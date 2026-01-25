@@ -1,196 +1,135 @@
-# Health Data Aggregator
+# Quarks
 
-An open-source, privacy-focused health data app for aggregating and analyzing sleep data from wearables like Apple Watch (via HealthKit), Pixel Watch (via Health Connect), and Whoop API. Users self-host data on their cloud to avoid paid apps and data selling.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
-[![Supabase](https://img.shields.io/badge/Supabase-Self--hosted-green.svg)](https://supabase.com)
+A comprehensive health tracking application that syncs Apple Health data to the cloud, provides insightful analytics, and offers a web dashboard for data visualization.
 
 ## Features
 
-- 🔒 **Privacy-First**: Self-host your data with Supabase
-- 📱 **Cross-Platform**: Flutter app for Web, Android, and iOS
-- ⌚ **Multi-Device Support**: Apple Watch, Android Wear, Whoop
-- 📊 **Sleep Analysis**: Track and analyze sleep patterns
-- 🌙 **Dark Mode**: Beautiful Material 3 UI
-- 🚀 **Scalable**: Kubernetes-ready architecture
+- **Apple Health Sync**: Automatically sync all your health data from Apple Health
+- **Comprehensive Tracking**: Sleep, workouts, heart rate, activity, body metrics, and more
+- **AI-Powered Insights**: Get personalized health insights powered by Claude AI
+- **Web Dashboard**: Access your health data from any browser
+- **Privacy First**: Your data is encrypted and you control access
 
 ## Tech Stack
 
-- **Frontend**: Flutter (Dart) with Riverpod, Material 3
-- **Backend**: Self-hosted Supabase (PostgreSQL, Auth, Storage)
-- **Analysis**: Python microservice (Pandas/SciPy)
-- **Containerization**: Docker & Docker Compose
-- **Orchestration**: Kubernetes (for scaling)
+| Component | Technology |
+|-----------|------------|
+| iOS App | Swift, SwiftUI, HealthKit |
+| Backend | Supabase (PostgreSQL, Auth, Realtime) |
+| Web | Next.js 14, Tailwind CSS, shadcn/ui |
+| AI | Claude API (configurable) |
 
 ## Project Structure
 
 ```
-health_app/
-├── lib/
-│   ├── main.dart                    # App entry point
-│   └── src/
-│       ├── screens/                 # UI screens
-│       ├── providers/               # Riverpod state management
-│       ├── services/                # API clients and sync services
-│       ├── models/                  # Data models
-│       ├── widgets/                 # Reusable widgets
-│       └── routing/                 # Navigation with GoRouter
-├── supabase/
-│   ├── migrations/                  # Database schema migrations
-│   ├── functions/                   # Edge functions (TypeScript)
-│   └── docker-compose.yml           # Self-hosted Supabase setup
-├── analysis/
-│   └── sleep_analyzer.py            # Python sleep analysis
-├── pubspec.yaml                     # Flutter dependencies
-└── README.md                        # This file
+├── ios/                 # iOS app (Swift/SwiftUI)
+├── web/                 # Web dashboard (Next.js)
+├── supabase/           # Backend (migrations, functions)
+├── docs/               # Documentation
+├── CLAUDE.md           # Claude Code guidelines
+└── AGENTS.md           # Swarm agent definitions
 ```
 
-## Prerequisites
+## Getting Started
 
-- Flutter SDK (3.0+)
-- Docker & Docker Compose
-- Node.js (for edge functions)
-- Python 3.8+ (for analysis service)
+### Prerequisites
 
-## Local Setup
+- Xcode 15+ (for iOS development)
+- Node.js 18+ (for web development)
+- Supabase CLI
+- A Supabase project
 
-### 1. Clone the Repository
+### Setup
 
-```bash
-git clone <repository-url>
-cd health
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/qxlsz/quarks.git
+   cd quarks
+   ```
 
-### 2. Set Up Supabase (Localhost)
+2. **Set up Supabase**
+   ```bash
+   # Install Supabase CLI
+   brew install supabase/tap/supabase
 
-Navigate to the `supabase` directory and start Supabase using Docker Compose:
+   # Start local Supabase
+   supabase start
 
-```bash
-cd supabase
-cp .env.example .env
-# Edit .env with your desired passwords
-docker-compose up -d
-```
+   # Apply migrations
+   supabase db push
+   ```
 
-This will start Supabase services on:
-- **API URL**: `http://localhost:54321`
-- **Studio**: `http://localhost:54323` (Database admin UI)
-- **Auth**: `http://localhost:54324`
-- **REST API**: `http://localhost:54325`
-- **Realtime**: `http://localhost:54326`
-- **Storage**: `http://localhost:54327`
+3. **iOS App**
+   ```bash
+   open ios/Quarks.xcodeproj
+   # Configure signing and run on device
+   ```
 
-Wait for all services to be healthy (check with `docker-compose ps`).
+4. **Web Dashboard**
+   ```bash
+   cd web
+   npm install
+   cp .env.example .env.local
+   # Add your Supabase credentials to .env.local
+   npm run dev
+   ```
 
-### 3. Run Database Migrations
+## Health Data
 
-The migrations in `supabase/migrations/` will automatically run on first startup. To verify, check the Supabase Studio at `http://localhost:54323`.
+The app tracks the following health metrics:
 
-### 4. Configure Flutter App
+### Activity
+- Steps, distance, calories burned, floors climbed
 
-Create a `.env` file in the project root:
+### Heart
+- Heart rate, resting heart rate, heart rate variability (HRV)
 
-```bash
-cp env.template .env
-```
+### Sleep
+- Sleep duration, sleep stages (REM, deep, core, awake)
 
-Update the `.env` file with your Supabase credentials:
+### Workouts
+- Exercise type, duration, calories, heart rate zones
 
-```bash
-SUPABASE_URL=http://localhost:54321
-SUPABASE_ANON_KEY=your_anon_key_here
-```
+### Body
+- Weight, body fat percentage, height
 
-**Note**: For local development, use the default keys from `supabase/.env.example`. For production, generate secure keys.
+### Vitals
+- Blood pressure, respiratory rate, blood oxygen (SpO2)
 
-### 5. Install Flutter Dependencies
+## AI Insights
 
-```bash
-flutter pub get
-```
+The app provides AI-powered health insights using:
+- **Claude** (default): Anthropic's Claude for intelligent analysis
+- **OpenAI**: GPT-4 for alternative insights
+- **Custom**: Connect your own AI provider
 
-### 6. Run Code Generation
+Insights include:
+- Daily health summaries
+- Trend analysis and recommendations
+- Anomaly detection
+- Correlation analysis (e.g., sleep vs. recovery)
 
-Generate the required code for JSON serialization:
+## Development
 
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
+See [CLAUDE.md](./CLAUDE.md) for coding guidelines and conventions.
 
-This will generate the necessary files for `health_data.dart` model serialization.
+See [AGENTS.md](./AGENTS.md) for swarm agent configurations.
 
-### 7. Run the App
+## Roadmap
 
-```bash
-# Web
-flutter run -d chrome
-
-# Android
-flutter run
-
-# iOS
-flutter run
-```
-
-## Environment Variables
-
-Copy `env.template` to `.env` and fill in your values:
-
-```bash
-# Supabase Configuration (Localhost for Development)
-SUPABASE_URL=http://localhost:54321
-SUPABASE_ANON_KEY=your_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
-
-# Whoop OAuth (Optional - Add when implementing)
-WHOOP_CLIENT_ID=your_whoop_client_id
-WHOOP_CLIENT_SECRET=your_whoop_client_secret
-WHOOP_REDIRECT_URI=http://localhost:8080/callback
-
-# App Configuration
-APP_ENV=development
-```
-
-**Important**: 
-- **Local Development**: Use `localhost:54321` for Supabase
-- **Production**: Update `.env` with your cloud Supabase URL
-
-## Database Schema
-
-The app uses the following main tables:
-
-- **profiles**: User profiles (extends Supabase auth)
-- **devices**: Connected wearable devices (Apple Watch, Android, Whoop)
-- **health_metrics**: Sleep and activity data (stored as JSONB)
-
-All tables have Row Level Security (RLS) enabled, ensuring users can only access their own data.
-
-## Development Roadmap
-
-- [x] **Phase 1**: Setup & Scaffold (Auth, Basic UI, Database)
-- [ ] **Phase 2**: UI/UX Basics (Dashboard, Settings, Charts)
-- [ ] **Phase 3**: Integrations (HealthKit, Health Connect, Whoop)
-- [ ] **Phase 4**: Analysis Module (Python sleep analysis)
-- [ ] **Phase 5**: Self-Hosting & Scaling (Kubernetes, CI/CD)
-
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+- [x] Project setup and architecture
+- [ ] Supabase database schema
+- [ ] iOS app skeleton with HealthKit
+- [ ] Basic health data sync
+- [ ] Web dashboard with charts
+- [ ] AI insights integration
+- [ ] Android app (Health Connect)
+- [ ] Apple Watch app
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](./LICENSE) for details.
 
-## Privacy
+## Contributing
 
-This app is designed with privacy as a core principle:
-- All data is stored in your self-hosted Supabase instance
-- No analytics or tracking
-- Device tokens are encrypted
-- Row-level security ensures data isolation
-
-## Support
-
-For issues and questions, please open an issue on GitHub.
-
+Contributions are welcome! Please read the contributing guidelines before submitting PRs.
