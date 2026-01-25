@@ -1,52 +1,111 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+Pods/
+Carthage/
 
 # Build outputs
 .next/
 out/
 dist/
 build/
+.build/
 
 # Environment files
 .env
 .env.local
 .env.*.local
+*.xcconfig
 
-# iOS
-ios/HealthApp.xcodeproj/project.xcworkspace/
-ios/HealthApp.xcodeproj/xcuserdata/
-ios/DerivedData/
+# iOS / Xcode
 *.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+xcuserdata/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.hmap
 *.ipa
 *.dSYM.zip
 *.dSYM
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+ios/Quarks.xcodeproj/project.xcworkspace/
+ios/Quarks.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
 
 # macOS
 .DS_Store
-*.swp
-*.swo
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
 
-# IDE
+# Editor
 .idea/
 .vscode/
 *.sublime-*
+*.swp
+*.swo
+*~
 
 # Supabase
 supabase/.branches
 supabase/.temp
+.supabase/
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Testing
 coverage/
 .nyc_output/
+*.lcov
 
 # Misc
 *.pem
+*.p12
+*.mobileprovision
 .vercel
 .turbo
+.cache/
+tmp/
+temp/
+
+# Secrets - NEVER commit these
+secrets/
+*.secret
+credentials.json
+google-services.json
+GoogleService-Info.plist
+
+# Local development
+.claude/plans/
