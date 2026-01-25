@@ -26,7 +26,8 @@ struct DashboardView: View {
                         } label: {
                             Image(systemName: viewModel.isSyncing ? "arrow.triangle.2.circlepath" : "arrow.clockwise")
                                 .font(.title2)
-                                .symbolEffect(.rotate, isActive: viewModel.isSyncing)
+                                .rotationEffect(.degrees(viewModel.isSyncing ? 360 : 0))
+                                .animation(viewModel.isSyncing ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: viewModel.isSyncing)
                         }
                         .disabled(viewModel.isSyncing)
                     }
