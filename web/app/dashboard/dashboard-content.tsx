@@ -25,6 +25,19 @@ import { NutritionOverview, MealLog, WaterTracker, MacroDistribution, FastingTim
 import { BodyBattery, BodyBatteryTrend, StressLevel, Readiness, SleepDebt } from './components/body-battery'
 import { RespiratoryRate, BloodOxygen, SkinTemperature, WellnessRadar, MenstrualCycle, Leaderboard, QuickActions, DailyTip } from './components/advanced-metrics'
 import { CurrentGlucose, GlucoseChart, TimeInRange, MealGlucoseImpact, GlucoseInsights, DailyGlucosePattern } from './components/glucose-monitor'
+import {
+  PersonalRecords,
+  StatCards,
+  CorrelationMatrix,
+  PercentileRankings,
+  MonthlyReview,
+  TrendPrediction,
+  ShareableStatCard,
+  HealthTimeline,
+  DataExplorer,
+  LifetimeStatsCard,
+  ComparisonCards,
+} from './components/infographics'
 
 interface DashboardContentProps {
   user: {
@@ -282,6 +295,124 @@ export function DashboardContent({
     { meal: 'Pasta with Marinara', carbs: 75, glucoseBefore: 95, glucosePeak: 172, glucoseAfter2h: 125, peakTime: 55, recovery: 150, score: 'poor' as const },
   ]
 
+  // Infographic mock data
+  const mockPersonalRecords = [
+    { metric: 'Most Steps', value: 24850, unit: 'steps', date: 'Dec 15, 2024', icon: '👟', improvement: 12 },
+    { metric: 'Longest Run', value: 15.2, unit: 'km', date: 'Nov 28, 2024', icon: '🏃', improvement: 8 },
+    { metric: 'Best Sleep', value: 9.2, unit: 'hours', date: 'Jan 1, 2025', icon: '😴' },
+    { metric: 'Lowest RHR', value: 48, unit: 'bpm', date: 'Jan 10, 2025', icon: '❤️', improvement: 5 },
+  ]
+
+  const mockStatCards = [
+    { label: 'Weekly Steps', value: weeklySteps, unit: '', change: 12, changeLabel: 'vs last week', sparkline: [6500, 8200, 7800, 9100, 8500, 10200, 9800], color: '#8B5CF6', icon: '👟' },
+    { label: 'Avg Heart Rate', value: 72, unit: 'bpm', change: -3, changeLabel: 'vs last week', sparkline: [75, 74, 73, 72, 74, 71, 72], color: '#EF4444', icon: '❤️' },
+    { label: 'Sleep Score', value: 85, unit: '', change: 8, changeLabel: 'vs last week', sparkline: [78, 82, 80, 85, 83, 88, 85], color: '#3B82F6', icon: '😴' },
+    { label: 'Calories', value: Math.round(weeklyCalories), unit: 'kcal', change: 5, changeLabel: 'vs last week', sparkline: [420, 380, 450, 520, 480, 510, 490], color: '#F97316', icon: '🔥' },
+  ]
+
+  const mockCorrelationData = {
+    metrics: ['Sleep', 'HRV', 'Steps', 'Stress', 'Recovery'],
+    correlations: [
+      [1.0, 0.8, 0.3, -0.6, 0.7],
+      [0.8, 1.0, 0.2, -0.5, 0.9],
+      [0.3, 0.2, 1.0, 0.1, 0.4],
+      [-0.6, -0.5, 0.1, 1.0, -0.7],
+      [0.7, 0.9, 0.4, -0.7, 1.0],
+    ],
+  }
+
+  const mockPercentileRankings = [
+    { metric: 'Daily Steps', value: today?.steps ?? 8500, unit: 'steps', percentile: 78, demographic: 'Males 25-34', icon: '👟' },
+    { metric: 'Resting HR', value: 58, unit: 'bpm', percentile: 85, demographic: 'Your age group', icon: '❤️' },
+    { metric: 'Sleep Duration', value: 7.5, unit: 'hours', percentile: 62, demographic: 'Adults', icon: '😴' },
+    { metric: 'VO2 Max', value: 48, unit: 'ml/kg/min', percentile: 72, demographic: 'Males 25-34', icon: '🫁' },
+  ]
+
+  const mockMonthlyReview = {
+    month: 'January 2025',
+    highlights: [
+      { label: 'Total Steps', value: '285K', icon: '👟', change: 15 },
+      { label: 'Workouts', value: '18', icon: '💪', change: 20 },
+      { label: 'Avg Sleep', value: '7.4h', icon: '😴', change: 5 },
+    ],
+    topDay: { date: 'Jan 15', metric: 'steps', value: '18,420' },
+    totalActive: 26,
+    avgDaily: { steps: 9500, calories: 2200, sleep: 7.4 },
+    streakDays: 12,
+    achievements: ['🏆', '🎯', '🔥', '💪', '⭐'],
+  }
+
+  const mockTrendPrediction = {
+    metric: 'Weekly Steps',
+    current: 68000,
+    predicted: 75000,
+    confidence: 82,
+    trend: 'up' as const,
+    timeframe: 'Next Week',
+    historicalData: [
+      { date: 'W1', actual: 52000 },
+      { date: 'W2', actual: 58000 },
+      { date: 'W3', actual: 61000 },
+      { date: 'W4', actual: 68000 },
+      { date: 'W5', actual: 68000, predicted: 72000 },
+      { date: 'W6', actual: 72000, predicted: 75000 },
+    ],
+  }
+
+  const mockShareableCard = {
+    metric: 'Steps This Month',
+    value: 285420,
+    unit: 'steps',
+    achievement: 'You walked the equivalent of 3 marathons this month!',
+    date: 'January 2025',
+    comparison: 'Top 15% of Quarks users',
+    gradient: 'from-emerald-500 to-teal-600',
+  }
+
+  const mockTimelineEvents = [
+    { time: '6:30 AM', type: 'sleep' as const, title: 'Wake Up', description: 'Slept 7h 42m with 92% efficiency', icon: '😴', value: '92% quality' },
+    { time: '7:15 AM', type: 'activity' as const, title: 'Morning Run', description: '5.2 km in 28 minutes', icon: '🏃', value: '320 cal' },
+    { time: '8:00 AM', type: 'meal' as const, title: 'Breakfast', description: 'Oatmeal with berries and coffee', icon: '🍳', value: '380 kcal' },
+    { time: '12:30 PM', type: 'meal' as const, title: 'Lunch', description: 'Grilled chicken salad', icon: '🥗', value: '520 kcal' },
+    { time: '3:00 PM', type: 'achievement' as const, title: 'Goal Reached!', description: 'Hit 10,000 steps for the day', icon: '🎯' },
+    { time: '6:00 PM', type: 'activity' as const, title: 'Gym Session', description: 'Strength training - Upper body', icon: '💪', value: '45 min' },
+  ]
+
+  const mockDataExplorerData = chartData.map((d, i) => ({
+    date: d.date,
+    steps: d.steps,
+    calories: d.calories,
+    sleep: 6.5 + Math.random() * 2,
+    hrv: 45 + Math.random() * 20,
+    stress: 30 + Math.random() * 30,
+  }))
+
+  const mockDataExplorerMetrics = [
+    { key: 'steps', label: 'Steps', color: '#8B5CF6' },
+    { key: 'calories', label: 'Calories', color: '#F97316' },
+    { key: 'sleep', label: 'Sleep (hrs)', color: '#3B82F6' },
+    { key: 'hrv', label: 'HRV', color: '#22C55E' },
+    { key: 'stress', label: 'Stress', color: '#EF4444' },
+  ]
+
+  const mockLifetimeStats = {
+    totalSteps: 4850000,
+    totalCalories: 892000,
+    totalDistance: 3420,
+    totalWorkouts: 342,
+    totalSleepHours: 2850,
+    memberSince: 'Mar 2023',
+    activeDays: 485,
+    longestStreak: 45,
+  }
+
+  const mockComparisons = [
+    { metric: 'Daily Steps', current: today?.steps ?? 8500, previous: 7200, unit: '', icon: '👟' },
+    { metric: 'Active Calories', current: Math.round(today?.active_calories ?? 450), previous: 380, unit: 'kcal', icon: '🔥' },
+    { metric: 'Sleep Duration', current: 7.5, previous: 6.8, unit: 'hrs', icon: '😴' },
+    { metric: 'Resting HR', current: 58, previous: 62, unit: 'bpm', icon: '❤️' },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
@@ -329,6 +460,11 @@ export function DashboardContent({
         {/* Quick Actions */}
         <div className="mb-8">
           <QuickActions />
+        </div>
+
+        {/* Key Stats with Sparklines */}
+        <div className="mb-8">
+          <StatCards stats={mockStatCards} />
         </div>
 
         {/* Strain + Recovery Row (Whoop-style) */}
@@ -487,6 +623,46 @@ export function DashboardContent({
             }))}
             weeks={12}
           />
+        </div>
+
+        {/* ============================================ */}
+        {/* INFOGRAPHICS & STATS SECTION */}
+        {/* ============================================ */}
+
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <span className="text-2xl">📈</span> Your Stats & Insights
+          </h2>
+        </div>
+
+        {/* Personal Records + Monthly Review */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <PersonalRecords records={mockPersonalRecords} />
+          <MonthlyReview data={mockMonthlyReview} />
+        </div>
+
+        {/* Timeline + Comparisons */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <HealthTimeline events={mockTimelineEvents} />
+          <ComparisonCards comparisons={mockComparisons} periodLabel="Last Week" />
+        </div>
+
+        {/* Percentile Rankings + Correlations */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <PercentileRankings rankings={mockPercentileRankings} />
+          <CorrelationMatrix data={mockCorrelationData} />
+        </div>
+
+        {/* Data Explorer */}
+        <div className="mb-8">
+          <DataExplorer data={mockDataExplorerData} metrics={mockDataExplorerMetrics} />
+        </div>
+
+        {/* Trend Prediction + Shareable Card + Lifetime Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <TrendPrediction data={mockTrendPrediction} />
+          <ShareableStatCard data={mockShareableCard} />
+          <LifetimeStatsCard stats={mockLifetimeStats} />
         </div>
 
         {/* AI Insights */}
