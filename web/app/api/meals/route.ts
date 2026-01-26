@@ -1,118 +1,93 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+  createMealSchema,
+  paginationSchema,
+  dateRangeSchema,
+} from '@/lib/security'
 
-interface MealItemInput {
-  name: string
-  brand?: string
-  barcode?: string
-  serving_size: string
-  servings: number
-  calories: number
-  protein: number
-  carbs: number
-  fat: number
-  fiber?: number
-  sugar?: number
-  sodium?: number
-  source: 'barcode' | 'ai_recognition' | 'manual' | 'search'
-  confidence?: number
-}
-
-interface CreateMealInput {
-  name: string
-  meal_type: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'other'
-  logged_at?: string
-  notes?: string
-  image_url?: string
-  items: MealItemInput[]
-}
+// Query schema for GET requests
+const getMealsQuerySchema = paginationSchema.merge(dateRangeSchema).extend({
+  date: z.string().optional(),
+})
 
 // GET /api/meals - Get user's meals
-export async function GET(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    querySchema: getMealsQuerySchema,
+    auditAction: 'READ',
+    auditResource: 'meal',
+  },
+  async (request, { user, query, supabase }) => {
+    const { date, limit = 20 } = query as z.infer<typeof getMealsQuerySchema>
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const searchParams = request.nextUrl.searchParams
-    const date = searchParams.get('date') // Optional: filter by date (YYYY-MM-DD)
-    const limit = parseInt(searchParams.get('limit') || '20')
-
-    let query = supabase
+    let dbQuery = supabase
       .from('meals')
       .select(`
         *,
         meal_items (*)
       `)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .order('logged_at', { ascending: false })
       .limit(limit)
 
     if (date) {
-      query = query
+      dbQuery = dbQuery
         .gte('logged_at', `${date}T00:00:00`)
         .lt('logged_at', `${date}T23:59:59`)
     }
 
-    const { data: meals, error } = await query
+    const { data: meals, error } = await dbQuery
 
     if (error) {
       console.error('Error fetching meals:', error)
-      return NextResponse.json({ error: 'Failed to fetch meals' }, { status: 500 })
+      return secureErrorResponse('Failed to fetch meals', 500)
     }
 
-    return NextResponse.json({ meals })
-  } catch (error) {
-    console.error('Meals GET error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return secureJsonResponse({ meals })
   }
-}
+)
 
 // POST /api/meals - Create a new meal with items
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const body: CreateMealInput = await request.json()
-
-    if (!body.name || !body.meal_type || !body.items || body.items.length === 0) {
-      return NextResponse.json(
-        { error: 'Missing required fields: name, meal_type, and at least one item' },
-        { status: 400 }
-      )
-    }
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    bodySchema: createMealSchema,
+    auditAction: 'CREATE',
+    auditResource: 'meal',
+  },
+  async (request, { user, body, supabase, audit }) => {
+    const mealData = body as z.infer<typeof createMealSchema>
 
     // Create the meal
     const { data: meal, error: mealError } = await supabase
       .from('meals')
       .insert({
-        user_id: user.id,
-        name: body.name,
-        meal_type: body.meal_type,
-        logged_at: body.logged_at || new Date().toISOString(),
-        notes: body.notes,
-        image_url: body.image_url,
+        user_id: user!.id,
+        name: mealData.name,
+        meal_type: mealData.meal_type,
+        logged_at: mealData.logged_at || new Date().toISOString(),
+        notes: mealData.notes,
+        image_url: mealData.image_url,
       })
       .select()
       .single()
 
     if (mealError) {
       console.error('Error creating meal:', mealError)
-      return NextResponse.json({ error: 'Failed to create meal' }, { status: 500 })
+      return secureErrorResponse('Failed to create meal', 500)
     }
 
     // Create meal items
-    const mealItems = body.items.map((item) => ({
+    const mealItems = mealData.items.map((item) => ({
       meal_id: meal.id,
-      user_id: user.id,
+      user_id: user!.id,
       name: item.name,
       brand: item.brand,
       barcode: item.barcode,
@@ -137,7 +112,7 @@ export async function POST(request: NextRequest) {
       console.error('Error creating meal items:', itemsError)
       // Rollback meal creation
       await supabase.from('meals').delete().eq('id', meal.id)
-      return NextResponse.json({ error: 'Failed to create meal items' }, { status: 500 })
+      return secureErrorResponse('Failed to create meal items', 500)
     }
 
     // Fetch the complete meal with items
@@ -150,26 +125,45 @@ export async function POST(request: NextRequest) {
       .eq('id', meal.id)
       .single()
 
-    return NextResponse.json({ meal: completeMeal }, { status: 201 })
-  } catch (error) {
-    console.error('Meals POST error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    // Log audit event with meal ID
+    await audit.log(user!.id, 'CREATE', 'meal', {
+      resourceId: meal.id,
+      details: {
+        meal_type: mealData.meal_type,
+        item_count: mealData.items.length,
+        total_calories: mealData.items.reduce((sum, i) => sum + i.calories, 0),
+      },
+    })
+
+    return secureJsonResponse({ meal: completeMeal }, 201)
   }
-}
+)
 
 // DELETE /api/meals?id=xxx - Delete a meal
-export async function DELETE(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const DELETE = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'DELETE',
+    auditResource: 'meal',
+  },
+  async (request, { user, supabase, audit }) => {
+    const mealId = request.nextUrl.searchParams.get('id')
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!mealId) {
+      return secureErrorResponse('Meal ID required', 400)
     }
 
-    const mealId = request.nextUrl.searchParams.get('id')
-    if (!mealId) {
-      return NextResponse.json({ error: 'Meal ID required' }, { status: 400 })
+    // Verify ownership before delete
+    const { data: existingMeal } = await supabase
+      .from('meals')
+      .select('id')
+      .eq('id', mealId)
+      .eq('user_id', user!.id)
+      .single()
+
+    if (!existingMeal) {
+      return secureErrorResponse('Meal not found', 404)
     }
 
     // Delete meal (items will cascade delete)
@@ -177,16 +171,16 @@ export async function DELETE(request: NextRequest) {
       .from('meals')
       .delete()
       .eq('id', mealId)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
 
     if (error) {
       console.error('Error deleting meal:', error)
-      return NextResponse.json({ error: 'Failed to delete meal' }, { status: 500 })
+      return secureErrorResponse('Failed to delete meal', 500)
     }
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Meals DELETE error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    // Log deletion
+    await audit.log(user!.id, 'DELETE', 'meal', { resourceId: mealId })
+
+    return secureJsonResponse({ success: true })
   }
-}
+)

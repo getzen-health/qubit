@@ -1,47 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { NextRequest } from 'next/server'
+import { z } from 'zod'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+  startFastingSchema,
+  endFastingSchema,
+} from '@/lib/security'
+
+// Query schema for GET requests
+const getFastingQuerySchema = z.object({
+  active: z.coerce.boolean().optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+})
 
 // GET /api/fasting - Get user's fasting sessions
-export async function GET(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    querySchema: getFastingQuerySchema,
+    auditAction: 'READ',
+    auditResource: 'fasting_session',
+  },
+  async (request, { user, query, supabase }) => {
+    const { active, limit } = query as z.infer<typeof getFastingQuerySchema>
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const searchParams = request.nextUrl.searchParams
-    const active = searchParams.get('active') === 'true'
-    const limit = parseInt(searchParams.get('limit') || '10')
-
-    let query = supabase
+    let dbQuery = supabase
       .from('fasting_sessions')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .order('started_at', { ascending: false })
       .limit(limit)
 
     if (active) {
-      // Get only the active (not ended) session
-      query = query.is('ended_at', null)
+      dbQuery = dbQuery.is('ended_at', null)
     }
 
-    const { data: sessions, error } = await query
+    const { data: sessions, error } = await dbQuery
 
     if (error) {
       console.error('Error fetching fasting sessions:', error)
-      return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
+      return secureErrorResponse('Failed to fetch sessions', 500)
     }
 
-    // Get user's default fasting settings
     const { data: settings } = await supabase
       .from('user_nutrition_settings')
       .select('default_fasting_protocol, default_fasting_hours')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .single()
 
-    // Calculate elapsed time for active session
     const activeSession = sessions?.find((s) => !s.ended_at)
     let activeSessionWithElapsed = null
 
@@ -59,97 +67,96 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    return secureJsonResponse({
       active_session: activeSessionWithElapsed,
       recent_sessions: sessions?.filter((s) => s.ended_at) || [],
       default_protocol: settings?.default_fasting_protocol || '16:8',
       default_hours: settings?.default_fasting_hours || 16,
     })
-  } catch (error) {
-    console.error('Fasting GET error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+)
 
 // POST /api/fasting - Start a new fasting session
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    bodySchema: startFastingSchema,
+    auditAction: 'CREATE',
+    auditResource: 'fasting_session',
+  },
+  async (request, { user, body, supabase, audit }) => {
+    const fastingData = body as z.infer<typeof startFastingSchema>
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const body = await request.json()
-
-    // Check if there's already an active session
+    // Check for existing active session
     const { data: existingActive } = await supabase
       .from('fasting_sessions')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .is('ended_at', null)
       .single()
 
     if (existingActive) {
-      return NextResponse.json(
-        { error: 'You already have an active fasting session. End it first.' },
-        { status: 400 }
+      return secureErrorResponse(
+        'You already have an active fasting session. End it first.',
+        400
       )
     }
 
     const { data: session, error } = await supabase
       .from('fasting_sessions')
       .insert({
-        user_id: user.id,
-        protocol: body.protocol || '16:8',
-        target_hours: body.target_hours || 16,
-        started_at: body.started_at || new Date().toISOString(),
-        notes: body.notes,
+        user_id: user!.id,
+        protocol: fastingData.protocol,
+        target_hours: fastingData.target_hours,
+        started_at: fastingData.started_at || new Date().toISOString(),
+        notes: fastingData.notes,
       })
       .select()
       .single()
 
     if (error) {
       console.error('Error creating fasting session:', error)
-      return NextResponse.json({ error: 'Failed to start fasting' }, { status: 500 })
+      return secureErrorResponse('Failed to start fasting', 500)
     }
 
-    return NextResponse.json({ session }, { status: 201 })
-  } catch (error) {
-    console.error('Fasting POST error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    await audit.log(user!.id, 'CREATE', 'fasting_session', {
+      resourceId: session.id,
+      details: {
+        protocol: fastingData.protocol,
+        target_hours: fastingData.target_hours,
+      },
+    })
+
+    return secureJsonResponse({ session }, 201)
   }
-}
+)
 
 // PATCH /api/fasting - End an active fasting session
-export async function PATCH(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const PATCH = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    bodySchema: endFastingSchema,
+    auditAction: 'UPDATE',
+    auditResource: 'fasting_session',
+  },
+  async (request, { user, body, supabase, audit }) => {
+    const endData = body as z.infer<typeof endFastingSchema>
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const body = await request.json()
-    const sessionId = body.id
-
-    // Get the active session
     const { data: activeSession, error: fetchError } = await supabase
       .from('fasting_sessions')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .is('ended_at', null)
       .single()
 
     if (fetchError || !activeSession) {
-      return NextResponse.json({ error: 'No active fasting session found' }, { status: 404 })
+      return secureErrorResponse('No active fasting session found', 404)
     }
 
-    // Calculate actual duration
     const startedAt = new Date(activeSession.started_at)
-    const endedAt = body.ended_at ? new Date(body.ended_at) : new Date()
+    const endedAt = endData.ended_at ? new Date(endData.ended_at) : new Date()
     const actualHours = (endedAt.getTime() - startedAt.getTime()) / (1000 * 60 * 60)
     const completed = actualHours >= activeSession.target_hours
 
@@ -159,7 +166,7 @@ export async function PATCH(request: NextRequest) {
         ended_at: endedAt.toISOString(),
         actual_hours: Math.round(actualHours * 100) / 100,
         completed,
-        notes: body.notes || activeSession.notes,
+        notes: endData.notes || activeSession.notes,
         updated_at: new Date().toISOString(),
       })
       .eq('id', activeSession.id)
@@ -168,49 +175,65 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       console.error('Error ending fasting session:', error)
-      return NextResponse.json({ error: 'Failed to end fasting' }, { status: 500 })
+      return secureErrorResponse('Failed to end fasting', 500)
     }
 
-    return NextResponse.json({
+    await audit.log(user!.id, 'UPDATE', 'fasting_session', {
+      resourceId: activeSession.id,
+      details: {
+        actual_hours: Math.round(actualHours * 100) / 100,
+        completed,
+      },
+    })
+
+    return secureJsonResponse({
       session,
       completed,
       actual_hours: Math.round(actualHours * 100) / 100,
     })
-  } catch (error) {
-    console.error('Fasting PATCH error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+)
 
 // DELETE /api/fasting?id=xxx - Delete a fasting session
-export async function DELETE(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+export const DELETE = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'DELETE',
+    auditResource: 'fasting_session',
+  },
+  async (request, { user, supabase, audit }) => {
+    const sessionId = request.nextUrl.searchParams.get('id')
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!sessionId) {
+      return secureErrorResponse('Session ID required', 400)
     }
 
-    const sessionId = request.nextUrl.searchParams.get('id')
-    if (!sessionId) {
-      return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
+    // Verify ownership
+    const { data: existingSession } = await supabase
+      .from('fasting_sessions')
+      .select('id')
+      .eq('id', sessionId)
+      .eq('user_id', user!.id)
+      .single()
+
+    if (!existingSession) {
+      return secureErrorResponse('Fasting session not found', 404)
     }
 
     const { error } = await supabase
       .from('fasting_sessions')
       .delete()
       .eq('id', sessionId)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
 
     if (error) {
       console.error('Error deleting fasting session:', error)
-      return NextResponse.json({ error: 'Failed to delete session' }, { status: 500 })
+      return secureErrorResponse('Failed to delete session', 500)
     }
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Fasting DELETE error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    await audit.log(user!.id, 'DELETE', 'fasting_session', { resourceId: sessionId })
+
+    return secureJsonResponse({ success: true })
   }
-}
+)
