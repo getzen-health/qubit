@@ -4,11 +4,15 @@ import Supabase
 @main
 struct QuarksApp: App {
     @State private var appState = AppState()
+    @State private var themeManager = ThemeManager.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(appState)
+                .environment(themeManager)
+                .preferredColorScheme(themeManager.appearanceMode.colorScheme)
+                .tint(themeManager.accentColor)
                 .task {
                     await appState.initializeAuth()
                 }

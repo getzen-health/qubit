@@ -18,27 +18,7 @@ struct ContentView: View {
 
 struct MainTabView: View {
     var body: some View {
-        TabView {
-            DashboardView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "heart.text.square")
-                }
-
-            HealthDataView()
-                .tabItem {
-                    Label("Health", systemImage: "figure.walk")
-                }
-
-            InsightsView()
-                .tabItem {
-                    Label("Insights", systemImage: "sparkles")
-                }
-
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
-        }
+        AdaptiveNavigationView()
     }
 }
 

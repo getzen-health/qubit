@@ -3,7 +3,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="text-center">
         <h1 className="text-6xl font-bold text-purple-600 mb-4">
-          Quarks
+          KQuarks
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
           Your personal health dashboard

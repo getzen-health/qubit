@@ -408,7 +408,7 @@ export function DashboardContent({
     unit: 'steps',
     achievement: 'You walked the equivalent of 3 marathons this month!',
     date: 'January 2025',
-    comparison: 'Top 15% of Quarks users',
+    comparison: 'Top 15% of KQuarks users',
     gradient: 'from-emerald-500 to-teal-600',
   }
 
@@ -463,9 +463,9 @@ export function DashboardContent({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold">Q</span>
+              <span className="text-white font-bold">K</span>
             </div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Quarks</h1>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">KQuarks</h1>
           </div>
           <div className="flex items-center gap-4">
             <button className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">

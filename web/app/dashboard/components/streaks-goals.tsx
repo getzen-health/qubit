@@ -1,5 +1,7 @@
 'use client'
 
+import { Check, Trophy } from 'lucide-react'
+
 interface Streak {
   name: string
   current: number
@@ -140,7 +142,7 @@ export function WeeklyChallenge({ challenge }: { challenge: { name: string; desc
           <h3 className="text-xl font-bold mt-1">{challenge.name}</h3>
           <p className="text-sm text-orange-100 mt-1">{challenge.description}</p>
         </div>
-        <div className="text-4xl">🏆</div>
+        <Trophy className="w-10 h-10 text-orange-200" />
       </div>
 
       <div className="mt-4">

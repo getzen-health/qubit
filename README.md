@@ -1,4 +1,4 @@
-# Quarks
+# KQuarks
 
 A comprehensive health tracking application that syncs Apple Health data to the cloud, provides insightful analytics, and offers a web dashboard for data visualization.
 
@@ -52,8 +52,8 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/qxlsz/quarks.git
-   cd quarks
+   git clone https://github.com/qxlsz/kquarks.git
+   cd kquarks
    ```
 
 2. **Open in Xcode**
@@ -195,10 +195,10 @@ The app provides AI-powered health insights using:
    - Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com)
    - Click "+" to add a new app
    - Fill in app information:
-     - Name: Quarks
+     - Name: KQuarks
      - Primary language: English
      - Bundle ID: com.qxlsz.quarks
-     - SKU: quarks-health-app
+     - SKU: kquarks-health-app
 
 2. **Prepare App Store Listing**
    - **App Icon**: 1024x1024 PNG (no transparency)

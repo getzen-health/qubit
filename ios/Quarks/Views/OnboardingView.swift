@@ -107,7 +107,7 @@ struct WelcomePage: View {
                 .font(.system(size: 80))
                 .foregroundStyle(.purple, .indigo.opacity(0.3))
 
-            Text("Quarks")
+            Text("KQuarks")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
 

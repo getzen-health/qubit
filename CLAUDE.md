@@ -1,8 +1,8 @@
-# Quarks - Claude Code Guidelines
+# KQuarks - Claude Code Guidelines
 
 ## Project Overview
 
-Quarks is a comprehensive health tracking app that syncs Apple Health data to the cloud, displays interesting stats and AI-powered insights, and provides a web interface for data visualization.
+KQuarks is a comprehensive health tracking app that syncs Apple Health data to the cloud, displays interesting stats and AI-powered insights, and provides a web interface for data visualization.
 
 ## Architecture
 

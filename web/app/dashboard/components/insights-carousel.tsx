@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { Moon, Activity, Heart, Apple, Zap, TrendingUp, Sparkles, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 interface Insight {
   id: string
@@ -12,13 +14,13 @@ interface Insight {
   icon?: string
 }
 
-const categoryIcons: Record<string, string> = {
-  sleep: '😴',
-  activity: '🏃',
-  heart: '❤️',
-  nutrition: '🥗',
-  recovery: '🧘',
-  trend: '📈',
+const categoryIcons: Record<string, LucideIcon> = {
+  sleep: Moon,
+  activity: Activity,
+  heart: Heart,
+  nutrition: Apple,
+  recovery: Zap,
+  trend: TrendingUp,
 }
 
 const priorityStyles = {
@@ -33,7 +35,9 @@ export function InsightsCarousel({ insights }: { insights: Insight[] }) {
   if (insights.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div className="text-4xl mb-4">🔮</div>
+        <div className="flex justify-center mb-4">
+          <Sparkles className="w-10 h-10 text-purple-500" />
+        </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">No insights yet</h3>
         <p className="text-sm text-gray-500 mt-2">Keep syncing your health data to receive AI-powered insights</p>
       </div>
@@ -73,7 +77,12 @@ export function InsightsCarousel({ insights }: { insights: Insight[] }) {
 
       <div className={`border-l-4 rounded-r-xl p-4 ${priorityStyles[currentInsight.priority]}`}>
         <div className="flex items-start gap-3">
-          <div className="text-2xl">{categoryIcons[currentInsight.category] || '💡'}</div>
+          <div className="flex-shrink-0">
+            {(() => {
+              const Icon = categoryIcons[currentInsight.category] ?? Sparkles
+              return <Icon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            })()}
+          </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-medium text-gray-500 uppercase">{currentInsight.category}</span>
@@ -127,7 +136,12 @@ export function InsightsList({ insights }: { insights: Insight[] }) {
             className={`border-l-4 rounded-r-xl p-4 transition-all hover:translate-x-1 cursor-pointer ${priorityStyles[insight.priority]}`}
           >
             <div className="flex items-start gap-3">
-              <div className="text-xl">{categoryIcons[insight.category] || '💡'}</div>
+              <div className="flex-shrink-0">
+                {(() => {
+                  const Icon = categoryIcons[insight.category] ?? Sparkles
+                  return <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                })()}
+              </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-gray-900 dark:text-white truncate">{insight.title}</h4>
                 <p className="text-sm text-gray-500 truncate">{insight.content}</p>

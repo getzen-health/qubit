@@ -1,6 +1,6 @@
-# Contributing to Quarks
+# Contributing to KQuarks
 
-Thank you for your interest in contributing to Quarks!
+Thank you for your interest in contributing to KQuarks!
 
 ## Development Setup
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to Quarks!
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/qxlsz/quarks.git
-   cd quarks
+   git clone https://github.com/qxlsz/kquarks.git
+   cd kquarks
    ```
 
 2. **Set up the backend**

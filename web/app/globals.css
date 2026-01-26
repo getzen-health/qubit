@@ -2,27 +2,161 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 250, 250, 250;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 10, 10, 10;
-    --background-end-rgb: 20, 20, 20;
+    /* Accent color (customizable) */
+    --accent-h: 270;
+    --accent-s: 70%;
+    --accent-l: 50%;
+    --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+    --accent-foreground: hsl(var(--accent-h), var(--accent-s), 95%);
+    --accent-muted: hsl(var(--accent-h), calc(var(--accent-s) * 0.5), 90%);
+
+    /* Surface colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --surface: 0 0% 100%;
+    --surface-secondary: 0 0% 98%;
+    --surface-tertiary: 0 0% 96%;
+
+    /* Text colors */
+    --text-primary: 0 0% 9%;
+    --text-secondary: 0 0% 45%;
+    --text-tertiary: 0 0% 65%;
+    --text-muted: 0 0% 75%;
+
+    /* Border colors */
+    --border: 0 0% 90%;
+    --border-muted: 0 0% 95%;
+
+    /* Semantic metric colors */
+    --color-recovery: 142 71% 45%;
+    --color-strain: 24 95% 53%;
+    --color-heart: 0 84% 60%;
+    --color-sleep: 221 83% 53%;
+    --color-activity: 142 76% 36%;
+    --color-hrv: 280 70% 55%;
+    --color-glucose: 45 93% 47%;
+
+    /* Status colors */
+    --color-success: 142 71% 45%;
+    --color-warning: 38 92% 50%;
+    --color-error: 0 84% 60%;
+    --color-info: 221 83% 53%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+    /* Radii */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Spacing */
+    --spacing-section: 24px;
+    --spacing-card: 16px;
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --surface: 0 0% 10%;
+    --surface-secondary: 0 0% 13%;
+    --surface-tertiary: 0 0% 16%;
+
+    --text-primary: 0 0% 98%;
+    --text-secondary: 0 0% 65%;
+    --text-tertiary: 0 0% 50%;
+    --text-muted: 0 0% 40%;
+
+    --border: 0 0% 20%;
+    --border-muted: 0 0% 15%;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  min-height: 100vh;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Scrollbar styling */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Subtle scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: var(--radius-full);
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.2s ease-out;
+  }
+  .animate-slide-down {
+    animation: slideDown 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

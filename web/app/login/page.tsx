@@ -46,7 +46,7 @@ function LoginContent() {
           </svg>
         </div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Quarks
+          KQuarks
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">
           Sign in to access your health dashboard

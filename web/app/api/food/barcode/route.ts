@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`,
       {
         headers: {
-          'User-Agent': 'Quarks Health App - https://github.com/qxlsz/quarks',
+          'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
         },
       }
     )

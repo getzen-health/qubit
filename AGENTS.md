@@ -1,6 +1,6 @@
-# Quarks - Swarm Agent Definitions
+# KQuarks - Swarm Agent Definitions
 
-This file defines specialized agents for parallel development of Quarks.
+This file defines specialized agents for parallel development of KQuarks.
 
 ## Agent Definitions
 

@@ -68,6 +68,21 @@ struct SettingsView: View {
                     .disabled(syncService.isSyncing)
                 }
 
+                // Appearance
+                Section("Appearance") {
+                    NavigationLink {
+                        AppearanceSettingsView()
+                    } label: {
+                        Label("Theme & Colors", systemImage: "paintpalette")
+                    }
+
+                    NavigationLink {
+                        DashboardConfigView()
+                    } label: {
+                        Label("Dashboard Widgets", systemImage: "square.grid.2x2")
+                    }
+                }
+
                 // AI Settings
                 Section("AI Insights") {
                     NavigationLink {
@@ -219,7 +234,7 @@ struct AboutView: View {
                         .font(.system(size: 60))
                         .foregroundStyle(.purple, .indigo.opacity(0.3))
 
-                    Text("Quarks")
+                    Text("KQuarks")
                         .font(.title.bold())
 
                     Text("Your personal health dashboard with AI-powered insights.")
@@ -239,7 +254,7 @@ struct AboutView: View {
             }
 
             Section {
-                Link(destination: URL(string: "https://github.com/qxlsz/quarks")!) {
+                Link(destination: URL(string: "https://github.com/qxlsz/kquarks")!) {
                     Label("View on GitHub", systemImage: "link")
                 }
             }

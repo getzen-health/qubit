@@ -1,7 +1,7 @@
-# Quarks - Development Roadmap
+# KQuarks - Development Roadmap
 
 ## Goal
-Build Quarks - an iOS app that reads Apple Health data and displays it on a web dashboard.
+Build KQuarks - an iOS app that reads Apple Health data and displays it on a web dashboard.
 
 ---
 
