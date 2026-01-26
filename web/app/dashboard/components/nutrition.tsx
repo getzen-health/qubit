@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
 
@@ -43,11 +43,83 @@ interface FoodItem {
   servingSize: string
   barcode?: string
   imageUrl?: string
+  source?: 'barcode' | 'ai_recognition' | 'manual' | 'search'
+  confidence?: number
 }
 
-export function NutritionOverview({ data, onFoodAdded }: { data: MacroData; onFoodAdded?: (food: FoodItem) => void }) {
+// Helper to determine meal type based on time
+function getMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
+  const hour = new Date().getHours()
+  if (hour >= 5 && hour < 11) return 'breakfast'
+  if (hour >= 11 && hour < 15) return 'lunch'
+  if (hour >= 17 && hour < 21) return 'dinner'
+  return 'snack'
+}
+
+// Helper to format meal name
+function getMealName(type: string): string {
+  const names = {
+    breakfast: 'Breakfast',
+    lunch: 'Lunch',
+    dinner: 'Dinner',
+    snack: 'Snack',
+  }
+  return names[type as keyof typeof names] || 'Meal'
+}
+
+// Save meal to database
+async function saveMealToDatabase(foods: FoodItem[]): Promise<{ success: boolean; error?: string }> {
+  try {
+    const mealType = getMealType()
+    const mealName = getMealName(mealType)
+
+    const response = await fetch('/api/meals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: mealName,
+        meal_type: mealType,
+        items: foods.map((food) => ({
+          name: food.name,
+          brand: food.brand,
+          barcode: food.barcode,
+          serving_size: food.servingSize,
+          servings: 1,
+          calories: food.calories,
+          protein: food.protein,
+          carbs: food.carbs,
+          fat: food.fat,
+          fiber: food.fiber,
+          sugar: food.sugar,
+          sodium: food.sodium,
+          source: food.source || 'manual',
+          confidence: food.confidence,
+        })),
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      return { success: false, error: data.error || 'Failed to save meal' }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error saving meal:', error)
+    return { success: false, error: 'Failed to save meal' }
+  }
+}
+
+export function NutritionOverview({ data, onFoodAdded, onMealSaved }: {
+  data: MacroData
+  onFoodAdded?: (food: FoodItem) => void
+  onMealSaved?: () => void
+}) {
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false)
   const [showImageRecognition, setShowImageRecognition] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const netCalories = data.calories.consumed - data.calories.burned
   const calorieProgress = (data.calories.consumed / data.calories.target) * 100
@@ -58,14 +130,42 @@ export function NutritionOverview({ data, onFoodAdded }: { data: MacroData; onFo
     { name: 'Fat', value: data.fat.consumed, color: MACRO_COLORS.fat },
   ]
 
-  const handleFoodFound = (food: FoodItem) => {
+  const handleFoodFound = async (food: FoodItem) => {
     setShowBarcodeScanner(false)
-    onFoodAdded?.(food)
+    setIsSaving(true)
+    setSaveMessage(null)
+
+    const foodWithSource = { ...food, source: 'barcode' as const }
+    const result = await saveMealToDatabase([foodWithSource])
+
+    setIsSaving(false)
+    if (result.success) {
+      setSaveMessage({ type: 'success', text: `Added ${food.name} to your log!` })
+      onFoodAdded?.(food)
+      onMealSaved?.()
+      setTimeout(() => setSaveMessage(null), 3000)
+    } else {
+      setSaveMessage({ type: 'error', text: result.error || 'Failed to save' })
+    }
   }
 
-  const handleFoodsRecognized = (foods: FoodItem[]) => {
+  const handleFoodsRecognized = async (foods: FoodItem[]) => {
     setShowImageRecognition(false)
-    foods.forEach(food => onFoodAdded?.(food))
+    setIsSaving(true)
+    setSaveMessage(null)
+
+    const foodsWithSource = foods.map((f) => ({ ...f, source: 'ai_recognition' as const }))
+    const result = await saveMealToDatabase(foodsWithSource)
+
+    setIsSaving(false)
+    if (result.success) {
+      setSaveMessage({ type: 'success', text: `Added ${foods.length} item(s) to your log!` })
+      foods.forEach((food) => onFoodAdded?.(food))
+      onMealSaved?.()
+      setTimeout(() => setSaveMessage(null), 3000)
+    } else {
+      setSaveMessage({ type: 'error', text: result.error || 'Failed to save' })
+    }
   }
 
   return (
@@ -90,6 +190,25 @@ export function NutritionOverview({ data, onFoodAdded }: { data: MacroData; onFo
           onFoodRecognized={handleFoodsRecognized}
           onClose={() => setShowImageRecognition(false)}
         />
+      )}
+
+      {/* Saving indicator */}
+      {isSaving && (
+        <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center gap-3">
+          <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full" />
+          <span className="text-sm text-purple-600 dark:text-purple-400">Saving to your log...</span>
+        </div>
+      )}
+
+      {/* Save message */}
+      {saveMessage && (
+        <div className={`mb-4 p-3 rounded-xl ${
+          saveMessage.type === 'success'
+            ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400'
+            : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+        }`}>
+          <span className="text-sm">{saveMessage.text}</span>
+        </div>
       )}
 
       <div className="flex items-center gap-6">
@@ -231,21 +350,62 @@ export function MealLog({ meals }: { meals: Meal[] }) {
   )
 }
 
-export function WaterTracker({ consumed, target }: { consumed: number; target: number }) {
+export function WaterTracker({ consumed, target, onWaterAdded }: {
+  consumed: number
+  target: number
+  onWaterAdded?: (newTotal: number) => void
+}) {
+  const [currentConsumed, setCurrentConsumed] = useState(consumed)
+  const [isAdding, setIsAdding] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+
   const glasses = Math.ceil(target / 250) // 250ml per glass
-  const filledGlasses = Math.floor(consumed / 250)
-  const progress = (consumed / target) * 100
+  const filledGlasses = Math.floor(currentConsumed / 250)
+
+  const addWater = async (amount: number) => {
+    setIsAdding(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/water', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount_ml: amount, source: 'quick_add' }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setCurrentConsumed(data.daily_total_ml)
+        setMessage(`+${amount}ml added!`)
+        onWaterAdded?.(data.daily_total_ml)
+        setTimeout(() => setMessage(null), 2000)
+      } else {
+        setMessage('Failed to save')
+      }
+    } catch (error) {
+      setMessage('Failed to save')
+    } finally {
+      setIsAdding(false)
+    }
+  }
 
   return (
     <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl shadow-lg p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-medium text-white/80">Water Intake</h3>
-          <div className="text-3xl font-bold mt-1">{(consumed / 1000).toFixed(1)}L</div>
+          <div className="text-3xl font-bold mt-1">{(currentConsumed / 1000).toFixed(1)}L</div>
           <div className="text-sm text-white/70">of {(target / 1000).toFixed(1)}L goal</div>
         </div>
         <div className="text-5xl">💧</div>
       </div>
+
+      {message && (
+        <div className="mb-3 py-1 px-3 bg-white/20 rounded-lg text-sm text-center">
+          {message}
+        </div>
+      )}
 
       <div className="flex gap-1 mb-4">
         {[...Array(glasses)].map((_, i) => (
@@ -259,11 +419,19 @@ export function WaterTracker({ consumed, target }: { consumed: number; target: n
       </div>
 
       <div className="flex gap-2">
-        <button className="flex-1 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition">
-          + 250ml
+        <button
+          onClick={() => addWater(250)}
+          disabled={isAdding}
+          className="flex-1 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition disabled:opacity-50"
+        >
+          {isAdding ? '...' : '+ 250ml'}
         </button>
-        <button className="flex-1 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition">
-          + 500ml
+        <button
+          onClick={() => addWater(500)}
+          disabled={isAdding}
+          className="flex-1 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition disabled:opacity-50"
+        >
+          {isAdding ? '...' : '+ 500ml'}
         </button>
       </div>
     </div>
@@ -322,9 +490,56 @@ export function MacroDistribution({ protein, carbs, fat }: { protein: number; ca
   )
 }
 
-export function FastingTimer({ startTime, targetHours }: { startTime: Date | null; targetHours: number }) {
-  const now = new Date()
-  const elapsed = startTime ? (now.getTime() - startTime.getTime()) / 1000 / 60 / 60 : 0
+interface FastingSession {
+  id: string
+  protocol: string
+  target_hours: number
+  started_at: string
+  ended_at?: string
+  elapsed_hours?: number
+  remaining_hours?: number
+  progress_percent?: number
+}
+
+export function FastingTimer({
+  initialSession,
+  defaultProtocol = '16:8',
+  defaultHours = 16,
+  onSessionChanged
+}: {
+  initialSession?: FastingSession | null
+  defaultProtocol?: string
+  defaultHours?: number
+  onSessionChanged?: () => void
+}) {
+  const [session, setSession] = useState<FastingSession | null>(initialSession || null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+  const [elapsed, setElapsed] = useState(0)
+
+  const targetHours = session?.target_hours || defaultHours
+  const protocol = session?.protocol || defaultProtocol
+
+  // Update elapsed time every minute
+  useEffect(() => {
+    if (!session?.started_at) {
+      setElapsed(0)
+      return
+    }
+
+    const updateElapsed = () => {
+      const start = new Date(session.started_at)
+      const now = new Date()
+      const hours = (now.getTime() - start.getTime()) / 1000 / 60 / 60
+      setElapsed(hours)
+    }
+
+    updateElapsed()
+    const interval = setInterval(updateElapsed, 60000) // Update every minute
+
+    return () => clearInterval(interval)
+  }, [session?.started_at])
+
   const progress = Math.min((elapsed / targetHours) * 100, 100)
   const remaining = Math.max(targetHours - elapsed, 0)
 
@@ -334,12 +549,82 @@ export function FastingTimer({ startTime, targetHours }: { startTime: Date | nul
     return `${h}h ${m}m`
   }
 
+  const startFast = async () => {
+    setIsLoading(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/fasting', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          protocol: defaultProtocol,
+          target_hours: defaultHours,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSession(data.session)
+        setMessage('Fast started!')
+        onSessionChanged?.()
+        setTimeout(() => setMessage(null), 2000)
+      } else {
+        setMessage(data.error || 'Failed to start fast')
+      }
+    } catch (error) {
+      setMessage('Failed to start fast')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const endFast = async () => {
+    if (!session) return
+
+    setIsLoading(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/fasting', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: session.id }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        const completedMessage = data.completed
+          ? `Fast completed! ${data.actual_hours.toFixed(1)} hours`
+          : `Fast ended early at ${data.actual_hours.toFixed(1)} hours`
+        setMessage(completedMessage)
+        setSession(null)
+        onSessionChanged?.()
+        setTimeout(() => setMessage(null), 3000)
+      } else {
+        setMessage(data.error || 'Failed to end fast')
+      }
+    } catch (error) {
+      setMessage('Failed to end fast')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-white/80">Intermittent Fasting</h3>
-        <span className="px-2 py-1 bg-white/20 rounded-full text-xs">{targetHours}:{24-targetHours} Protocol</span>
+        <span className="px-2 py-1 bg-white/20 rounded-full text-xs">{protocol}</span>
       </div>
+
+      {message && (
+        <div className="mb-3 py-1 px-3 bg-white/20 rounded-lg text-sm text-center">
+          {message}
+        </div>
+      )}
 
       <div className="relative w-40 h-40 mx-auto mb-4">
         <svg className="w-full h-full transform -rotate-90">
@@ -358,20 +643,28 @@ export function FastingTimer({ startTime, targetHours }: { startTime: Date | nul
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-3xl font-bold">{formatTime(elapsed)}</span>
-          <span className="text-sm text-white/70">elapsed</span>
+          <span className="text-sm text-white/70">{session ? 'elapsed' : 'ready'}</span>
         </div>
       </div>
 
       <div className="text-center">
-        {remaining > 0 ? (
-          <p className="text-white/80">{formatTime(remaining)} until eating window</p>
+        {session ? (
+          remaining > 0 ? (
+            <p className="text-white/80">{formatTime(remaining)} until eating window</p>
+          ) : (
+            <p className="text-green-300">Eating window open!</p>
+          )
         ) : (
-          <p className="text-green-300">Eating window open!</p>
+          <p className="text-white/80">Start a {targetHours}-hour fast</p>
         )}
       </div>
 
-      <button className="w-full mt-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition">
-        {startTime ? 'End Fast' : 'Start Fast'}
+      <button
+        onClick={session ? endFast : startFast}
+        disabled={isLoading}
+        className="w-full mt-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition disabled:opacity-50"
+      >
+        {isLoading ? '...' : session ? 'End Fast' : 'Start Fast'}
       </button>
     </div>
   )

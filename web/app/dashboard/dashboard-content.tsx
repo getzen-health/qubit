@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import {
@@ -39,6 +40,33 @@ import {
   ComparisonCards,
 } from './components/infographics'
 
+interface NutritionData {
+  calories: { consumed: number; target: number; burned: number }
+  protein: { consumed: number; target: number }
+  carbs: { consumed: number; target: number }
+  fat: { consumed: number; target: number }
+  water: { consumed: number; target: number }
+  fiber: { consumed: number; target: number }
+}
+
+interface Meal {
+  id: string
+  name: string
+  time: string
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+}
+
+interface FastingSession {
+  id: string
+  protocol: string
+  target_hours: number
+  started_at: string
+  ended_at?: string
+}
+
 interface DashboardContentProps {
   user: {
     id: string
@@ -65,6 +93,11 @@ interface DashboardContentProps {
     priority: string
     created_at: string
   }>
+  nutritionData?: NutritionData
+  meals?: Meal[]
+  fastingSession?: FastingSession | null
+  defaultFastingProtocol?: string
+  defaultFastingHours?: number
 }
 
 export function DashboardContent({
@@ -72,9 +105,24 @@ export function DashboardContent({
   profile,
   summaries,
   insights,
+  nutritionData: initialNutritionData,
+  meals: initialMeals,
+  fastingSession: initialFastingSession,
+  defaultFastingProtocol = '16:8',
+  defaultFastingHours = 16,
 }: DashboardContentProps) {
   const router = useRouter()
   const supabase = createClient()
+
+  // State for nutrition data that can be refreshed
+  const [nutritionData, setNutritionData] = useState(initialNutritionData)
+  const [meals, setMeals] = useState(initialMeals ?? [])
+  const [waterConsumed, setWaterConsumed] = useState(initialNutritionData?.water.consumed ?? 0)
+
+  // Refresh nutrition data from the server
+  const refreshNutrition = async () => {
+    router.refresh()
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -119,21 +167,16 @@ export function DashboardContent({
     bloodOxygen: 98,
   }
 
-  const mockNutritionData = {
-    calories: { consumed: 1650, target: 2200, burned: 485 },
-    protein: { consumed: 95, target: 150 },
-    carbs: { consumed: 180, target: 250 },
-    fat: { consumed: 55, target: 70 },
-    water: { consumed: 1800, target: 2500 },
-    fiber: { consumed: 22, target: 30 },
+  // Use real nutrition data from server with fallback to defaults
+  const defaultNutritionData: NutritionData = {
+    calories: { consumed: 0, target: 2000, burned: Math.round(today?.active_calories ?? 0) },
+    protein: { consumed: 0, target: 150 },
+    carbs: { consumed: 0, target: 250 },
+    fat: { consumed: 0, target: 65 },
+    water: { consumed: 0, target: 2500 },
+    fiber: { consumed: 0, target: 30 },
   }
-
-  const mockMeals = [
-    { id: '1', name: 'Breakfast - Oatmeal & Berries', time: '7:30 AM', calories: 380, protein: 12, carbs: 65, fat: 8 },
-    { id: '2', name: 'Lunch - Grilled Chicken Salad', time: '12:30 PM', calories: 520, protein: 42, carbs: 28, fat: 22 },
-    { id: '3', name: 'Snack - Protein Shake', time: '3:30 PM', calories: 280, protein: 30, carbs: 15, fat: 8 },
-    { id: '4', name: 'Dinner - Salmon & Vegetables', time: '7:00 PM', calories: 470, protein: 38, carbs: 32, fat: 18 },
-  ]
+  const actualNutritionData = nutritionData ?? defaultNutritionData
 
   const mockBodyBattery = {
     current: 72,
@@ -236,7 +279,7 @@ export function DashboardContent({
     { name: 'Steps', current: today?.steps ?? 0, target: 10000, unit: 'steps', icon: '👟' },
     { name: 'Calories', current: Math.round(today?.active_calories ?? 0), target: 500, unit: 'kcal', icon: '🔥' },
     { name: 'Distance', current: Number(((today?.distance_meters ?? 0) / 1000).toFixed(1)), target: 8, unit: 'km', icon: '📍' },
-    { name: 'Water', current: 1.8, target: 2.5, unit: 'L', icon: '💧' },
+    { name: 'Water', current: Number((waterConsumed / 1000).toFixed(1)), target: actualNutritionData.water.target / 1000, unit: 'L', icon: '💧' },
   ]
 
   const mockStreaks = [
@@ -491,17 +534,33 @@ export function DashboardContent({
         {/* Nutrition Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
-            <NutritionOverview data={mockNutritionData} />
+            <NutritionOverview
+              data={actualNutritionData}
+              onMealSaved={refreshNutrition}
+            />
           </div>
-          <WaterTracker consumed={mockNutritionData.water.consumed} target={mockNutritionData.water.target} />
+          <WaterTracker
+            consumed={waterConsumed}
+            target={actualNutritionData.water.target}
+            onWaterAdded={(newTotal) => setWaterConsumed(newTotal)}
+          />
         </div>
 
         {/* Meals + Macros */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <MealLog meals={mockMeals} />
+          <MealLog meals={meals} />
           <div className="space-y-6">
-            <MacroDistribution protein={mockNutritionData.protein.consumed} carbs={mockNutritionData.carbs.consumed} fat={mockNutritionData.fat.consumed} />
-            <FastingTimer startTime={null} targetHours={16} />
+            <MacroDistribution
+              protein={actualNutritionData.protein.consumed}
+              carbs={actualNutritionData.carbs.consumed}
+              fat={actualNutritionData.fat.consumed}
+            />
+            <FastingTimer
+              initialSession={initialFastingSession}
+              defaultProtocol={defaultFastingProtocol}
+              defaultHours={defaultFastingHours}
+              onSessionChanged={refreshNutrition}
+            />
           </div>
         </div>
 
