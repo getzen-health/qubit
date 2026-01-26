@@ -137,8 +137,7 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) { }
                 Button("Sign Out", role: .destructive) {
                     Task {
-                        try? await SupabaseService.shared.signOut()
-                        appState.isAuthenticated = false
+                        await appState.signOut()
                     }
                 }
             } message: {

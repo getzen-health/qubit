@@ -1,23 +1,53 @@
 import Foundation
 import AuthenticationServices
-
-// Note: Add Supabase Swift SDK via Swift Package Manager
-// https://github.com/supabase/supabase-swift
+import Supabase
 
 @Observable
 class SupabaseService {
     static let shared = SupabaseService()
 
-    // TODO: Replace with your Supabase project credentials
-    private let supabaseUrl = "YOUR_SUPABASE_URL"
-    private let supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY"
+    private let client: SupabaseClient
 
     var currentUser: User?
     var isAuthenticated: Bool { currentUser != nil }
+    var currentSession: Session?
 
     private init() {
-        // Initialize Supabase client
-        // Will be implemented when adding Supabase SDK
+        // Load from environment or Info.plist
+        let supabaseUrl = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String
+            ?? ProcessInfo.processInfo.environment["SUPABASE_URL"]
+            ?? ""
+        let supabaseAnonKey = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String
+            ?? ProcessInfo.processInfo.environment["SUPABASE_ANON_KEY"]
+            ?? ""
+
+        guard let url = URL(string: supabaseUrl), !supabaseAnonKey.isEmpty else {
+            fatalError("Missing Supabase configuration. Set SUPABASE_URL and SUPABASE_ANON_KEY in Info.plist or environment.")
+        }
+
+        client = SupabaseClient(
+            supabaseURL: url,
+            supabaseKey: supabaseAnonKey
+        )
+
+        // Check for existing session on init
+        Task {
+            await restoreSession()
+        }
+    }
+
+    // MARK: - Session Management
+
+    private func restoreSession() async {
+        do {
+            let session = try await client.auth.session
+            self.currentSession = session
+            self.currentUser = try await fetchCurrentUser()
+        } catch {
+            // No existing session
+            self.currentSession = nil
+            self.currentUser = nil
+        }
     }
 
     // MARK: - Authentication
@@ -28,93 +58,188 @@ class SupabaseService {
             throw SupabaseError.invalidCredential
         }
 
-        // TODO: Implement Supabase Apple Sign-In
-        // let session = try await supabase.auth.signInWithIdToken(
-        //     credentials: .init(provider: .apple, idToken: tokenString)
-        // )
-        // currentUser = try await fetchCurrentUser()
+        // Sign in with Supabase using the Apple ID token
+        let session = try await client.auth.signInWithIdToken(
+            credentials: .init(
+                provider: .apple,
+                idToken: tokenString
+            )
+        )
+
+        self.currentSession = session
+
+        // Update user profile with name if available (only on first sign-in)
+        if let fullName = credential.fullName {
+            let displayName = [fullName.givenName, fullName.familyName]
+                .compactMap { $0 }
+                .joined(separator: " ")
+
+            if !displayName.isEmpty {
+                try? await updateUserProfile(displayName: displayName)
+            }
+        }
+
+        // Fetch the user profile
+        self.currentUser = try await fetchCurrentUser()
     }
 
     func signOut() async throws {
-        // TODO: Implement sign out
-        // try await supabase.auth.signOut()
+        try await client.auth.signOut()
+        currentSession = nil
         currentUser = nil
     }
 
     func fetchCurrentUser() async throws -> User? {
-        // TODO: Implement fetch user profile
-        // let response = try await supabase
-        //     .from("users")
-        //     .select()
-        //     .eq("id", value: session.user.id)
-        //     .single()
-        //     .execute()
-        // return try response.value
-        return nil
+        guard let userId = currentSession?.user.id else {
+            return nil
+        }
+
+        let response: User = try await client
+            .from("users")
+            .select()
+            .eq("id", value: userId.uuidString)
+            .single()
+            .execute()
+            .value
+
+        return response
+    }
+
+    private func updateUserProfile(displayName: String) async throws {
+        guard let userId = currentSession?.user.id else { return }
+
+        try await client
+            .from("users")
+            .update(["display_name": displayName])
+            .eq("id", value: userId.uuidString)
+            .execute()
+    }
+
+    // MARK: - Auth State Listener
+
+    func observeAuthStateChanges() -> AsyncStream<AuthChangeEvent> {
+        AsyncStream { continuation in
+            Task {
+                for await (event, _) in client.auth.authStateChanges {
+                    continuation.yield(event)
+                }
+            }
+        }
     }
 
     // MARK: - Health Data Sync
 
     func uploadHealthRecords(_ records: [HealthRecordUpload]) async throws {
         guard !records.isEmpty else { return }
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
-        // TODO: Implement batch upload
-        // try await supabase
-        //     .from("health_records")
-        //     .upsert(records, onConflict: "user_id,type,start_time")
-        //     .execute()
+        // Upload in batches of 100
+        let batchSize = 100
+        for i in stride(from: 0, to: records.count, by: batchSize) {
+            let batch = Array(records[i..<min(i + batchSize, records.count)])
+            try await client
+                .from("health_records")
+                .upsert(batch, onConflict: "user_id,type,start_time")
+                .execute()
+        }
     }
 
     func uploadDailySummary(_ summary: DailySummaryUpload) async throws {
-        // TODO: Implement daily summary upsert
-        // try await supabase
-        //     .from("daily_summaries")
-        //     .upsert(summary, onConflict: "user_id,date")
-        //     .execute()
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        try await client
+            .from("daily_summaries")
+            .upsert(summary, onConflict: "user_id,date")
+            .execute()
     }
 
     func uploadSleepRecord(_ record: SleepRecordUpload) async throws {
-        // TODO: Implement sleep record upload
-        // try await supabase
-        //     .from("sleep_records")
-        //     .insert(record)
-        //     .execute()
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        try await client
+            .from("sleep_records")
+            .upsert(record, onConflict: "user_id,start_time")
+            .execute()
     }
 
     func uploadWorkoutRecord(_ record: WorkoutRecordUpload) async throws {
-        // TODO: Implement workout record upload
-        // try await supabase
-        //     .from("workout_records")
-        //     .insert(record)
-        //     .execute()
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        try await client
+            .from("workout_records")
+            .upsert(record, onConflict: "user_id,start_time")
+            .execute()
     }
 
     // MARK: - Fetch Data
 
     func fetchDailySummaries(days: Int = 7) async throws -> [DailySummary] {
-        // TODO: Implement fetch
-        // let calendar = Calendar.current
-        // let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
-        //
-        // let response = try await supabase
-        //     .from("daily_summaries")
-        //     .select()
-        //     .gte("date", value: startDate.ISO8601Format())
-        //     .order("date", ascending: false)
-        //     .execute()
-        //
-        // return try response.value
-        return []
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        let calendar = Calendar.current
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
+
+        let response: [DailySummary] = try await client
+            .from("daily_summaries")
+            .select()
+            .gte("date", value: dateFormatter.string(from: startDate))
+            .order("date", ascending: false)
+            .execute()
+            .value
+
+        return response
     }
 
     func fetchSleepRecords(days: Int = 7) async throws -> [SleepRecord] {
-        // TODO: Implement fetch
-        return []
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        let calendar = Calendar.current
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+
+        let response: [SleepRecord] = try await client
+            .from("sleep_records")
+            .select()
+            .gte("start_time", value: startDate.ISO8601Format())
+            .order("start_time", ascending: false)
+            .execute()
+            .value
+
+        return response
     }
 
     func fetchWorkoutRecords(days: Int = 30) async throws -> [WorkoutRecord] {
-        // TODO: Implement fetch
-        return []
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        let calendar = Calendar.current
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+
+        let response: [WorkoutRecord] = try await client
+            .from("workout_records")
+            .select()
+            .gte("start_time", value: startDate.ISO8601Format())
+            .order("start_time", ascending: false)
+            .execute()
+            .value
+
+        return response
+    }
+
+    // MARK: - AI Insights
+
+    func fetchInsights() async throws -> [HealthInsight] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        let response: [HealthInsight] = try await client
+            .from("health_insights")
+            .select()
+            .order("created_at", ascending: false)
+            .limit(20)
+            .execute()
+            .value
+
+        return response
     }
 }
 
@@ -222,12 +347,37 @@ struct WorkoutRecordUpload: Encodable {
     }
 }
 
+// MARK: - Health Insight Model
+
+struct HealthInsight: Codable, Identifiable {
+    let id: UUID
+    let userId: UUID
+    let category: String
+    let title: String
+    let content: String
+    let priority: String
+    let isRead: Bool
+    let createdAt: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case category
+        case title
+        case content
+        case priority
+        case isRead = "is_read"
+        case createdAt = "created_at"
+    }
+}
+
 // MARK: - Errors
 
 enum SupabaseError: Error, LocalizedError {
     case invalidCredential
     case notAuthenticated
     case networkError
+    case userNotFound
     case unknown(Error)
 
     var errorDescription: String? {
@@ -238,6 +388,8 @@ enum SupabaseError: Error, LocalizedError {
             return "Not authenticated"
         case .networkError:
             return "Network error occurred"
+        case .userNotFound:
+            return "User profile not found"
         case .unknown(let error):
             return error.localizedDescription
         }
