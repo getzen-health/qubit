@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
 
 interface MacroData {
   calories: { consumed: number; target: number; burned: number }
@@ -28,7 +30,25 @@ const MACRO_COLORS = {
   fat: '#F59E0B',
 }
 
-export function NutritionOverview({ data }: { data: MacroData }) {
+interface FoodItem {
+  name: string
+  brand?: string
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  fiber?: number
+  sugar?: number
+  sodium?: number
+  servingSize: string
+  barcode?: string
+  imageUrl?: string
+}
+
+export function NutritionOverview({ data, onFoodAdded }: { data: MacroData; onFoodAdded?: (food: FoodItem) => void }) {
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false)
+  const [showImageRecognition, setShowImageRecognition] = useState(false)
+
   const netCalories = data.calories.consumed - data.calories.burned
   const calorieProgress = (data.calories.consumed / data.calories.target) * 100
 
@@ -38,14 +58,39 @@ export function NutritionOverview({ data }: { data: MacroData }) {
     { name: 'Fat', value: data.fat.consumed, color: MACRO_COLORS.fat },
   ]
 
-  const totalMacros = macroData.reduce((sum, m) => sum + m.value, 0)
+  const handleFoodFound = (food: FoodItem) => {
+    setShowBarcodeScanner(false)
+    onFoodAdded?.(food)
+  }
+
+  const handleFoodsRecognized = (foods: FoodItem[]) => {
+    setShowImageRecognition(false)
+    foods.forEach(food => onFoodAdded?.(food))
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Nutrition</h3>
-        <button className="text-sm text-purple-500 hover:text-purple-600 font-medium">+ Log Food</button>
+        <AddFoodButton
+          onScanBarcode={() => setShowBarcodeScanner(true)}
+          onRecognizeFood={() => setShowImageRecognition(true)}
+        />
       </div>
+
+      {showBarcodeScanner && (
+        <BarcodeScanner
+          onFoodFound={handleFoodFound}
+          onClose={() => setShowBarcodeScanner(false)}
+        />
+      )}
+
+      {showImageRecognition && (
+        <FoodImageRecognition
+          onFoodRecognized={handleFoodsRecognized}
+          onClose={() => setShowImageRecognition(false)}
+        />
+      )}
 
       <div className="flex items-center gap-6">
         {/* Calorie ring */}

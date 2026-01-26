@@ -24,6 +24,7 @@ import { StrainGauge, RecoveryScore, StrainTrend, TrainingLoad } from './compone
 import { NutritionOverview, MealLog, WaterTracker, MacroDistribution, FastingTimer } from './components/nutrition'
 import { BodyBattery, BodyBatteryTrend, StressLevel, Readiness, SleepDebt } from './components/body-battery'
 import { RespiratoryRate, BloodOxygen, SkinTemperature, WellnessRadar, MenstrualCycle, Leaderboard, QuickActions, DailyTip } from './components/advanced-metrics'
+import { CurrentGlucose, GlucoseChart, TimeInRange, MealGlucoseImpact, GlucoseInsights, DailyGlucosePattern } from './components/glucose-monitor'
 
 interface DashboardContentProps {
   user: {
@@ -248,6 +249,39 @@ export function DashboardContent({
     { id: '3', category: 'heart', title: 'HRV trending up', content: 'Your heart rate variability improved 8% this week.', priority: 'low' as const, actionable: 'See trends' },
   ]
 
+  // CGM/Glucose mock data
+  const mockGlucoseData = {
+    current: 98,
+    trend: 'stable' as const,
+    average: 112,
+    gmi: 5.8,
+    variability: 28,
+    timeInRange: { low: 3, inRange: 82, high: 15 },
+    readings: Array.from({ length: 48 }, (_, i) => {
+      const hour = Math.floor(i / 2)
+      const minute = (i % 2) * 30
+      const baseValue = 95 + Math.sin(hour / 3) * 20 + Math.random() * 15
+      // Add meal spikes
+      const mealSpike = (hour === 8 || hour === 13 || hour === 19) ? 40 * Math.exp(-(minute / 30)) : 0
+      return {
+        timestamp: new Date(Date.now() - (47 - i) * 30 * 60 * 1000).toISOString(),
+        value: Math.round(baseValue + mealSpike),
+        trend: 'stable' as const,
+      }
+    }),
+    meals: [
+      { timestamp: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(), name: 'Breakfast', calories: 380, carbs: 45 },
+      { timestamp: new Date(Date.now() - 11 * 60 * 60 * 1000).toISOString(), name: 'Lunch', calories: 520, carbs: 55 },
+      { timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), name: 'Dinner', calories: 650, carbs: 70 },
+    ],
+  }
+
+  const mockGlucoseImpacts = [
+    { meal: 'Oatmeal with Berries', carbs: 45, glucoseBefore: 92, glucosePeak: 138, glucoseAfter2h: 102, peakTime: 45, recovery: 90, score: 'good' as const },
+    { meal: 'Grilled Chicken Salad', carbs: 25, glucoseBefore: 98, glucosePeak: 118, glucoseAfter2h: 95, peakTime: 35, recovery: 60, score: 'excellent' as const },
+    { meal: 'Pasta with Marinara', carbs: 75, glucoseBefore: 95, glucosePeak: 172, glucoseAfter2h: 125, peakTime: 55, recovery: 150, score: 'poor' as const },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
@@ -333,6 +367,28 @@ export function DashboardContent({
             <MacroDistribution protein={mockNutritionData.protein.consumed} carbs={mockNutritionData.carbs.consumed} fat={mockNutritionData.fat.consumed} />
             <FastingTimer startTime={null} targetHours={16} />
           </div>
+        </div>
+
+        {/* CGM / Glucose Monitoring Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <span className="text-2xl">📊</span> Glucose Monitoring
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <CurrentGlucose data={mockGlucoseData} />
+          <TimeInRange data={mockGlucoseData.timeInRange} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <GlucoseChart data={mockGlucoseData} />
+          <DailyGlucosePattern readings={mockGlucoseData.readings} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <MealGlucoseImpact impacts={mockGlucoseImpacts} />
+          <GlucoseInsights data={mockGlucoseData} />
         </div>
 
         {/* Wellness Radar + Vitals */}
