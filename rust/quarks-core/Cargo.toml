@@ -1,0 +1,47 @@
+[package]
+name = "quarks-core"
+version = "0.1.0"
+edition = "2021"
+description = "Core health data processing library for Quarks"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["wasm"]
+wasm = ["wasm-bindgen", "console_error_panic_hook", "js-sys", "web-sys"]
+native = []
+
+[dependencies]
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Cryptography
+aes-gcm = "0.10"
+sha2 = "0.10"
+rand = "0.8"
+base64 = "0.22"
+hex = "0.4"
+getrandom = { version = "0.2", features = ["js"] }
+
+# Validation
+regex = "1.10"
+thiserror = "1.0"
+
+# Date/Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# WASM bindings (optional)
+wasm-bindgen = { version = "0.2", optional = true }
+console_error_panic_hook = { version = "0.1", optional = true }
+js-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true, features = ["console"] }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[profile.release]
+opt-level = "s"
+lto = true

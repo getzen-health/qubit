@@ -2,10 +2,15 @@
  * Data Encryption for Sensitive Health Information
  * Provides field-level encryption for extra-sensitive health data
  *
+ * Uses Rust WASM module when available for better performance,
+ * falls back to Web Crypto API otherwise.
+ *
  * Note: Supabase already provides encryption at rest and in transit.
  * This provides an additional layer for highly sensitive fields like
  * medical notes, diagnoses, or personal health information.
  */
+
+import * as wasmLoader from '../wasm-loader'
 
 // Use Web Crypto API for encryption (available in Node.js 18+ and browsers)
 const ALGORITHM = 'AES-GCM'
@@ -15,19 +20,14 @@ const TAG_LENGTH = 128 // bits
 
 /**
  * Generate a random encryption key
+ * Uses Rust WASM when available
  */
 export async function generateEncryptionKey(): Promise<string> {
-  const key = await crypto.subtle.generateKey(
-    { name: ALGORITHM, length: KEY_LENGTH },
-    true,
-    ['encrypt', 'decrypt']
-  )
-  const exported = await crypto.subtle.exportKey('raw', key)
-  return Buffer.from(exported).toString('base64')
+  return wasmLoader.generateKey()
 }
 
 /**
- * Import a key from base64 string
+ * Import a key from base64 string (JS fallback only)
  */
 async function importKey(keyBase64: string): Promise<CryptoKey> {
   const keyBuffer = Buffer.from(keyBase64, 'base64')
@@ -42,52 +42,24 @@ async function importKey(keyBase64: string): Promise<CryptoKey> {
 
 /**
  * Encrypt sensitive data
+ * Uses Rust WASM when available
  * @param plaintext - The data to encrypt
  * @param keyBase64 - Base64 encoded encryption key
  * @returns Base64 encoded encrypted data (IV + ciphertext + tag)
  */
 export async function encrypt(plaintext: string, keyBase64: string): Promise<string> {
-  const key = await importKey(keyBase64)
-  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH))
-  const encoder = new TextEncoder()
-  const data = encoder.encode(plaintext)
-
-  const ciphertext = await crypto.subtle.encrypt(
-    { name: ALGORITHM, iv, tagLength: TAG_LENGTH },
-    key,
-    data
-  )
-
-  // Combine IV + ciphertext for storage
-  const combined = new Uint8Array(iv.length + ciphertext.byteLength)
-  combined.set(iv)
-  combined.set(new Uint8Array(ciphertext), iv.length)
-
-  return Buffer.from(combined).toString('base64')
+  return wasmLoader.encryptData(plaintext, keyBase64)
 }
 
 /**
  * Decrypt sensitive data
+ * Uses Rust WASM when available
  * @param encryptedBase64 - Base64 encoded encrypted data
  * @param keyBase64 - Base64 encoded encryption key
  * @returns Decrypted plaintext
  */
 export async function decrypt(encryptedBase64: string, keyBase64: string): Promise<string> {
-  const key = await importKey(keyBase64)
-  const combined = Buffer.from(encryptedBase64, 'base64')
-
-  // Extract IV and ciphertext
-  const iv = combined.slice(0, IV_LENGTH)
-  const ciphertext = combined.slice(IV_LENGTH)
-
-  const decrypted = await crypto.subtle.decrypt(
-    { name: ALGORITHM, iv, tagLength: TAG_LENGTH },
-    key,
-    ciphertext
-  )
-
-  const decoder = new TextDecoder()
-  return decoder.decode(decrypted)
+  return wasmLoader.decryptData(encryptedBase64, keyBase64)
 }
 
 /**
@@ -95,11 +67,7 @@ export async function decrypt(encryptedBase64: string, keyBase64: string): Promi
  * Uses SHA-256 with a salt
  */
 export async function hashSensitiveData(data: string, salt: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const dataWithSalt = encoder.encode(data + salt)
-
-  const hashBuffer = await crypto.subtle.digest('SHA-256', dataWithSalt)
-  return Buffer.from(hashBuffer).toString('hex')
+  return wasmLoader.hashData(data, salt)
 }
 
 /**
@@ -118,6 +86,14 @@ export function maskSensitiveString(str: string): string {
 }
 
 /**
+ * Mask sensitive data for display - async version using WASM
+ */
+export async function maskSensitiveStringAsync(str: string): Promise<string> {
+  if (!str || str.length < 2) return '***'
+  return wasmLoader.maskString(str)
+}
+
+/**
  * Mask email for display (e.g., "john@example.com" -> "j***@e******.com")
  */
 export function maskEmail(email: string): string {
@@ -129,6 +105,13 @@ export function maskEmail(email: string): string {
   const maskedDomain = domainName[0] + '*'.repeat(Math.min(domainName.length - 1, 5))
 
   return `${maskedLocal}@${maskedDomain}.${tld.join('.')}`
+}
+
+/**
+ * Mask email for display - async version using WASM
+ */
+export async function maskEmailAsync(email: string): Promise<string> {
+  return wasmLoader.maskEmail(email)
 }
 
 /**

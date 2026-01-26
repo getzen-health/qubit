@@ -1,0 +1,2 @@
+# Keep WASM build artifacts - needed for web app
+# Delete this file if you want to ignore WASM build

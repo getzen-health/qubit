@@ -1,0 +1,17 @@
+{
+  "name": "quarks-core",
+  "type": "module",
+  "description": "Core health data processing library for Quarks",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "quarks_core_bg.wasm",
+    "quarks_core.js",
+    "quarks_core.d.ts"
+  ],
+  "main": "quarks_core.js",
+  "types": "quarks_core.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
