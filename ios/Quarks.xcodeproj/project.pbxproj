@@ -458,10 +458,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quarks/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Quarks;
+				INFOPLIST_KEY_CFBundleDisplayName = KQuarks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Quarks needs access to your health data to display insights and sync to the cloud.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Quarks needs access to update your health data.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks needs access to your health data to display insights and sync to the cloud.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "KQuarks needs access to update your health data.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "armv7 healthkit";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -493,10 +493,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quarks/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Quarks;
+				INFOPLIST_KEY_CFBundleDisplayName = KQuarks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Quarks needs access to your health data to display insights and sync to the cloud.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Quarks needs access to update your health data.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks needs access to your health data to display insights and sync to the cloud.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "KQuarks needs access to update your health data.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "armv7 healthkit";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
