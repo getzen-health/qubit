@@ -6,12 +6,15 @@ export async function middleware(request: NextRequest) {
   // Get response from session handler
   const response = await updateSession(request)
 
-  // Apply security headers to all responses
+  // Don't modify headers on redirect responses
+  if (response.status >= 300 && response.status < 400) {
+    return response
+  }
+
+  // Apply security headers to non-redirect responses
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value)
   })
-
-  // Add additional security measures
 
   // Prevent caching of sensitive pages
   if (request.nextUrl.pathname.startsWith('/dashboard') ||
