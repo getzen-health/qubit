@@ -31,6 +31,6 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: team_sZRvQF9f2uqbr8UkQcW7xuuH
-          vercel-project-id: prj_yqVjHRnPpy6HvHqJwP4gDgz57Tkb
+          vercel-project-id: prj_s16LdxlyAi8fcFxauyRThiq4bhBH
           vercel-args: '--prod'
           working-directory: web
