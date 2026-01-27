@@ -1,10 +1,10 @@
-# SwiftLint Configuration for Quarks
+# SwiftLint Configuration for KQuarks
 
 included:
-  - Quarks
+  - KQuarks
 
 excluded:
-  - Quarks/Generated
+  - KQuarks/Generated
   - .build
 
 # Rules

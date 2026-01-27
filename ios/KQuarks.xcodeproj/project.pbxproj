@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001 /* QuarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101 /* QuarksApp.swift */; };
+		001 /* KQuarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101 /* KQuarksApp.swift */; };
 		002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102 /* ContentView.swift */; };
 		003 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103 /* User.swift */; };
 		004 /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104 /* HealthData.swift */; };
@@ -39,8 +39,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		100 /* Quarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		101 /* QuarksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuarksApp.swift; sourceTree = "<group>"; };
+		100 /* KQuarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KQuarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		101 /* KQuarksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KQuarksApp.swift; sourceTree = "<group>"; };
 		102 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		103 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		104 /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
@@ -67,7 +67,7 @@
 		125 /* DashboardConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfigView.swift; sourceTree = "<group>"; };
 		126 /* WidgetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfiguration.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		202 /* Quarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Quarks.entitlements; sourceTree = "<group>"; };
+		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		301 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -88,13 +88,13 @@
 		500 = {
 			isa = PBXGroup;
 			children = (
-				501 /* Quarks */,
+				501 /* KQuarks */,
 				502 /* Products */,
 				503 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		501 /* Quarks */ = {
+		501 /* KQuarks */ = {
 			isa = PBXGroup;
 			children = (
 				504 /* App */,
@@ -104,16 +104,16 @@
 				508 /* Theme */,
 				509 /* Widgets */,
 				201 /* Assets.xcassets */,
-				202 /* Quarks.entitlements */,
+				202 /* KQuarks.entitlements */,
 				203 /* Info.plist */,
 			);
-			path = Quarks;
+			path = KQuarks;
 			sourceTree = "<group>";
 		};
 		502 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				100 /* Quarks.app */,
+				100 /* KQuarks.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,7 +129,7 @@
 		504 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				101 /* QuarksApp.swift */,
+				101 /* KQuarksApp.swift */,
 				102 /* ContentView.swift */,
 			);
 			path = App;
@@ -221,9 +221,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		600 /* Quarks */ = {
+		600 /* KQuarks */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 700 /* Build configuration list for PBXNativeTarget "Quarks" */;
+			buildConfigurationList = 700 /* Build configuration list for PBXNativeTarget "KQuarks" */;
 			buildPhases = (
 				601 /* Sources */,
 				400 /* Frameworks */,
@@ -233,12 +233,12 @@
 			);
 			dependencies = (
 			);
-			name = Quarks;
+			name = KQuarks;
 			packageProductDependencies = (
 				PKG001 /* Supabase */,
 			);
-			productName = Quarks;
-			productReference = 100 /* Quarks.app */;
+			productName = KQuarks;
+			productReference = 100 /* KQuarks.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -256,7 +256,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 801 /* Build configuration list for PBXProject "Quarks" */;
+			buildConfigurationList = 801 /* Build configuration list for PBXProject "KQuarks" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -272,7 +272,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				600 /* Quarks */,
+				600 /* KQuarks */,
 			);
 		};
 /* End PBXProject section */
@@ -293,7 +293,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001 /* QuarksApp.swift in Sources */,
+				001 /* KQuarksApp.swift in Sources */,
 				002 /* ContentView.swift in Sources */,
 				003 /* User.swift in Sources */,
 				004 /* HealthData.swift in Sources */,
@@ -451,13 +451,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Quarks/Quarks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KQuarks/KQuarks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Quarks/Info.plist;
+				INFOPLIST_FILE = KQuarks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KQuarks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks needs access to your health data to display insights and sync to the cloud.";
@@ -472,7 +472,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qxlsz.quarks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qxlsz.kquarks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -486,13 +486,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Quarks/Quarks.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KQuarks/KQuarks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Quarks/Info.plist;
+				INFOPLIST_FILE = KQuarks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KQuarks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks needs access to your health data to display insights and sync to the cloud.";
@@ -507,7 +507,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qxlsz.quarks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qxlsz.kquarks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -519,7 +519,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		700 /* Build configuration list for PBXNativeTarget "Quarks" */ = {
+		700 /* Build configuration list for PBXNativeTarget "KQuarks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				902 /* Debug */,
@@ -528,7 +528,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		801 /* Build configuration list for PBXProject "Quarks" */ = {
+		801 /* Build configuration list for PBXProject "KQuarks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				900 /* Debug */,

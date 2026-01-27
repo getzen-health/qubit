@@ -2,7 +2,7 @@ import SwiftUI
 import Supabase
 
 @main
-struct QuarksApp: App {
+struct KQuarksApp: App {
     @State private var appState = AppState()
     @State private var themeManager = ThemeManager.shared
 

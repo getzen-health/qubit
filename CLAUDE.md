@@ -21,7 +21,7 @@ KQuarks is a comprehensive health tracking app that syncs Apple Health data to t
 ```
 /
 ├── ios/                    # Swift iOS app
-│   └── Quarks/
+│   └── KQuarks/
 │       ├── App/           # App entry, configuration
 │       ├── Models/        # Data models
 │       ├── Views/         # SwiftUI views
@@ -164,20 +164,20 @@ Deno.serve(async (req) => {
 
 ```bash
 # Open in Xcode
-open ios/Quarks.xcodeproj
+open ios/KQuarks.xcodeproj
 
 # Build for iOS Simulator
 cd ios && xcodebuild build \
-  -project Quarks.xcodeproj \
-  -scheme Quarks \
+  -project KQuarks.xcodeproj \
+  -scheme KQuarks \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO
 
 # Build for macOS (Mac Catalyst)
 cd ios && xcodebuild build \
-  -project Quarks.xcodeproj \
-  -scheme Quarks \
+  -project KQuarks.xcodeproj \
+  -scheme KQuarks \
   -destination 'platform=macOS,variant=Mac Catalyst' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO

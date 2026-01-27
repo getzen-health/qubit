@@ -23,8 +23,8 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 
 ```
 ├── ios/                 # iOS app (Swift/SwiftUI)
-│   ├── Quarks.xcodeproj # Xcode project
-│   └── Quarks/          # Source code
+│   ├── KQuarks.xcodeproj # Xcode project
+│   └── KQuarks/          # Source code
 │       ├── App/         # App entry point
 │       ├── Models/      # Data models
 │       ├── Views/       # SwiftUI views
@@ -58,7 +58,7 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 
 2. **Open in Xcode**
    ```bash
-   open ios/Quarks.xcodeproj
+   open ios/KQuarks.xcodeproj
    ```
 
 3. **Download iOS Simulator (if needed)**
@@ -73,8 +73,8 @@ A comprehensive health tracking application that syncs Apple Health data to the 
      ```bash
      cd ios
      xcodebuild build \
-       -project Quarks.xcodeproj \
-       -scheme Quarks \
+       -project KQuarks.xcodeproj \
+       -scheme KQuarks \
        -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
        -configuration Debug \
        CODE_SIGNING_ALLOWED=NO
@@ -182,7 +182,7 @@ The app provides AI-powered health insights using:
 
 2. **Create App ID**
    - Go to Certificates, Identifiers & Profiles
-   - Create a new App ID with bundle identifier: `com.qxlsz.quarks`
+   - Create a new App ID with bundle identifier: `com.qxlsz.kquarks`
    - Enable HealthKit capability
 
 3. **Create Provisioning Profiles**
@@ -197,7 +197,7 @@ The app provides AI-powered health insights using:
    - Fill in app information:
      - Name: KQuarks
      - Primary language: English
-     - Bundle ID: com.qxlsz.quarks
+     - Bundle ID: com.qxlsz.kquarks
      - SKU: kquarks-health-app
 
 2. **Prepare App Store Listing**
@@ -222,16 +222,16 @@ The app provides AI-powered health insights using:
    ```bash
    cd ios
    xcodebuild archive \
-     -project Quarks.xcodeproj \
-     -scheme Quarks \
-     -archivePath build/Quarks.xcarchive \
+     -project KQuarks.xcodeproj \
+     -scheme KQuarks \
+     -archivePath build/KQuarks.xcarchive \
      -destination 'generic/platform=iOS'
    ```
 
 2. **Export for App Store**
    ```bash
    xcodebuild -exportArchive \
-     -archivePath build/Quarks.xcarchive \
+     -archivePath build/KQuarks.xcarchive \
      -exportPath build/AppStore \
      -exportOptionsPlist ExportOptions.plist
    ```
