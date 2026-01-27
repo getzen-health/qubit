@@ -1,30 +1,32 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-import { securityHeaders } from '@/lib/security/headers'
 
 export async function middleware(request: NextRequest) {
-  // Get response from session handler
-  const response = await updateSession(request)
+  try {
+    // Get response from session handler
+    const response = await updateSession(request)
 
-  // Don't modify headers on redirect responses
-  if (response.status >= 300 && response.status < 400) {
+    // Don't modify headers on redirect responses
+    if (response.status >= 300 && response.status < 400) {
+      return response
+    }
+
+    // Basic security headers (safe for all environments)
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+    // Prevent caching of sensitive pages
+    if (request.nextUrl.pathname.startsWith('/dashboard') ||
+        request.nextUrl.pathname.startsWith('/api/')) {
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
+    }
+
     return response
+  } catch (error) {
+    console.error('Middleware error:', error)
+    return NextResponse.next()
   }
-
-  // Apply security headers to non-redirect responses
-  Object.entries(securityHeaders).forEach(([key, value]) => {
-    response.headers.set(key, value)
-  })
-
-  // Prevent caching of sensitive pages
-  if (request.nextUrl.pathname.startsWith('/dashboard') ||
-      request.nextUrl.pathname.startsWith('/api/')) {
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
-    response.headers.set('Pragma', 'no-cache')
-    response.headers.set('Expires', '0')
-  }
-
-  return response
 }
 
 export const config = {
