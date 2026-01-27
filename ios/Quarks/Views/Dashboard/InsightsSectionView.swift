@@ -111,42 +111,28 @@ struct EmptyInsightsView: View {
     }
 }
 
-/// Health insight model for display
-struct HealthInsight: Identifiable {
-    let id: String
-    let title: String
-    let content: String
-    let category: String
-    let priority: String
-    let createdAt: Date
-}
-
 #Preview {
     ScrollView {
         VStack(spacing: 24) {
             InsightsSectionView(insights: [
                 HealthInsight(
-                    id: "1",
-                    title: "Great sleep consistency",
-                    content: "You've maintained a consistent bedtime for 5 days straight. This improves your circadian rhythm.",
+                    id: UUID(),
+                    userId: UUID(),
                     category: "sleep",
+                    title: "Great sleep consistency",
+                    content: "You've maintained a consistent bedtime for 5 days straight.",
                     priority: "medium",
+                    isRead: false,
                     createdAt: Date()
                 ),
                 HealthInsight(
-                    id: "2",
-                    title: "Activity goal streak",
-                    content: "You've hit your step goal 3 days in a row! Keep it up.",
+                    id: UUID(),
+                    userId: UUID(),
                     category: "activity",
+                    title: "Activity goal streak",
+                    content: "You've hit your step goal 3 days in a row!",
                     priority: "low",
-                    createdAt: Date()
-                ),
-                HealthInsight(
-                    id: "3",
-                    title: "Recovery improving",
-                    content: "Your HRV has increased 15% over the past week, indicating better recovery.",
-                    category: "recovery",
-                    priority: "high",
+                    isRead: false,
                     createdAt: Date()
                 ),
             ])

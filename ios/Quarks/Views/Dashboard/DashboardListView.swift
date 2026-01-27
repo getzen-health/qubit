@@ -111,12 +111,10 @@ struct DashboardListView: View {
             color: .strain
         ))
 
-        if let sleepMinutes = summary.sleepDurationMinutes {
-            let hours = sleepMinutes / 60
-            let mins = sleepMinutes % 60
+        if let formattedSleep = summary.formattedSleep {
             stats.append(QuickStat(
                 label: "Sleep",
-                value: "\(hours)h \(mins)m",
+                value: formattedSleep,
                 color: .sleep
             ))
         }
@@ -170,13 +168,11 @@ struct DashboardListView: View {
                 }
 
                 // Sleep
-                if let sleepMinutes = summary.sleepDurationMinutes {
-                    let hours = sleepMinutes / 60
-                    let mins = sleepMinutes % 60
+                if let formattedSleep = summary.formattedSleep {
                     MetricRowView(
                         icon: "moon.fill",
                         label: "Sleep",
-                        value: "\(hours)h \(mins)m",
+                        value: formattedSleep,
                         sublabel: "85% quality",
                         color: .sleep
                     ) {
@@ -297,7 +293,7 @@ struct DashboardListView: View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
-                .foregroundStyle(.warning)
+                .foregroundStyle(Color.warning)
 
             Text(error)
                 .foregroundStyle(.secondary)

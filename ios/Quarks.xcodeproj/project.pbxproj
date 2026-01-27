@@ -22,6 +22,20 @@
 		013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113 /* SettingsView.swift */; };
 		014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 201 /* Assets.xcassets */; };
 		015 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 301 /* HealthKit.framework */; };
+		016 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = PKG001 /* Supabase */; };
+		017 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114 /* AppTheme.swift */; };
+		018 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115 /* ColorScheme.swift */; };
+		019 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116 /* ThemeManager.swift */; };
+		020 /* AIEssenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117 /* AIEssenceView.swift */; };
+		021 /* DashboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118 /* DashboardListView.swift */; };
+		022 /* InsightsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119 /* InsightsSectionView.swift */; };
+		023 /* MetricRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120 /* MetricRowView.swift */; };
+		024 /* QuickStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121 /* QuickStatsView.swift */; };
+		025 /* AdaptiveNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122 /* AdaptiveNavigationView.swift */; };
+		026 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123 /* SidebarView.swift */; };
+		027 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124 /* AppearanceSettingsView.swift */; };
+		028 /* DashboardConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125 /* DashboardConfigView.swift */; };
+		029 /* WidgetConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126 /* WidgetConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +53,19 @@
 		111 /* HealthDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataView.swift; sourceTree = "<group>"; };
 		112 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		113 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		114 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		115 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
+		116 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		117 /* AIEssenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEssenceView.swift; sourceTree = "<group>"; };
+		118 /* DashboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardListView.swift; sourceTree = "<group>"; };
+		119 /* InsightsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsSectionView.swift; sourceTree = "<group>"; };
+		120 /* MetricRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricRowView.swift; sourceTree = "<group>"; };
+		121 /* QuickStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickStatsView.swift; sourceTree = "<group>"; };
+		122 /* AdaptiveNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveNavigationView.swift; sourceTree = "<group>"; };
+		123 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		124 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		125 /* DashboardConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfigView.swift; sourceTree = "<group>"; };
+		126 /* WidgetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfiguration.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* Quarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Quarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -51,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				015 /* HealthKit.framework in Frameworks */,
+				016 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +101,8 @@
 				505 /* Models */,
 				506 /* Views */,
 				507 /* Services */,
+				508 /* Theme */,
+				509 /* Widgets */,
 				201 /* Assets.xcassets */,
 				202 /* Quarks.entitlements */,
 				203 /* Info.plist */,
@@ -117,6 +147,9 @@
 		506 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				510 /* Dashboard */,
+				511 /* Navigation */,
+				512 /* Settings */,
 				108 /* OnboardingView.swift */,
 				109 /* AuthView.swift */,
 				110 /* DashboardView.swift */,
@@ -137,6 +170,54 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		508 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				114 /* AppTheme.swift */,
+				115 /* ColorScheme.swift */,
+				116 /* ThemeManager.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		509 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				126 /* WidgetConfiguration.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		510 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				117 /* AIEssenceView.swift */,
+				118 /* DashboardListView.swift */,
+				119 /* InsightsSectionView.swift */,
+				120 /* MetricRowView.swift */,
+				121 /* QuickStatsView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		511 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				122 /* AdaptiveNavigationView.swift */,
+				123 /* SidebarView.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		512 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				124 /* AppearanceSettingsView.swift */,
+				125 /* DashboardConfigView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,6 +234,9 @@
 			dependencies = (
 			);
 			name = Quarks;
+			packageProductDependencies = (
+				PKG001 /* Supabase */,
+			);
 			productName = Quarks;
 			productReference = 100 /* Quarks.app */;
 			productType = "com.apple.product-type.application";
@@ -181,6 +265,9 @@
 				Base,
 			);
 			mainGroup = 500;
+			packageReferences = (
+				PKGREF001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			productRefGroup = 502 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -219,6 +306,19 @@
 				011 /* HealthDataView.swift in Sources */,
 				012 /* InsightsView.swift in Sources */,
 				013 /* SettingsView.swift in Sources */,
+				017 /* AppTheme.swift in Sources */,
+				018 /* ColorScheme.swift in Sources */,
+				019 /* ThemeManager.swift in Sources */,
+				020 /* AIEssenceView.swift in Sources */,
+				021 /* DashboardListView.swift in Sources */,
+				022 /* InsightsSectionView.swift in Sources */,
+				023 /* MetricRowView.swift in Sources */,
+				024 /* QuickStatsView.swift in Sources */,
+				025 /* AdaptiveNavigationView.swift in Sources */,
+				026 /* SidebarView.swift in Sources */,
+				027 /* AppearanceSettingsView.swift in Sources */,
+				028 /* DashboardConfigView.swift in Sources */,
+				029 /* WidgetConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,6 +536,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		PKGREF001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PKG001 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = PKGREF001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 800 /* Project object */;
 }

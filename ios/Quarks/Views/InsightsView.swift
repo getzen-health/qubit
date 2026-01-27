@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InsightsView: View {
-    @State private var insights: [HealthInsight] = []
+    @State private var insights: [InsightItem] = []
     @State private var isLoading = false
 
     var body: some View {
@@ -11,7 +11,7 @@ struct InsightsView: View {
                     ProgressView()
                         .padding(.top, 100)
                 } else if insights.isEmpty {
-                    EmptyInsightsView()
+                    InsightsEmptyStateView()
                 } else {
                     LazyVStack(spacing: 16) {
                         ForEach(insights) { insight in
@@ -43,7 +43,7 @@ struct InsightsView: View {
         isLoading = true
         // TODO: Fetch from Supabase
         // For now, show sample insights
-        insights = HealthInsight.samples
+        insights = InsightItem.samples
         isLoading = false
     }
 
@@ -51,14 +51,14 @@ struct InsightsView: View {
         isLoading = true
         // TODO: Call AI edge function
         try? await Task.sleep(for: .seconds(2))
-        insights = HealthInsight.samples
+        insights = InsightItem.samples
         isLoading = false
     }
 }
 
 // MARK: - Empty State
 
-struct EmptyInsightsView: View {
+struct InsightsEmptyStateView: View {
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
@@ -81,7 +81,7 @@ struct EmptyInsightsView: View {
 // MARK: - Insight Card
 
 struct InsightCard: View {
-    let insight: HealthInsight
+    let insight: InsightItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -125,7 +125,7 @@ struct InsightCard: View {
 
 // MARK: - Models
 
-struct HealthInsight: Identifiable {
+struct InsightItem: Identifiable {
     let id = UUID()
     let date: Date
     let category: InsightCategory
@@ -133,30 +133,30 @@ struct HealthInsight: Identifiable {
     let content: String
     let priority: InsightPriority
 
-    static var samples: [HealthInsight] {
+    static var samples: [InsightItem] {
         [
-            HealthInsight(
+            InsightItem(
                 date: Date(),
                 category: .sleep,
                 title: "Great Sleep Last Night!",
                 content: "You got 8 hours of sleep with 2 hours of deep sleep. This is above your weekly average.",
                 priority: .normal
             ),
-            HealthInsight(
+            InsightItem(
                 date: Date(),
                 category: .activity,
                 title: "Step Goal Streak",
                 content: "You've hit your 10,000 step goal 5 days in a row. Keep it up!",
                 priority: .normal
             ),
-            HealthInsight(
+            InsightItem(
                 date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
                 category: .heart,
                 title: "HRV Trending Up",
                 content: "Your heart rate variability has increased by 15% over the past week, indicating improved recovery.",
                 priority: .normal
             ),
-            HealthInsight(
+            InsightItem(
                 date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
                 category: .recovery,
                 title: "Consider a Rest Day",
