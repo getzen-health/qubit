@@ -178,13 +178,11 @@ class SupabaseService {
 
         let calendar = Calendar.current
         let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withFullDate]
 
         let response: [DailySummary] = try await client
             .from("daily_summaries")
             .select()
-            .gte("date", value: dateFormatter.string(from: startDate))
+            .gte("date", value: startDate.ISO8601Format())
             .order("date", ascending: false)
             .execute()
             .value
@@ -267,7 +265,7 @@ struct HealthRecordUpload: Encodable {
 
 struct DailySummaryUpload: Encodable {
     let userId: UUID
-    let date: String // YYYY-MM-DD
+    let date: Date
     let steps: Int
     let distanceMeters: Double
     let floorsClimbed: Int

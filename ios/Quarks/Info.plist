@@ -9,5 +9,9 @@
 	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>SUPABASE_URL</key>
+	<string>https://dbokxnlpllrnhhpyuryj.supabase.co</string>
+	<key>SUPABASE_ANON_KEY</key>
+	<string>sb_publishable_q8X1-IBmyQxCu-UwCDaj6w_PCzN4E7W</string>
 </dict>
 </plist>

@@ -62,12 +62,12 @@ class SyncService {
 
         let summary = try await healthKit.fetchTodaySummary()
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
 
         let upload = DailySummaryUpload(
             userId: userId,
-            date: dateFormatter.string(from: Date()),
+            date: today,
             steps: summary.steps,
             distanceMeters: summary.distanceMeters,
             floorsClimbed: summary.floorsClimbed,
