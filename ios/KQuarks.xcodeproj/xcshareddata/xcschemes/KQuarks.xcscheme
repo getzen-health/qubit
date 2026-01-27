@@ -61,11 +61,20 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "600"
-            BuildableName = "Quarks.app"
-            BlueprintName = "Quarks"
-            ReferencedContainer = "container:Quarks.xcodeproj">
+            BuildableName = "KQuarks.app"
+            BlueprintName = "KQuarks"
+            ReferencedContainer = "container:KQuarks.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "600"
+            BuildableName = "KQuarks.app"
+            BlueprintName = "KQuarks"
+            ReferencedContainer = "container:KQuarks.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
