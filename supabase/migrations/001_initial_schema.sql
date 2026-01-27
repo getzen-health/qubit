@@ -1,8 +1,7 @@
 -- Health App Database Schema
 -- Initial migration: Core tables for health data tracking
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Using gen_random_uuid() which is built into Postgres (no extension needed)
 
 -- ============================================
 -- USERS & SETTINGS
@@ -21,7 +20,7 @@ CREATE TABLE users (
 
 -- User AI provider settings
 CREATE TABLE user_ai_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     provider TEXT NOT NULL DEFAULT 'claude', -- claude, openai, custom
     api_key_encrypted TEXT, -- encrypted API key for user-provided keys
@@ -34,7 +33,7 @@ CREATE TABLE user_ai_settings (
 
 -- Device/source tracking
 CREATE TABLE user_devices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     device_name TEXT NOT NULL,
     device_type TEXT NOT NULL, -- iphone, apple_watch, android
@@ -50,7 +49,7 @@ CREATE TABLE user_devices (
 
 -- Generic health records for all sample types
 CREATE TABLE health_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     type TEXT NOT NULL, -- steps, heart_rate, weight, etc.
     value DOUBLE PRECISION NOT NULL,
@@ -73,7 +72,7 @@ CREATE INDEX idx_health_records_type_time ON health_records(type, start_time DES
 
 -- Sleep sessions
 CREATE TABLE sleep_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
@@ -100,7 +99,7 @@ CREATE INDEX idx_sleep_records_user_time ON sleep_records(user_id, start_time DE
 
 -- Workout sessions
 CREATE TABLE workout_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     workout_type TEXT NOT NULL, -- running, cycling, strength, etc.
     start_time TIMESTAMPTZ NOT NULL,
@@ -131,7 +130,7 @@ CREATE INDEX idx_workout_records_user_type ON workout_records(user_id, workout_t
 
 -- Heart rate samples (high-frequency data)
 CREATE TABLE heart_rate_samples (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     timestamp TIMESTAMPTZ NOT NULL,
     bpm INTEGER NOT NULL,
@@ -145,7 +144,7 @@ CREATE INDEX idx_hr_samples_user_time ON heart_rate_samples(user_id, timestamp D
 
 -- Daily heart rate summaries
 CREATE TABLE daily_heart_rate (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     date DATE NOT NULL,
     resting_hr INTEGER,
@@ -165,7 +164,7 @@ CREATE INDEX idx_daily_hr_user_date ON daily_heart_rate(user_id, date DESC);
 
 -- Aggregated daily health summaries
 CREATE TABLE daily_summaries (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     date DATE NOT NULL,
     -- Activity
@@ -201,7 +200,7 @@ CREATE INDEX idx_daily_summaries_user_date ON daily_summaries(user_id, date DESC
 
 -- AI-generated health insights
 CREATE TABLE health_insights (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     date DATE NOT NULL,
     insight_type TEXT NOT NULL, -- daily_summary, trend, anomaly, recommendation
