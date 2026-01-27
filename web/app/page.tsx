@@ -1,7 +1,7 @@
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Quarks',
+  name: 'KQuarks',
   applicationCategory: 'HealthApplication',
   operatingSystem: 'iOS, Web',
   description: 'Your health data. Your cloud. Your AI. A privacy-first health tracking platform.',
@@ -25,7 +25,7 @@ export default function Home() {
         <section className="min-h-screen flex flex-col items-center justify-center px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight mb-6">
-              Quarks
+              KQuarks
             </h1>
             <p className="text-xl sm:text-2xl text-zinc-400 font-light mb-12 max-w-xl mx-auto">
               Your health data. Your cloud. Your AI.
@@ -180,7 +180,7 @@ export default function Home() {
         <footer className="py-12 px-6 border-t border-zinc-900">
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-zinc-500 text-sm">
-              Quarks
+              KQuarks
             </div>
             <div className="flex gap-8 text-zinc-500 text-sm">
               <a href="https://github.com/qxlsz/kquarks" className="hover:text-white transition-colors">
