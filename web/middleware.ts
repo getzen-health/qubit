@@ -1,7 +1,13 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const response = await updateSession(request)
+
+  // Skip headers for redirects
+  if (response.status >= 300 && response.status < 400) {
+    return response
+  }
 
   // Basic security headers
   response.headers.set('X-Frame-Options', 'DENY')
