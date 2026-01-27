@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001 /* QuarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101; };
-		002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102; };
-		003 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103; };
-		004 /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104; };
-		005 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105; };
-		006 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106; };
-		007 /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107; };
-		008 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108; };
-		009 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109; };
-		010 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110; };
-		011 /* HealthDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111; };
-		012 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112; };
-		013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113; };
-		014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 201; };
-		015 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 301; };
+		001 /* QuarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101 /* QuarksApp.swift */; };
+		002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102 /* ContentView.swift */; };
+		003 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103 /* User.swift */; };
+		004 /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104 /* HealthData.swift */; };
+		005 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105 /* HealthKitService.swift */; };
+		006 /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106 /* SupabaseService.swift */; };
+		007 /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107 /* SyncService.swift */; };
+		008 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108 /* OnboardingView.swift */; };
+		009 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109 /* AuthView.swift */; };
+		010 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110 /* DashboardView.swift */; };
+		011 /* HealthDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111 /* HealthDataView.swift */; };
+		012 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112 /* InsightsView.swift */; };
+		013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113 /* SettingsView.swift */; };
+		014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 201 /* Assets.xcassets */; };
+		015 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 301 /* HealthKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,7 +142,7 @@
 /* Begin PBXNativeTarget section */
 		600 /* Quarks */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 700;
+			buildConfigurationList = 700 /* Build configuration list for PBXNativeTarget "Quarks" */;
 			buildPhases = (
 				601 /* Sources */,
 				400 /* Frameworks */,
@@ -165,14 +165,14 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					600 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
-			buildConfigurationList = 801;
+			buildConfigurationList = 801 /* Build configuration list for PBXProject "Quarks" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -283,6 +283,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -339,6 +340,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -360,9 +362,9 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Quarks needs access to your health data to display insights and sync to the cloud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Quarks needs access to update your health data.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "armv7 healthkit";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -394,9 +396,9 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Quarks needs access to your health data to display insights and sync to the cloud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Quarks needs access to update your health data.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "armv7 healthkit";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
