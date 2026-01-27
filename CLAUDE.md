@@ -158,23 +158,85 @@ Deno.serve(async (req) => {
 - Web: Vitest for unit tests, Playwright for E2E
 - Use mocks for HealthKit and Supabase in tests
 
-## Common Commands
+## Building the Apps
+
+### iOS App
 
 ```bash
-# iOS
+# Open in Xcode
 open ios/Quarks.xcodeproj
 
-# Web
+# Build for iOS Simulator
+cd ios && xcodebuild build \
+  -project Quarks.xcodeproj \
+  -scheme Quarks \
+  -destination 'generic/platform=iOS Simulator' \
+  -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO
+
+# Build for macOS (Mac Catalyst)
+cd ios && xcodebuild build \
+  -project Quarks.xcodeproj \
+  -scheme Quarks \
+  -destination 'platform=macOS,variant=Mac Catalyst' \
+  -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO
+```
+
+### Platform Support Status
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| iOS | ✅ Supported | Full HealthKit integration |
+| macOS (Catalyst) | ✅ Supported | Runs as iPad app on Mac |
+| tvOS | ❌ Not supported | No HealthKit on tvOS |
+| watchOS | ❌ Needs separate target | Requires watchOS-specific UI |
+| visionOS | ❌ Needs separate target | Requires visionOS-specific UI |
+
+### Web Dashboard
+
+```bash
+# Development
 cd web && npm run dev
 
-# Supabase
+# Production build
+cd web && npm run build
+
+# Deployment
+# Vercel auto-deploys on push to main (Root Directory: web)
+```
+
+### Supabase
+
+```bash
+# Start local Supabase
 supabase start
+
+# Push database migrations
 supabase db push
+
+# Serve edge functions locally
 supabase functions serve
 
-# Database migrations
+# Create new migration
 supabase migration new <name>
 ```
+
+## CI/CD
+
+### GitHub Actions Workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ios.yml` | Push to `ios/**` | Build iOS & macOS apps |
+| `supabase.yml` | Push to `supabase/**` | Validate migrations |
+
+### Vercel (Web)
+
+- Auto-deploys on push to `main`
+- Root Directory: `web`
+- Framework: Next.js
+- No GitHub Actions workflow needed (native integration)
 
 ## Security Considerations
 
