@@ -22,134 +22,142 @@ export default function Home() {
     if (!ctx) return
 
     let animationId: number
-    let particles: Particle[] = []
+    let time = 0
 
     const resize = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
     }
 
-    class Particle {
-      x: number
-      y: number
-      size: number
-      speedX: number
-      speedY: number
-      opacity: number
-      rotation: number
-      rotationSpeed: number
-      shape: number
+    // 3D Icosahedron vertices
+    const phi = (1 + Math.sqrt(5)) / 2
+    const vertices = [
+      [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
+      [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
+      [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1]
+    ]
 
-      constructor() {
-        this.x = Math.random() * canvas!.width
-        this.y = Math.random() * canvas!.height
-        this.size = Math.random() * 60 + 20
-        this.speedX = (Math.random() - 0.5) * 0.3
-        this.speedY = (Math.random() - 0.5) * 0.3
-        this.opacity = Math.random() * 0.08 + 0.02
-        this.rotation = Math.random() * Math.PI * 2
-        this.rotationSpeed = (Math.random() - 0.5) * 0.005
-        this.shape = Math.floor(Math.random() * 4)
-      }
+    const edges = [
+      [0, 1], [0, 5], [0, 7], [0, 10], [0, 11],
+      [1, 5], [1, 7], [1, 8], [1, 9],
+      [2, 3], [2, 4], [2, 6], [2, 10], [2, 11],
+      [3, 4], [3, 6], [3, 8], [3, 9],
+      [4, 5], [4, 9], [4, 11],
+      [5, 9], [5, 11],
+      [6, 7], [6, 8], [6, 10],
+      [7, 8], [7, 10],
+      [8, 9], [10, 11]
+    ]
 
-      update() {
-        this.x += this.speedX
-        this.y += this.speedY
-        this.rotation += this.rotationSpeed
-
-        if (this.x < -this.size) this.x = canvas!.width + this.size
-        if (this.x > canvas!.width + this.size) this.x = -this.size
-        if (this.y < -this.size) this.y = canvas!.height + this.size
-        if (this.y > canvas!.height + this.size) this.y = -this.size
-      }
-
-      draw() {
-        ctx!.save()
-        ctx!.translate(this.x, this.y)
-        ctx!.rotate(this.rotation)
-        ctx!.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`
-        ctx!.lineWidth = 1
-
-        switch (this.shape) {
-          case 0: // Triangle
-            ctx!.beginPath()
-            ctx!.moveTo(0, -this.size / 2)
-            ctx!.lineTo(-this.size / 2, this.size / 2)
-            ctx!.lineTo(this.size / 2, this.size / 2)
-            ctx!.closePath()
-            ctx!.stroke()
-            break
-          case 1: // Square
-            ctx!.strokeRect(-this.size / 2, -this.size / 2, this.size, this.size)
-            break
-          case 2: // Hexagon
-            ctx!.beginPath()
-            for (let i = 0; i < 6; i++) {
-              const angle = (Math.PI / 3) * i
-              const x = (this.size / 2) * Math.cos(angle)
-              const y = (this.size / 2) * Math.sin(angle)
-              if (i === 0) ctx!.moveTo(x, y)
-              else ctx!.lineTo(x, y)
-            }
-            ctx!.closePath()
-            ctx!.stroke()
-            break
-          case 3: // Circle
-            ctx!.beginPath()
-            ctx!.arc(0, 0, this.size / 2, 0, Math.PI * 2)
-            ctx!.stroke()
-            break
-        }
-
-        ctx!.restore()
+    const project = (x: number, y: number, z: number, scale: number, cx: number, cy: number) => {
+      const perspective = 4
+      const factor = perspective / (perspective + z)
+      return {
+        x: cx + x * scale * factor,
+        y: cy + y * scale * factor,
+        z: z
       }
     }
 
-    const init = () => {
-      particles = []
-      const count = Math.floor((canvas.width * canvas.height) / 40000)
-      for (let i = 0; i < Math.min(count, 30); i++) {
-        particles.push(new Particle())
-      }
+    const rotateX = (x: number, y: number, z: number, angle: number) => {
+      const cos = Math.cos(angle)
+      const sin = Math.sin(angle)
+      return [x, y * cos - z * sin, y * sin + z * cos]
+    }
+
+    const rotateY = (x: number, y: number, z: number, angle: number) => {
+      const cos = Math.cos(angle)
+      const sin = Math.sin(angle)
+      return [x * cos + z * sin, y, -x * sin + z * cos]
+    }
+
+    const rotateZ = (x: number, y: number, z: number, angle: number) => {
+      const cos = Math.cos(angle)
+      const sin = Math.sin(angle)
+      return [x * cos - y * sin, x * sin + y * cos, z]
     }
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'
+      time += 0.003
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((p) => {
-        p.update()
-        p.draw()
+      const cx = canvas.width / 2
+      const cy = canvas.height / 2
+      const scale = Math.min(canvas.width, canvas.height) * 0.15
+
+      // Transform vertices
+      const transformed = vertices.map(([x, y, z]) => {
+        let [rx, ry, rz] = rotateX(x, y, z, time * 0.7)
+        ;[rx, ry, rz] = rotateY(rx, ry, rz, time)
+        ;[rx, ry, rz] = rotateZ(rx, ry, rz, time * 0.5)
+        return project(rx, ry, rz, scale, cx, cy)
       })
 
-      // Draw connecting lines
-      particles.forEach((p1, i) => {
-        particles.slice(i + 1).forEach((p2) => {
-          const dx = p1.x - p2.x
-          const dy = p1.y - p2.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 200) {
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.03 * (1 - dist / 200)})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(p1.x, p1.y)
-            ctx.lineTo(p2.x, p2.y)
-            ctx.stroke()
-          }
-        })
+      // Draw edges with glow
+      edges.forEach(([i, j]) => {
+        const p1 = transformed[i]
+        const p2 = transformed[j]
+
+        const avgZ = (p1.z + p2.z) / 2
+        const opacity = 0.1 + (avgZ + 2) * 0.15
+
+        // Glow layer
+        ctx.beginPath()
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.strokeStyle = `rgba(100, 200, 255, ${opacity * 0.3})`
+        ctx.lineWidth = 8
+        ctx.lineCap = 'round'
+        ctx.stroke()
+
+        // Core line
+        ctx.beginPath()
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.strokeStyle = `rgba(150, 220, 255, ${opacity})`
+        ctx.lineWidth = 1.5
+        ctx.stroke()
       })
+
+      // Draw vertices
+      transformed.forEach((p) => {
+        const opacity = 0.3 + (p.z + 2) * 0.2
+
+        // Outer glow
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(100, 200, 255, ${opacity * 0.2})`
+        ctx.fill()
+
+        // Core
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(200, 240, 255, ${opacity})`
+        ctx.fill()
+      })
+
+      // Outer rings
+      for (let i = 0; i < 3; i++) {
+        const ringTime = time + i * 2
+        const ringScale = scale * (1.8 + Math.sin(ringTime) * 0.3 + i * 0.5)
+        const ringOpacity = 0.03 - i * 0.008
+
+        ctx.beginPath()
+        ctx.arc(cx, cy, ringScale, 0, Math.PI * 2)
+        ctx.strokeStyle = `rgba(100, 200, 255, ${ringOpacity})`
+        ctx.lineWidth = 1
+        ctx.stroke()
+      }
 
       animationId = requestAnimationFrame(animate)
     }
 
     resize()
-    init()
     animate()
 
-    window.addEventListener('resize', () => {
-      resize()
-      init()
-    })
+    window.addEventListener('resize', resize)
 
     return () => {
       cancelAnimationFrame(animationId)
@@ -177,7 +185,6 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Animated background */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 bg-black"
@@ -185,19 +192,16 @@ export default function Home() {
 
       <main className="relative z-10 h-screen text-white font-[Inter] flex flex-col items-center justify-center px-6">
 
-        {/* Logo */}
         <div className="mb-16">
           <h1 className="text-4xl sm:text-6xl font-extralight tracking-[-0.03em]">
             KQuarks
           </h1>
         </div>
 
-        {/* Tagline */}
         <p className="text-zinc-500 font-extralight text-center mb-12 max-w-sm text-sm sm:text-base">
           Health tracking that respects your privacy.
         </p>
 
-        {/* Email form */}
         {!submitted ? (
           <form onSubmit={handleSubmit} className="w-full max-w-xs">
             <div className="flex flex-col gap-4">
@@ -207,11 +211,11 @@ export default function Home() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 required
-                className="w-full px-5 py-3 bg-black/50 backdrop-blur-sm border border-zinc-800 rounded-full text-sm font-extralight text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors"
+                className="w-full px-5 py-3 bg-black/60 backdrop-blur-md border border-zinc-800 rounded-full text-sm font-extralight text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-900 transition-colors"
               />
               <button
                 type="submit"
-                className="w-full px-5 py-3 bg-white text-black text-sm font-light tracking-wide rounded-full hover:bg-zinc-200 transition-colors"
+                className="w-full px-5 py-3 bg-white text-black text-sm font-light tracking-wide rounded-full hover:bg-cyan-100 transition-colors"
               >
                 Request Access
               </button>
@@ -223,9 +227,8 @@ export default function Home() {
           </p>
         )}
 
-        {/* Status */}
         <div className="absolute bottom-8 flex items-center gap-2 text-xs text-zinc-600 font-extralight tracking-wide">
-          <span className="dot w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+          <span className="dot w-1.5 h-1.5 bg-cyan-500 rounded-full" />
           Building
         </div>
 
