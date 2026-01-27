@@ -183,3 +183,9 @@ supabase migration new <name>
 - Encrypt user-provided API keys in database
 - Request minimal HealthKit permissions
 - Implement proper auth token refresh
+
+## Git Commit Guidelines
+
+- Use simple, concise commit messages
+- Do NOT add "Co-Authored-By" lines
+- Do NOT add Claude Code attribution or emoji signatures
