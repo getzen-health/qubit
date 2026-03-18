@@ -68,7 +68,7 @@ export default function InsightsPage() {
       const [{ data: summaries }, { data: workouts }, { data: sleepRecords }] = await Promise.all([
         supabase
           .from('daily_summaries')
-          .select('date, steps, active_calories, distance_meters, floors_climbed, resting_heart_rate, avg_hrv, sleep_duration_minutes, recovery_score, strain_score')
+          .select('date, steps, active_calories, distance_meters, floors_climbed, active_minutes, resting_heart_rate, avg_hrv, sleep_duration_minutes, recovery_score, strain_score')
           .eq('user_id', user.id)
           .order('date', { ascending: false })
           .limit(8),
@@ -101,7 +101,7 @@ export default function InsightsPage() {
           avgHrv: today.avg_hrv ?? null,
           sleepDurationMinutes: today.sleep_duration_minutes ?? null,
           sleepQualityScore: null,
-          activeMinutes: 0,
+          activeMinutes: (today as Record<string, number>).active_minutes ?? 0,
         },
         weekHistory: (summaries ?? []).slice(1).map((s) => ({
           date: s.date,
