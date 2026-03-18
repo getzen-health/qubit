@@ -1,4 +1,5 @@
 import UserNotifications
+import SwiftUI
 
 @Observable
 final class NotificationService {
@@ -10,6 +11,14 @@ final class NotificationService {
     private let stepGoalNotifiedKey = "stepGoalNotifiedDate"
     private let weeklyReviewKey = "weeklyReviewNotifiedDate"
     private let stepReminderKey = "stepReminderNotifiedDate"
+
+    // Configurable morning brief hour (0-23), defaults to 8am
+    @ObservationIgnored
+    @AppStorage("morningBriefHour") var morningBriefHour: Int = 8
+
+    // Toggle: step afternoon reminder enabled
+    @ObservationIgnored
+    @AppStorage("stepReminderEnabled") var stepReminderEnabled: Bool = true
 
     func requestPermission() async {
         do {
@@ -51,9 +60,9 @@ final class NotificationService {
                 stepGoal: Int(goal)
             )
 
-            // Afternoon step reminder (4–8pm, if below 50% of goal)
+            // Afternoon step reminder (4–8pm, if below 50% of goal and enabled)
             let hour = Calendar.current.component(.hour, from: Date())
-            if hour >= 16 && hour <= 20 && !alreadySentStepReminderToday() {
+            if stepReminderEnabled && hour >= 16 && hour <= 20 && !alreadySentStepReminderToday() {
                 let pct = Double(summary.steps) / goal
                 if pct < 0.5 {
                     let remaining = Int(goal) - summary.steps
@@ -101,7 +110,7 @@ final class NotificationService {
         content.sound = .default
 
         var components = Calendar.current.dateComponents([.hour, .minute], from: Date())
-        components.hour = 8
+        components.hour = morningBriefHour
         components.minute = 0
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
 

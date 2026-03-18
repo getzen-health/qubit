@@ -52,6 +52,7 @@
 		043 /* DashboardWeeklyChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139 /* DashboardWeeklyChartView.swift */; };
 		044 /* HealthIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140 /* HealthIntents.swift */; };
 		045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141 /* AppDelegate.swift */; };
+		046 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142 /* NotificationSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +98,7 @@
 		139 /* DashboardWeeklyChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardWeeklyChartView.swift; sourceTree = "<group>"; };
 		140 /* HealthIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthIntents.swift; sourceTree = "<group>"; };
 		141 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		142 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				124 /* AppearanceSettingsView.swift */,
 				125 /* DashboardConfigView.swift */,
 				133 /* GoalsSettingsView.swift */,
+				142 /* NotificationSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				043 /* DashboardWeeklyChartView.swift in Sources */,
 				044 /* HealthIntents.swift in Sources */,
 				045 /* AppDelegate.swift in Sources */,
+				046 /* NotificationSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
