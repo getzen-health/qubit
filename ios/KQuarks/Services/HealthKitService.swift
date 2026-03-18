@@ -779,6 +779,19 @@ class HealthKitService {
         let sample = HKQuantitySample(type: type, quantity: quantity, start: Date(), end: Date())
         try await healthStore.save(sample)
     }
+
+    func saveMindfulnessSession(startDate: Date, endDate: Date) async throws {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+        let type = HKCategoryType(.mindfulSession)
+        let sample = HKCategorySample(type: type, value: HKCategoryValue.notApplicable.rawValue, start: startDate, end: endDate)
+        try await healthStore.save(sample)
+    }
+
+    func fetchMindfulnessSessions(days: Int = 30) async throws -> [HKCategorySample] {
+        guard isHealthDataAvailable else { return [] }
+        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        return try await fetchCategoryEvents(.mindfulSession, from: startDate, to: Date())
+    }
 }
 
 // MARK: - Supporting Types
