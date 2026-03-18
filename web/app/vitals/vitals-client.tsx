@@ -16,9 +16,16 @@ interface VitalReading {
   value: number
 }
 
+interface BPReading {
+  time: string
+  systolic: number
+  diastolic: number
+}
+
 interface VitalsClientProps {
   spO2: VitalReading[]
   respRate: VitalReading[]
+  bloodPressure: BPReading[]
 }
 
 const tooltipStyle = {
@@ -53,7 +60,7 @@ function EmptyVital({ name }: { name: string }) {
   )
 }
 
-export function VitalsClient({ spO2, respRate }: VitalsClientProps) {
+export function VitalsClient({ spO2, respRate, bloodPressure }: VitalsClientProps) {
   // Downsample to daily averages for clarity (too many points otherwise)
   function dailyAvg(readings: VitalReading[]): { date: string; value: number }[] {
     const byDay: Record<string, number[]> = {}
@@ -207,10 +214,95 @@ export function VitalsClient({ spO2, respRate }: VitalsClientProps) {
         )}
       </section>
 
+      {/* Blood Pressure */}
+      {bloodPressure.length > 0 && (
+        <section>
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Blood Pressure</h2>
+          {(() => {
+            const latest = bloodPressure[bloodPressure.length - 1]
+            const avgSys = Math.round(bloodPressure.reduce((s, r) => s + r.systolic, 0) / bloodPressure.length)
+            const avgDia = Math.round(bloodPressure.reduce((s, r) => s + r.diastolic, 0) / bloodPressure.length)
+            // BP classification
+            function bpClass(sys: number, dia: number) {
+              if (sys < 120 && dia < 80) return { label: 'Normal', color: 'text-green-400' }
+              if (sys < 130 && dia < 80) return { label: 'Elevated', color: 'text-yellow-400' }
+              if (sys < 140 || dia < 90) return { label: 'High Stage 1', color: 'text-orange-400' }
+              return { label: 'High Stage 2', color: 'text-red-400' }
+            }
+            const latestClass = bpClass(latest.systolic, latest.diastolic)
+            const bpChartData = bloodPressure.slice(-30).map((r) => ({
+              date: fmtDate(r.time),
+              systolic: r.systolic,
+              diastolic: r.diastolic,
+            }))
+
+            return (
+              <>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <StatPill
+                    label="Latest"
+                    value={`${latest.systolic}/${latest.diastolic}`}
+                    unit="mmHg"
+                    color={latestClass.color}
+                  />
+                  <StatPill
+                    label="Avg Systolic"
+                    value={`${avgSys}`}
+                    unit="mmHg"
+                    color="text-red-400"
+                  />
+                  <StatPill
+                    label="Avg Diastolic"
+                    value={`${avgDia}`}
+                    unit="mmHg"
+                    color="text-blue-400"
+                  />
+                </div>
+                <div className="mb-3 px-3 py-2 rounded-lg bg-surface border border-border inline-flex items-center gap-2">
+                  <span className={`text-sm font-semibold ${latestClass.color}`}>{latestClass.label}</span>
+                  <span className="text-xs text-text-secondary">— based on latest reading</span>
+                </div>
+                {bpChartData.length >= 2 && (
+                  <div className="bg-surface rounded-xl border border-border p-4">
+                    <h3 className="text-sm font-medium text-text-secondary mb-3">Systolic &amp; Diastolic (30 days)</h3>
+                    <ResponsiveContainer width="100%" height={160}>
+                      <LineChart data={bpChartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                          axisLine={false}
+                          tickLine={false}
+                          interval="preserveStartEnd"
+                        />
+                        <YAxis hide domain={['dataMin - 5', 'dataMax + 5']} />
+                        <Tooltip
+                          contentStyle={tooltipStyle}
+                          formatter={(v: number, name: string) => [`${v} mmHg`, name === 'systolic' ? 'Systolic' : 'Diastolic']}
+                        />
+                        <ReferenceLine y={120} stroke="rgba(250,204,21,0.3)" strokeDasharray="4 3" label={{ value: '120', position: 'insideTopRight', fontSize: 9, fill: 'rgba(250,204,21,0.5)' }} />
+                        <ReferenceLine y={80} stroke="rgba(250,204,21,0.2)" strokeDasharray="4 3" label={{ value: '80', position: 'insideTopRight', fontSize: 9, fill: 'rgba(250,204,21,0.4)' }} />
+                        <Line type="monotone" dataKey="systolic" stroke="#ef4444" strokeWidth={2} dot={{ r: 3, fill: '#ef4444' }} activeDot={{ r: 5 }} />
+                        <Line type="monotone" dataKey="diastolic" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div className="flex gap-4 mt-2 text-xs text-text-secondary">
+                      <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-red-400 inline-block" /> Systolic</span>
+                      <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-blue-400 inline-block" /> Diastolic</span>
+                    </div>
+                    <p className="text-xs text-text-secondary mt-2">Normal: below 120/80 mmHg</p>
+                  </div>
+                )}
+              </>
+            )
+          })()}
+        </section>
+      )}
+
       {/* Info card */}
       <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-1">
         <p className="font-medium text-text-primary text-sm">How this data is collected</p>
-        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Data syncs automatically through the KQuarks iOS app.</p>
+        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Blood pressure requires a compatible third-party device connected to Apple Health. Data syncs automatically through the KQuarks iOS app.</p>
       </div>
     </div>
   )

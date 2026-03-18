@@ -173,6 +173,45 @@ class SyncService {
             ))
         }
 
+        // Fetch blood pressure samples
+        let systolicSamples = try await healthKit.fetchSamples(
+            for: .bloodPressureSystolic,
+            from: startDate,
+            to: now,
+            limit: 200
+        )
+        for sample in systolicSamples {
+            let mmHg = sample.quantity.doubleValue(for: .millimeterOfMercury())
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "blood_pressure_systolic",
+                value: mmHg,
+                unit: "mmHg",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
+        let diastolicSamples = try await healthKit.fetchSamples(
+            for: .bloodPressureDiastolic,
+            from: startDate,
+            to: now,
+            limit: 200
+        )
+        for sample in diastolicSamples {
+            let mmHg = sample.quantity.doubleValue(for: .millimeterOfMercury())
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "blood_pressure_diastolic",
+                value: mmHg,
+                unit: "mmHg",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Fetch VO2 Max samples
         let vo2Samples = try await healthKit.fetchSamples(
             for: .vo2Max,
