@@ -1019,6 +1019,8 @@ export function DashboardStream({
                 { href: '/nutrition', label: 'Nutrition' },
                 { href: '/macros', label: 'Macros' },
                 { href: '/fasting', label: 'Fasting' },
+                { href: '/habits', label: 'Habits' },
+                { href: '/checkin', label: 'Check-in' },
               ],
             },
             {
