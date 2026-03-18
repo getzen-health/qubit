@@ -299,6 +299,11 @@ struct DashboardListView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            NavigationLink(destination: SleepView()) {
+                Text("Sleep History")
+                    .font(.caption.bold())
+                    .foregroundStyle(Color.sleep)
+            }
         }
     }
 

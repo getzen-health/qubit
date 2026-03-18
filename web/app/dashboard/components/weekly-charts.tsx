@@ -30,6 +30,7 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
       weekday: 'short',
     }),
     steps: s.steps,
+    activeCalories: s.active_calories,
     sleepHours: s.sleep_duration_minutes
       ? +(s.sleep_duration_minutes / 60).toFixed(1)
       : null,
@@ -64,6 +65,33 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
               formatter={(value: number) => [value.toLocaleString(), 'Steps']}
             />
             <Bar dataKey="steps" fill="#22c55e" radius={[3, 3, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Active Calories */}
+      <div>
+        <h3 className="text-sm font-medium text-text-secondary mb-2">Active Calories</h3>
+        <ResponsiveContainer width="100%" height={160}>
+          <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <XAxis
+              dataKey="day"
+              tick={{ fontSize: 11, fill: 'var(--color-text-secondary, #888)' }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis hide />
+            <Tooltip
+              contentStyle={{
+                background: 'var(--color-surface, #1a1a1a)',
+                border: '1px solid var(--color-border, #333)',
+                borderRadius: 8,
+                fontSize: 12,
+              }}
+              formatter={(value: number) => [`${value} cal`, 'Active Calories']}
+            />
+            <Bar dataKey="activeCalories" fill="#f97316" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
