@@ -37,6 +37,7 @@
 		028 /* DashboardConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125 /* DashboardConfigView.swift */; };
 		029 /* WidgetConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126 /* WidgetConfiguration.swift */; };
 		030 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 204 /* PrivacyInfo.xcprivacy */; };
+		031 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 127 /* KeychainHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		124 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
 		125 /* DashboardConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfigView.swift; sourceTree = "<group>"; };
 		126 /* WidgetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfiguration.swift; sourceTree = "<group>"; };
+		127 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				105 /* HealthKitService.swift */,
 				106 /* SupabaseService.swift */,
 				107 /* SyncService.swift */,
+				127 /* KeychainHelper.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				027 /* AppearanceSettingsView.swift in Sources */,
 				028 /* DashboardConfigView.swift in Sources */,
 				029 /* WidgetConfiguration.swift in Sources */,
+				031 /* KeychainHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
