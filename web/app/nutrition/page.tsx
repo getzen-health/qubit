@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X, Search } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -484,6 +484,15 @@ export default function NutritionPage() {
   const [fatGoal, setFatGoal] = useState(65)
 
   const today = new Date().toISOString().slice(0, 10)
+  const [currentDate, setCurrentDate] = useState(today)
+  const isToday = currentDate === today
+
+  function shiftDate(delta: number) {
+    const d = new Date(currentDate + 'T12:00:00')
+    d.setDate(d.getDate() + delta)
+    const next = d.toISOString().slice(0, 10)
+    if (next <= today) setCurrentDate(next)
+  }
 
   const loadSettings = useCallback(async () => {
     const supabase = createClient()
@@ -503,13 +512,14 @@ export default function NutritionPage() {
   }, [])
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/meals?date=${today}`)
+    setLoading(true)
+    const res = await fetch(`/api/meals?date=${currentDate}`)
     if (res.ok) {
       const data = await res.json()
       setMeals(data.meals ?? [])
     }
     setLoading(false)
-  }, [today])
+  }, [currentDate])
 
   const loadWeekly = useCallback(async () => {
     const days: { day: string; cal: number; date: string }[] = []
@@ -532,13 +542,17 @@ export default function NutritionPage() {
 
   useEffect(() => {
     load()
-    loadWeekly()
     loadSettings()
-  }, [load, loadWeekly, loadSettings])
+  }, [load, loadSettings])
+
+  useEffect(() => {
+    loadWeekly()
+  }, [loadWeekly])
 
   const deleteMeal = async (id: string) => {
     await fetch(`/api/meals?id=${id}`, { method: 'DELETE' })
-    await Promise.all([load(), loadWeekly()])
+    await load()
+    loadWeekly()
   }
 
   // Aggregate totals
@@ -569,20 +583,49 @@ export default function NutritionPage() {
           <Link href="/dashboard" className="p-2 -ml-2 rounded-lg hover:bg-surface-secondary transition-colors">
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-text-primary">Nutrition</h1>
-            <p className="text-sm text-text-secondary">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
-            </p>
+          <div className="flex-1 flex items-center gap-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => shiftDate(-1)}
+              className="p-1.5 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary shrink-0"
+              aria-label="Previous day"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div className="min-w-0 text-center flex-1">
+              <h1 className="text-base font-bold text-text-primary truncate">
+                {isToday ? 'Today' : new Date(currentDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              </h1>
+              {!isToday && (
+                <button
+                  type="button"
+                  onClick={() => setCurrentDate(today)}
+                  className="text-xs text-accent hover:underline"
+                >
+                  Back to today
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => shiftDate(1)}
+              disabled={isToday}
+              className="p-1.5 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary shrink-0 disabled:opacity-30"
+              aria-label="Next day"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => openModal()}
-            className="flex items-center gap-1.5 px-3 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Log
-          </button>
+          {isToday && (
+            <button
+              type="button"
+              onClick={() => openModal()}
+              className="flex items-center gap-1.5 px-3 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              Log
+            </button>
+          )}
         </div>
       </header>
 
@@ -722,7 +765,7 @@ export default function NutritionPage() {
       {showModal && (
         <AddMealModal
           onClose={() => setShowModal(false)}
-          onAdded={() => Promise.all([load(), loadWeekly()])}
+          onAdded={() => { load(); loadWeekly() }}
           defaultType={defaultMealType}
         />
       )}
