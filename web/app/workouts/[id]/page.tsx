@@ -56,7 +56,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
   // Find personal bests for this workout type
   const { data: sameType } = await supabase
     .from('workout_records')
-    .select('id, duration_minutes, distance_meters, active_calories')
+    .select('id, duration_minutes, distance_meters, active_calories, avg_pace_per_km')
     .eq('user_id', user.id)
     .eq('workout_type', workout.workout_type)
     .lt('start_time', workout.start_time) // only prior workouts
@@ -66,9 +66,11 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
     const maxDuration = Math.max(...sameType.map((w) => w.duration_minutes ?? 0))
     const maxDistance = Math.max(...sameType.map((w) => w.distance_meters ?? 0))
     const maxCalories = Math.max(...sameType.map((w) => w.active_calories ?? 0))
+    const bestPace = Math.min(...sameType.filter((w) => (w.avg_pace_per_km ?? 0) > 0).map((w) => w.avg_pace_per_km!))
     if (workout.duration_minutes > maxDuration) pbs.push('Longest session')
     if (workout.distance_meters > 0 && workout.distance_meters > maxDistance) pbs.push('Furthest distance')
     if (workout.active_calories > 0 && workout.active_calories > maxCalories) pbs.push('Most calories')
+    if (workout.avg_pace_per_km > 0 && isFinite(bestPace) && workout.avg_pace_per_km < bestPace) pbs.push('Fastest pace')
   }
 
   const startDate = new Date(workout.start_time)

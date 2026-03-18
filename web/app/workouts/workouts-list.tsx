@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Plus, X } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import {
   BarChart,
@@ -133,6 +134,152 @@ function PaceChart({ workouts }: { workouts: Workout[] }) {
   )
 }
 
+const LOG_WORKOUT_TYPES = [
+  'Running', 'Walking', 'Cycling', 'Swimming', 'Hiking',
+  'Strength Training', 'HIIT', 'Yoga', 'Pilates', 'Rowing', 'Dance', 'Other',
+]
+
+function LogWorkoutModal({ onClose, onLogged }: { onClose: () => void; onLogged: () => void }) {
+  const [type, setType] = useState('Running')
+  const [durationHours, setDurationHours] = useState('')
+  const [durationMins, setDurationMins] = useState('')
+  const [calories, setCalories] = useState('')
+  const [distanceKm, setDistanceKm] = useState('')
+  const [heartRate, setHeartRate] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSave = async () => {
+    const hours = parseFloat(durationHours) || 0
+    const mins = parseFloat(durationMins) || 0
+    const totalMins = hours * 60 + mins
+    if (totalMins <= 0) { setError('Enter a duration'); return }
+
+    setSaving(true)
+    setError('')
+    try {
+      const body: Record<string, unknown> = {
+        workout_type: type,
+        duration_minutes: totalMins,
+      }
+      if (calories) body.active_calories = parseFloat(calories)
+      if (distanceKm) body.distance_meters = parseFloat(distanceKm) * 1000
+      if (heartRate) body.avg_heart_rate = parseInt(heartRate, 10)
+
+      const res = await fetch('/api/workouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (res.ok) {
+        onLogged()
+        onClose()
+      } else {
+        const json = await res.json().catch(() => ({}))
+        setError(json.error ?? 'Failed to save')
+      }
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full sm:max-w-lg bg-background border border-border rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[85vh] overflow-y-auto">
+        <div className="sticky top-0 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
+          <h2 className="font-bold text-text-primary">Log Workout</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-surface-secondary text-text-secondary">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="p-4 space-y-4">
+          {/* Workout type */}
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wide block mb-2">Type</label>
+            <div className="flex flex-wrap gap-1.5">
+              {LOG_WORKOUT_TYPES.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setType(t)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                    type === t
+                      ? 'border-accent bg-accent/10 text-accent'
+                      : 'border-border bg-surface text-text-secondary hover:bg-surface-secondary'
+                  }`}
+                >
+                  {workoutIcon(t)} {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Duration */}
+          <div>
+            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wide block mb-2">Duration</label>
+            <div className="flex gap-2 items-center">
+              <input
+                type="number"
+                min={0}
+                max={24}
+                placeholder="0"
+                value={durationHours}
+                onChange={(e) => setDurationHours(e.target.value)}
+                className="w-20 px-3 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary text-center focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+              <span className="text-text-secondary text-sm">h</span>
+              <input
+                type="number"
+                min={0}
+                max={59}
+                placeholder="30"
+                value={durationMins}
+                onChange={(e) => setDurationMins(e.target.value)}
+                className="w-20 px-3 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary text-center focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+              <span className="text-text-secondary text-sm">min</span>
+            </div>
+          </div>
+
+          {/* Optional fields */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Calories', placeholder: 'kcal', value: calories, set: setCalories },
+              { label: 'Distance', placeholder: 'km', value: distanceKm, set: setDistanceKm },
+              { label: 'Avg HR', placeholder: 'bpm', value: heartRate, set: setHeartRate },
+            ].map(({ label, placeholder, value, set }) => (
+              <div key={label}>
+                <label className="text-[10px] text-text-secondary mb-1 block">{label}</label>
+                <input
+                  type="number"
+                  min={0}
+                  placeholder={placeholder}
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  className="w-full px-2.5 py-2 bg-surface border border-border rounded-lg text-sm text-text-primary text-center focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+              </div>
+            ))}
+          </div>
+
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50"
+          >
+            {saving ? 'Saving…' : 'Save Workout'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface WorkoutsListProps {
   workouts: Workout[]
 }
@@ -148,6 +295,8 @@ function weekLabel(date: Date): string {
 
 export function WorkoutsList({ workouts }: WorkoutsListProps) {
   const [activeType, setActiveType] = useState<string | null>(null)
+  const [showLogModal, setShowLogModal] = useState(false)
+  const router = useRouter()
 
   // Unique types that appear in this user's workouts, preserving occurrence order
   const types = Array.from(new Set(workouts.map((w) => w.workout_type)))
@@ -184,10 +333,18 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Workouts</h1>
             <p className="text-sm text-text-secondary">{workouts.length} sessions</p>
           </div>
+          <button
+            type="button"
+            onClick={() => setShowLogModal(true)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Log
+          </button>
         </div>
       </header>
 
@@ -346,6 +503,13 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
         )}
       </main>
       <BottomNav />
+
+      {showLogModal && (
+        <LogWorkoutModal
+          onClose={() => setShowLogModal(false)}
+          onLogged={() => router.refresh()}
+        />
+      )}
     </div>
   )
 }
