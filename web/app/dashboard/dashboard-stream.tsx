@@ -698,6 +698,7 @@ export function DashboardStream({
               { href: '/heartrate', label: 'Heart Rate' },
               { href: '/recovery', label: 'Recovery' },
               { href: '/body', label: 'Body Weight' },
+              { href: '/water', label: 'Hydration' },
               { href: '/insights', label: 'AI Insights' },
               { href: '/records', label: 'Records' },
               { href: '/monthly', label: 'Monthly' },
