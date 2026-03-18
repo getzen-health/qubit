@@ -80,8 +80,13 @@ struct WorkoutsView: View {
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: RecordsView()) {
-                        Image(systemName: "trophy.fill")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: RecordsView()) {
+                            Image(systemName: "trophy.fill")
+                        }
+                        NavigationLink(destination: TrainingLoadView()) {
+                            Image(systemName: "chart.bar.fill")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
