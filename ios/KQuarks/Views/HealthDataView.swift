@@ -83,6 +83,34 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .heart {
+                            // VO2 Max / Cardio Fitness
+                            NavigationLink(destination: VO2MaxView()) {
+                                HStack {
+                                    Image(systemName: "lungs.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Cardio Fitness (VO₂ Max)")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Trend and fitness level")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood pressure gets its own detailed view
                             NavigationLink(destination: BloodPressureView()) {
                                 HStack {
