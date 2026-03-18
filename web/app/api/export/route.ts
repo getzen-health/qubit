@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   if (type === 'workouts') {
     const { data } = await supabase
       .from('workout_records')
-      .select('*')
+      .select('start_time, workout_type, duration_minutes, active_calories, distance_meters, avg_heart_rate, max_heart_rate')
       .eq('user_id', user.id)
       .order('start_time', { ascending: false })
 
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
   if (type === 'sleep') {
     const { data } = await supabase
       .from('sleep_records')
-      .select('*')
+      .select('start_time, end_time, duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
       .eq('user_id', user.id)
       .order('start_time', { ascending: false })
 
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
   // Default: daily summaries
   const { data } = await supabase
     .from('daily_summaries')
-    .select('*')
+    .select('date, steps, active_calories, distance_meters, floors_climbed, resting_heart_rate, avg_hrv, sleep_duration_minutes, weight_kg, recovery_score, strain_score')
     .eq('user_id', user.id)
     .order('date', { ascending: false })
 
