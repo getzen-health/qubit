@@ -454,6 +454,36 @@ class HealthKitService {
         }
     }
 
+    func fetchHeartRateSamples(during workout: HKWorkout) async throws -> [(date: Date, bpm: Double)] {
+        let hrType = HKQuantityType(.heartRate)
+        let predicate = HKQuery.predicateForSamples(
+            withStart: workout.startDate,
+            end: workout.endDate,
+            options: .strictStartDate
+        )
+        let bpmUnit = HKUnit.count().unitDivided(by: .minute())
+        let sortByDate = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: hrType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [sortByDate]
+            ) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                let results: [(date: Date, bpm: Double)] = (samples as? [HKQuantitySample] ?? []).map {
+                    (date: $0.startDate, bpm: $0.quantity.doubleValue(for: bpmUnit))
+                }
+                continuation.resume(returning: results)
+            }
+            self.healthStore.execute(query)
+        }
+    }
+
     // MARK: - Helpers
 
     private func preferredUnit(for identifier: HKQuantityTypeIdentifier) -> HKUnit {

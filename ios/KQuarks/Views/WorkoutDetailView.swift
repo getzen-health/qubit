@@ -5,7 +5,47 @@ struct WorkoutDetailView: View {
     let workout: HKWorkout
 
     @State private var avgHeartRate: Double?
+    @State private var hrZones: [HRZoneTime] = []
     private let healthKit = HealthKitService.shared
+
+    struct HRZoneTime: Identifiable {
+        let id: Int
+        let label: String
+        let bpmRange: String
+        let color: Color
+        let seconds: TimeInterval
+    }
+
+    private static let zones: [(label: String, bpmRange: String, color: Color, max: Double)] = [
+        ("Zone 1", "< 115 bpm", .blue,    115),
+        ("Zone 2", "115–134",   .green,   135),
+        ("Zone 3", "135–154",   .yellow,  155),
+        ("Zone 4", "155–174",   .orange,  175),
+        ("Zone 5", "≥ 175 bpm", .red,     .infinity),
+    ]
+
+    private func computeZones(from samples: [(date: Date, bpm: Double)]) -> [HRZoneTime] {
+        var zoneSecs = [Double](repeating: 0, count: 5)
+        for i in 0..<samples.count {
+            let current = samples[i]
+            let nextDate = i + 1 < samples.count ? samples[i + 1].date : workout.endDate
+            let duration = nextDate.timeIntervalSince(current.date)
+            guard duration > 0 else { continue }
+            let zoneIdx: Int
+            switch current.bpm {
+            case ..<115:   zoneIdx = 0
+            case 115..<135: zoneIdx = 1
+            case 135..<155: zoneIdx = 2
+            case 155..<175: zoneIdx = 3
+            default:       zoneIdx = 4
+            }
+            zoneSecs[zoneIdx] += duration
+        }
+        return Self.zones.enumerated().compactMap { (idx, z) in
+            guard zoneSecs[idx] > 0 else { return nil }
+            return HRZoneTime(id: idx, label: z.label, bpmRange: z.bpmRange, color: z.color, seconds: zoneSecs[idx])
+        }
+    }
 
     var body: some View {
         List {
@@ -86,12 +126,51 @@ struct WorkoutDetailView: View {
                     }
                 }
             }
+
+            if !hrZones.isEmpty {
+                Section("Heart Rate Zones") {
+                    let totalSecs = hrZones.reduce(0) { $0 + $1.seconds }
+                    ForEach(hrZones) { zone in
+                        HStack(spacing: 10) {
+                            Circle()
+                                .fill(zone.color)
+                                .frame(width: 10, height: 10)
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack {
+                                    Text(zone.label).font(.subheadline)
+                                    Spacer()
+                                    Text(formatDuration(zone.seconds))
+                                        .font(.subheadline.monospacedDigit())
+                                }
+                                GeometryReader { geo in
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(zone.color.opacity(0.3))
+                                        .frame(
+                                            width: geo.size.width * CGFloat(zone.seconds / max(totalSecs, 1)),
+                                            height: 5
+                                        )
+                                }
+                                .frame(height: 5)
+                                Text(zone.bpmRange)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(workout.workoutActivityType.name)
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            avgHeartRate = try? await healthKit.fetchAverageHeartRate(during: workout)
+            async let hr = healthKit.fetchAverageHeartRate(during: workout)
+            async let samples = healthKit.fetchHeartRateSamples(during: workout)
+            avgHeartRate = try? await hr
+            if let s = try? await samples, !s.isEmpty {
+                hrZones = computeZones(from: s)
+            }
         }
     }
 
