@@ -53,6 +53,53 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
   if (!workout) notFound()
 
+  // Fetch heart rate samples within workout window for zone analysis
+  const workoutEnd = workout.end_time
+    ?? new Date(new Date(workout.start_time).getTime() + workout.duration_minutes * 60000).toISOString()
+  const { data: hrRecords } = await supabase
+    .from('health_records')
+    .select('start_time, end_time, value')
+    .eq('user_id', user.id)
+    .eq('type', 'heart_rate')
+    .gte('start_time', workout.start_time)
+    .lte('start_time', workoutEnd)
+    .order('start_time', { ascending: true })
+
+  // Compute HR zones (5-zone model based on % of max HR)
+  const maxHR = workout.max_heart_rate ?? 190
+  const zones = [
+    { label: 'Zone 1', desc: 'Easy', pctMin: 50, pctMax: 60, color: '#6366f1' },
+    { label: 'Zone 2', desc: 'Aerobic', pctMin: 60, pctMax: 70, color: '#22c55e' },
+    { label: 'Zone 3', desc: 'Tempo', pctMin: 70, pctMax: 80, color: '#eab308' },
+    { label: 'Zone 4', desc: 'Threshold', pctMin: 80, pctMax: 90, color: '#f97316' },
+    { label: 'Zone 5', desc: 'Max', pctMin: 90, pctMax: 200, color: '#ef4444' },
+  ]
+
+  // Compute seconds in each zone from HR samples (each sample represents interval to next)
+  const zoneSeconds = zones.map(() => 0)
+  let totalZoneSeconds = 0
+  if (hrRecords && hrRecords.length > 0) {
+    for (let i = 0; i < hrRecords.length; i++) {
+      const bpm = hrRecords[i].value
+      const nextTime = hrRecords[i + 1]?.start_time ?? workoutEnd
+      const duration = (new Date(nextTime).getTime() - new Date(hrRecords[i].start_time).getTime()) / 1000
+      const clampedDuration = Math.min(duration, 120) // cap at 2 min to avoid gaps inflating zone
+      const pct = (bpm / maxHR) * 100
+      const zoneIdx = zones.findIndex((z) => pct >= z.pctMin && pct < z.pctMax)
+      if (zoneIdx >= 0 && clampedDuration > 0) {
+        zoneSeconds[zoneIdx] += clampedDuration
+        totalZoneSeconds += clampedDuration
+      }
+    }
+  }
+  const hasZoneData = totalZoneSeconds > 60 // at least 1 minute of data
+
+  function fmtZoneTime(secs: number) {
+    const m = Math.floor(secs / 60)
+    const s = Math.round(secs % 60)
+    return m > 0 ? `${m}m ${s}s` : `${s}s`
+  }
+
   // Find personal bests for this workout type
   const { data: sameType } = await supabase
     .from('workout_records')
@@ -153,6 +200,46 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
             </div>
           ))}
         </div>
+
+        {/* Heart Rate Zones */}
+        {hasZoneData && (
+          <div className="bg-surface rounded-xl border border-border p-4">
+            <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-1">Heart Rate Zones</h2>
+            <p className="text-xs text-text-secondary mb-3">Based on {maxHR} bpm max HR</p>
+            {/* Zone stacked bar */}
+            <div className="flex h-4 rounded-full overflow-hidden mb-4">
+              {zones.map((zone, i) => {
+                const pct = totalZoneSeconds > 0 ? (zoneSeconds[i] / totalZoneSeconds) * 100 : 0
+                return pct > 0 ? (
+                  <div key={zone.label} style={{ width: `${pct}%`, backgroundColor: zone.color }} title={`${zone.label}: ${fmtZoneTime(zoneSeconds[i])}`} />
+                ) : null
+              })}
+            </div>
+            {/* Zone breakdown rows */}
+            <div className="space-y-2">
+              {zones.map((zone, i) => {
+                const secs = zoneSeconds[i]
+                const pct = totalZoneSeconds > 0 ? (secs / totalZoneSeconds) * 100 : 0
+                if (secs === 0) return null
+                return (
+                  <div key={zone.label} className="flex items-center gap-3">
+                    <span style={{ color: zone.color }} className="text-xs font-semibold w-14 shrink-0">{zone.label}</span>
+                    <div className="flex-1 bg-surface-secondary rounded-full h-2 overflow-hidden">
+                      <div style={{ width: `${pct}%`, backgroundColor: zone.color }} className="h-full rounded-full" />
+                    </div>
+                    <span className="text-xs text-text-secondary w-16 text-right shrink-0">{fmtZoneTime(secs)}</span>
+                    <span className="text-xs text-text-secondary w-10 text-right shrink-0">{Math.round(pct)}%</span>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-secondary">
+              {zones.map((zone) => (
+                <span key={zone.label}><span style={{ color: zone.color }}>●</span> {zone.label} {zone.desc} ({zone.pctMin}–{zone.pctMax === 200 ? '100' : zone.pctMax}%)</span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Source */}
         {workout.source && (
