@@ -71,6 +71,7 @@ interface DashboardStreamProps {
     created_at: string
   }>
   weeklyWorkoutCount: number
+  workoutStreak: number
 }
 
 export function DashboardStream({
@@ -79,6 +80,7 @@ export function DashboardStream({
   summaries,
   insights,
   weeklyWorkoutCount,
+  workoutStreak,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -397,6 +399,16 @@ export function DashboardStream({
                 label="Workouts This Week"
                 value={weeklyWorkoutCount}
                 unit={weeklyWorkoutCount === 1 ? 'session' : 'sessions'}
+                color="activity"
+              />
+            )}
+            {workoutStreak > 0 && (
+              <MetricRow
+                icon={<Activity className="w-5 h-5" />}
+                label="Workout Streak"
+                value={workoutStreak}
+                unit={workoutStreak === 1 ? 'day' : 'days'}
+                sublabel="consecutive days with a workout"
                 color="activity"
               />
             )}

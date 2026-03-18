@@ -302,6 +302,17 @@ struct DashboardListView: View {
                         color: .activity
                     )
                 }
+
+                if viewModel.workoutStreak > 0 {
+                    MetricRowView(
+                        icon: "figure.run",
+                        label: "Workout Streak",
+                        value: "\(viewModel.workoutStreak)",
+                        unit: viewModel.workoutStreak == 1 ? "day" : "days",
+                        sublabel: "consecutive days with a workout",
+                        color: .activity
+                    )
+                }
             }
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -392,6 +403,7 @@ class DashboardListViewModel {
     var hrvTrend: Int? = nil
     var currentStreak: Int = 0
     var sleepStreak: Int = 0
+    var workoutStreak: Int = 0
     var latestSleepContext: AIInsightsService.SleepContext? = nil
     var bodyWeightKg: Double? = nil
     var weeklyWorkoutCount: Int = 0
@@ -550,6 +562,29 @@ class DashboardListViewModel {
                 }
             }
             await MainActor.run { sleepStreak = sleepStreakCount }
+
+            // Compute workout streak (consecutive days with ≥1 workout, skip today)
+            let wCal = Calendar.current
+            let sixtyDaysAgo = wCal.date(byAdding: .day, value: -60, to: Date())!
+            let allWorkouts = (try? await healthKit.fetchWorkouts(from: sixtyDaysAgo, to: Date())) ?? []
+            var workoutDaySet = Set<String>()
+            let isoFmt = ISO8601DateFormatter()
+            isoFmt.formatOptions = [.withFullDate]
+            for workout in allWorkouts {
+                workoutDaySet.insert(isoFmt.string(from: wCal.startOfDay(for: workout.startDate)))
+            }
+            var workoutStreakCount = 0
+            var checkDay = wCal.date(byAdding: .day, value: -1, to: wCal.startOfDay(for: Date()))!
+            for _ in 0..<60 {
+                let key = isoFmt.string(from: checkDay)
+                if workoutDaySet.contains(key) {
+                    workoutStreakCount += 1
+                    checkDay = wCal.date(byAdding: .day, value: -1, to: checkDay)!
+                } else {
+                    break
+                }
+            }
+            await MainActor.run { workoutStreak = workoutStreakCount }
         } catch {
             // Trends are non-critical, silently fail
         }

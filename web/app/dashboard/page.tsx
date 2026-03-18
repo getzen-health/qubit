@@ -40,6 +40,30 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .gte('start_time', sevenDaysAgo.toISOString())
 
+  // Compute workout streak (consecutive days with ≥1 workout, skipping today)
+  const sixtyDaysAgo = new Date()
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60)
+  const { data: workoutTimestamps } = await supabase
+    .from('workout_records')
+    .select('start_time')
+    .eq('user_id', user.id)
+    .gte('start_time', sixtyDaysAgo.toISOString())
+  const workoutDateSet = new Set(
+    (workoutTimestamps ?? []).map((w) => w.start_time.slice(0, 10))
+  )
+  let workoutStreak = 0
+  const checkDate = new Date()
+  checkDate.setDate(checkDate.getDate() - 1) // start from yesterday
+  for (let i = 0; i < 60; i++) {
+    const dateStr = checkDate.toISOString().slice(0, 10)
+    if (workoutDateSet.has(dateStr)) {
+      workoutStreak++
+      checkDate.setDate(checkDate.getDate() - 1)
+    } else {
+      break
+    }
+  }
+
   // Fetch recent insights
   const { data: insights } = await supabase
     .from('health_insights')
@@ -55,6 +79,7 @@ export default async function DashboardPage() {
       summaries={summaries ?? []}
       insights={insights ?? []}
       weeklyWorkoutCount={weeklyWorkoutCount ?? 0}
+      workoutStreak={workoutStreak}
     />
   )
 }
