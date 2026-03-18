@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import {
   BarChart,
   Bar,
@@ -124,11 +125,20 @@ export function StepsClient({ summaries }: StepsClientProps) {
           {weeks.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-1">
               {week.map((day, di) => (
-                <div
-                  key={di}
-                  title={day.steps != null ? `${day.date}: ${day.steps.toLocaleString()} steps` : day.date}
-                  className={`w-3 h-3 rounded-sm ${cellColor(day.steps)}`}
-                />
+                day.steps != null ? (
+                  <Link
+                    key={di}
+                    href={`/day/${day.date}`}
+                    title={`${day.date}: ${day.steps.toLocaleString()} steps`}
+                    className={`w-3 h-3 rounded-sm ${cellColor(day.steps)} hover:ring-1 hover:ring-white/30`}
+                  />
+                ) : (
+                  <div
+                    key={di}
+                    title={day.date}
+                    className={`w-3 h-3 rounded-sm ${cellColor(day.steps)}`}
+                  />
+                )
               ))}
             </div>
           ))}
@@ -222,9 +232,10 @@ export function StepsClient({ summaries }: StepsClientProps) {
         {[...withSteps].reverse().map((s) => {
           const metGoal = s.steps >= stepGoal
           return (
-            <div
+            <Link
               key={s.date}
-              className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between"
+              href={`/day/${s.date}`}
+              className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between hover:bg-surface-secondary transition-colors"
             >
               <div>
                 <p className="text-sm font-medium text-text-primary">
@@ -246,7 +257,7 @@ export function StepsClient({ summaries }: StepsClientProps) {
                   <p className="text-xs text-text-secondary">{Math.round(s.active_calories)} cal</p>
                 )}
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>

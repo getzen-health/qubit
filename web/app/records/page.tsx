@@ -32,11 +32,12 @@ interface RecordCardProps {
   sub?: string
   date?: string
   empty?: boolean
+  href?: string
 }
 
-function RecordCard({ label, value, sub, date, empty }: RecordCardProps) {
-  return (
-    <div className="bg-surface rounded-xl border border-border p-4 space-y-1">
+function RecordCard({ label, value, sub, date, empty, href }: RecordCardProps) {
+  const inner = (
+    <>
       <p className="text-xs text-text-secondary font-medium uppercase tracking-wide">{label}</p>
       {empty ? (
         <p className="text-text-secondary text-sm">No data yet</p>
@@ -47,6 +48,18 @@ function RecordCard({ label, value, sub, date, empty }: RecordCardProps) {
           {date && <p className="text-xs text-text-secondary opacity-70">{date}</p>}
         </>
       )}
+    </>
+  )
+  if (href && !empty) {
+    return (
+      <Link href={href} className="bg-surface rounded-xl border border-border p-4 space-y-1 block hover:bg-surface-secondary transition-colors">
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <div className="bg-surface rounded-xl border border-border p-4 space-y-1">
+      {inner}
     </div>
   )
 }
@@ -187,7 +200,7 @@ export default async function RecordsPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-6">
         {/* Lifetime Totals */}
         <section>
           <h2 className="text-sm font-semibold text-text-secondary mb-3 uppercase tracking-wide">Lifetime Totals</h2>
@@ -222,24 +235,28 @@ export default async function RecordsPage() {
               sub="steps in a day"
               date={bestSteps ? formatDate(bestSteps.date) : undefined}
               empty={!bestSteps}
+              href={bestSteps ? `/day/${bestSteps.date}` : undefined}
             />
             <RecordCard
               label="Best HRV"
               value={bestHrv ? `${Math.round(bestHrv.avg_hrv!)} ms` : '—'}
               date={bestHrv ? formatDate(bestHrv.date) : undefined}
               empty={!bestHrv}
+              href={bestHrv ? `/day/${bestHrv.date}` : undefined}
             />
             <RecordCard
               label="Best Recovery"
               value={bestRecovery ? `${bestRecovery.recovery_score}%` : '—'}
               date={bestRecovery ? formatDate(bestRecovery.date) : undefined}
               empty={!bestRecovery}
+              href={bestRecovery ? `/day/${bestRecovery.date}` : undefined}
             />
             {bestStrain && (
               <RecordCard
                 label="Peak Strain"
                 value={`${bestStrain.strain_score?.toFixed(1)}/21`}
                 date={formatDate(bestStrain.date)}
+                href={`/day/${bestStrain.date}`}
               />
             )}
             <RecordCard
@@ -247,6 +264,7 @@ export default async function RecordsPage() {
               value={bestSleep ? formatDuration(bestSleep.sleep_duration_minutes!) : '—'}
               date={bestSleep ? formatDate(bestSleep.date) : undefined}
               empty={!bestSleep}
+              href={bestSleep ? `/day/${bestSleep.date}` : undefined}
             />
           </div>
         </section>
