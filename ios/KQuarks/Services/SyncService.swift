@@ -48,6 +48,7 @@ class SyncService {
                 UserDefaults.standard.set(lastSyncDate, forKey: lastSyncKey)
                 isSyncing = false
             }
+            Task { await NotificationService.shared.notifyAfterSync() }
         } catch {
             await MainActor.run {
                 syncError = error
@@ -269,6 +270,7 @@ class SyncService {
 
         do {
             try await syncTodaySummary()
+            Task { await NotificationService.shared.notifyAfterSync() }
             task.setTaskCompleted(success: true)
         } catch {
             print("[BGTask] Refresh sync failed: \(error)")
