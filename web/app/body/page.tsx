@@ -15,7 +15,7 @@ export default async function BodyPage() {
 
   const { data: summaries } = await supabase
     .from('daily_summaries')
-    .select('date, weight_kg')
+    .select('date, weight_kg, body_fat_percent')
     .eq('user_id', user.id)
     .not('weight_kg', 'is', null)
     .gt('weight_kg', 0)

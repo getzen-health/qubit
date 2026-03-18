@@ -15,6 +15,7 @@ import { Scale } from 'lucide-react'
 interface DaySummary {
   date: string
   weight_kg: number
+  body_fat_percent?: number | null
 }
 
 interface BodyClientProps {
@@ -138,6 +139,31 @@ export function BodyClient({ summaries }: BodyClientProps) {
         )}
       </div>
 
+      {/* Body fat chart (if data available) */}
+      {summaries.some((s) => (s.body_fat_percent ?? 0) > 0) && (() => {
+        const bfData = summaries
+          .filter((s) => (s.body_fat_percent ?? 0) > 0)
+          .map((s) => ({ date: fmtDate(s.date), bf: +((s.body_fat_percent ?? 0).toFixed(1)) }))
+        const latestBf = bfData[bfData.length - 1]?.bf
+        return (
+          <div className="bg-surface rounded-xl border border-border p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-medium text-text-secondary">Body Fat %</h2>
+              {latestBf && <span className="text-sm font-semibold text-text-primary">{latestBf}%</span>}
+            </div>
+            <ResponsiveContainer width="100%" height={140}>
+              <LineChart data={bfData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`, 'Body Fat']} />
+                <Line type="monotone" dataKey="bf" stroke="#a78bfa" strokeWidth={1.5} dot={{ r: 2, fill: '#a78bfa' }} activeDot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )
+      })()}
+
       {/* Measurement list */}
       <div className="space-y-2">
         {[...summaries].reverse().map((s) => (
@@ -153,7 +179,12 @@ export function BodyClient({ summaries }: BodyClientProps) {
                 year: 'numeric',
               })}
             </p>
-            <p className="text-blue-400 font-semibold">{s.weight_kg.toFixed(1)} kg</p>
+            <div className="text-right">
+              <p className="text-blue-400 font-semibold">{s.weight_kg.toFixed(1)} kg</p>
+              {(s.body_fat_percent ?? 0) > 0 && (
+                <p className="text-xs text-purple-400">{s.body_fat_percent!.toFixed(1)}% fat</p>
+              )}
+            </div>
           </div>
         ))}
       </div>

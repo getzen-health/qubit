@@ -64,7 +64,12 @@ class SyncService {
         guard let userId = supabase.currentUser?.id else { return }
 
         let summary = try await healthKit.fetchTodaySummary()
-        let weightKg = try? await healthKit.fetchLatest(for: .bodyMass)
+        async let weightKgTask = healthKit.fetchLatest(for: .bodyMass)
+        async let bodyFatTask = healthKit.fetchLatest(for: .bodyFatPercentage)
+        let weightKg = try? await weightKgTask
+        let bodyFatRaw = try? await bodyFatTask
+        // HealthKit stores body fat as a fraction (0.0–1.0); convert to percent
+        let bodyFatPercent = bodyFatRaw.map { $0 > 1.0 ? $0 : $0 * 100.0 }
 
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -84,7 +89,8 @@ class SyncService {
             avgHrv: summary.hrv,
             recoveryScore: AIInsightsService.shared.latestRecoveryScore,
             strainScore: AIInsightsService.shared.latestStrainScore.map { Int($0) },
-            weightKg: weightKg
+            weightKg: weightKg,
+            bodyFatPercent: bodyFatPercent
         )
 
         try await supabase.uploadDailySummary(upload)
