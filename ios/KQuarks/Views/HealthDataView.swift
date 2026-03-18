@@ -18,8 +18,40 @@ struct HealthDataView: View {
                 // Content
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
-                            HealthDataRow(dataType: dataType)
+                        if selectedCategory == .sleep {
+                            NavigationLink(destination: SleepView()) {
+                                HStack {
+                                    Image(systemName: "moon.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep History")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Last 14 nights")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
+                                HealthDataRow(dataType: dataType)
+                            }
                         }
                     }
                     .padding()
