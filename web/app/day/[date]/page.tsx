@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }) {
@@ -62,7 +62,15 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: summary }, { data: workouts }, { data: sleepRecords }] = await Promise.all([
+  // Compute adjacent dates
+  const dateObj = new Date(date + 'T12:00:00')
+  const prevDate = new Date(dateObj); prevDate.setDate(dateObj.getDate() - 1)
+  const nextDate = new Date(dateObj); nextDate.setDate(dateObj.getDate() + 1)
+  const prevDateStr = prevDate.toISOString().slice(0, 10)
+  const nextDateStr = nextDate.toISOString().slice(0, 10)
+  const today = new Date().toISOString().slice(0, 10)
+
+  const [{ data: summary }, { data: workouts }, { data: sleepRecords }, { data: prevDay }, { data: nextDay }] = await Promise.all([
     supabase
       .from('daily_summaries')
       .select('date, steps, active_calories, distance_meters, floors_climbed, sleep_duration_minutes, resting_heart_rate, avg_hrv, recovery_score, strain_score, weight_kg')
@@ -83,6 +91,8 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
       .gte('start_time', `${date}T00:00:00`)
       .lt('end_time', `${date}T23:59:59`)
       .order('start_time', { ascending: true }),
+    supabase.from('daily_summaries').select('date').eq('user_id', user.id).eq('date', prevDateStr).maybeSingle(),
+    supabase.from('daily_summaries').select('date').eq('user_id', user.id).eq('date', nextDateStr).maybeSingle(),
   ])
 
   if (!summary) notFound()
@@ -92,7 +102,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-2">
           <Link
             href="/dashboard"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
@@ -100,9 +110,32 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">{fmtDate(date)}</h1>
-            <p className="text-sm text-text-secondary">Daily summary</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold text-text-primary truncate">{fmtDate(date)}</h1>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            {prevDay ? (
+              <Link
+                href={`/day/${prevDateStr}`}
+                className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+                aria-label="Previous day"
+              >
+                <ChevronLeft className="w-5 h-5 text-text-secondary" />
+              </Link>
+            ) : (
+              <span className="p-2 opacity-30"><ChevronLeft className="w-5 h-5 text-text-secondary" /></span>
+            )}
+            {nextDay && nextDateStr <= today ? (
+              <Link
+                href={`/day/${nextDateStr}`}
+                className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+                aria-label="Next day"
+              >
+                <ChevronRight className="w-5 h-5 text-text-secondary" />
+              </Link>
+            ) : (
+              <span className="p-2 opacity-30"><ChevronRight className="w-5 h-5 text-text-secondary" /></span>
+            )}
           </div>
         </div>
       </header>
