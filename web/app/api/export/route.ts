@@ -101,6 +101,42 @@ export async function GET(request: Request) {
     })
   }
 
+  if (type === 'nutrition') {
+    const { data } = await supabase
+      .from('meals')
+      .select('logged_at, name, meal_type, meal_items(name, servings, calories, protein, carbs, fat)')
+      .eq('user_id', user.id)
+      .order('logged_at', { ascending: false })
+
+    const rows: string[] = []
+    const headers = ['date', 'meal_type', 'meal_name', 'food_name', 'servings', 'calories', 'protein_g', 'carbs_g', 'fat_g']
+    rows.push(headers.join(','))
+
+    for (const meal of data ?? []) {
+      const date = meal.logged_at?.slice(0, 10) ?? ''
+      for (const item of (meal.meal_items as Array<{ name: string; servings: number; calories: number; protein?: number | null; carbs?: number | null; fat?: number | null }> ?? [])) {
+        rows.push([
+          date,
+          meal.meal_type ?? '',
+          meal.name ?? '',
+          item.name ?? '',
+          item.servings ?? '',
+          item.calories ?? '',
+          item.protein ?? '',
+          item.carbs ?? '',
+          item.fat ?? '',
+        ].join(','))
+      }
+    }
+
+    return new Response(rows.join('\n'), {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="kquarks_nutrition.csv"',
+      },
+    })
+  }
+
   if (type === 'fasting') {
     const { data } = await supabase
       .from('fasting_sessions')

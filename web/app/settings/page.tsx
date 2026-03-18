@@ -97,6 +97,7 @@ export default async function SettingsPage() {
               { label: 'Daily Summaries', desc: 'Steps, calories, HRV, sleep, weight', type: 'daily' },
               { label: 'Workouts', desc: 'All workout sessions', type: 'workouts' },
               { label: 'Sleep Records', desc: 'Night-by-night sleep data', type: 'sleep' },
+              { label: 'Nutrition Logs', desc: 'Meals, food items, and macros', type: 'nutrition' },
               { label: 'Hydration', desc: 'Daily water intake logs', type: 'water' },
               { label: 'Fasting Sessions', desc: 'Intermittent fasting history', type: 'fasting' },
             ].map(({ label, desc, type }) => (
