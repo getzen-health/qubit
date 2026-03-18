@@ -24,8 +24,13 @@ struct InsightsView: View {
             .navigationTitle("Insights")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: CorrelationInsightsView()) {
-                        Image(systemName: "chart.line.text.clipboard")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: WeeklyReportView()) {
+                            Image(systemName: "calendar.badge.checkmark")
+                        }
+                        NavigationLink(destination: CorrelationInsightsView()) {
+                            Image(systemName: "chart.line.text.clipboard")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
