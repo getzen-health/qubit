@@ -52,6 +52,24 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
   if (!workout) notFound()
 
+  // Find personal bests for this workout type
+  const { data: sameType } = await supabase
+    .from('workout_records')
+    .select('id, duration_minutes, distance_meters, active_calories')
+    .eq('user_id', user.id)
+    .eq('workout_type', workout.workout_type)
+    .lt('start_time', workout.start_time) // only prior workouts
+
+  const pbs: string[] = []
+  if (sameType && sameType.length > 0) {
+    const maxDuration = Math.max(...sameType.map((w) => w.duration_minutes ?? 0))
+    const maxDistance = Math.max(...sameType.map((w) => w.distance_meters ?? 0))
+    const maxCalories = Math.max(...sameType.map((w) => w.active_calories ?? 0))
+    if (workout.duration_minutes > maxDuration) pbs.push('Longest session')
+    if (workout.distance_meters > 0 && workout.distance_meters > maxDistance) pbs.push('Furthest distance')
+    if (workout.active_calories > 0 && workout.active_calories > maxCalories) pbs.push('Most calories')
+  }
+
   const startDate = new Date(workout.start_time)
 
   const stats: Array<{ label: string; value: string }> = [
@@ -111,6 +129,15 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-text-secondary">
               {startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
             </p>
+            {pbs.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {pbs.map((pb) => (
+                  <span key={pb} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-semibold border border-yellow-500/20">
+                    🏆 {pb}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
