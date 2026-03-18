@@ -239,6 +239,12 @@ class SyncService {
         for workout in workouts {
             let avgHR = (try? await healthKit.fetchAverageHeartRate(during: workout)).map { Int($0) }
             let maxHR = (try? await healthKit.fetchMaxHeartRate(during: workout)).map { Int($0) }
+            let elevationGain: Double? = {
+                if let quantity = workout.metadata?[HKMetadataKeyElevationAscended] as? HKQuantity {
+                    return quantity.doubleValue(for: .meter())
+                }
+                return nil
+            }()
             let upload = WorkoutRecordUpload(
                 userId: userId,
                 workoutType: workout.workoutActivityType.name,
@@ -250,6 +256,7 @@ class SyncService {
                 distanceMeters: workout.totalDistance?.doubleValue(for: .meter()),
                 avgHeartRate: avgHR,
                 maxHeartRate: maxHR,
+                elevationGainMeters: elevationGain,
                 source: workout.sourceRevision.source.name
             )
             try await supabase.uploadWorkoutRecord(upload)
