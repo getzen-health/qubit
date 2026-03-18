@@ -266,7 +266,12 @@ struct FastingView: View {
             elapsedHours = status.elapsedHours
             targetHours = status.targetHours > 0 ? status.targetHours : 16
             if isActive {
-                startedAt = Calendar.current.date(byAdding: .second, value: -Int(elapsedHours * 3600), to: Date())
+                let start = Calendar.current.date(byAdding: .second, value: -Int(elapsedHours * 3600), to: Date())
+                startedAt = start
+                // Re-schedule milestone notifications in case they were cleared (app restart, etc.)
+                if let start {
+                    NotificationService.shared.scheduleFastingMilestones(targetHours: targetHours, startedAt: start)
+                }
             }
             history = try await SupabaseService.shared.getFastingHistory(limit: 10)
         } catch { }

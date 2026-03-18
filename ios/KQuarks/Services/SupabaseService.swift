@@ -606,6 +606,16 @@ class SupabaseService {
             .execute()
     }
 
+    func reorderHabits(_ orderedIds: [String]) async throws {
+        struct Patch: Encodable { let sort_order: Int }
+        for (idx, habitId) in orderedIds.enumerated() {
+            try await client.from("habits")
+                .update(Patch(sort_order: idx))
+                .eq("id", value: habitId)
+                .execute()
+        }
+    }
+
     func fetchTodayCheckin() async throws -> DailyCheckin? {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let df = DateFormatter()

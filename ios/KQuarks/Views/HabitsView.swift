@@ -111,6 +111,12 @@ final class HabitsViewModel {
         habits.removeAll { $0.id == habit.id }
         try? await SupabaseService.shared.archiveHabit(habitId: habit.id)
     }
+
+    func moveHabits(from source: IndexSet, to destination: Int) {
+        habits.move(fromOffsets: source, toOffset: destination)
+        let ids = habits.map(\.id)
+        Task { try? await SupabaseService.shared.reorderHabits(ids) }
+    }
 }
 
 // MARK: - HabitsView
@@ -120,6 +126,7 @@ struct HabitsView: View {
     @State private var showAdd = false
     @State private var newName = ""
     @State private var newEmoji = "✅"
+    @State private var editMode: EditMode = .inactive
 
     private let emojiPresets = ["✅", "💧", "🏃", "📚", "🧘", "🥗", "😴", "💊", "🚶", "✍️", "💪", "☀️", "🍎", "🎯", "🌿"]
 
@@ -136,7 +143,15 @@ struct HabitsView: View {
                 }
             }
             .navigationTitle("Habits")
+            .environment(\.editMode, $editMode)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !vm.habits.isEmpty {
+                        Button(editMode == .active ? "Done" : "Edit") {
+                            editMode = editMode == .active ? .inactive : .active
+                        }
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showAdd = true
@@ -183,7 +198,7 @@ struct HabitsView: View {
             // Today's habits
             if !vm.todayHabits.isEmpty {
                 Section("Today") {
-                    ForEach(vm.todayHabits) { habit in
+                    ForEach(vm.habits.filter { $0.target_days.contains(vm.todayDow) }) { habit in
                         HabitRow(
                             habit: habit,
                             done: vm.isCompleted(habit, on: vm.todayStr),
@@ -198,6 +213,7 @@ struct HabitsView: View {
                             }
                         }
                     }
+                    .onMove { vm.moveHabits(from: $0, to: $1) }
                 }
             }
 
