@@ -69,6 +69,36 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
 
   const hasStages = records.some((r) => (r.deep_minutes ?? 0) > 0 || (r.rem_minutes ?? 0) > 0)
 
+  // Sleep schedule consistency (from all records)
+  const bedtimeHours = records.map((r) => {
+    const t = new Date(r.start_time)
+    let h = t.getHours() + t.getMinutes() / 60
+    if (h < 12) h += 24 // wrap midnight: 0:30 → 24.5
+    return h
+  })
+  const waketimeHours = records.map((r) => {
+    const t = new Date(r.end_time)
+    return t.getHours() + t.getMinutes() / 60
+  })
+  function avgHours(arr: number[]) { return arr.reduce((a, b) => a + b, 0) / arr.length }
+  function stdDev(arr: number[], mean: number) {
+    return Math.sqrt(arr.reduce((a, b) => a + (b - mean) ** 2, 0) / arr.length)
+  }
+  function fmtHourDecimal(h: number) {
+    const norm = h % 24
+    const hh = Math.floor(norm)
+    const mm = Math.round((norm - hh) * 60)
+    const period = hh >= 12 ? 'PM' : 'AM'
+    const displayH = hh > 12 ? hh - 12 : hh === 0 ? 12 : hh
+    return `${displayH}:${mm.toString().padStart(2, '0')} ${period}`
+  }
+  const avgBed = avgHours(bedtimeHours)
+  const avgWake = avgHours(waketimeHours)
+  const bedSD = stdDev(bedtimeHours, avgBed) * 60 // in minutes
+  const wakeSD = stdDev(waketimeHours, avgWake) * 60
+  const consistencyLabel = bedSD < 30 ? 'Very consistent' : bedSD < 60 ? 'Consistent' : bedSD < 90 ? 'Moderate' : 'Variable'
+  const consistencyColor = bedSD < 30 ? 'text-green-400' : bedSD < 60 ? 'text-blue-400' : bedSD < 90 ? 'text-yellow-400' : 'text-red-400'
+
   return (
     <div className="space-y-6">
       {/* Bar chart */}
@@ -144,6 +174,29 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
                 <p className="text-xs text-text-secondary">{label}</p>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sleep schedule */}
+      {records.length >= 5 && (
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <h2 className="text-sm font-medium text-text-secondary mb-3">Sleep Schedule</h2>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p className="text-lg font-bold text-text-primary">{fmtHourDecimal(avgBed)}</p>
+              <p className="text-xs text-text-secondary">Avg Bedtime</p>
+              {bedSD > 0 && <p className="text-xs text-text-secondary opacity-60">±{Math.round(bedSD)}m</p>}
+            </div>
+            <div>
+              <p className="text-lg font-bold text-text-primary">{fmtHourDecimal(avgWake)}</p>
+              <p className="text-xs text-text-secondary">Avg Wake</p>
+              {wakeSD > 0 && <p className="text-xs text-text-secondary opacity-60">±{Math.round(wakeSD)}m</p>}
+            </div>
+            <div>
+              <p className={`text-lg font-bold ${consistencyColor}`}>{consistencyLabel}</p>
+              <p className="text-xs text-text-secondary">Consistency</p>
+            </div>
           </div>
         </div>
       )}

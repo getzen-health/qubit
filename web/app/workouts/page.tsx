@@ -20,7 +20,6 @@ export default async function WorkoutsPage() {
     .select('id, workout_type, start_time, duration_minutes, active_calories, distance_meters, avg_heart_rate')
     .eq('user_id', user.id)
     .order('start_time', { ascending: false })
-    .limit(50)
 
   return <WorkoutsList workouts={workouts ?? []} />
 }
