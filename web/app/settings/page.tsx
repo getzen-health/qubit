@@ -7,6 +7,7 @@ import {
   Target,
   ChevronRight,
   ArrowLeft,
+  Download,
 } from 'lucide-react'
 
 export default async function SettingsPage() {
@@ -78,6 +79,34 @@ export default async function SettingsPage() {
               </Link>
             )
           })}
+        </div>
+
+        {/* Export data */}
+        <div className="mt-8">
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Export Data</h2>
+          <div className="space-y-2">
+            {[
+              { label: 'Daily Summaries', desc: 'Steps, calories, HRV, sleep, weight', type: 'daily' },
+              { label: 'Workouts', desc: 'All workout sessions', type: 'workouts' },
+              { label: 'Sleep Records', desc: 'Night-by-night sleep data', type: 'sleep' },
+            ].map(({ label, desc, type }) => (
+              <a
+                key={type}
+                href={`/api/export?type=${type}`}
+                download
+                className="flex items-center gap-4 p-4 bg-surface rounded-lg border border-border hover:bg-surface-secondary transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <Download className="w-5 h-5 text-accent" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-text-primary">{label}</p>
+                  <p className="text-sm text-text-secondary">{desc}</p>
+                </div>
+                <span className="text-xs text-text-secondary font-mono">.csv</span>
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* User Info */}
