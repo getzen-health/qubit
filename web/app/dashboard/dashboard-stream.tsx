@@ -40,6 +40,8 @@ import {
 import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
 
+const STEP_GOAL = 10000
+
 interface DashboardStreamProps {
   user: {
     id: string
@@ -89,6 +91,16 @@ export function DashboardStream({
   // Calculate trends
   const yesterdaySteps = summaries[1]?.steps ?? today?.steps
   const stepsTrend = today ? Math.round(((today.steps - yesterdaySteps) / yesterdaySteps) * 100) : 0
+
+  // Compute step goal streak (summaries are newest-first, skip today which may be partial)
+  let stepStreak = 0
+  for (const day of summaries.slice(1)) { // skip today — still accumulating
+    if (day.steps >= STEP_GOAL) {
+      stepStreak++
+    } else {
+      break
+    }
+  }
 
   // Mock metrics (will be replaced with real data)
   const metrics = {
@@ -304,8 +316,8 @@ export function DashboardStream({
               icon={<Activity className="w-5 h-5" />}
               label="Steps"
               value={metrics.steps.toLocaleString()}
-              unit="/ 10,000"
-              sublabel={`${Math.round((metrics.steps / 10000) * 100)}% of goal`}
+              unit={`/ ${STEP_GOAL.toLocaleString()}`}
+              sublabel={`${Math.round((metrics.steps / STEP_GOAL) * 100)}% of goal`}
               trend={stepsTrend}
               color="activity"
             />
@@ -317,6 +329,16 @@ export function DashboardStream({
               sublabel="500 cal goal"
               color="strain"
             />
+            {stepStreak > 0 && (
+              <MetricRow
+                icon={<Target className="w-5 h-5" />}
+                label="Step Streak"
+                value={stepStreak}
+                unit={stepStreak === 1 ? 'day' : 'days'}
+                sublabel="consecutive days at goal"
+                color="activity"
+              />
+            )}
             <MetricRow
               icon={<Droplets className="w-5 h-5" />}
               label="Water"
@@ -330,7 +352,7 @@ export function DashboardStream({
 
         {/* 7-Day Trends */}
         <DataStreamSection title="7-Day Trends">
-          <WeeklyCharts summaries={summaries} />
+          <WeeklyCharts summaries={summaries.slice(0, 7)} />
         </DataStreamSection>
 
         {/* AI Insights */}

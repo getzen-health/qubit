@@ -20,15 +20,15 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  // Fetch recent daily summaries (7 days)
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  // Fetch 30 days of summaries — needed for streak calculation in the client
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
   const { data: summaries } = await supabase
     .from('daily_summaries')
     .select('*')
     .eq('user_id', user.id)
-    .gte('date', sevenDaysAgo.toISOString().split('T')[0])
+    .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
     .order('date', { ascending: false })
 
   // Fetch recent insights
