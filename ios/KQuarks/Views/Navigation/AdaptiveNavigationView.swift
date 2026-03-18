@@ -8,6 +8,8 @@ struct AdaptiveNavigationView: View {
 
     @State private var selectedSidebarItem: SidebarItem? = .dashboard
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var selectedTab: Int = 0
+    @State private var showCheckinSheet = false
 
     var body: some View {
         if horizontalSizeClass == .regular {
@@ -78,31 +80,40 @@ struct AdaptiveNavigationView: View {
 
     @ViewBuilder
     private var iPhoneNavigationView: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             DashboardListView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "heart.text.square")
-                }
+                .tabItem { Label("Dashboard", systemImage: "heart.text.square") }
+                .tag(0)
 
             HealthDataView()
-                .tabItem {
-                    Label("Health", systemImage: "figure.walk")
-                }
+                .tabItem { Label("Health", systemImage: "figure.walk") }
+                .tag(1)
 
             WorkoutsView()
-                .tabItem {
-                    Label("Workouts", systemImage: "figure.run")
-                }
+                .tabItem { Label("Workouts", systemImage: "figure.run") }
+                .tag(2)
 
             InsightsView()
-                .tabItem {
-                    Label("Insights", systemImage: "sparkles")
-                }
+                .tabItem { Label("Insights", systemImage: "sparkles") }
+                .tag(3)
 
             SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(4)
+        }
+        .sheet(isPresented: $showCheckinSheet) {
+            CheckinView()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .quickActionTriggered)) { note in
+            guard let type = note.userInfo?["type"] as? String else { return }
+            switch type {
+            case "com.kquarks.insights": selectedTab = 3
+            case "com.kquarks.workouts": selectedTab = 2
+            case "com.kquarks.checkin":
+                selectedTab = 0
+                showCheckinSheet = true
+            default: break
+            }
         }
     }
 }
