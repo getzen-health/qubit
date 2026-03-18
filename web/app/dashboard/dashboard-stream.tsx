@@ -5,7 +5,7 @@
  * Minimalistic, AI-first, expandable metrics layout
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -97,6 +97,12 @@ interface DashboardStreamProps {
   lastSyncAt?: string | null
   todayWaterMl?: number
   waterTargetMl?: number
+  activeFast?: {
+    id: string
+    protocol: string
+    target_hours: number
+    started_at: string
+  } | null
 }
 
 export function DashboardStream({
@@ -114,6 +120,7 @@ export function DashboardStream({
   lastSyncAt,
   todayWaterMl = 0,
   waterTargetMl = 2500,
+  activeFast = null,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -122,6 +129,18 @@ export function DashboardStream({
   const [calGoal, setCalGoal] = useState(dbCalGoal ?? DEFAULT_CAL_GOAL)
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false)
   const [insightError, setInsightError] = useState<string | null>(null)
+  const [fastElapsedHours, setFastElapsedHours] = useState<number>(() => {
+    if (!activeFast) return 0
+    return (Date.now() - new Date(activeFast.started_at).getTime()) / 3600000
+  })
+
+  useEffect(() => {
+    if (!activeFast) return
+    const startMs = new Date(activeFast.started_at).getTime()
+    const tick = () => setFastElapsedHours((Date.now() - startMs) / 3600000)
+    const id = setInterval(tick, 60000) // update every minute on dashboard
+    return () => clearInterval(id)
+  }, [activeFast])
   const [localInsights, setLocalInsights] = useState(insights)
   useEffect(() => {
     // Only use localStorage if DB didn't provide goals
@@ -490,6 +509,36 @@ export function DashboardStream({
               {todayWaterMl >= waterTargetMl
                 ? 'Goal reached!'
                 : `${waterTargetMl - todayWaterMl}ml to go`}
+            </p>
+          </Link>
+        )}
+
+        {/* Active Fast */}
+        {activeFast && (
+          <Link href="/fasting" className="block mb-6 bg-surface rounded-xl border border-amber-500/20 p-4 hover:bg-surface-secondary transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-amber-400 text-sm">⏱</span>
+                <span className="text-sm font-medium text-amber-400">Fasting · {activeFast.protocol}</span>
+              </div>
+              <span className="text-sm font-semibold text-text-primary">
+                {Math.floor(fastElapsedHours)}h {Math.floor((fastElapsedHours % 1) * 60)}m
+                <span className="text-text-secondary font-normal"> / {activeFast.target_hours}h</span>
+              </span>
+            </div>
+            <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min((fastElapsedHours / activeFast.target_hours) * 100, 100)}%`,
+                  background: fastElapsedHours >= activeFast.target_hours ? '#22c55e' : '#f59e0b',
+                }}
+              />
+            </div>
+            <p className="text-xs text-text-secondary mt-1.5">
+              {fastElapsedHours >= activeFast.target_hours
+                ? '🎉 Goal reached!'
+                : `${Math.max(0, activeFast.target_hours - Math.floor(fastElapsedHours))}h remaining`}
             </p>
           </Link>
         )}

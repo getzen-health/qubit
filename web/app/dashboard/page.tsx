@@ -64,9 +64,9 @@ export default async function DashboardPage() {
     }
   }
 
-  // Fetch today's water data
+  // Fetch today's water data and active fasting session
   const todayStr = new Date().toISOString().slice(0, 10)
-  const [{ data: todayWater }, { data: nutritionSettings }] = await Promise.all([
+  const [{ data: todayWater }, { data: nutritionSettings }, { data: activeFast }] = await Promise.all([
     supabase
       .from('daily_water')
       .select('total_ml')
@@ -77,6 +77,12 @@ export default async function DashboardPage() {
       .from('user_nutrition_settings')
       .select('water_target_ml')
       .eq('user_id', user.id)
+      .single(),
+    supabase
+      .from('fasting_sessions')
+      .select('id, protocol, target_hours, started_at')
+      .eq('user_id', user.id)
+      .is('ended_at', null)
       .single(),
   ])
 
@@ -127,6 +133,7 @@ export default async function DashboardPage() {
       lastSyncAt={lastSyncAt}
       todayWaterMl={todayWater?.total_ml ?? 0}
       waterTargetMl={nutritionSettings?.water_target_ml ?? 2500}
+      activeFast={activeFast ?? null}
     />
   )
 }
