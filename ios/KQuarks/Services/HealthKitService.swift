@@ -498,6 +498,32 @@ class HealthKitService {
         }
     }
 
+    func fetchMaxHeartRate(during workout: HKWorkout) async throws -> Double? {
+        let hrType = HKQuantityType(.heartRate)
+        let predicate = HKQuery.predicateForSamples(
+            withStart: workout.startDate,
+            end: workout.endDate,
+            options: .strictStartDate
+        )
+        let beatsPerMinute = HKUnit.count().unitDivided(by: .minute())
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: hrType,
+                quantitySamplePredicate: predicate,
+                options: .discreteMax
+            ) { _, statistics, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                let value = statistics?.maximumQuantity()?.doubleValue(for: beatsPerMinute)
+                continuation.resume(returning: value)
+            }
+            self.healthStore.execute(query)
+        }
+    }
+
     func fetchHeartRateSamples(during workout: HKWorkout) async throws -> [(date: Date, bpm: Double)] {
         let hrType = HKQuantityType(.heartRate)
         let predicate = HKQuery.predicateForSamples(

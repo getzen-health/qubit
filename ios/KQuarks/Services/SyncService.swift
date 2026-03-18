@@ -237,6 +237,8 @@ class SyncService {
         let workouts = try await healthKit.fetchWorkouts(from: startDate, to: now)
 
         for workout in workouts {
+            let avgHR = (try? await healthKit.fetchAverageHeartRate(during: workout)).map { Int($0) }
+            let maxHR = (try? await healthKit.fetchMaxHeartRate(during: workout)).map { Int($0) }
             let upload = WorkoutRecordUpload(
                 userId: userId,
                 workoutType: workout.workoutActivityType.name,
@@ -246,11 +248,10 @@ class SyncService {
                 activeCalories: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
                 totalCalories: nil,
                 distanceMeters: workout.totalDistance?.doubleValue(for: .meter()),
-                avgHeartRate: nil, // Would need to query separately
-                maxHeartRate: nil,
+                avgHeartRate: avgHR,
+                maxHeartRate: maxHR,
                 source: workout.sourceRevision.source.name
             )
-
             try await supabase.uploadWorkoutRecord(upload)
         }
     }
