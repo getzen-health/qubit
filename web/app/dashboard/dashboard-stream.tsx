@@ -472,7 +472,14 @@ export function DashboardStream({
         )}
 
         {/* Primary Metrics Stream */}
-        <DataStreamSection title="Today's Metrics">
+        <DataStreamSection
+          title="Today's Metrics"
+          action={today?.date ? (
+            <Link href={`/day/${today.date}`} className="text-sm text-accent hover:underline">
+              Full day →
+            </Link>
+          ) : undefined}
+        >
           <DataStream>
             <MetricRow
               icon={<Zap className="w-5 h-5" />}

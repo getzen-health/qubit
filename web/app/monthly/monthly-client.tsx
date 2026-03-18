@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import Link from 'next/link'
 import {
   BarChart,
   Bar,
@@ -10,6 +12,7 @@ import {
   CartesianGrid,
   ReferenceLine,
 } from 'recharts'
+import { cn } from '@/lib/utils'
 
 interface Summary {
   date: string
@@ -38,6 +41,103 @@ interface MonthData {
   avgHrv: number | null
   avgRecovery: number | null
   workouts: number
+}
+
+const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+
+function stepColor(steps: number | undefined): string {
+  if (!steps || steps === 0) return 'bg-surface-secondary'
+  if (steps >= 10000) return 'bg-green-500'
+  if (steps >= 7500) return 'bg-green-500/70'
+  if (steps >= 5000) return 'bg-green-500/40'
+  return 'bg-green-500/20'
+}
+
+function CalendarHeatmap({ summaries }: { summaries: Summary[] }) {
+  const dataMap = new Map<string, number>()
+  for (const s of summaries) dataMap.set(s.date, s.steps)
+
+  const monthSet = new Set(summaries.map((s) => s.date.slice(0, 7)))
+  const months = Array.from(monthSet).sort().reverse()
+  const [selectedMonth, setSelectedMonth] = useState(months[0] ?? '')
+
+  if (!selectedMonth) return null
+
+  const [year, month] = selectedMonth.split('-').map(Number)
+  const monthLabel = new Date(year, month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  const daysInMonth = new Date(year, month, 0).getDate()
+  const firstDow = new Date(year, month - 1, 1).getDay()
+
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const day = i + 1
+    const dateStr = `${selectedMonth}-${day.toString().padStart(2, '0')}`
+    return { dateStr, day, steps: dataMap.get(dateStr) }
+  })
+
+  const visibleMonths = months.slice(0, 6)
+
+  return (
+    <div className="bg-surface rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+        <h2 className="text-sm font-medium text-text-primary">{monthLabel}</h2>
+        <div className="flex items-center gap-1">
+          {visibleMonths.map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setSelectedMonth(m)}
+              className={cn(
+                'text-xs px-2 py-1 rounded transition-colors',
+                m === selectedMonth
+                  ? 'bg-accent text-white'
+                  : 'text-text-secondary hover:bg-surface-secondary',
+              )}
+            >
+              {new Date(m + '-01').toLocaleDateString('en-US', { month: 'short' })}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-1">
+        {DAY_LABELS.map((d) => (
+          <div key={d} className="text-center text-xs text-text-secondary">{d}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: firstDow }).map((_, i) => <div key={`pad-${i}`} />)}
+        {days.map(({ dateStr, day, steps }) => {
+          const hasData = steps !== undefined
+          return (
+            <Link
+              key={dateStr}
+              href={hasData ? `/day/${dateStr}` : '#'}
+              className={cn(
+                'aspect-square rounded-md flex items-center justify-center text-xs font-medium transition-opacity',
+                stepColor(steps),
+                hasData ? 'hover:opacity-80' : 'cursor-default pointer-events-none',
+              )}
+              title={hasData ? `${dateStr}: ${steps?.toLocaleString()} steps` : dateStr}
+            >
+              <span className={steps && steps > 0 ? 'text-white' : 'text-text-secondary'}>{day}</span>
+            </Link>
+          )
+        })}
+      </div>
+
+      <div className="flex items-center gap-1.5 mt-3 text-xs text-text-secondary">
+        <span>Less</span>
+        <div className="w-4 h-4 rounded-sm bg-surface-secondary border border-border" />
+        <div className="w-4 h-4 rounded-sm bg-green-500/20" />
+        <div className="w-4 h-4 rounded-sm bg-green-500/40" />
+        <div className="w-4 h-4 rounded-sm bg-green-500/70" />
+        <div className="w-4 h-4 rounded-sm bg-green-500" />
+        <span>More</span>
+        <span className="ml-2 opacity-60">(tap to view day)</span>
+      </div>
+    </div>
+  )
 }
 
 function groupByMonth(summaries: Summary[], workouts: Workout[]): MonthData[] {
@@ -117,6 +217,9 @@ export function MonthlyClient({ summaries, workouts }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Calendar Heatmap */}
+      <CalendarHeatmap summaries={summaries} />
+
       {/* Steps chart */}
       <div className="bg-surface rounded-xl border border-border p-4">
         <h2 className="text-sm font-medium text-text-secondary mb-3">Avg Daily Steps</h2>
