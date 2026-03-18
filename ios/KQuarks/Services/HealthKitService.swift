@@ -116,7 +116,11 @@ class HealthKitService {
             throw HealthKitError.notAvailable
         }
 
-        let shareTypes: Set<HKSampleType> = [HKQuantityType(.bodyMass)]
+        let shareTypes: Set<HKSampleType> = [
+            HKQuantityType(.bodyMass),
+            HKObjectType.workoutType(),
+            HKCategoryType(.mindfulSession),
+        ]
         try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
         await MainActor.run {
             isAuthorized = true
@@ -791,6 +795,43 @@ class HealthKitService {
         guard isHealthDataAvailable else { return [] }
         let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         return try await fetchCategoryEvents(.mindfulSession, from: startDate, to: Date())
+    }
+
+    // MARK: - Workout Logging
+
+    func saveWorkout(
+        activityType: HKWorkoutActivityType,
+        startDate: Date,
+        endDate: Date,
+        activeCalories: Double?,
+        distanceMeters: Double?
+    ) async throws {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+
+        var samples: [HKSample] = []
+
+        if let calories = activeCalories, calories > 0 {
+            let calType = HKQuantityType(.activeEnergyBurned)
+            let calQty = HKQuantity(unit: .kilocalorie(), doubleValue: calories)
+            samples.append(HKQuantitySample(type: calType, quantity: calQty, start: startDate, end: endDate))
+        }
+
+        if let distance = distanceMeters, distance > 0 {
+            let distType = HKQuantityType(.distanceWalkingRunning)
+            let distQty = HKQuantity(unit: .meter(), doubleValue: distance)
+            samples.append(HKQuantitySample(type: distType, quantity: distQty, start: startDate, end: endDate))
+        }
+
+        let config = HKWorkoutConfiguration()
+        config.activityType = activityType
+        let builder = HKWorkoutBuilder(healthStore: healthStore, configuration: config, device: .local())
+
+        try await builder.beginCollection(at: startDate)
+        if !samples.isEmpty {
+            try await builder.addSamples(samples)
+        }
+        try await builder.endCollection(at: endDate)
+        try await builder.finishWorkout()
     }
 }
 

@@ -6,6 +6,7 @@ struct WorkoutsView: View {
     @State private var isLoading = false
     @State private var selectedPeriod: WorkoutPeriod = .month
     @State private var searchText = ""
+    @State private var showLogWorkout = false
 
     private let healthKit = HealthKitService.shared
 
@@ -84,13 +85,25 @@ struct WorkoutsView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Picker("Period", selection: $selectedPeriod) {
-                        ForEach(WorkoutPeriod.allCases, id: \.self) { period in
-                            Text(period.label).tag(period)
+                    HStack(spacing: 4) {
+                        Button {
+                            showLogWorkout = true
+                        } label: {
+                            Image(systemName: "plus")
                         }
+                        Picker("Period", selection: $selectedPeriod) {
+                            ForEach(WorkoutPeriod.allCases, id: \.self) { period in
+                                Text(period.label).tag(period)
+                            }
+                        }
+                        .pickerStyle(.menu)
                     }
-                    .pickerStyle(.menu)
                 }
+            }
+            .sheet(isPresented: $showLogWorkout, onDismiss: {
+                Task { await loadWorkouts() }
+            }) {
+                LogWorkoutView()
             }
             .task(id: selectedPeriod) {
                 await loadWorkouts()
