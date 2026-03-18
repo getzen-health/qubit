@@ -41,17 +41,38 @@ struct InsightsView: View {
 
     private func loadInsights() async {
         isLoading = true
-        // TODO: Fetch from Supabase
-        // For now, show sample insights
-        insights = InsightItem.samples
+        do {
+            let healthInsights = try await SupabaseService.shared.fetchInsights()
+            insights = healthInsights.map { insight in
+                InsightItem(
+                    date: insight.createdAt,
+                    category: InsightCategory.from(string: insight.category),
+                    title: insight.title,
+                    content: insight.content,
+                    priority: insight.priority == "high" ? .high : (insight.priority == "low" ? .low : .normal)
+                )
+            }
+        } catch {
+            // Fall back to empty state if not authenticated or no data
+            insights = []
+        }
         isLoading = false
     }
 
     private func generateInsights() async {
         isLoading = true
-        // TODO: Call AI edge function
-        try? await Task.sleep(for: .seconds(2))
-        insights = InsightItem.samples
+        let result = await AIInsightsService.shared.generateInsights()
+        if let result = result {
+            insights = result.insights.map { insight in
+                InsightItem(
+                    date: Date(),
+                    category: InsightCategory.from(string: insight.category),
+                    title: insight.title,
+                    content: insight.content,
+                    priority: insight.priority == "high" ? .high : (insight.priority == "low" ? .low : .normal)
+                )
+            }
+        }
         isLoading = false
     }
 }
@@ -201,6 +222,17 @@ enum InsightCategory {
         case .heart: return .red
         case .recovery: return .orange
         case .nutrition: return .yellow
+        }
+    }
+
+    static func from(string: String) -> InsightCategory {
+        switch string.lowercased() {
+        case "sleep": return .sleep
+        case "activity": return .activity
+        case "heart": return .heart
+        case "recovery": return .recovery
+        case "nutrition": return .nutrition
+        default: return .recovery
         }
     }
 }
