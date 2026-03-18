@@ -21,6 +21,7 @@ class HealthKitService {
         types.insert(HKQuantityType(.activeEnergyBurned))
         types.insert(HKQuantityType(.basalEnergyBurned))
         types.insert(HKQuantityType(.flightsClimbed))
+        types.insert(HKQuantityType(.appleExerciseTime))
 
         // Heart
         types.insert(HKQuantityType(.heartRate))
@@ -123,6 +124,7 @@ class HealthKitService {
         async let distance = fetchSum(for: .distanceWalkingRunning, from: startOfDay, to: now)
         async let activeCalories = fetchSum(for: .activeEnergyBurned, from: startOfDay, to: now)
         async let floors = fetchSum(for: .flightsClimbed, from: startOfDay, to: now)
+        async let exerciseTime = fetchSum(for: .appleExerciseTime, from: startOfDay, to: now)
         async let restingHR = fetchLatest(for: .restingHeartRate)
         async let hrv = fetchLatest(for: .heartRateVariabilitySDNN)
         async let lastNightSleep = fetchLastNightSleep()
@@ -132,6 +134,7 @@ class HealthKitService {
             distanceMeters: distance ?? 0,
             activeCalories: activeCalories ?? 0,
             floorsClimbed: Int(floors ?? 0),
+            exerciseMinutes: Int(exerciseTime ?? 0),
             restingHeartRate: restingHR.map { Int($0) },
             hrv: hrv,
             sleepHours: lastNightSleep
@@ -603,6 +606,7 @@ struct TodayHealthSummary {
     var distanceMeters: Double
     var activeCalories: Double
     var floorsClimbed: Int
+    var exerciseMinutes: Int
     var restingHeartRate: Int?
     var hrv: Double?
     var sleepHours: Double?

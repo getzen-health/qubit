@@ -75,8 +75,8 @@ class SyncService {
             distanceMeters: summary.distanceMeters,
             floorsClimbed: summary.floorsClimbed,
             activeCalories: summary.activeCalories,
-            totalCalories: 0, // Would need to calculate
-            activeMinutes: 0, // Would need to calculate
+            totalCalories: 0,
+            activeMinutes: summary.exerciseMinutes,
             sleepDurationMinutes: summary.sleepHours.map { Int($0 * 60) },
             sleepQualityScore: nil,
             restingHeartRate: summary.restingHeartRate,
