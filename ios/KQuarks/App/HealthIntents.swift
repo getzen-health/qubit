@@ -165,6 +165,100 @@ struct GetTodayHRVIntent: AppIntent {
     }
 }
 
+struct LogWaterIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log Water"
+    static var description = IntentDescription("Log water intake in KQuarks.")
+
+    @Parameter(title: "Amount (ml)", description: "Amount of water in millilitres.")
+    var amountMl: Int
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$amountMl) ml of water")
+    }
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        try await SupabaseService.shared.logWater(amountMl: amountMl)
+        let total = (try? await SupabaseService.shared.getTodayWaterTotal()) ?? amountMl
+        let amountStr = amountMl >= 1000 ? String(format: "%.1fL", Double(amountMl) / 1000) : "\(amountMl)ml"
+        let totalStr = total >= 1000 ? String(format: "%.1fL", Double(total) / 1000) : "\(total)ml"
+        return .result(
+            value: total,
+            dialog: IntentDialog(stringLiteral: "Logged \(amountStr). Today's total: \(totalStr).")
+        )
+    }
+}
+
+struct StartFastIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Fasting"
+    static var description = IntentDescription("Start a fasting session in KQuarks.")
+
+    @Parameter(title: "Hours", description: "Fast duration in hours.", default: 16)
+    var targetHours: Int
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Start a \(\.$targetHours)-hour fast")
+    }
+
+    func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: false,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        let protocolName: String
+        switch targetHours {
+        case 18: protocolName = "18:6"
+        case 20: protocolName = "20:4"
+        case 23: protocolName = "OMAD"
+        default: protocolName = "16:8"
+        }
+        try await SupabaseService.shared.startFasting(protocolName: protocolName, targetHours: targetHours)
+        let eatingHours = 24 - targetHours
+        return .result(
+            value: true,
+            dialog: IntentDialog(stringLiteral: "Started your \(targetHours)-hour fast (\(protocolName)). Eating window opens in \(targetHours) hours.")
+        )
+    }
+}
+
+struct CheckFastIntent: AppIntent {
+    static var title: LocalizedStringResource = "Fasting Status"
+    static var description = IntentDescription("Check your current fasting progress in KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        let status = try await SupabaseService.shared.getFastingStatus()
+        if status.isActive {
+            let h = Int(status.elapsedHours)
+            let m = Int((status.elapsedHours - Double(h)) * 60)
+            let remaining = max(0, Double(status.targetHours) - status.elapsedHours)
+            let rh = Int(remaining)
+            let rm = Int((remaining - Double(rh)) * 60)
+            let msg = remaining > 0
+                ? "You've been fasting for \(h)h \(m)m. \(rh)h \(rm)m until your \(status.targetHours)-hour goal."
+                : "Fast complete! You've fasted for \(h)h \(m)m. Great work!"
+            return .result(value: status.elapsedHours, dialog: IntentDialog(stringLiteral: msg))
+        } else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "No active fast. Say \"Start fasting in KQuarks\" to begin.")
+            )
+        }
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -239,6 +333,35 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Today's HRV",
             systemImageName: "waveform.path.ecg"
+        )
+        AppShortcut(
+            intent: LogWaterIntent(),
+            phrases: [
+                "Log water in \(.applicationName)",
+                "I drank water in \(.applicationName)",
+                "Add water in \(.applicationName)"
+            ],
+            shortTitle: "Log Water",
+            systemImageName: "drop.fill"
+        )
+        AppShortcut(
+            intent: StartFastIntent(),
+            phrases: [
+                "Start fasting in \(.applicationName)",
+                "Begin my fast in \(.applicationName)"
+            ],
+            shortTitle: "Start Fast",
+            systemImageName: "timer"
+        )
+        AppShortcut(
+            intent: CheckFastIntent(),
+            phrases: [
+                "Check my fast in \(.applicationName)",
+                "How long have I been fasting in \(.applicationName)",
+                "Fasting status in \(.applicationName)"
+            ],
+            shortTitle: "Fasting Status",
+            systemImageName: "timer.circle"
         )
     }
 }

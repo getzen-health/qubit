@@ -281,6 +281,184 @@ class SupabaseService {
         return response
     }
 
+    // MARK: - Water Logging
+
+    func logWater(amountMl: Int) async throws {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct WaterLogInsert: Encodable {
+            let userId: UUID
+            let amountMl: Int
+            let loggedAt: String
+            let source: String
+            enum CodingKeys: String, CodingKey {
+                case userId = "user_id"
+                case amountMl = "amount_ml"
+                case loggedAt = "logged_at"
+                case source
+            }
+        }
+
+        try await client
+            .from("water_logs")
+            .insert(WaterLogInsert(
+                userId: userId,
+                amountMl: amountMl,
+                loggedAt: ISO8601DateFormatter().string(from: Date()),
+                source: "siri"
+            ))
+            .execute()
+    }
+
+    func getTodayWaterTotal() async throws -> Int {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct DailyWater: Decodable {
+            let totalMl: Int
+            enum CodingKeys: String, CodingKey {
+                case totalMl = "total_ml"
+            }
+        }
+
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+
+        let rows: [DailyWater] = try await client
+            .from("daily_water")
+            .select("total_ml")
+            .eq("user_id", value: userId.uuidString)
+            .eq("date", value: today)
+            .execute()
+            .value
+
+        return rows.first?.totalMl ?? 0
+    }
+
+    // MARK: - Fasting Sessions
+
+    func startFasting(protocolName: String, targetHours: Int) async throws {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct FastingInsert: Encodable {
+            let userId: UUID
+            let protocolName: String
+            let targetHours: Int
+            let startedAt: String
+            enum CodingKeys: String, CodingKey {
+                case userId = "user_id"
+                case protocolName = "protocol"
+                case targetHours = "target_hours"
+                case startedAt = "started_at"
+            }
+        }
+
+        try await client
+            .from("fasting_sessions")
+            .insert(FastingInsert(
+                userId: userId,
+                protocolName: protocolName,
+                targetHours: targetHours,
+                startedAt: ISO8601DateFormatter().string(from: Date())
+            ))
+            .execute()
+    }
+
+    func getFastingStatus() async throws -> (isActive: Bool, elapsedHours: Double, targetHours: Int) {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct FastingSession: Decodable {
+            let startedAt: String
+            let targetHours: Int
+            let endedAt: String?
+            enum CodingKeys: String, CodingKey {
+                case startedAt = "started_at"
+                case targetHours = "target_hours"
+                case endedAt = "ended_at"
+            }
+        }
+
+        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date())!)
+
+        let sessions: [FastingSession] = try await client
+            .from("fasting_sessions")
+            .select("started_at,target_hours,ended_at")
+            .eq("user_id", value: userId.uuidString)
+            .gte("started_at", value: since)
+            .order("started_at", ascending: false)
+            .limit(5)
+            .execute()
+            .value
+
+        guard let active = sessions.first(where: { $0.endedAt == nil }) else {
+            return (false, 0, 0)
+        }
+
+        let start = ISO8601DateFormatter().date(from: active.startedAt) ?? Date()
+        let elapsed = Date().timeIntervalSince(start) / 3600
+        return (true, elapsed, active.targetHours)
+    }
+
+    func endFasting() async throws -> Double? {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct FastingSession: Decodable {
+            let id: UUID
+            let startedAt: String
+            let targetHours: Int
+            let endedAt: String?
+            enum CodingKeys: String, CodingKey {
+                case id
+                case startedAt = "started_at"
+                case targetHours = "target_hours"
+                case endedAt = "ended_at"
+            }
+        }
+
+        struct FastingUpdate: Encodable {
+            let endedAt: String
+            let actualHours: Double
+            let completed: Bool
+            enum CodingKeys: String, CodingKey {
+                case endedAt = "ended_at"
+                case actualHours = "actual_hours"
+                case completed
+            }
+        }
+
+        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date())!)
+
+        let sessions: [FastingSession] = try await client
+            .from("fasting_sessions")
+            .select("id,started_at,target_hours,ended_at")
+            .eq("user_id", value: userId.uuidString)
+            .gte("started_at", value: since)
+            .order("started_at", ascending: false)
+            .limit(5)
+            .execute()
+            .value
+
+        guard let active = sessions.first(where: { $0.endedAt == nil }) else {
+            return nil
+        }
+
+        let now = Date()
+        let start = ISO8601DateFormatter().date(from: active.startedAt) ?? now
+        let elapsed = now.timeIntervalSince(start) / 3600
+
+        try await client
+            .from("fasting_sessions")
+            .update(FastingUpdate(
+                endedAt: ISO8601DateFormatter().string(from: now),
+                actualHours: elapsed,
+                completed: elapsed >= Double(active.targetHours)
+            ))
+            .eq("id", value: active.id.uuidString)
+            .execute()
+
+        return elapsed
+    }
+
     // MARK: - AI Insights
 
     func deleteAllUserData() async throws {
