@@ -24,6 +24,7 @@ import {
   Sparkles,
   Apple,
   UtensilsCrossed,
+  Scale,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -63,6 +64,7 @@ interface DashboardStreamProps {
     avg_hrv?: number
     recovery_score?: number
     strain_score?: number
+    weight_kg?: number
   }>
   insights: Array<{
     id: string
@@ -142,6 +144,9 @@ export function DashboardStream({
     : undefined
 
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
+
+  // Most recent body weight (may not be today's)
+  const latestWeight = summaries.find((s) => s.weight_kg != null)?.weight_kg ?? null
 
   // Format sleep duration
   const sleepHours = Math.floor(metrics.sleep.duration / 60)
@@ -329,6 +334,15 @@ export function DashboardStream({
                 </div>
               }
             />
+            {latestWeight != null && (
+              <MetricRow
+                icon={<Scale className="w-5 h-5" />}
+                label="Body Weight"
+                value={latestWeight.toFixed(1)}
+                unit="kg"
+                color="recovery"
+              />
+            )}
           </DataStream>
         </DataStreamSection>
 
