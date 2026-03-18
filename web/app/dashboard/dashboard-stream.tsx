@@ -197,13 +197,13 @@ export function DashboardStream({
             >
               <Activity className="w-5 h-5 text-text-secondary" />
             </Link>
-            <button
-              type="button"
+            <Link
+              href="/settings"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="Settings"
             >
               <Settings className="w-5 h-5 text-text-secondary" />
-            </button>
+            </Link>
             <button
               type="button"
               onClick={handleSignOut}
