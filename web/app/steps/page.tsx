@@ -15,12 +15,19 @@ export default async function StepsPage() {
   const ninetyDaysAgo = new Date()
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
 
-  const { data: summaries } = await supabase
-    .from('daily_summaries')
-    .select('date, steps, active_calories, distance_meters, active_minutes')
-    .eq('user_id', user.id)
-    .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
-    .order('date', { ascending: true })
+  const [{ data: summaries }, { data: profile }] = await Promise.all([
+    supabase
+      .from('daily_summaries')
+      .select('date, steps, active_calories, distance_meters, active_minutes')
+      .eq('user_id', user.id)
+      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
+      .order('date', { ascending: true }),
+    supabase
+      .from('users')
+      .select('step_goal')
+      .eq('id', user.id)
+      .single(),
+  ])
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,7 +55,7 @@ export default async function StepsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <StepsClient summaries={summaries ?? []} />
+        <StepsClient summaries={summaries ?? []} dbStepGoal={profile?.step_goal ?? null} />
       </main>
       <BottomNav />
     </div>

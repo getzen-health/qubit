@@ -25,6 +25,7 @@ interface DaySummary {
 
 interface StepsClientProps {
   summaries: DaySummary[]
+  dbStepGoal?: number | null
 }
 
 const DEFAULT_STEP_GOAL = 10000
@@ -33,13 +34,14 @@ function fmtDate(dateStr: string) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function StepsClient({ summaries }: StepsClientProps) {
-  const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
+export function StepsClient({ summaries, dbStepGoal }: StepsClientProps) {
+  const [stepGoal, setStepGoal] = useState(dbStepGoal ?? DEFAULT_STEP_GOAL)
 
   useEffect(() => {
+    if (dbStepGoal) return // DB value wins
     const stored = localStorage.getItem('kquarks_step_goal')
     if (stored) setStepGoal(Number(stored))
-  }, [])
+  }, [dbStepGoal])
 
   if (summaries.length === 0) {
     return (

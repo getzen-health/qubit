@@ -36,9 +36,10 @@ function stageWidth(minutes: number, total: number) {
 
 interface SleepPageClientProps {
   records: SleepRecord[]
+  sleepGoalHours?: number
 }
 
-export function SleepPageClient({ records }: SleepPageClientProps) {
+export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClientProps) {
   if (records.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -138,10 +139,10 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
               }}
             />
             <ReferenceLine
-              y={8}
+              y={sleepGoalHours}
               stroke="rgba(255,255,255,0.25)"
               strokeDasharray="4 3"
-              label={{ value: '8h goal', position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
+              label={{ value: `${sleepGoalHours}h goal`, position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
             />
             {hasStages ? (
               <>

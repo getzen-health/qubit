@@ -15,12 +15,21 @@ export default async function SleepPage() {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  const { data: records } = await supabase
-    .from('sleep_records')
-    .select('*')
-    .eq('user_id', user.id)
-    .gte('start_time', thirtyDaysAgo.toISOString())
-    .order('start_time', { ascending: false })
+  const [{ data: records }, { data: profile }] = await Promise.all([
+    supabase
+      .from('sleep_records')
+      .select('*')
+      .eq('user_id', user.id)
+      .gte('start_time', thirtyDaysAgo.toISOString())
+      .order('start_time', { ascending: false }),
+    supabase
+      .from('users')
+      .select('sleep_goal_minutes')
+      .eq('id', user.id)
+      .single(),
+  ])
+
+  const sleepGoalHours = profile?.sleep_goal_minutes ? profile.sleep_goal_minutes / 60 : 8
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,7 +50,7 @@ export default async function SleepPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <SleepPageClient records={records ?? []} />
+        <SleepPageClient records={records ?? []} sleepGoalHours={sleepGoalHours} />
       </main>
       <BottomNav />
     </div>
