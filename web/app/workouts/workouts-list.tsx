@@ -3,6 +3,15 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts'
 
 interface Workout {
   id: string
@@ -42,12 +51,40 @@ interface WorkoutsListProps {
   workouts: Workout[]
 }
 
+// Compute ISO week label "MMM d" for the Monday of each week
+function weekLabel(date: Date): string {
+  const d = new Date(date)
+  const day = d.getDay()
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1) // Monday
+  d.setDate(diff)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export function WorkoutsList({ workouts }: WorkoutsListProps) {
   const [activeType, setActiveType] = useState<string | null>(null)
 
   // Unique types that appear in this user's workouts, preserving occurrence order
   const types = Array.from(new Set(workouts.map((w) => w.workout_type)))
   const filtered = activeType ? workouts.filter((w) => w.workout_type === activeType) : workouts
+
+  // 12-week frequency chart (always from full workouts list, not filtered)
+  const weekFrequency = (() => {
+    const weeks: Map<string, number> = new Map()
+    const now = new Date()
+    // Seed last 12 weeks with 0 so missing weeks appear
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now)
+      d.setDate(d.getDate() - i * 7)
+      weeks.set(weekLabel(d), 0)
+    }
+    for (const w of workouts) {
+      const label = weekLabel(new Date(w.start_time))
+      if (weeks.has(label)) {
+        weeks.set(label, (weeks.get(label) ?? 0) + 1)
+      }
+    }
+    return Array.from(weeks.entries()).map(([week, count]) => ({ week, count }))
+  })()
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,6 +107,36 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* 12-week frequency chart */}
+        {workouts.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-sm font-medium text-text-secondary mb-2">Weekly Frequency</h2>
+            <ResponsiveContainer width="100%" height={120}>
+              <BarChart data={weekFrequency} margin={{ top: 4, right: 0, left: -30, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis
+                  dataKey="week"
+                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                  axisLine={false}
+                  tickLine={false}
+                  interval="preserveStartEnd"
+                />
+                <YAxis hide allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{
+                    background: 'var(--color-surface, #1a1a1a)',
+                    border: '1px solid var(--color-border, #333)',
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                  formatter={(value: number) => [value, 'Workouts']}
+                />
+                <Bar dataKey="count" fill="#6366f1" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
         {/* Type filter chips */}
         {types.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar">
