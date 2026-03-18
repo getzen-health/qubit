@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw } from 'lucide-react'
+import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw, Smile } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -24,6 +24,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; icon: typeof Activity; co
   heart: { label: 'Heart', icon: Heart, color: 'text-red-400' },
   recovery: { label: 'Recovery', icon: Zap, color: 'text-emerald-400' },
   strain: { label: 'Strain', icon: Flame, color: 'text-orange-400' },
+  wellbeing: { label: 'Wellbeing', icon: Smile, color: 'text-teal-400' },
 }
 
 const PRIORITY_BADGE: Record<string, string> = {

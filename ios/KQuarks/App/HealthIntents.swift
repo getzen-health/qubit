@@ -219,8 +219,9 @@ struct StartFastIntent: AppIntent {
         case 23: protocolName = "OMAD"
         default: protocolName = "16:8"
         }
+        let start = Date()
         try await SupabaseService.shared.startFasting(protocolName: protocolName, targetHours: targetHours)
-        let eatingHours = 24 - targetHours
+        NotificationService.shared.scheduleFastingMilestones(targetHours: targetHours, startedAt: start)
         return .result(
             value: true,
             dialog: IntentDialog(stringLiteral: "Started your \(targetHours)-hour fast (\(protocolName)). Eating window opens in \(targetHours) hours.")
@@ -276,6 +277,7 @@ struct EndFastIntent: AppIntent {
                 dialog: IntentDialog(stringLiteral: "No active fast found. Say \"Start fasting in KQuarks\" to begin one.")
             )
         }
+        NotificationService.shared.cancelFastingNotifications()
         let h = Int(elapsed)
         let m = Int((elapsed - Double(h)) * 60)
         return .result(
