@@ -40,6 +40,12 @@ struct DashboardListView: View {
                         }
                         .disabled(aiService.isGenerating)
 
+                        if let summary = viewModel.todaySummary {
+                            ShareLink(item: dailySummaryShareText(summary: summary)) {
+                                Image(systemName: "square.and.arrow.up")
+                            }
+                        }
+
                         Button {
                             Task {
                                 await viewModel.sync()
@@ -58,10 +64,28 @@ struct DashboardListView: View {
                     }
                 }
             }
+            .onChange(of: viewModel.isSyncing) { wasSyncing, isSyncing in
+                if wasSyncing && !isSyncing {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+            }
             .task {
                 await viewModel.loadData()
             }
         }
+    }
+
+    private func dailySummaryShareText(summary: TodayHealthSummary) -> String {
+        let date = Date().formatted(date: .abbreviated, time: .omitted)
+        var lines: [String] = ["📊 Health Summary — \(date)"]
+        lines.append("🚶 \(summary.steps.formatted()) steps")
+        if summary.activeCalories > 0 { lines.append("🔥 \(Int(summary.activeCalories)) cal active") }
+        if let sleep = summary.formattedSleep { lines.append("💤 \(sleep) sleep") }
+        if let hr = summary.restingHeartRate { lines.append("❤️ \(hr) bpm resting HR") }
+        lines.append("⚡ Recovery \(viewModel.recoveryScore)%")
+        if viewModel.currentStreak > 1 { lines.append("🔥 \(viewModel.currentStreak)-day step streak") }
+        lines.append("\nTracked with KQuarks")
+        return lines.joined(separator: "\n")
     }
 
     private var greeting: String {
