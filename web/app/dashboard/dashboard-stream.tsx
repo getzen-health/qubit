@@ -1009,6 +1009,7 @@ export function DashboardStream({
             {
               section: 'Analytics',
               links: [
+                { href: '/score', label: 'Health Score' },
                 { href: '/insights', label: 'AI Insights' },
                 { href: '/correlations', label: 'Correlations' },
                 { href: '/trends', label: 'Trends' },
