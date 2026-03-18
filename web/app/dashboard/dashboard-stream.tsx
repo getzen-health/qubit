@@ -22,6 +22,7 @@ import {
   Sparkles,
   Scale,
   Trophy,
+  BedDouble,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -249,6 +250,13 @@ export function DashboardStream({
               title="Workouts"
             >
               <Activity className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
+              href="/sleep"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Sleep History"
+            >
+              <BedDouble className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/records"
