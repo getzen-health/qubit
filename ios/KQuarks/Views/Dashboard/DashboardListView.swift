@@ -185,6 +185,22 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: FastingView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "timer")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+                            Text("Fasting")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: HabitsView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "checklist")

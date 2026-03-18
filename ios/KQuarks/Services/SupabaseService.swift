@@ -488,6 +488,18 @@ class SupabaseService {
         return elapsed
     }
 
+    func getFastingHistory(limit: Int = 10) async throws -> [FastSession] {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+        let sessions: [FastSession] = try await client.from("fasting_sessions")
+            .select("id, protocol, target_hours, started_at, ended_at, actual_hours, completed")
+            .eq("user_id", value: userId.uuidString)
+            .order("started_at", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
+        return sessions
+    }
+
     // MARK: - Daily Check-ins
 
     func logCheckin(energy: Int?, mood: Int?, stress: Int?, notes: String?) async throws {
