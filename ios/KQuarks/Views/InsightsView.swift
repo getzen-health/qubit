@@ -23,6 +23,11 @@ struct InsightsView: View {
             }
             .navigationTitle("Insights")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink(destination: CorrelationInsightsView()) {
+                        Image(systemName: "chart.line.text.clipboard")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {

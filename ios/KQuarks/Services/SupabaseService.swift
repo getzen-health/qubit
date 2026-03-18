@@ -849,6 +849,35 @@ class SupabaseService {
         return DailyCheckin(id: row.id, date: row.date, energy: row.energy, mood: row.mood, stress: row.stress, notes: row.notes)
     }
 
+    // MARK: - Correlation Analysis
+
+    struct DailySummaryRow: Decodable {
+        let date: String
+        let steps: Int
+        let sleep_duration_minutes: Int?
+        let avg_hrv: Double?
+        let recovery_score: Int?
+
+        var sleepHours: Double? {
+            guard let mins = sleep_duration_minutes, mins > 0 else { return nil }
+            return Double(mins) / 60.0
+        }
+        var avgHrv: Double? { avg_hrv }
+        var recoveryScore: Int? { recovery_score }
+    }
+
+    func fetchDailySummariesForCorrelation(days: Int = 60) async throws -> [DailySummaryRow] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        return try await client.from("daily_summaries")
+            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score")
+            .gte("date", value: df.string(from: since))
+            .order("date", ascending: true)
+            .execute()
+            .value
+    }
+
     // MARK: - AI Insights
 
     func deleteAllUserData() async throws {
