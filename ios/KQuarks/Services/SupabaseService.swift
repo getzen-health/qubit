@@ -115,6 +115,27 @@ class SupabaseService {
             .execute()
     }
 
+    func saveUserGoals(stepGoal: Int, calorieGoal: Int, sleepGoalMinutes: Int) async throws {
+        guard let userId = currentSession?.user.id else { return }
+
+        struct GoalUpdate: Encodable {
+            let stepGoal: Int
+            let calorieGoal: Int
+            let sleepGoalMinutes: Int
+            enum CodingKeys: String, CodingKey {
+                case stepGoal = "step_goal"
+                case calorieGoal = "calorie_goal"
+                case sleepGoalMinutes = "sleep_goal_minutes"
+            }
+        }
+
+        try await client
+            .from("users")
+            .update(GoalUpdate(stepGoal: stepGoal, calorieGoal: calorieGoal, sleepGoalMinutes: sleepGoalMinutes))
+            .eq("id", value: userId.uuidString)
+            .execute()
+    }
+
     // MARK: - Auth State Listener
 
     func observeAuthStateChanges() -> AsyncStream<AuthChangeEvent> {

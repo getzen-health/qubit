@@ -29,6 +29,19 @@ struct GoalsSettingsView: View {
                 }
             }
 
+            Section("Sleep") {
+                HStack {
+                    Label("Sleep Duration", systemImage: "moon.fill")
+                    Spacer()
+                    Stepper(
+                        fmtSleepGoal(goalService.sleepGoalMinutes),
+                        value: $goalService.sleepGoalMinutes,
+                        in: 240...600,
+                        step: 30
+                    )
+                }
+            }
+
             Section {
                 Button("Reset to Defaults", role: .destructive) {
                     goalService.reset()
@@ -37,6 +50,15 @@ struct GoalsSettingsView: View {
         }
         .navigationTitle("Health Goals")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: goalService.stepsGoal) { goalService.saveToSupabase() }
+        .onChange(of: goalService.activeCaloriesGoal) { goalService.saveToSupabase() }
+        .onChange(of: goalService.sleepGoalMinutes) { goalService.saveToSupabase() }
+    }
+
+    private func fmtSleepGoal(_ minutes: Double) -> String {
+        let h = Int(minutes) / 60
+        let m = Int(minutes) % 60
+        return m == 0 ? "\(h)h" : "\(h)h \(m)m"
     }
 }
 

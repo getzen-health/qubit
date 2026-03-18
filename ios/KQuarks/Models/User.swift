@@ -8,6 +8,9 @@ struct User: Codable, Identifiable {
     var timezone: String
     var createdAt: Date
     var updatedAt: Date
+    var stepGoal: Int?
+    var calorieGoal: Int?
+    var sleepGoalMinutes: Int?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -17,5 +20,8 @@ struct User: Codable, Identifiable {
         case timezone
         case createdAt = "created_at"
         case updatedAt = "updated_at"
+        case stepGoal = "step_goal"
+        case calorieGoal = "calorie_goal"
+        case sleepGoalMinutes = "sleep_goal_minutes"
     }
 }
