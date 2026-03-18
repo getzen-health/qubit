@@ -117,14 +117,14 @@ export default async function RecordsPage() {
       .single(),
     supabase
       .from('workout_records')
-      .select('start_time, workout_type, duration_minutes')
+      .select('id, start_time, workout_type, duration_minutes')
       .eq('user_id', user.id)
       .order('duration_minutes', { ascending: false })
       .limit(1)
       .single(),
     supabase
       .from('workout_records')
-      .select('start_time, workout_type, active_calories')
+      .select('id, start_time, workout_type, active_calories')
       .eq('user_id', user.id)
       .not('active_calories', 'is', null)
       .gt('active_calories', 0)
@@ -133,7 +133,7 @@ export default async function RecordsPage() {
       .single(),
     supabase
       .from('workout_records')
-      .select('start_time, workout_type, distance_meters')
+      .select('id, start_time, workout_type, distance_meters')
       .eq('user_id', user.id)
       .not('distance_meters', 'is', null)
       .gt('distance_meters', 0)
@@ -279,6 +279,7 @@ export default async function RecordsPage() {
               sub={longestWorkout?.workout_type}
               date={longestWorkout ? formatDatetime(longestWorkout.start_time) : undefined}
               empty={!longestWorkout}
+              href={longestWorkout ? `/workouts/${longestWorkout.id}` : undefined}
             />
             <RecordCard
               label="Most Calories in a Workout"
@@ -286,6 +287,7 @@ export default async function RecordsPage() {
               sub={mostCalWorkout?.workout_type}
               date={mostCalWorkout ? formatDatetime(mostCalWorkout.start_time) : undefined}
               empty={!mostCalWorkout}
+              href={mostCalWorkout ? `/workouts/${mostCalWorkout.id}` : undefined}
             />
             {longestDistance && (
               <RecordCard
@@ -293,6 +295,7 @@ export default async function RecordsPage() {
                 value={`${(longestDistance.distance_meters! / 1000).toFixed(2)} km`}
                 sub={longestDistance.workout_type}
                 date={formatDatetime(longestDistance.start_time)}
+                href={`/workouts/${longestDistance.id}`}
               />
             )}
           </div>
