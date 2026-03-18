@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { createClient } from '@/lib/supabase/client'
 import {
   BarChart,
   Bar,
@@ -52,7 +53,10 @@ const MACRO_COLORS = {
   fat: '#3b82f6',
 }
 
-function MacroBar({ protein, carbs, fat }: { protein: number; carbs: number; fat: number }) {
+function MacroBar({ protein, carbs, fat, proteinGoal, carbsGoal, fatGoal }: {
+  protein: number; carbs: number; fat: number
+  proteinGoal?: number; carbsGoal?: number; fatGoal?: number
+}) {
   const total = protein * 4 + carbs * 4 + fat * 9
   if (total === 0) return null
   const pPct = Math.round((protein * 4 / total) * 100)
@@ -67,9 +71,21 @@ function MacroBar({ protein, carbs, fat }: { protein: number; carbs: number; fat
         <div style={{ width: `${fPct}%`, background: MACRO_COLORS.fat }} />
       </div>
       <div className="flex gap-4 text-xs text-text-secondary">
-        <span><span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>{protein}g</span> protein</span>
-        <span><span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>{carbs}g</span> carbs</span>
-        <span><span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>{fat}g</span> fat</span>
+        <span>
+          <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>{protein}g</span>
+          {proteinGoal ? <span className="opacity-50">/{proteinGoal}g</span> : null}
+          {' '}protein
+        </span>
+        <span>
+          <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>{carbs}g</span>
+          {carbsGoal ? <span className="opacity-50">/{carbsGoal}g</span> : null}
+          {' '}carbs
+        </span>
+        <span>
+          <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>{fat}g</span>
+          {fatGoal ? <span className="opacity-50">/{fatGoal}g</span> : null}
+          {' '}fat
+        </span>
       </div>
     </div>
   )
@@ -330,8 +346,29 @@ export default function NutritionPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [defaultMealType, setDefaultMealType] = useState<string | undefined>()
+  const [calorieGoal, setCalorieGoal] = useState(2000)
+  const [proteinGoal, setProteinGoal] = useState(150)
+  const [carbsGoal, setCarbsGoal] = useState(250)
+  const [fatGoal, setFatGoal] = useState(65)
 
   const today = new Date().toISOString().slice(0, 10)
+
+  const loadSettings = useCallback(async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { data } = await supabase
+      .from('user_nutrition_settings')
+      .select('calorie_target, protein_target, carbs_target, fat_target')
+      .eq('user_id', user.id)
+      .single()
+    if (data) {
+      if (data.calorie_target) setCalorieGoal(data.calorie_target)
+      if (data.protein_target) setProteinGoal(data.protein_target)
+      if (data.carbs_target) setCarbsGoal(data.carbs_target)
+      if (data.fat_target) setFatGoal(data.fat_target)
+    }
+  }, [])
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/meals?date=${today}`)
@@ -364,7 +401,8 @@ export default function NutritionPage() {
   useEffect(() => {
     load()
     loadWeekly()
-  }, [load, loadWeekly])
+    loadSettings()
+  }, [load, loadWeekly, loadSettings])
 
   const deleteMeal = async (id: string) => {
     await fetch(`/api/meals?id=${id}`, { method: 'DELETE' })
@@ -386,8 +424,6 @@ export default function NutritionPage() {
     type,
     items: meals.filter((m) => m.meal_type.toLowerCase() === type.toLowerCase()),
   })).filter((g) => g.items.length > 0)
-
-  const calorieGoal = 2000 // could load from settings in a future improvement
 
   const openModal = (type?: string) => {
     setDefaultMealType(type)
@@ -452,6 +488,9 @@ export default function NutritionPage() {
                 protein={Math.round(totalProtein)}
                 carbs={Math.round(totalCarbs)}
                 fat={Math.round(totalFat)}
+                proteinGoal={proteinGoal}
+                carbsGoal={carbsGoal}
+                fatGoal={fatGoal}
               />
             )}
           </div>

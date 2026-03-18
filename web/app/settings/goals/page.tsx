@@ -12,6 +12,10 @@ const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
 const DEFAULT_SLEEP_GOAL = 480 // 8 hours
 const DEFAULT_WATER_GOAL = 2500 // ml
+const DEFAULT_CALORIE_INTAKE_GOAL = 2000
+const DEFAULT_PROTEIN_GOAL = 150
+const DEFAULT_CARBS_GOAL = 250
+const DEFAULT_FAT_GOAL = 65
 
 export default function GoalsSettingsPage() {
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
@@ -22,6 +26,14 @@ export default function GoalsSettingsPage() {
   const [sleepInput, setSleepInput] = useState((DEFAULT_SLEEP_GOAL / 60).toString())
   const [waterGoal, setWaterGoal] = useState(DEFAULT_WATER_GOAL)
   const [waterInput, setWaterInput] = useState(DEFAULT_WATER_GOAL.toString())
+  const [calorieIntakeGoal, setCalorieIntakeGoal] = useState(DEFAULT_CALORIE_INTAKE_GOAL)
+  const [calorieIntakeInput, setCalorieIntakeInput] = useState(DEFAULT_CALORIE_INTAKE_GOAL.toString())
+  const [proteinGoal, setProteinGoal] = useState(DEFAULT_PROTEIN_GOAL)
+  const [proteinInput, setProteinInput] = useState(DEFAULT_PROTEIN_GOAL.toString())
+  const [carbsGoal, setCarbsGoal] = useState(DEFAULT_CARBS_GOAL)
+  const [carbsInput, setCarbsInput] = useState(DEFAULT_CARBS_GOAL.toString())
+  const [fatGoal, setFatGoal] = useState(DEFAULT_FAT_GOAL)
+  const [fatInput, setFatInput] = useState(DEFAULT_FAT_GOAL.toString())
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -43,15 +55,31 @@ export default function GoalsSettingsPage() {
           setStepGoal(s); setStepInput(s.toString())
           setCalGoal(c); setCalInput(c.toString())
           setSleepGoal(sl); setSleepInput((sl / 60).toString())
-          // Load water goal from nutrition settings
+          // Load water + macro goals from nutrition settings
           const { data: nutrition } = await supabase
             .from('user_nutrition_settings')
-            .select('water_target_ml')
+            .select('water_target_ml, calorie_target, protein_target, carbs_target, fat_target')
             .eq('user_id', user.id)
             .single()
           if (nutrition?.water_target_ml) {
             setWaterGoal(nutrition.water_target_ml)
             setWaterInput(nutrition.water_target_ml.toString())
+          }
+          if (nutrition?.calorie_target) {
+            setCalorieIntakeGoal(nutrition.calorie_target)
+            setCalorieIntakeInput(nutrition.calorie_target.toString())
+          }
+          if (nutrition?.protein_target) {
+            setProteinGoal(nutrition.protein_target)
+            setProteinInput(nutrition.protein_target.toString())
+          }
+          if (nutrition?.carbs_target) {
+            setCarbsGoal(nutrition.carbs_target)
+            setCarbsInput(nutrition.carbs_target.toString())
+          }
+          if (nutrition?.fat_target) {
+            setFatGoal(nutrition.fat_target)
+            setFatInput(nutrition.fat_target.toString())
           }
           setLoading(false)
           return
@@ -76,11 +104,19 @@ export default function GoalsSettingsPage() {
     const sleepHours = parseFloat(sleepInput)
     const sleepMin = Math.round(sleepHours * 60)
     const water = parseInt(waterInput, 10)
+    const calorieIntake = parseInt(calorieIntakeInput, 10)
+    const protein = parseInt(proteinInput, 10)
+    const carbs = parseInt(carbsInput, 10)
+    const fat = parseInt(fatInput, 10)
 
     if (isNaN(steps) || steps <= 0 || steps > 100000) return
     if (isNaN(cal) || cal <= 0 || cal > 5000) return
     if (isNaN(sleepHours) || sleepHours < 4 || sleepHours > 12) return
     if (isNaN(water) || water < 500 || water > 6000) return
+    if (isNaN(calorieIntake) || calorieIntake < 500 || calorieIntake > 8000) return
+    if (isNaN(protein) || protein < 0 || protein > 500) return
+    if (isNaN(carbs) || carbs < 0 || carbs > 1000) return
+    if (isNaN(fat) || fat < 0 || fat > 500) return
 
     // Save to localStorage
     localStorage.setItem(STEP_KEY, steps.toString())
@@ -90,6 +126,10 @@ export default function GoalsSettingsPage() {
     setCalGoal(cal)
     setSleepGoal(sleepMin)
     setWaterGoal(water)
+    setCalorieIntakeGoal(calorieIntake)
+    setProteinGoal(protein)
+    setCarbsGoal(carbs)
+    setFatGoal(fat)
 
     // Save to DB (best effort)
     const { data: { user } } = await supabase.auth.getUser()
@@ -101,7 +141,14 @@ export default function GoalsSettingsPage() {
           .eq('id', user.id),
         supabase
           .from('user_nutrition_settings')
-          .upsert({ user_id: user.id, water_target_ml: water }, { onConflict: 'user_id' }),
+          .upsert({
+            user_id: user.id,
+            water_target_ml: water,
+            calorie_target: calorieIntake,
+            protein_target: protein,
+            carbs_target: carbs,
+            fat_target: fat,
+          }, { onConflict: 'user_id' }),
       ])
     }
 
@@ -289,6 +336,41 @@ export default function GoalsSettingsPage() {
               >
                 {preset >= 1000 ? `${preset / 1000}L` : `${preset}ml`}
               </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Nutrition Goals */}
+        <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
+          <div>
+            <h2 className="font-semibold text-text-primary">Daily Nutrition Goals</h2>
+            <p className="text-sm text-text-secondary mt-0.5">
+              Calorie intake and macro targets for your nutrition tracker.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { label: 'Calorie Intake', unit: 'kcal / day', value: calorieIntakeInput, set: setCalorieIntakeInput, min: 500, max: 8000, step: 100 },
+              { label: 'Protein', unit: 'g / day', value: proteinInput, set: setProteinInput, min: 0, max: 500, step: 5 },
+              { label: 'Carbohydrates', unit: 'g / day', value: carbsInput, set: setCarbsInput, min: 0, max: 1000, step: 10 },
+              { label: 'Fat', unit: 'g / day', value: fatInput, set: setFatInput, min: 0, max: 500, step: 5 },
+            ].map(({ label, unit, value, set, min, max, step }) => (
+              <div key={label} className="flex gap-3 items-center">
+                <div className="flex-1">
+                  <p className="text-sm text-text-primary">{label}</p>
+                </div>
+                <input
+                  type="number"
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-sm font-mono focus:outline-none focus:border-accent"
+                />
+                <span className="text-text-secondary text-xs w-16 shrink-0">{unit}</span>
+              </div>
             ))}
           </div>
         </section>
