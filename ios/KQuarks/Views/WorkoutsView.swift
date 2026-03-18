@@ -23,7 +23,9 @@ struct WorkoutsView: View {
                 } else {
                     List {
                         ForEach(workouts, id: \.uuid) { workout in
-                            WorkoutRow(workout: workout)
+                            NavigationLink(destination: WorkoutDetailView(workout: workout)) {
+                                WorkoutRow(workout: workout)
+                            }
                         }
                     }
                     .listStyle(.insetGrouped)
