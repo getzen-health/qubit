@@ -409,6 +409,50 @@ export function DashboardStream({
     return undefined
   }
 
+  // Personalized daily tip based on current data
+  const getDailyTip = (): { text: string; icon: string; type: 'positive' | 'caution' | 'info' } | null => {
+    const hour = new Date().getHours()
+    const sleepMin = today?.sleep_duration_minutes ?? 0
+    const steps = today?.steps ?? 0
+    const hrv = today?.avg_hrv ?? null
+    const avgHrv7 = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : null
+
+    // Sleep-based tips
+    if (sleepMin > 0 && sleepMin < (dbSleepGoalMinutes ?? 420)) {
+      const deficit = Math.round(((dbSleepGoalMinutes ?? 420) - sleepMin) / 60 * 10) / 10
+      return { text: `You slept ${deficit}h under your goal. A short nap or early bedtime tonight will help recovery.`, icon: '🌙', type: 'caution' }
+    }
+
+    // HRV drop tip
+    if (hrv && avgHrv7 && hrv < avgHrv7 * 0.85) {
+      return { text: `Your HRV is ${Math.round(((avgHrv7 - hrv) / avgHrv7) * 100)}% below your 7-day average. Consider lighter activity today.`, icon: '💗', type: 'caution' }
+    }
+
+    // Step goal nearly met in evening
+    if (hour >= 16 && steps >= stepGoal * 0.8 && steps < stepGoal) {
+      const remaining = stepGoal - steps
+      return { text: `Only ${remaining.toLocaleString()} steps to go! A 10–15 minute walk will get you there.`, icon: '🚶', type: 'info' }
+    }
+
+    // High recovery — encourage training
+    if (recoveryScore >= 75 && strainScore < 10) {
+      return { text: `Recovery is strong at ${recoveryScore}%. Great day to push your training.`, icon: '⚡', type: 'positive' }
+    }
+
+    // Step goal already met
+    if (steps >= stepGoal) {
+      return { text: `Step goal hit! You've walked ${(steps / 1000).toFixed(1)}k steps today.`, icon: '✅', type: 'positive' }
+    }
+
+    // Low water
+    if (waterTargetMl > 0 && localWaterMl < waterTargetMl * 0.4 && hour >= 14) {
+      return { text: `You've only had ${localWaterMl}ml of water today. Try to drink more this afternoon.`, icon: '💧', type: 'caution' }
+    }
+
+    return null
+  }
+  const dailyTip = getDailyTip()
+
   // Map insight categories to icons and colors
   const insightCategoryMap: Record<string, { icon: typeof Activity; color: 'recovery' | 'strain' | 'sleep' | 'heart' | 'activity' }> = {
     sleep: { icon: Moon, color: 'sleep' },
@@ -505,6 +549,24 @@ export function DashboardStream({
             sleepMinutes={metrics.sleep.duration}
             sleepGoalMinutes={sleepGoalMin}
           />
+        )}
+
+        {/* Daily Tip */}
+        {dailyTip && (
+          <div className={cn(
+            'mb-6 rounded-xl border p-4 flex items-start gap-3',
+            dailyTip.type === 'positive' && 'bg-green-500/5 border-green-500/20',
+            dailyTip.type === 'caution' && 'bg-amber-500/5 border-amber-500/20',
+            dailyTip.type === 'info' && 'bg-blue-500/5 border-blue-500/20',
+          )}>
+            <span className="text-xl leading-none mt-0.5">{dailyTip.icon}</span>
+            <p className={cn(
+              'text-sm leading-relaxed',
+              dailyTip.type === 'positive' && 'text-green-300',
+              dailyTip.type === 'caution' && 'text-amber-300',
+              dailyTip.type === 'info' && 'text-blue-300',
+            )}>{dailyTip.text}</p>
+          </div>
         )}
 
         {/* Quick Stats */}
