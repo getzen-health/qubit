@@ -66,11 +66,20 @@ interface InsightResult {
   priority: "high" | "normal" | "low"
 }
 
+interface CheckinRecord {
+  date: string
+  energy: number | null
+  mood: number | null
+  stress: number | null
+  notes: string | null
+}
+
 function buildPrompt(
   today: DailySummary,
   history: DailySummary[],
   workouts: WorkoutRecord[],
-  sleep: SleepRecord[]
+  sleep: SleepRecord[],
+  checkins: CheckinRecord[]
 ): string {
   const sleepStr = (s: SleepRecord) =>
     `${((s.duration_minutes ?? 0) / 60).toFixed(1)}h total, ${s.deep_minutes ?? 0}m deep, ${s.rem_minutes ?? 0}m REM`
@@ -80,7 +89,29 @@ function buildPrompt(
     return vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null
   }
 
-  return `You are a health coach AI. Generate 3-5 concise, actionable health insights.
+  const energyLabels = ["", "Very Low", "Low", "Moderate", "Good", "Great"]
+  const moodLabels = ["", "Very Low", "Low", "Neutral", "Good", "Excellent"]
+  const stressLabels = ["", "None", "Mild", "Moderate", "High", "Very High"]
+
+  const recentCheckin = checkins[0]
+  const checkinStr = recentCheckin
+    ? `Energy: ${recentCheckin.energy != null ? energyLabels[recentCheckin.energy] : "N/A"} (${recentCheckin.energy ?? "?"}/5), ` +
+      `Mood: ${recentCheckin.mood != null ? moodLabels[recentCheckin.mood] : "N/A"} (${recentCheckin.mood ?? "?"}/5), ` +
+      `Stress: ${recentCheckin.stress != null ? stressLabels[recentCheckin.stress] : "N/A"} (${recentCheckin.stress ?? "?"}/5)` +
+      (recentCheckin.notes ? ` — Note: "${recentCheckin.notes}"` : "")
+    : "No recent check-in"
+
+  const avgEnergy = checkins.length > 0
+    ? (checkins.map((c) => c.energy).filter((v) => v != null) as number[]).reduce((a, b) => a + b, 0) / checkins.filter((c) => c.energy != null).length
+    : null
+  const avgMood = checkins.length > 0
+    ? (checkins.map((c) => c.mood).filter((v) => v != null) as number[]).reduce((a, b) => a + b, 0) / checkins.filter((c) => c.mood != null).length
+    : null
+  const avgStress = checkins.length > 0
+    ? (checkins.map((c) => c.stress).filter((v) => v != null) as number[]).reduce((a, b) => a + b, 0) / checkins.filter((c) => c.stress != null).length
+    : null
+
+  return `You are a health coach AI. Generate 3-5 concise, actionable health insights. Consider both objective health data and subjective wellbeing when they are both available.
 
 TODAY (${today.date}):
 - Steps: ${today.steps ?? "N/A"}
@@ -90,6 +121,10 @@ TODAY (${today.date}):
 - HRV: ${today.avg_hrv ?? "N/A"} ms
 - Sleep: ${today.sleep_duration_minutes ? ((today.sleep_duration_minutes ?? 0) / 60).toFixed(1) + "h" : "N/A"}
 - Recovery: ${today.recovery_score ?? "N/A"}%
+
+SUBJECTIVE WELLBEING:
+- Latest check-in: ${checkinStr}
+${avgEnergy != null ? `- 7-day avg energy: ${avgEnergy.toFixed(1)}/5, mood: ${avgMood?.toFixed(1) ?? "N/A"}/5, stress: ${avgStress?.toFixed(1) ?? "N/A"}/5` : ""}
 
 WEEK AVERAGES (${history.length} days):
 - Avg steps: ${historyAvg("steps") ?? "N/A"}
@@ -104,7 +139,7 @@ RECENT SLEEP (${sleep.length} nights):
 ${sleep.slice(0, 2).map(sleepStr).join("\n") || "No sleep data"}
 
 Return ONLY a valid JSON array (no markdown, no explanation):
-[{"category":"sleep|activity|heart|recovery|strain","title":"Short title under 60 chars","content":"2-3 sentence specific insight (100-200 chars)","priority":"high|normal|low"}]`
+[{"category":"sleep|activity|heart|recovery|strain|wellbeing","title":"Short title under 60 chars","content":"2-3 sentence specific insight (100-200 chars)","priority":"high|normal|low"}]`
 }
 
 async function generateInsightsForUser(
@@ -115,7 +150,7 @@ async function generateInsightsForUser(
   const since14d = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString()
   const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10)
 
-  const [{ data: summaries }, { data: workouts }, { data: sleep }] = await Promise.all([
+  const [{ data: summaries }, { data: workouts }, { data: sleep }, { data: checkins }] = await Promise.all([
     supabase
       .from("daily_summaries")
       .select("date,steps,active_calories,distance_meters,resting_heart_rate,avg_hrv,sleep_duration_minutes,recovery_score")
@@ -139,13 +174,20 @@ async function generateInsightsForUser(
       .gt("duration_minutes", 60)
       .order("start_time", { ascending: false })
       .limit(3),
+    supabase
+      .from("daily_checkins")
+      .select("date,energy,mood,stress,notes")
+      .eq("user_id", userId)
+      .gte("date", since7d)
+      .order("date", { ascending: false })
+      .limit(7),
   ])
 
   if (!summaries || summaries.length === 0) return 0
 
   const today = summaries[0]
   const history = summaries.slice(1)
-  const prompt = buildPrompt(today, history, workouts ?? [], sleep ?? [])
+  const prompt = buildPrompt(today, history, workouts ?? [], sleep ?? [], checkins ?? [])
 
   const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
