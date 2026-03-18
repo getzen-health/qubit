@@ -1,10 +1,22 @@
 import SwiftUI
 import Supabase
+import BackgroundTasks
 
 @main
 struct KQuarksApp: App {
     @State private var appState = AppState()
     @State private var themeManager = ThemeManager.shared
+
+    init() {
+        // MUST register handlers before app finishes launching.
+        // Do NOT move this to .task or .onAppear.
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.refresh", using: nil) { task in
+            Task { await SyncService.shared.handleRefreshTask(task as! BGAppRefreshTask) }
+        }
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.full", using: nil) { task in
+            Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -15,6 +27,9 @@ struct KQuarksApp: App {
                 .tint(themeManager.accentColor)
                 .task {
                     await appState.initializeAuth()
+                }
+                .task {
+                    SyncService.shared.scheduleBackgroundSync()
                 }
         }
     }
