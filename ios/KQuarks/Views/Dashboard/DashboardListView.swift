@@ -4,6 +4,7 @@ import SwiftUI
 struct DashboardListView: View {
     @State private var viewModel = DashboardListViewModel()
     @Environment(ThemeManager.self) private var themeManager
+    private let aiService = AIInsightsService.shared
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,16 @@ struct DashboardListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
+                        Button {
+                            Task {
+                                await viewModel.refreshAIInsights()
+                            }
+                        } label: {
+                            Image(systemName: "sparkles")
+                                .symbolEffect(.pulse, isActive: aiService.isGenerating)
+                        }
+                        .disabled(aiService.isGenerating)
+
                         Button {
                             Task {
                                 await viewModel.sync()
@@ -321,16 +332,17 @@ class DashboardListViewModel {
     var isSyncing = false
     var error: String?
 
-    // Mock computed scores (will be replaced with real calculations)
-    var recoveryScore: Int { 78 }
-    var strainScore: Double { 14.2 }
-    var recoveryTrend: Int? { 5 }
-    var strainTrend: Int? { -8 }
-    var stepsTrend: Int? { 12 }
-    var hrvTrend: Int? { 8 }
+    // Real scores from AI analysis (with sensible defaults)
+    var recoveryScore: Int = 70
+    var strainScore: Double = 8.0
+    var recoveryTrend: Int? = nil
+    var strainTrend: Int? = nil
+    var stepsTrend: Int? = nil
+    var hrvTrend: Int? = nil
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
+    private let aiService = AIInsightsService.shared
 
     func loadData() async {
         await MainActor.run {
@@ -344,6 +356,23 @@ class DashboardListViewModel {
                 todaySummary = summary
                 isLoading = false
             }
+
+            // Load cached AI scores if available
+            if let cachedRecovery = aiService.latestRecoveryScore {
+                await MainActor.run { recoveryScore = cachedRecovery }
+            }
+            if let cachedStrain = aiService.latestStrainScore {
+                await MainActor.run { strainScore = cachedStrain }
+            }
+
+            // Load insights from Supabase
+            if let fetchedInsights = try? await SupabaseService.shared.fetchInsights() {
+                await MainActor.run { insights = fetchedInsights }
+            }
+
+            // Calculate trends from week data
+            await calculateTrends()
+
         } catch {
             await MainActor.run {
                 self.error = error.localizedDescription
@@ -366,6 +395,48 @@ class DashboardListViewModel {
         await loadData()
     }
 
+    func refreshAIInsights() async {
+        let result = await aiService.generateInsights()
+        if let result = result {
+            await MainActor.run {
+                recoveryScore = result.recoveryScore
+                strainScore = result.strainScore
+            }
+            // Reload insights from DB
+            if let fetchedInsights = try? await SupabaseService.shared.fetchInsights() {
+                await MainActor.run { insights = fetchedInsights }
+            }
+        }
+    }
+
+    private func calculateTrends() async {
+        do {
+            let weekData = try await healthKit.fetchWeekSummaries(days: 7)
+            guard weekData.count >= 2 else { return }
+
+            let todaySteps = weekData.first?.steps ?? 0
+            let avgSteps = weekData.dropFirst().reduce(0) { $0 + $1.steps } / max(weekData.count - 1, 1)
+            if avgSteps > 0 {
+                await MainActor.run {
+                    stepsTrend = Int(((Double(todaySteps) - Double(avgSteps)) / Double(avgSteps)) * 100)
+                }
+            }
+
+            let todayHrv = weekData.first?.avgHrv
+            let hrvValues = weekData.dropFirst().compactMap { $0.avgHrv }
+            if let todayHrv = todayHrv, !hrvValues.isEmpty {
+                let avgHrv = hrvValues.reduce(0, +) / Double(hrvValues.count)
+                if avgHrv > 0 {
+                    await MainActor.run {
+                        hrvTrend = Int(((todayHrv - avgHrv) / avgHrv) * 100)
+                    }
+                }
+            }
+        } catch {
+            // Trends are non-critical, silently fail
+        }
+    }
+
     func generatePrimaryInsight() -> String {
         if recoveryScore >= 80 {
             return "Your recovery is excellent. Today is ideal for high-intensity training."
@@ -378,10 +449,10 @@ class DashboardListViewModel {
 
     func generateSecondaryInsight() -> String? {
         if let trend = hrvTrend, trend > 10 {
-            return "HRV trending up \(trend)% this week - a positive adaptation sign."
+            return "HRV trending up \(trend)% this week — a positive adaptation sign."
         }
         if let trend = stepsTrend, trend > 20 {
-            return "You're \(trend)% more active than yesterday. Great momentum!"
+            return "You're \(trend)% more active than your weekly average. Great momentum!"
         }
         return nil
     }
