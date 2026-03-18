@@ -9,6 +9,7 @@ struct SettingsView: View {
 
     private let syncService = SyncService.shared
     private let supabaseService = SupabaseService.shared
+    private let notificationService = NotificationService.shared
 
     var body: some View {
         NavigationStack {
@@ -123,6 +124,23 @@ struct SettingsView: View {
                         }
                     }
                     .disabled(isDeletingData)
+                }
+
+                // Notifications
+                Section("Notifications") {
+                    HStack {
+                        Label("Notifications", systemImage: "bell")
+                        Spacer()
+                        if notificationService.isAuthorized {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        } else {
+                            Button("Enable") {
+                                Task { await notificationService.requestPermission() }
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
                 }
 
                 // App section

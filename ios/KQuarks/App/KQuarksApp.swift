@@ -30,6 +30,7 @@ struct KQuarksApp: App {
                 }
                 .task {
                     SyncService.shared.scheduleBackgroundSync()
+                    await NotificationService.shared.refreshAuthorizationStatus()
                 }
         }
     }
