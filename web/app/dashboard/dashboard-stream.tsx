@@ -158,6 +158,15 @@ export function DashboardStream({
                 day: 'numeric',
               })}
             </p>
+            {summaries.length > 0 && (() => {
+              const lastDate = new Date(summaries[0].date + 'T00:00:00')
+              const diffDays = Math.floor((Date.now() - lastDate.getTime()) / 86400000)
+              return (
+                <p className="text-xs text-text-secondary opacity-60">
+                  {diffDays === 0 ? 'Synced today' : diffDays === 1 ? 'Synced yesterday' : `Synced ${diffDays} days ago`}
+                </p>
+              )
+            })()}
           </div>
           <div className="flex items-center gap-2">
             <button

@@ -67,6 +67,18 @@ struct OnboardingView: View {
                             .background(Color.green)
                             .cornerRadius(12)
                     }
+                } else if error != nil {
+                    Button {
+                        appState.completeOnboarding()
+                    } label: {
+                        Text("Continue Anyway")
+                            .font(.headline)
+                            .foregroundColor(.accentColor)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.accentColor.opacity(0.12))
+                            .cornerRadius(12)
+                    }
                 }
             }
             .padding(.horizontal, 24)
