@@ -120,6 +120,9 @@ class HealthKitService {
             HKQuantityType(.bodyMass),
             HKObjectType.workoutType(),
             HKCategoryType(.mindfulSession),
+            HKQuantityType(.bloodPressureSystolic),
+            HKQuantityType(.bloodPressureDiastolic),
+            HKCorrelationType(.bloodPressure),
         ]
         try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
         await MainActor.run {
@@ -795,6 +798,62 @@ class HealthKitService {
         guard isHealthDataAvailable else { return [] }
         let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         return try await fetchCategoryEvents(.mindfulSession, from: startDate, to: Date())
+    }
+
+    // MARK: - Blood Pressure
+
+    struct BPReading: Identifiable {
+        let id: UUID
+        let systolic: Double
+        let diastolic: Double
+        let date: Date
+    }
+
+    func saveBloodPressure(systolic: Double, diastolic: Double) async throws {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+        let now = Date()
+        let sysType = HKQuantityType(.bloodPressureSystolic)
+        let diaType = HKQuantityType(.bloodPressureDiastolic)
+        let mmHg = HKUnit.millimeterOfMercury()
+        let sysSample = HKQuantitySample(type: sysType, quantity: HKQuantity(unit: mmHg, doubleValue: systolic), start: now, end: now)
+        let diaSample = HKQuantitySample(type: diaType, quantity: HKQuantity(unit: mmHg, doubleValue: diastolic), start: now, end: now)
+        let correlation = HKCorrelation(
+            type: HKCorrelationType(.bloodPressure),
+            start: now, end: now,
+            objects: [sysSample, diaSample]
+        )
+        try await healthStore.save(correlation)
+    }
+
+    func fetchBloodPressureReadings(days: Int = 30) async throws -> [BPReading] {
+        guard isHealthDataAvailable else { return [] }
+        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: .strictEndDate)
+        let correlationType = HKCorrelationType(.bloodPressure)
+        let sysType = HKQuantityType(.bloodPressureSystolic)
+        let diaType = HKQuantityType(.bloodPressureDiastolic)
+        let mmHg = HKUnit.millimeterOfMercury()
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKCorrelationQuery(type: correlationType, predicate: predicate, samplePredicates: nil) { _, correlations, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                let readings: [BPReading] = (correlations ?? []).compactMap { corr in
+                    guard let sys = corr.objects(for: sysType).first as? HKQuantitySample,
+                          let dia = corr.objects(for: diaType).first as? HKQuantitySample else { return nil }
+                    return BPReading(
+                        id: corr.uuid,
+                        systolic: sys.quantity.doubleValue(for: mmHg),
+                        diastolic: dia.quantity.doubleValue(for: mmHg),
+                        date: corr.startDate
+                    )
+                }
+                continuation.resume(returning: readings.sorted { $0.date > $1.date })
+            }
+            self.healthStore.execute(query)
+        }
     }
 
     // MARK: - Workout Logging
