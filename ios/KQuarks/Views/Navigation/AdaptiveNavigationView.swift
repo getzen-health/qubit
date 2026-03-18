@@ -89,6 +89,11 @@ struct AdaptiveNavigationView: View {
                     Label("Health", systemImage: "figure.walk")
                 }
 
+            WorkoutsView()
+                .tabItem {
+                    Label("Workouts", systemImage: "figure.run")
+                }
+
             InsightsView()
                 .tabItem {
                     Label("Insights", systemImage: "sparkles")

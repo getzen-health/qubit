@@ -230,8 +230,8 @@ struct DashboardListView: View {
                     icon: "figure.walk",
                     label: "Steps",
                     value: summary.steps.formatted(),
-                    unit: "/ 10,000",
-                    sublabel: "\(Int(Double(summary.steps) / 10000.0 * 100))% of goal",
+                    unit: "/ \(Int(GoalService.shared.stepsGoal).formatted())",
+                    sublabel: "\(Int(Double(summary.steps) / GoalService.shared.stepsGoal * 100))% of goal",
                     trend: viewModel.stepsTrend,
                     color: .activity
                 )
@@ -241,7 +241,7 @@ struct DashboardListView: View {
                     label: "Active Calories",
                     value: "\(Int(summary.activeCalories))",
                     unit: "cal",
-                    sublabel: "500 cal goal",
+                    sublabel: "\(Int(GoalService.shared.activeCaloriesGoal)) cal goal",
                     color: .strain
                 )
 

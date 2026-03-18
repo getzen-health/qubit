@@ -161,9 +161,9 @@ struct DashboardView: View {
 struct ActivityRingsView: View {
     let summary: TodayHealthSummary
 
-    // Goals (could be user-configurable)
-    let stepsGoal = 10000
-    let caloriesGoal = 500.0
+    // Goals from user settings
+    var stepsGoal: Int { Int(GoalService.shared.stepsGoal) }
+    var caloriesGoal: Double { GoalService.shared.activeCaloriesGoal }
     let activeMinutesGoal = 30
 
     var body: some View {
