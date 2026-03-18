@@ -164,6 +164,13 @@ struct WorkoutDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(workout.workoutActivityType.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                ShareLink(item: shareText) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+        }
         .task {
             async let hr = healthKit.fetchAverageHeartRate(during: workout)
             async let samples = healthKit.fetchHeartRateSamples(during: workout)
@@ -172,6 +179,23 @@ struct WorkoutDetailView: View {
                 hrZones = computeZones(from: s)
             }
         }
+    }
+
+    private var shareText: String {
+        var lines: [String] = []
+        lines.append("\(workout.workoutActivityType.name) · \(workout.startDate.formatted(date: .abbreviated, time: .omitted))")
+        lines.append("⏱ \(formatDuration(workout.duration))")
+        if let cal = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()), cal > 0 {
+            lines.append("🔥 \(Int(cal)) kcal")
+        }
+        if let dist = workout.totalDistance?.doubleValue(for: .meter()), dist > 0 {
+            lines.append("📍 \(String(format: "%.2f km", dist / 1000))")
+        }
+        if let hr = avgHeartRate {
+            lines.append("❤️ \(Int(hr)) bpm avg")
+        }
+        lines.append("\nTracked with KQuarks")
+        return lines.joined(separator: "\n")
     }
 
     private func formatDuration(_ seconds: TimeInterval) -> String {
