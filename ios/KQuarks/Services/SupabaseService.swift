@@ -486,6 +486,33 @@ class SupabaseService {
             .execute()
     }
 
+    func fetchTodayCheckin() async throws -> DailyCheckin? {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+
+        struct Row: Decodable {
+            let id: String
+            let date: String
+            let energy: Int?
+            let mood: Int?
+            let stress: Int?
+            let notes: String?
+        }
+
+        let rows: [Row] = try await client.from("daily_checkins")
+            .select("id, date, energy, mood, stress, notes")
+            .eq("user_id", value: session.user.id.uuidString)
+            .eq("date", value: today)
+            .limit(1)
+            .execute()
+            .value
+
+        guard let row = rows.first else { return nil }
+        return DailyCheckin(id: row.id, date: row.date, energy: row.energy, mood: row.mood, stress: row.stress, notes: row.notes)
+    }
+
     // MARK: - AI Insights
 
     func deleteAllUserData() async throws {

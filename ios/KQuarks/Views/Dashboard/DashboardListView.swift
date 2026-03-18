@@ -11,6 +11,9 @@ struct DashboardListView: View {
     @State private var logWeightText = ""
     @State private var logWeightError: String?
 
+    @State private var showCheckin = false
+    @State private var todayCheckin: DailyCheckin?
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -75,6 +78,12 @@ struct DashboardListView: View {
             }
             .task {
                 await viewModel.loadData()
+                todayCheckin = try? await SupabaseService.shared.fetchTodayCheckin()
+            }
+            .sheet(isPresented: $showCheckin, onDismiss: {
+                Task { todayCheckin = try? await SupabaseService.shared.fetchTodayCheckin() }
+            }) {
+                CheckinView()
             }
             .alert("Log Weight", isPresented: $showLogWeight) {
                 TextField("Weight in kg", text: $logWeightText)
@@ -148,6 +157,19 @@ struct DashboardListView: View {
 
             // Activity Stream
             activitySection(summary: summary)
+
+            // Daily Check-in card
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Wellbeing")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .padding(.horizontal, 16)
+                CheckinDashboardCard(checkin: todayCheckin) {
+                    showCheckin = true
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 16)
+            }
 
             // AI Insights
             InsightsSectionView(insights: viewModel.insights)
