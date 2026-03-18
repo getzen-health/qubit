@@ -91,6 +91,14 @@ class HealthKitService {
         // Metabolic
         types.insert(HKQuantityType(.bloodGlucose))
 
+        // Dietary (synced from third-party apps like MyFitnessPal)
+        types.insert(HKQuantityType(.dietaryEnergyConsumed))
+        types.insert(HKQuantityType(.dietaryProtein))
+        types.insert(HKQuantityType(.dietaryCarbohydrates))
+        types.insert(HKQuantityType(.dietaryFatTotal))
+        types.insert(HKQuantityType(.dietaryFiber))
+        types.insert(HKQuantityType(.dietaryWater))
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 

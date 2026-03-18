@@ -1000,6 +1000,7 @@ export function DashboardStream({
               links: [
                 { href: '/water', label: 'Hydration' },
                 { href: '/nutrition', label: 'Nutrition' },
+                { href: '/macros', label: 'Macros' },
                 { href: '/fasting', label: 'Fasting' },
               ],
             },

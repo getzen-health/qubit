@@ -449,6 +449,46 @@ class SyncService {
             }
         }
 
+        // Dietary macros (from third-party apps writing to Apple Health, aggregated by day)
+        struct DietaryMetric { let identifier: HKQuantityTypeIdentifier; let type: String; let unit: HKUnit; let unitName: String }
+        let dietaryMetrics = [
+            DietaryMetric(identifier: .dietaryEnergyConsumed, type: "dietary_energy", unit: HKUnit.kilocalorie(), unitName: "kcal"),
+            DietaryMetric(identifier: .dietaryProtein, type: "dietary_protein", unit: .gram(), unitName: "g"),
+            DietaryMetric(identifier: .dietaryCarbohydrates, type: "dietary_carbs", unit: .gram(), unitName: "g"),
+            DietaryMetric(identifier: .dietaryFatTotal, type: "dietary_fat", unit: .gram(), unitName: "g"),
+            DietaryMetric(identifier: .dietaryFiber, type: "dietary_fiber", unit: .gram(), unitName: "g"),
+            DietaryMetric(identifier: .dietaryWater, type: "dietary_water", unit: HKUnit.liter(), unitName: "mL"),
+        ]
+        for metric in dietaryMetrics {
+            let samples = try await healthKit.fetchSamples(for: metric.identifier, from: startDate, to: now)
+            // Aggregate samples by day (sum per calendar day)
+            var dayTotals: [String: Double] = [:]
+            var dayDates: [String: (Date, Date)] = [:]
+            for sample in samples {
+                let cal = Calendar.current
+                let dayStart = cal.startOfDay(for: sample.startDate)
+                let dayEnd = cal.date(byAdding: .day, value: 1, to: dayStart)!
+                let key = ISO8601DateFormatter().string(from: dayStart).prefix(10).description
+                var value = sample.quantity.doubleValue(for: metric.unit)
+                if metric.identifier == .dietaryWater { value *= 1000 } // convert L to mL
+                dayTotals[key, default: 0] += value
+                dayDates[key] = (dayStart, dayEnd)
+            }
+            for (_, (start, end)) in dayDates {
+                let key = ISO8601DateFormatter().string(from: start).prefix(10).description
+                guard let total = dayTotals[key], total > 0 else { continue }
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: metric.type,
+                    value: total,
+                    unit: metric.unitName,
+                    source: "Apple Health",
+                    startTime: start,
+                    endTime: end
+                ))
+            }
+        }
+
         // Blood glucose
         let glucoseSamples = try await healthKit.fetchSamples(for: .bloodGlucose, from: startDate, to: now)
         for sample in glucoseSamples {
