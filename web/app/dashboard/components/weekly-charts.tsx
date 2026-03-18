@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import {
   BarChart,
   Bar,
@@ -30,12 +31,15 @@ interface WeeklyChartsProps {
 }
 
 export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weightData }: WeeklyChartsProps) {
+  const router = useRouter()
+
   // Reverse to ascending order (oldest → newest left → right)
   // Append T00:00:00 to force local-time parsing and avoid UTC day-shift
   const chartData = [...summaries].reverse().map((s) => ({
     day: new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', {
       weekday: 'short',
     }),
+    date: s.date,
     steps: s.steps,
     activeCalories: s.active_calories,
     sleepHours: s.sleep_duration_minutes
@@ -46,6 +50,12 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
     recoveryScore: s.recovery_score ?? null,
     strainScore: s.strain_score ?? null,
   }))
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleChartClick(data: any) {
+    const date = data?.activePayload?.[0]?.payload?.date
+    if (date) router.push(`/day/${date}`)
+  }
 
   const hasSleepData = chartData.some((d) => d.sleepHours !== null)
   const hasHRData = chartData.some((d) => d.restingHR !== null)
@@ -59,7 +69,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
       <div>
         <h3 className="text-sm font-medium text-text-secondary mb-2">Steps</h3>
         <ResponsiveContainer width="100%" height={160}>
-          <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis
               dataKey="day"
@@ -92,7 +102,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
       <div>
         <h3 className="text-sm font-medium text-text-secondary mb-2">Active Calories</h3>
         <ResponsiveContainer width="100%" height={160}>
-          <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis
               dataKey="day"
@@ -126,7 +136,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
         <div>
           <h3 className="text-sm font-medium text-text-secondary mb-2">Sleep (hours)</h3>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="day"
@@ -157,7 +167,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
             Resting Heart Rate (bpm)
           </h3>
           <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="day"
@@ -195,7 +205,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
             HRV (ms)
           </h3>
           <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="day"
@@ -230,7 +240,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
         <div>
           <h3 className="text-sm font-medium text-text-secondary mb-2">Recovery (%)</h3>
           <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="day"
@@ -266,7 +276,7 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weigh
         <div>
           <h3 className="text-sm font-medium text-text-secondary mb-2">Strain (/21)</h3>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="day"
