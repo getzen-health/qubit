@@ -60,6 +60,11 @@ class HealthKitService {
             types.insert(HKQuantityType(.timeInDaylight))
         }
 
+        // Cardiac events (Apple Watch Series 4+)
+        types.insert(HKCategoryType(.highHeartRateEvent))
+        types.insert(HKCategoryType(.lowHeartRateEvent))
+        types.insert(HKCategoryType(.irregularHeartRhythmEvent))
+
         // Running form metrics (Apple Watch, iOS 16+)
         if #available(iOS 16.0, *) {
             types.insert(HKQuantityType(.runningCadence))
@@ -485,6 +490,28 @@ class HealthKitService {
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKSampleQuery(
                 sampleType: mindfulType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: (samples as? [HKCategorySample]) ?? [])
+            }
+            self.healthStore.execute(query)
+        }
+    }
+
+    func fetchCategoryEvents(_ identifier: HKCategoryTypeIdentifier, from startDate: Date, to endDate: Date) async throws -> [HKCategorySample] {
+        let categoryType = HKCategoryType(identifier)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: categoryType,
                 predicate: predicate,
                 limit: HKObjectQueryNoLimit,
                 sortDescriptors: [sortDescriptor]

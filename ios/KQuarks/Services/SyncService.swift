@@ -401,6 +401,27 @@ class SyncService {
             ))
         }
 
+        // Fetch cardiac events (AFib, high HR, low HR) from Apple Watch
+        let cardiacEvents: [(HKCategoryTypeIdentifier, String)] = [
+            (.irregularHeartRhythmEvent, "afib_event"),
+            (.highHeartRateEvent, "high_heart_rate_event"),
+            (.lowHeartRateEvent, "low_heart_rate_event"),
+        ]
+        for (identifier, typeName) in cardiacEvents {
+            let events = try await healthKit.fetchCategoryEvents(identifier, from: startDate, to: now)
+            for event in events {
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: typeName,
+                    value: 1.0,
+                    unit: "event",
+                    source: event.sourceRevision.source.name,
+                    startTime: event.startDate,
+                    endTime: event.endDate
+                ))
+            }
+        }
+
         // Batch upload
         if !records.isEmpty {
             // Split into batches of 100
