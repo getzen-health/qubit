@@ -232,6 +232,22 @@ struct DashboardListView: View {
                         }
                         .padding()
                     }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: BreathingView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "wind")
+                                .font(.title3)
+                                .foregroundStyle(.cyan)
+                            Text("Breathing")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
                 }
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
