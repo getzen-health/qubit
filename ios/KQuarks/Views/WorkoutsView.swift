@@ -78,6 +78,11 @@ struct WorkoutsView: View {
             .navigationTitle("Workouts")
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink(destination: RecordsView()) {
+                        Image(systemName: "trophy.fill")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Picker("Period", selection: $selectedPeriod) {
                         ForEach(WorkoutPeriod.allCases, id: \.self) { period in
