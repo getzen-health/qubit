@@ -960,6 +960,7 @@ export function DashboardStream({
                 { href: '/cycling', label: 'Cycling' },
                 { href: '/swimming', label: 'Swimming' },
                 { href: '/hiking', label: 'Hiking' },
+                { href: '/variety', label: 'Workout Variety' },
                 { href: '/workouts/prs', label: 'Workout PRs' },
                 { href: '/records', label: 'All-Time Records' },
                 { href: '/calories', label: 'Calorie Balance' },
