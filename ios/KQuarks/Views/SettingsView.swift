@@ -4,6 +4,7 @@ struct SettingsView: View {
     @Environment(AppState.self) private var appState
     @State private var showingSignOutAlert = false
     @State private var showingDeleteDataAlert = false
+    @State private var showingHistoricalSyncConfirm = false
     @State private var isDeletingData = false
     @State private var deleteError: String?
     @State private var biometricEnabled = false
@@ -89,7 +90,31 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    .disabled(syncService.isSyncing)
+                    .disabled(syncService.isSyncing || syncService.isHistoricalSyncing)
+
+                    Button {
+                        showingHistoricalSyncConfirm = true
+                    } label: {
+                        HStack {
+                            Label("Sync Health History", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                            Spacer()
+                            if syncService.isHistoricalSyncing {
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(syncService.isSyncing || syncService.isHistoricalSyncing)
+
+                    if syncService.isHistoricalSyncing {
+                        VStack(alignment: .leading, spacing: 4) {
+                            ProgressView(value: syncService.historicalSyncProgress)
+                                .tint(.accentColor)
+                            Text("\(Int(syncService.historicalSyncProgress * 100))% — syncing up to 1 year of history…")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 2)
+                    }
                 }
 
                 // Appearance
@@ -241,6 +266,16 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) { deleteError = nil }
             } message: {
                 Text(deleteError ?? "")
+            }
+            .alert("Sync Health History", isPresented: $showingHistoricalSyncConfirm) {
+                Button("Cancel", role: .cancel) { }
+                Button("Sync") {
+                    Task {
+                        await syncService.performHistoricalSync(daysBack: 365)
+                    }
+                }
+            } message: {
+                Text("This will sync up to 1 year of your Apple Health data (steps, sleep, workouts, heart rate). This may take a few minutes.")
             }
         }
     }

@@ -263,6 +263,185 @@ class SyncService {
         }
     }
 
+    // MARK: - Historical Backfill
+
+    var historicalSyncProgress: Double = 0.0
+    var isHistoricalSyncing: Bool = false
+
+    /// Backfills all available HealthKit data going back `daysBack` days.
+    /// Uses bulk HKStatisticsCollectionQuery for efficiency.
+    func performHistoricalSync(daysBack: Int = 365) async {
+        guard !isHistoricalSyncing && !isSyncing else { return }
+        guard let userId = supabase.currentUser?.id else { return }
+
+        await MainActor.run {
+            isHistoricalSyncing = true
+            historicalSyncProgress = 0.0
+        }
+
+        do {
+            let calendar = Calendar.current
+            let now = Date()
+            let endDate = calendar.startOfDay(for: now) // up to start of today (today handled by regular sync)
+            let startDate = calendar.date(byAdding: .day, value: -daysBack, to: endDate)!
+
+            await MainActor.run { historicalSyncProgress = 0.05 }
+
+            // Fetch all daily activity stats in parallel using efficient collection queries
+            async let stepMap = healthKit.fetchDailyStats(for: .stepCount, from: startDate, to: endDate, isDiscrete: false)
+            async let distMap = healthKit.fetchDailyStats(for: .distanceWalkingRunning, from: startDate, to: endDate, isDiscrete: false)
+            async let calMap = healthKit.fetchDailyStats(for: .activeEnergyBurned, from: startDate, to: endDate, isDiscrete: false)
+            async let floorsMap = healthKit.fetchDailyStats(for: .flightsClimbed, from: startDate, to: endDate, isDiscrete: false)
+            let (steps, dist, cal, floors) = try await (stepMap, distMap, calMap, floorsMap)
+
+            async let exerciseMap = healthKit.fetchDailyStats(for: .appleExerciseTime, from: startDate, to: endDate, isDiscrete: false)
+            async let rhrMap = healthKit.fetchDailyStats(for: .restingHeartRate, from: startDate, to: endDate, isDiscrete: true)
+            async let hrvMap = healthKit.fetchDailyStats(for: .heartRateVariabilitySDNN, from: startDate, to: endDate, isDiscrete: true)
+            let (exercise, rhr, hrv) = try await (exerciseMap, rhrMap, hrvMap)
+
+            await MainActor.run { historicalSyncProgress = 0.35 }
+
+            // Fetch all sleep samples for the range and group into per-day minutes
+            let sleepSamples = try await healthKit.fetchSleepAnalysis(from: startDate, to: endDate)
+            let sleepByDay = buildDailySleepMap(from: sleepSamples)
+
+            await MainActor.run { historicalSyncProgress = 0.45 }
+
+            // Build ordered list of days to upload
+            var allDates: [Date] = []
+            var d = startDate
+            while d < endDate {
+                allDates.append(d)
+                d = calendar.date(byAdding: .day, value: 1, to: d)!
+            }
+
+            let total = Double(allDates.count)
+            for (i, dayStart) in allDates.enumerated() {
+                // Skip days with no data (reduces unnecessary upserts)
+                let daySteps = Int(steps[dayStart] ?? 0)
+                let dayCalories = cal[dayStart] ?? 0
+                guard daySteps > 0 || dayCalories > 0 else { continue }
+
+                let dayDist = dist[dayStart] ?? 0
+                let dayFloors = Int(floors[dayStart] ?? 0)
+                let dayExercise = Int(exercise[dayStart] ?? 0)
+                let daySleep: Int? = sleepByDay[dayStart]
+                let dayRhr: Int? = rhr[dayStart].map { Int($0) }
+                let dayHrv: Double? = hrv[dayStart]
+
+                let upload = DailySummaryUpload(
+                    userId: userId,
+                    date: dayStart,
+                    steps: daySteps,
+                    distanceMeters: dayDist,
+                    floorsClimbed: dayFloors,
+                    activeCalories: dayCalories,
+                    totalCalories: 0,
+                    activeMinutes: dayExercise,
+                    sleepDurationMinutes: daySleep,
+                    sleepQualityScore: nil,
+                    restingHeartRate: dayRhr,
+                    avgHrv: dayHrv,
+                    recoveryScore: nil,
+                    strainScore: nil,
+                    weightKg: nil
+                )
+                try await supabase.uploadDailySummary(upload)
+                let progress = 0.45 + 0.35 * Double(i + 1) / total
+                await MainActor.run { historicalSyncProgress = progress }
+            }
+
+            // Sync historical workouts
+            let workouts = try await healthKit.fetchWorkouts(from: startDate, to: endDate)
+            for workout in workouts {
+                let avgHR = (try? await healthKit.fetchAverageHeartRate(during: workout)).map { Int($0) }
+                let maxHR = (try? await healthKit.fetchMaxHeartRate(during: workout)).map { Int($0) }
+                let elevationGain: Double? = {
+                    if let quantity = workout.metadata?[HKMetadataKeyElevationAscended] as? HKQuantity {
+                        return quantity.doubleValue(for: .meter())
+                    }
+                    return nil
+                }()
+                let upload = WorkoutRecordUpload(
+                    userId: userId,
+                    workoutType: workout.workoutActivityType.name,
+                    startTime: workout.startDate,
+                    endTime: workout.endDate,
+                    durationMinutes: Int(workout.duration / 60),
+                    activeCalories: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
+                    totalCalories: nil,
+                    distanceMeters: workout.totalDistance?.doubleValue(for: .meter()),
+                    avgHeartRate: avgHR,
+                    maxHeartRate: maxHR,
+                    elevationGainMeters: elevationGain,
+                    source: workout.sourceRevision.source.name
+                )
+                try? await supabase.uploadWorkoutRecord(upload)
+            }
+
+            // Sync historical sleep sessions
+            let sleepSessions = groupSleepSamples(sleepSamples)
+            for session in sleepSessions {
+                guard let first = session.first, let last = session.last else { continue }
+                var awake = 0, rem = 0, core = 0, deep = 0
+                for sample in session {
+                    let minutes = Int(sample.endDate.timeIntervalSince(sample.startDate) / 60)
+                    let value = HKCategoryValueSleepAnalysis(rawValue: sample.value)
+                    switch value {
+                    case .awake: awake += minutes
+                    case .asleepREM: rem += minutes
+                    case .asleepCore: core += minutes
+                    case .asleepDeep: deep += minutes
+                    default: core += minutes
+                    }
+                }
+                let totalMin = Int(last.endDate.timeIntervalSince(first.startDate) / 60)
+                let upload = SleepRecordUpload(
+                    userId: userId,
+                    startTime: first.startDate,
+                    endTime: last.endDate,
+                    durationMinutes: totalMin,
+                    awakeMinutes: awake,
+                    remMinutes: rem,
+                    coreMinutes: core,
+                    deepMinutes: deep,
+                    source: first.sourceRevision.source.name
+                )
+                try? await supabase.uploadSleepRecord(upload)
+            }
+
+            await MainActor.run {
+                historicalSyncProgress = 1.0
+                isHistoricalSyncing = false
+            }
+        } catch {
+            await MainActor.run {
+                syncError = error
+                isHistoricalSyncing = false
+            }
+        }
+    }
+
+    /// Groups sleep samples by the calendar day they END on (morning wakeup day),
+    /// returning total actual sleep minutes (excluding awake time) per day.
+    private func buildDailySleepMap(from samples: [HKCategorySample]) -> [Date: Int] {
+        let calendar = Calendar.current
+        var map: [Date: Int] = [:]
+        for sample in samples {
+            let day = calendar.startOfDay(for: sample.endDate)
+            let minutes = Int(sample.endDate.timeIntervalSince(sample.startDate) / 60)
+            let value = HKCategoryValueSleepAnalysis(rawValue: sample.value)
+            // Only count actual sleep stages, not awake time
+            switch value {
+            case .asleepREM, .asleepCore, .asleepDeep, .asleepUnspecified:
+                map[day] = (map[day] ?? 0) + minutes
+            default:
+                break
+            }
+        }
+        return map
+    }
+
     // MARK: - Background Sync
 
     func scheduleBackgroundSync() {

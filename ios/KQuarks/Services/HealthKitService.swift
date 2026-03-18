@@ -557,11 +557,70 @@ class HealthKitService {
         }
     }
 
+    // MARK: - Bulk Daily Stats
+
+    /// Fetches per-day statistics for a date range using HKStatisticsCollectionQuery.
+    /// Much more efficient than calling fetchSum/fetchLatest for each day individually.
+    /// - Returns: Dictionary mapping the start-of-day Date to the daily value.
+    func fetchDailyStats(
+        for identifier: HKQuantityTypeIdentifier,
+        from startDate: Date,
+        to endDate: Date,
+        isDiscrete: Bool
+    ) async throws -> [Date: Double] {
+        let quantityType = HKQuantityType(identifier)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let interval = DateComponents(day: 1)
+        let anchorDate = Calendar.current.startOfDay(for: Date())
+        let options: HKStatisticsOptions = isDiscrete ? .discreteAverage : .cumulativeSum
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsCollectionQuery(
+                quantityType: quantityType,
+                quantitySamplePredicate: predicate,
+                options: options,
+                anchorDate: anchorDate,
+                intervalComponents: interval
+            )
+
+            query.initialResultsHandler = { _, results, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let results = results else {
+                    continuation.resume(returning: [:])
+                    return
+                }
+
+                let unit = self.preferredUnit(for: identifier)
+                var data: [Date: Double] = [:]
+
+                results.enumerateStatistics(from: startDate, to: endDate) { statistics, _ in
+                    let value: Double?
+                    if isDiscrete {
+                        value = statistics.averageQuantity()?.doubleValue(for: unit)
+                    } else {
+                        value = statistics.sumQuantity()?.doubleValue(for: unit)
+                    }
+                    if let value = value, value > 0 {
+                        data[statistics.startDate] = value
+                    }
+                }
+
+                continuation.resume(returning: data)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
     // MARK: - Helpers
 
     private func preferredUnit(for identifier: HKQuantityTypeIdentifier) -> HKUnit {
         switch identifier {
-        case .stepCount, .flightsClimbed:
+        case .stepCount, .flightsClimbed, .appleExerciseTime:
             return .count()
         case .distanceWalkingRunning:
             return .meter()

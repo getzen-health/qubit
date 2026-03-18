@@ -46,6 +46,7 @@ import { BottomNav } from '@/components/bottom-nav'
 
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
+const DEFAULT_SLEEP_GOAL_MINUTES = 480 // 8 hours
 
 interface DashboardStreamProps {
   user: {
@@ -232,11 +233,11 @@ export function DashboardStream({
     }
   }
 
-  // Compute sleep streak (7+ hours = 420 min goal, skip today)
-  const SLEEP_GOAL_MINUTES = 420
+  // Compute sleep streak (consecutive nights meeting sleep goal)
+  const sleepGoalMin = (dbSleepGoalMinutes ?? DEFAULT_SLEEP_GOAL_MINUTES)
   let sleepStreak = 0
   for (const day of summaries.slice(1)) {
-    if ((day.sleep_duration_minutes ?? 0) >= SLEEP_GOAL_MINUTES) {
+    if ((day.sleep_duration_minutes ?? 0) >= sleepGoalMin) {
       sleepStreak++
     } else {
       break
