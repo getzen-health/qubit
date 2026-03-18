@@ -253,6 +253,13 @@ export function DashboardStream({
               <Activity className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
+              href="/heartrate"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Heart Rate"
+            >
+              <Heart className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
               href="/sleep"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="Sleep History"
