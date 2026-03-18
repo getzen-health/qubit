@@ -77,22 +77,10 @@ struct SidebarContentView: View {
         case .workouts:
             WorkoutsView()
         case .sleep:
-            SleepPlaceholderView()
+            SleepView()
         case .settings:
             SettingsView()
         }
-    }
-}
-
-/// Placeholder for sleep view
-struct SleepPlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Sleep",
-            systemImage: "moon.fill",
-            description: Text("View your sleep patterns and trends.")
-        )
-        .navigationTitle("Sleep")
     }
 }
 
