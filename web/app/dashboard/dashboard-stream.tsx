@@ -145,6 +145,10 @@ export function DashboardStream({
 
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
 
+  // 7-day average resting HR (skip today)
+  const hrHistory = summaries.slice(1, 7).map((d) => d.resting_heart_rate).filter((v): v is number => typeof v === 'number' && v > 0)
+  const avgRestingHR = hrHistory.length > 0 ? Math.round(hrHistory.reduce((a, b) => a + b, 0) / hrHistory.length) : null
+
   // Most recent body weight (may not be today's)
   const latestWeight = summaries.find((s) => s.weight_kg != null)?.weight_kg ?? null
 
@@ -288,14 +292,6 @@ export function DashboardStream({
               sublabel={recoveryScore >= 67 ? 'Optimal' : recoveryScore >= 34 ? 'Moderate' : 'Low'}
               trend={recoveryTrend}
               color="recovery"
-              expandContent={
-                <div className="space-y-3">
-                  <MetricDetail label="Sleep Performance" value="85%" />
-                  <MetricDetail label="Sleep Consistency" value="92%" />
-                  <MetricDetail label="Respiratory Rate" value="14.5 breaths/min" />
-                  <MetricDetail label="Skin Temperature" value="+0.2°C" />
-                </div>
-              }
             />
             <MetricRow
               icon={<Flame className="w-5 h-5" />}
@@ -305,14 +301,6 @@ export function DashboardStream({
               sublabel={strainScore >= 18 ? 'All Out' : strainScore >= 14 ? 'High' : strainScore >= 10 ? 'Moderate' : 'Light'}
               trend={strainTrend}
               color="strain"
-              expandContent={
-                <div className="space-y-3">
-                  <MetricDetail label="Cardiovascular" value="12.8" />
-                  <MetricDetail label="Muscular" value="8.5" />
-                  <MetricDetail label="Peak HR" value="172 bpm" />
-                  <MetricDetail label="Active Minutes" value="127 min" />
-                </div>
-              }
             />
             <MetricRow
               icon={<Moon className="w-5 h-5" />}
@@ -329,8 +317,7 @@ export function DashboardStream({
               expandContent={
                 <div className="space-y-3">
                   <MetricDetail label="HRV" value={todayHrv != null ? `${Math.round(todayHrv)} ms` : '—'} />
-                  <MetricDetail label="Max HR Today" value="142 bpm" />
-                  <MetricDetail label="7-day Average" value="59 bpm" />
+                  {avgRestingHR != null && <MetricDetail label="7-day Average" value={`${avgRestingHR} bpm`} />}
                 </div>
               }
             />
