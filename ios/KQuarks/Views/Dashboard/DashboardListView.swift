@@ -206,6 +206,17 @@ struct DashboardListView: View {
                         AnyView(heartDetails(summary: summary))
                     }
                 }
+
+                // Body Weight
+                if let weight = viewModel.bodyWeightKg {
+                    MetricRowView(
+                        icon: "scalemass.fill",
+                        label: "Body Weight",
+                        value: String(format: "%.1f", weight),
+                        unit: "kg",
+                        color: .hrv
+                    )
+                }
             }
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -359,6 +370,7 @@ class DashboardListViewModel {
     var hrvTrend: Int? = nil
     var currentStreak: Int = 0
     var latestSleepContext: AIInsightsService.SleepContext? = nil
+    var bodyWeightKg: Double? = nil
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
@@ -400,6 +412,11 @@ class DashboardListViewModel {
                         coreMinutes: core, awakeMinutes: awake
                     )
                 }
+            }
+
+            // Fetch latest body weight
+            if let weight = try? await healthKit.fetchLatest(for: .bodyMass) {
+                await MainActor.run { bodyWeightKg = weight }
             }
 
             // Load cached AI scores if available
