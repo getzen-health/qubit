@@ -955,6 +955,7 @@ export function DashboardStream({
               section: 'Activity',
               links: [
                 { href: '/rings', label: 'Activity Rings' },
+                { href: '/floors', label: 'Floors Climbed' },
                 { href: '/running', label: 'Running' },
                 { href: '/cycling', label: 'Cycling' },
                 { href: '/swimming', label: 'Swimming' },
