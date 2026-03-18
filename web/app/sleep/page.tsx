@@ -15,7 +15,7 @@ export default async function SleepPage() {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  const [{ data: records }, { data: profile }] = await Promise.all([
+  const [{ data: records }, { data: profile }, { data: breathingRecords }] = await Promise.all([
     supabase
       .from('sleep_records')
       .select('*')
@@ -27,9 +27,27 @@ export default async function SleepPage() {
       .select('sleep_goal_minutes')
       .eq('id', user.id)
       .single(),
+    supabase
+      .from('health_records')
+      .select('start_time, value')
+      .eq('user_id', user.id)
+      .eq('type', 'sleep_breathing_disturbances')
+      .gte('start_time', thirtyDaysAgo.toISOString())
+      .order('start_time', { ascending: false }),
   ])
 
   const sleepGoalHours = profile?.sleep_goal_minutes ? profile.sleep_goal_minutes / 60 : 8
+
+  // Index breathing by night (start date)
+  const breathingByDate = new Map<string, number>()
+  for (const r of breathingRecords ?? []) {
+    const day = r.start_time.slice(0, 10)
+    // value 1 = elevated; keep elevated if any reading that night is elevated
+    if (!breathingByDate.has(day) || r.value === 1) {
+      breathingByDate.set(day, r.value)
+    }
+  }
+  const elevatedNights = Array.from(breathingByDate.values()).filter((v) => v === 1).length
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,7 +76,12 @@ export default async function SleepPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <SleepPageClient records={records ?? []} sleepGoalHours={sleepGoalHours} />
+        <SleepPageClient
+          records={records ?? []}
+          sleepGoalHours={sleepGoalHours}
+          elevatedBreathingNights={elevatedNights}
+          breathingByDate={Object.fromEntries(breathingByDate)}
+        />
       </main>
       <BottomNav />
     </div>

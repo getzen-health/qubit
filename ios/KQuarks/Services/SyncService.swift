@@ -432,6 +432,23 @@ class SyncService {
             }
         }
 
+        // Fetch sleep breathing disturbances (Watch Series 4+, iOS 16+)
+        if #available(iOS 16.0, *) {
+            let breathingEvents = try await healthKit.fetchCategoryEvents(.sleepBreathingDisturbances, from: startDate, to: now)
+            for event in breathingEvents {
+                // value 0 = not elevated, 1 = elevated
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: "sleep_breathing_disturbances",
+                    value: Double(event.value), // 0 = normal, 1 = elevated
+                    unit: "category",
+                    source: event.sourceRevision.source.name,
+                    startTime: event.startDate,
+                    endTime: event.endDate
+                ))
+            }
+        }
+
         // Fetch cardiac events (AFib, high HR, low HR) from Apple Watch
         let cardiacEvents: [(HKCategoryTypeIdentifier, String)] = [
             (.irregularHeartRhythmEvent, "afib_event"),

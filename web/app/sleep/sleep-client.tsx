@@ -76,9 +76,11 @@ function scoreToGrade(score: number): { score: number; grade: string; color: str
 interface SleepPageClientProps {
   records: SleepRecord[]
   sleepGoalHours?: number
+  elevatedBreathingNights?: number
+  breathingByDate?: Record<string, number>
 }
 
-export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClientProps) {
+export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathingNights = 0, breathingByDate = {} }: SleepPageClientProps) {
   if (records.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -278,6 +280,25 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
         </div>
       )}
 
+      {/* Breathing disturbances */}
+      {Object.keys(breathingByDate).length > 0 && (
+        <div className={`rounded-xl border p-4 ${elevatedBreathingNights > 0 ? 'bg-orange-500/5 border-orange-500/20' : 'bg-surface border-border'}`}>
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-sm font-medium text-text-secondary">Sleep Breathing</h2>
+            <span className={`text-sm font-bold ${elevatedBreathingNights > 5 ? 'text-orange-400' : elevatedBreathingNights > 0 ? 'text-yellow-400' : 'text-green-400'}`}>
+              {elevatedBreathingNights} elevated night{elevatedBreathingNights !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <p className="text-xs text-text-secondary">
+            {elevatedBreathingNights === 0
+              ? 'No elevated breathing disturbances detected in the last 30 nights.'
+              : elevatedBreathingNights > 5
+              ? 'Frequent elevated breathing detected. Consider discussing with a doctor.'
+              : 'Some elevated breathing detected. Apple Watch monitors for sleep apnea patterns.'}
+          </p>
+        </div>
+      )}
+
       {/* Night list */}
       <div className="space-y-3">
         {records.map((record) => {
@@ -286,6 +307,8 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
           const totalWithAwake = record.duration_minutes + (record.awake_minutes ?? 0)
           const showStages = hasStages && ((record.deep_minutes ?? 0) + (record.rem_minutes ?? 0) + (record.core_minutes ?? 0)) > 0
           const quality = sleepQualityScore(record, sleepGoalHours * 60)
+          const breathingValue = breathingByDate[dayDate]
+          const breathingElevated = breathingValue === 1
 
           return (
             <Link key={record.id} href={`/day/${dayDate}`} className="bg-surface rounded-xl border border-border p-4 space-y-3 block hover:bg-surface-secondary transition-colors">
@@ -301,6 +324,11 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
+                  {breathingElevated && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full border bg-orange-500/10 text-orange-400 border-orange-500/20" title="Elevated breathing disturbances detected">
+                      🌬️
+                    </span>
+                  )}
                   {quality && (
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${quality.color}`} title={`Sleep score: ${quality.score}/100`}>
                       {quality.grade}
