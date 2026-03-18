@@ -14,16 +14,12 @@ import {
   Moon,
   Flame,
   Route,
-  Brain,
   Zap,
   TrendingUp,
-  Clock,
   Target,
   LogOut,
   Settings,
   Sparkles,
-  Apple,
-  UtensilsCrossed,
   Scale,
 } from 'lucide-react'
 import Link from 'next/link'
