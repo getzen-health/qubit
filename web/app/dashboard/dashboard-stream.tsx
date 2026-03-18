@@ -24,6 +24,7 @@ import {
   Trophy,
   BedDouble,
   Lightbulb,
+  CalendarDays,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -354,6 +355,13 @@ export function DashboardStream({
               title="All Insights"
             >
               <Lightbulb className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
+              href="/monthly"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Monthly Stats"
+            >
+              <CalendarDays className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/records"
