@@ -964,6 +964,7 @@ export function DashboardStream({
                 { href: '/workouts/prs', label: 'Workout PRs' },
                 { href: '/records', label: 'All-Time Records' },
                 { href: '/calories', label: 'Calorie Balance' },
+                { href: '/training-load', label: 'Training Load' },
               ],
             },
             {
