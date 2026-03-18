@@ -132,6 +132,47 @@ class SyncService {
             ))
         }
 
+        // Fetch blood oxygen samples (SpO2)
+        let spO2Samples = try await healthKit.fetchSamples(
+            for: .oxygenSaturation,
+            from: startDate,
+            to: now,
+            limit: 200
+        )
+        for sample in spO2Samples {
+            // HealthKit stores as fraction (0.0–1.0); convert to percent
+            let pct = sample.quantity.doubleValue(for: .percent()) * 100.0
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "oxygen_saturation",
+                value: pct,
+                unit: "%",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
+        // Fetch respiratory rate
+        let rrSamples = try await healthKit.fetchSamples(
+            for: .respiratoryRate,
+            from: startDate,
+            to: now,
+            limit: 200
+        )
+        for sample in rrSamples {
+            let brpm = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "respiratory_rate",
+                value: brpm,
+                unit: "brpm",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Batch upload
         if !records.isEmpty {
             // Split into batches of 100
