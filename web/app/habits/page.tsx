@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, CheckCircle2, Circle, Flame } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = undefined // client component
 
 interface Habit {
   id: string

@@ -13,7 +13,7 @@ import {
   Bar,
 } from 'recharts'
 
-interface Record {
+interface HealthRecord {
   value: number
   start_time: string
 }
@@ -26,7 +26,7 @@ interface Summary {
 }
 
 interface RespiratoryClientProps {
-  records: Record[]
+  records: HealthRecord[]
   summaries: Summary[]
 }
 
@@ -61,7 +61,7 @@ export function RespiratoryClient({ records, summaries }: RespiratoryClientProps
     )
   }
 
-  const values = records.map((r) => r.value)
+  const values = records.map((r: HealthRecord) => r.value)
   const avg = Math.round(values.reduce((a, b) => a + b, 0) / values.length * 10) / 10
   const min = Math.min(...values)
   const max = Math.max(...values)

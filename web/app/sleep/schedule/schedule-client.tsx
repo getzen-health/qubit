@@ -212,7 +212,6 @@ export function SleepScheduleClient({ nights, sleepGoalMinutes }: SleepScheduleC
               <XAxis
                 dataKey="date"
                 type="category"
-                data={bedtimeChartData}
                 tick={{ fontSize: 9, fill: 'var(--color-text-secondary, #888)' }}
                 axisLine={false}
                 tickLine={false}

@@ -21,7 +21,7 @@ export default async function RunningPage() {
   const [{ data: runs }, { data: formRecords }] = await Promise.all([
     supabase
       .from('workout_records')
-      .select('id, start_time, duration_minutes, distance_meters, avg_pace_per_km, avg_heart_rate')
+      .select('id, start_time, end_time, duration_minutes, distance_meters, avg_pace_per_km, avg_heart_rate')
       .eq('user_id', user.id)
       .eq('workout_type', 'Running')
       .gte('start_time', startIso)

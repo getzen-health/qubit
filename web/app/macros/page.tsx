@@ -42,7 +42,8 @@ export default async function MacrosPage() {
   for (const r of records ?? []) {
     const day = r.start_time.slice(0, 10)
     if (!byDay[day]) byDay[day] = { date: day }
-    const typeMap: Record<string, keyof DayMacros> = {
+    type NumericKey = 'energy' | 'protein' | 'carbs' | 'fat' | 'fiber' | 'water'
+    const typeMap: Record<string, NumericKey> = {
       dietary_energy: 'energy',
       dietary_protein: 'protein',
       dietary_carbs: 'carbs',

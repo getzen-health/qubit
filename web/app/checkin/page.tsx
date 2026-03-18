@@ -17,7 +17,6 @@ import {
   Legend,
 } from 'recharts'
 
-export const metadata = undefined // client component
 
 interface Checkin {
   id: string
