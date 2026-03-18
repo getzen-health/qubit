@@ -107,6 +107,12 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
   const avgDeep = Math.round(recent7.reduce((s, r) => s + (r.deep_minutes ?? 0), 0) / Math.max(recent7.length, 1))
   const avgRem = Math.round(recent7.reduce((s, r) => s + (r.rem_minutes ?? 0), 0) / Math.max(recent7.length, 1))
 
+  // Sleep debt: 7-day accumulated deficit vs goal (minutes)
+  const goalMin = sleepGoalHours * 60
+  const sleepDebtMin = recent7.reduce((debt, r) => debt + Math.max(0, goalMin - r.duration_minutes), 0)
+  const sleepSurplusMin = recent7.reduce((s, r) => s + Math.max(0, r.duration_minutes - goalMin), 0)
+  const netDebtMin = sleepDebtMin - sleepSurplusMin // negative = surplus
+
   const hasStages = records.some((r) => (r.deep_minutes ?? 0) > 0 || (r.rem_minutes ?? 0) > 0)
 
   // Sleep schedule consistency (from all records)
@@ -215,6 +221,37 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Sleep debt */}
+      {recent7.length >= 3 && (
+        <div className={`rounded-xl border p-4 ${netDebtMin > 60 ? 'bg-red-500/5 border-red-500/20' : netDebtMin < -30 ? 'bg-green-500/5 border-green-500/20' : 'bg-surface border-border'}`}>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-text-secondary">7-Day Sleep Debt</h2>
+            {netDebtMin > 0 ? (
+              <span className="text-red-400 font-bold text-sm">
+                -{Math.floor(netDebtMin / 60)}h {netDebtMin % 60}m owed
+              </span>
+            ) : (
+              <span className="text-green-400 font-bold text-sm">
+                +{Math.floor(Math.abs(netDebtMin) / 60)}h {Math.abs(netDebtMin) % 60}m surplus
+              </span>
+            )}
+          </div>
+          <div className="mt-2 h-2 bg-surface-secondary rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full ${netDebtMin > 0 ? 'bg-red-400' : 'bg-green-400'}`}
+              style={{ width: `${Math.min(100, (Math.abs(netDebtMin) / (goalMin * 7)) * 100 * 3)}%` }}
+            />
+          </div>
+          <p className="text-xs text-text-secondary mt-1.5">
+            {netDebtMin > 60
+              ? `To recover: add ~${Math.ceil(netDebtMin / 7 / 60)}h to tonight's sleep`
+              : netDebtMin > 0
+              ? 'Slightly behind — close to balanced'
+              : 'You\'re ahead of your sleep goal this week'}
+          </p>
         </div>
       )}
 
