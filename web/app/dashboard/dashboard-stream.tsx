@@ -110,6 +110,7 @@ export function DashboardStream({
   workoutStreak,
   dbStepGoal,
   dbCalGoal,
+  dbSleepGoalMinutes,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
