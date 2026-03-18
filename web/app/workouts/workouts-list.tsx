@@ -128,44 +128,62 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-6">
             {filtered.length === 0 ? (
               <p className="text-center text-text-secondary py-12">No {activeType} workouts found.</p>
-            ) : null}
-            {filtered.map((workout) => {
-              const date = new Date(workout.start_time)
-              const stats: string[] = [formatDuration(workout.duration_minutes)]
-              if (workout.active_calories && workout.active_calories > 0) {
-                stats.push(`${Math.round(workout.active_calories)} cal`)
+            ) : (() => {
+              // Group by month label
+              const groups: { label: string; items: typeof filtered }[] = []
+              for (const workout of filtered) {
+                const label = new Date(workout.start_time).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                const last = groups[groups.length - 1]
+                if (last && last.label === label) {
+                  last.items.push(workout)
+                } else {
+                  groups.push({ label, items: [workout] })
+                }
               }
-              if (workout.distance_meters && workout.distance_meters > 0) {
-                stats.push(`${(workout.distance_meters / 1000).toFixed(1)} km`)
-              }
-              if (workout.avg_heart_rate && workout.avg_heart_rate > 0) {
-                stats.push(`${workout.avg_heart_rate} bpm avg`)
-              }
-
-              return (
-                <Link
-                  key={workout.id}
-                  href={`/workouts/${workout.id}`}
-                  className="flex items-center gap-4 p-4 bg-surface rounded-xl border border-border hover:bg-surface-secondary transition-colors"
-                >
-                  <span className="text-3xl">{workoutIcon(workout.workout_type)}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-text-primary truncate">
-                        {workout.workout_type}
-                      </span>
-                      <span className="text-sm text-text-secondary shrink-0">
-                        {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                    <p className="text-sm text-text-secondary mt-0.5">{stats.join(' · ')}</p>
+              return groups.map((group) => (
+                <div key={group.label}>
+                  <h3 className="text-sm font-semibold text-text-secondary mb-2 px-1">{group.label}</h3>
+                  <div className="space-y-2">
+                    {group.items.map((workout) => {
+                      const date = new Date(workout.start_time)
+                      const stats: string[] = [formatDuration(workout.duration_minutes)]
+                      if (workout.active_calories && workout.active_calories > 0) {
+                        stats.push(`${Math.round(workout.active_calories)} cal`)
+                      }
+                      if (workout.distance_meters && workout.distance_meters > 0) {
+                        stats.push(`${(workout.distance_meters / 1000).toFixed(1)} km`)
+                      }
+                      if (workout.avg_heart_rate && workout.avg_heart_rate > 0) {
+                        stats.push(`${workout.avg_heart_rate} bpm avg`)
+                      }
+                      return (
+                        <Link
+                          key={workout.id}
+                          href={`/workouts/${workout.id}`}
+                          className="flex items-center gap-4 p-4 bg-surface rounded-xl border border-border hover:bg-surface-secondary transition-colors"
+                        >
+                          <span className="text-3xl">{workoutIcon(workout.workout_type)}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-semibold text-text-primary truncate">
+                                {workout.workout_type}
+                              </span>
+                              <span className="text-sm text-text-secondary shrink-0">
+                                {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                              </span>
+                            </div>
+                            <p className="text-sm text-text-secondary mt-0.5">{stats.join(' · ')}</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
                   </div>
-                </Link>
-              )
-            })}
+                </div>
+              ))
+            })()}
           </div>
         )}
       </main>
