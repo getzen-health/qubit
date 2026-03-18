@@ -36,10 +36,10 @@ function avg(arr: number[]) {
   return arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null
 }
 
-function StatPill({ label, value, unit, color }: { label: string; value: string; color: string }) {
+function StatPill({ label, value, unit, color }: { label: string; value: string; unit?: string; color: string }) {
   return (
     <div className="bg-surface rounded-xl border border-border p-4 text-center">
-      <p className={`text-2xl font-bold ${color}`}>{value}<span className="text-sm font-normal text-text-secondary ml-1">{unit}</span></p>
+      <p className={`text-2xl font-bold ${color}`}>{value}{unit && <span className="text-sm font-normal text-text-secondary ml-1">{unit}</span>}</p>
       <p className="text-xs text-text-secondary mt-0.5">{label}</p>
     </div>
   )
