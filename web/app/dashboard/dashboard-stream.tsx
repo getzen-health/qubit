@@ -267,6 +267,13 @@ export function DashboardStream({
               <BedDouble className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
+              href="/body"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Body Weight"
+            >
+              <Scale className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
               href="/insights"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="All Insights"
