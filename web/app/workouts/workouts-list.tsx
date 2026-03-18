@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { BottomNav } from '@/components/bottom-nav'
 import {
   BarChart,
   Bar,
@@ -254,6 +255,7 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { SleepPageClient } from './sleep-client'
+import { BottomNav } from '@/components/bottom-nav'
 
 export default async function SleepPage() {
   const supabase = await createClient()
@@ -39,9 +40,10 @@ export default async function SleepPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         <SleepPageClient records={records ?? []} />
       </main>
+      <BottomNav />
     </div>
   )
 }

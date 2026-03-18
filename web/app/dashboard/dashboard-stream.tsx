@@ -42,6 +42,7 @@ import {
 } from './components/layout'
 import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
+import { BottomNav } from '@/components/bottom-nav'
 
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
@@ -398,7 +399,7 @@ export function DashboardStream({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         {/* AI Essence */}
         <AIEssence
           recoveryScore={recoveryScore}
@@ -659,6 +660,7 @@ export function DashboardStream({
           )}
         </div>
       </main>
+      <BottomNav />
     </div>
   )
 }

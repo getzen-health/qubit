@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { StepsClient } from './steps-client'
+import { BottomNav } from '@/components/bottom-nav'
 
 export default async function StepsPage() {
   const supabase = await createClient()
@@ -39,9 +40,10 @@ export default async function StepsPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         <StepsClient summaries={summaries ?? []} />
       </main>
+      <BottomNav />
     </div>
   )
 }
