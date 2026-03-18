@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { BottomNav } from '@/components/bottom-nav'
 
 const WORKOUT_ICONS: Record<string, string> = {
   Running: '🏃',
@@ -112,7 +113,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-4">
         {/* Hero */}
         <div className="flex items-center gap-4 p-6 bg-surface rounded-xl border border-border">
           <span className="text-5xl">{workoutIcon(workout.workout_type)}</span>
@@ -158,6 +159,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           </p>
         )}
       </main>
+      <BottomNav />
     </div>
   )
 }

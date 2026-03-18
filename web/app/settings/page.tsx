@@ -10,6 +10,7 @@ import {
   Download,
   Sparkles,
 } from 'lucide-react'
+import { BottomNav } from '@/components/bottom-nav'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -65,7 +66,7 @@ export default async function SettingsPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
         <div className="space-y-2">
           {settingsSections.map((section) => {
             const Icon = section.icon
@@ -122,6 +123,7 @@ export default async function SettingsPage() {
           <p className="font-medium text-text-primary">{user.email}</p>
         </div>
       </main>
+      <BottomNav />
     </div>
   )
 }
