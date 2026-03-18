@@ -38,6 +38,7 @@ import {
   EmptyState,
 } from './components/layout'
 import { cn } from '@/lib/utils'
+import { WeeklyCharts } from './components/weekly-charts'
 
 interface DashboardStreamProps {
   user: {
@@ -316,6 +317,11 @@ export function DashboardStream({
               color="sleep"
             />
           </DataStream>
+        </DataStreamSection>
+
+        {/* 7-Day Trends */}
+        <DataStreamSection title="7-Day Trends">
+          <WeeklyCharts summaries={summaries} />
         </DataStreamSection>
 
         {/* AI Insights */}
