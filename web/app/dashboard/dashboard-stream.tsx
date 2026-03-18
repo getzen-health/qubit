@@ -97,6 +97,8 @@ interface DashboardStreamProps {
   lastSyncAt?: string | null
   todayWaterMl?: number
   waterTargetMl?: number
+  todayCaloriesConsumed?: number
+  calorieIntakeTarget?: number
   activeFast?: {
     id: string
     protocol: string
@@ -120,6 +122,8 @@ export function DashboardStream({
   lastSyncAt,
   todayWaterMl = 0,
   waterTargetMl = 2500,
+  todayCaloriesConsumed = 0,
+  calorieIntakeTarget = 2000,
   activeFast = null,
 }: DashboardStreamProps) {
   const router = useRouter()
@@ -509,6 +513,36 @@ export function DashboardStream({
               {todayWaterMl >= waterTargetMl
                 ? 'Goal reached!'
                 : `${waterTargetMl - todayWaterMl}ml to go`}
+            </p>
+          </Link>
+        )}
+
+        {/* Nutrition calories */}
+        {todayCaloriesConsumed > 0 && (
+          <Link href="/nutrition" className="block mb-6 bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🥗</span>
+                <span className="text-sm font-medium text-text-secondary">Calories</span>
+              </div>
+              <span className="text-sm font-semibold text-text-primary">
+                {todayCaloriesConsumed.toLocaleString()}
+                <span className="text-text-secondary font-normal"> / {calorieIntakeTarget.toLocaleString()} kcal</span>
+              </span>
+            </div>
+            <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min((todayCaloriesConsumed / calorieIntakeTarget) * 100, 100)}%`,
+                  background: todayCaloriesConsumed > calorieIntakeTarget ? '#ef4444' : '#10b981',
+                }}
+              />
+            </div>
+            <p className="text-xs text-text-secondary mt-1.5">
+              {todayCaloriesConsumed >= calorieIntakeTarget
+                ? 'Daily goal reached'
+                : `${(calorieIntakeTarget - todayCaloriesConsumed).toLocaleString()} kcal remaining`}
             </p>
           </Link>
         )}

@@ -5,6 +5,17 @@ import Link from 'next/link'
 import { ArrowLeft, Timer, Play, Square, Trash2 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { cn } from '@/lib/utils'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceLine,
+  Cell,
+} from 'recharts'
 
 interface ActiveSession {
   id: string
@@ -256,6 +267,59 @@ export default function FastingPage() {
             <p className="text-xs text-text-secondary text-center">
               Fast for {selectedProtocol.hours} hours · Eating window opens in {selectedProtocol.hours}h
             </p>
+          </div>
+        )}
+
+        {/* Fasting history chart */}
+        {(data?.recent_sessions ?? []).length >= 2 && (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Recent Fasts</p>
+            <div className="bg-surface rounded-xl border border-border p-4">
+              <ResponsiveContainer width="100%" height={130}>
+                <BarChart
+                  data={[...(data?.recent_sessions ?? [])].reverse().slice(-10).map((s) => ({
+                    label: new Date(s.started_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                    hours: +s.actual_hours.toFixed(1),
+                    target: s.target_hours,
+                    completed: s.completed,
+                  }))}
+                  margin={{ top: 4, right: 4, left: -28, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis hide />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--color-surface, #1a1a1a)',
+                      border: '1px solid var(--color-border, #333)',
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number, name: string) => [
+                      `${value}h`,
+                      name === 'hours' ? 'Fasted' : 'Target',
+                    ]}
+                  />
+                  <ReferenceLine
+                    y={(data?.default_hours ?? 16)}
+                    stroke="rgba(245,158,11,0.4)"
+                    strokeDasharray="4 4"
+                    label={{ value: 'Goal', position: 'right', fontSize: 10, fill: 'rgba(245,158,11,0.6)' }}
+                  />
+                  <Bar dataKey="hours" radius={[4, 4, 0, 0]}>
+                    {[...(data?.recent_sessions ?? [])].reverse().slice(-10).map((s, i) => (
+                      <Cell key={i} fill={s.completed ? '#f59e0b' : 'rgba(245,158,11,0.35)'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              <p className="text-xs text-text-secondary text-center mt-1">Amber = completed goal</p>
+            </div>
           </div>
         )}
 

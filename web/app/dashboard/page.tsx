@@ -75,7 +75,7 @@ export default async function DashboardPage() {
       .single(),
     supabase
       .from('user_nutrition_settings')
-      .select('water_target_ml')
+      .select('water_target_ml, calorie_target')
       .eq('user_id', user.id)
       .single(),
     supabase
@@ -85,6 +85,19 @@ export default async function DashboardPage() {
       .is('ended_at', null)
       .single(),
   ])
+
+  // Fetch today's meal calories
+  const { data: todayMeals } = await supabase
+    .from('meals')
+    .select('meal_items(calories, servings)')
+    .eq('user_id', user.id)
+    .gte('logged_at', `${todayStr}T00:00:00`)
+    .lt('logged_at', `${todayStr}T23:59:59`)
+
+  const todayCaloriesConsumed = (todayMeals ?? []).reduce((sum, m) => {
+    const items = (m as { meal_items: Array<{ calories: number; servings: number }> }).meal_items ?? []
+    return sum + items.reduce((s: number, it) => s + it.calories * it.servings, 0)
+  }, 0)
 
   // Fetch recent workouts and sleep records for AI insights
   const [{ data: recentWorkouts }, { data: recentSleepRecords }, { data: insights }, { data: devices }] = await Promise.all([
@@ -134,6 +147,8 @@ export default async function DashboardPage() {
       todayWaterMl={todayWater?.total_ml ?? 0}
       waterTargetMl={nutritionSettings?.water_target_ml ?? 2500}
       activeFast={activeFast ?? null}
+      todayCaloriesConsumed={Math.round(todayCaloriesConsumed)}
+      calorieIntakeTarget={nutritionSettings?.calorie_target ?? 2000}
     />
   )
 }
