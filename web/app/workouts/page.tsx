@@ -17,7 +17,7 @@ export default async function WorkoutsPage() {
 
   const { data: workouts } = await supabase
     .from('workout_records')
-    .select('id, workout_type, start_time, duration_minutes, active_calories, distance_meters, avg_heart_rate')
+    .select('id, workout_type, start_time, duration_minutes, active_calories, distance_meters, avg_heart_rate, avg_pace_per_km')
     .eq('user_id', user.id)
     .order('start_time', { ascending: false })
 

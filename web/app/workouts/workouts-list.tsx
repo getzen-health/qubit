@@ -7,6 +7,8 @@ import { BottomNav } from '@/components/bottom-nav'
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -22,6 +24,7 @@ interface Workout {
   active_calories?: number
   distance_meters?: number
   avg_heart_rate?: number
+  avg_pace_per_km?: number  // seconds per km
 }
 
 const WORKOUT_ICONS: Record<string, string> = {
@@ -46,6 +49,88 @@ function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
   return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+
+// Workout types that have meaningful pace data
+const DISTANCE_TYPES = new Set(['Running', 'Cycling', 'Walking', 'Hiking', 'Rowing'])
+
+function fmtPace(secsPerKm: number): string {
+  const min = Math.floor(secsPerKm / 60)
+  const sec = Math.round(secsPerKm % 60)
+  return `${min}:${sec.toString().padStart(2, '0')}`
+}
+
+const tooltipStyle = {
+  background: 'var(--color-surface, #1a1a1a)',
+  border: '1px solid var(--color-border, #333)',
+  borderRadius: 8,
+  fontSize: 12,
+}
+
+function PaceChart({ workouts }: { workouts: Workout[] }) {
+  const withPace = [...workouts]
+    .filter((w) => w.avg_pace_per_km && w.avg_pace_per_km > 0)
+    .reverse() // oldest first for chart
+    .slice(-30) // last 30 sessions
+    .map((w) => ({
+      date: new Date(w.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      paceRaw: w.avg_pace_per_km!,
+      // Invert for chart: lower seconds = faster = higher on chart
+      // We'll use negative of secsPerKm so that "better" is visually up
+      paceDisplay: w.avg_pace_per_km!,
+      paceLabel: fmtPace(w.avg_pace_per_km!),
+    }))
+
+  if (withPace.length < 2) return null
+
+  const bestPace = Math.min(...withPace.map((d) => d.paceRaw))
+  const avgPace = withPace.reduce((s, d) => s + d.paceRaw, 0) / withPace.length
+
+  // Invert Y axis so faster (lower sec) = higher on chart
+  const yMin = Math.min(...withPace.map((d) => d.paceRaw)) - 10
+  const yMax = Math.max(...withPace.map((d) => d.paceRaw)) + 10
+
+  return (
+    <div className="mb-6 bg-surface rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-medium text-text-secondary">Pace Trend</h2>
+        <div className="flex gap-3 text-xs text-text-secondary">
+          <span>Best <span className="text-green-400 font-medium">{fmtPace(bestPace)}/km</span></span>
+          <span>Avg <span className="text-text-primary font-medium">{fmtPace(Math.round(avgPace))}/km</span></span>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={140}>
+        <LineChart data={withPace} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+            axisLine={false}
+            tickLine={false}
+            interval="preserveStartEnd"
+          />
+          <YAxis
+            hide
+            domain={[yMin, yMax]}
+            reversed
+          />
+          <Tooltip
+            contentStyle={tooltipStyle}
+            formatter={(_: number, __: string, props: { payload?: { paceLabel: string } }) => [props.payload?.paceLabel ?? '', 'Pace']}
+          />
+          <Line
+            type="monotone"
+            dataKey="paceRaw"
+            stroke="#6366f1"
+            strokeWidth={2}
+            dot={{ r: 3, fill: '#6366f1' }}
+            activeDot={{ r: 5 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+      <p className="text-xs text-text-secondary text-center mt-1">Lower line = faster pace (chart inverted)</p>
+    </div>
+  )
 }
 
 interface WorkoutsListProps {
@@ -108,6 +193,11 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* Pace chart — only for distance-based workout types */}
+        {activeType && DISTANCE_TYPES.has(activeType) && (
+          <PaceChart workouts={filtered} />
+        )}
+
         {/* 12-week frequency chart */}
         {workouts.length > 0 && (
           <div className="mb-6">
