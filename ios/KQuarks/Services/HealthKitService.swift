@@ -46,6 +46,11 @@ class HealthKitService {
         // Mindfulness
         types.insert(HKCategoryType(.mindfulSession))
 
+        // Temperature (Apple Watch Series 8+)
+        if #available(iOS 16.0, *) {
+            types.insert(HKQuantityType(.appleSleepingWristTemperature))
+        }
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 
@@ -670,6 +675,7 @@ class HealthKitService {
             // mL/kg/min
             return HKUnit.literUnit(with: .milli).unitDivided(by: HKUnit.gramUnit(with: .kilo).unitMultiplied(by: .minute()))
         default:
+            // appleSleepingWristTemperature and others use degC or count
             return .count()
         }
     }

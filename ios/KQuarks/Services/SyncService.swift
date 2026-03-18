@@ -233,6 +233,28 @@ class SyncService {
             ))
         }
 
+        // Fetch wrist temperature during sleep (Apple Watch Series 8+, iOS 16+)
+        if #available(iOS 16.0, *) {
+            let wristTempSamples = try await healthKit.fetchSamples(
+                for: .appleSleepingWristTemperature,
+                from: startDate,
+                to: now,
+                limit: 100
+            )
+            for sample in wristTempSamples {
+                let degC = sample.quantity.doubleValue(for: .degreeCelsius())
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: "wrist_temperature",
+                    value: degC,
+                    unit: "°C",
+                    source: sample.sourceRevision.source.name,
+                    startTime: sample.startDate,
+                    endTime: sample.endDate
+                ))
+            }
+        }
+
         // Fetch mindfulness sessions
         let mindfulSamples = try await healthKit.fetchMindfulSessions(from: startDate, to: now)
         for sample in mindfulSamples {

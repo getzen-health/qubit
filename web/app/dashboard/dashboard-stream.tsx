@@ -958,6 +958,7 @@ export function DashboardStream({
               { href: '/streaks', label: 'Streaks' },
               { href: '/calories', label: 'Calorie Balance' },
               { href: '/mindfulness', label: 'Mindfulness' },
+              { href: '/temperature', label: 'Wrist Temp' },
               { href: '/vitals', label: 'Vitals' },
               { href: '/vo2max', label: 'VO₂ Max' },
               { href: '/heartrate', label: 'Heart Rate' },

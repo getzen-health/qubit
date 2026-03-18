@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Thermometer } from 'lucide-react'
 import { SleepPageClient } from './sleep-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -42,10 +42,18 @@ export default async function SleepPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Sleep</h1>
             <p className="text-sm text-text-secondary">Last 30 nights</p>
           </div>
+          <Link
+            href="/temperature"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Wrist temperature"
+            title="Wrist Temperature"
+          >
+            <Thermometer className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
