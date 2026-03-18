@@ -129,15 +129,16 @@ class HealthKitService {
         return summaries
     }
 
-    /// Fetch per-day stats for the past 7 days for charting.
+    /// Fetch per-day stats for the past N days for charting.
     /// - Parameters:
     ///   - identifier: The HealthKit quantity type identifier.
     ///   - isDiscrete: true → discreteAverage (HR, HRV, weight); false → cumulativeSum (steps, calories).
-    func fetchWeekData(for identifier: HKQuantityTypeIdentifier, isDiscrete: Bool) async throws -> [(date: Date, value: Double)] {
+    ///   - days: Number of days to fetch (default 7).
+    func fetchWeekData(for identifier: HKQuantityTypeIdentifier, isDiscrete: Bool, days: Int = 7) async throws -> [(date: Date, value: Double)] {
         let calendar = Calendar.current
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
-        let startDate = calendar.date(byAdding: .day, value: -6, to: startOfToday)!
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday)!
 
         let quantityType = HKQuantityType(identifier)
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictStartDate)

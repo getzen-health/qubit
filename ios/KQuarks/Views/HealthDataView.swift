@@ -32,7 +32,7 @@ struct HealthDataView: View {
                                         Text("Sleep History")
                                             .font(.headline)
                                             .foregroundStyle(.primary)
-                                        Text("Last 14 nights")
+                                        Text("Last 30 nights")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }

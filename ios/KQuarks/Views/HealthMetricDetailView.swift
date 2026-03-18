@@ -6,6 +6,7 @@ struct HealthMetricDetailView: View {
     let dataType: HealthDataType
 
     @State private var weekData: [(date: Date, value: Double)] = []
+    @State private var selectedDays = 30
     @State private var isLoading = true
     @State private var hasError = false
 
@@ -32,7 +33,20 @@ struct HealthMetricDetailView: View {
         }
         .navigationTitle(dataType.displayName)
         .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Picker("Period", selection: $selectedDays) {
+                    Text("7D").tag(7)
+                    Text("30D").tag(30)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 100)
+            }
+        }
         .task { await loadData() }
+        .onChange(of: selectedDays) {
+            Task { await loadData() }
+        }
     }
 
     // MARK: - Subviews
@@ -57,8 +71,13 @@ struct HealthMetricDetailView: View {
 
     private var chartSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Last 7 Days")
+            Text("Last \(selectedDays) Days")
                 .font(.headline)
+
+            let axisStride: Calendar.Component = selectedDays <= 7 ? .day : .weekOfYear
+            let axisFormat: Date.FormatStyle = selectedDays <= 7
+                ? .dateTime.weekday(.abbreviated)
+                : .dateTime.month(.abbreviated).day()
 
             if dataType.isDiscrete {
                 // Line chart for discrete metrics
@@ -78,9 +97,9 @@ struct HealthMetricDetailView: View {
                 }
                 .frame(height: 180)
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: .day)) { _ in
+                    AxisMarks(values: .stride(by: axisStride)) { _ in
                         AxisGridLine()
-                        AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                        AxisValueLabel(format: axisFormat)
                     }
                 }
             } else {
@@ -95,9 +114,9 @@ struct HealthMetricDetailView: View {
                 }
                 .frame(height: 180)
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: .day)) { _ in
+                    AxisMarks(values: .stride(by: axisStride)) { _ in
                         AxisGridLine()
-                        AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                        AxisValueLabel(format: axisFormat)
                     }
                 }
             }
@@ -184,7 +203,7 @@ struct HealthMetricDetailView: View {
         }
         isLoading = true
         do {
-            weekData = try await healthKit.fetchWeekData(for: identifier, isDiscrete: dataType.isDiscrete)
+            weekData = try await healthKit.fetchWeekData(for: identifier, isDiscrete: dataType.isDiscrete, days: selectedDays)
         } catch {
             hasError = true
         }
