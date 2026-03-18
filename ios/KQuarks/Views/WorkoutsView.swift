@@ -5,8 +5,14 @@ struct WorkoutsView: View {
     @State private var workouts: [HKWorkout] = []
     @State private var isLoading = false
     @State private var selectedPeriod: WorkoutPeriod = .month
+    @State private var searchText = ""
 
     private let healthKit = HealthKitService.shared
+
+    private var filtered: [HKWorkout] {
+        guard !searchText.isEmpty else { return workouts }
+        return workouts.filter { $0.workoutActivityType.name.localizedCaseInsensitiveContains(searchText) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,10 +29,10 @@ struct WorkoutsView: View {
                 } else {
                     List {
                         Section {
-                            WorkoutSummaryRow(workouts: workouts)
+                            WorkoutSummaryRow(workouts: filtered)
                         }
 
-                        ForEach(workouts, id: \.uuid) { workout in
+                        ForEach(filtered, id: \.uuid) { workout in
                             NavigationLink(destination: WorkoutDetailView(workout: workout)) {
                                 WorkoutRow(workout: workout)
                             }
@@ -36,6 +42,7 @@ struct WorkoutsView: View {
                 }
             }
             .navigationTitle("Workouts")
+            .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Picker("Period", selection: $selectedPeriod) {
