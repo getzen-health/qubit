@@ -5,7 +5,7 @@
  * Minimalistic, AI-first, expandable metrics layout
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -725,6 +725,9 @@ export function DashboardStream({
           </div>
         )}
 
+        {/* Daily Check-in card */}
+        <DashboardCheckinCard />
+
         {/* Week-over-Week Comparison */}
         {(wowSteps !== null || wowCal !== null || wowSleep !== null) && (
           <div className="mb-6 bg-surface rounded-xl border border-border p-4">
@@ -1057,6 +1060,63 @@ export function DashboardStream({
       </main>
       <BottomNav />
     </div>
+  )
+}
+
+// MARK: - Dashboard Check-in Card
+
+const ENERGY_EMOJIS = ['', '😴', '😑', '😐', '🙂', '😄']
+const MOOD_EMOJIS   = ['', '😞', '😕', '😐', '🙂', '😁']
+const STRESS_EMOJIS = ['', '😌', '🙂', '😐', '😟', '😰']
+
+interface TodayCheckin {
+  energy: number | null
+  mood: number | null
+  stress: number | null
+}
+
+function DashboardCheckinCard() {
+  const [checkin, setCheckin] = useState<TodayCheckin | null | undefined>(undefined)
+  const supabase = createClient()
+
+  const load = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setCheckin(null); return }
+    const today = new Date().toISOString().slice(0, 10)
+    const { data } = await supabase
+      .from('daily_checkins')
+      .select('energy, mood, stress')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .single()
+    setCheckin(data ?? null)
+  }, [supabase])
+
+  useEffect(() => { load() }, [load])
+
+  if (checkin === undefined) return null // loading — don't flash
+
+  return (
+    <Link
+      href="/checkin"
+      className="block mb-6 bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-base">{checkin ? '✅' : '📋'}</span>
+          <span className="text-sm font-medium text-text-secondary">Daily Check-in</span>
+        </div>
+        {checkin ? (
+          <div className="flex items-center gap-1 text-lg">
+            {checkin.energy !== null && <span>{ENERGY_EMOJIS[checkin.energy]}</span>}
+            {checkin.mood   !== null && <span>{MOOD_EMOJIS[checkin.mood]}</span>}
+            {checkin.stress !== null && <span>{STRESS_EMOJIS[checkin.stress]}</span>}
+          </div>
+        ) : (
+          <span className="text-xs text-accent font-medium">Log how you feel →</span>
+        )}
+      </div>
+    </Link>
   )
 }
 
