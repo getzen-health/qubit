@@ -13,7 +13,7 @@ import {
   Heart,
   Moon,
   Flame,
-  Droplets,
+  Route,
   Brain,
   Zap,
   TrendingUp,
@@ -108,15 +108,14 @@ export function DashboardStream({
     strain: { score: 14.2, trend: -8 },
     sleep: {
       duration: today?.sleep_duration_minutes ?? 462,
-      quality: 85,
     },
     hrv: { value: 52, trend: 12 },
     restingHR: today?.resting_heart_rate ?? 58,
     steps: today?.steps ?? 0,
     calories: Math.round(today?.active_calories ?? 0),
-    water: 1800,
-    waterTarget: 2500,
   }
+
+  const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
 
   // Format sleep duration
   const sleepHours = Math.floor(metrics.sleep.duration / 60)
@@ -281,16 +280,7 @@ export function DashboardStream({
               icon={<Moon className="w-5 h-5" />}
               label="Sleep"
               value={`${sleepHours}h ${sleepMins}m`}
-              sublabel={`${metrics.sleep.quality}% quality`}
               color="sleep"
-              expandContent={
-                <div className="space-y-3">
-                  <MetricDetail label="Deep Sleep" value="1h 23m" color="text-sleep" />
-                  <MetricDetail label="REM" value="1h 45m" color="text-hrv" />
-                  <MetricDetail label="Light" value="3h 52m" color="text-text-secondary" />
-                  <MetricDetail label="Awake" value="22m" color="text-warning" />
-                </div>
-              }
             />
             <MetricRow
               icon={<Heart className="w-5 h-5" />}
@@ -340,13 +330,21 @@ export function DashboardStream({
               />
             )}
             <MetricRow
-              icon={<Droplets className="w-5 h-5" />}
-              label="Water"
-              value={(metrics.water / 1000).toFixed(1)}
-              unit={`/ ${(metrics.waterTarget / 1000).toFixed(1)}L`}
-              sublabel={`${Math.round((metrics.water / metrics.waterTarget) * 100)}% of goal`}
-              color="sleep"
+              icon={<Route className="w-5 h-5" />}
+              label="Distance"
+              value={distanceKm}
+              unit="km"
+              color="activity"
             />
+            {(today?.floors_climbed ?? 0) > 0 && (
+              <MetricRow
+                icon={<TrendingUp className="w-5 h-5" />}
+                label="Floors Climbed"
+                value={today?.floors_climbed ?? 0}
+                unit="floors"
+                color="activity"
+              />
+            )}
           </DataStream>
         </DataStreamSection>
 
