@@ -216,6 +216,22 @@ struct DashboardListView: View {
                         }
                         .padding()
                     }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: MindfulnessView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "brain.head.profile")
+                                .font(.title3)
+                                .foregroundStyle(.teal)
+                            Text("Mindfulness")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
                 }
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
