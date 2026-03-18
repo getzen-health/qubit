@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Plus, Trophy, X, TrendingUp } from 'lucide-react'
+import { ArrowLeft, Plus, Trophy, X, TrendingUp, Bike } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import {
   BarChart,
@@ -337,6 +337,14 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
             <h1 className="text-xl font-bold text-text-primary">Workouts</h1>
             <p className="text-sm text-text-secondary">{workouts.length} sessions</p>
           </div>
+          <Link
+            href="/cycling"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Cycling analytics"
+            title="Cycling Analytics"
+          >
+            <Bike className="w-5 h-5" />
+          </Link>
           <Link
             href="/running"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
