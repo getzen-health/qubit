@@ -821,6 +821,7 @@ export function DashboardStream({
           <div className="flex flex-wrap gap-2">
             {[
               { href: '/goals', label: 'Goals' },
+              { href: '/correlations', label: 'Correlations' },
               { href: '/heartrate', label: 'Heart Rate' },
               { href: '/recovery', label: 'Recovery' },
               { href: '/body', label: 'Body Weight' },

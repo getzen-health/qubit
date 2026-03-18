@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, GitCompareArrows } from 'lucide-react'
+import { ArrowLeft, GitCompareArrows, TrendingUp } from 'lucide-react'
 import { TrendsClient } from './trends-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -37,13 +37,22 @@ export default async function TrendsPage() {
             <h1 className="text-xl font-bold text-text-primary">Trends & Patterns</h1>
             <p className="text-sm text-text-secondary">90-day analysis</p>
           </div>
-          <Link
-            href="/compare"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-text-secondary hover:bg-surface-secondary transition-colors"
-          >
-            <GitCompareArrows className="w-4 h-4" />
-            Compare
-          </Link>
+          <div className="flex items-center gap-1">
+            <Link
+              href="/correlations"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-text-secondary hover:bg-surface-secondary transition-colors"
+            >
+              <TrendingUp className="w-4 h-4" />
+              Correlations
+            </Link>
+            <Link
+              href="/compare"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-text-secondary hover:bg-surface-secondary transition-colors"
+            >
+              <GitCompareArrows className="w-4 h-4" />
+              Compare
+            </Link>
+          </div>
         </div>
       </header>
 
