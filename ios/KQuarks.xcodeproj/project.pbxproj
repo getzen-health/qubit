@@ -36,6 +36,7 @@
 		027 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124 /* AppearanceSettingsView.swift */; };
 		028 /* DashboardConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125 /* DashboardConfigView.swift */; };
 		029 /* WidgetConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126 /* WidgetConfiguration.swift */; };
+		030 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 204 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		204 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		301 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -106,6 +108,7 @@
 				201 /* Assets.xcassets */,
 				202 /* KQuarks.entitlements */,
 				203 /* Info.plist */,
+				204 /* PrivacyInfo.xcprivacy */,
 			);
 			path = KQuarks;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				014 /* Assets.xcassets in Resources */,
+				030 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
