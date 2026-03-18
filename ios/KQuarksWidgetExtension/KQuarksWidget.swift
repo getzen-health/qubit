@@ -34,7 +34,8 @@ struct KQuarksProvider: TimelineProvider {
     }
 
     private func fetchEntry() async -> KQuarksEntry {
-        let stepGoal = 10000
+        let storedGoal = UserDefaults.standard.double(forKey: "goal_steps")
+        let stepGoal = storedGoal > 0 ? Int(storedGoal) : 10000
         let cachedRecovery = UserDefaults.standard.integer(forKey: "cached_recovery_score")
         let recoveryScore = cachedRecovery > 0 ? cachedRecovery : 50
 
