@@ -68,6 +68,49 @@ class HealthKitService {
         healthStore.authorizationStatus(for: HKQuantityType(.stepCount))
     }
 
+    // MARK: - Background Delivery
+
+    /// Call once after HealthKit authorization to trigger background sync when new data arrives.
+    func setupBackgroundDelivery() {
+        let typesToObserve: [HKQuantityTypeIdentifier] = [
+            .stepCount,
+            .activeEnergyBurned,
+            .heartRate,
+            .restingHeartRate,
+            .heartRateVariabilitySDNN,
+        ]
+        for identifier in typesToObserve {
+            let type = HKQuantityType(identifier)
+            healthStore.enableBackgroundDelivery(for: type, frequency: .hourly) { _, _ in }
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, completionHandler, error in
+                guard error == nil, self != nil else {
+                    completionHandler()
+                    return
+                }
+                Task {
+                    await SyncService.shared.performFullSync()
+                    completionHandler()
+                }
+            }
+            healthStore.execute(query)
+        }
+
+        // Workouts
+        let workoutType = HKObjectType.workoutType()
+        healthStore.enableBackgroundDelivery(for: workoutType, frequency: .immediate) { _, _ in }
+        let workoutQuery = HKObserverQuery(sampleType: workoutType, predicate: nil) { [weak self] _, completionHandler, error in
+            guard error == nil, self != nil else {
+                completionHandler()
+                return
+            }
+            Task {
+                await SyncService.shared.performFullSync()
+                completionHandler()
+            }
+        }
+        healthStore.execute(workoutQuery)
+    }
+
     // MARK: - Fetch Today's Summary
 
     func fetchTodaySummary() async throws -> TodayHealthSummary {

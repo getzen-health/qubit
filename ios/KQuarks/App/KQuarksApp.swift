@@ -32,6 +32,11 @@ struct KQuarksApp: App {
                     SyncService.shared.scheduleBackgroundSync()
                     await NotificationService.shared.refreshAuthorizationStatus()
                 }
+                .task {
+                    // Set up HealthKit observer queries for background delivery
+                    // Only after HealthKit is authorized (no-op if not yet authorized)
+                    HealthKitService.shared.setupBackgroundDelivery()
+                }
         }
     }
 }
