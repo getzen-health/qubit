@@ -25,6 +25,7 @@ import {
   BedDouble,
   Lightbulb,
   CalendarDays,
+  BarChart2,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -355,6 +356,13 @@ export function DashboardStream({
               title="All Insights"
             >
               <Lightbulb className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
+              href="/trends"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Trends & Patterns"
+            >
+              <BarChart2 className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/monthly"
