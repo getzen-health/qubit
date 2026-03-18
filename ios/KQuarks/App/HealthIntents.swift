@@ -1,4 +1,5 @@
 import AppIntents
+import HealthKit
 
 struct GetTodayStepsIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Today's Steps"
@@ -35,6 +36,48 @@ struct GetRecoveryScoreIntent: AppIntent {
     }
 }
 
+struct GetSleepDurationIntent: AppIntent {
+    static var title: LocalizedStringResource = "How Did I Sleep?"
+    static var description = IntentDescription("Shows your sleep duration for last night.")
+
+    func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+        let samples = (try? await HealthKitService.shared.fetchSleepAnalysis(from: yesterday, to: Date())) ?? []
+        let minutes = samples.filter {
+            if case .asleepDeep? = HKCategoryValueSleepAnalysis(rawValue: $0.value) { return true }
+            if case .asleepREM? = HKCategoryValueSleepAnalysis(rawValue: $0.value) { return true }
+            if case .asleepCore? = HKCategoryValueSleepAnalysis(rawValue: $0.value) { return true }
+            return false
+        }.reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) / 60 }
+        let hours = minutes / 60
+        let h = Int(hours)
+        let m = Int(minutes) % 60
+        return .result(
+            value: hours,
+            dialog: IntentDialog(stringLiteral: h > 0 ? "You slept \(h) hours and \(m) minutes last night." : "No sleep data found for last night.")
+        )
+    }
+}
+
+struct GetWeeklyWorkoutsIntent: AppIntent {
+    static var title: LocalizedStringResource = "Workouts This Week"
+    static var description = IntentDescription("Shows how many workouts you've done this week.")
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+        let workouts = (try? await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date())) ?? []
+        let count = workouts.count
+        let word = count == 1 ? "workout" : "workouts"
+        return .result(
+            value: count,
+            dialog: IntentDialog(stringLiteral: count > 0
+                ? "You've completed \(count) \(word) this week. Keep it up!"
+                : "No workouts logged this week yet. Time to move!")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -55,6 +98,24 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Recovery Score",
             systemImageName: "bolt.fill"
+        )
+        AppShortcut(
+            intent: GetSleepDurationIntent(),
+            phrases: [
+                "How did I sleep in \(.applicationName)",
+                "Show last night's sleep in \(.applicationName)"
+            ],
+            shortTitle: "Last Night's Sleep",
+            systemImageName: "moon.fill"
+        )
+        AppShortcut(
+            intent: GetWeeklyWorkoutsIntent(),
+            phrases: [
+                "How many workouts in \(.applicationName)",
+                "Workouts this week in \(.applicationName)"
+            ],
+            shortTitle: "Weekly Workouts",
+            systemImageName: "figure.run"
         )
     }
 }
