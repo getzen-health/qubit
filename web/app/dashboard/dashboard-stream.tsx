@@ -60,6 +60,7 @@ interface DashboardStreamProps {
     floors_climbed: number
     sleep_duration_minutes?: number
     resting_heart_rate?: number
+    avg_hrv?: number
   }>
   insights: Array<{
     id: string
@@ -110,11 +111,19 @@ export function DashboardStream({
     sleep: {
       duration: today?.sleep_duration_minutes ?? 462,
     },
-    hrv: { value: 52, trend: 12 },
     restingHR: today?.resting_heart_rate ?? 58,
     steps: today?.steps ?? 0,
     calories: Math.round(today?.active_calories ?? 0),
   }
+
+  // Real HRV from synced data
+  const todayHrv = today?.avg_hrv ?? null
+
+  // HRV trend: today vs average of past 6 days (skip today)
+  const hrvHistory = summaries.slice(1, 7).map((d) => d.avg_hrv).filter((v): v is number => typeof v === 'number' && v > 0)
+  const hrvTrend = todayHrv && hrvHistory.length > 0
+    ? Math.round(((todayHrv - hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length) / (hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length)) * 100)
+    : undefined
 
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
 
@@ -134,8 +143,8 @@ export function DashboardStream({
   }
 
   const getSecondaryInsight = () => {
-    if (metrics.hrv.trend > 10) {
-      return `HRV trending up ${metrics.hrv.trend}% this week - a positive adaptation sign.`
+    if (hrvTrend != null && hrvTrend > 10) {
+      return `HRV trending up ${hrvTrend}% this week - a positive adaptation sign.`
     }
     if (stepsTrend > 20) {
       return `You're ${stepsTrend}% more active than yesterday. Great momentum!`
@@ -240,9 +249,9 @@ export function DashboardStream({
           />
           <QuickStat
             label="HRV"
-            value={metrics.hrv.value}
+            value={todayHrv != null ? Math.round(todayHrv) : '—'}
             unit="ms"
-            trend={metrics.hrv.trend}
+            trend={hrvTrend}
             color="heart"
           />
         </QuickStatsGrid>
@@ -298,7 +307,7 @@ export function DashboardStream({
               color="heart"
               expandContent={
                 <div className="space-y-3">
-                  <MetricDetail label="HRV" value={`${metrics.hrv.value} ms`} />
+                  <MetricDetail label="HRV" value={todayHrv != null ? `${Math.round(todayHrv)} ms` : '—'} />
                   <MetricDetail label="Max HR Today" value="142 bpm" />
                   <MetricDetail label="7-day Average" value="59 bpm" />
                 </div>
