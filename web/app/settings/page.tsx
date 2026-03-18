@@ -4,6 +4,7 @@ import Link from 'next/link'
 import {
   Palette,
   User,
+  Target,
   ChevronRight,
   ArrowLeft,
 } from 'lucide-react'
@@ -31,6 +32,12 @@ export default async function SettingsPage() {
       description: 'Profile and account settings',
       href: '/settings/account',
       icon: User,
+    },
+    {
+      title: 'Goals',
+      description: 'Configure daily step goal and targets',
+      href: '/settings/goals',
+      icon: Target,
     },
   ]
 

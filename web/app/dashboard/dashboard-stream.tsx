@@ -5,7 +5,7 @@
  * Minimalistic, AI-first, expandable metrics layout
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -38,7 +38,7 @@ import {
 import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
 
-const STEP_GOAL = 10000
+const DEFAULT_STEP_GOAL = 10000
 
 interface DashboardStreamProps {
   user: {
@@ -83,6 +83,15 @@ export function DashboardStream({
   const router = useRouter()
   const supabase = createClient()
 
+  const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
+  useEffect(() => {
+    const stored = localStorage.getItem('kquarks_step_goal')
+    if (stored) {
+      const n = parseInt(stored, 10)
+      if (!isNaN(n) && n > 0) setStepGoal(n)
+    }
+  }, [])
+
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push('/login')
@@ -99,7 +108,7 @@ export function DashboardStream({
   // Compute step goal streak (summaries are newest-first, skip today which may be partial)
   let stepStreak = 0
   for (const day of summaries.slice(1)) { // skip today — still accumulating
-    if (day.steps >= STEP_GOAL) {
+    if (day.steps >= stepGoal) {
       stepStreak++
     } else {
       break
@@ -338,8 +347,8 @@ export function DashboardStream({
               icon={<Activity className="w-5 h-5" />}
               label="Steps"
               value={metrics.steps.toLocaleString()}
-              unit={`/ ${STEP_GOAL.toLocaleString()}`}
-              sublabel={`${Math.round((metrics.steps / STEP_GOAL) * 100)}% of goal`}
+              unit={`/ ${stepGoal.toLocaleString()}`}
+              sublabel={`${Math.round((metrics.steps / stepGoal) * 100)}% of goal`}
               trend={stepsTrend}
               color="activity"
             />
@@ -393,6 +402,7 @@ export function DashboardStream({
         <DataStreamSection title="7-Day Trends">
           <WeeklyCharts
             summaries={summaries.slice(0, 7)}
+            stepGoal={stepGoal}
             weightData={summaries
               .filter((s) => s.weight_kg != null)
               .map((s) => ({ date: s.date, weight_kg: s.weight_kg! }))}

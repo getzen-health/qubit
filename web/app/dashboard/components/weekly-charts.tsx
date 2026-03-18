@@ -13,8 +13,6 @@ import {
   ReferenceLine,
 } from 'recharts'
 
-const STEP_GOAL = 10000
-
 interface WeeklyChartsProps {
   summaries: Array<{
     date: string
@@ -26,10 +24,11 @@ interface WeeklyChartsProps {
     recovery_score?: number
     strain_score?: number
   }>
+  stepGoal?: number
   weightData?: Array<{ date: string; weight_kg: number }>
 }
 
-export function WeeklyCharts({ summaries, weightData }: WeeklyChartsProps) {
+export function WeeklyCharts({ summaries, stepGoal = 10000, weightData }: WeeklyChartsProps) {
   // Reverse to ascending order (oldest → newest left → right)
   // Append T00:00:00 to force local-time parsing and avoid UTC day-shift
   const chartData = [...summaries].reverse().map((s) => ({
@@ -79,10 +78,10 @@ export function WeeklyCharts({ summaries, weightData }: WeeklyChartsProps) {
             />
             <Bar dataKey="steps" fill="#22c55e" radius={[3, 3, 0, 0]} />
             <ReferenceLine
-              y={STEP_GOAL}
+              y={stepGoal}
               stroke="rgba(255,255,255,0.25)"
               strokeDasharray="4 3"
-              label={{ value: '10k goal', position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
+              label={{ value: `${(stepGoal / 1000).toFixed(0)}k goal`, position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
             />
           </BarChart>
         </ResponsiveContainer>
