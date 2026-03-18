@@ -63,6 +63,26 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {workouts.length > 0 && (() => {
+          const totalMinutes = workouts.reduce((s, w) => s + w.duration_minutes, 0)
+          const totalCal = workouts.reduce((s, w) => s + (w.active_calories ?? 0), 0)
+          const h = Math.floor(totalMinutes / 60)
+          const m = totalMinutes % 60
+          return (
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { label: 'Sessions', value: workouts.length.toString() },
+                { label: 'Total Time', value: h > 0 ? `${h}h ${m}m` : `${m}m` },
+                { label: 'Calories', value: totalCal > 0 ? `${Math.round(totalCal).toLocaleString()} cal` : '—' },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-surface rounded-xl border border-border p-4 text-center">
+                  <p className="text-lg font-bold text-text-primary">{value}</p>
+                  <p className="text-xs text-text-secondary mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+          )
+        })()}
         {workouts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <span className="text-5xl mb-4">⚡</span>
