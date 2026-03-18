@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -42,6 +43,12 @@ interface WorkoutsListProps {
 }
 
 export function WorkoutsList({ workouts }: WorkoutsListProps) {
+  const [activeType, setActiveType] = useState<string | null>(null)
+
+  // Unique types that appear in this user's workouts, preserving occurrence order
+  const types = Array.from(new Set(workouts.map((w) => w.workout_type)))
+  const filtered = activeType ? workouts.filter((w) => w.workout_type === activeType) : workouts
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -63,15 +70,44 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* Type filter chips */}
+        {types.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar">
+            <button
+              onClick={() => setActiveType(null)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                activeType === null
+                  ? 'bg-accent text-white'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-secondary'
+              }`}
+            >
+              All
+            </button>
+            {types.map((type) => (
+              <button
+                key={type}
+                onClick={() => setActiveType(activeType === type ? null : type)}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  activeType === type
+                    ? 'bg-accent text-white'
+                    : 'bg-surface border border-border text-text-secondary hover:bg-surface-secondary'
+                }`}
+              >
+                {workoutIcon(type)} {type}
+              </button>
+            ))}
+          </div>
+        )}
+
         {workouts.length > 0 && (() => {
-          const totalMinutes = workouts.reduce((s, w) => s + w.duration_minutes, 0)
-          const totalCal = workouts.reduce((s, w) => s + (w.active_calories ?? 0), 0)
+          const totalMinutes = filtered.reduce((s, w) => s + w.duration_minutes, 0)
+          const totalCal = filtered.reduce((s, w) => s + (w.active_calories ?? 0), 0)
           const h = Math.floor(totalMinutes / 60)
           const m = totalMinutes % 60
           return (
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
-                { label: 'Sessions', value: workouts.length.toString() },
+                { label: 'Sessions', value: filtered.length.toString() },
                 { label: 'Total Time', value: h > 0 ? `${h}h ${m}m` : `${m}m` },
                 { label: 'Calories', value: totalCal > 0 ? `${Math.round(totalCal).toLocaleString()} cal` : '—' },
               ].map(({ label, value }) => (
@@ -93,7 +129,10 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
           </div>
         ) : (
           <div className="space-y-2">
-            {workouts.map((workout) => {
+            {filtered.length === 0 ? (
+              <p className="text-center text-text-secondary py-12">No {activeType} workouts found.</p>
+            ) : null}
+            {filtered.map((workout) => {
               const date = new Date(workout.start_time)
               const stats: string[] = [formatDuration(workout.duration_minutes)]
               if (workout.active_calories && workout.active_calories > 0) {
