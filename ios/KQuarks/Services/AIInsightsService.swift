@@ -89,6 +89,7 @@ class AIInsightsService {
                 latestStrainScore = result.strainScore
             }
 
+            NotificationService.shared.scheduleInsightsNotification()
             return result
         } catch {
             await MainActor.run {
