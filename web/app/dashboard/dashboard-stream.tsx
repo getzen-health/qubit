@@ -215,6 +215,27 @@ export function DashboardStream({
 
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
 
+  // Week-over-week comparison (skip today index 0 — partial day)
+  const thisWeek = summaries.slice(1, 8)  // days 1-7 (yesterday through 7 days ago)
+  const lastWeek = summaries.slice(8, 15) // days 8-14 (one full week prior)
+  const wowSteps = thisWeek.length > 0 && lastWeek.length > 0
+    ? Math.round(((thisWeek.reduce((a, b) => a + b.steps, 0) / thisWeek.length)
+        - (lastWeek.reduce((a, b) => a + b.steps, 0) / lastWeek.length))
+        / Math.max(lastWeek.reduce((a, b) => a + b.steps, 0) / lastWeek.length, 1) * 100)
+    : null
+  const wowCal = thisWeek.length > 0 && lastWeek.length > 0
+    ? Math.round(((thisWeek.reduce((a, b) => a + b.active_calories, 0) / thisWeek.length)
+        - (lastWeek.reduce((a, b) => a + b.active_calories, 0) / lastWeek.length))
+        / Math.max(lastWeek.reduce((a, b) => a + b.active_calories, 0) / lastWeek.length, 1) * 100)
+    : null
+  const wowSleepThis = thisWeek.filter((d) => (d.sleep_duration_minutes ?? 0) > 0)
+  const wowSleepLast = lastWeek.filter((d) => (d.sleep_duration_minutes ?? 0) > 0)
+  const wowSleep = wowSleepThis.length > 0 && wowSleepLast.length > 0
+    ? Math.round(((wowSleepThis.reduce((a, b) => a + (b.sleep_duration_minutes ?? 0), 0) / wowSleepThis.length)
+        - (wowSleepLast.reduce((a, b) => a + (b.sleep_duration_minutes ?? 0), 0) / wowSleepLast.length))
+        / Math.max(wowSleepLast.reduce((a, b) => a + (b.sleep_duration_minutes ?? 0), 0) / wowSleepLast.length, 1) * 100)
+    : null
+
   // 7-day average resting HR (skip today)
   const hrHistory = summaries.slice(1, 7).map((d) => d.resting_heart_rate).filter((v): v is number => typeof v === 'number' && v > 0)
   const avgRestingHR = hrHistory.length > 0 ? Math.round(hrHistory.reduce((a, b) => a + b, 0) / hrHistory.length) : null
@@ -399,6 +420,39 @@ export function DashboardStream({
             color="heart"
           />
         </QuickStatsGrid>
+
+        {/* Week-over-Week Comparison */}
+        {(wowSteps !== null || wowCal !== null || wowSleep !== null) && (
+          <div className="mb-6 bg-surface rounded-xl border border-border p-4">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">vs Last Week</p>
+            <div className="flex gap-4">
+              {wowSteps !== null && (
+                <div className="flex-1 text-center">
+                  <p className={`text-lg font-bold ${wowSteps > 0 ? 'text-green-400' : wowSteps < 0 ? 'text-red-400' : 'text-text-primary'}`}>
+                    {wowSteps > 0 ? '+' : ''}{wowSteps}%
+                  </p>
+                  <p className="text-xs text-text-secondary mt-0.5">Steps</p>
+                </div>
+              )}
+              {wowCal !== null && (
+                <div className="flex-1 text-center">
+                  <p className={`text-lg font-bold ${wowCal > 0 ? 'text-green-400' : wowCal < 0 ? 'text-red-400' : 'text-text-primary'}`}>
+                    {wowCal > 0 ? '+' : ''}{wowCal}%
+                  </p>
+                  <p className="text-xs text-text-secondary mt-0.5">Calories</p>
+                </div>
+              )}
+              {wowSleep !== null && (
+                <div className="flex-1 text-center">
+                  <p className={`text-lg font-bold ${wowSleep > 0 ? 'text-green-400' : wowSleep < 0 ? 'text-red-400' : 'text-text-primary'}`}>
+                    {wowSleep > 0 ? '+' : ''}{wowSleep}%
+                  </p>
+                  <p className="text-xs text-text-secondary mt-0.5">Sleep</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Primary Metrics Stream */}
         <DataStreamSection title="Today's Metrics">
