@@ -38,6 +38,7 @@ class HealthKitService {
         types.insert(HKQuantityType(.respiratoryRate))
         types.insert(HKQuantityType(.bloodPressureSystolic))
         types.insert(HKQuantityType(.bloodPressureDiastolic))
+        types.insert(HKQuantityType(.vo2Max))
 
         // Sleep
         types.insert(HKCategoryType(.sleepAnalysis))
@@ -665,6 +666,9 @@ class HealthKitService {
             return HKUnit.count().unitDivided(by: .minute())
         case .bloodPressureSystolic, .bloodPressureDiastolic:
             return .millimeterOfMercury()
+        case .vo2Max:
+            // mL/kg/min
+            return HKUnit.literUnit(with: .milli).unitDivided(by: HKUnit.gramUnit(with: .kilo).unitMultiplied(by: .minute()))
         default:
             return .count()
         }

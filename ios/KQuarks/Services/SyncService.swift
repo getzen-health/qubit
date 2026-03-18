@@ -173,6 +173,27 @@ class SyncService {
             ))
         }
 
+        // Fetch VO2 Max samples
+        let vo2Samples = try await healthKit.fetchSamples(
+            for: .vo2Max,
+            from: startDate,
+            to: now,
+            limit: 50
+        )
+        for sample in vo2Samples {
+            let vo2Unit = HKUnit.literUnit(with: .milli).unitDivided(by: HKUnit.gramUnit(with: .kilo).unitMultiplied(by: .minute()))
+            let value = sample.quantity.doubleValue(for: vo2Unit)
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "vo2_max",
+                value: value,
+                unit: "ml/kg/min",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Fetch mindfulness sessions
         let mindfulSamples = try await healthKit.fetchMindfulSessions(from: startDate, to: now)
         for sample in mindfulSamples {
