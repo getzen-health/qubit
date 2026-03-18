@@ -967,6 +967,7 @@ export function DashboardStream({
               { href: '/fasting', label: 'Fasting' },
               { href: '/nutrition', label: 'Nutrition' },
               { href: '/insights', label: 'AI Insights' },
+              { href: '/workouts/prs', label: 'Workout PRs' },
               { href: '/records', label: 'Records' },
               { href: '/monthly', label: 'Monthly' },
               { href: '/year', label: 'Year View' },

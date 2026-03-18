@@ -89,7 +89,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
       .from('sleep_records')
       .select('id, start_time, end_time, duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
       .eq('user_id', user.id)
-      .gte('start_time', `${date}T00:00:00`)
+      .gte('end_time', `${date}T00:00:00`)
       .lt('end_time', `${date}T23:59:59`)
       .order('start_time', { ascending: true }),
     supabase.from('daily_summaries').select('date').eq('user_id', user.id).eq('date', prevDateStr).maybeSingle(),
