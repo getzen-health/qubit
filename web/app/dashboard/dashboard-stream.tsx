@@ -145,6 +145,26 @@ export function DashboardStream({
     const id = setInterval(tick, 60000) // update every minute on dashboard
     return () => clearInterval(id)
   }, [activeFast])
+  const [localWaterMl, setLocalWaterMl] = useState(todayWaterMl)
+  const [waterLogging, setWaterLogging] = useState(false)
+  const [showWaterQuick, setShowWaterQuick] = useState(false)
+
+  const handleAddWater = async (ml: number) => {
+    setWaterLogging(true)
+    try {
+      const { data: { user: u } } = await supabase.auth.getUser()
+      if (!u) return
+      const todayDate = new Date().toISOString().slice(0, 10)
+      await supabase.from('water_logs').insert({ user_id: u.id, amount_ml: ml, logged_at: new Date().toISOString() })
+      const newTotal = localWaterMl + ml
+      await supabase.from('daily_water').upsert({ user_id: u.id, date: todayDate, total_ml: newTotal }, { onConflict: 'user_id,date' })
+      setLocalWaterMl(newTotal)
+      setShowWaterQuick(false)
+    } finally {
+      setWaterLogging(false)
+    }
+  }
+
   const [localInsights, setLocalInsights] = useState(insights)
   useEffect(() => {
     // Only use localStorage if DB didn't provide goals
@@ -496,32 +516,52 @@ export function DashboardStream({
 
         {/* Hydration */}
         {waterTargetMl > 0 && (
-          <Link href="/water" className="block mb-6 bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors">
+          <div className="mb-6 bg-surface rounded-xl border border-border p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowWaterQuick((v) => !v)}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
                 <Droplets className="w-4 h-4 text-blue-400" />
                 <span className="text-sm font-medium text-text-secondary">Hydration</span>
-              </div>
-              <span className="text-sm font-semibold text-text-primary">
-                {todayWaterMl >= 1000 ? `${(todayWaterMl / 1000).toFixed(1)}L` : `${todayWaterMl}ml`}
+                <span className="text-xs text-blue-400">{showWaterQuick ? '▲' : '+ Log'}</span>
+              </button>
+              <Link href="/water" className="text-sm font-semibold text-text-primary hover:underline">
+                {localWaterMl >= 1000 ? `${(localWaterMl / 1000).toFixed(1)}L` : `${localWaterMl}ml`}
                 <span className="text-text-secondary font-normal"> / {waterTargetMl >= 1000 ? `${(waterTargetMl / 1000).toFixed(1)}L` : `${waterTargetMl}ml`}</span>
-              </span>
+              </Link>
             </div>
             <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{
-                  width: `${Math.min((todayWaterMl / waterTargetMl) * 100, 100)}%`,
-                  background: todayWaterMl >= waterTargetMl ? '#22c55e' : '#3b82f6',
+                  width: `${Math.min((localWaterMl / waterTargetMl) * 100, 100)}%`,
+                  background: localWaterMl >= waterTargetMl ? '#22c55e' : '#3b82f6',
                 }}
               />
             </div>
             <p className="text-xs text-text-secondary mt-1.5">
-              {todayWaterMl >= waterTargetMl
+              {localWaterMl >= waterTargetMl
                 ? 'Goal reached!'
-                : `${waterTargetMl - todayWaterMl}ml to go`}
+                : `${waterTargetMl - localWaterMl}ml to go`}
             </p>
-          </Link>
+            {showWaterQuick && (
+              <div className="flex gap-2 mt-3 flex-wrap">
+                {[150, 250, 350, 500, 750].map((ml) => (
+                  <button
+                    key={ml}
+                    type="button"
+                    disabled={waterLogging}
+                    onClick={() => handleAddWater(ml)}
+                    className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors disabled:opacity-50"
+                  >
+                    +{ml >= 1000 ? `${ml / 1000}L` : `${ml}ml`}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {/* Nutrition calories */}
