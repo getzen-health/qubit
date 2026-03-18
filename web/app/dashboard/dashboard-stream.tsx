@@ -23,6 +23,7 @@ import {
   Scale,
   Trophy,
   BedDouble,
+  Lightbulb,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -257,6 +258,13 @@ export function DashboardStream({
               title="Sleep History"
             >
               <BedDouble className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
+              href="/insights"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="All Insights"
+            >
+              <Lightbulb className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/records"
