@@ -194,6 +194,18 @@ struct DashboardListView: View {
                     }
                 }
 
+                // Sleep Streak
+                if viewModel.sleepStreak > 0 {
+                    MetricRowView(
+                        icon: "moon.stars.fill",
+                        label: "Sleep Streak",
+                        value: "\(viewModel.sleepStreak)",
+                        unit: viewModel.sleepStreak == 1 ? "night" : "nights",
+                        sublabel: "consecutive nights of 7+ hours",
+                        color: .sleep
+                    )
+                }
+
                 // Heart Rate
                 if let rhr = summary.restingHeartRate {
                     MetricRowView(
@@ -379,6 +391,7 @@ class DashboardListViewModel {
     var stepsTrend: Int? = nil
     var hrvTrend: Int? = nil
     var currentStreak: Int = 0
+    var sleepStreak: Int = 0
     var latestSleepContext: AIInsightsService.SleepContext? = nil
     var bodyWeightKg: Double? = nil
     var weeklyWorkoutCount: Int = 0
@@ -525,6 +538,18 @@ class DashboardListViewModel {
             await MainActor.run {
                 currentStreak = streak
             }
+
+            // Compute sleep streak (7h = 420 min goal, newest first, skip today)
+            let sleepGoalMinutes = 420
+            var sleepStreakCount = 0
+            for day in streakData.dropFirst() {
+                if (day.sleepDurationMinutes ?? 0) >= sleepGoalMinutes {
+                    sleepStreakCount += 1
+                } else {
+                    break
+                }
+            }
+            await MainActor.run { sleepStreak = sleepStreakCount }
         } catch {
             // Trends are non-critical, silently fail
         }
