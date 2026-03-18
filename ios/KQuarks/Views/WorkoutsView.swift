@@ -22,6 +22,10 @@ struct WorkoutsView: View {
                     )
                 } else {
                     List {
+                        Section {
+                            WorkoutSummaryRow(workouts: workouts)
+                        }
+
                         ForEach(workouts, id: \.uuid) { workout in
                             NavigationLink(destination: WorkoutDetailView(workout: workout)) {
                                 WorkoutRow(workout: workout)
@@ -103,6 +107,59 @@ struct WorkoutRow: View {
             return "\(h)h \(m)m"
         }
         return "\(m)m"
+    }
+}
+
+// MARK: - Workout Summary Row
+
+struct WorkoutSummaryRow: View {
+    let workouts: [HKWorkout]
+
+    private var totalSeconds: TimeInterval {
+        workouts.reduce(0) { $0 + $1.duration }
+    }
+
+    private var totalCalories: Int {
+        workouts.reduce(0) { sum, w in
+            sum + Int(w.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0)
+        }
+    }
+
+    private func fmt(_ seconds: TimeInterval) -> String {
+        let h = Int(seconds) / 3600
+        let m = (Int(seconds) % 3600) / 60
+        return h > 0 ? "\(h)h \(m)m" : "\(m)m"
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            SummaryBubble(label: "Sessions", value: "\(workouts.count)")
+            Divider().frame(height: 40)
+            SummaryBubble(label: "Total Time", value: fmt(totalSeconds))
+            Divider().frame(height: 40)
+            SummaryBubble(label: "Calories", value: totalCalories > 0 ? "\(totalCalories)" : "—")
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct SummaryBubble: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.subheadline.bold().monospacedDigit())
+                .foregroundStyle(.primary)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
     }
 }
 
