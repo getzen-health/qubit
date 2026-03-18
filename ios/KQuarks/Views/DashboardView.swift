@@ -164,23 +164,26 @@ struct ActivityRingsView: View {
     // Goals from user settings
     var stepsGoal: Int { Int(GoalService.shared.stepsGoal) }
     var caloriesGoal: Double { GoalService.shared.activeCaloriesGoal }
-    let activeMinutesGoal = 30
+    var sleepGoalHours: Double { GoalService.shared.sleepGoalMinutes / 60 }
+
+    private var sleepHours: Double { summary.sleepHours ?? 0 }
+    private var sleepProgress: Double { sleepGoalHours > 0 ? sleepHours / sleepGoalHours : 0 }
 
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 16) {
             // Steps ring
             RingView(
                 progress: Double(summary.steps) / Double(stepsGoal),
                 color: .green,
-                lineWidth: 12
+                lineWidth: 11
             )
-            .frame(width: 80, height: 80)
+            .frame(width: 76, height: 76)
             .overlay {
                 VStack(spacing: 0) {
                     Image(systemName: "figure.walk")
-                        .font(.caption)
+                        .font(.caption2)
                     Text("\(Int(Double(summary.steps) / Double(stepsGoal) * 100))%")
-                        .font(.caption.bold())
+                        .font(.caption2.bold())
                 }
                 .foregroundColor(.green)
             }
@@ -189,17 +192,34 @@ struct ActivityRingsView: View {
             RingView(
                 progress: summary.activeCalories / caloriesGoal,
                 color: .orange,
-                lineWidth: 12
+                lineWidth: 11
             )
-            .frame(width: 80, height: 80)
+            .frame(width: 76, height: 76)
             .overlay {
                 VStack(spacing: 0) {
                     Image(systemName: "flame.fill")
-                        .font(.caption)
+                        .font(.caption2)
                     Text("\(Int(summary.activeCalories / caloriesGoal * 100))%")
-                        .font(.caption.bold())
+                        .font(.caption2.bold())
                 }
                 .foregroundColor(.orange)
+            }
+
+            // Sleep ring
+            RingView(
+                progress: sleepProgress,
+                color: .indigo,
+                lineWidth: 11
+            )
+            .frame(width: 76, height: 76)
+            .overlay {
+                VStack(spacing: 0) {
+                    Image(systemName: "moon.fill")
+                        .font(.caption2)
+                    Text("\(Int(sleepProgress * 100))%")
+                        .font(.caption2.bold())
+                }
+                .foregroundColor(.indigo)
             }
 
             Spacer()
@@ -207,18 +227,23 @@ struct ActivityRingsView: View {
             // Summary text
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(summary.steps)")
-                    .font(.title2.bold())
+                    .font(.headline.bold())
                     .foregroundColor(.green)
                 Text("of \(stepsGoal.formatted()) steps")
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundColor(.secondary)
 
-                Text("\(Int(summary.activeCalories))")
-                    .font(.title2.bold())
+                Text("\(Int(summary.activeCalories)) kcal")
+                    .font(.headline.bold())
                     .foregroundColor(.orange)
-                Text("of \(Int(caloriesGoal)) cal")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+
+                if sleepHours > 0 {
+                    let h = Int(sleepHours)
+                    let m = Int((sleepHours - Double(h)) * 60)
+                    Text(m > 0 ? "\(h)h \(m)m sleep" : "\(h)h sleep")
+                        .font(.headline.bold())
+                        .foregroundColor(.indigo)
+                }
             }
         }
         .padding()
