@@ -957,6 +957,7 @@ export function DashboardStream({
                 { href: '/rings', label: 'Activity Rings' },
                 { href: '/floors', label: 'Floors Climbed' },
                 { href: '/running', label: 'Running' },
+                { href: '/race-predictor', label: 'Race Predictor' },
                 { href: '/cycling', label: 'Cycling' },
                 { href: '/swimming', label: 'Swimming' },
                 { href: '/hiking', label: 'Hiking' },

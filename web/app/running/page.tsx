@@ -82,10 +82,13 @@ export default async function RunningPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Running Analytics</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link href="/race-predictor" className="text-xs text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+            Race Predictor
+          </Link>
         </div>
       </header>
 
