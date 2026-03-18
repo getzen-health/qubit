@@ -140,7 +140,7 @@ export function MonthlyClient({ summaries, workouts }: Props) {
             <BarChart data={months} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="label" tick={tickStyle} axisLine={false} tickLine={false} interval={0} />
-              <YAxis hide domain={[0, 10]} />
+              <YAxis hide />
               <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${(v / 60).toFixed(1)}h`, 'Avg sleep']} />
               <ReferenceLine y={480} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 3" />
               <Bar dataKey="avgSleep" fill="#3b82f6" radius={[3, 3, 0, 0]} />
