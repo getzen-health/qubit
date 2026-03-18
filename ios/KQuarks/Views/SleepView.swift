@@ -1,5 +1,6 @@
 import SwiftUI
 import HealthKit
+import Charts
 
 struct SleepView: View {
     @State private var sessions: [SleepSession] = []
@@ -21,6 +22,12 @@ struct SleepView: View {
                     )
                 } else {
                     List {
+                        if sessions.count >= 2 {
+                            Section {
+                                SleepBarChart(sessions: sessions)
+                            }
+                        }
+
                         if sessions.count >= 3 {
                             Section {
                                 SleepWeeklyAverageRow(sessions: sessions)
@@ -174,6 +181,61 @@ struct StatBubble: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
+    }
+}
+
+// MARK: - Sleep Bar Chart
+
+struct SleepBarChart: View {
+    let sessions: [SleepSession] // newest-first
+
+    private var chartData: [(label: String, hours: Double)] {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "EEE"
+        return sessions.prefix(7).reversed().map { session in
+            (label: fmt.string(from: session.date), hours: Double(session.totalMinutes) / 60.0)
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Last 7 Nights")
+                .font(.headline)
+
+            Chart {
+                RuleMark(y: .value("Goal", 8.0))
+                    .foregroundStyle(.indigo.opacity(0.35))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                    .annotation(position: .top, alignment: .trailing) {
+                        Text("8h goal")
+                            .font(.caption2)
+                            .foregroundStyle(.indigo.opacity(0.6))
+                    }
+
+                ForEach(chartData, id: \.label) { item in
+                    BarMark(
+                        x: .value("Day", item.label),
+                        y: .value("Hours", item.hours)
+                    )
+                    .foregroundStyle(.indigo.gradient)
+                    .cornerRadius(4)
+                }
+            }
+            .chartYScale(domain: 0...10)
+            .chartYAxis {
+                AxisMarks(values: [0, 4, 6, 8, 10]) { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let h = value.as(Double.self) {
+                            Text("\(Int(h))h")
+                                .font(.caption2)
+                        }
+                    }
+                }
+            }
+            .frame(height: 160)
+        }
+        .padding(.vertical, 4)
     }
 }
 
