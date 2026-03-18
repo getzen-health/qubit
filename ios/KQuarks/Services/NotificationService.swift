@@ -312,6 +312,23 @@ final class NotificationService {
         UNUserNotificationCenter.current().add(request)
     }
 
+    // MARK: - Achievement Unlocked
+
+    func scheduleAchievementUnlocked(icon: String, title: String, description: String) {
+        guard isAuthorized else { return }
+        let content = UNMutableNotificationContent()
+        content.title = "\(icon) Achievement Unlocked!"
+        content.body = "\(title) — \(description)"
+        content.sound = .default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "achievement-\(title.lowercased().replacingOccurrences(of: " ", with: "-"))-\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
     // MARK: - Fasting Milestones
 
     /// Schedule local notifications at 25%, 50%, 75%, and 100% of the fasting target.

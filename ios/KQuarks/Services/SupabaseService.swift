@@ -701,7 +701,23 @@ class SupabaseService {
         request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["userId": userId])
-        _ = try? await URLSession.shared.data(for: request)
+
+        guard let (data, _) = try? await URLSession.shared.data(for: request) else { return }
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let newlyGranted = json["newly_granted"] as? [String],
+              !newlyGranted.isEmpty else { return }
+
+        // Fetch titles for newly granted achievements to show in notifications
+        if let achievements = try? await fetchAchievements() {
+            let newAchievements = achievements.filter { newlyGranted.contains($0.achievement_type) }
+            for achievement in newAchievements {
+                NotificationService.shared.scheduleAchievementUnlocked(
+                    icon: achievement.icon,
+                    title: achievement.title,
+                    description: achievement.description
+                )
+            }
+        }
     }
 
     /// Call the generate-insights edge function
