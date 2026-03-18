@@ -91,6 +91,9 @@ export function DashboardStream({
 
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
   const [calGoal, setCalGoal] = useState(DEFAULT_CAL_GOAL)
+  const [isGeneratingInsights, setIsGeneratingInsights] = useState(false)
+  const [insightError, setInsightError] = useState<string | null>(null)
+  const [localInsights, setLocalInsights] = useState(insights)
   useEffect(() => {
     const storedSteps = localStorage.getItem('kquarks_step_goal')
     if (storedSteps) {
@@ -103,6 +106,43 @@ export function DashboardStream({
       if (!isNaN(n) && n > 0) setCalGoal(n)
     }
   }, [])
+
+  const handleGenerateInsights = async () => {
+    setIsGeneratingInsights(true)
+    setInsightError(null)
+    try {
+      const userApiKey = localStorage.getItem('kquarks_claude_api_key') ?? undefined
+      const healthContext = summaries.slice(0, 7).map((s) => ({
+        date: s.date,
+        steps: s.steps,
+        active_calories: s.active_calories,
+        sleep_duration_minutes: s.sleep_duration_minutes,
+        resting_heart_rate: s.resting_heart_rate,
+        avg_hrv: s.avg_hrv,
+        recovery_score: s.recovery_score,
+        strain_score: s.strain_score,
+      }))
+      const { error } = await supabase.functions.invoke('generate-insights', {
+        body: { healthContext, userApiKey },
+      })
+      if (error) throw error
+      // Refresh insights from DB
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: fresh } = await supabase
+          .from('health_insights')
+          .select('id, title, content, category, priority, insight_type, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20)
+        if (fresh) setLocalInsights(fresh)
+      }
+    } catch (err: unknown) {
+      setInsightError(err instanceof Error ? err.message : 'Failed to generate insights')
+    } finally {
+      setIsGeneratingInsights(false)
+    }
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -503,37 +543,51 @@ export function DashboardStream({
         </DataStreamSection>
 
         {/* AI Insights */}
-        {insights.length > 0 && (
-          <InsightsStream>
-            {insights.slice(0, 5).map((insight) => {
-              const category = insightCategoryMap[insight.category.toLowerCase()] ?? {
-                icon: Sparkles,
-                color: 'default' as const,
-              }
-              const Icon = category.icon
-              return (
-                <InsightCard
-                  key={insight.id}
-                  category={insight.category}
-                  title={insight.title}
-                  description={insight.content}
-                  icon={<Icon className="w-5 h-5" />}
-                  color={category.color}
-                />
-              )
-            })}
-          </InsightsStream>
-        )}
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">AI Insights</h2>
+            <button
+              onClick={handleGenerateInsights}
+              disabled={isGeneratingInsights}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              {isGeneratingInsights ? 'Generating…' : 'Generate'}
+            </button>
+          </div>
 
-        {insights.length === 0 && (
-          <div className="mt-6">
+          {insightError && (
+            <p className="text-xs text-red-400 mb-3">{insightError}</p>
+          )}
+
+          {localInsights.length > 0 ? (
+            <InsightsStream>
+              {localInsights.slice(0, 5).map((insight) => {
+                const category = insightCategoryMap[insight.category.toLowerCase()] ?? {
+                  icon: Sparkles,
+                  color: 'default' as const,
+                }
+                const Icon = category.icon
+                return (
+                  <InsightCard
+                    key={insight.id}
+                    category={insight.category}
+                    title={insight.title}
+                    description={insight.content}
+                    icon={<Icon className="w-5 h-5" />}
+                    color={category.color}
+                  />
+                )
+              })}
+            </InsightsStream>
+          ) : (
             <EmptyState
               icon={<Sparkles className="w-6 h-6" />}
               title="No insights yet"
-              description="As we learn more about your health patterns, personalized insights will appear here."
+              description="Click Generate to get AI-powered insights about your health patterns."
             />
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   )
