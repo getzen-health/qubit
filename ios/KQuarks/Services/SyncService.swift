@@ -255,6 +255,46 @@ class SyncService {
             }
         }
 
+        // Fetch hearing health (headphone + environmental audio exposure)
+        let dbUnit = HKUnit.decibelAWeightedSoundPressureLevel()
+        let headphoneSamples = try await healthKit.fetchSamples(
+            for: .headphoneAudioExposure,
+            from: startDate,
+            to: now,
+            limit: 500
+        )
+        for sample in headphoneSamples {
+            let db = sample.quantity.doubleValue(for: dbUnit)
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "headphone_audio_exposure",
+                value: db,
+                unit: "dBASPL",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
+        let environmentalSamples = try await healthKit.fetchSamples(
+            for: .environmentalAudioExposure,
+            from: startDate,
+            to: now,
+            limit: 500
+        )
+        for sample in environmentalSamples {
+            let db = sample.quantity.doubleValue(for: dbUnit)
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "environmental_audio_exposure",
+                value: db,
+                unit: "dBASPL",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Fetch mindfulness sessions
         let mindfulSamples = try await healthKit.fetchMindfulSessions(from: startDate, to: now)
         for sample in mindfulSamples {

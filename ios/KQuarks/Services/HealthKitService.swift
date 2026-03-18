@@ -51,6 +51,10 @@ class HealthKitService {
             types.insert(HKQuantityType(.appleSleepingWristTemperature))
         }
 
+        // Hearing health
+        types.insert(HKQuantityType(.headphoneAudioExposure))
+        types.insert(HKQuantityType(.environmentalAudioExposure))
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 
