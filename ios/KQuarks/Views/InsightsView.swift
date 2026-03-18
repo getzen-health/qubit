@@ -194,6 +194,8 @@ enum InsightCategory {
     case heart
     case recovery
     case nutrition
+    case strain
+    case wellbeing
 
     var title: String {
         switch self {
@@ -202,6 +204,8 @@ enum InsightCategory {
         case .heart: return "Heart"
         case .recovery: return "Recovery"
         case .nutrition: return "Nutrition"
+        case .strain: return "Strain"
+        case .wellbeing: return "Wellbeing"
         }
     }
 
@@ -212,6 +216,8 @@ enum InsightCategory {
         case .heart: return "heart.fill"
         case .recovery: return "arrow.counterclockwise"
         case .nutrition: return "fork.knife"
+        case .strain: return "flame.fill"
+        case .wellbeing: return "face.smiling.fill"
         }
     }
 
@@ -222,6 +228,8 @@ enum InsightCategory {
         case .heart: return .red
         case .recovery: return .orange
         case .nutrition: return .yellow
+        case .strain: return .pink
+        case .wellbeing: return .teal
         }
     }
 
@@ -232,6 +240,8 @@ enum InsightCategory {
         case "heart": return .heart
         case "recovery": return .recovery
         case "nutrition": return .nutrition
+        case "strain": return .strain
+        case "wellbeing": return .wellbeing
         default: return .recovery
         }
     }

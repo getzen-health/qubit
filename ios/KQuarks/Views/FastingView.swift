@@ -276,11 +276,13 @@ struct FastingView: View {
         isStarting = true
         defer { isStarting = false }
         do {
+            let start = Date()
             try await SupabaseService.shared.startFasting(protocolName: selectedProtocol.protocolName, targetHours: selectedProtocol.hours)
             targetHours = selectedProtocol.hours
-            startedAt = Date()
+            startedAt = start
             isActive = true
             elapsedHours = 0
+            NotificationService.shared.scheduleFastingMilestones(targetHours: selectedProtocol.hours, startedAt: start)
         } catch { }
     }
 
@@ -289,6 +291,7 @@ struct FastingView: View {
         defer { isEnding = false }
         do {
             _ = try await SupabaseService.shared.endFasting()
+            NotificationService.shared.cancelFastingNotifications()
             isActive = false
             elapsedHours = 0
             startedAt = nil

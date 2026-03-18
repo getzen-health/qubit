@@ -22,6 +22,26 @@ final class NotificationService {
     @ObservationIgnored
     @AppStorage("stepReminderEnabled") var stepReminderEnabled: Bool = true
 
+    // Toggle: fasting milestone notifications
+    @ObservationIgnored
+    @AppStorage("fastingMilestonesEnabled") var fastingMilestonesEnabled: Bool = true
+
+    // Toggle: daily water reminder
+    @ObservationIgnored
+    @AppStorage("waterReminderEnabled") var waterReminderEnabled: Bool = false
+
+    // Water reminder hour (0-23), defaults to 2pm
+    @ObservationIgnored
+    @AppStorage("waterReminderHour") var waterReminderHour: Int = 14
+
+    // Sleep wind-down reminder toggle
+    @ObservationIgnored
+    @AppStorage("sleepReminderEnabled") var sleepReminderEnabled: Bool = false
+
+    // Sleep reminder hour (0-23), defaults to 9pm
+    @ObservationIgnored
+    @AppStorage("sleepReminderHour") var sleepReminderHour: Int = 21
+
     func requestPermission() async {
         do {
             let granted = try await UNUserNotificationCenter.current()
@@ -289,6 +309,93 @@ final class NotificationService {
             content: content,
             trigger: trigger
         )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    // MARK: - Fasting Milestones
+
+    /// Schedule local notifications at 25%, 50%, 75%, and 100% of the fasting target.
+    /// Call when a fast is started.
+    func scheduleFastingMilestones(targetHours: Int, startedAt: Date) {
+        guard isAuthorized, fastingMilestonesEnabled else { return }
+        cancelFastingNotifications()
+
+        let milestones: [(fraction: Double, label: String)] = [
+            (0.25, "25%"),
+            (0.50, "Halfway"),
+            (0.75, "75%"),
+            (1.00, "Goal reached"),
+        ]
+
+        for m in milestones {
+            let hoursElapsed = Double(targetHours) * m.fraction
+            let fireDate = startedAt.addingTimeInterval(hoursElapsed * 3600)
+            guard fireDate > Date() else { continue }
+
+            let content = UNMutableNotificationContent()
+            if m.fraction < 1.0 {
+                content.title = "Fasting \(m.label)"
+                content.body = "\(String(format: "%.0f", hoursElapsed))h down — \(String(format: "%.0f", Double(targetHours) - hoursElapsed))h to go. Stay strong!"
+            } else {
+                content.title = "Fast Complete! 🎉"
+                content.body = "You've hit your \(targetHours)h fasting goal. Amazing discipline!"
+            }
+            content.sound = .default
+
+            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+            let request = UNNotificationRequest(
+                identifier: "fasting-milestone-\(m.fraction)",
+                content: content,
+                trigger: trigger
+            )
+            UNUserNotificationCenter.current().add(request)
+        }
+    }
+
+    /// Cancel all pending fasting milestone notifications.
+    func cancelFastingNotifications() {
+        let ids = [0.25, 0.50, 0.75, 1.00].map { "fasting-milestone-\($0)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
+    }
+
+    // MARK: - Water Reminder
+
+    /// Schedule (or replace) a daily water goal reminder at the configured hour.
+    func scheduleWaterReminder() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["water-reminder"])
+        guard isAuthorized, waterReminderEnabled else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Stay Hydrated 💧"
+        content.body = "Don't forget to log your water intake and hit your daily hydration goal."
+        content.sound = .default
+
+        var components = DateComponents()
+        components.hour = waterReminderHour
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(identifier: "water-reminder", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    // MARK: - Sleep Wind-Down Reminder
+
+    /// Schedule (or replace) a nightly sleep wind-down reminder.
+    func scheduleSleepReminder() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["sleep-reminder"])
+        guard isAuthorized, sleepReminderEnabled else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Wind Down 🌙"
+        content.body = "Time to start winding down for bed. Good sleep is the foundation of great health."
+        content.sound = .default
+
+        var components = DateComponents()
+        components.hour = sleepReminderHour
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(identifier: "sleep-reminder", content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request)
     }
 

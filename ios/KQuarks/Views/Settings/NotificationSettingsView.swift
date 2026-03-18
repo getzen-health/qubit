@@ -55,9 +55,79 @@ struct NotificationSettingsView: View {
                     Label("Afternoon Step Reminder", systemImage: "figure.walk")
                 }
             } header: {
-                Text("Activity Reminder")
+                Text("Activity")
             } footer: {
                 Text("Reminds you between 4–8pm if you're below 50% of your step goal for the day.")
+            }
+
+            Section {
+                Toggle(isOn: $notificationService.fastingMilestonesEnabled) {
+                    Label("Fasting Milestones", systemImage: "timer")
+                }
+            } header: {
+                Text("Fasting")
+            } footer: {
+                Text("Notifies you at 25%, 50%, 75%, and when you reach your fasting goal.")
+            }
+
+            Section {
+                Toggle(isOn: Binding(
+                    get: { notificationService.waterReminderEnabled },
+                    set: { notificationService.waterReminderEnabled = $0; notificationService.scheduleWaterReminder() }
+                )) {
+                    Label("Daily Hydration Reminder", systemImage: "drop.fill")
+                }
+                if notificationService.waterReminderEnabled {
+                    Stepper(
+                        value: Binding(
+                            get: { notificationService.waterReminderHour },
+                            set: { notificationService.waterReminderHour = $0; notificationService.scheduleWaterReminder() }
+                        ),
+                        in: 8...20,
+                        label: {
+                            HStack {
+                                Text("Time")
+                                Spacer()
+                                Text(hourLabel(notificationService.waterReminderHour))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    )
+                }
+            } header: {
+                Text("Hydration")
+            } footer: {
+                Text("A daily reminder to log your water and hit your hydration goal.")
+            }
+
+            Section {
+                Toggle(isOn: Binding(
+                    get: { notificationService.sleepReminderEnabled },
+                    set: { notificationService.sleepReminderEnabled = $0; notificationService.scheduleSleepReminder() }
+                )) {
+                    Label("Wind-Down Reminder", systemImage: "moon.fill")
+                }
+                if notificationService.sleepReminderEnabled {
+                    Stepper(
+                        value: Binding(
+                            get: { notificationService.sleepReminderHour },
+                            set: { notificationService.sleepReminderHour = $0; notificationService.scheduleSleepReminder() }
+                        ),
+                        in: 18...23,
+                        label: {
+                            HStack {
+                                Text("Time")
+                                Spacer()
+                                Text(hourLabel(notificationService.sleepReminderHour))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    )
+                }
+            } header: {
+                Text("Sleep")
+            } footer: {
+                Text("A nightly reminder to start winding down before bed.")
             }
         }
         .navigationTitle("Notifications")
