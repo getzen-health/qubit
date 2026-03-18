@@ -107,6 +107,11 @@ struct CheckinView: View {
             .navigationTitle("Daily Check-in")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink(destination: MoodHistoryView()) {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                    }
+                }
                 if let c = vm.checkin, !vm.isEditing {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {

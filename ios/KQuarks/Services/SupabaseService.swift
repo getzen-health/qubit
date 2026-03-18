@@ -661,6 +661,32 @@ class SupabaseService {
         }
     }
 
+    func fetchRecentCheckins(days: Int = 14) async throws -> [DailyCheckin] {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+
+        struct Row: Decodable {
+            let id: String
+            let date: String
+            let energy: Int?
+            let mood: Int?
+            let stress: Int?
+            let notes: String?
+        }
+
+        let rows: [Row] = try await client.from("daily_checkins")
+            .select("id, date, energy, mood, stress, notes")
+            .eq("user_id", value: session.user.id.uuidString)
+            .gte("date", value: df.string(from: since))
+            .order("date", ascending: false)
+            .execute()
+            .value
+
+        return rows.map { DailyCheckin(id: $0.id, date: $0.date, energy: $0.energy, mood: $0.mood, stress: $0.stress, notes: $0.notes) }
+    }
+
     func fetchTodayCheckin() async throws -> DailyCheckin? {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let df = DateFormatter()
