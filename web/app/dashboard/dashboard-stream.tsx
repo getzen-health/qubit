@@ -21,6 +21,7 @@ import {
   Settings,
   Sparkles,
   Scale,
+  Trophy,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -248,6 +249,13 @@ export function DashboardStream({
               title="Workouts"
             >
               <Activity className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
+              href="/records"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Personal Records"
+            >
+              <Trophy className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/settings"
