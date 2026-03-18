@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   LineChart,
   Line,
@@ -27,13 +29,23 @@ function fmt(dateStr: string) {
 }
 
 export function HeartRateClient({ summaries }: HeartRateClientProps) {
+  const router = useRouter()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleChartClick(data: any) {
+    const date = data?.activePayload?.[0]?.payload?.rawDate
+    if (date) router.push(`/day/${date}`)
+  }
+
   const rhrData = summaries.filter((s) => s.resting_heart_rate && s.resting_heart_rate > 0).map((s) => ({
     date: fmt(s.date),
+    rawDate: s.date,
     rhr: s.resting_heart_rate!,
   }))
 
   const hrvData = summaries.filter((s) => s.avg_hrv && s.avg_hrv > 0).map((s) => ({
     date: fmt(s.date),
+    rawDate: s.date,
     hrv: Math.round(s.avg_hrv!),
   }))
 
@@ -91,7 +103,7 @@ export function HeartRateClient({ summaries }: HeartRateClientProps) {
         <div className="bg-surface rounded-xl border border-border p-4">
           <h2 className="text-sm font-medium text-text-secondary mb-3">Resting Heart Rate (bpm)</h2>
           <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={rhrData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+            <LineChart data={rhrData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="date"
@@ -129,7 +141,7 @@ export function HeartRateClient({ summaries }: HeartRateClientProps) {
         <div className="bg-surface rounded-xl border border-border p-4">
           <h2 className="text-sm font-medium text-text-secondary mb-3">Heart Rate Variability (ms)</h2>
           <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={hrvData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+            <LineChart data={hrvData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="date"
@@ -165,7 +177,7 @@ export function HeartRateClient({ summaries }: HeartRateClientProps) {
       {/* Day list */}
       <div className="space-y-2">
         {[...summaries].reverse().filter((s) => s.resting_heart_rate || s.avg_hrv).map((s) => (
-          <div key={s.date} className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between">
+          <Link key={s.date} href={`/day/${s.date}`} className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between hover:bg-surface-secondary transition-colors">
             <p className="text-sm font-medium text-text-primary">
               {new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', {
                 weekday: 'short',
@@ -181,7 +193,7 @@ export function HeartRateClient({ summaries }: HeartRateClientProps) {
                 <span className="text-purple-400 font-medium">{Math.round(s.avg_hrv)} ms HRV</span>
               )}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

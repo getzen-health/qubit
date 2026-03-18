@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   LineChart,
   Line,
@@ -72,8 +74,17 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
   const latestRecovery = withRecovery[withRecovery.length - 1]?.recovery_score ?? null
   const latestStrain = withStrain[withStrain.length - 1]?.strain_score ?? null
 
+  const router = useRouter()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleChartClick(data: any) {
+    const date = data?.activePayload?.[0]?.payload?.rawDate
+    if (date) router.push(`/day/${date}`)
+  }
+
   const chartData = summaries.map((s) => ({
     date: fmtDate(s.date),
+    rawDate: s.date,
     recovery: s.recovery_score ?? null,
     strain: s.strain_score ?? null,
   }))
@@ -116,7 +127,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
         <div className="bg-surface rounded-xl border border-border p-4">
           <h2 className="text-sm font-medium text-text-secondary mb-3">Recovery Score (%)</h2>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData.filter((d) => d.recovery != null)} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+            <BarChart data={chartData.filter((d) => d.recovery != null)} margin={{ top: 4, right: 4, left: -24, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="date"
@@ -154,7 +165,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
         <div className="bg-surface rounded-xl border border-border p-4">
           <h2 className="text-sm font-medium text-text-secondary mb-3">Strain Score</h2>
           <ResponsiveContainer width="100%" height={120}>
-            <LineChart data={chartData.filter((d) => d.strain != null)} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+            <LineChart data={chartData.filter((d) => d.strain != null)} margin={{ top: 4, right: 4, left: -24, bottom: 0 }} onClick={handleChartClick} style={{ cursor: 'pointer' }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis
                 dataKey="date"
@@ -189,9 +200,10 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
           .map((s) => {
             const rec = s.recovery_score
             return (
-              <div
+              <Link
                 key={s.date}
-                className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between"
+                href={`/day/${s.date}`}
+                className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between hover:bg-surface-secondary transition-colors"
               >
                 <div>
                   <p className="text-sm font-medium text-text-primary">
@@ -215,7 +227,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
                     <span className="text-orange-400 font-medium">{s.strain_score.toFixed(1)} strain</span>
                   )}
                 </div>
-              </div>
+              </Link>
             )
           })}
       </div>
