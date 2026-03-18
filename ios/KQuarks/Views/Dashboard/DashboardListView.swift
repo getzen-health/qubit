@@ -162,9 +162,7 @@ struct DashboardListView: View {
                     sublabel: RecoveryLevel.from(score: viewModel.recoveryScore).label,
                     trend: viewModel.recoveryTrend,
                     color: .recovery
-                ) {
-                    AnyView(recoveryDetails)
-                }
+                )
 
                 // Strain
                 MetricRowView(
@@ -175,9 +173,7 @@ struct DashboardListView: View {
                     sublabel: StrainLevel.from(score: viewModel.strainScore).label,
                     trend: viewModel.strainTrend,
                     color: .strain
-                ) {
-                    AnyView(strainDetails)
-                }
+                )
 
                 // Sleep
                 if let formattedSleep = summary.formattedSleep {
@@ -280,24 +276,6 @@ struct DashboardListView: View {
         }
     }
 
-    private var recoveryDetails: some View {
-        VStack(spacing: 8) {
-            MetricDetailRow(label: "Sleep Performance", value: "85%")
-            MetricDetailRow(label: "Sleep Consistency", value: "92%")
-            MetricDetailRow(label: "Respiratory Rate", value: "14.5 br/min")
-            MetricDetailRow(label: "Skin Temperature", value: "+0.2°C")
-        }
-    }
-
-    private var strainDetails: some View {
-        VStack(spacing: 8) {
-            MetricDetailRow(label: "Cardiovascular", value: "12.8")
-            MetricDetailRow(label: "Muscular", value: "8.5")
-            MetricDetailRow(label: "Peak HR", value: "172 bpm")
-            MetricDetailRow(label: "Active Minutes", value: "127 min")
-        }
-    }
-
     private func sleepDetails(summary: TodayHealthSummary) -> some View {
         VStack(spacing: 8) {
             if let sleepContext = viewModel.latestSleepContext {
@@ -331,9 +309,11 @@ struct DashboardListView: View {
         VStack(spacing: 8) {
             if let hrv = summary.hrv {
                 MetricDetailRow(label: "HRV", value: "\(Int(hrv)) ms")
+            } else {
+                Text("No additional heart data available")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            MetricDetailRow(label: "Max HR Today", value: "142 bpm")
-            MetricDetailRow(label: "7-day Average", value: "59 bpm")
         }
     }
 
