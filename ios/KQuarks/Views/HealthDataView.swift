@@ -48,6 +48,40 @@ struct HealthDataView: View {
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
+                        } else if selectedCategory == .body {
+                            NavigationLink(destination: BodyCompositionView()) {
+                                HStack {
+                                    Image(systemName: "scalemass.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.mint)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.mint.opacity(0.1))
+                                        .cornerRadius(10)
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Body Weight")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Trend chart and history")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            ForEach(selectedCategory.dataTypes.filter { $0 != .weight }, id: \.self) { dataType in
+                                HealthDataRow(dataType: dataType)
+                            }
                         } else {
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
