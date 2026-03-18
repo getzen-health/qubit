@@ -857,6 +857,9 @@ class SupabaseService {
         let sleep_duration_minutes: Int?
         let avg_hrv: Double?
         let recovery_score: Int?
+        let active_calories: Double?
+        let strain_score: Int?
+        let distance_meters: Double?
 
         var sleepHours: Double? {
             guard let mins = sleep_duration_minutes, mins > 0 else { return nil }
@@ -871,9 +874,21 @@ class SupabaseService {
         let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         return try await client.from("daily_summaries")
-            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score")
+            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")
             .gte("date", value: df.string(from: since))
             .order("date", ascending: true)
+            .execute()
+            .value
+    }
+
+    func fetchAllDailySummaries(days: Int = 365) async throws -> [DailySummaryRow] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        return try await client.from("daily_summaries")
+            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")
+            .gte("date", value: df.string(from: since))
+            .order("date", ascending: false)
             .execute()
             .value
     }
