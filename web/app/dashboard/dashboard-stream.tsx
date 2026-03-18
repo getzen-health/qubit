@@ -133,21 +133,42 @@ export function DashboardStream({
   const [calGoal, setCalGoal] = useState(dbCalGoal ?? DEFAULT_CAL_GOAL)
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false)
   const [insightError, setInsightError] = useState<string | null>(null)
+  const [localActiveFast, setLocalActiveFast] = useState(activeFast)
+  const [endingFast, setEndingFast] = useState(false)
   const [fastElapsedHours, setFastElapsedHours] = useState<number>(() => {
     if (!activeFast) return 0
     return (Date.now() - new Date(activeFast.started_at).getTime()) / 3600000
   })
 
   useEffect(() => {
-    if (!activeFast) return
-    const startMs = new Date(activeFast.started_at).getTime()
+    if (!localActiveFast) return
+    const startMs = new Date(localActiveFast.started_at).getTime()
     const tick = () => setFastElapsedHours((Date.now() - startMs) / 3600000)
     const id = setInterval(tick, 60000) // update every minute on dashboard
     return () => clearInterval(id)
-  }, [activeFast])
+  }, [localActiveFast])
   const [localWaterMl, setLocalWaterMl] = useState(todayWaterMl)
   const [waterLogging, setWaterLogging] = useState(false)
   const [showWaterQuick, setShowWaterQuick] = useState(false)
+
+  const handleEndFast = async () => {
+    if (!localActiveFast) return
+    setEndingFast(true)
+    try {
+      const { data: { user: u } } = await supabase.auth.getUser()
+      if (!u) return
+      const now = new Date().toISOString()
+      const actualHours = (Date.now() - new Date(localActiveFast.started_at).getTime()) / 3600000
+      await supabase
+        .from('fasting_sessions')
+        .update({ ended_at: now, actual_hours: actualHours, completed: actualHours >= localActiveFast.target_hours })
+        .eq('id', localActiveFast.id)
+        .eq('user_id', u.id)
+      setLocalActiveFast(null)
+    } finally {
+      setEndingFast(false)
+    }
+  }
 
   const handleAddWater = async (ml: number) => {
     setWaterLogging(true)
@@ -595,33 +616,43 @@ export function DashboardStream({
         )}
 
         {/* Active Fast */}
-        {activeFast && (
-          <Link href="/fasting" className="block mb-6 bg-surface rounded-xl border border-amber-500/20 p-4 hover:bg-surface-secondary transition-colors">
+        {localActiveFast && (
+          <div className="mb-6 bg-surface rounded-xl border border-amber-500/20 p-4">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
+              <Link href="/fasting" className="flex items-center gap-2">
                 <span className="text-amber-400 text-sm">⏱</span>
-                <span className="text-sm font-medium text-amber-400">Fasting · {activeFast.protocol}</span>
+                <span className="text-sm font-medium text-amber-400">Fasting · {localActiveFast.protocol}</span>
+              </Link>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-text-primary">
+                  {Math.floor(fastElapsedHours)}h {Math.floor((fastElapsedHours % 1) * 60)}m
+                  <span className="text-text-secondary font-normal"> / {localActiveFast.target_hours}h</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleEndFast}
+                  disabled={endingFast}
+                  className="px-2.5 py-1 text-xs font-medium bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition-colors disabled:opacity-50"
+                >
+                  {endingFast ? '…' : 'End'}
+                </button>
               </div>
-              <span className="text-sm font-semibold text-text-primary">
-                {Math.floor(fastElapsedHours)}h {Math.floor((fastElapsedHours % 1) * 60)}m
-                <span className="text-text-secondary font-normal"> / {activeFast.target_hours}h</span>
-              </span>
             </div>
             <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{
-                  width: `${Math.min((fastElapsedHours / activeFast.target_hours) * 100, 100)}%`,
-                  background: fastElapsedHours >= activeFast.target_hours ? '#22c55e' : '#f59e0b',
+                  width: `${Math.min((fastElapsedHours / localActiveFast.target_hours) * 100, 100)}%`,
+                  background: fastElapsedHours >= localActiveFast.target_hours ? '#22c55e' : '#f59e0b',
                 }}
               />
             </div>
             <p className="text-xs text-text-secondary mt-1.5">
-              {fastElapsedHours >= activeFast.target_hours
+              {fastElapsedHours >= localActiveFast.target_hours
                 ? '🎉 Goal reached!'
-                : `${Math.max(0, activeFast.target_hours - Math.floor(fastElapsedHours))}h remaining`}
+                : `${Math.max(0, localActiveFast.target_hours - Math.floor(fastElapsedHours))}h remaining`}
             </p>
-          </Link>
+          </div>
         )}
 
         {/* Week-over-Week Comparison */}
