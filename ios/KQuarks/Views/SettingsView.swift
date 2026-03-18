@@ -105,6 +105,12 @@ struct SettingsView: View {
                         Label("Health Permissions", systemImage: "heart.text.square")
                     }
 
+                    NavigationLink {
+                        GoalsSettingsView()
+                    } label: {
+                        Label("Goals", systemImage: "target")
+                    }
+
                     Button(role: .destructive) {
                         showingDeleteDataAlert = true
                     } label: {
