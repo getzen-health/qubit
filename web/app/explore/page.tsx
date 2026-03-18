@@ -93,6 +93,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Analytics & Insights',
     features: [
+      { label: "Today's Readiness", desc: 'HRV + sleep + load → training recommendation', href: '/ready', emoji: '🎯' },
       { label: 'Health Score', desc: 'Composite daily health score', href: '/score', emoji: '🌟' },
       { label: 'Recovery & Strain', desc: 'Training stress and recovery balance', href: '/recovery', emoji: '⚡' },
       { label: 'Trends', desc: 'Long-term patterns across metrics', href: '/trends', emoji: '📉' },
