@@ -8,6 +8,7 @@ final class NotificationService {
     var isAuthorized = false
 
     private let stepGoalNotifiedKey = "stepGoalNotifiedDate"
+    private let weeklyReviewKey = "weeklyReviewNotifiedDate"
 
     func requestPermission() async {
         do {
@@ -48,6 +49,12 @@ final class NotificationService {
                 steps: summary.steps,
                 stepGoal: Int(goal)
             )
+
+            // Weekly review notification on Sundays
+            let weekday = Calendar.current.component(.weekday, from: Date())
+            if weekday == 1 && !alreadyNotifiedWeeklyReviewThisWeek() {
+                await scheduleWeeklyReview()
+            }
         } catch { }
     }
 
@@ -111,6 +118,43 @@ final class NotificationService {
             trigger: trigger
         )
         UNUserNotificationCenter.current().add(request)
+    }
+
+    private func scheduleWeeklyReview() async {
+        let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date()))!
+        let summaries = (try? await HealthKitService.shared.fetchWeekSummaries(days: 7)) ?? []
+        let workouts = (try? await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date())) ?? []
+
+        let weeklySteps = summaries.reduce(0) { $0 + $1.steps }
+        let goalDays = summaries.filter { Double($0.steps) >= GoalService.shared.stepsGoal }.count
+        let workoutCount = workouts.count
+
+        let content = UNMutableNotificationContent()
+        content.title = "Your Week in Review"
+        var parts: [String] = []
+        if weeklySteps > 0 { parts.append("\(weeklySteps.formatted()) steps") }
+        if workoutCount > 0 { parts.append("\(workoutCount) workout\(workoutCount == 1 ? "" : "s")") }
+        if summaries.count > 0 { parts.append("\(goalDays)/\(summaries.count) days at goal") }
+        content.body = parts.isEmpty ? "Great week — keep it up!" : parts.joined(separator: " · ")
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "weekly-review-\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+        try? await UNUserNotificationCenter.current().add(request)
+        markWeeklyReviewNotified()
+    }
+
+    private func alreadyNotifiedWeeklyReviewThisWeek() -> Bool {
+        guard let last = UserDefaults.standard.object(forKey: weeklyReviewKey) as? Date else { return false }
+        return Calendar.current.isDate(last, equalTo: Date(), toGranularity: .weekOfYear)
+    }
+
+    private func markWeeklyReviewNotified() {
+        UserDefaults.standard.set(Date(), forKey: weeklyReviewKey)
     }
 
     private func scheduleStepGoalNotification(steps: Double, goal: Double) {
