@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(AppState.self) private var appState
+    @State private var biometric = BiometricService.shared
 
     var body: some View {
         Group {
@@ -9,9 +10,14 @@ struct ContentView: View {
                 OnboardingView()
             } else if !appState.isAuthenticated {
                 AuthView()
+            } else if biometric.isLocked {
+                BiometricLockView()
             } else {
                 MainTabView()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            biometric.lock()
         }
     }
 }

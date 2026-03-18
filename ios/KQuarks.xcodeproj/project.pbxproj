@@ -47,6 +47,8 @@
 		038 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134 /* NotificationService.swift */; };
 		039 /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135 /* WorkoutDetailView.swift */; };
 		040 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136 /* RecordsView.swift */; };
+		041 /* BiometricService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137 /* BiometricService.swift */; };
+		042 /* BiometricLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138 /* BiometricLockView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +89,8 @@
 		134 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		135 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
 		136 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
+		137 /* BiometricService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricService.swift; sourceTree = "<group>"; };
+		138 /* BiometricLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -184,6 +188,7 @@
 				131 /* HealthMetricDetailView.swift */,
 				135 /* WorkoutDetailView.swift */,
 				136 /* RecordsView.swift */,
+				138 /* BiometricLockView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 				128 /* AIInsightsService.swift */,
 				132 /* GoalService.swift */,
 				134 /* NotificationService.swift */,
+				137 /* BiometricService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -363,6 +369,8 @@
 			038 /* NotificationService.swift in Sources */,
 				039 /* WorkoutDetailView.swift in Sources */,
 				040 /* RecordsView.swift in Sources */,
+				041 /* BiometricService.swift in Sources */,
+				042 /* BiometricLockView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

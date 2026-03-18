@@ -6,10 +6,30 @@ struct SettingsView: View {
     @State private var showingDeleteDataAlert = false
     @State private var isDeletingData = false
     @State private var deleteError: String?
+    @State private var biometricEnabled = false
 
     private let syncService = SyncService.shared
     private let supabaseService = SupabaseService.shared
     private let notificationService = NotificationService.shared
+    private let biometric = BiometricService.shared
+
+    @ViewBuilder
+    private var privacySection: some View {
+        if biometric.isAvailable {
+            Section {
+                Toggle(isOn: $biometricEnabled) {
+                    Label("Require \(biometric.biometryName)", systemImage: biometric.biometryIcon)
+                }
+                .onChange(of: biometricEnabled) {
+                    biometric.isEnabled = biometricEnabled
+                }
+            } header: {
+                Text("Privacy")
+            } footer: {
+                Text("Lock the app when it goes to the background. \(biometric.biometryName) will be required to reopen.")
+            }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -126,6 +146,8 @@ struct SettingsView: View {
                     .disabled(isDeletingData)
                 }
 
+                privacySection
+
                 // Notifications
                 Section("Notifications") {
                     HStack {
@@ -182,6 +204,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .onAppear { biometricEnabled = biometric.isEnabled }
             .alert("Sign Out", isPresented: $showingSignOutAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Sign Out", role: .destructive) {
