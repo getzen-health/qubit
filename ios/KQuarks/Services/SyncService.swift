@@ -1,5 +1,6 @@
 import Foundation
 import HealthKit
+import BackgroundTasks
 
 @Observable
 class SyncService {
@@ -242,6 +243,59 @@ class SyncService {
 
             try await supabase.uploadWorkoutRecord(upload)
         }
+    }
+
+    // MARK: - Background Sync
+
+    func scheduleBackgroundSync() {
+        let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.kquarks.sync.refresh")
+        refreshRequest.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 3600)
+        try? BGTaskScheduler.shared.submit(refreshRequest)
+
+        let fullRequest = BGProcessingTaskRequest(identifier: "com.kquarks.sync.full")
+        fullRequest.requiresNetworkConnectivity = true
+        fullRequest.requiresExternalPower = true
+        try? BGTaskScheduler.shared.submit(fullRequest)
+    }
+
+    func handleRefreshTask(_ task: BGAppRefreshTask) async {
+        // Reschedule before doing work so the next refresh is always queued
+        scheduleBackgroundSync()
+
+        guard supabase.isAuthenticated else {
+            task.setTaskCompleted(success: true)
+            return
+        }
+
+        do {
+            try await syncTodaySummary()
+            task.setTaskCompleted(success: true)
+        } catch {
+            print("[BGTask] Refresh sync failed: \(error)")
+            task.setTaskCompleted(success: false)
+        }
+    }
+
+    func handleFullSyncTask(_ task: BGProcessingTask) async {
+        // Reschedule before doing work
+        scheduleBackgroundSync()
+
+        guard supabase.isAuthenticated else {
+            task.setTaskCompleted(success: true)
+            return
+        }
+
+        // Set expiration handler — OS can cancel long-running tasks
+        var didExpire = false
+        task.expirationHandler = {
+            didExpire = true
+            print("[BGTask] Full sync task expired")
+        }
+
+        await performFullSync()
+        // Read syncError on MainActor to avoid data race
+        let succeeded = await MainActor.run { self.syncError == nil } && !didExpire
+        task.setTaskCompleted(success: succeeded)
     }
 }
 
