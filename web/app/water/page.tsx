@@ -4,11 +4,27 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Trash2, Droplets } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { createClient } from '@/lib/supabase/client'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceLine,
+} from 'recharts'
 
 interface WaterLog {
   id: string
   amount_ml: number
   logged_at: string
+}
+
+interface DailyWater {
+  date: string
+  total_ml: number
 }
 
 const QUICK_AMOUNTS = [
@@ -61,6 +77,7 @@ export default function WaterPage() {
   const [totalMl, setTotalMl] = useState(0)
   const [targetMl, setTargetMl] = useState(2500)
   const [logs, setLogs] = useState<WaterLog[]>([])
+  const [weeklyHistory, setWeeklyHistory] = useState<DailyWater[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
   const [customMl, setCustomMl] = useState('')
@@ -78,7 +95,37 @@ export default function WaterPage() {
     setLoading(false)
   }, [today])
 
-  useEffect(() => { loadToday() }, [loadToday])
+  const loadWeekly = useCallback(async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+    const since = sevenDaysAgo.toISOString().slice(0, 10)
+    const { data } = await supabase
+      .from('daily_water')
+      .select('date, total_ml')
+      .eq('user_id', user.id)
+      .gte('date', since)
+      .order('date', { ascending: true })
+    if (data) {
+      // Fill in missing days with 0
+      const byDate = new Map(data.map((d: DailyWater) => [d.date, d.total_ml]))
+      const filled: DailyWater[] = []
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date()
+        d.setDate(d.getDate() - i)
+        const dateStr = d.toISOString().slice(0, 10)
+        filled.push({ date: dateStr, total_ml: byDate.get(dateStr) ?? 0 })
+      }
+      setWeeklyHistory(filled)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadToday()
+    loadWeekly()
+  }, [loadToday, loadWeekly])
 
   const addWater = async (ml: number) => {
     if (adding) return
@@ -90,7 +137,7 @@ export default function WaterPage() {
         body: JSON.stringify({ amount_ml: ml, source: 'manual' }),
       })
       if (res.ok) {
-        await loadToday()
+        await Promise.all([loadToday(), loadWeekly()])
       }
     } finally {
       setAdding(false)
@@ -99,7 +146,7 @@ export default function WaterPage() {
 
   const deleteLog = async (id: string) => {
     const res = await fetch(`/api/water?id=${id}`, { method: 'DELETE' })
-    if (res.ok) await loadToday()
+    if (res.ok) await Promise.all([loadToday(), loadWeekly()])
   }
 
   const handleCustomAdd = async () => {
@@ -177,6 +224,49 @@ export default function WaterPage() {
             </button>
           </div>
         </div>
+
+        {/* 7-day history chart */}
+        {weeklyHistory.some((d) => d.total_ml > 0) && (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Last 7 Days</p>
+            <div className="bg-surface rounded-xl border border-border p-4">
+              <ResponsiveContainer width="100%" height={130}>
+                <BarChart
+                  data={weeklyHistory.map((d) => ({
+                    day: new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' }),
+                    ml: d.total_ml,
+                  }))}
+                  margin={{ top: 4, right: 4, left: -28, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis
+                    dataKey="day"
+                    tick={{ fontSize: 11, fill: 'var(--color-text-secondary, #888)' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis hide domain={[0, Math.max(targetMl * 1.2, ...weeklyHistory.map((d) => d.total_ml))]} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--color-surface, #1a1a1a)',
+                      border: '1px solid var(--color-border, #333)',
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number) => [value >= 1000 ? `${(value / 1000).toFixed(1)}L` : `${value}ml`, 'Water']}
+                  />
+                  <ReferenceLine
+                    y={targetMl}
+                    stroke="rgba(59,130,246,0.4)"
+                    strokeDasharray="4 4"
+                    label={{ value: 'Goal', position: 'right', fontSize: 10, fill: 'rgba(59,130,246,0.7)' }}
+                  />
+                  <Bar dataKey="ml" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
 
         {/* Today's log */}
         {logs.length > 0 && (
