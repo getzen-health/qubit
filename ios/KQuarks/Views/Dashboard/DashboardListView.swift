@@ -257,6 +257,14 @@ struct DashboardListView: View {
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 16)
 
+            StepGoalRingView(
+                steps: summary.steps,
+                goal: Int(GoalService.shared.stepsGoal),
+                calories: Int(summary.activeCalories),
+                calorieGoal: Int(GoalService.shared.activeCaloriesGoal)
+            )
+            .padding(.horizontal, 16)
+
             VStack(spacing: 0) {
                 MetricRowView(
                     icon: "figure.walk",
@@ -613,6 +621,99 @@ class DashboardListViewModel {
             return "You're \(trend)% more active than your weekly average. Great momentum!"
         }
         return nil
+    }
+}
+
+// MARK: - Step Goal Ring
+
+struct StepGoalRingView: View {
+    let steps: Int
+    let goal: Int
+    let calories: Int
+    let calorieGoal: Int
+
+    private var stepProgress: Double {
+        min(Double(steps) / Double(max(goal, 1)), 1.0)
+    }
+
+    private var calProgress: Double {
+        min(Double(calories) / Double(max(calorieGoal, 1)), 1.0)
+    }
+
+    var body: some View {
+        HStack(spacing: 20) {
+            // Concentric rings
+            ZStack {
+                // Outer ring track (steps)
+                Circle()
+                    .stroke(Color.activity.opacity(0.15), lineWidth: 12)
+                    .frame(width: 110, height: 110)
+
+                // Outer ring progress (steps)
+                Circle()
+                    .trim(from: 0, to: stepProgress)
+                    .stroke(Color.activity, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                    .frame(width: 110, height: 110)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut(duration: 0.6), value: stepProgress)
+
+                // Inner ring track (calories)
+                Circle()
+                    .stroke(Color.strain.opacity(0.15), lineWidth: 10)
+                    .frame(width: 80, height: 80)
+
+                // Inner ring progress (calories)
+                Circle()
+                    .trim(from: 0, to: calProgress)
+                    .stroke(Color.strain, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .frame(width: 80, height: 80)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut(duration: 0.6), value: calProgress)
+
+                // Center text
+                VStack(spacing: 0) {
+                    Image(systemName: "figure.walk")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text("\(Int((stepProgress * 100).rounded()))%")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                }
+            }
+            .frame(width: 110, height: 110)
+
+            // Labels
+            VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Label {
+                        Text("\(steps.formatted()) steps")
+                            .font(.subheadline.bold())
+                    } icon: {
+                        Circle().fill(Color.activity).frame(width: 8, height: 8)
+                    }
+                    Text("Goal: \(goal.formatted())")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Label {
+                        Text("\(calories) cal")
+                            .font(.subheadline.bold())
+                    } icon: {
+                        Circle().fill(Color.strain).frame(width: 8, height: 8)
+                    }
+                    Text("Goal: \(calorieGoal) cal")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(16)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
