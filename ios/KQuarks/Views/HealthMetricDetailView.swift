@@ -23,7 +23,7 @@ struct HealthMetricDetailView: View {
                     currentValueHeader
                     chartSection
                     statsStrip
-                    if let goal = dataType.dailyGoal {
+                    if let goal = GoalService.shared.goal(for: dataType) {
                         goalBar(goal: goal)
                     }
                 }
@@ -262,13 +262,6 @@ extension HealthDataType {
         }
     }
 
-    var dailyGoal: Double? {
-        switch self {
-        case .steps: return 10_000
-        case .activeCalories: return 500
-        default: return nil
-        }
-    }
 }
 
 #Preview {
