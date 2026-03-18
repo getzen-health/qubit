@@ -44,6 +44,7 @@
 		035 /* HealthMetricDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131 /* HealthMetricDetailView.swift */; settings = {}; };
 		036 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132 /* GoalService.swift */; };
 		037 /* GoalsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 133 /* GoalsSettingsView.swift */; };
+		038 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134 /* NotificationService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,7 @@
 		131 /* HealthMetricDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricDetailView.swift; sourceTree = "<group>"; };
 		132 /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalService.swift; sourceTree = "<group>"; };
 		133 /* GoalsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsSettingsView.swift; sourceTree = "<group>"; };
+		134 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				127 /* KeychainHelper.swift */,
 				128 /* AIInsightsService.swift */,
 				132 /* GoalService.swift */,
+				134 /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				035 /* HealthMetricDetailView.swift in Sources */,
 			036 /* GoalService.swift in Sources */,
 			037 /* GoalsSettingsView.swift in Sources */,
+			038 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
