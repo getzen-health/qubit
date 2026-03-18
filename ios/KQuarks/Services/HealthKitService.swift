@@ -94,6 +94,69 @@ class HealthKitService {
         )
     }
 
+    // MARK: - Week Summaries for AI
+
+    /// Fetches daily summaries for the past N days for AI context
+    func fetchWeekSummaries(days: Int = 7) async throws -> [DaySummaryForAI] {
+        let calendar = Calendar.current
+        let now = Date()
+        var summaries: [DaySummaryForAI] = []
+
+        for dayOffset in 0..<days {
+            let date = calendar.date(byAdding: .day, value: -dayOffset, to: now)!
+            let startOfDay = calendar.startOfDay(for: date)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+            async let steps = fetchSum(for: .stepCount, from: startOfDay, to: endOfDay)
+            async let calories = fetchSum(for: .activeEnergyBurned, from: startOfDay, to: endOfDay)
+            async let rhr = fetchLatestInRange(for: .restingHeartRate, from: startOfDay, to: endOfDay)
+            async let hrv = fetchLatestInRange(for: .heartRateVariabilitySDNN, from: startOfDay, to: endOfDay)
+
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions = [.withFullDate]
+
+            let summary = try await DaySummaryForAI(
+                date: dateFormatter.string(from: startOfDay),
+                steps: Int(steps ?? 0),
+                activeCalories: calories ?? 0,
+                restingHeartRate: rhr.map { Int($0) },
+                avgHrv: hrv,
+                sleepDurationMinutes: nil // Sleep is fetched separately
+            )
+            summaries.append(summary)
+        }
+
+        return summaries
+    }
+
+    /// Fetch latest value within a date range
+    func fetchLatestInRange(for identifier: HKQuantityTypeIdentifier, from startDate: Date, to endDate: Date) async throws -> Double? {
+        let quantityType = HKQuantityType(identifier)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: quantityType,
+                predicate: predicate,
+                limit: 1,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                let unit = self.preferredUnit(for: identifier)
+                continuation.resume(returning: sample.quantity.doubleValue(for: unit))
+            }
+            self.healthStore.execute(query)
+        }
+    }
+
     // MARK: - Quantity Queries
 
     func fetchSum(for identifier: HKQuantityTypeIdentifier, from startDate: Date, to endDate: Date) async throws -> Double? {
@@ -375,4 +438,13 @@ enum HealthKitError: Error, LocalizedError {
             return "No health data available"
         }
     }
+}
+
+struct DaySummaryForAI: Codable {
+    let date: String
+    let steps: Int
+    let activeCalories: Double
+    let restingHeartRate: Int?
+    let avgHrv: Double?
+    let sleepDurationMinutes: Int?
 }
