@@ -948,46 +948,83 @@ export function DashboardStream({
             />
           )}
         </div>
-        {/* Quick navigation */}
-        <div className="mt-6 pt-6 border-t border-border">
-          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Explore</p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { href: '/goals', label: 'Goals' },
-              { href: '/correlations', label: 'Correlations' },
-              { href: '/streaks', label: 'Streaks' },
-              { href: '/calories', label: 'Calorie Balance' },
-              { href: '/mindfulness', label: 'Mindfulness' },
-              { href: '/temperature', label: 'Wrist Temp' },
-              { href: '/hearing', label: 'Hearing Health' },
-              { href: '/mobility', label: 'Mobility' },
-              { href: '/daylight', label: 'Daylight' },
-              { href: '/vitals', label: 'Vitals' },
-              { href: '/cardiac', label: 'Cardiac Events' },
-              { href: '/rings', label: 'Activity Rings' },
-              { href: '/vo2max', label: 'VO₂ Max' },
-              { href: '/heartrate', label: 'Heart Rate' },
-              { href: '/recovery', label: 'Recovery' },
-              { href: '/body', label: 'Body Weight' },
-              { href: '/water', label: 'Hydration' },
-              { href: '/fasting', label: 'Fasting' },
-              { href: '/nutrition', label: 'Nutrition' },
-              { href: '/insights', label: 'AI Insights' },
-              { href: '/workouts/prs', label: 'Workout PRs' },
-              { href: '/records', label: 'Records' },
-              { href: '/monthly', label: 'Monthly' },
-              { href: '/year', label: 'Year View' },
-              { href: '/compare', label: 'Compare Weeks' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="px-3 py-1.5 rounded-full bg-surface border border-border text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-colors"
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+        {/* Quick navigation — categorized */}
+        <div className="mt-6 pt-6 border-t border-border space-y-4">
+          {[
+            {
+              section: 'Activity',
+              links: [
+                { href: '/rings', label: 'Activity Rings' },
+                { href: '/running', label: 'Running' },
+                { href: '/workouts/prs', label: 'Workout PRs' },
+                { href: '/records', label: 'All-Time Records' },
+                { href: '/calories', label: 'Calorie Balance' },
+              ],
+            },
+            {
+              section: 'Heart & Vitals',
+              links: [
+                { href: '/heartrate', label: 'Heart Rate' },
+                { href: '/recovery', label: 'Recovery & HRV' },
+                { href: '/vitals', label: 'Vitals' },
+                { href: '/vo2max', label: 'VO₂ Max' },
+                { href: '/cardiac', label: 'Cardiac Events' },
+              ],
+            },
+            {
+              section: 'Sleep',
+              links: [
+                { href: '/sleep', label: 'Sleep' },
+                { href: '/temperature', label: 'Wrist Temp' },
+              ],
+            },
+            {
+              section: 'Wellbeing',
+              links: [
+                { href: '/daylight', label: 'Daylight' },
+                { href: '/mobility', label: 'Mobility' },
+                { href: '/hearing', label: 'Hearing Health' },
+                { href: '/mindfulness', label: 'Mindfulness' },
+                { href: '/body', label: 'Body Weight' },
+              ],
+            },
+            {
+              section: 'Lifestyle',
+              links: [
+                { href: '/water', label: 'Hydration' },
+                { href: '/nutrition', label: 'Nutrition' },
+                { href: '/fasting', label: 'Fasting' },
+              ],
+            },
+            {
+              section: 'Analytics',
+              links: [
+                { href: '/insights', label: 'AI Insights' },
+                { href: '/correlations', label: 'Correlations' },
+                { href: '/trends', label: 'Trends' },
+                { href: '/streaks', label: 'Streaks' },
+                { href: '/goals', label: 'Goals' },
+                { href: '/monthly', label: 'Monthly' },
+                { href: '/year', label: 'Year View' },
+                { href: '/compare', label: 'Compare Weeks' },
+              ],
+            },
+          ].map(({ section, links }) => (
+            <div key={section}>
+              <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">{section}</p>
+              <div className="flex flex-wrap gap-2">
+                {links.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="px-3 py-1.5 rounded-full bg-surface border border-border text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-colors"
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </main>
       <BottomNav />
