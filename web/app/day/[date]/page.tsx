@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ChevronLeft, ChevronRight, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { CopySummaryButton } from './copy-summary-button'
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params
@@ -99,6 +100,18 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
   const distanceKm = summary.distance_meters ? (summary.distance_meters / 1000).toFixed(2) : null
 
+  const shareLines: string[] = [fmtDate(date)]
+  shareLines.push(`Steps: ${summary.steps.toLocaleString()}`)
+  if (summary.active_calories) shareLines.push(`Active Calories: ${Math.round(summary.active_calories)} kcal`)
+  if (distanceKm) shareLines.push(`Distance: ${distanceKm} km`)
+  if (summary.sleep_duration_minutes) shareLines.push(`Sleep: ${fmtSleep(summary.sleep_duration_minutes)}`)
+  if (summary.resting_heart_rate) shareLines.push(`Resting HR: ${summary.resting_heart_rate} bpm`)
+  if (summary.avg_hrv) shareLines.push(`HRV: ${Math.round(summary.avg_hrv)} ms`)
+  if (summary.recovery_score != null) shareLines.push(`Recovery: ${summary.recovery_score}%`)
+  if (summary.strain_score != null) shareLines.push(`Strain: ${summary.strain_score.toFixed(1)}/21`)
+  if (workouts && workouts.length > 0) shareLines.push(`Workouts: ${workouts.length}`)
+  const shareText = shareLines.join('\n')
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -114,6 +127,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
             <h1 className="text-xl font-bold text-text-primary truncate">{fmtDate(date)}</h1>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            <CopySummaryButton text={shareText} />
             {prevDay ? (
               <Link
                 href={`/day/${prevDateStr}`}
