@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Heart } from 'lucide-react'
+import { ArrowLeft, Heart, Wind } from 'lucide-react'
 import { VitalsClient } from './vitals-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -60,6 +60,14 @@ export default async function VitalsPage() {
             <h1 className="text-xl font-bold text-text-primary">Vitals</h1>
             <p className="text-sm text-text-secondary">Blood oxygen, breathing & pressure</p>
           </div>
+          <Link
+            href="/oxygen"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Blood oxygen detail"
+            title="Blood Oxygen Detail"
+          >
+            <Wind className="w-5 h-5" />
+          </Link>
           <Link
             href="/bloodpressure"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
