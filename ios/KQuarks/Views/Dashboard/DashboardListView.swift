@@ -280,6 +280,16 @@ struct DashboardListView: View {
                         color: .orange
                     )
                 }
+
+                if viewModel.weeklyWorkoutCount > 0 {
+                    MetricRowView(
+                        icon: "figure.mixed.cardio",
+                        label: "Workouts This Week",
+                        value: "\(viewModel.weeklyWorkoutCount)",
+                        unit: viewModel.weeklyWorkoutCount == 1 ? "session" : "sessions",
+                        color: .activity
+                    )
+                }
             }
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -371,6 +381,7 @@ class DashboardListViewModel {
     var currentStreak: Int = 0
     var latestSleepContext: AIInsightsService.SleepContext? = nil
     var bodyWeightKg: Double? = nil
+    var weeklyWorkoutCount: Int = 0
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
@@ -418,6 +429,11 @@ class DashboardListViewModel {
             if let weight = try? await healthKit.fetchLatest(for: .bodyMass) {
                 await MainActor.run { bodyWeightKg = weight }
             }
+
+            // Count workouts this week
+            let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+            let weekWorkouts = (try? await healthKit.fetchWorkouts(from: weekStart, to: Date())) ?? []
+            await MainActor.run { weeklyWorkoutCount = weekWorkouts.count }
 
             // Load cached AI scores if available
             if let cachedRecovery = aiService.latestRecoveryScore {
