@@ -48,6 +48,19 @@ interface HealthContext {
     awakeMinutes: number
   }>
   userGoals?: UserGoals
+  hydration?: {
+    todayMl: number
+    targetMl: number
+  }
+  nutrition?: {
+    todayCalories: number
+    calorieTarget: number
+  }
+  fasting?: {
+    isActive: boolean
+    protocol: string | null
+    elapsedHours: number
+  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -266,6 +279,22 @@ function buildHealthPrompt(ctx: HealthContext): string {
   prompt += `\n**7-Day Trend Data:**\n`
   for (const day of ctx.weekHistory) {
     prompt += `- ${day.date}: ${day.steps} steps, ${day.activeCalories.toFixed(0)} cal, RHR ${day.restingHeartRate ?? "?"}, HRV ${day.avgHrv?.toFixed(0) ?? "?"}, Sleep ${day.sleepDurationMinutes ? (day.sleepDurationMinutes / 60).toFixed(1) + "h" : "?"}\n`
+  }
+
+  if (ctx.hydration) {
+    const hydPct = Math.round((ctx.hydration.todayMl / ctx.hydration.targetMl) * 100)
+    prompt += `\n**Hydration:**\n- Today: ${ctx.hydration.todayMl >= 1000 ? (ctx.hydration.todayMl / 1000).toFixed(1) + "L" : ctx.hydration.todayMl + "ml"} (${hydPct}% of ${ctx.hydration.targetMl >= 1000 ? (ctx.hydration.targetMl / 1000).toFixed(1) + "L" : ctx.hydration.targetMl + "ml"} goal)\n`
+  }
+
+  if (ctx.nutrition) {
+    const nutPct = Math.round((ctx.nutrition.todayCalories / ctx.nutrition.calorieTarget) * 100)
+    prompt += `\n**Nutrition:**\n- Calories consumed today: ${ctx.nutrition.todayCalories} kcal (${nutPct}% of ${ctx.nutrition.calorieTarget} kcal target)\n`
+  }
+
+  if (ctx.fasting) {
+    if (ctx.fasting.isActive) {
+      prompt += `\n**Fasting:**\n- Active fast: ${ctx.fasting.protocol ?? "Intermittent fasting"}, ${ctx.fasting.elapsedHours.toFixed(1)} hours elapsed\n`
+    }
   }
 
   prompt += `\nAnalyze this health data and provide personalized insights with recovery and strain scores.`

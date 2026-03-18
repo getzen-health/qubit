@@ -215,8 +215,15 @@ export function DashboardStream({
         calorieGoal: calGoalRaw ? parseInt(calGoalRaw, 10) || 500 : 500,
         sleepGoalMinutes: sleepGoalRaw ? parseInt(sleepGoalRaw, 10) || 480 : 480,
       }
+      const extendedContext = {
+        ...healthContext,
+        userGoals,
+        ...(waterTargetMl > 0 ? { hydration: { todayMl: todayWaterMl, targetMl: waterTargetMl } } : {}),
+        ...(calorieIntakeTarget > 0 && todayCaloriesConsumed > 0 ? { nutrition: { todayCalories: todayCaloriesConsumed, calorieTarget: calorieIntakeTarget } } : {}),
+        ...(activeFast ? { fasting: { isActive: true, protocol: activeFast.protocol, elapsedHours: fastElapsedHours } } : {}),
+      }
       const { error } = await supabase.functions.invoke('generate-insights', {
-        body: { healthContext: { ...healthContext, userGoals }, userApiKey },
+        body: { healthContext: extendedContext, userApiKey },
       })
       if (error) throw error
       // Refresh insights from DB
