@@ -486,6 +486,85 @@ class SupabaseService {
             .execute()
     }
 
+    // MARK: - Habits
+
+    func fetchHabits(userId: String) async throws -> ([Habit], [HabitCompletion]) {
+        let since: String = {
+            let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+            return df.string(from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!)
+        }()
+
+        struct HabitRow: Decodable {
+            let id: String
+            let name: String
+            let emoji: String
+            let target_days: [String]
+            let sort_order: Int
+            let created_at: String
+        }
+        struct CompletionRow: Decodable {
+            let habit_id: String
+            let date: String
+        }
+
+        async let habitRows: [HabitRow] = client.from("habits")
+            .select("id, name, emoji, target_days, sort_order, created_at")
+            .eq("user_id", value: userId)
+            .is("archived_at", value: nil)
+            .order("sort_order", ascending: true)
+            .execute()
+            .value
+
+        async let compRows: [CompletionRow] = client.from("habit_completions")
+            .select("habit_id, date")
+            .eq("user_id", value: userId)
+            .gte("date", value: since)
+            .execute()
+            .value
+
+        let (hr, cr) = try await (habitRows, compRows)
+        let habits = hr.map { Habit(id: $0.id, name: $0.name, emoji: $0.emoji, target_days: $0.target_days, sort_order: $0.sort_order, created_at: $0.created_at) }
+        let completions = cr.map { HabitCompletion(habit_id: $0.habit_id, date: $0.date) }
+        return (habits, completions)
+    }
+
+    func toggleHabit(habitId: String, date: String, completed: Bool) async throws {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        if completed {
+            struct Payload: Encodable { let habit_id: String; let user_id: String; let date: String }
+            try await client.from("habit_completions")
+                .upsert(Payload(habit_id: habitId, user_id: session.user.id.uuidString, date: date), onConflict: "habit_id,date")
+                .execute()
+        } else {
+            try await client.from("habit_completions")
+                .delete()
+                .eq("habit_id", value: habitId)
+                .eq("date", value: date)
+                .execute()
+        }
+    }
+
+    func createHabit(name: String, emoji: String) async throws {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        struct Payload: Encodable {
+            let user_id: String; let name: String; let emoji: String
+            let target_days: [String]
+        }
+        let allDays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        try await client.from("habits")
+            .insert(Payload(user_id: session.user.id.uuidString, name: name, emoji: emoji, target_days: allDays))
+            .execute()
+    }
+
+    func archiveHabit(habitId: String) async throws {
+        struct Patch: Encodable { let archived_at: String }
+        let df = ISO8601DateFormatter()
+        try await client.from("habits")
+            .update(Patch(archived_at: df.string(from: Date())))
+            .eq("id", value: habitId)
+            .execute()
+    }
+
     func fetchTodayCheckin() async throws -> DailyCheckin? {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let df = DateFormatter()

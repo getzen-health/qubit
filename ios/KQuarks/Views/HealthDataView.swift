@@ -60,8 +60,16 @@ struct HealthDataView: View {
             .navigationTitle("Health Data")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: RecordsView()) {
-                        Image(systemName: "trophy")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: HabitsView()) {
+                            Image(systemName: "checklist")
+                        }
+                        NavigationLink(destination: CheckinView()) {
+                            Image(systemName: "face.smiling")
+                        }
+                        NavigationLink(destination: RecordsView()) {
+                            Image(systemName: "trophy")
+                        }
                     }
                 }
             }

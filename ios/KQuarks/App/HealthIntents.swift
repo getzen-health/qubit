@@ -285,6 +285,41 @@ struct EndFastIntent: AppIntent {
     }
 }
 
+struct GetHabitsProgressIntent: AppIntent {
+    static var title: LocalizedStringResource = "Get Today's Habit Progress"
+    static var description = IntentDescription("Shows how many habits you've completed today in KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        guard let session = SupabaseService.shared.currentSession else {
+            return .result(value: 0, dialog: IntentDialog(stringLiteral: "Not signed in."))
+        }
+        let (habits, completions) = (try? await SupabaseService.shared.fetchHabits(userId: session.user.id.uuidString)) ?? ([], [])
+
+        let dowLabels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+        let todayDow = dowLabels[Calendar.current.component(.weekday, from: Date()) - 1]
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+
+        let todayHabits = habits.filter { $0.target_days.contains(todayDow) }
+        let done = todayHabits.filter { h in completions.contains { $0.habit_id == h.id && $0.date == today } }.count
+        let total = todayHabits.count
+
+        if total == 0 {
+            return .result(value: 0, dialog: IntentDialog(stringLiteral: "You have no habits scheduled for today."))
+        }
+        let msg = done == total
+            ? "All \(total) habits done today. Great work!"
+            : "You've completed \(done) of \(total) habits today."
+        return .result(value: done, dialog: IntentDialog(stringLiteral: msg))
+    }
+}
+
 struct LogCheckinIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Daily Check-in"
     static var description = IntentDescription("Log your energy, mood, and stress levels in KQuarks.")
@@ -443,6 +478,16 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Daily Check-in",
             systemImageName: "checklist"
+        )
+        AppShortcut(
+            intent: GetHabitsProgressIntent(),
+            phrases: [
+                "How are my habits in \(.applicationName)",
+                "Habit progress in \(.applicationName)",
+                "Check my habits in \(.applicationName)"
+            ],
+            shortTitle: "Habit Progress",
+            systemImageName: "checklist.checked"
         )
     }
 }
