@@ -20,6 +20,8 @@ interface WeeklyChartsProps {
     sleep_duration_minutes?: number
     resting_heart_rate?: number
     avg_hrv?: number
+    recovery_score?: number
+    strain_score?: number
   }>
 }
 
@@ -37,11 +39,15 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
       : null,
     restingHR: s.resting_heart_rate ?? null,
     avgHrv: s.avg_hrv ?? null,
+    recoveryScore: s.recovery_score ?? null,
+    strainScore: s.strain_score ?? null,
   }))
 
   const hasSleepData = chartData.some((d) => d.sleepHours !== null)
   const hasHRData = chartData.some((d) => d.restingHR !== null)
   const hasHRVData = chartData.some((d) => d.avgHrv !== null)
+  const hasRecoveryData = chartData.some((d) => d.recoveryScore !== null && d.recoveryScore > 0)
+  const hasStrainData = chartData.some((d) => d.strainScore !== null && d.strainScore > 0)
 
   return (
     <div className="space-y-6">
@@ -200,6 +206,70 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
                 connectNulls={false}
               />
             </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      {/* Recovery Score */}
+      {hasRecoveryData && (
+        <div>
+          <h3 className="text-sm font-medium text-text-secondary mb-2">Recovery (%)</h3>
+          <ResponsiveContainer width="100%" height={160}>
+            <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="day"
+                tick={{ fontSize: 11, fill: 'var(--color-text-secondary, #888)' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis hide />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--color-surface, #1a1a1a)',
+                  border: '1px solid var(--color-border, #333)',
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+                formatter={(value: number) => [`${value}%`, 'Recovery']}
+              />
+              <Line
+                type="monotone"
+                dataKey="recoveryScore"
+                stroke="#22c55e"
+                strokeWidth={2}
+                dot={{ fill: '#22c55e', r: 3 }}
+                connectNulls={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Strain Score */}
+      {hasStrainData && (
+        <div>
+          <h3 className="text-sm font-medium text-text-secondary mb-2">Strain (/21)</h3>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="day"
+                tick={{ fontSize: 11, fill: 'var(--color-text-secondary, #888)' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis hide />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--color-surface, #1a1a1a)',
+                  border: '1px solid var(--color-border, #333)',
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+                formatter={(value: number) => [`${value}/21`, 'Strain']}
+              />
+              <Bar dataKey="strainScore" fill="#f97316" radius={[3, 3, 0, 0]} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       )}
