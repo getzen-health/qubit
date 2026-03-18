@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { BottomNav } from '@/components/bottom-nav'
 
 interface Insight {
   id: string
@@ -158,6 +159,7 @@ export default function InsightsPage() {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   )
 }

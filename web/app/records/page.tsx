@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Trophy } from 'lucide-react'
+import { BottomNav } from '@/components/bottom-nav'
 
 function formatDate(dateStr: string) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
@@ -279,6 +280,7 @@ export default async function RecordsPage() {
           </div>
         </section>
       </main>
+      <BottomNav />
     </div>
   )
 }

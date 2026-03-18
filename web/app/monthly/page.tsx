@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { MonthlyClient } from './monthly-client'
+import { BottomNav } from '@/components/bottom-nav'
 
 export default async function MonthlyPage() {
   const supabase = await createClient()
@@ -48,12 +49,13 @@ export default async function MonthlyPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         <MonthlyClient
           summaries={summaries ?? []}
           workouts={workouts ?? []}
         />
       </main>
+      <BottomNav />
     </div>
   )
 }
