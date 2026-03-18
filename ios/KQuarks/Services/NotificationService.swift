@@ -9,6 +9,7 @@ final class NotificationService {
 
     private let stepGoalNotifiedKey = "stepGoalNotifiedDate"
     private let weeklyReviewKey = "weeklyReviewNotifiedDate"
+    private let stepReminderKey = "stepReminderNotifiedDate"
 
     func requestPermission() async {
         do {
@@ -49,6 +50,17 @@ final class NotificationService {
                 steps: summary.steps,
                 stepGoal: Int(goal)
             )
+
+            // Afternoon step reminder (4–8pm, if below 50% of goal)
+            let hour = Calendar.current.component(.hour, from: Date())
+            if hour >= 16 && hour <= 20 && !alreadySentStepReminderToday() {
+                let pct = Double(summary.steps) / goal
+                if pct < 0.5 {
+                    let remaining = Int(goal) - summary.steps
+                    scheduleStepReminder(remaining: remaining)
+                    markStepReminderSentToday()
+                }
+            }
 
             // Weekly review notification on Sundays
             let weekday = Calendar.current.component(.weekday, from: Date())
@@ -180,5 +192,28 @@ final class NotificationService {
 
     private func markStepGoalNotifiedToday() {
         UserDefaults.standard.set(Date(), forKey: stepGoalNotifiedKey)
+    }
+
+    private func scheduleStepReminder(remaining: Int) {
+        let content = UNMutableNotificationContent()
+        content.title = "Keep Moving!"
+        content.body = "You've got \(remaining.formatted()) steps to go — finish strong!"
+        content.sound = .default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "step-reminder-\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: trigger
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    private func alreadySentStepReminderToday() -> Bool {
+        guard let last = UserDefaults.standard.object(forKey: stepReminderKey) as? Date else { return false }
+        return Calendar.current.isDateInToday(last)
+    }
+
+    private func markStepReminderSentToday() {
+        UserDefaults.standard.set(Date(), forKey: stepReminderKey)
     }
 }
