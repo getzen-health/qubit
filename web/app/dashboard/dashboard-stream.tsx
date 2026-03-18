@@ -459,7 +459,10 @@ export function DashboardStream({
         {/* Week-over-Week Comparison */}
         {(wowSteps !== null || wowCal !== null || wowSleep !== null) && (
           <div className="mb-6 bg-surface rounded-xl border border-border p-4">
-            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">vs Last Week</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">vs Last Week</p>
+              <Link href="/compare" className="text-xs text-accent hover:underline">View all</Link>
+            </div>
             <div className="flex gap-4">
               {wowSteps !== null && (
                 <div className="flex-1 text-center">
