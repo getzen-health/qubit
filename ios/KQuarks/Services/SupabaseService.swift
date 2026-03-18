@@ -335,6 +335,8 @@ struct DailySummaryUpload: Encodable {
     let sleepQualityScore: Int?
     let restingHeartRate: Int?
     let avgHrv: Double?
+    let recoveryScore: Int?
+    let strainScore: Int?
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
@@ -349,6 +351,8 @@ struct DailySummaryUpload: Encodable {
         case sleepQualityScore = "sleep_quality_score"
         case restingHeartRate = "resting_heart_rate"
         case avgHrv = "avg_hrv"
+        case recoveryScore = "recovery_score"
+        case strainScore = "strain_score"
     }
 }
 

@@ -79,7 +79,9 @@ class SyncService {
             sleepDurationMinutes: summary.sleepHours.map { Int($0 * 60) },
             sleepQualityScore: nil,
             restingHeartRate: summary.restingHeartRate,
-            avgHrv: summary.hrv
+            avgHrv: summary.hrv,
+            recoveryScore: AIInsightsService.shared.latestRecoveryScore,
+            strainScore: AIInsightsService.shared.latestStrainScore.map { Int($0) }
         )
 
         try await supabase.uploadDailySummary(upload)
