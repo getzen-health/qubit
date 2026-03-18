@@ -87,6 +87,11 @@ class SyncService {
         )
 
         try await supabase.uploadDailySummary(upload)
+
+        // Cache recovery score for morning brief notification
+        if let rec = AIInsightsService.shared.latestRecoveryScore {
+            UserDefaults.standard.set(rec, forKey: "cached_recovery_score")
+        }
     }
 
     // MARK: - Sync Health Samples

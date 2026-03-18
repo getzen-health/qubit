@@ -28,16 +28,60 @@ final class NotificationService {
 
     func notifyAfterSync() async {
         guard isAuthorized else { return }
-        guard !alreadyNotifiedStepGoalToday() else { return }
 
         do {
             let summary = try await HealthKitService.shared.fetchTodaySummary()
             let goal = GoalService.shared.stepsGoal
-            if Double(summary.steps) >= goal {
+
+            if !alreadyNotifiedStepGoalToday() && Double(summary.steps) >= goal {
                 scheduleStepGoalNotification(steps: Double(summary.steps), goal: goal)
                 markStepGoalNotifiedToday()
             }
+
+            // Update morning brief with fresh data
+            let recoveryScore = UserDefaults.standard.integer(forKey: "cached_recovery_score")
+            scheduleMorningBrief(
+                recoveryScore: recoveryScore > 0 ? recoveryScore : nil,
+                steps: summary.steps,
+                stepGoal: Int(goal)
+            )
         } catch { }
+    }
+
+    /// Schedules (or replaces) tomorrow's 8am morning brief with today's data.
+    func scheduleMorningBrief(recoveryScore: Int?, steps: Int, stepGoal: Int) {
+        guard isAuthorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Morning Brief"
+
+        var bodyParts: [String] = []
+        if let rec = recoveryScore, rec > 0 {
+            let emoji = rec >= 67 ? "🟢" : rec >= 34 ? "🟡" : "🔴"
+            bodyParts.append("\(emoji) Recovery \(rec)%")
+        }
+        if steps > 0 {
+            bodyParts.append("Yesterday: \(steps.formatted()) steps")
+        }
+        bodyParts.append("Goal: \(stepGoal.formatted()) steps today")
+        content.body = bodyParts.joined(separator: " · ")
+        content.sound = .default
+
+        var components = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        components.hour = 8
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+
+        let request = UNNotificationRequest(
+            identifier: "morning-brief",
+            content: content,
+            trigger: trigger
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    func cancelMorningBrief() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["morning-brief"])
     }
 
     func scheduleInsightsNotification() {
