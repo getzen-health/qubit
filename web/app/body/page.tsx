@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BodyClient } from './body-client'
+import { LogWeightForm } from './log-weight-form'
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function BodyPage() {
@@ -42,7 +43,11 @@ export default async function BodyPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-6">
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <h2 className="text-sm font-medium text-text-secondary mb-3">Log Today&apos;s Weight</h2>
+          <LogWeightForm latestKg={summaries && summaries.length > 0 ? summaries[summaries.length - 1].weight_kg : undefined} />
+        </div>
         <BodyClient summaries={summaries ?? []} />
       </main>
       <BottomNav />
