@@ -966,6 +966,7 @@ export function DashboardStream({
               section: 'Heart & Vitals',
               links: [
                 { href: '/heartrate', label: 'Heart Rate' },
+                { href: '/zones', label: 'Training Zones' },
                 { href: '/recovery', label: 'Recovery & HRV' },
                 { href: '/vitals', label: 'Vitals' },
                 { href: '/vo2max', label: 'VO₂ Max' },

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Activity } from 'lucide-react'
 import { HeartRateClient } from './heartrate-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -33,10 +33,18 @@ export default async function HeartRatePage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Heart Rate</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/zones"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Training zones"
+            title="Training Zones"
+          >
+            <Activity className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
