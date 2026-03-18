@@ -260,6 +260,13 @@ export function DashboardStream({
               <Zap className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
+              href="/recovery"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Recovery & Strain"
+            >
+              <TrendingUp className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
               href="/heartrate"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="Heart Rate"
