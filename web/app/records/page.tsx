@@ -160,6 +160,8 @@ export default async function RecordsPage() {
     { data: fastestPace },
     { data: longestFast },
     { data: bestHydration },
+    { data: lowestRhr },
+    { data: bestVo2 },
   ] = await Promise.all([
     supabase
       .from('daily_summaries')
@@ -201,6 +203,24 @@ export default async function RecordsPage() {
       .select('date, total_ml')
       .eq('user_id', user.id)
       .order('total_ml', { ascending: false })
+      .limit(1)
+      .single(),
+    supabase
+      .from('daily_summaries')
+      .select('date, resting_heart_rate')
+      .eq('user_id', user.id)
+      .not('resting_heart_rate', 'is', null)
+      .gt('resting_heart_rate', 30)
+      .order('resting_heart_rate', { ascending: true })
+      .limit(1)
+      .single(),
+    supabase
+      .from('health_records')
+      .select('start_time, value')
+      .eq('user_id', user.id)
+      .eq('type', 'vo2_max')
+      .gt('value', 0)
+      .order('value', { ascending: false })
       .limit(1)
       .single(),
   ])
@@ -304,6 +324,24 @@ export default async function RecordsPage() {
               empty={!bestSleep}
               href={bestSleep ? `/day/${bestSleep.date}` : undefined}
             />
+            {lowestRhr && (
+              <RecordCard
+                label="Lowest Resting HR"
+                value={`${lowestRhr.resting_heart_rate} bpm`}
+                sub="best cardiovascular fitness"
+                date={formatDate(lowestRhr.date)}
+                href={`/day/${lowestRhr.date}`}
+              />
+            )}
+            {bestVo2 && (
+              <RecordCard
+                label="Peak VO₂ Max"
+                value={`${bestVo2.value.toFixed(1)} mL/kg/min`}
+                sub="cardiorespiratory fitness"
+                date={formatDatetime(bestVo2.start_time)}
+                href="/vo2max"
+              />
+            )}
           </div>
         </section>
 
