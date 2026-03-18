@@ -78,7 +78,7 @@ export default function AppearanceSettingsPage() {
           <div>
             <h2 className="text-lg font-semibold text-text-primary">Theme</h2>
             <p className="text-sm text-text-secondary">
-              Choose how Quarks looks on your device
+              Choose how KQuarks looks on your device
             </p>
           </div>
 

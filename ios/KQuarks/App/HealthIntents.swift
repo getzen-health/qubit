@@ -95,6 +95,76 @@ struct LogWeightIntent: AppIntent {
     }
 }
 
+struct SyncHealthDataIntent: AppIntent {
+    static var title: LocalizedStringResource = "Sync Health Data"
+    static var description = IntentDescription("Syncs your Apple Health data to KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: false,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        await SyncService.shared.performFullSync()
+        return .result(
+            value: true,
+            dialog: IntentDialog(stringLiteral: "Health data synced to KQuarks.")
+        )
+    }
+}
+
+struct GetTodayCaloriesIntent: AppIntent {
+    static var title: LocalizedStringResource = "Get Today's Active Calories"
+    static var description = IntentDescription("Shows your active calorie burn for today from Apple Health.")
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        let summary = try await HealthKitService.shared.fetchTodaySummary()
+        let cal = Int(summary.activeCalories)
+        let goal = Int(GoalService.shared.activeCaloriesGoal)
+        let pct = goal > 0 ? Int(Double(cal) / Double(goal) * 100) : 0
+        return .result(
+            value: cal,
+            dialog: IntentDialog(stringLiteral: "\(cal.formatted()) active calories today — \(pct)% of your goal.")
+        )
+    }
+}
+
+struct GetTodayHRVIntent: AppIntent {
+    static var title: LocalizedStringResource = "Get Today's HRV"
+    static var description = IntentDescription("Shows your heart rate variability from Apple Health.")
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        let samples = (try? await HealthKitService.shared.fetchSamples(
+            for: .heartRateVariabilitySDNN,
+            from: startOfDay,
+            to: Date()
+        )) ?? []
+        if !samples.isEmpty {
+            let values = samples.map { $0.quantity.doubleValue(for: HKUnit(from: "ms")) }
+            let avg = values.reduce(0.0, +) / Double(values.count)
+            return .result(
+                value: Int(avg),
+                dialog: IntentDialog(stringLiteral: "Your HRV today is \(Int(avg)) ms.")
+            )
+        }
+        // Fall back to cached value from last sync
+        let cached = UserDefaults.standard.double(forKey: "cached_hrv")
+        if cached > 0 {
+            return .result(
+                value: Int(cached),
+                dialog: IntentDialog(stringLiteral: "Your most recent HRV is \(Int(cached)) ms.")
+            )
+        }
+        return .result(
+            value: 0,
+            dialog: IntentDialog(stringLiteral: "No HRV data found. Try syncing KQuarks first.")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -142,6 +212,33 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Log Weight",
             systemImageName: "scalemass.fill"
+        )
+        AppShortcut(
+            intent: SyncHealthDataIntent(),
+            phrases: [
+                "Sync my health data in \(.applicationName)",
+                "Sync \(.applicationName)"
+            ],
+            shortTitle: "Sync Health Data",
+            systemImageName: "arrow.clockwise.heart"
+        )
+        AppShortcut(
+            intent: GetTodayCaloriesIntent(),
+            phrases: [
+                "How many calories today in \(.applicationName)",
+                "Show my calories in \(.applicationName)"
+            ],
+            shortTitle: "Today's Calories",
+            systemImageName: "flame.fill"
+        )
+        AppShortcut(
+            intent: GetTodayHRVIntent(),
+            phrases: [
+                "What's my HRV in \(.applicationName)",
+                "Show my heart rate variability in \(.applicationName)"
+            ],
+            shortTitle: "Today's HRV",
+            systemImageName: "waveform.path.ecg"
         )
     }
 }

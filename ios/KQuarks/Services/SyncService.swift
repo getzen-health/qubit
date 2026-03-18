@@ -383,6 +383,7 @@ class SyncService {
                     avgHeartRate: avgHR,
                     maxHeartRate: maxHR,
                     elevationGainMeters: elevationGain,
+                    avgPacePerKm: nil,
                     source: workout.sourceRevision.source.name
                 )
                 try? await supabase.uploadWorkoutRecord(upload)

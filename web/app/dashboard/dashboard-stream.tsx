@@ -42,6 +42,7 @@ import {
 } from './components/layout'
 import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
+import { GoalRings } from './components/goal-rings'
 import { BottomNav } from '@/components/bottom-nav'
 
 const DEFAULT_STEP_GOAL = 10000
@@ -492,6 +493,18 @@ export function DashboardStream({
           recoveryTrend={recoveryTrend}
           strainTrend={strainTrend}
         />
+
+        {/* Goal Rings */}
+        {today && (
+          <GoalRings
+            steps={metrics.steps}
+            stepGoal={stepGoal}
+            calories={metrics.calories}
+            calGoal={calGoal}
+            sleepMinutes={metrics.sleep.duration}
+            sleepGoalMinutes={sleepGoalMin}
+          />
+        )}
 
         {/* Quick Stats */}
         <QuickStatsGrid columns={4}>
