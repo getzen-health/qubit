@@ -44,6 +44,13 @@ struct SleepView: View {
                 }
             }
             .navigationTitle("Sleep")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: SleepDebtView()) {
+                        Image(systemName: "moon.zzz.fill")
+                    }
+                }
+            }
             .task {
                 await loadSleep()
             }
