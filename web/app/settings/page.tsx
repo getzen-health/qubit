@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   Download,
   Sparkles,
+  RefreshCw,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -47,6 +48,12 @@ export default async function SettingsPage() {
       description: 'Claude API key for generating insights',
       href: '/settings/ai',
       icon: Sparkles,
+    },
+    {
+      title: 'Sync Status',
+      description: 'Data coverage, devices, and sync health',
+      href: '/sync',
+      icon: RefreshCw,
     },
   ]
 
