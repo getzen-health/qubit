@@ -173,6 +173,21 @@ class SyncService {
             ))
         }
 
+        // Fetch mindfulness sessions
+        let mindfulSamples = try await healthKit.fetchMindfulSessions(from: startDate, to: now)
+        for sample in mindfulSamples {
+            let durationMinutes = sample.endDate.timeIntervalSince(sample.startDate) / 60
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "mindfulness",
+                value: durationMinutes,
+                unit: "minutes",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Batch upload
         if !records.isEmpty {
             // Split into batches of 100

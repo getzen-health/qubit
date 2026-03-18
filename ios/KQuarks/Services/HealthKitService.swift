@@ -42,6 +42,9 @@ class HealthKitService {
         // Sleep
         types.insert(HKCategoryType(.sleepAnalysis))
 
+        // Mindfulness
+        types.insert(HKCategoryType(.mindfulSession))
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 
@@ -441,6 +444,28 @@ class HealthKitService {
             }
 
             healthStore.execute(query)
+        }
+    }
+
+    func fetchMindfulSessions(from startDate: Date, to endDate: Date) async throws -> [HKCategorySample] {
+        let mindfulType = HKCategoryType(.mindfulSession)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: mindfulType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: (samples as? [HKCategorySample]) ?? [])
+            }
+            self.healthStore.execute(query)
         }
     }
 

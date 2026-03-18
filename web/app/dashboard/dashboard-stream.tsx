@@ -955,6 +955,7 @@ export function DashboardStream({
             {[
               { href: '/goals', label: 'Goals' },
               { href: '/correlations', label: 'Correlations' },
+              { href: '/mindfulness', label: 'Mindfulness' },
               { href: '/vitals', label: 'Vitals' },
               { href: '/heartrate', label: 'Heart Rate' },
               { href: '/recovery', label: 'Recovery' },
