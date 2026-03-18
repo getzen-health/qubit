@@ -26,6 +26,12 @@ function formatDuration(minutes: number) {
   return h > 0 ? `${h}h ${m}m` : `${m}m`
 }
 
+function formatPace(secsPerKm: number) {
+  const min = Math.floor(secsPerKm / 60)
+  const sec = Math.round(secsPerKm % 60)
+  return `${min}:${sec.toString().padStart(2, '0')} /km`
+}
+
 interface RecordCardProps {
   label: string
   value: string
@@ -146,8 +152,15 @@ export default async function RecordsPage() {
       .eq('user_id', user.id),
   ])
 
-  // Fetch best strain and workout totals in parallel
-  const [{ data: bestStrain }, { data: workoutTotals }, { count: totalWorkouts }] = await Promise.all([
+  // Fetch best strain, workout totals, and new records in parallel
+  const [
+    { data: bestStrain },
+    { data: workoutTotals },
+    { count: totalWorkouts },
+    { data: fastestPace },
+    { data: longestFast },
+    { data: bestHydration },
+  ] = await Promise.all([
     supabase
       .from('daily_summaries')
       .select('date, strain_score')
@@ -165,6 +178,31 @@ export default async function RecordsPage() {
       .from('workout_records')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id),
+    supabase
+      .from('workout_records')
+      .select('id, start_time, workout_type, avg_pace_per_km')
+      .eq('user_id', user.id)
+      .not('avg_pace_per_km', 'is', null)
+      .gt('avg_pace_per_km', 0)
+      .in('workout_type', ['Running', 'Walking', 'Cycling', 'Hiking', 'Rowing'])
+      .order('avg_pace_per_km', { ascending: true })
+      .limit(1)
+      .single(),
+    supabase
+      .from('fasting_sessions')
+      .select('id, protocol, actual_hours, started_at')
+      .eq('user_id', user.id)
+      .not('ended_at', 'is', null)
+      .order('actual_hours', { ascending: false })
+      .limit(1)
+      .single(),
+    supabase
+      .from('daily_water')
+      .select('date, total_ml')
+      .eq('user_id', user.id)
+      .order('total_ml', { ascending: false })
+      .limit(1)
+      .single(),
   ])
 
   // Compute lifetime totals
@@ -298,8 +336,44 @@ export default async function RecordsPage() {
                 href={`/workouts/${longestDistance.id}`}
               />
             )}
+            {fastestPace && (
+              <RecordCard
+                label="Fastest Pace"
+                value={formatPace(fastestPace.avg_pace_per_km!)}
+                sub={fastestPace.workout_type}
+                date={formatDatetime(fastestPace.start_time)}
+                href={`/workouts/${fastestPace.id}`}
+              />
+            )}
           </div>
         </section>
+
+        {/* Lifestyle Bests */}
+        {(longestFast || bestHydration) && (
+          <section>
+            <h2 className="text-sm font-semibold text-text-secondary mb-3 uppercase tracking-wide">Lifestyle Bests</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {longestFast && (
+                <RecordCard
+                  label="Longest Fast"
+                  value={`${longestFast.actual_hours.toFixed(1)}h`}
+                  sub={longestFast.protocol}
+                  date={formatDatetime(longestFast.started_at)}
+                />
+              )}
+              {bestHydration && (
+                <RecordCard
+                  label="Best Hydration Day"
+                  value={bestHydration.total_ml >= 1000
+                    ? `${(bestHydration.total_ml / 1000).toFixed(1)}L`
+                    : `${bestHydration.total_ml}ml`}
+                  date={formatDate(bestHydration.date)}
+                  href={`/day/${bestHydration.date}`}
+                />
+              )}
+            </div>
+          </section>
+        )}
       </main>
       <BottomNav />
     </div>
