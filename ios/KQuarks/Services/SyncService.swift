@@ -295,6 +295,36 @@ class SyncService {
             ))
         }
 
+        // Fetch mobility metrics (iPhone walking health, iOS 14+)
+        let mobilityTypes: [(HKQuantityTypeIdentifier, String, HKUnit, String)] = [
+            (.walkingSpeed, "walking_speed", HKUnit.meter().unitDivided(by: .second()), "m/s"),
+            (.walkingStepLength, "walking_step_length", .meter(), "m"),
+            (.walkingAsymmetryPercentage, "walking_asymmetry", .percent(), "%"),
+            (.walkingDoubleSupportPercentage, "walking_double_support", .percent(), "%"),
+        ]
+        for (identifier, typeName, unit, unitStr) in mobilityTypes {
+            let samples = try await healthKit.fetchSamples(
+                for: identifier,
+                from: startDate,
+                to: now,
+                limit: 200
+            )
+            for sample in samples {
+                var value = sample.quantity.doubleValue(for: unit)
+                // Convert percent fraction to 0-100 range
+                if unitStr == "%" && value <= 1.0 { value *= 100 }
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: typeName,
+                    value: value,
+                    unit: unitStr,
+                    source: sample.sourceRevision.source.name,
+                    startTime: sample.startDate,
+                    endTime: sample.endDate
+                ))
+            }
+        }
+
         // Fetch mindfulness sessions
         let mindfulSamples = try await healthKit.fetchMindfulSessions(from: startDate, to: now)
         for sample in mindfulSamples {

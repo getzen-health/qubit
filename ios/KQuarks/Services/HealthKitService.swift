@@ -55,6 +55,12 @@ class HealthKitService {
         types.insert(HKQuantityType(.headphoneAudioExposure))
         types.insert(HKQuantityType(.environmentalAudioExposure))
 
+        // Mobility (iPhone walking metrics, iOS 14+)
+        types.insert(HKQuantityType(.walkingSpeed))
+        types.insert(HKQuantityType(.walkingStepLength))
+        types.insert(HKQuantityType(.walkingAsymmetryPercentage))
+        types.insert(HKQuantityType(.walkingDoubleSupportPercentage))
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 
