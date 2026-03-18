@@ -7,6 +7,10 @@ struct DashboardListView: View {
     @Environment(ThemeManager.self) private var themeManager
     private let aiService = AIInsightsService.shared
 
+    @State private var showLogWeight = false
+    @State private var logWeightText = ""
+    @State private var logWeightError: String?
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -71,6 +75,21 @@ struct DashboardListView: View {
             }
             .task {
                 await viewModel.loadData()
+            }
+            .alert("Log Weight", isPresented: $showLogWeight) {
+                TextField("Weight in kg", text: $logWeightText)
+                    .keyboardType(.decimalPad)
+                Button("Save") {
+                    guard let kg = Double(logWeightText), kg > 0, kg < 500 else { return }
+                    Task {
+                        try? await HealthKitService.shared.saveBodyWeight(kg)
+                        await viewModel.loadData()
+                    }
+                    logWeightText = ""
+                }
+                Button("Cancel", role: .cancel) { logWeightText = "" }
+            } message: {
+                Text("Enter your current body weight.")
             }
         }
     }
@@ -274,6 +293,29 @@ struct DashboardListView: View {
                         color: .hrv,
                         destination: AnyView(HealthMetricDetailView(dataType: .weight))
                     )
+                    .contextMenu {
+                        Button {
+                            logWeightText = String(format: "%.1f", weight)
+                            showLogWeight = true
+                        } label: {
+                            Label("Log Today's Weight", systemImage: "scalemass")
+                        }
+                    }
+                } else {
+                    MetricRowView(
+                        icon: "scalemass.fill",
+                        label: "Body Weight",
+                        value: "—",
+                        color: .hrv
+                    )
+                    .contextMenu {
+                        Button {
+                            logWeightText = ""
+                            showLogWeight = true
+                        } label: {
+                            Label("Log Today's Weight", systemImage: "scalemass")
+                        }
+                    }
                 }
             }
             .background(Color(.systemBackground))
