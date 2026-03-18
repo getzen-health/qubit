@@ -12,14 +12,22 @@ export default async function YearPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: summaries } = await supabase
-    .from('daily_summaries')
-    .select('date, steps')
-    .eq('user_id', user.id)
-    .gt('steps', 0)
-    .order('date', { ascending: false })
+  const [{ data: summaries }, { data: profile }] = await Promise.all([
+    supabase
+      .from('daily_summaries')
+      .select('date, steps')
+      .eq('user_id', user.id)
+      .gt('steps', 0)
+      .order('date', { ascending: false }),
+    supabase
+      .from('users')
+      .select('step_goal')
+      .eq('id', user.id)
+      .single(),
+  ])
 
   const rows = summaries ?? []
+  const stepGoal = profile?.step_goal ?? 10000
 
   // Find available years from data
   const yearSet = new Set(rows.map((r) => parseInt(r.date.slice(0, 4), 10)))
@@ -59,6 +67,7 @@ export default async function YearPage() {
             summaries={rows}
             availableYears={availableYears}
             initialYear={currentYear}
+            stepGoal={stepGoal}
           />
         )}
       </main>

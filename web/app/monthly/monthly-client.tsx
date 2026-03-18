@@ -45,15 +45,15 @@ interface MonthData {
 
 const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
-function stepColor(steps: number | undefined): string {
+function stepColor(steps: number | undefined, goal: number): string {
   if (!steps || steps === 0) return 'bg-surface-secondary'
-  if (steps >= 10000) return 'bg-green-500'
-  if (steps >= 7500) return 'bg-green-500/70'
-  if (steps >= 5000) return 'bg-green-500/40'
+  if (steps >= goal) return 'bg-green-500'
+  if (steps >= goal * 0.75) return 'bg-green-500/70'
+  if (steps >= goal * 0.5) return 'bg-green-500/40'
   return 'bg-green-500/20'
 }
 
-function CalendarHeatmap({ summaries }: { summaries: Summary[] }) {
+function CalendarHeatmap({ summaries, stepGoal }: { summaries: Summary[]; stepGoal: number }) {
   const dataMap = new Map<string, number>()
   for (const s of summaries) dataMap.set(s.date, s.steps)
 
@@ -115,7 +115,7 @@ function CalendarHeatmap({ summaries }: { summaries: Summary[] }) {
               href={hasData ? `/day/${dateStr}` : '#'}
               className={cn(
                 'aspect-square rounded-md flex items-center justify-center text-xs font-medium transition-opacity',
-                stepColor(steps),
+                stepColor(steps, stepGoal),
                 hasData ? 'hover:opacity-80' : 'cursor-default pointer-events-none',
               )}
               title={hasData ? `${dateStr}: ${steps?.toLocaleString()} steps` : dateStr}
@@ -133,7 +133,7 @@ function CalendarHeatmap({ summaries }: { summaries: Summary[] }) {
         <div className="w-4 h-4 rounded-sm bg-green-500/40" />
         <div className="w-4 h-4 rounded-sm bg-green-500/70" />
         <div className="w-4 h-4 rounded-sm bg-green-500" />
-        <span>More</span>
+        <span>{stepGoal.toLocaleString()}+</span>
         <span className="ml-2 opacity-60">(tap to view day)</span>
       </div>
     </div>
@@ -198,9 +198,10 @@ const tooltipStyle = {
 interface Props {
   summaries: Summary[]
   workouts: Workout[]
+  stepGoal?: number
 }
 
-export function MonthlyClient({ summaries, workouts }: Props) {
+export function MonthlyClient({ summaries, workouts, stepGoal = 10000 }: Props) {
   const months = groupByMonth(summaries, workouts)
 
   if (months.length === 0) {
@@ -218,7 +219,7 @@ export function MonthlyClient({ summaries, workouts }: Props) {
   return (
     <div className="space-y-6">
       {/* Calendar Heatmap */}
-      <CalendarHeatmap summaries={summaries} />
+      <CalendarHeatmap summaries={summaries} stepGoal={stepGoal} />
 
       {/* Steps chart */}
       <div className="bg-surface rounded-xl border border-border p-4">
@@ -229,7 +230,7 @@ export function MonthlyClient({ summaries, workouts }: Props) {
             <XAxis dataKey="label" tick={tickStyle} axisLine={false} tickLine={false} interval={0} />
             <YAxis hide />
             <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [v.toLocaleString(), 'Avg steps']} />
-            <ReferenceLine y={10000} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 3" />
+            <ReferenceLine y={stepGoal} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 3" />
             <Bar dataKey="avgSteps" fill="#22c55e" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

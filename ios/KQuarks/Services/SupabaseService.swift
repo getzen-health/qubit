@@ -394,6 +394,7 @@ struct WorkoutRecordUpload: Encodable {
     let avgHeartRate: Int?
     let maxHeartRate: Int?
     let elevationGainMeters: Double?
+    let avgPacePerKm: Double?
     let source: String?
 
     enum CodingKeys: String, CodingKey {
@@ -408,6 +409,7 @@ struct WorkoutRecordUpload: Encodable {
         case avgHeartRate = "avg_heart_rate"
         case maxHeartRate = "max_heart_rate"
         case elevationGainMeters = "elevation_gain_meters"
+        case avgPacePerKm = "avg_pace_per_km"
         case source
     }
 }

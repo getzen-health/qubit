@@ -13,16 +13,17 @@ interface Props {
   summaries: DaySummary[]
   availableYears: number[]
   initialYear: number
+  stepGoal?: number
 }
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']
 
-function stepColor(steps: number | null): string {
+function stepColor(steps: number | null, goal: number): string {
   if (steps === null || steps === 0) return 'bg-surface-secondary'
-  if (steps >= 10000) return 'bg-green-500'
-  if (steps >= 7500) return 'bg-green-500/70'
-  if (steps >= 5000) return 'bg-green-500/40'
+  if (steps >= goal) return 'bg-green-500'
+  if (steps >= goal * 0.75) return 'bg-green-500/70'
+  if (steps >= goal * 0.5) return 'bg-green-500/40'
   return 'bg-green-500/20'
 }
 
@@ -74,7 +75,7 @@ function buildYearGrid(year: number, dataMap: Map<string, number>) {
   return { weeks, monthStartWeeks }
 }
 
-export function YearClient({ summaries, availableYears, initialYear }: Props) {
+export function YearClient({ summaries, availableYears, initialYear, stepGoal = 10000 }: Props) {
   const [selectedYear, setSelectedYear] = useState(initialYear)
 
   const dataMap = new Map<string, number>()
@@ -84,7 +85,7 @@ export function YearClient({ summaries, availableYears, initialYear }: Props) {
 
   // Stats for selected year
   const yearDays = summaries.filter((s) => s.date.startsWith(`${selectedYear}-`))
-  const goalDays = yearDays.filter((s) => s.steps >= 10000).length
+  const goalDays = yearDays.filter((s) => s.steps >= stepGoal).length
   const totalSteps = yearDays.reduce((a, b) => a + b.steps, 0)
   const avgSteps = yearDays.length > 0 ? Math.round(totalSteps / yearDays.length) : 0
 
@@ -96,7 +97,7 @@ export function YearClient({ summaries, availableYears, initialYear }: Props) {
   for (const day of sortedDays) {
     const d = new Date(day.date + 'T12:00:00')
     const isConsecutive = prevDate && (d.getTime() - prevDate.getTime()) === 86400000
-    if (day.steps >= 10000) {
+    if (day.steps >= stepGoal) {
       currentStreak = isConsecutive ? currentStreak + 1 : 1
       bestStreak = Math.max(bestStreak, currentStreak)
     } else {
@@ -197,7 +198,7 @@ export function YearClient({ summaries, availableYears, initialYear }: Props) {
                       href={hasData ? `/day/${dateStr}` : '#'}
                       className={cn(
                         'w-3 h-3 rounded-sm transition-opacity',
-                        stepColor(steps),
+                        stepColor(steps, stepGoal),
                         hasData ? 'hover:opacity-75 cursor-pointer' : 'cursor-default pointer-events-none',
                       )}
                       title={`${dateStr}${steps !== null ? `: ${steps.toLocaleString()} steps` : ''}`}
@@ -217,7 +218,7 @@ export function YearClient({ summaries, availableYears, initialYear }: Props) {
           <div className="w-3 h-3 rounded-sm bg-green-500/40" />
           <div className="w-3 h-3 rounded-sm bg-green-500/70" />
           <div className="w-3 h-3 rounded-sm bg-green-500" />
-          <span>10k+ steps</span>
+          <span>{stepGoal.toLocaleString()}+ steps</span>
         </div>
       </div>
     </div>

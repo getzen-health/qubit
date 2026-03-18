@@ -245,6 +245,13 @@ class SyncService {
                 }
                 return nil
             }()
+            let distMeters = workout.totalDistance?.doubleValue(for: .meter())
+            let durationSecs = workout.duration
+            // Pace in seconds per km (only meaningful for distance-based workouts)
+            let avgPacePerKm: Double? = {
+                guard let d = distMeters, d > 100, durationSecs > 0 else { return nil }
+                return (durationSecs / d) * 1000
+            }()
             let upload = WorkoutRecordUpload(
                 userId: userId,
                 workoutType: workout.workoutActivityType.name,
@@ -253,10 +260,11 @@ class SyncService {
                 durationMinutes: Int(workout.duration / 60),
                 activeCalories: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
                 totalCalories: nil,
-                distanceMeters: workout.totalDistance?.doubleValue(for: .meter()),
+                distanceMeters: distMeters,
                 avgHeartRate: avgHR,
                 maxHeartRate: maxHR,
                 elevationGainMeters: elevationGain,
+                avgPacePerKm: avgPacePerKm,
                 source: workout.sourceRevision.source.name
             )
             try await supabase.uploadWorkoutRecord(upload)

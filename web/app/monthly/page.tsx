@@ -16,7 +16,7 @@ export default async function MonthlyPage() {
   const oneYearAgo = new Date()
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
 
-  const [{ data: summaries }, { data: workouts }] = await Promise.all([
+  const [{ data: summaries }, { data: workouts }, { data: profile }] = await Promise.all([
     supabase
       .from('daily_summaries')
       .select('date, steps, active_calories, sleep_duration_minutes, resting_heart_rate, avg_hrv, recovery_score')
@@ -29,6 +29,11 @@ export default async function MonthlyPage() {
       .eq('user_id', user.id)
       .gte('start_time', oneYearAgo.toISOString())
       .order('start_time', { ascending: true }),
+    supabase
+      .from('users')
+      .select('step_goal')
+      .eq('id', user.id)
+      .single(),
   ])
 
   return (
@@ -53,6 +58,7 @@ export default async function MonthlyPage() {
         <MonthlyClient
           summaries={summaries ?? []}
           workouts={workouts ?? []}
+          stepGoal={profile?.step_goal ?? 10000}
         />
       </main>
       <BottomNav />
