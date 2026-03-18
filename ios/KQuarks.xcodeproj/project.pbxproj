@@ -53,6 +53,8 @@
 		044 /* HealthIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140 /* HealthIntents.swift */; };
 		045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141 /* AppDelegate.swift */; };
 		046 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142 /* NotificationSettingsView.swift */; };
+		W01 /* KQuarksWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = W11 /* KQuarksWidget.swift */; };
+		W02 /* KQuarksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = W10 /* KQuarksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -104,7 +106,35 @@
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		204 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		301 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		W10 /* KQuarksWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KQuarksWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		W11 /* KQuarksWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KQuarksWidget.swift; sourceTree = "<group>"; };
+		W12 /* KQuarksWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarksWidget.entitlements; sourceTree = "<group>"; };
+		W13 /* KQuarksWidget-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXContainerItemProxy section */
+		W30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 800 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = W60;
+			remoteInfo = KQuarksWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		W50 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				W02 /* KQuarksWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		400 /* Frameworks */ = {
@@ -116,6 +146,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		W40 /* Frameworks (Widget) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -123,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				501 /* KQuarks */,
+				W20 /* KQuarksWidgetExtension */,
 				502 /* Products */,
 				503 /* Frameworks */,
 			);
@@ -149,8 +187,19 @@
 			isa = PBXGroup;
 			children = (
 				100 /* KQuarks.app */,
+				W10 /* KQuarksWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		W20 /* KQuarksWidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				W11 /* KQuarksWidget.swift */,
+				W12 /* KQuarksWidget.entitlements */,
+				W13 /* KQuarksWidget-Info.plist */,
+			);
+			path = KQuarksWidgetExtension;
 			sourceTree = "<group>";
 		};
 		503 /* Frameworks */ = {
@@ -271,6 +320,14 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXTargetDependency section */
+		W31 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = W60 /* KQuarksWidgetExtension */;
+			targetProxy = W30 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXNativeTarget section */
 		600 /* KQuarks */ = {
 			isa = PBXNativeTarget;
@@ -279,10 +336,12 @@
 				601 /* Sources */,
 				400 /* Frameworks */,
 				602 /* Resources */,
+				W50 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				W31 /* PBXTargetDependency */,
 			);
 			name = KQuarks;
 			packageProductDependencies = (
@@ -291,6 +350,23 @@
 			productName = KQuarks;
 			productReference = 100 /* KQuarks.app */;
 			productType = "com.apple.product-type.application";
+		};
+		W60 /* KQuarksWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = W70 /* Build configuration list for PBXNativeTarget "KQuarksWidgetExtension" */;
+			buildPhases = (
+				W61 /* Sources */,
+				W40 /* Frameworks (Widget) */,
+				W62 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KQuarksWidgetExtension;
+			productName = KQuarksWidgetExtension;
+			productReference = W10 /* KQuarksWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -303,6 +379,9 @@
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					600 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					W60 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -324,6 +403,7 @@
 			projectRoot = "";
 			targets = (
 				600 /* KQuarks */,
+				W60 /* KQuarksWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -335,6 +415,13 @@
 			files = (
 				014 /* Assets.xcassets in Resources */,
 				030 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		W62 /* Resources (Widget) */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +474,14 @@
 				044 /* HealthIntents.swift in Sources */,
 				045 /* AppDelegate.swift in Sources */,
 				046 /* NotificationSettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		W61 /* Sources (Widget) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				W01 /* KQuarksWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,6 +679,54 @@
 			};
 			name = Release;
 		};
+		W90 /* Debug (Widget) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "KQuarksWidgetExtension/KQuarksWidget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "KQuarksWidgetExtension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.qxlsz.kquarks.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		W91 /* Release (Widget) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "KQuarksWidgetExtension/KQuarksWidget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "KQuarksWidgetExtension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.qxlsz.kquarks.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -601,6 +744,15 @@
 			buildConfigurations = (
 				900 /* Debug */,
 				901 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		W70 /* Build configuration list for PBXNativeTarget "KQuarksWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				W90 /* Debug (Widget) */,
+				W91 /* Release (Widget) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
