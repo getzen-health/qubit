@@ -8,6 +8,7 @@ import {
   ChevronRight,
   ArrowLeft,
   Download,
+  Sparkles,
 } from 'lucide-react'
 
 export default async function SettingsPage() {
@@ -39,6 +40,12 @@ export default async function SettingsPage() {
       description: 'Configure daily step goal and targets',
       href: '/settings/goals',
       icon: Target,
+    },
+    {
+      title: 'AI Insights',
+      description: 'Claude API key for generating insights',
+      href: '/settings/ai',
+      icon: Sparkles,
     },
   ]
 
