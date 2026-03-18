@@ -80,7 +80,7 @@ struct KQuarksProvider: TimelineProvider {
     }
 }
 
-// MARK: - Small Widget View
+// MARK: - Home Screen: Small Widget
 
 struct SmallWidgetView: View {
     let entry: KQuarksEntry
@@ -120,7 +120,7 @@ struct SmallWidgetView: View {
     }
 }
 
-// MARK: - Medium Widget View
+// MARK: - Home Screen: Medium Widget
 
 struct MediumWidgetView: View {
     let entry: KQuarksEntry
@@ -194,6 +194,88 @@ struct MediumWidgetView: View {
     }
 }
 
+// MARK: - Lock Screen: Circular (step progress gauge)
+
+struct AccessoryCircularView: View {
+    let entry: KQuarksEntry
+
+    private var progress: Double {
+        min(Double(entry.steps) / Double(max(entry.stepGoal, 1)), 1.0)
+    }
+
+    var body: some View {
+        Gauge(value: progress) {
+            Image(systemName: "figure.walk")
+        } currentValueLabel: {
+            Text(entry.steps >= 1000
+                 ? "\(entry.steps / 1000)k"
+                 : "\(entry.steps)")
+                .font(.system(size: 11, weight: .semibold, design: .rounded))
+        }
+        .gaugeStyle(.accessoryCircular)
+        .widgetAccentable()
+        .containerBackground(.clear, for: .widget)
+    }
+}
+
+// MARK: - Lock Screen: Rectangular
+
+struct AccessoryRectangularView: View {
+    let entry: KQuarksEntry
+
+    private var progress: Double {
+        min(Double(entry.steps) / Double(max(entry.stepGoal, 1)), 1.0)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Image(systemName: "figure.walk")
+                    .font(.caption2)
+                    .widgetAccentable()
+                Text("\(entry.steps.formatted()) steps")
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .monospacedDigit()
+            }
+
+            ProgressView(value: progress)
+                .tint(.green)
+                .scaleEffect(x: 1, y: 1.4)
+
+            if entry.sleepHours > 0 {
+                let h = Int(entry.sleepHours)
+                let m = Int((entry.sleepHours - Double(h)) * 60)
+                HStack(spacing: 4) {
+                    Image(systemName: "moon.fill")
+                        .font(.caption2)
+                    Text(m > 0 ? "\(h)h \(m)m" : "\(h)h sleep")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .containerBackground(.clear, for: .widget)
+    }
+}
+
+// MARK: - Lock Screen: Inline
+
+struct AccessoryInlineView: View {
+    let entry: KQuarksEntry
+
+    var body: some View {
+        let stepsText = entry.steps.formatted()
+        if entry.sleepHours > 0 {
+            let h = Int(entry.sleepHours)
+            let m = Int((entry.sleepHours - Double(h)) * 60)
+            let sleepText = m > 0 ? "\(h)h\(m)m" : "\(h)h"
+            Label("\(stepsText) steps · \(sleepText) sleep", systemImage: "figure.walk")
+        } else {
+            Label("\(stepsText) steps", systemImage: "figure.walk")
+        }
+    }
+}
+
 // MARK: - Entry View
 
 struct KQuarksWidgetEntryView: View {
@@ -204,6 +286,14 @@ struct KQuarksWidgetEntryView: View {
         switch family {
         case .systemSmall:
             SmallWidgetView(entry: entry)
+        case .systemMedium:
+            MediumWidgetView(entry: entry)
+        case .accessoryCircular:
+            AccessoryCircularView(entry: entry)
+        case .accessoryRectangular:
+            AccessoryRectangularView(entry: entry)
+        case .accessoryInline:
+            AccessoryInlineView(entry: entry)
         default:
             MediumWidgetView(entry: entry)
         }
@@ -221,7 +311,13 @@ struct KQuarksWidget: Widget {
         }
         .configurationDisplayName("KQuarks")
         .description("Today's steps, recovery, and sleep at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([
+            .systemSmall,
+            .systemMedium,
+            .accessoryCircular,
+            .accessoryRectangular,
+            .accessoryInline,
+        ])
     }
 }
 
