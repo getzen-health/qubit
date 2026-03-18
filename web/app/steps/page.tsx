@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, CalendarDays } from 'lucide-react'
 import { StepsClient } from './steps-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -33,10 +33,17 @@ export default async function StepsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Activity</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/year"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-text-secondary hover:bg-surface-secondary transition-colors"
+          >
+            <CalendarDays className="w-4 h-4" />
+            Year
+          </Link>
         </div>
       </header>
 
