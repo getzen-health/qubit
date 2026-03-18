@@ -213,10 +213,9 @@ struct DashboardListView: View {
                         label: "Resting Heart Rate",
                         value: "\(rhr)",
                         unit: "bpm",
-                        color: .heart
-                    ) {
-                        AnyView(heartDetails(summary: summary))
-                    }
+                        color: .heart,
+                        destination: AnyView(HealthMetricDetailView(dataType: .restingHeartRate))
+                    )
                 }
 
                 // Body Weight
@@ -226,7 +225,8 @@ struct DashboardListView: View {
                         label: "Body Weight",
                         value: String(format: "%.1f", weight),
                         unit: "kg",
-                        color: .hrv
+                        color: .hrv,
+                        destination: AnyView(HealthMetricDetailView(dataType: .weight))
                     )
                 }
             }
@@ -252,7 +252,8 @@ struct DashboardListView: View {
                     unit: "/ \(Int(GoalService.shared.stepsGoal).formatted())",
                     sublabel: "\(Int(Double(summary.steps) / GoalService.shared.stepsGoal * 100))% of goal",
                     trend: viewModel.stepsTrend,
-                    color: .activity
+                    color: .activity,
+                    destination: AnyView(HealthMetricDetailView(dataType: .steps))
                 )
 
                 MetricRowView(
@@ -261,7 +262,8 @@ struct DashboardListView: View {
                     value: "\(Int(summary.activeCalories))",
                     unit: "cal",
                     sublabel: "\(Int(GoalService.shared.activeCaloriesGoal)) cal goal",
-                    color: .strain
+                    color: .strain,
+                    destination: AnyView(HealthMetricDetailView(dataType: .activeCalories))
                 )
 
                 MetricRowView(
@@ -347,18 +349,6 @@ struct DashboardListView: View {
             return "\(h)h \(m)m"
         }
         return "\(m)m"
-    }
-
-    private func heartDetails(summary: TodayHealthSummary) -> some View {
-        VStack(spacing: 8) {
-            if let hrv = summary.hrv {
-                MetricDetailRow(label: "HRV", value: "\(Int(hrv)) ms")
-            } else {
-                Text("No additional heart data available")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
     }
 
     @ViewBuilder

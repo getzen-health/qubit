@@ -10,80 +10,88 @@ struct MetricRowView: View {
     var trend: Int? = nil
     var color: Color = .primary
     var expandContent: (() -> AnyView)? = nil
+    /// When set, the row acts as a NavigationLink to this view.
+    var destination: AnyView? = nil
 
     @State private var isExpanded = false
 
+    private var rowLabel: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(color)
+                .frame(width: 24, height: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+                if let sublabel = sublabel {
+                    Text(sublabel)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(value)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(color)
+                if let unit = unit {
+                    Text(unit)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if let trend = trend {
+                TrendBadge(value: trend)
+            }
+
+            if destination != nil {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            } else if expandContent != nil {
+                Image(systemName: "chevron.down")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .contentShape(Rectangle())
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            Button {
-                if expandContent != nil {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        isExpanded.toggle()
-                    }
+            if let dest = destination {
+                NavigationLink(destination: dest) {
+                    rowLabel
                 }
-            } label: {
-                HStack(spacing: 12) {
-                    // Icon
-                    Image(systemName: icon)
-                        .font(.system(size: 18))
-                        .foregroundStyle(color)
-                        .frame(width: 24, height: 24)
-
-                    // Label and sublabel
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(label)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.primary)
-
-                        if let sublabel = sublabel {
-                            Text(sublabel)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    Spacer()
-
-                    // Value
-                    HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text(value)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(color)
-
-                        if let unit = unit {
-                            Text(unit)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    // Trend indicator
-                    if let trend = trend {
-                        TrendBadge(value: trend)
-                    }
-
-                    // Expand indicator
+                .buttonStyle(.plain)
+            } else {
+                Button {
                     if expandContent != nil {
-                        Image(systemName: "chevron.down")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                            isExpanded.toggle()
+                        }
                     }
+                } label: {
+                    rowLabel
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .contentShape(Rectangle())
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
 
-            // Expanded content
             if isExpanded, let content = expandContent {
                 VStack(spacing: 0) {
                     Divider()
                         .padding(.leading, 52)
-
                     content()
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
