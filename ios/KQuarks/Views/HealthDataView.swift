@@ -95,11 +95,11 @@ struct HealthDataView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: HistoryView()) {
+                            Image(systemName: "calendar")
+                        }
                         NavigationLink(destination: HabitsView()) {
                             Image(systemName: "checklist")
-                        }
-                        NavigationLink(destination: CheckinView()) {
-                            Image(systemName: "face.smiling")
                         }
                         NavigationLink(destination: RecordsView()) {
                             Image(systemName: "trophy")

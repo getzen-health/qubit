@@ -230,6 +230,51 @@ class SupabaseService {
 
     // MARK: - Fetch Data
 
+    func fetchDailySummary(for date: Date) async throws -> DailySummary? {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let dateStr = df.string(from: date)
+        let response: [DailySummary] = try await client
+            .from("daily_summaries")
+            .select()
+            .eq("date", value: dateStr)
+            .limit(1)
+            .execute()
+            .value
+        return response.first
+    }
+
+    func fetchWorkoutRecords(for date: Date) async throws -> [WorkoutRecord] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        return try await client
+            .from("workout_records")
+            .select()
+            .gte("start_time", value: startOfDay.ISO8601Format())
+            .lt("start_time", value: endOfDay.ISO8601Format())
+            .order("start_time", ascending: true)
+            .execute()
+            .value
+    }
+
+    func fetchSleepRecords(for date: Date) async throws -> [SleepRecord] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        // Sleep for "date" means sleep that ended on that date or the morning of
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let noon = Calendar.current.date(byAdding: .hour, value: 12, to: startOfDay)!
+        let previousNoon = Calendar.current.date(byAdding: .day, value: -1, to: noon)!
+        return try await client
+            .from("sleep_records")
+            .select()
+            .gte("end_time", value: previousNoon.ISO8601Format())
+            .lte("end_time", value: noon.ISO8601Format())
+            .gt("duration_minutes", value: 60)
+            .order("start_time", ascending: true)
+            .execute()
+            .value
+    }
+
     func fetchDailySummaries(days: Int = 7) async throws -> [DailySummary] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
