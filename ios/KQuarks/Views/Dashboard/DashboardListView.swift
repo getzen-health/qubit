@@ -194,6 +194,19 @@ struct DashboardListView: View {
                     }
                 }
 
+                // HRV
+                if let hrv = summary.hrv {
+                    MetricRowView(
+                        icon: "waveform.path.ecg",
+                        label: "HRV",
+                        value: "\(Int(hrv))",
+                        unit: "ms",
+                        trend: viewModel.hrvTrend,
+                        color: .hrv,
+                        destination: AnyView(HealthMetricDetailView(dataType: .hrv))
+                    )
+                }
+
                 // Sleep Streak
                 if viewModel.sleepStreak > 0 {
                     MetricRowView(
