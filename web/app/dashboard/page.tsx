@@ -64,19 +64,36 @@ export default async function DashboardPage() {
     }
   }
 
-  // Fetch recent insights
-  const { data: insights } = await supabase
-    .from('health_insights')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(5)
+  // Fetch recent workouts and sleep records for AI insights
+  const [{ data: recentWorkouts }, { data: recentSleepRecords }, { data: insights }] = await Promise.all([
+    supabase
+      .from('workout_records')
+      .select('workout_type, duration_minutes, active_calories, avg_heart_rate')
+      .eq('user_id', user.id)
+      .gte('start_time', sevenDaysAgo.toISOString())
+      .order('start_time', { ascending: false })
+      .limit(7),
+    supabase
+      .from('sleep_records')
+      .select('duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
+      .eq('user_id', user.id)
+      .order('start_time', { ascending: false })
+      .limit(7),
+    supabase
+      .from('health_insights')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(5),
+  ])
 
   return (
     <DashboardStream
       user={user}
       profile={profile}
       summaries={summaries ?? []}
+      recentWorkouts={recentWorkouts ?? []}
+      recentSleepRecords={recentSleepRecords ?? []}
       insights={insights ?? []}
       weeklyWorkoutCount={weeklyWorkoutCount ?? 0}
       workoutStreak={workoutStreak}

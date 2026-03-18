@@ -70,6 +70,19 @@ interface DashboardStreamProps {
     strain_score?: number
     weight_kg?: number
   }>
+  recentWorkouts: Array<{
+    workout_type: string
+    duration_minutes: number
+    active_calories?: number | null
+    avg_heart_rate?: number | null
+  }>
+  recentSleepRecords: Array<{
+    duration_minutes: number
+    deep_minutes?: number | null
+    rem_minutes?: number | null
+    core_minutes?: number | null
+    awake_minutes?: number | null
+  }>
   insights: Array<{
     id: string
     title: string
@@ -86,6 +99,8 @@ export function DashboardStream({
   user,
   profile,
   summaries,
+  recentWorkouts,
+  recentSleepRecords,
   insights,
   weeklyWorkoutCount,
   workoutStreak,
@@ -140,8 +155,19 @@ export function DashboardStream({
           avgHrv: s.avg_hrv ?? null,
           sleepDurationMinutes: s.sleep_duration_minutes ?? null,
         })),
-        recentWorkouts: [],
-        recentSleep: [],
+        recentWorkouts: recentWorkouts.map((w) => ({
+          workoutType: w.workout_type,
+          durationMinutes: w.duration_minutes ?? 0,
+          activeCalories: w.active_calories ?? null,
+          avgHeartRate: w.avg_heart_rate ?? null,
+        })),
+        recentSleep: recentSleepRecords.map((s) => ({
+          durationMinutes: s.duration_minutes ?? 0,
+          deepMinutes: s.deep_minutes ?? 0,
+          remMinutes: s.rem_minutes ?? 0,
+          coreMinutes: s.core_minutes ?? 0,
+          awakeMinutes: s.awake_minutes ?? 0,
+        })),
       }
       const { error } = await supabase.functions.invoke('generate-insights', {
         body: { healthContext, userApiKey },
