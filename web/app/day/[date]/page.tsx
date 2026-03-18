@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell } from 'lucide-react'
+import { BottomNav } from '@/components/bottom-nav'
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params
@@ -61,7 +62,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: summary }, { data: workouts }] = await Promise.all([
+  const [{ data: summary }, { data: workouts }, { data: sleepRecords }] = await Promise.all([
     supabase
       .from('daily_summaries')
       .select('date, steps, active_calories, distance_meters, floors_climbed, sleep_duration_minutes, resting_heart_rate, avg_hrv, recovery_score, strain_score, weight_kg')
@@ -74,6 +75,13 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
       .eq('user_id', user.id)
       .gte('start_time', `${date}T00:00:00`)
       .lt('start_time', `${date}T23:59:59`)
+      .order('start_time', { ascending: true }),
+    supabase
+      .from('sleep_records')
+      .select('id, start_time, end_time, duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
+      .eq('user_id', user.id)
+      .gte('start_time', `${date}T00:00:00`)
+      .lt('end_time', `${date}T23:59:59`)
       .order('start_time', { ascending: true }),
   ])
 
@@ -99,7 +107,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-6 pb-24 space-y-6">
         {/* Activity */}
         <section>
           <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Activity</h2>
@@ -230,6 +238,41 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
           </section>
         )}
 
+        {/* Sleep stages detail */}
+        {sleepRecords && sleepRecords.length > 0 && sleepRecords.some((r) => (r.deep_minutes ?? 0) + (r.rem_minutes ?? 0) + (r.core_minutes ?? 0) > 0) && (
+          <section>
+            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Sleep Stages</h2>
+            {sleepRecords.map((r) => {
+              const hasStages = (r.deep_minutes ?? 0) + (r.rem_minutes ?? 0) + (r.core_minutes ?? 0) > 0
+              if (!hasStages) return null
+              const total = r.duration_minutes + (r.awake_minutes ?? 0)
+              const pct = (min: number) => `${Math.round((min / Math.max(total, 1)) * 100)}%`
+              const fmtMin = (m: number) => { const h = Math.floor(m / 60); const mn = m % 60; return h > 0 ? `${h}h ${mn}m` : `${mn}m` }
+              return (
+                <div key={r.id} className="bg-surface rounded-xl border border-border p-4 space-y-3">
+                  <p className="text-xs text-text-secondary">
+                    {new Date(r.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                    {' – '}
+                    {new Date(r.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                  </p>
+                  <div className="flex h-3 rounded-full overflow-hidden gap-0.5">
+                    {(r.deep_minutes ?? 0) > 0 && <div className="bg-blue-500" style={{ width: pct(r.deep_minutes!) }} />}
+                    {(r.rem_minutes ?? 0) > 0 && <div className="bg-purple-500" style={{ width: pct(r.rem_minutes!) }} />}
+                    {(r.core_minutes ?? 0) > 0 && <div className="bg-blue-300" style={{ width: pct(r.core_minutes!) }} />}
+                    {(r.awake_minutes ?? 0) > 0 && <div className="bg-orange-400 rounded-r-full" style={{ width: pct(r.awake_minutes!) }} />}
+                  </div>
+                  <div className="flex flex-wrap gap-3 text-xs text-text-secondary">
+                    {(r.deep_minutes ?? 0) > 0 && <span><span className="text-blue-400">●</span> Deep {fmtMin(r.deep_minutes!)}</span>}
+                    {(r.rem_minutes ?? 0) > 0 && <span><span className="text-purple-400">●</span> REM {fmtMin(r.rem_minutes!)}</span>}
+                    {(r.core_minutes ?? 0) > 0 && <span><span className="text-blue-300">●</span> Light {fmtMin(r.core_minutes!)}</span>}
+                    {(r.awake_minutes ?? 0) > 0 && <span><span className="text-orange-400">●</span> Awake {fmtMin(r.awake_minutes!)}</span>}
+                  </div>
+                </div>
+              )
+            })}
+          </section>
+        )}
+
         {/* No data fallback */}
         {summary.steps === 0 && !workouts?.length && (
           <div className="text-center py-12 text-text-secondary">
@@ -238,6 +281,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   )
 }
