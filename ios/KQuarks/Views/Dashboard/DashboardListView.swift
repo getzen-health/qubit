@@ -262,6 +262,17 @@ struct DashboardListView: View {
                         color: .hrv
                     )
                 }
+
+                if viewModel.currentStreak > 0 {
+                    MetricRowView(
+                        icon: "rosette",
+                        label: "Step Streak",
+                        value: "\(viewModel.currentStreak)",
+                        unit: viewModel.currentStreak == 1 ? "day" : "days",
+                        sublabel: "consecutive days at goal",
+                        color: .orange
+                    )
+                }
             }
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -366,6 +377,7 @@ class DashboardListViewModel {
     var strainTrend: Int? = nil
     var stepsTrend: Int? = nil
     var hrvTrend: Int? = nil
+    var currentStreak: Int = 0
     var latestSleepContext: AIInsightsService.SleepContext? = nil
 
     private let healthKit = HealthKitService.shared
@@ -484,6 +496,21 @@ class DashboardListViewModel {
                         hrvTrend = Int(((todayHrv - avgHrv) / avgHrv) * 100)
                     }
                 }
+            }
+
+            // Compute step goal streak (60 days, newest first)
+            let streakData = try await healthKit.fetchWeekSummaries(days: 60)
+            let stepGoal = GoalService.shared.stepsGoal
+            var streak = 0
+            for day in streakData.dropFirst() { // skip today — still accumulating
+                if Double(day.steps) >= stepGoal {
+                    streak += 1
+                } else {
+                    break
+                }
+            }
+            await MainActor.run {
+                currentStreak = streak
             }
         } catch {
             // Trends are non-critical, silently fail
