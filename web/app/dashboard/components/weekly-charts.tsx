@@ -25,10 +25,11 @@ interface WeeklyChartsProps {
     strain_score?: number
   }>
   stepGoal?: number
+  calGoal?: number
   weightData?: Array<{ date: string; weight_kg: number }>
 }
 
-export function WeeklyCharts({ summaries, stepGoal = 10000, weightData }: WeeklyChartsProps) {
+export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weightData }: WeeklyChartsProps) {
   // Reverse to ascending order (oldest → newest left → right)
   // Append T00:00:00 to force local-time parsing and avoid UTC day-shift
   const chartData = [...summaries].reverse().map((s) => ({
@@ -110,6 +111,12 @@ export function WeeklyCharts({ summaries, stepGoal = 10000, weightData }: Weekly
               formatter={(value: number) => [`${value} cal`, 'Active Calories']}
             />
             <Bar dataKey="activeCalories" fill="#f97316" radius={[3, 3, 0, 0]} />
+            <ReferenceLine
+              y={calGoal}
+              stroke="rgba(255,255,255,0.25)"
+              strokeDasharray="4 3"
+              label={{ value: `${calGoal} cal goal`, position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

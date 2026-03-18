@@ -451,6 +451,7 @@ export function DashboardStream({
           <WeeklyCharts
             summaries={summaries.slice(0, 7)}
             stepGoal={stepGoal}
+            calGoal={calGoal}
             weightData={summaries
               .filter((s) => s.weight_kg != null)
               .map((s) => ({ date: s.date, weight_kg: s.weight_kg! }))}
