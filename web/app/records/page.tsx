@@ -132,6 +132,27 @@ export default async function RecordsPage() {
       .eq('user_id', user.id),
   ])
 
+  // Fetch best strain and workout totals in parallel
+  const [{ data: bestStrain }, { data: workoutTotals }, { count: totalWorkouts }] = await Promise.all([
+    supabase
+      .from('daily_summaries')
+      .select('date, strain_score')
+      .eq('user_id', user.id)
+      .not('strain_score', 'is', null)
+      .gt('strain_score', 0)
+      .order('strain_score', { ascending: false })
+      .limit(1)
+      .single(),
+    supabase
+      .from('workout_records')
+      .select('active_calories, distance_meters')
+      .eq('user_id', user.id),
+    supabase
+      .from('workout_records')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id),
+  ])
+
   // Compute lifetime totals
   const totals = (totalStats ?? []).reduce(
     (acc, row) => ({
@@ -141,6 +162,11 @@ export default async function RecordsPage() {
     }),
     { steps: 0, calories: 0, distanceKm: 0 }
   )
+
+  const workoutTotalDistance = (workoutTotals ?? []).reduce(
+    (sum, w) => sum + (w.distance_meters ?? 0),
+    0
+  ) / 1000
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,7 +190,7 @@ export default async function RecordsPage() {
         {/* Lifetime Totals */}
         <section>
           <h2 className="text-sm font-semibold text-text-secondary mb-3 uppercase tracking-wide">Lifetime Totals</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <RecordCard
               label="Total Steps"
               value={Math.round(totals.steps).toLocaleString()}
@@ -174,8 +200,13 @@ export default async function RecordsPage() {
               value={`${Math.round(totals.calories).toLocaleString()} cal`}
             />
             <RecordCard
-              label="Distance"
+              label="Distance Walked/Run"
               value={`${totals.distanceKm.toFixed(0)} km`}
+            />
+            <RecordCard
+              label="Total Workouts"
+              value={(totalWorkouts ?? 0).toString()}
+              sub={workoutTotalDistance > 0 ? `${workoutTotalDistance.toFixed(0)} km total` : undefined}
             />
           </div>
         </section>
@@ -203,6 +234,13 @@ export default async function RecordsPage() {
               date={bestRecovery ? formatDate(bestRecovery.date) : undefined}
               empty={!bestRecovery}
             />
+            {bestStrain && (
+              <RecordCard
+                label="Peak Strain"
+                value={`${bestStrain.strain_score?.toFixed(1)}/21`}
+                date={formatDate(bestStrain.date)}
+              />
+            )}
             <RecordCard
               label="Longest Sleep"
               value={bestSleep ? formatDuration(bestSleep.sleep_duration_minutes!) : '—'}
