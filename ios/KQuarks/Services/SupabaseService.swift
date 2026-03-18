@@ -459,6 +459,33 @@ class SupabaseService {
         return elapsed
     }
 
+    // MARK: - Daily Check-ins
+
+    func logCheckin(energy: Int?, mood: Int?, stress: Int?, notes: String?) async throws {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let userId = session.user.id.uuidString
+
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+
+        struct CheckinPayload: Encodable {
+            let user_id: String
+            let date: String
+            let energy: Int?
+            let mood: Int?
+            let stress: Int?
+            let notes: String?
+        }
+
+        try await client.from("daily_checkins")
+            .upsert(
+                CheckinPayload(user_id: userId, date: today, energy: energy, mood: mood, stress: stress, notes: notes),
+                onConflict: "user_id,date"
+            )
+            .execute()
+    }
+
     // MARK: - AI Insights
 
     func deleteAllUserData() async throws {

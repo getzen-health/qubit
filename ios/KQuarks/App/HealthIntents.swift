@@ -285,6 +285,41 @@ struct EndFastIntent: AppIntent {
     }
 }
 
+struct LogCheckinIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log Daily Check-in"
+    static var description = IntentDescription("Log your energy, mood, and stress levels in KQuarks.")
+
+    @Parameter(title: "Energy (1-5)", description: "Your energy level from 1 (very low) to 5 (great).", default: 3)
+    var energy: Int
+
+    @Parameter(title: "Mood (1-5)", description: "Your mood from 1 (very low) to 5 (excellent).", default: 3)
+    var mood: Int
+
+    @Parameter(title: "Stress (1-5)", description: "Your stress level from 1 (none) to 5 (very high).", default: 2)
+    var stress: Int
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log check-in: energy \(\.$energy), mood \(\.$mood), stress \(\.$stress)")
+    }
+
+    func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: false,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        let e = max(1, min(5, energy))
+        let m = max(1, min(5, mood))
+        let s = max(1, min(5, stress))
+        try await SupabaseService.shared.logCheckin(energy: e, mood: m, stress: s, notes: nil)
+        return .result(
+            value: true,
+            dialog: IntentDialog(stringLiteral: "Check-in logged. Energy \(e)/5, mood \(m)/5, stress \(s)/5.")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -398,6 +433,16 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "End Fast",
             systemImageName: "timer.circle.fill"
+        )
+        AppShortcut(
+            intent: LogCheckinIntent(),
+            phrases: [
+                "Log my check-in in \(.applicationName)",
+                "Daily check-in in \(.applicationName)",
+                "Log how I feel in \(.applicationName)"
+            ],
+            shortTitle: "Daily Check-in",
+            systemImageName: "checklist"
         )
     }
 }
