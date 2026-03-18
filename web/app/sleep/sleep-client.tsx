@@ -34,6 +34,45 @@ function stageWidth(minutes: number, total: number) {
   return `${Math.round((minutes / Math.max(total, 1)) * 100)}%`
 }
 
+function sleepQualityScore(record: SleepRecord, goalMinutes: number): { score: number; grade: string; color: string } | null {
+  const total = record.duration_minutes
+  if (total <= 0) return null
+
+  // Duration: up to 40 pts — full points at goal, partial below
+  const durPts = Math.min(40, Math.round((total / Math.max(goalMinutes, 1)) * 40))
+
+  // Only score stages if we have stage data
+  const hasS = (record.deep_minutes ?? 0) + (record.rem_minutes ?? 0) + (record.core_minutes ?? 0) > 0
+  if (!hasS) {
+    // Score only on duration when no stage data
+    const score = Math.round((durPts / 40) * 100)
+    return scoreToGrade(score)
+  }
+
+  // Deep: 25 pts — ideal is 15–20% of total
+  const deepPct = (record.deep_minutes ?? 0) / total
+  const deepPts = deepPct >= 0.15 ? 25 : Math.round((deepPct / 0.15) * 25)
+
+  // REM: 25 pts — ideal is 20–25% of total
+  const remPct = (record.rem_minutes ?? 0) / total
+  const remPts = remPct >= 0.20 ? 25 : Math.round((remPct / 0.20) * 25)
+
+  // Awake: 10 pts — ideal < 5% awake
+  const awakePct = (record.awake_minutes ?? 0) / (total + (record.awake_minutes ?? 0))
+  const awakePts = awakePct <= 0.05 ? 10 : awakePct >= 0.20 ? 0 : Math.round(10 - ((awakePct - 0.05) / 0.15) * 10)
+
+  const score = Math.min(100, durPts + deepPts + remPts + awakePts)
+  return scoreToGrade(score)
+}
+
+function scoreToGrade(score: number): { score: number; grade: string; color: string } {
+  if (score >= 85) return { score, grade: 'A', color: 'text-green-400 bg-green-500/10 border-green-500/20' }
+  if (score >= 70) return { score, grade: 'B', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' }
+  if (score >= 55) return { score, grade: 'C', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' }
+  if (score >= 40) return { score, grade: 'D', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' }
+  return { score, grade: 'F', color: 'text-red-400 bg-red-500/10 border-red-500/20' }
+}
+
 interface SleepPageClientProps {
   records: SleepRecord[]
   sleepGoalHours?: number
@@ -209,6 +248,7 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
           const dayDate = night.toISOString().slice(0, 10)
           const totalWithAwake = record.duration_minutes + (record.awake_minutes ?? 0)
           const showStages = hasStages && ((record.deep_minutes ?? 0) + (record.rem_minutes ?? 0) + (record.core_minutes ?? 0)) > 0
+          const quality = sleepQualityScore(record, sleepGoalHours * 60)
 
           return (
             <Link key={record.id} href={`/day/${dayDate}`} className="bg-surface rounded-xl border border-border p-4 space-y-3 block hover:bg-surface-secondary transition-colors">
@@ -223,9 +263,16 @@ export function SleepPageClient({ records, sleepGoalHours = 8 }: SleepPageClient
                     {new Date(record.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
                   </p>
                 </div>
-                <p className="text-xl font-bold text-blue-400">
-                  {formatDuration(record.duration_minutes)}
-                </p>
+                <div className="flex items-center gap-2">
+                  {quality && (
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${quality.color}`} title={`Sleep score: ${quality.score}/100`}>
+                      {quality.grade}
+                    </span>
+                  )}
+                  <p className="text-xl font-bold text-blue-400">
+                    {formatDuration(record.duration_minutes)}
+                  </p>
+                </div>
               </div>
 
               {showStages && (
