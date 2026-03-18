@@ -65,7 +65,7 @@ export default async function DashboardPage() {
   }
 
   // Fetch recent workouts and sleep records for AI insights
-  const [{ data: recentWorkouts }, { data: recentSleepRecords }, { data: insights }] = await Promise.all([
+  const [{ data: recentWorkouts }, { data: recentSleepRecords }, { data: insights }, { data: devices }] = await Promise.all([
     supabase
       .from('workout_records')
       .select('workout_type, duration_minutes, active_calories, avg_heart_rate')
@@ -85,7 +85,15 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(5),
+    supabase
+      .from('user_devices')
+      .select('last_sync_at, device_name')
+      .eq('user_id', user.id)
+      .order('last_sync_at', { ascending: false })
+      .limit(1),
   ])
+
+  const lastSyncAt = devices && devices.length > 0 ? devices[0].last_sync_at : null
 
   return (
     <DashboardStream
@@ -100,6 +108,7 @@ export default async function DashboardPage() {
       dbStepGoal={profile?.step_goal ?? null}
       dbCalGoal={profile?.calorie_goal ?? null}
       dbSleepGoalMinutes={profile?.sleep_goal_minutes ?? null}
+      lastSyncAt={lastSyncAt}
     />
   )
 }

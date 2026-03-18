@@ -97,6 +97,7 @@ interface DashboardStreamProps {
   dbStepGoal?: number | null
   dbCalGoal?: number | null
   dbSleepGoalMinutes?: number | null
+  lastSyncAt?: string | null
 }
 
 export function DashboardStream({
@@ -111,6 +112,7 @@ export function DashboardStream({
   dbStepGoal,
   dbCalGoal,
   dbSleepGoalMinutes,
+  lastSyncAt,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -362,14 +364,31 @@ export function DashboardStream({
                 day: 'numeric',
               })}
             </p>
-            {summaries.length > 0 && (() => {
-              const lastDate = new Date(summaries[0].date + 'T00:00:00')
-              const diffDays = Math.floor((Date.now() - lastDate.getTime()) / 86400000)
-              return (
-                <p className="text-xs text-text-secondary opacity-60">
-                  {diffDays === 0 ? 'Synced today' : diffDays === 1 ? 'Synced yesterday' : `Synced ${diffDays} days ago`}
-                </p>
-              )
+            {(() => {
+              if (lastSyncAt) {
+                const syncDate = new Date(lastSyncAt)
+                const diffMs = Date.now() - syncDate.getTime()
+                const diffMin = Math.floor(diffMs / 60000)
+                const diffHours = Math.floor(diffMs / 3600000)
+                const diffDays = Math.floor(diffMs / 86400000)
+                let label: string
+                if (diffMin < 2) label = 'Synced just now'
+                else if (diffMin < 60) label = `Synced ${diffMin}m ago`
+                else if (diffHours < 24) label = `Synced ${diffHours}h ago`
+                else if (diffDays === 1) label = 'Synced yesterday'
+                else label = `Synced ${diffDays} days ago`
+                return <p className="text-xs text-text-secondary opacity-60">{label}</p>
+              }
+              if (summaries.length > 0) {
+                const lastDate = new Date(summaries[0].date + 'T00:00:00')
+                const diffDays = Math.floor((Date.now() - lastDate.getTime()) / 86400000)
+                return (
+                  <p className="text-xs text-text-secondary opacity-60">
+                    {diffDays === 0 ? 'Data from today' : diffDays === 1 ? 'Data from yesterday' : `Data from ${diffDays} days ago`}
+                  </p>
+                )
+              }
+              return null
             })()}
           </div>
           <div className="flex items-center gap-2">

@@ -1,5 +1,6 @@
 import Foundation
 import AuthenticationServices
+import UIKit
 import Supabase
 
 @Observable
@@ -112,6 +113,41 @@ class SupabaseService {
             .from("users")
             .update(["display_name": displayName])
             .eq("id", value: userId.uuidString)
+            .execute()
+    }
+
+    func updateLastSyncAt() async {
+        guard let userId = currentSession?.user.id else { return }
+        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
+        let deviceName = UIDevice.current.name
+
+        struct DeviceUpsert: Encodable {
+            let userId: UUID
+            let deviceName: String
+            let deviceType: String
+            let deviceId: String
+            let lastSyncAt: Date
+            enum CodingKeys: String, CodingKey {
+                case userId = "user_id"
+                case deviceName = "device_name"
+                case deviceType = "device_type"
+                case deviceId = "device_id"
+                case lastSyncAt = "last_sync_at"
+            }
+        }
+
+        try? await client
+            .from("user_devices")
+            .upsert(
+                DeviceUpsert(
+                    userId: userId,
+                    deviceName: deviceName,
+                    deviceType: "iphone",
+                    deviceId: deviceId,
+                    lastSyncAt: Date()
+                ),
+                onConflict: "user_id,device_id"
+            )
             .execute()
     }
 
