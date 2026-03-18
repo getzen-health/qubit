@@ -1,0 +1,41 @@
+{
+  "name": "KQuarks Health",
+  "short_name": "KQuarks",
+  "description": "AI-powered health tracking and insights synced from Apple Health.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "categories": ["health", "fitness"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard"
+    },
+    {
+      "name": "Activity",
+      "short_name": "Steps",
+      "url": "/steps"
+    },
+    {
+      "name": "Sleep",
+      "short_name": "Sleep",
+      "url": "/sleep"
+    },
+    {
+      "name": "Workouts",
+      "short_name": "Workouts",
+      "url": "/workouts"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="115" fill="#7c3aed"/>
+  <g transform="translate(256,256)" fill="none" stroke="white" stroke-width="18" stroke-linecap="round">
+    <!-- Atom nucleus -->
+    <circle cx="0" cy="0" r="22" fill="white" stroke="none"/>
+    <!-- Orbit 1 -->
+    <ellipse rx="140" ry="52" transform="rotate(0)"/>
+    <!-- Orbit 2 -->
+    <ellipse rx="140" ry="52" transform="rotate(60)"/>
+    <!-- Orbit 3 -->
+    <ellipse rx="140" ry="52" transform="rotate(120)"/>
+  </g>
+</svg>
