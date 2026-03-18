@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
 
 const DEFAULT_STEP_GOAL = 10000
+const DEFAULT_CAL_GOAL = 500
 
 interface DashboardStreamProps {
   user: {
@@ -86,11 +87,17 @@ export function DashboardStream({
   const supabase = createClient()
 
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
+  const [calGoal, setCalGoal] = useState(DEFAULT_CAL_GOAL)
   useEffect(() => {
-    const stored = localStorage.getItem('kquarks_step_goal')
-    if (stored) {
-      const n = parseInt(stored, 10)
+    const storedSteps = localStorage.getItem('kquarks_step_goal')
+    if (storedSteps) {
+      const n = parseInt(storedSteps, 10)
       if (!isNaN(n) && n > 0) setStepGoal(n)
+    }
+    const storedCal = localStorage.getItem('kquarks_calorie_goal')
+    if (storedCal) {
+      const n = parseInt(storedCal, 10)
+      if (!isNaN(n) && n > 0) setCalGoal(n)
     }
   }, [])
 
@@ -380,7 +387,7 @@ export function DashboardStream({
               label="Active Calories"
               value={metrics.calories}
               unit="cal"
-              sublabel="500 cal goal"
+              sublabel={`${calGoal} cal goal`}
               color="strain"
             />
             {stepStreak > 0 && (
