@@ -971,6 +971,7 @@ export function DashboardStream({
                 { href: '/recovery', label: 'Recovery & HRV' },
                 { href: '/vitals', label: 'Vitals' },
                 { href: '/bloodpressure', label: 'Blood Pressure' },
+                { href: '/glucose', label: 'Blood Glucose' },
                 { href: '/vo2max', label: 'VO₂ Max' },
                 { href: '/cardiac', label: 'Cardiac Events' },
               ],

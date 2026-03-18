@@ -449,6 +449,22 @@ class SyncService {
             }
         }
 
+        // Blood glucose
+        let glucoseSamples = try await healthKit.fetchSamples(for: .bloodGlucose, from: startDate, to: now)
+        for sample in glucoseSamples {
+            // HealthKit stores glucose in mmol/L; convert for display (store as mg/dL)
+            let mgDL = sample.quantity.doubleValue(for: HKUnit(from: "mg/dL"))
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "blood_glucose",
+                value: mgDL,
+                unit: "mg/dL",
+                source: sample.sourceRevision.source.name,
+                startTime: sample.startDate,
+                endTime: sample.endDate
+            ))
+        }
+
         // Fetch cardiac events (AFib, high HR, low HR) from Apple Watch
         let cardiacEvents: [(HKCategoryTypeIdentifier, String)] = [
             (.irregularHeartRhythmEvent, "afib_event"),
