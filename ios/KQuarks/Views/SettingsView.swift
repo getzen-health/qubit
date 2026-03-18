@@ -173,8 +173,13 @@ struct SettingsView: View {
 // MARK: - AI Settings View
 
 struct AISettingsView: View {
-    @State private var selectedProvider: AIProvider = .claude
-    @State private var customApiKey = ""
+    @State private var selectedProvider: AIProvider = {
+        let saved = UserDefaults.standard.string(forKey: "ai_provider") ?? "claude"
+        return AIProvider(rawValue: saved) ?? .claude
+    }()
+    @State private var apiKey: String = ""
+    @State private var showSavedAlert = false
+    @State private var hasExistingKey = false
 
     var body: some View {
         List {
@@ -185,31 +190,101 @@ struct AISettingsView: View {
                     }
                 }
             } footer: {
-                Text("Select which AI provider to use for generating health insights.")
+                Text("Claude is the default AI provider. Your health data is sent securely to generate personalized insights.")
             }
 
-            if selectedProvider == .openai || selectedProvider == .custom {
-                Section("API Key") {
-                    SecureField("Enter API Key", text: $customApiKey)
+            Section {
+                if selectedProvider == .claude {
+                    SecureField(hasExistingKey ? "••••••••••••••••" : "Enter Claude API Key (optional)", text: $apiKey)
+                        .textContentType(.password)
+                        .autocorrectionDisabled()
+
+                    if hasExistingKey {
+                        Button("Remove Saved Key", role: .destructive) {
+                            KeychainHelper.delete(key: "claude_api_key")
+                            apiKey = ""
+                            hasExistingKey = false
+                        }
+                    }
+                } else {
+                    SecureField("Enter API Key", text: $apiKey)
+                        .textContentType(.password)
+                        .autocorrectionDisabled()
+                }
+            } header: {
+                Text("API Key")
+            } footer: {
+                if selectedProvider == .claude {
+                    Text("Optional. If not provided, the app's built-in key will be used. Your key is stored securely in the iOS Keychain and never leaves your device except to authenticate API calls.")
+                } else {
+                    Text("Required for this provider. Your key is stored securely in the iOS Keychain.")
                 }
             }
 
             Section {
                 Button("Save") {
-                    // TODO: Save to Supabase
+                    saveSettings()
                 }
-                .disabled(needsApiKey && customApiKey.isEmpty)
+                .disabled(needsApiKey && apiKey.isEmpty && !hasExistingKey)
+            }
+
+            Section {
+                Button("Generate Insights Now") {
+                    Task {
+                        _ = await AIInsightsService.shared.generateInsights()
+                    }
+                }
+                .disabled(AIInsightsService.shared.isGenerating)
+
+                if AIInsightsService.shared.isGenerating {
+                    HStack {
+                        ProgressView()
+                        Text("Analyzing your health data...")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                if let error = AIInsightsService.shared.lastError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
             }
         }
         .navigationTitle("AI Provider")
+        .alert("Settings Saved", isPresented: $showSavedAlert) {
+            Button("OK") { }
+        }
+        .onAppear {
+            hasExistingKey = KeychainHelper.load(key: "claude_api_key") != nil
+        }
     }
 
     private var needsApiKey: Bool {
-        selectedProvider == .openai || selectedProvider == .custom
+        selectedProvider != .claude
+    }
+
+    private func saveSettings() {
+        UserDefaults.standard.set(selectedProvider.rawValue, forKey: "ai_provider")
+
+        if !apiKey.isEmpty {
+            let keyName: String
+            switch selectedProvider {
+            case .claude: keyName = "claude_api_key"
+            case .openai: keyName = "openai_api_key"
+            case .custom: keyName = "custom_api_key"
+            }
+            try? KeychainHelper.save(key: keyName, value: apiKey)
+            hasExistingKey = true
+            apiKey = ""
+        }
+
+        showSavedAlert = true
     }
 }
 
-enum AIProvider: CaseIterable {
+enum AIProvider: String, CaseIterable {
     case claude
     case openai
     case custom
