@@ -295,6 +295,28 @@ class SyncService {
             ))
         }
 
+        // Fetch time in daylight (iPhone ambient light sensor, iOS 17+)
+        if #available(iOS 17.0, *) {
+            let daylightSamples = try await healthKit.fetchSamples(
+                for: .timeInDaylight,
+                from: startDate,
+                to: now,
+                limit: 100
+            )
+            for sample in daylightSamples {
+                let minutes = sample.quantity.doubleValue(for: .minute())
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: "time_in_daylight",
+                    value: minutes,
+                    unit: "minutes",
+                    source: sample.sourceRevision.source.name,
+                    startTime: sample.startDate,
+                    endTime: sample.endDate
+                ))
+            }
+        }
+
         // Fetch mobility metrics (iPhone walking health, iOS 14+)
         let mobilityTypes: [(HKQuantityTypeIdentifier, String, HKUnit, String)] = [
             (.walkingSpeed, "walking_speed", HKUnit.meter().unitDivided(by: .second()), "m/s"),

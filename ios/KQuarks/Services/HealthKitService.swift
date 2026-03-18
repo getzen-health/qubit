@@ -55,6 +55,11 @@ class HealthKitService {
         types.insert(HKQuantityType(.headphoneAudioExposure))
         types.insert(HKQuantityType(.environmentalAudioExposure))
 
+        // Daylight exposure (iPhone ambient light sensor, iOS 17+)
+        if #available(iOS 17.0, *) {
+            types.insert(HKQuantityType(.timeInDaylight))
+        }
+
         // Mobility (iPhone walking metrics, iOS 14+)
         types.insert(HKQuantityType(.walkingSpeed))
         types.insert(HKQuantityType(.walkingStepLength))

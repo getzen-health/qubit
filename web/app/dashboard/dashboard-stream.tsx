@@ -961,6 +961,7 @@ export function DashboardStream({
               { href: '/temperature', label: 'Wrist Temp' },
               { href: '/hearing', label: 'Hearing Health' },
               { href: '/mobility', label: 'Mobility' },
+              { href: '/daylight', label: 'Daylight' },
               { href: '/vitals', label: 'Vitals' },
               { href: '/vo2max', label: 'VO₂ Max' },
               { href: '/heartrate', label: 'Heart Rate' },
