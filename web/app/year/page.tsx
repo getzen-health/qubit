@@ -12,28 +12,38 @@ export default async function YearPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: summaries }, { data: profile }] = await Promise.all([
+  const [{ data: summaries }, { data: workouts }, { data: profile }] = await Promise.all([
     supabase
       .from('daily_summaries')
-      .select('date, steps')
+      .select('date, steps, active_calories, sleep_duration_minutes')
       .eq('user_id', user.id)
-      .gt('steps', 0)
       .order('date', { ascending: false }),
     supabase
+      .from('workout_records')
+      .select('start_time')
+      .eq('user_id', user.id),
+    supabase
       .from('users')
-      .select('step_goal')
+      .select('step_goal, calorie_goal, sleep_goal_minutes')
       .eq('id', user.id)
       .single(),
   ])
 
   const rows = summaries ?? []
   const stepGoal = profile?.step_goal ?? 10000
+  const calorieGoal = profile?.calorie_goal ?? 500
+  const sleepGoalMinutes = profile?.sleep_goal_minutes ?? 480
+
+  // Workout dates set (YYYY-MM-DD)
+  const workoutDates = (workouts ?? []).map((w) => w.start_time.slice(0, 10))
 
   // Find available years from data
   const yearSet = new Set(rows.map((r) => parseInt(r.date.slice(0, 4), 10)))
   const currentYear = new Date().getFullYear()
   yearSet.add(currentYear)
   const availableYears = Array.from(yearSet).sort((a, b) => b - a)
+
+  const totalDays = rows.filter((r) => r.steps > 0 || r.active_calories > 0 || (r.sleep_duration_minutes ?? 0) > 0).length
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,7 +59,7 @@ export default async function YearPage() {
           <div>
             <h1 className="text-xl font-bold text-text-primary">Year View</h1>
             <p className="text-sm text-text-secondary">
-              {rows.length > 0 ? `${rows.length} days tracked` : 'No data yet'}
+              {totalDays > 0 ? `${totalDays} days tracked` : 'No data yet'}
             </p>
           </div>
         </div>
@@ -65,9 +75,12 @@ export default async function YearPage() {
         ) : (
           <YearClient
             summaries={rows}
+            workoutDates={workoutDates}
             availableYears={availableYears}
             initialYear={currentYear}
             stepGoal={stepGoal}
+            calorieGoal={calorieGoal}
+            sleepGoalMinutes={sleepGoalMinutes}
           />
         )}
       </main>
