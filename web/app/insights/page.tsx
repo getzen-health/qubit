@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles } from 'lucide-react'
+import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -35,22 +35,114 @@ const PRIORITY_BADGE: Record<string, string> = {
 export default function InsightsPage() {
   const [insights, setInsights] = useState<Insight[]>([])
   const [loading, setLoading] = useState(true)
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const supabase = createClient()
+
+  const fetchInsights = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from('health_insights')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(100)
+    setInsights(data ?? [])
+  }, [supabase])
 
   useEffect(() => {
-    const supabase = createClient()
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return
-      const { data } = await supabase
-        .from('health_insights')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(100)
-      setInsights(data ?? [])
+      await fetchInsights(user.id)
       setLoading(false)
     })
-  }, [])
+  }, [fetchInsights, supabase.auth])
+
+  const handleGenerate = async () => {
+    setGenerating(true)
+    setGenerateError(null)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not signed in')
+
+      const [{ data: summaries }, { data: workouts }, { data: sleepRecords }] = await Promise.all([
+        supabase
+          .from('daily_summaries')
+          .select('date, steps, active_calories, distance_meters, floors_climbed, resting_heart_rate, avg_hrv, sleep_duration_minutes, recovery_score, strain_score')
+          .eq('user_id', user.id)
+          .order('date', { ascending: false })
+          .limit(8),
+        supabase
+          .from('workout_records')
+          .select('workout_type, duration_minutes, active_calories, avg_heart_rate')
+          .eq('user_id', user.id)
+          .order('start_time', { ascending: false })
+          .limit(5),
+        supabase
+          .from('sleep_records')
+          .select('duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
+          .eq('user_id', user.id)
+          .order('start_time', { ascending: false })
+          .limit(3),
+      ])
+
+      const today = summaries?.[0]
+      if (!today) throw new Error('No health data found. Sync your data from the iOS app first.')
+
+      const healthContext = {
+        dailySummary: {
+          date: today.date,
+          steps: today.steps ?? 0,
+          distanceMeters: today.distance_meters ?? 0,
+          activeCalories: today.active_calories ?? 0,
+          totalCalories: today.active_calories ?? 0,
+          floorsClimbed: today.floors_climbed ?? 0,
+          restingHeartRate: today.resting_heart_rate ?? null,
+          avgHrv: today.avg_hrv ?? null,
+          sleepDurationMinutes: today.sleep_duration_minutes ?? null,
+          sleepQualityScore: null,
+          activeMinutes: 0,
+        },
+        weekHistory: (summaries ?? []).slice(1).map((s) => ({
+          date: s.date,
+          steps: s.steps ?? 0,
+          activeCalories: s.active_calories ?? 0,
+          restingHeartRate: s.resting_heart_rate ?? null,
+          avgHrv: s.avg_hrv ?? null,
+          sleepDurationMinutes: s.sleep_duration_minutes ?? null,
+        })),
+        recentWorkouts: (workouts ?? []).map((w) => ({
+          workoutType: w.workout_type,
+          durationMinutes: w.duration_minutes ?? 0,
+          activeCalories: w.active_calories ?? null,
+          avgHeartRate: w.avg_heart_rate ?? null,
+        })),
+        recentSleep: (sleepRecords ?? []).map((s) => ({
+          durationMinutes: s.duration_minutes ?? 0,
+          deepMinutes: s.deep_minutes ?? 0,
+          remMinutes: s.rem_minutes ?? 0,
+          coreMinutes: s.core_minutes ?? 0,
+          awakeMinutes: s.awake_minutes ?? 0,
+        })),
+      }
+
+      const userApiKey = typeof window !== 'undefined'
+        ? localStorage.getItem('kquarks_claude_api_key') ?? undefined
+        : undefined
+
+      const { error } = await supabase.functions.invoke('generate-insights', {
+        body: { healthContext, userApiKey },
+      })
+
+      if (error) throw new Error(error.message ?? 'Generation failed')
+
+      await fetchInsights(user.id)
+    } catch (err: unknown) {
+      setGenerateError(err instanceof Error ? err.message : 'Failed to generate insights')
+    } finally {
+      setGenerating(false)
+    }
+  }
 
   const categories = Array.from(new Set(insights.map((i) => i.category).filter(Boolean)))
   const filtered = activeCategory ? insights.filter((i) => i.category === activeCategory) : insights
@@ -66,16 +158,32 @@ export default function InsightsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Insights</h1>
             <p className="text-sm text-text-secondary">
               {loading ? '…' : `${insights.length} AI-generated insights`}
             </p>
           </div>
+          <button
+            onClick={handleGenerate}
+            disabled={generating || loading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50"
+          >
+            {generating
+              ? <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              : <Sparkles className="w-3.5 h-3.5" />}
+            {generating ? 'Generating…' : 'Generate'}
+          </button>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-4 pb-24">
+        {generateError && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
+            {generateError}
+          </div>
+        )}
+
         {/* Category filter chips */}
         {categories.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
@@ -116,9 +224,17 @@ export default function InsightsPage() {
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Sparkles className="w-10 h-10 text-text-secondary mb-4" />
             <h2 className="text-lg font-semibold text-text-primary mb-2">No insights yet</h2>
-            <p className="text-sm text-text-secondary">
-              Sync data and generate insights from your dashboard to see them here.
+            <p className="text-sm text-text-secondary mb-6">
+              Tap &ldquo;Generate&rdquo; above to get AI-powered insights about your health patterns.
             </p>
+            <button
+              onClick={handleGenerate}
+              disabled={generating}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white font-medium hover:bg-accent/90 transition-colors disabled:opacity-50"
+            >
+              <Sparkles className="w-4 h-4" />
+              Generate Insights
+            </button>
           </div>
         ) : (
           <div className="space-y-3">

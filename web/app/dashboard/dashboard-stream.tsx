@@ -115,16 +115,33 @@ export function DashboardStream({
     setInsightError(null)
     try {
       const userApiKey = localStorage.getItem('kquarks_claude_api_key') ?? undefined
-      const healthContext = summaries.slice(0, 7).map((s) => ({
-        date: s.date,
-        steps: s.steps,
-        active_calories: s.active_calories,
-        sleep_duration_minutes: s.sleep_duration_minutes,
-        resting_heart_rate: s.resting_heart_rate,
-        avg_hrv: s.avg_hrv,
-        recovery_score: s.recovery_score,
-        strain_score: s.strain_score,
-      }))
+      const todaySummary = summaries[0]
+      const weekHistory = summaries.slice(1, 8)
+      const healthContext = {
+        dailySummary: {
+          date: todaySummary?.date ?? '',
+          steps: todaySummary?.steps ?? 0,
+          distanceMeters: todaySummary?.distance_meters ?? 0,
+          activeCalories: todaySummary?.active_calories ?? 0,
+          totalCalories: todaySummary?.active_calories ?? 0,
+          floorsClimbed: todaySummary?.floors_climbed ?? 0,
+          restingHeartRate: todaySummary?.resting_heart_rate ?? null,
+          avgHrv: todaySummary?.avg_hrv ?? null,
+          sleepDurationMinutes: todaySummary?.sleep_duration_minutes ?? null,
+          sleepQualityScore: null,
+          activeMinutes: 0,
+        },
+        weekHistory: weekHistory.map((s) => ({
+          date: s.date,
+          steps: s.steps,
+          activeCalories: s.active_calories,
+          restingHeartRate: s.resting_heart_rate ?? null,
+          avgHrv: s.avg_hrv ?? null,
+          sleepDurationMinutes: s.sleep_duration_minutes ?? null,
+        })),
+        recentWorkouts: [],
+        recentSleep: [],
+      }
       const { error } = await supabase.functions.invoke('generate-insights', {
         body: { healthContext, userApiKey },
       })
