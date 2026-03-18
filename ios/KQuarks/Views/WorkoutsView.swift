@@ -14,6 +14,34 @@ struct WorkoutsView: View {
         return workouts.filter { $0.workoutActivityType.name.localizedCaseInsensitiveContains(searchText) }
     }
 
+    struct TypeStat: Identifiable {
+        let id: String
+        let name: String
+        let icon: String
+        let color: Color
+        let count: Int
+        let totalSeconds: TimeInterval
+    }
+
+    private var typeBreakdown: [TypeStat] {
+        var counts: [HKWorkoutActivityType: (count: Int, seconds: TimeInterval)] = [:]
+        for w in filtered {
+            let t = w.workoutActivityType
+            let prev = counts[t] ?? (0, 0)
+            counts[t] = (prev.count + 1, prev.seconds + w.duration)
+        }
+        return counts.map { (type, stat) in
+            TypeStat(
+                id: type.name,
+                name: type.name,
+                icon: type.icon,
+                color: type.color,
+                count: stat.count,
+                totalSeconds: stat.seconds
+            )
+        }.sorted { $0.count > $1.count }
+    }
+
     var body: some View {
         NavigationStack {
             Group {
@@ -30,6 +58,12 @@ struct WorkoutsView: View {
                     List {
                         Section {
                             WorkoutSummaryRow(workouts: filtered)
+                        }
+
+                        if typeBreakdown.count > 1 {
+                            Section("By Type") {
+                                WorkoutTypeBreakdownView(breakdown: typeBreakdown)
+                            }
                         }
 
                         ForEach(filtered, id: \.uuid) { workout in
@@ -65,6 +99,55 @@ struct WorkoutsView: View {
         let startDate = calendar.date(byAdding: selectedPeriod.dateComponent, value: -selectedPeriod.value, to: Date())!
         workouts = (try? await healthKit.fetchWorkouts(from: startDate, to: Date())) ?? []
         isLoading = false
+    }
+}
+
+// MARK: - Type Breakdown
+
+struct WorkoutTypeBreakdownView: View {
+    let breakdown: [WorkoutsView.TypeStat]
+
+    private func fmt(_ seconds: TimeInterval) -> String {
+        let h = Int(seconds) / 3600
+        let m = (Int(seconds) % 3600) / 60
+        return h > 0 ? "\(h)h \(m)m" : "\(m)m"
+    }
+
+    private var maxCount: Int { breakdown.first?.count ?? 1 }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            ForEach(breakdown) { stat in
+                HStack(spacing: 10) {
+                    Image(systemName: stat.icon)
+                        .font(.subheadline)
+                        .foregroundStyle(stat.color)
+                        .frame(width: 28)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack {
+                            Text(stat.name)
+                                .font(.subheadline)
+                            Spacer()
+                            Text("\(stat.count) · \(fmt(stat.totalSeconds))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        GeometryReader { geo in
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(stat.color.opacity(0.25))
+                                .frame(
+                                    width: geo.size.width * CGFloat(stat.count) / CGFloat(maxCount),
+                                    height: 6
+                                )
+                        }
+                        .frame(height: 6)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
 
