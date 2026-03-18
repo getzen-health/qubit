@@ -117,6 +117,36 @@ struct HealthDataView: View {
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
+                        } else if selectedCategory == .activity {
+                            NavigationLink(destination: ActivityHeatmapView()) {
+                                HStack {
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Activity Calendar")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("365-day heatmap")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+                            ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
+                                HealthDataRow(dataType: dataType)
+                            }
                         } else {
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
