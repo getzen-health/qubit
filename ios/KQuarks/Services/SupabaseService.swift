@@ -226,6 +226,17 @@ class SupabaseService {
 
     // MARK: - AI Insights
 
+    func deleteAllUserData() async throws {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let userId = session.user.id.uuidString
+
+        try await client.from("health_insights").delete().eq("user_id", value: userId).execute()
+        try await client.from("sleep_records").delete().eq("user_id", value: userId).execute()
+        try await client.from("workout_records").delete().eq("user_id", value: userId).execute()
+        try await client.from("health_records").delete().eq("user_id", value: userId).execute()
+        try await client.from("daily_summaries").delete().eq("user_id", value: userId).execute()
+    }
+
     func fetchInsights() async throws -> [HealthInsight] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
