@@ -78,6 +78,23 @@ struct GetWeeklyWorkoutsIntent: AppIntent {
     }
 }
 
+struct LogWeightIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log Body Weight"
+    static var description = IntentDescription("Records your body weight in Apple Health.")
+
+    @Parameter(title: "Weight (kg)", description: "Your body weight in kilograms.")
+    var weightKg: Double
+
+    func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
+        try await HealthKitService.shared.requestAuthorization()
+        try await HealthKitService.shared.saveBodyWeight(weightKg)
+        return .result(
+            value: weightKg,
+            dialog: IntentDialog(stringLiteral: "Logged \(String(format: "%.1f", weightKg)) kg in Apple Health.")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -116,6 +133,15 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Weekly Workouts",
             systemImageName: "figure.run"
+        )
+        AppShortcut(
+            intent: LogWeightIntent(),
+            phrases: [
+                "Log my weight in \(.applicationName)",
+                "Record my weight in \(.applicationName)"
+            ],
+            shortTitle: "Log Weight",
+            systemImageName: "scalemass.fill"
         )
     }
 }

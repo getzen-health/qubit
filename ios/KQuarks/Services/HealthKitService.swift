@@ -58,7 +58,8 @@ class HealthKitService {
             throw HealthKitError.notAvailable
         }
 
-        try await healthStore.requestAuthorization(toShare: [], read: readTypes)
+        let shareTypes: Set<HKSampleType> = [HKQuantityType(.bodyMass)]
+        try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
         await MainActor.run {
             isAuthorized = true
         }
@@ -554,6 +555,18 @@ class HealthKitService {
         default:
             return .count()
         }
+    }
+
+    // MARK: - Write
+
+    /// Saves a body weight sample to HealthKit.
+    func saveBodyWeight(_ kg: Double) async throws {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+        guard kg > 0 && kg < 500 else { return }
+        let type = HKQuantityType(.bodyMass)
+        let quantity = HKQuantity(unit: .gramUnit(with: .kilo), doubleValue: kg)
+        let sample = HKQuantitySample(type: type, quantity: quantity, start: Date(), end: Date())
+        try await healthStore.save(sample)
     }
 }
 
