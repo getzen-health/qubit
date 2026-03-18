@@ -820,6 +820,7 @@ export function DashboardStream({
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Explore</p>
           <div className="flex flex-wrap gap-2">
             {[
+              { href: '/goals', label: 'Goals' },
               { href: '/heartrate', label: 'Heart Rate' },
               { href: '/recovery', label: 'Recovery' },
               { href: '/body', label: 'Body Weight' },
