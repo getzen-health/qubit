@@ -246,11 +246,18 @@ export function DashboardStream({
           </div>
           <div className="flex items-center gap-2">
             <Link
+              href="/steps"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Activity"
+            >
+              <Activity className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link
               href="/workouts"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="Workouts"
             >
-              <Activity className="w-5 h-5 text-text-secondary" />
+              <Zap className="w-5 h-5 text-text-secondary" />
             </Link>
             <Link
               href="/heartrate"
