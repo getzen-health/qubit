@@ -11,6 +11,7 @@ const SLEEP_KEY = 'kquarks_sleep_goal_minutes'
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
 const DEFAULT_SLEEP_GOAL = 480 // 8 hours
+const DEFAULT_WATER_GOAL = 2500 // ml
 
 export default function GoalsSettingsPage() {
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
@@ -19,6 +20,8 @@ export default function GoalsSettingsPage() {
   const [calInput, setCalInput] = useState(DEFAULT_CAL_GOAL.toString())
   const [sleepGoal, setSleepGoal] = useState(DEFAULT_SLEEP_GOAL)
   const [sleepInput, setSleepInput] = useState((DEFAULT_SLEEP_GOAL / 60).toString())
+  const [waterGoal, setWaterGoal] = useState(DEFAULT_WATER_GOAL)
+  const [waterInput, setWaterInput] = useState(DEFAULT_WATER_GOAL.toString())
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -40,6 +43,16 @@ export default function GoalsSettingsPage() {
           setStepGoal(s); setStepInput(s.toString())
           setCalGoal(c); setCalInput(c.toString())
           setSleepGoal(sl); setSleepInput((sl / 60).toString())
+          // Load water goal from nutrition settings
+          const { data: nutrition } = await supabase
+            .from('user_nutrition_settings')
+            .select('water_target_ml')
+            .eq('user_id', user.id)
+            .single()
+          if (nutrition?.water_target_ml) {
+            setWaterGoal(nutrition.water_target_ml)
+            setWaterInput(nutrition.water_target_ml.toString())
+          }
           setLoading(false)
           return
         }
@@ -62,10 +75,12 @@ export default function GoalsSettingsPage() {
     const cal = parseInt(calInput, 10)
     const sleepHours = parseFloat(sleepInput)
     const sleepMin = Math.round(sleepHours * 60)
+    const water = parseInt(waterInput, 10)
 
     if (isNaN(steps) || steps <= 0 || steps > 100000) return
     if (isNaN(cal) || cal <= 0 || cal > 5000) return
     if (isNaN(sleepHours) || sleepHours < 4 || sleepHours > 12) return
+    if (isNaN(water) || water < 500 || water > 6000) return
 
     // Save to localStorage
     localStorage.setItem(STEP_KEY, steps.toString())
@@ -74,14 +89,20 @@ export default function GoalsSettingsPage() {
     setStepGoal(steps)
     setCalGoal(cal)
     setSleepGoal(sleepMin)
+    setWaterGoal(water)
 
     // Save to DB (best effort)
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      await supabase
-        .from('users')
-        .update({ step_goal: steps, calorie_goal: cal, sleep_goal_minutes: sleepMin })
-        .eq('id', user.id)
+      await Promise.all([
+        supabase
+          .from('users')
+          .update({ step_goal: steps, calorie_goal: cal, sleep_goal_minutes: sleepMin })
+          .eq('id', user.id),
+        supabase
+          .from('user_nutrition_settings')
+          .upsert({ user_id: user.id, water_target_ml: water }, { onConflict: 'user_id' }),
+      ])
     }
 
     setSaved(true)
@@ -227,6 +248,46 @@ export default function GoalsSettingsPage() {
                 }`}
               >
                 {preset}h
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Water Goal */}
+        <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
+          <div>
+            <h2 className="font-semibold text-text-primary">Daily Water Goal</h2>
+            <p className="text-sm text-text-secondary mt-0.5">
+              Daily hydration target shown on your hydration tracker.
+            </p>
+          </div>
+
+          <div className="flex gap-3 items-center">
+            <input
+              type="number"
+              min={500}
+              max={6000}
+              step={250}
+              value={waterInput}
+              onChange={(e) => setWaterInput(e.target.value)}
+              className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
+            />
+            <span className="text-text-secondary text-sm">ml / day</span>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            {[1500, 2000, 2500, 3000, 3500].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setWaterInput(preset.toString())}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  waterGoal === preset
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-border text-text-secondary hover:bg-surface-secondary'
+                }`}
+              >
+                {preset >= 1000 ? `${preset / 1000}L` : `${preset}ml`}
               </button>
             ))}
           </div>
