@@ -87,9 +87,10 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
               }
 
               return (
-                <div
+                <Link
                   key={workout.id}
-                  className="flex items-center gap-4 p-4 bg-surface rounded-xl border border-border"
+                  href={`/workouts/${workout.id}`}
+                  className="flex items-center gap-4 p-4 bg-surface rounded-xl border border-border hover:bg-surface-secondary transition-colors"
                 >
                   <span className="text-3xl">{workoutIcon(workout.workout_type)}</span>
                   <div className="flex-1 min-w-0">
@@ -103,7 +104,7 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
                     </div>
                     <p className="text-sm text-text-secondary mt-0.5">{stats.join(' · ')}</p>
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>
