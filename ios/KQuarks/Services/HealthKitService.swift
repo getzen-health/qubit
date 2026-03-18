@@ -129,6 +129,63 @@ class HealthKitService {
         return summaries
     }
 
+    /// Fetch per-day stats for the past 7 days for charting.
+    /// - Parameters:
+    ///   - identifier: The HealthKit quantity type identifier.
+    ///   - isDiscrete: true → discreteAverage (HR, HRV, weight); false → cumulativeSum (steps, calories).
+    func fetchWeekData(for identifier: HKQuantityTypeIdentifier, isDiscrete: Bool) async throws -> [(date: Date, value: Double)] {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let startDate = calendar.date(byAdding: .day, value: -6, to: startOfToday)!
+
+        let quantityType = HKQuantityType(identifier)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictStartDate)
+        let interval = DateComponents(day: 1)
+        let options: HKStatisticsOptions = isDiscrete ? .discreteAverage : .cumulativeSum
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsCollectionQuery(
+                quantityType: quantityType,
+                quantitySamplePredicate: predicate,
+                options: options,
+                anchorDate: startOfToday,
+                intervalComponents: interval
+            )
+
+            query.initialResultsHandler = { _, results, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let results = results else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                let unit = self.preferredUnit(for: identifier)
+                var data: [(date: Date, value: Double)] = []
+
+                results.enumerateStatistics(from: startDate, to: now) { statistics, _ in
+                    let value: Double?
+                    if isDiscrete {
+                        value = statistics.averageQuantity()?.doubleValue(for: unit)
+                    } else {
+                        value = statistics.sumQuantity()?.doubleValue(for: unit)
+                    }
+                    if let value = value {
+                        data.append((date: statistics.startDate, value: value))
+                    }
+                }
+
+                continuation.resume(returning: data)
+            }
+
+            self.healthStore.execute(query)
+        }
+    }
+
     /// Fetch latest value within a date range
     func fetchLatestInRange(for identifier: HKQuantityTypeIdentifier, from startDate: Date, to endDate: Date) async throws -> Double? {
         let quantityType = HKQuantityType(identifier)

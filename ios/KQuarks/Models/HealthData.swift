@@ -63,6 +63,16 @@ enum HealthDataType: String, Codable, CaseIterable {
         }
     }
 
+    var isDiscrete: Bool {
+        switch self {
+        case .heartRate, .restingHeartRate, .hrv, .weight, .bodyFat,
+             .oxygenSaturation, .respiratoryRate, .bloodPressureSystolic, .bloodPressureDiastolic:
+            return true
+        default:
+            return false
+        }
+    }
+
     var icon: String {
         switch self {
         case .steps: return "figure.walk"
