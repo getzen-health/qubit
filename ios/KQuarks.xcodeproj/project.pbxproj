@@ -43,6 +43,7 @@
 		034 /* SleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130 /* SleepView.swift */; };
 		035 /* HealthMetricDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131 /* HealthMetricDetailView.swift */; settings = {}; };
 		036 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132 /* GoalService.swift */; };
+		037 /* GoalsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 133 /* GoalsSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +80,7 @@
 		130 /* SleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepView.swift; sourceTree = "<group>"; };
 		131 /* HealthMetricDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricDetailView.swift; sourceTree = "<group>"; };
 		132 /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalService.swift; sourceTree = "<group>"; };
+		133 /* GoalsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsSettingsView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			children = (
 				124 /* AppearanceSettingsView.swift */,
 				125 /* DashboardConfigView.swift */,
+				133 /* GoalsSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			034 /* SleepView.swift in Sources */,
 				035 /* HealthMetricDetailView.swift in Sources */,
 			036 /* GoalService.swift in Sources */,
+			037 /* GoalsSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
