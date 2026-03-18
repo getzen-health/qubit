@@ -79,6 +79,59 @@ export async function GET(request: Request) {
     })
   }
 
+  if (type === 'water') {
+    const { data } = await supabase
+      .from('daily_water')
+      .select('date, total_ml')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+
+    const rows = data ?? []
+    const headers = ['date', 'total_ml']
+    const csv = [
+      headers.join(','),
+      ...rows.map((r) => [r.date ?? '', r.total_ml ?? ''].join(',')),
+    ].join('\n')
+
+    return new Response(csv, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="kquarks_water.csv"',
+      },
+    })
+  }
+
+  if (type === 'fasting') {
+    const { data } = await supabase
+      .from('fasting_sessions')
+      .select('protocol, target_hours, started_at, ended_at, actual_hours, completed')
+      .eq('user_id', user.id)
+      .order('started_at', { ascending: false })
+
+    const rows = data ?? []
+    const headers = ['protocol', 'target_hours', 'started_at', 'ended_at', 'actual_hours', 'completed']
+    const csv = [
+      headers.join(','),
+      ...rows.map((r) =>
+        [
+          r.protocol ?? '',
+          r.target_hours ?? '',
+          r.started_at ?? '',
+          r.ended_at ?? '',
+          r.actual_hours ?? '',
+          r.completed ?? '',
+        ].join(',')
+      ),
+    ].join('\n')
+
+    return new Response(csv, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="kquarks_fasting.csv"',
+      },
+    })
+  }
+
   // Default: daily summaries
   const { data } = await supabase
     .from('daily_summaries')
