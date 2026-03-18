@@ -51,6 +51,7 @@
 		042 /* BiometricLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138 /* BiometricLockView.swift */; };
 		043 /* DashboardWeeklyChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139 /* DashboardWeeklyChartView.swift */; };
 		044 /* HealthIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140 /* HealthIntents.swift */; };
+		045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +96,7 @@
 		138 /* BiometricLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockView.swift; sourceTree = "<group>"; };
 		139 /* DashboardWeeklyChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardWeeklyChartView.swift; sourceTree = "<group>"; };
 		140 /* HealthIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthIntents.swift; sourceTree = "<group>"; };
+		141 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				101 /* KQuarksApp.swift */,
 				102 /* ContentView.swift */,
 				140 /* HealthIntents.swift */,
+				141 /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -379,6 +382,7 @@
 				042 /* BiometricLockView.swift in Sources */,
 				043 /* DashboardWeeklyChartView.swift in Sources */,
 				044 /* HealthIntents.swift in Sources */,
+				045 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
