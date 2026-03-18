@@ -964,6 +964,7 @@ export function DashboardStream({
               { href: '/daylight', label: 'Daylight' },
               { href: '/vitals', label: 'Vitals' },
               { href: '/cardiac', label: 'Cardiac Events' },
+              { href: '/rings', label: 'Activity Rings' },
               { href: '/vo2max', label: 'VO₂ Max' },
               { href: '/heartrate', label: 'Heart Rate' },
               { href: '/recovery', label: 'Recovery' },

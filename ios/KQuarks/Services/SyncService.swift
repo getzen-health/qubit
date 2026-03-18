@@ -401,6 +401,37 @@ class SyncService {
             ))
         }
 
+        // Fetch stand hours from activity summaries
+        let activitySummaries = try await healthKit.fetchActivitySummaries(from: startDate, to: now)
+        let calendar2 = Calendar.current
+        for summary in activitySummaries {
+            let standHours = summary.appleStandHours.doubleValue(for: .count())
+            let standGoal = summary.appleStandHoursGoal.doubleValue(for: .count())
+            // Reconstruct approximate date from calendar components (activity summaries use date components)
+            let comps = summary.dateComponents(for: calendar2)
+            guard let date = calendar2.date(from: comps) else { continue }
+            records.append(HealthRecordUpload(
+                userId: userId,
+                type: "stand_hours",
+                value: standHours,
+                unit: "hours",
+                source: "Apple Watch",
+                startTime: date,
+                endTime: calendar2.date(byAdding: .day, value: 1, to: date) ?? date
+            ))
+            if standGoal > 0 {
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: "stand_hours_goal",
+                    value: standGoal,
+                    unit: "hours",
+                    source: "Apple Watch",
+                    startTime: date,
+                    endTime: calendar2.date(byAdding: .day, value: 1, to: date) ?? date
+                ))
+            }
+        }
+
         // Fetch cardiac events (AFib, high HR, low HR) from Apple Watch
         let cardiacEvents: [(HKCategoryTypeIdentifier, String)] = [
             (.irregularHeartRhythmEvent, "afib_event"),

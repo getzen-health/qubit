@@ -65,6 +65,9 @@ class HealthKitService {
         types.insert(HKCategoryType(.lowHeartRateEvent))
         types.insert(HKCategoryType(.irregularHeartRhythmEvent))
 
+        // Activity rings (Apple Watch stand hours)
+        types.insert(HKObjectType.activitySummaryType())
+
         // Running form metrics (Apple Watch, iOS 16+)
         if #available(iOS 16.0, *) {
             types.insert(HKQuantityType(.runningCadence))
@@ -499,6 +502,24 @@ class HealthKitService {
                     return
                 }
                 continuation.resume(returning: (samples as? [HKCategorySample]) ?? [])
+            }
+            self.healthStore.execute(query)
+        }
+    }
+
+    func fetchActivitySummaries(from startDate: Date, to endDate: Date) async throws -> [HKActivitySummary] {
+        let calendar = Calendar.current
+        let startComponents = calendar.dateComponents([.year, .month, .day], from: startDate)
+        let endComponents = calendar.dateComponents([.year, .month, .day], from: endDate)
+        let predicate = HKQuery.predicate(forActivitySummariesBetweenStart: startComponents, end: endComponents)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKActivitySummaryQuery(predicate: predicate) { _, summaries, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: summaries ?? [])
             }
             self.healthStore.execute(query)
         }
