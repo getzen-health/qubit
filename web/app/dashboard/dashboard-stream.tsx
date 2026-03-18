@@ -21,11 +21,6 @@ import {
   Settings,
   Sparkles,
   Scale,
-  Trophy,
-  BedDouble,
-  Lightbulb,
-  CalendarDays,
-  BarChart2,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -392,77 +387,7 @@ export function DashboardStream({
               return null
             })()}
           </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/steps"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Activity"
-            >
-              <Activity className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/workouts"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Workouts"
-            >
-              <Zap className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/recovery"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Recovery & Strain"
-            >
-              <TrendingUp className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/heartrate"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Heart Rate"
-            >
-              <Heart className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/sleep"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Sleep History"
-            >
-              <BedDouble className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/body"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Body Weight"
-            >
-              <Scale className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/insights"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="All Insights"
-            >
-              <Lightbulb className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/trends"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Trends & Patterns"
-            >
-              <BarChart2 className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/monthly"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Monthly Stats"
-            >
-              <CalendarDays className="w-5 h-5 text-text-secondary" />
-            </Link>
-            <Link
-              href="/records"
-              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-              title="Personal Records"
-            >
-              <Trophy className="w-5 h-5 text-text-secondary" />
-            </Link>
+          <div className="flex items-center gap-1">
             <Link
               href="/settings"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
@@ -764,6 +689,30 @@ export function DashboardStream({
               description="Click Generate to get AI-powered insights about your health patterns."
             />
           )}
+        </div>
+        {/* Quick navigation */}
+        <div className="mt-6 pt-6 border-t border-border">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Explore</p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { href: '/heartrate', label: 'Heart Rate' },
+              { href: '/recovery', label: 'Recovery' },
+              { href: '/body', label: 'Body Weight' },
+              { href: '/insights', label: 'AI Insights' },
+              { href: '/records', label: 'Records' },
+              { href: '/monthly', label: 'Monthly' },
+              { href: '/year', label: 'Year View' },
+              { href: '/compare', label: 'Compare Weeks' },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="px-3 py-1.5 rounded-full bg-surface border border-border text-sm text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </main>
       <BottomNav />
