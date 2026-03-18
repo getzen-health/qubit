@@ -21,6 +21,7 @@ import {
   Settings,
   Sparkles,
   Scale,
+  Droplets,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -94,6 +95,8 @@ interface DashboardStreamProps {
   dbCalGoal?: number | null
   dbSleepGoalMinutes?: number | null
   lastSyncAt?: string | null
+  todayWaterMl?: number
+  waterTargetMl?: number
 }
 
 export function DashboardStream({
@@ -109,6 +112,8 @@ export function DashboardStream({
   dbCalGoal,
   dbSleepGoalMinutes,
   lastSyncAt,
+  todayWaterMl = 0,
+  waterTargetMl = 2500,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -458,6 +463,36 @@ export function DashboardStream({
             color="heart"
           />
         </QuickStatsGrid>
+
+        {/* Hydration */}
+        {waterTargetMl > 0 && (
+          <Link href="/water" className="block mb-6 bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Droplets className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-medium text-text-secondary">Hydration</span>
+              </div>
+              <span className="text-sm font-semibold text-text-primary">
+                {todayWaterMl >= 1000 ? `${(todayWaterMl / 1000).toFixed(1)}L` : `${todayWaterMl}ml`}
+                <span className="text-text-secondary font-normal"> / {waterTargetMl >= 1000 ? `${(waterTargetMl / 1000).toFixed(1)}L` : `${waterTargetMl}ml`}</span>
+              </span>
+            </div>
+            <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min((todayWaterMl / waterTargetMl) * 100, 100)}%`,
+                  background: todayWaterMl >= waterTargetMl ? '#22c55e' : '#3b82f6',
+                }}
+              />
+            </div>
+            <p className="text-xs text-text-secondary mt-1.5">
+              {todayWaterMl >= waterTargetMl
+                ? 'Goal reached!'
+                : `${waterTargetMl - todayWaterMl}ml to go`}
+            </p>
+          </Link>
+        )}
 
         {/* Week-over-Week Comparison */}
         {(wowSteps !== null || wowCal !== null || wowSleep !== null) && (

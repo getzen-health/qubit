@@ -64,6 +64,22 @@ export default async function DashboardPage() {
     }
   }
 
+  // Fetch today's water data
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const [{ data: todayWater }, { data: nutritionSettings }] = await Promise.all([
+    supabase
+      .from('daily_water')
+      .select('total_ml')
+      .eq('user_id', user.id)
+      .eq('date', todayStr)
+      .single(),
+    supabase
+      .from('user_nutrition_settings')
+      .select('water_target_ml')
+      .eq('user_id', user.id)
+      .single(),
+  ])
+
   // Fetch recent workouts and sleep records for AI insights
   const [{ data: recentWorkouts }, { data: recentSleepRecords }, { data: insights }, { data: devices }] = await Promise.all([
     supabase
@@ -109,6 +125,8 @@ export default async function DashboardPage() {
       dbCalGoal={profile?.calorie_goal ?? null}
       dbSleepGoalMinutes={profile?.sleep_goal_minutes ?? null}
       lastSyncAt={lastSyncAt}
+      todayWaterMl={todayWater?.total_ml ?? 0}
+      waterTargetMl={nutritionSettings?.water_target_ml ?? 2500}
     />
   )
 }
