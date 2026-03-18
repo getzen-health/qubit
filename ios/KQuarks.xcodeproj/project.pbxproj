@@ -38,6 +38,7 @@
 		029 /* WidgetConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126 /* WidgetConfiguration.swift */; };
 		030 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 204 /* PrivacyInfo.xcprivacy */; };
 		031 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 127 /* KeychainHelper.swift */; };
+		032 /* AIInsightsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128 /* AIInsightsService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		125 /* DashboardConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfigView.swift; sourceTree = "<group>"; };
 		126 /* WidgetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfiguration.swift; sourceTree = "<group>"; };
 		127 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		128 /* AIInsightsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightsService.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				106 /* SupabaseService.swift */,
 				107 /* SyncService.swift */,
 				127 /* KeychainHelper.swift */,
+				128 /* AIInsightsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 				028 /* DashboardConfigView.swift in Sources */,
 				029 /* WidgetConfiguration.swift in Sources */,
 				031 /* KeychainHelper.swift in Sources */,
+				032 /* AIInsightsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

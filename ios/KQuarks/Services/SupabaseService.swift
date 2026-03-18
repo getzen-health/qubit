@@ -239,6 +239,54 @@ class SupabaseService {
 
         return response
     }
+
+    /// Call the generate-insights edge function
+    func invokeGenerateInsights(
+        healthContext: AIInsightsService.HealthContext,
+        userApiKey: String?
+    ) async throws -> AIInsightsService.AIAnalysisResult {
+        guard let session = currentSession else {
+            throw SupabaseError.notAuthenticated
+        }
+
+        struct RequestBody: Encodable {
+            let healthContext: AIInsightsService.HealthContext
+            let userApiKey: String?
+        }
+
+        let body = RequestBody(healthContext: healthContext, userApiKey: userApiKey)
+        let bodyData = try JSONEncoder().encode(body)
+
+        let url = URL(string: Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as! String)!
+            .appendingPathComponent("functions/v1/generate-insights")
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue(
+            Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String ?? "",
+            forHTTPHeaderField: "apikey"
+        )
+        request.httpBody = bodyData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw SupabaseError.networkError
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            if let errorBody = try? JSONDecoder().decode([String: String].self, from: data),
+               let errorMessage = errorBody["error"] {
+                throw SupabaseError.unknown(NSError(domain: "AI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage]))
+            }
+            throw SupabaseError.networkError
+        }
+
+        let result = try JSONDecoder().decode(AIInsightsService.AIAnalysisResult.self, from: data)
+        return result
+    }
 }
 
 // MARK: - Upload Models
