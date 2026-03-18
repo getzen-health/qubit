@@ -4,6 +4,9 @@ import HealthKit
 struct WorkoutDetailView: View {
     let workout: HKWorkout
 
+    @State private var avgHeartRate: Double?
+    private let healthKit = HealthKitService.shared
+
     var body: some View {
         List {
             // Header section
@@ -48,6 +51,15 @@ struct WorkoutDetailView: View {
                     )
                 }
 
+                if let hr = avgHeartRate {
+                    WorkoutStatRow(
+                        icon: "heart.fill",
+                        label: "Avg Heart Rate",
+                        value: "\(Int(hr)) bpm",
+                        color: .red
+                    )
+                }
+
                 if let distance = workout.totalDistance?.doubleValue(for: .meter()), distance > 0 {
                     let km = distance / 1000
                     WorkoutStatRow(
@@ -78,6 +90,9 @@ struct WorkoutDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(workout.workoutActivityType.name)
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            avgHeartRate = try? await healthKit.fetchAverageHeartRate(during: workout)
+        }
     }
 
     private func formatDuration(_ seconds: TimeInterval) -> String {
