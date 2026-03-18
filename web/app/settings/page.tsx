@@ -3,11 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import {
   Palette,
-  LayoutDashboard,
   User,
-  Bell,
-  Shield,
-  HelpCircle,
   ChevronRight,
   ArrowLeft,
 } from 'lucide-react'
@@ -31,34 +27,10 @@ export default async function SettingsPage() {
       icon: Palette,
     },
     {
-      title: 'Dashboard',
-      description: 'Customize widgets and layout',
-      href: '/settings/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
       title: 'Account',
       description: 'Profile and account settings',
       href: '/settings/account',
       icon: User,
-    },
-    {
-      title: 'Notifications',
-      description: 'Manage notification preferences',
-      href: '/settings/notifications',
-      icon: Bell,
-    },
-    {
-      title: 'Privacy',
-      description: 'Data and privacy settings',
-      href: '/settings/privacy',
-      icon: Shield,
-    },
-    {
-      title: 'Help',
-      description: 'Support and documentation',
-      href: '/settings/help',
-      icon: HelpCircle,
     },
   ]
 
