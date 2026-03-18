@@ -61,6 +61,8 @@ interface DashboardStreamProps {
     sleep_duration_minutes?: number
     resting_heart_rate?: number
     avg_hrv?: number
+    recovery_score?: number
+    strain_score?: number
   }>
   insights: Array<{
     id: string
@@ -106,8 +108,6 @@ export function DashboardStream({
 
   // Mock metrics (will be replaced with real data)
   const metrics = {
-    recovery: { score: 78, trend: 5 },
-    strain: { score: 14.2, trend: -8 },
     sleep: {
       duration: today?.sleep_duration_minutes ?? 462,
     },
@@ -125,6 +125,22 @@ export function DashboardStream({
     ? Math.round(((todayHrv - hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length) / (hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length)) * 100)
     : undefined
 
+  // Real recovery and strain from AI-synced scores
+  const recoveryScore = today?.recovery_score ?? 50
+  const strainScore = today?.strain_score ?? 0
+
+  // Recovery trend: today vs average of past 6 days
+  const recoveryHistory = summaries.slice(1, 7).map((d) => d.recovery_score).filter((v): v is number => typeof v === 'number' && v > 0)
+  const recoveryTrend = (today?.recovery_score != null) && recoveryHistory.length > 0
+    ? Math.round(((today.recovery_score - recoveryHistory.reduce((a, b) => a + b, 0) / recoveryHistory.length) / (recoveryHistory.reduce((a, b) => a + b, 0) / recoveryHistory.length)) * 100)
+    : undefined
+
+  // Strain trend: today vs past 6 days
+  const strainHistory = summaries.slice(1, 7).map((d) => d.strain_score).filter((v): v is number => typeof v === 'number' && v > 0)
+  const strainTrend = (today?.strain_score != null) && strainHistory.length > 0
+    ? Math.round(((today.strain_score - strainHistory.reduce((a, b) => a + b, 0) / strainHistory.length) / (strainHistory.reduce((a, b) => a + b, 0) / strainHistory.length)) * 100)
+    : undefined
+
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
 
   // Format sleep duration
@@ -133,10 +149,10 @@ export function DashboardStream({
 
   // Generate AI insight based on data
   const generatePrimaryInsight = () => {
-    if (metrics.recovery.score >= 80) {
+    if (recoveryScore >= 80) {
       return "Your recovery is excellent. Today is ideal for high-intensity training."
     }
-    if (metrics.recovery.score >= 60) {
+    if (recoveryScore >= 60) {
       return "You're moderately recovered. Consider a balanced workout today."
     }
     return "Your recovery is low. Prioritize rest and light activity today."
@@ -220,12 +236,12 @@ export function DashboardStream({
       <main className="max-w-4xl mx-auto px-4 py-6">
         {/* AI Essence */}
         <AIEssence
-          recoveryScore={metrics.recovery.score}
-          strainScore={metrics.strain.score}
+          recoveryScore={recoveryScore}
+          strainScore={strainScore}
           primaryInsight={generatePrimaryInsight()}
           secondaryInsight={getSecondaryInsight()}
-          recoveryTrend={metrics.recovery.trend}
-          strainTrend={metrics.strain.trend}
+          recoveryTrend={recoveryTrend}
+          strainTrend={strainTrend}
         />
 
         {/* Quick Stats */}
@@ -262,10 +278,10 @@ export function DashboardStream({
             <MetricRow
               icon={<Zap className="w-5 h-5" />}
               label="Recovery"
-              value={metrics.recovery.score}
+              value={recoveryScore}
               unit="%"
-              sublabel={metrics.recovery.score >= 67 ? 'Optimal' : metrics.recovery.score >= 34 ? 'Moderate' : 'Low'}
-              trend={metrics.recovery.trend}
+              sublabel={recoveryScore >= 67 ? 'Optimal' : recoveryScore >= 34 ? 'Moderate' : 'Low'}
+              trend={recoveryTrend}
               color="recovery"
               expandContent={
                 <div className="space-y-3">
@@ -279,10 +295,10 @@ export function DashboardStream({
             <MetricRow
               icon={<Flame className="w-5 h-5" />}
               label="Strain"
-              value={metrics.strain.score.toFixed(1)}
+              value={strainScore.toFixed(1)}
               unit="/21"
-              sublabel={metrics.strain.score >= 18 ? 'All Out' : metrics.strain.score >= 14 ? 'High' : metrics.strain.score >= 10 ? 'Moderate' : 'Light'}
-              trend={metrics.strain.trend}
+              sublabel={strainScore >= 18 ? 'All Out' : strainScore >= 14 ? 'High' : strainScore >= 10 ? 'Moderate' : 'Light'}
+              trend={strainTrend}
               color="strain"
               expandContent={
                 <div className="space-y-3">
