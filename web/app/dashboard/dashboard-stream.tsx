@@ -700,6 +700,7 @@ export function DashboardStream({
               { href: '/body', label: 'Body Weight' },
               { href: '/water', label: 'Hydration' },
               { href: '/fasting', label: 'Fasting' },
+              { href: '/nutrition', label: 'Nutrition' },
               { href: '/insights', label: 'AI Insights' },
               { href: '/records', label: 'Records' },
               { href: '/monthly', label: 'Monthly' },
