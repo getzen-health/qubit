@@ -49,6 +49,7 @@
 		040 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136 /* RecordsView.swift */; };
 		041 /* BiometricService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137 /* BiometricService.swift */; };
 		042 /* BiometricLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138 /* BiometricLockView.swift */; };
+		043 /* DashboardWeeklyChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139 /* DashboardWeeklyChartView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +92,7 @@
 		136 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 		137 /* BiometricService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricService.swift; sourceTree = "<group>"; };
 		138 /* BiometricLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockView.swift; sourceTree = "<group>"; };
+		139 /* DashboardWeeklyChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardWeeklyChartView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				119 /* InsightsSectionView.swift */,
 				120 /* MetricRowView.swift */,
 				121 /* QuickStatsView.swift */,
+				139 /* DashboardWeeklyChartView.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				040 /* RecordsView.swift in Sources */,
 				041 /* BiometricService.swift in Sources */,
 				042 /* BiometricLockView.swift in Sources */,
+				043 /* DashboardWeeklyChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

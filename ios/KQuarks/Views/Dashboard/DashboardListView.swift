@@ -91,6 +91,15 @@ struct DashboardListView: View {
             )
             .padding(.horizontal, 16)
 
+            // Weekly Step Chart
+            if !viewModel.weeklyData.isEmpty {
+                DashboardWeeklyChartView(
+                    weekData: viewModel.weeklyData,
+                    stepGoal: GoalService.shared.stepsGoal
+                )
+                .padding(.horizontal, 16)
+            }
+
             // Primary Metrics Stream
             metricsSection(title: "Today's Metrics", summary: summary)
 
@@ -420,6 +429,7 @@ class DashboardListViewModel {
     var latestSleepContext: AIInsightsService.SleepContext? = nil
     var bodyWeightKg: Double? = nil
     var weeklyWorkoutCount: Int = 0
+    var weeklyData: [DaySummaryForAI] = []
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
@@ -528,6 +538,7 @@ class DashboardListViewModel {
     private func calculateTrends() async {
         do {
             let weekData = try await healthKit.fetchWeekSummaries(days: 7)
+            await MainActor.run { self.weeklyData = weekData }
             guard weekData.count >= 2 else { return }
 
             let todaySteps = weekData.first?.steps ?? 0
