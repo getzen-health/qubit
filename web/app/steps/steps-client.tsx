@@ -18,6 +18,7 @@ import { Activity } from 'lucide-react'
 interface DaySummary {
   date: string
   steps: number
+  active_minutes?: number | null
   active_calories?: number | null
   distance_meters?: number | null
 }
@@ -221,6 +222,43 @@ export function StepsClient({ summaries }: StepsClientProps) {
                   formatter={(value: number) => [`${value} cal`, 'Active Cal']}
                 />
                 <Bar dataKey="cal" fill="#f97316" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )
+      })()}
+
+      {/* Active minutes chart */}
+      {(() => {
+        const amData = withSteps
+          .filter((s) => (s.active_minutes ?? 0) > 0)
+          .slice(-30)
+          .map((s) => ({ date: fmtDate(s.date), min: s.active_minutes! }))
+        if (amData.length < 2) return null
+        const weeklyGoal = 150
+        const recentWeekMin = withSteps.slice(-7).reduce((a, b) => a + (b.active_minutes ?? 0), 0)
+        return (
+          <div className="bg-surface rounded-xl border border-border p-4">
+            <h2 className="text-sm font-medium text-text-secondary mb-1">Active Minutes</h2>
+            <p className="text-xs text-text-secondary mb-3">
+              This week: {recentWeekMin} min{recentWeekMin >= weeklyGoal ? ' — goal reached!' : ` / ${weeklyGoal} min goal`}
+            </p>
+            <ResponsiveContainer width="100%" height={120}>
+              <BarChart data={amData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                  axisLine={false}
+                  tickLine={false}
+                  interval="preserveStartEnd"
+                />
+                <YAxis hide />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  formatter={(value: number) => [`${value} min`, 'Active']}
+                />
+                <Bar dataKey="min" fill="#06b6d4" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

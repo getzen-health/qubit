@@ -17,7 +17,7 @@ export default async function StepsPage() {
 
   const { data: summaries } = await supabase
     .from('daily_summaries')
-    .select('date, steps, active_calories, distance_meters')
+    .select('date, steps, active_calories, distance_meters, active_minutes')
     .eq('user_id', user.id)
     .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
     .order('date', { ascending: true })
