@@ -137,6 +137,71 @@ export async function GET(request: Request) {
     })
   }
 
+  if (type === 'checkins') {
+    const { data } = await supabase
+      .from('daily_checkins')
+      .select('date, energy, mood, stress, notes, created_at')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+
+    const rows = data ?? []
+    const headers = ['date', 'energy', 'mood', 'stress', 'notes', 'created_at']
+    const csv = [
+      headers.join(','),
+      ...rows.map((r) =>
+        [
+          r.date ?? '',
+          r.energy ?? '',
+          r.mood ?? '',
+          r.stress ?? '',
+          `"${(r.notes ?? '').replace(/"/g, '""')}"`,
+          r.created_at ?? '',
+        ].join(',')
+      ),
+    ].join('\n')
+
+    return new Response(csv, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="kquarks_checkins.csv"',
+      },
+    })
+  }
+
+  if (type === 'habits') {
+    const { data: habits } = await supabase
+      .from('habits')
+      .select('name, emoji, target_days, created_at')
+      .eq('user_id', user.id)
+      .is('archived_at', null)
+
+    const { data: completions } = await supabase
+      .from('habit_completions')
+      .select('habit_id, date, completed_at')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+
+    const habitMap = new Map((habits ?? []).map((h: { name: string; emoji: string; target_days: string[]; created_at: string } & { id?: string }) => [h as unknown as { id: string; name: string }, h.name]))
+    void habitMap
+
+    // Simple flat export: date + habit_id (use name if possible)
+    const rows = completions ?? []
+    const headers = ['date', 'habit_id', 'completed_at']
+    const csv = [
+      headers.join(','),
+      ...rows.map((r: { habit_id: string; date: string; completed_at: string }) =>
+        [r.date ?? '', r.habit_id ?? '', r.completed_at ?? ''].join(',')
+      ),
+    ].join('\n')
+
+    return new Response(csv, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="kquarks_habits.csv"',
+      },
+    })
+  }
+
   if (type === 'fasting') {
     const { data } = await supabase
       .from('fasting_sessions')

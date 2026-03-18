@@ -107,6 +107,8 @@ export default async function SettingsPage() {
               { label: 'Nutrition Logs', desc: 'Meals, food items, and macros', type: 'nutrition' },
               { label: 'Hydration', desc: 'Daily water intake logs', type: 'water' },
               { label: 'Fasting Sessions', desc: 'Intermittent fasting history', type: 'fasting' },
+              { label: 'Daily Check-ins', desc: 'Energy, mood, and stress logs', type: 'checkins' },
+              { label: 'Habits', desc: 'Habit completions history', type: 'habits' },
             ].map(({ label, desc, type }) => (
               <a
                 key={type}
