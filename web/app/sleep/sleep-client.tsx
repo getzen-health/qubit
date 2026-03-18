@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import {
   BarChart,
   Bar,
@@ -54,6 +55,10 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
   const chartData = [...records].reverse().map((r) => ({
     date: new Date(r.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     hours: +(r.duration_minutes / 60).toFixed(1),
+    deep: +((r.deep_minutes ?? 0) / 60).toFixed(2),
+    rem: +((r.rem_minutes ?? 0) / 60).toFixed(2),
+    core: +((r.core_minutes ?? 0) / 60).toFixed(2),
+    awake: +((r.awake_minutes ?? 0) / 60).toFixed(2),
   }))
 
   // 7-day averages (first 7 records are most recent)
@@ -68,7 +73,17 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
     <div className="space-y-6">
       {/* Bar chart */}
       <div className="bg-surface rounded-xl border border-border p-4">
-        <h2 className="text-sm font-medium text-text-secondary mb-3">Sleep Duration (hours)</h2>
+        <h2 className="text-sm font-medium text-text-secondary mb-1">
+          {hasStages ? 'Sleep Stages (hours)' : 'Sleep Duration (hours)'}
+        </h2>
+        {hasStages && (
+          <div className="flex gap-3 mb-3 text-xs text-text-secondary">
+            <span><span className="text-blue-500">●</span> Deep</span>
+            <span><span className="text-purple-500">●</span> REM</span>
+            <span><span className="text-blue-300">●</span> Light</span>
+            <span><span className="text-orange-400">●</span> Awake</span>
+          </div>
+        )}
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -87,15 +102,27 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
                 borderRadius: 8,
                 fontSize: 12,
               }}
-              formatter={(value: number) => [`${value}h`, 'Sleep']}
+              formatter={(value: number, name: string) => {
+                const labels: Record<string, string> = { deep: 'Deep', rem: 'REM', core: 'Light', awake: 'Awake', hours: 'Total' }
+                return [`${value}h`, labels[name] ?? name]
+              }}
             />
-            <Bar dataKey="hours" fill="#3b82f6" radius={[3, 3, 0, 0]} />
             <ReferenceLine
               y={8}
               stroke="rgba(255,255,255,0.25)"
               strokeDasharray="4 3"
               label={{ value: '8h goal', position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
             />
+            {hasStages ? (
+              <>
+                <Bar dataKey="deep" stackId="s" fill="#3b82f6" />
+                <Bar dataKey="rem" stackId="s" fill="#a855f7" />
+                <Bar dataKey="core" stackId="s" fill="#93c5fd" />
+                <Bar dataKey="awake" stackId="s" fill="#fb923c" radius={[3, 3, 0, 0]} />
+              </>
+            ) : (
+              <Bar dataKey="hours" fill="#3b82f6" radius={[3, 3, 0, 0]} />
+            )}
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -125,11 +152,12 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
       <div className="space-y-3">
         {records.map((record) => {
           const night = new Date(record.start_time)
+          const dayDate = night.toISOString().slice(0, 10)
           const totalWithAwake = record.duration_minutes + (record.awake_minutes ?? 0)
           const showStages = hasStages && ((record.deep_minutes ?? 0) + (record.rem_minutes ?? 0) + (record.core_minutes ?? 0)) > 0
 
           return (
-            <div key={record.id} className="bg-surface rounded-xl border border-border p-4 space-y-3">
+            <Link key={record.id} href={`/day/${dayDate}`} className="bg-surface rounded-xl border border-border p-4 space-y-3 block hover:bg-surface-secondary transition-colors">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-text-primary">
@@ -193,7 +221,7 @@ export function SleepPageClient({ records }: SleepPageClientProps) {
                   </div>
                 </>
               )}
-            </div>
+            </Link>
           )
         })}
       </div>
