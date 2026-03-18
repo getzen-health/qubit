@@ -158,15 +158,50 @@ struct DashboardListView: View {
             // Activity Stream
             activitySection(summary: summary)
 
-            // Daily Check-in card
+            // Wellbeing section: check-in + quick links
             VStack(alignment: .leading, spacing: 8) {
                 Text("Wellbeing")
                     .font(.headline)
                     .foregroundStyle(.primary)
                     .padding(.horizontal, 16)
-                CheckinDashboardCard(checkin: todayCheckin) {
-                    showCheckin = true
+                VStack(spacing: 0) {
+                    CheckinDashboardCard(checkin: todayCheckin) {
+                        showCheckin = true
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: WaterView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "drop.fill")
+                                .font(.title3)
+                                .foregroundStyle(.blue)
+                            Text("Hydration")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: HabitsView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "checklist")
+                                .font(.title3)
+                                .foregroundStyle(.accentColor)
+                            Text("Habits")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
                 }
+                .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal, 16)
             }

@@ -335,6 +335,35 @@ class SupabaseService {
         return rows.first?.totalMl ?? 0
     }
 
+    func getWeekWaterHistory() async throws -> [(date: String, ml: Int)] {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let since = df.string(from: Calendar.current.date(byAdding: .day, value: -6, to: Date())!)
+
+        struct Row: Decodable { let date: String; let total_ml: Int }
+        let rows: [Row] = try await client.from("daily_water")
+            .select("date, total_ml")
+            .eq("user_id", value: userId.uuidString)
+            .gte("date", value: since)
+            .order("date", ascending: true)
+            .execute()
+            .value
+
+        return rows.map { (date: $0.date, ml: $0.total_ml) }
+    }
+
+    func getWaterTarget() async throws -> Int {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+        struct Row: Decodable { let water_target_ml: Int? }
+        let rows: [Row] = try await client.from("user_nutrition_settings")
+            .select("water_target_ml")
+            .eq("user_id", value: userId.uuidString)
+            .limit(1)
+            .execute()
+            .value
+        return rows.first?.water_target_ml ?? 2500
+    }
+
     // MARK: - Fasting Sessions
 
     func startFasting(protocolName: String, targetHours: Int) async throws {
