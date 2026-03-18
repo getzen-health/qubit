@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 interface ActivityDay {
   date: string
   steps: number
@@ -87,9 +89,10 @@ export function ActivityHeatmap({ data, weeks = 12 }: ActivityHeatmapProps) {
           {weeksData.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-1">
               {week.map((day, di) => (
-                <div
+                <Link
                   key={di}
-                  className={`w-3 h-3 rounded-sm ${levelColors[day.level]} transition-colors hover:ring-2 hover:ring-purple-500 cursor-pointer`}
+                  href={`/day/${day.date}`}
+                  className={`w-3 h-3 rounded-sm ${levelColors[day.level]} transition-colors hover:ring-2 hover:ring-purple-500 cursor-pointer block`}
                   title={`${day.date}: ${day.steps.toLocaleString()} steps`}
                 />
               ))}
