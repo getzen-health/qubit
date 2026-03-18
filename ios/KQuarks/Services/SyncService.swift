@@ -49,6 +49,7 @@ class SyncService {
                 isSyncing = false
             }
             Task { await NotificationService.shared.notifyAfterSync() }
+            Task { await SupabaseService.shared.checkAchievements() }
             await supabase.updateLastSyncAt()
         } catch {
             await MainActor.run {

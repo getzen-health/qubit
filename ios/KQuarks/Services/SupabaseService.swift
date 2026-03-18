@@ -670,6 +670,40 @@ class SupabaseService {
         return response
     }
 
+    // MARK: - Achievements
+
+    struct Achievement: Decodable, Identifiable {
+        let id: String
+        let achievement_type: String
+        let title: String
+        let description: String
+        let icon: String
+        let granted_at: String
+    }
+
+    func fetchAchievements() async throws -> [Achievement] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        return try await client
+            .from("user_achievements")
+            .select()
+            .order("granted_at", ascending: false)
+            .execute()
+            .value
+    }
+
+    func checkAchievements() async {
+        guard let session = currentSession else { return }
+        let userId = session.user.id.uuidString
+        let supabaseURL = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+        guard let url = URL(string: "\(supabaseURL)/functions/v1/check-achievements") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["userId": userId])
+        _ = try? await URLSession.shared.data(for: request)
+    }
+
     /// Call the generate-insights edge function
     func invokeGenerateInsights(
         healthContext: AIInsightsService.HealthContext,

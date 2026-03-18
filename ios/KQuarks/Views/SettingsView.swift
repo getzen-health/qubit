@@ -132,6 +132,15 @@ struct SettingsView: View {
                     }
                 }
 
+                // Achievements
+                Section("Progress") {
+                    NavigationLink {
+                        AchievementsView()
+                    } label: {
+                        Label("Achievements", systemImage: "trophy")
+                    }
+                }
+
                 // AI Settings
                 Section("AI Insights") {
                     NavigationLink {

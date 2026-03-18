@@ -461,6 +461,7 @@ export function DashboardStream({
     heart: { icon: Heart, color: 'heart' },
     recovery: { icon: Zap, color: 'recovery' },
     strain: { icon: Flame, color: 'strain' },
+    wellbeing: { icon: Compass, color: 'recovery' },
   }
 
   return (

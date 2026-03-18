@@ -58,6 +58,7 @@ const SECTIONS: Section[] = [
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
       { label: 'Personal Records', desc: 'All-time bests across every metric', href: '/records', emoji: '🏆' },
+      { label: 'Achievements', desc: 'Milestones and badges earned', href: '/achievements', emoji: '🎖️' },
     ],
   },
   {
