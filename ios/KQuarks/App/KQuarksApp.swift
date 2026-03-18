@@ -27,7 +27,8 @@ struct KQuarksApp: App {
                 .tint(themeManager.accentColor)
                 .task {
                     await appState.initializeAuth()
-                    // Schedule background sync after auth is ready
+                }
+                .task {
                     SyncService.shared.scheduleBackgroundSync()
                 }
         }
