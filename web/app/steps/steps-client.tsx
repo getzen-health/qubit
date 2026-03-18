@@ -52,17 +52,46 @@ export function StepsClient({ summaries }: StepsClientProps) {
   }
 
   const withSteps = summaries.filter((s) => s.steps > 0)
-  const chartData = withSteps.map((s) => ({
+  const chartData = withSteps.slice(-30).map((s) => ({
     date: fmtDate(s.date),
     steps: s.steps,
     metGoal: s.steps >= stepGoal,
   }))
 
   const avg7 = withSteps.slice(-7).reduce((a, b) => a + b.steps, 0) / Math.max(withSteps.slice(-7).length, 1)
-  const avg30 = withSteps.reduce((a, b) => a + b.steps, 0) / Math.max(withSteps.length, 1)
+  const avg30 = withSteps.slice(-30).reduce((a, b) => a + b.steps, 0) / Math.max(withSteps.slice(-30).length, 1)
   const totalCal = withSteps.reduce((a, b) => a + (b.active_calories ?? 0), 0)
   const totalKm = withSteps.reduce((a, b) => a + (b.distance_meters ?? 0), 0) / 1000
   const goalDays = withSteps.filter((s) => s.steps >= stepGoal).length
+
+  // Build 13-week heatmap grid (Sun→Sat columns, Mon→Sun rows)
+  const stepMap = new Map(summaries.map((s) => [s.date, s.steps]))
+  const today = new Date()
+  // Start from 12 complete weeks ago (the Sunday before 84 days ago)
+  const gridStart = new Date(today)
+  gridStart.setDate(gridStart.getDate() - (gridStart.getDay()) - 12 * 7)
+  gridStart.setHours(0, 0, 0, 0)
+  const weeks: { date: string; steps: number | null }[][] = []
+  for (let w = 0; w < 13; w++) {
+    const week: { date: string; steps: number | null }[] = []
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(gridStart)
+      day.setDate(gridStart.getDate() + w * 7 + d)
+      const dateStr = day.toISOString().slice(0, 10)
+      week.push({ date: dateStr, steps: stepMap.get(dateStr) ?? null })
+    }
+    weeks.push(week)
+  }
+
+  function cellColor(steps: number | null): string {
+    if (steps === null) return 'bg-surface-secondary'
+    const pct = steps / stepGoal
+    if (pct >= 1.0) return 'bg-green-500'
+    if (pct >= 0.75) return 'bg-green-600 opacity-80'
+    if (pct >= 0.5) return 'bg-green-700 opacity-70'
+    if (pct >= 0.25) return 'bg-green-800 opacity-60'
+    return 'bg-surface-secondary opacity-80'
+  }
 
   const tooltipStyle = {
     background: 'var(--color-surface, #1a1a1a)',
@@ -86,6 +115,33 @@ export function StepsClient({ summaries }: StepsClientProps) {
             <p className="text-xs text-text-secondary mt-0.5">{label}</p>
           </div>
         ))}
+      </div>
+
+      {/* 13-week heatmap */}
+      <div className="bg-surface rounded-xl border border-border p-4">
+        <h2 className="text-sm font-medium text-text-secondary mb-3">Step Activity (13 weeks)</h2>
+        <div className="flex gap-1 overflow-x-auto pb-1">
+          {weeks.map((week, wi) => (
+            <div key={wi} className="flex flex-col gap-1">
+              {week.map((day, di) => (
+                <div
+                  key={di}
+                  title={day.steps != null ? `${day.date}: ${day.steps.toLocaleString()} steps` : day.date}
+                  className={`w-3 h-3 rounded-sm ${cellColor(day.steps)}`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-3 text-xs text-text-secondary">
+          <span>Less</span>
+          <div className="w-3 h-3 rounded-sm bg-surface-secondary" />
+          <div className="w-3 h-3 rounded-sm bg-green-800 opacity-60" />
+          <div className="w-3 h-3 rounded-sm bg-green-700 opacity-70" />
+          <div className="w-3 h-3 rounded-sm bg-green-600 opacity-80" />
+          <div className="w-3 h-3 rounded-sm bg-green-500" />
+          <span>More</span>
+        </div>
       </div>
 
       {/* Steps bar chart */}

@@ -11,14 +11,14 @@ export default async function StepsPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  const ninetyDaysAgo = new Date()
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
 
   const { data: summaries } = await supabase
     .from('daily_summaries')
     .select('date, steps, active_calories, distance_meters')
     .eq('user_id', user.id)
-    .gte('date', thirtyDaysAgo.toISOString().slice(0, 10))
+    .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
     .order('date', { ascending: true })
 
   return (
@@ -34,7 +34,7 @@ export default async function StepsPage() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-text-primary">Activity</h1>
-            <p className="text-sm text-text-secondary">Last 30 days</p>
+            <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
         </div>
       </header>
