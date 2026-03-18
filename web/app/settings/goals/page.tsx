@@ -3,57 +3,97 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const STEP_KEY = 'kquarks_step_goal'
 const CAL_KEY = 'kquarks_calorie_goal'
+const SLEEP_KEY = 'kquarks_sleep_goal_minutes'
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
+const DEFAULT_SLEEP_GOAL = 480 // 8 hours
 
 export default function GoalsSettingsPage() {
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
-  const [stepInput, setStepInput] = useState('')
+  const [stepInput, setStepInput] = useState(DEFAULT_STEP_GOAL.toString())
   const [calGoal, setCalGoal] = useState(DEFAULT_CAL_GOAL)
-  const [calInput, setCalInput] = useState('')
+  const [calInput, setCalInput] = useState(DEFAULT_CAL_GOAL.toString())
+  const [sleepGoal, setSleepGoal] = useState(DEFAULT_SLEEP_GOAL)
+  const [sleepInput, setSleepInput] = useState((DEFAULT_SLEEP_GOAL / 60).toString())
   const [saved, setSaved] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
 
   useEffect(() => {
-    const storedSteps = localStorage.getItem(STEP_KEY)
-    if (storedSteps) {
-      const n = parseInt(storedSteps, 10)
-      if (!isNaN(n) && n > 0) { setStepGoal(n); setStepInput(n.toString()) }
-      else { setStepInput(DEFAULT_STEP_GOAL.toString()) }
-    } else {
-      setStepInput(DEFAULT_STEP_GOAL.toString())
+    async function loadGoals() {
+      // Try DB first
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('step_goal, calorie_goal, sleep_goal_minutes')
+          .eq('id', user.id)
+          .single()
+        if (profile) {
+          const s = profile.step_goal ?? DEFAULT_STEP_GOAL
+          const c = profile.calorie_goal ?? DEFAULT_CAL_GOAL
+          const sl = profile.sleep_goal_minutes ?? DEFAULT_SLEEP_GOAL
+          setStepGoal(s); setStepInput(s.toString())
+          setCalGoal(c); setCalInput(c.toString())
+          setSleepGoal(sl); setSleepInput((sl / 60).toString())
+          setLoading(false)
+          return
+        }
+      }
+      // Fall back to localStorage
+      const storedSteps = localStorage.getItem(STEP_KEY)
+      if (storedSteps) { const n = parseInt(storedSteps, 10); if (!isNaN(n) && n > 0) { setStepGoal(n); setStepInput(n.toString()) } }
+      const storedCal = localStorage.getItem(CAL_KEY)
+      if (storedCal) { const n = parseInt(storedCal, 10); if (!isNaN(n) && n > 0) { setCalGoal(n); setCalInput(n.toString()) } }
+      const storedSleep = localStorage.getItem(SLEEP_KEY)
+      if (storedSleep) { const n = parseInt(storedSleep, 10); if (!isNaN(n) && n > 0) { setSleepGoal(n); setSleepInput((n / 60).toString()) } }
+      setLoading(false)
     }
-
-    const storedCal = localStorage.getItem(CAL_KEY)
-    if (storedCal) {
-      const n = parseInt(storedCal, 10)
-      if (!isNaN(n) && n > 0) { setCalGoal(n); setCalInput(n.toString()) }
-      else { setCalInput(DEFAULT_CAL_GOAL.toString()) }
-    } else {
-      setCalInput(DEFAULT_CAL_GOAL.toString())
-    }
+    loadGoals()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleSave = () => {
-    let changed = false
+  const handleSave = async () => {
     const steps = parseInt(stepInput, 10)
-    if (!isNaN(steps) && steps > 0 && steps <= 100000) {
-      localStorage.setItem(STEP_KEY, steps.toString())
-      setStepGoal(steps)
-      changed = true
-    }
     const cal = parseInt(calInput, 10)
-    if (!isNaN(cal) && cal > 0 && cal <= 5000) {
-      localStorage.setItem(CAL_KEY, cal.toString())
-      setCalGoal(cal)
-      changed = true
+    const sleepHours = parseFloat(sleepInput)
+    const sleepMin = Math.round(sleepHours * 60)
+
+    if (isNaN(steps) || steps <= 0 || steps > 100000) return
+    if (isNaN(cal) || cal <= 0 || cal > 5000) return
+    if (isNaN(sleepHours) || sleepHours < 4 || sleepHours > 12) return
+
+    // Save to localStorage
+    localStorage.setItem(STEP_KEY, steps.toString())
+    localStorage.setItem(CAL_KEY, cal.toString())
+    localStorage.setItem(SLEEP_KEY, sleepMin.toString())
+    setStepGoal(steps)
+    setCalGoal(cal)
+    setSleepGoal(sleepMin)
+
+    // Save to DB (best effort)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      await supabase
+        .from('users')
+        .update({ step_goal: steps, calorie_goal: cal, sleep_goal_minutes: sleepMin })
+        .eq('id', user.id)
     }
-    if (changed) {
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    }
+
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (
@@ -152,6 +192,46 @@ export default function GoalsSettingsPage() {
           </div>
         </section>
 
+        {/* Sleep Goal */}
+        <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
+          <div>
+            <h2 className="font-semibold text-text-primary">Sleep Duration Goal</h2>
+            <p className="text-sm text-text-secondary mt-0.5">
+              Target hours of sleep per night. Used by AI insights to assess your sleep patterns.
+            </p>
+          </div>
+
+          <div className="flex gap-3 items-center">
+            <input
+              type="number"
+              min={4}
+              max={12}
+              step={0.5}
+              value={sleepInput}
+              onChange={(e) => setSleepInput(e.target.value)}
+              className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
+            />
+            <span className="text-text-secondary text-sm">hours / night</span>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            {[6, 7, 7.5, 8, 9].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setSleepInput(preset.toString())}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  sleepGoal === preset * 60
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-border text-text-secondary hover:bg-surface-secondary'
+                }`}
+              >
+                {preset}h
+              </button>
+            ))}
+          </div>
+        </section>
+
         <button
           type="button"
           onClick={handleSave}
@@ -161,7 +241,7 @@ export default function GoalsSettingsPage() {
         </button>
 
         <p className="text-xs text-text-secondary text-center">
-          Goals are stored locally on this device. Changes apply immediately on your dashboard.
+          Goals sync across devices and inform your AI-powered health insights.
         </p>
       </main>
     </div>

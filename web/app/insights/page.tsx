@@ -130,8 +130,17 @@ export default function InsightsPage() {
         ? localStorage.getItem('kquarks_claude_api_key') ?? undefined
         : undefined
 
+      const stepGoalRaw = localStorage.getItem('kquarks_step_goal')
+      const calGoalRaw = localStorage.getItem('kquarks_calorie_goal')
+      const sleepGoalRaw = localStorage.getItem('kquarks_sleep_goal_minutes')
+      const userGoals = {
+        stepGoal: stepGoalRaw ? parseInt(stepGoalRaw, 10) || 10000 : 10000,
+        calorieGoal: calGoalRaw ? parseInt(calGoalRaw, 10) || 500 : 500,
+        sleepGoalMinutes: sleepGoalRaw ? parseInt(sleepGoalRaw, 10) || 480 : 480,
+      }
+
       const { error } = await supabase.functions.invoke('generate-insights', {
-        body: { healthContext, userApiKey },
+        body: { healthContext: { ...healthContext, userGoals }, userApiKey },
       })
 
       if (error) throw new Error(error.message ?? 'Generation failed')

@@ -13,7 +13,7 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch user profile
+  // Fetch user profile (includes goals)
   const { data: profile } = await supabase
     .from('users')
     .select('*')
@@ -97,6 +97,9 @@ export default async function DashboardPage() {
       insights={insights ?? []}
       weeklyWorkoutCount={weeklyWorkoutCount ?? 0}
       workoutStreak={workoutStreak}
+      dbStepGoal={profile?.step_goal ?? null}
+      dbCalGoal={profile?.calorie_goal ?? null}
+      dbSleepGoalMinutes={profile?.sleep_goal_minutes ?? null}
     />
   )
 }

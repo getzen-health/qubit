@@ -93,6 +93,9 @@ interface DashboardStreamProps {
   }>
   weeklyWorkoutCount: number
   workoutStreak: number
+  dbStepGoal?: number | null
+  dbCalGoal?: number | null
+  dbSleepGoalMinutes?: number | null
 }
 
 export function DashboardStream({
@@ -104,27 +107,34 @@ export function DashboardStream({
   insights,
   weeklyWorkoutCount,
   workoutStreak,
+  dbStepGoal,
+  dbCalGoal,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
 
-  const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
-  const [calGoal, setCalGoal] = useState(DEFAULT_CAL_GOAL)
+  const [stepGoal, setStepGoal] = useState(dbStepGoal ?? DEFAULT_STEP_GOAL)
+  const [calGoal, setCalGoal] = useState(dbCalGoal ?? DEFAULT_CAL_GOAL)
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false)
   const [insightError, setInsightError] = useState<string | null>(null)
   const [localInsights, setLocalInsights] = useState(insights)
   useEffect(() => {
-    const storedSteps = localStorage.getItem('kquarks_step_goal')
-    if (storedSteps) {
-      const n = parseInt(storedSteps, 10)
-      if (!isNaN(n) && n > 0) setStepGoal(n)
+    // Only use localStorage if DB didn't provide goals
+    if (!dbStepGoal) {
+      const storedSteps = localStorage.getItem('kquarks_step_goal')
+      if (storedSteps) {
+        const n = parseInt(storedSteps, 10)
+        if (!isNaN(n) && n > 0) setStepGoal(n)
+      }
     }
-    const storedCal = localStorage.getItem('kquarks_calorie_goal')
-    if (storedCal) {
-      const n = parseInt(storedCal, 10)
-      if (!isNaN(n) && n > 0) setCalGoal(n)
+    if (!dbCalGoal) {
+      const storedCal = localStorage.getItem('kquarks_calorie_goal')
+      if (storedCal) {
+        const n = parseInt(storedCal, 10)
+        if (!isNaN(n) && n > 0) setCalGoal(n)
+      }
     }
-  }, [])
+  }, [dbStepGoal, dbCalGoal])
 
   const handleGenerateInsights = async () => {
     setIsGeneratingInsights(true)
@@ -169,8 +179,16 @@ export function DashboardStream({
           awakeMinutes: s.awake_minutes ?? 0,
         })),
       }
+      const stepGoalRaw = localStorage.getItem('kquarks_step_goal')
+      const calGoalRaw = localStorage.getItem('kquarks_calorie_goal')
+      const sleepGoalRaw = localStorage.getItem('kquarks_sleep_goal_minutes')
+      const userGoals = {
+        stepGoal: stepGoalRaw ? parseInt(stepGoalRaw, 10) || 10000 : 10000,
+        calorieGoal: calGoalRaw ? parseInt(calGoalRaw, 10) || 500 : 500,
+        sleepGoalMinutes: sleepGoalRaw ? parseInt(sleepGoalRaw, 10) || 480 : 480,
+      }
       const { error } = await supabase.functions.invoke('generate-insights', {
-        body: { healthContext, userApiKey },
+        body: { healthContext: { ...healthContext, userGoals }, userApiKey },
       })
       if (error) throw error
       // Refresh insights from DB

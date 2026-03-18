@@ -6,6 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
+interface UserGoals {
+  stepGoal: number
+  calorieGoal: number
+  sleepGoalMinutes: number
+}
+
 interface HealthContext {
   dailySummary: {
     date: string
@@ -41,6 +47,7 @@ interface HealthContext {
     coreMinutes: number
     awakeMinutes: number
   }>
+  userGoals?: UserGoals
 }
 
 Deno.serve(async (req: Request) => {
@@ -203,12 +210,31 @@ Generate 3-5 insights covering different categories. At least one should be acti
 function buildHealthPrompt(ctx: HealthContext): string {
   const today = ctx.dailySummary
   const weekAvg = calculateWeekAverages(ctx.weekHistory)
+  const goals = ctx.userGoals
+
+  // Goal progress helpers
+  const stepPct = goals ? Math.round((today.steps / goals.stepGoal) * 100) : null
+  const calPct = goals ? Math.round((today.activeCalories / goals.calorieGoal) * 100) : null
+  const sleepPct = goals && today.sleepDurationMinutes
+    ? Math.round((today.sleepDurationMinutes / goals.sleepGoalMinutes) * 100)
+    : null
 
   let prompt = `## Today's Health Data (${today.date})
+`
 
+  if (goals) {
+    prompt += `
+**User Goals:**
+- Step Goal: ${goals.stepGoal.toLocaleString()} steps/day
+- Calorie Goal: ${goals.calorieGoal} kcal active/day
+- Sleep Goal: ${(goals.sleepGoalMinutes / 60).toFixed(1)} hours/night
+`
+  }
+
+  prompt += `
 **Activity:**
-- Steps: ${today.steps.toLocaleString()} (weekly avg: ${weekAvg.steps.toLocaleString()})
-- Active Calories: ${today.activeCalories.toFixed(0)} kcal (weekly avg: ${weekAvg.activeCalories.toFixed(0)})
+- Steps: ${today.steps.toLocaleString()}${stepPct !== null ? ` (${stepPct}% of ${goals!.stepGoal.toLocaleString()} goal)` : ` (weekly avg: ${weekAvg.steps.toLocaleString()})`}
+- Active Calories: ${today.activeCalories.toFixed(0)} kcal${calPct !== null ? ` (${calPct}% of ${goals!.calorieGoal} goal)` : ` (weekly avg: ${weekAvg.activeCalories.toFixed(0)})`}
 - Distance: ${(today.distanceMeters / 1000).toFixed(1)} km
 - Floors Climbed: ${today.floorsClimbed}
 - Active Minutes: ${today.activeMinutes}
@@ -218,7 +244,7 @@ function buildHealthPrompt(ctx: HealthContext): string {
 - HRV: ${today.avgHrv?.toFixed(0) ?? "N/A"} ms (weekly avg: ${weekAvg.avgHrv?.toFixed(0) ?? "N/A"})
 
 **Sleep:**
-- Duration: ${today.sleepDurationMinutes ? (today.sleepDurationMinutes / 60).toFixed(1) + " hours" : "N/A"} (weekly avg: ${weekAvg.sleepDurationMinutes ? (weekAvg.sleepDurationMinutes / 60).toFixed(1) + " hours" : "N/A"})
+- Duration: ${today.sleepDurationMinutes ? (today.sleepDurationMinutes / 60).toFixed(1) + " hours" : "N/A"}${sleepPct !== null ? ` (${sleepPct}% of ${(goals!.sleepGoalMinutes / 60).toFixed(1)}h goal)` : weekAvg.sleepDurationMinutes ? ` (weekly avg: ${(weekAvg.sleepDurationMinutes / 60).toFixed(1)} hours)` : ""}
 `
 
   if (ctx.recentSleep.length > 0) {
