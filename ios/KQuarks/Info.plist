@@ -13,5 +13,15 @@
 	<string>https://dbokxnlpllrnhhpyuryj.supabase.co</string>
 	<key>SUPABASE_ANON_KEY</key>
 	<string>sb_publishable_q8X1-IBmyQxCu-UwCDaj6w_PCzN4E7W</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.kquarks.sync.refresh</string>
+		<string>com.kquarks.sync.full</string>
+	</array>
 </dict>
 </plist>
