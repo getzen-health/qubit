@@ -31,6 +31,15 @@ export default async function DashboardPage() {
     .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
     .order('date', { ascending: false })
 
+  // Count workouts this week
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const { count: weeklyWorkoutCount } = await supabase
+    .from('workout_records')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('start_time', sevenDaysAgo.toISOString())
+
   // Fetch recent insights
   const { data: insights } = await supabase
     .from('health_insights')
@@ -45,6 +54,7 @@ export default async function DashboardPage() {
       profile={profile}
       summaries={summaries ?? []}
       insights={insights ?? []}
+      weeklyWorkoutCount={weeklyWorkoutCount ?? 0}
     />
   )
 }
