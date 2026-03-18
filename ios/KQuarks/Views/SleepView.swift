@@ -18,7 +18,7 @@ struct SleepView: View {
                     ContentUnavailableView(
                         "No Sleep Data",
                         systemImage: "moon.zzz",
-                        description: Text("No sleep data found for the past 14 days. Enable sleep tracking in your Apple Watch or iPhone.")
+                        description: Text("No sleep data found for the past 30 days. Enable sleep tracking in your Apple Watch or iPhone.")
                     )
                 } else {
                     List {
@@ -53,8 +53,8 @@ struct SleepView: View {
     private func loadSleep() async {
         isLoading = true
         let calendar = Calendar.current
-        let twoWeeksAgo = calendar.date(byAdding: .day, value: -14, to: Date())!
-        let samples = (try? await healthKit.fetchSleepAnalysis(from: twoWeeksAgo, to: Date())) ?? []
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date())!
+        let samples = (try? await healthKit.fetchSleepAnalysis(from: thirtyDaysAgo, to: Date())) ?? []
         sessions = groupSamplesIntoSessions(samples)
         isLoading = false
     }
