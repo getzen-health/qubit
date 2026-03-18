@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X, Search } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -91,6 +91,124 @@ function MacroBar({ protein, carbs, fat, proteinGoal, carbsGoal, fatGoal }: {
   )
 }
 
+interface FoodResult {
+  name: string
+  brand?: string
+  calories100g: number
+  protein100g: number
+  carbs100g: number
+  fat100g: number
+}
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(timer)
+  }, [value, delay])
+  return debounced
+}
+
+function FoodSearchInput({
+  value,
+  onChange,
+  onSelect,
+  placeholder,
+}: {
+  value: string
+  onChange: (v: string) => void
+  onSelect: (food: FoodResult) => void
+  placeholder?: string
+}) {
+  const [results, setResults] = useState<FoodResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [open, setOpen] = useState(false)
+  const debouncedQuery = useDebounce(value, 400)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (debouncedQuery.length < 2) { setResults([]); setOpen(false); return }
+    let cancelled = false
+    setSearching(true)
+    fetch(
+      `https://world.openfoodfacts.org/cgi/search.pl?action=process&json=true&search_terms=${encodeURIComponent(debouncedQuery)}&fields=product_name,brands,nutriments&page_size=6&sort_by=popularity_key`
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return
+        const products: FoodResult[] = (data.products ?? [])
+          .filter((p: { product_name?: string; nutriments?: { 'energy-kcal_100g'?: number } }) => p.product_name && (p.nutriments?.['energy-kcal_100g'] ?? 0) > 0)
+          .slice(0, 6)
+          .map((p: { product_name: string; brands?: string; nutriments: Record<string, number> }) => ({
+            name: p.product_name,
+            brand: p.brands?.split(',')[0]?.trim(),
+            calories100g: Math.round(p.nutriments['energy-kcal_100g'] ?? 0),
+            protein100g: Math.round((p.nutriments['proteins_100g'] ?? 0) * 10) / 10,
+            carbs100g: Math.round((p.nutriments['carbohydrates_100g'] ?? 0) * 10) / 10,
+            fat100g: Math.round((p.nutriments['fat_100g'] ?? 0) * 10) / 10,
+          }))
+        setResults(products)
+        setOpen(products.length > 0)
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setSearching(false) })
+    return () => { cancelled = true }
+  }, [debouncedQuery])
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div ref={containerRef} className="relative flex-1">
+      <div className="relative">
+        <input
+          type="text"
+          placeholder={placeholder ?? 'Food name'}
+          value={value}
+          onChange={(e) => { onChange(e.target.value); if (e.target.value.length >= 2) setOpen(true) }}
+          onFocus={() => { if (results.length > 0) setOpen(true) }}
+          className="w-full px-2.5 py-2 pr-8 bg-background border border-border rounded-lg text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+        {searching
+          ? <div className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          : <Search className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-secondary pointer-events-none" />
+        }
+      </div>
+      {open && results.length > 0 && (
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-surface border border-border rounded-xl shadow-xl overflow-hidden">
+          {results.map((food, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); onSelect(food); setOpen(false) }}
+              className="w-full text-left px-3 py-2.5 hover:bg-surface-secondary transition-colors border-b border-border last:border-0"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-sm text-text-primary truncate">{food.name}</p>
+                  {food.brand && <p className="text-xs text-text-secondary truncate">{food.brand}</p>}
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-sm font-semibold text-text-primary">{food.calories100g} kcal</p>
+                  <p className="text-xs text-text-secondary">per 100g</p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function AddMealModal({
   onClose,
   onAdded,
@@ -108,6 +226,18 @@ function AddMealModal({
 
   const updateItem = (i: number, field: string, value: string) => {
     setItems((prev) => prev.map((item, idx) => idx === i ? { ...item, [field]: value } : item))
+  }
+
+  const handleFoodSelect = (i: number, food: FoodResult) => {
+    setItems((prev) => prev.map((item, idx) => idx === i ? {
+      ...item,
+      name: food.name,
+      calories: food.calories100g.toString(),
+      protein: food.protein100g.toString(),
+      carbs: food.carbs100g.toString(),
+      fat: food.fat100g.toString(),
+      servings: '1',
+    } : item))
   }
 
   const addItem = () => {
@@ -206,23 +336,25 @@ function AddMealModal({
             {items.map((item, i) => (
               <div key={i} className="bg-surface rounded-xl border border-border p-3 space-y-2">
                 <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Food name"
+                  <FoodSearchInput
                     value={item.name}
-                    onChange={(e) => updateItem(i, 'name', e.target.value)}
-                    className="flex-1 px-2.5 py-2 bg-background border border-border rounded-lg text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-accent"
+                    onChange={(v) => updateItem(i, 'name', v)}
+                    onSelect={(food) => handleFoodSelect(i, food)}
+                    placeholder="Search food or enter name…"
                   />
                   {items.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeItem(i)}
-                      className="p-2 text-text-secondary hover:text-red-400 rounded-lg hover:bg-surface-secondary"
+                      className="p-2 text-text-secondary hover:text-red-400 rounded-lg hover:bg-surface-secondary shrink-0"
                     >
                       <X className="w-4 h-4" />
                     </button>
                   )}
                 </div>
+                {item.name && item.calories && (
+                  <p className="text-xs text-text-secondary">Values shown are per 100g — adjust servings as needed</p>
+                )}
                 <div className="grid grid-cols-4 gap-2">
                   {[
                     { field: 'calories', label: 'Cal', unit: 'kcal' },
