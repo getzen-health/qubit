@@ -75,36 +75,12 @@ struct SidebarContentView: View {
         case .insights:
             InsightsView()
         case .workouts:
-            WorkoutsPlaceholderView()
+            WorkoutsView()
         case .sleep:
-            SleepPlaceholderView()
+            SleepView()
         case .settings:
             SettingsView()
         }
-    }
-}
-
-/// Placeholder for workouts view
-struct WorkoutsPlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Workouts",
-            systemImage: "figure.run",
-            description: Text("Track your workouts and exercise history.")
-        )
-        .navigationTitle("Workouts")
-    }
-}
-
-/// Placeholder for sleep view
-struct SleepPlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Sleep",
-            systemImage: "moon.fill",
-            description: Text("View your sleep patterns and trends.")
-        )
-        .navigationTitle("Sleep")
     }
 }
 

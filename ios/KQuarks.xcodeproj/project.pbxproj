@@ -39,6 +39,8 @@
 		030 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 204 /* PrivacyInfo.xcprivacy */; };
 		031 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 127 /* KeychainHelper.swift */; };
 		032 /* AIInsightsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 128 /* AIInsightsService.swift */; };
+		033 /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129 /* WorkoutsView.swift */; };
+		034 /* SleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130 /* SleepView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +73,8 @@
 		126 /* WidgetConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfiguration.swift; sourceTree = "<group>"; };
 		127 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		128 /* AIInsightsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightsService.swift; sourceTree = "<group>"; };
+		129 /* WorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
+		130 /* SleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -163,6 +167,8 @@
 				111 /* HealthDataView.swift */,
 				112 /* InsightsView.swift */,
 				113 /* SettingsView.swift */,
+				129 /* WorkoutsView.swift */,
+			130 /* SleepView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -331,6 +337,8 @@
 				029 /* WidgetConfiguration.swift in Sources */,
 				031 /* KeychainHelper.swift in Sources */,
 				032 /* AIInsightsService.swift in Sources */,
+				033 /* WorkoutsView.swift in Sources */,
+			034 /* SleepView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

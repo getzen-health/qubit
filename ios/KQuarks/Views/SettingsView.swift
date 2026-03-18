@@ -4,8 +4,11 @@ struct SettingsView: View {
     @Environment(AppState.self) private var appState
     @State private var showingSignOutAlert = false
     @State private var showingDeleteDataAlert = false
+    @State private var isDeletingData = false
+    @State private var deleteError: String?
 
     private let syncService = SyncService.shared
+    private let supabaseService = SupabaseService.shared
 
     var body: some View {
         NavigationStack {
@@ -105,8 +108,15 @@ struct SettingsView: View {
                     Button(role: .destructive) {
                         showingDeleteDataAlert = true
                     } label: {
-                        Label("Delete Synced Data", systemImage: "trash")
+                        HStack {
+                            Label("Delete Synced Data", systemImage: "trash")
+                            Spacer()
+                            if isDeletingData {
+                                ProgressView()
+                            }
+                        }
                     }
+                    .disabled(isDeletingData)
                 }
 
                 // App section
@@ -161,10 +171,26 @@ struct SettingsView: View {
             .alert("Delete Data", isPresented: $showingDeleteDataAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete", role: .destructive) {
-                    // TODO: Delete synced data
+                    Task {
+                        isDeletingData = true
+                        do {
+                            try await supabaseService.deleteAllUserData()
+                        } catch {
+                            deleteError = error.localizedDescription
+                        }
+                        isDeletingData = false
+                    }
                 }
             } message: {
                 Text("This will delete all your synced health data from the cloud. This action cannot be undone.")
+            }
+            .alert("Delete Failed", isPresented: Binding(
+                get: { deleteError != nil },
+                set: { if !$0 { deleteError = nil } }
+            )) {
+                Button("OK", role: .cancel) { deleteError = nil }
+            } message: {
+                Text(deleteError ?? "")
             }
         }
     }
