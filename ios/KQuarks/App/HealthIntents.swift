@@ -259,6 +259,32 @@ struct CheckFastIntent: AppIntent {
     }
 }
 
+struct EndFastIntent: AppIntent {
+    static var title: LocalizedStringResource = "End Fasting"
+    static var description = IntentDescription("End your current fasting session in KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        guard let elapsed = try await SupabaseService.shared.endFasting() else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "No active fast found. Say \"Start fasting in KQuarks\" to begin one.")
+            )
+        }
+        let h = Int(elapsed)
+        let m = Int((elapsed - Double(h)) * 60)
+        return .result(
+            value: elapsed,
+            dialog: IntentDialog(stringLiteral: "Fast ended. You fasted for \(h)h \(m)m. Great work!")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -362,6 +388,16 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Fasting Status",
             systemImageName: "timer.circle"
+        )
+        AppShortcut(
+            intent: EndFastIntent(),
+            phrases: [
+                "End my fast in \(.applicationName)",
+                "Stop fasting in \(.applicationName)",
+                "Break my fast in \(.applicationName)"
+            ],
+            shortTitle: "End Fast",
+            systemImageName: "timer.circle.fill"
         )
     }
 }
