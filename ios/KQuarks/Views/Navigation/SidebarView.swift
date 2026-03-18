@@ -75,24 +75,12 @@ struct SidebarContentView: View {
         case .insights:
             InsightsView()
         case .workouts:
-            WorkoutsPlaceholderView()
+            WorkoutsView()
         case .sleep:
             SleepPlaceholderView()
         case .settings:
             SettingsView()
         }
-    }
-}
-
-/// Placeholder for workouts view
-struct WorkoutsPlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Workouts",
-            systemImage: "figure.run",
-            description: Text("Track your workouts and exercise history.")
-        )
-        .navigationTitle("Workouts")
     }
 }
 
