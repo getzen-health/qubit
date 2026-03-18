@@ -572,6 +572,141 @@ class SupabaseService {
             .execute()
     }
 
+    // MARK: - Nutrition
+
+    struct MealEntry: Identifiable, Decodable {
+        let id: String
+        let name: String
+        let meal_type: String
+        let calories: Int
+        let protein: Double
+        let carbs: Double
+        let fat: Double
+        let logged_at: String
+    }
+
+    struct DailyNutrition: Decodable {
+        let calories_consumed: Int
+        let protein_consumed: Double
+        let carbs_consumed: Double
+        let fat_consumed: Double
+        let meal_count: Int
+    }
+
+    func logMeal(
+        mealType: String,
+        name: String,
+        calories: Int,
+        protein: Double,
+        carbs: Double,
+        fat: Double
+    ) async throws {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let userId = session.user.id.uuidString
+
+        struct MealPayload: Encodable {
+            let user_id: String
+            let name: String
+            let meal_type: String
+        }
+
+        struct ItemPayload: Encodable {
+            let meal_id: String
+            let user_id: String
+            let name: String
+            let serving_size: String
+            let servings: Double
+            let calories: Int
+            let protein: Double
+            let carbs: Double
+            let fat: Double
+            let source: String
+        }
+
+        // Create meal
+        struct MealRow: Decodable { let id: String }
+        let meals: [MealRow] = try await client.from("meals")
+            .insert(MealPayload(user_id: userId, name: name, meal_type: mealType))
+            .select("id")
+            .execute()
+            .value
+        guard let mealId = meals.first?.id else { return }
+
+        // Create meal item
+        try await client.from("meal_items")
+            .insert(ItemPayload(
+                meal_id: mealId,
+                user_id: userId,
+                name: name,
+                serving_size: "1 serving",
+                servings: 1,
+                calories: calories,
+                protein: protein,
+                carbs: carbs,
+                fat: fat,
+                source: "manual"
+            ))
+            .execute()
+    }
+
+    func fetchTodayNutrition() async throws -> DailyNutrition? {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+
+        let rows: [DailyNutrition] = try await client.from("daily_nutrition")
+            .select("calories_consumed, protein_consumed, carbs_consumed, fat_consumed, meal_count")
+            .eq("user_id", value: session.user.id.uuidString)
+            .eq("date", value: today)
+            .limit(1)
+            .execute()
+            .value
+        return rows.first
+    }
+
+    func fetchTodayMeals() async throws -> [MealEntry] {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        struct MealRow: Decodable {
+            let id: String
+            let name: String
+            let meal_type: String
+            let logged_at: String
+            let meal_items: [ItemRow]
+            struct ItemRow: Decodable {
+                let calories: Int
+                let protein: Double
+                let carbs: Double
+                let fat: Double
+            }
+        }
+
+        let rows: [MealRow] = try await client.from("meals")
+            .select("id, name, meal_type, logged_at, meal_items(calories, protein, carbs, fat)")
+            .eq("user_id", value: session.user.id.uuidString)
+            .gte("logged_at", value: ISO8601DateFormatter().string(from: startOfDay))
+            .lt("logged_at", value: ISO8601DateFormatter().string(from: endOfDay))
+            .order("logged_at", ascending: false)
+            .execute()
+            .value
+
+        return rows.map { row in
+            let calories = row.meal_items.reduce(0) { $0 + $1.calories }
+            let protein = row.meal_items.reduce(0.0) { $0 + $1.protein }
+            let carbs = row.meal_items.reduce(0.0) { $0 + $1.carbs }
+            let fat = row.meal_items.reduce(0.0) { $0 + $1.fat }
+            return MealEntry(id: row.id, name: row.name, meal_type: row.meal_type,
+                           calories: calories, protein: protein, carbs: carbs, fat: fat, logged_at: row.logged_at)
+        }
+    }
+
+    func deleteMeal(mealId: String) async throws {
+        try await client.from("meals").delete().eq("id", value: mealId).execute()
+    }
+
     // MARK: - Habits
 
     func fetchHabits(userId: String) async throws -> ([Habit], [HabitCompletion]) {

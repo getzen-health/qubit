@@ -248,6 +248,22 @@ struct DashboardListView: View {
                         }
                         .padding()
                     }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: NutritionView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "fork.knife")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+                            Text("Nutrition")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
                 }
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
