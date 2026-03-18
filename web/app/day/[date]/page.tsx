@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ChevronLeft, ChevronRight, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Activity, Flame, Moon, Heart, Route, Layers, Scale, Zap, Dumbbell, Timer } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { CopySummaryButton } from './copy-summary-button'
 
@@ -74,7 +74,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
   const [{ data: summary }, { data: workouts }, { data: sleepRecords }, { data: prevDay }, { data: nextDay }] = await Promise.all([
     supabase
       .from('daily_summaries')
-      .select('date, steps, active_calories, distance_meters, floors_climbed, sleep_duration_minutes, resting_heart_rate, avg_hrv, recovery_score, strain_score, weight_kg')
+      .select('date, steps, active_calories, distance_meters, floors_climbed, active_minutes, sleep_duration_minutes, resting_heart_rate, avg_hrv, recovery_score, strain_score, weight_kg')
       .eq('user_id', user.id)
       .eq('date', date)
       .single(),
@@ -102,6 +102,7 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
 
   const shareLines: string[] = [fmtDate(date)]
   shareLines.push(`Steps: ${summary.steps.toLocaleString()}`)
+  if (summary.active_minutes) shareLines.push(`Active Minutes: ${summary.active_minutes} min`)
   if (summary.active_calories) shareLines.push(`Active Calories: ${Math.round(summary.active_calories)} kcal`)
   if (distanceKm) shareLines.push(`Distance: ${distanceKm} km`)
   if (summary.sleep_duration_minutes) shareLines.push(`Sleep: ${fmtSleep(summary.sleep_duration_minutes)}`)
@@ -179,6 +180,15 @@ export default async function DayPage({ params }: { params: Promise<{ date: stri
                 value={distanceKm}
                 unit="km"
                 color="bg-blue-500/10"
+              />
+            )}
+            {summary.active_minutes != null && summary.active_minutes > 0 && (
+              <StatCard
+                icon={<Timer className="w-5 h-5 text-cyan-400" />}
+                label="Active Minutes"
+                value={summary.active_minutes.toString()}
+                unit="min"
+                color="bg-cyan-500/10"
               />
             )}
             {summary.floors_climbed != null && summary.floors_climbed > 0 && (

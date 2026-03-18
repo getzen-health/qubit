@@ -62,6 +62,7 @@ interface DashboardStreamProps {
     active_calories: number
     distance_meters: number
     floors_climbed: number
+    active_minutes?: number
     sleep_duration_minutes?: number
     resting_heart_rate?: number
     avg_hrv?: number
@@ -129,7 +130,7 @@ export function DashboardStream({
           avgHrv: todaySummary?.avg_hrv ?? null,
           sleepDurationMinutes: todaySummary?.sleep_duration_minutes ?? null,
           sleepQualityScore: null,
-          activeMinutes: 0,
+          activeMinutes: todaySummary?.active_minutes ?? 0,
         },
         weekHistory: weekHistory.map((s) => ({
           date: s.date,
