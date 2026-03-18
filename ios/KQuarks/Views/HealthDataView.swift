@@ -58,6 +58,13 @@ struct HealthDataView: View {
                 }
             }
             .navigationTitle("Health Data")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: RecordsView()) {
+                        Image(systemName: "trophy")
+                    }
+                }
+            }
         }
     }
 }

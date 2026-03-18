@@ -46,6 +46,7 @@
 		037 /* GoalsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 133 /* GoalsSettingsView.swift */; };
 		038 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134 /* NotificationService.swift */; };
 		039 /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135 /* WorkoutDetailView.swift */; };
+		040 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136 /* RecordsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,6 +86,7 @@
 		133 /* GoalsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsSettingsView.swift; sourceTree = "<group>"; };
 		134 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		135 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
+		136 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 		201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		202 /* KQuarks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarks.entitlements; sourceTree = "<group>"; };
 		203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 			130 /* SleepView.swift */,
 				131 /* HealthMetricDetailView.swift */,
 				135 /* WorkoutDetailView.swift */,
+				136 /* RecordsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 			037 /* GoalsSettingsView.swift in Sources */,
 			038 /* NotificationService.swift in Sources */,
 				039 /* WorkoutDetailView.swift in Sources */,
+				040 /* RecordsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
