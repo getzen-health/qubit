@@ -284,7 +284,8 @@ struct DashboardListView: View {
                     label: "Distance",
                     value: String(format: "%.1f", summary.distanceKm),
                     unit: "km",
-                    color: .activity
+                    color: .activity,
+                    destination: AnyView(HealthMetricDetailView(dataType: .distance))
                 )
 
                 if summary.floorsClimbed > 0 {
@@ -293,7 +294,8 @@ struct DashboardListView: View {
                         label: "Floors Climbed",
                         value: "\(summary.floorsClimbed)",
                         unit: "floors",
-                        color: .hrv
+                        color: .hrv,
+                        destination: AnyView(HealthMetricDetailView(dataType: .floorsClimbed))
                     )
                 }
 
