@@ -38,6 +38,9 @@ final class NotificationService {
                 markStepGoalNotifiedToday()
             }
 
+            // Update app icon badge with step progress (remaining steps to goal, 0 when goal reached)
+            updateStepBadge(steps: summary.steps, goal: Int(goal))
+
             // Update morning brief with fresh data
             let recoveryScore = UserDefaults.standard.integer(forKey: "cached_recovery_score")
             scheduleMorningBrief(
@@ -46,6 +49,17 @@ final class NotificationService {
                 stepGoal: Int(goal)
             )
         } catch { }
+    }
+
+    /// Shows remaining steps to goal on app icon badge. Clears badge when goal is met.
+    func updateStepBadge(steps: Int, goal: Int) {
+        guard isAuthorized else { return }
+        let remaining = max(goal - steps, 0)
+        // Show remaining in hundreds (e.g. 2500 remaining → badge 25), cap at 99
+        let badgeValue = min(remaining / 100, 99)
+        Task { @MainActor in
+            try? await UNUserNotificationCenter.current().setBadgeCount(badgeValue)
+        }
     }
 
     /// Schedules (or replaces) tomorrow's 8am morning brief with today's data.
