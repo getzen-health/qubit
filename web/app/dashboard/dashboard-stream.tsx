@@ -22,6 +22,7 @@ import {
   Sparkles,
   Scale,
   Droplets,
+  Compass,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -508,6 +509,13 @@ export function DashboardStream({
             })()}
           </div>
           <div className="flex items-center gap-1">
+            <Link
+              href="/explore"
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Explore all features"
+            >
+              <Compass className="w-5 h-5 text-text-secondary" />
+            </Link>
             <Link
               href="/settings"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
