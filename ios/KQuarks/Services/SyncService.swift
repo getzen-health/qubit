@@ -295,6 +295,45 @@ class SyncService {
             ))
         }
 
+        // Fetch running form metrics (Apple Watch, iOS 16+) — averaged per workout session
+        if #available(iOS 16.0, *) {
+            let runningWorkouts = try await healthKit.fetchWorkouts(from: startDate, to: now)
+                .filter { $0.workoutActivityType == .running && $0.duration >= 120 }
+
+            for workout in runningWorkouts {
+                struct FormMetric { let identifier: HKQuantityTypeIdentifier; let type: String; let unit: HKUnit }
+                let formMetrics = [
+                    FormMetric(identifier: .runningCadence, type: "running_cadence", unit: HKUnit.count().unitDivided(by: .minute())),
+                    FormMetric(identifier: .runningStrideLength, type: "running_stride_length", unit: .meter()),
+                    FormMetric(identifier: .runningVerticalOscillation, type: "running_vertical_oscillation", unit: .meterUnit(with: .centi)),
+                    FormMetric(identifier: .runningGroundContactTime, type: "running_ground_contact_time", unit: .secondUnit(with: .milli)),
+                    FormMetric(identifier: .runningPower, type: "running_power", unit: HKUnit.watt()),
+                ]
+                for metric in formMetrics {
+                    let samples = try await healthKit.fetchSamples(
+                        for: metric.identifier,
+                        from: workout.startDate,
+                        to: workout.endDate,
+                        limit: 5000
+                    )
+                    guard !samples.isEmpty else { continue }
+                    let avg = samples.map { $0.quantity.doubleValue(for: metric.unit) }.reduce(0, +) / Double(samples.count)
+                    records.append(HealthRecordUpload(
+                        userId: userId,
+                        type: metric.type,
+                        value: avg,
+                        unit: metric.identifier == .runningGroundContactTime ? "ms" :
+                              metric.identifier == .runningVerticalOscillation ? "cm" :
+                              metric.identifier == .runningStrideLength ? "m" :
+                              metric.identifier == .runningPower ? "W" : "spm",
+                        source: workout.sourceRevision.source.name,
+                        startTime: workout.startDate,
+                        endTime: workout.endDate
+                    ))
+                }
+            }
+        }
+
         // Fetch time in daylight (iPhone ambient light sensor, iOS 17+)
         if #available(iOS 17.0, *) {
             let daylightSamples = try await healthKit.fetchSamples(

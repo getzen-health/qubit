@@ -60,6 +60,15 @@ class HealthKitService {
             types.insert(HKQuantityType(.timeInDaylight))
         }
 
+        // Running form metrics (Apple Watch, iOS 16+)
+        if #available(iOS 16.0, *) {
+            types.insert(HKQuantityType(.runningCadence))
+            types.insert(HKQuantityType(.runningStrideLength))
+            types.insert(HKQuantityType(.runningVerticalOscillation))
+            types.insert(HKQuantityType(.runningGroundContactTime))
+            types.insert(HKQuantityType(.runningPower))
+        }
+
         // Mobility (iPhone walking metrics, iOS 14+)
         types.insert(HKQuantityType(.walkingSpeed))
         types.insert(HKQuantityType(.walkingStepLength))

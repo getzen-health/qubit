@@ -1,0 +1,318 @@
+'use client'
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceLine,
+} from 'recharts'
+
+interface RunData {
+  date: string
+  durationMinutes: number
+  distanceKm: number
+  paceSecsPerKm: number | null
+  heartRate: number | null
+  cadence: number | null
+  strideLength: number | null
+  verticalOscillation: number | null
+  groundContactTime: number | null
+  power: number | null
+}
+
+interface RunningClientProps {
+  runs: RunData[]
+}
+
+const tooltipStyle = {
+  background: 'var(--color-surface, #1a1a1a)',
+  border: '1px solid var(--color-border, #333)',
+  borderRadius: 8,
+  fontSize: 12,
+}
+
+function fmtDate(iso: string) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function fmtPace(secs: number) {
+  const m = Math.floor(secs / 60)
+  const s = Math.round(secs % 60)
+  return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+function fmtDuration(min: number) {
+  const h = Math.floor(min / 60)
+  const m = min % 60
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+
+function avgOf(runs: RunData[], key: keyof RunData): number | null {
+  const vals = runs.map((r) => r[key] as number | null).filter((v): v is number => v !== null && v > 0)
+  if (!vals.length) return null
+  return vals.reduce((a, b) => a + b, 0) / vals.length
+}
+
+function TrendChart<T extends object>({
+  data,
+  dataKey,
+  label,
+  color,
+  formatter,
+  domain,
+  refLines,
+}: {
+  data: T[]
+  dataKey: keyof T & string
+  label: string
+  color: string
+  formatter: (v: number) => string
+  domain?: [number | string, number | string]
+  refLines?: { y: number; color: string; label: string }[]
+}) {
+  if (data.length < 2) return null
+  return (
+    <div className="bg-surface rounded-xl border border-border p-4">
+      <h3 className="text-sm font-medium text-text-secondary mb-3">{label}</h3>
+      <ResponsiveContainer width="100%" height={140}>
+        <LineChart data={data} margin={{ top: 8, right: 4, left: -4, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+            axisLine={false}
+            tickLine={false}
+            interval="preserveStartEnd"
+          />
+          <YAxis
+            tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+            tickFormatter={formatter}
+            domain={domain ?? ['auto', 'auto']}
+            width={38}
+          />
+          <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatter(v), label]} />
+          {refLines?.map((r) => (
+            <ReferenceLine key={r.y} y={r.y} stroke={r.color} strokeDasharray="4 3"
+              label={{ value: r.label, position: 'insideTopRight', fontSize: 9, fill: r.color }} />
+          ))}
+          <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={{ r: 3, fill: color }} activeDot={{ r: 5 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+export function RunningClient({ runs }: RunningClientProps) {
+  if (runs.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+        <span className="text-5xl">🏃</span>
+        <h2 className="text-lg font-semibold text-text-primary">No running data yet</h2>
+        <p className="text-sm text-text-secondary max-w-xs">
+          Sync your iPhone to import running workouts. Form metrics (cadence, stride, oscillation) require Apple Watch Series 4 or later with iOS 16+.
+        </p>
+      </div>
+    )
+  }
+
+  const hasFormData = runs.some((r) => r.cadence !== null)
+  const avgCadence = avgOf(runs, 'cadence')
+  const avgStride = avgOf(runs, 'strideLength')
+  const avgOscillation = avgOf(runs, 'verticalOscillation')
+  const avgGCT = avgOf(runs, 'groundContactTime')
+  const avgPace = avgOf(runs, 'paceSecsPerKm')
+  const totalKm = runs.reduce((s, r) => s + r.distanceKm, 0)
+  const totalRuns = runs.length
+
+  // Chart data
+  const paceChartData = runs
+    .filter((r) => r.paceSecsPerKm && r.paceSecsPerKm > 0)
+    .map((r) => ({ date: fmtDate(r.date), pace: r.paceSecsPerKm! }))
+
+  const cadenceChartData = runs
+    .filter((r) => r.cadence && r.cadence > 0)
+    .map((r) => ({ date: fmtDate(r.date), cadence: Math.round(r.cadence!) }))
+
+  const oscChartData = runs
+    .filter((r) => r.verticalOscillation && r.verticalOscillation > 0)
+    .map((r) => ({ date: fmtDate(r.date), osc: +r.verticalOscillation!.toFixed(1) }))
+
+  const gctChartData = runs
+    .filter((r) => r.groundContactTime && r.groundContactTime > 0)
+    .map((r) => ({ date: fmtDate(r.date), gct: Math.round(r.groundContactTime!) }))
+
+  return (
+    <div className="space-y-6">
+      {/* Summary stats */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="bg-surface rounded-xl border border-border p-4 text-center">
+          <p className="text-2xl font-bold text-green-400">{totalRuns}</p>
+          <p className="text-xs text-text-secondary mt-0.5">Runs</p>
+        </div>
+        <div className="bg-surface rounded-xl border border-border p-4 text-center">
+          <p className="text-2xl font-bold text-blue-400">{totalKm.toFixed(0)} km</p>
+          <p className="text-xs text-text-secondary mt-0.5">Total Distance</p>
+        </div>
+        {avgPace && (
+          <div className="bg-surface rounded-xl border border-border p-4 text-center">
+            <p className="text-2xl font-bold text-purple-400">{fmtPace(avgPace)}</p>
+            <p className="text-xs text-text-secondary mt-0.5">Avg Pace /km</p>
+          </div>
+        )}
+        {avgCadence && (
+          <div className="bg-surface rounded-xl border border-border p-4 text-center">
+            <p className={`text-2xl font-bold ${avgCadence >= 170 ? 'text-green-400' : avgCadence >= 160 ? 'text-yellow-400' : 'text-orange-400'}`}>
+              {Math.round(avgCadence)}
+            </p>
+            <p className="text-xs text-text-secondary mt-0.5">Avg Cadence (spm)</p>
+          </div>
+        )}
+      </div>
+
+      {/* Form metric stats */}
+      {hasFormData && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {avgStride && (
+            <div className="bg-surface rounded-xl border border-border p-4 text-center">
+              <p className="text-2xl font-bold text-indigo-400">{(avgStride * 100).toFixed(0)} cm</p>
+              <p className="text-xs text-text-secondary mt-0.5">Avg Stride</p>
+            </div>
+          )}
+          {avgOscillation && (
+            <div className="bg-surface rounded-xl border border-border p-4 text-center">
+              <p className={`text-2xl font-bold ${avgOscillation <= 8 ? 'text-green-400' : avgOscillation <= 10 ? 'text-yellow-400' : 'text-orange-400'}`}>
+                {avgOscillation.toFixed(1)} cm
+              </p>
+              <p className="text-xs text-text-secondary mt-0.5">Vert. Oscillation</p>
+            </div>
+          )}
+          {avgGCT && (
+            <div className="bg-surface rounded-xl border border-border p-4 text-center">
+              <p className={`text-2xl font-bold ${avgGCT <= 240 ? 'text-green-400' : avgGCT <= 280 ? 'text-yellow-400' : 'text-orange-400'}`}>
+                {Math.round(avgGCT)} ms
+              </p>
+              <p className="text-xs text-text-secondary mt-0.5">Ground Contact</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Trend charts */}
+      <TrendChart
+        data={paceChartData}
+        dataKey="pace"
+        label="Pace (min/km)"
+        color="#a78bfa"
+        formatter={(v) => fmtPace(v)}
+        domain={['dataMin - 30', 'dataMax + 30']}
+      />
+      {cadenceChartData.length >= 2 && (
+        <TrendChart
+          data={cadenceChartData}
+          dataKey="cadence"
+          label="Cadence (steps/min)"
+          color="#4ade80"
+          formatter={(v) => `${Math.round(v)}`}
+          domain={[140, 200]}
+          refLines={[
+            { y: 170, color: 'rgba(74,222,128,0.4)', label: '170' },
+            { y: 180, color: 'rgba(74,222,128,0.6)', label: '180' },
+          ]}
+        />
+      )}
+      {oscChartData.length >= 2 && (
+        <TrendChart
+          data={oscChartData}
+          dataKey="osc"
+          label="Vertical Oscillation (cm)"
+          color="#fb923c"
+          formatter={(v) => `${v.toFixed(1)} cm`}
+          domain={[4, 16]}
+          refLines={[{ y: 8, color: 'rgba(74,222,128,0.4)', label: '8cm' }]}
+        />
+      )}
+      {gctChartData.length >= 2 && (
+        <TrendChart
+          data={gctChartData}
+          dataKey="gct"
+          label="Ground Contact Time (ms)"
+          color="#38bdf8"
+          formatter={(v) => `${Math.round(v)} ms`}
+          domain={[180, 340]}
+          refLines={[{ y: 240, color: 'rgba(74,222,128,0.4)', label: '240ms' }]}
+        />
+      )}
+
+      {/* Form guide */}
+      {hasFormData && (
+        <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-3">
+          <p className="font-medium text-text-primary text-sm">Running form guide</p>
+          <div className="space-y-2">
+            {[
+              {
+                name: 'Cadence',
+                good: '≥ 170 spm',
+                detail: 'Higher cadence reduces impact forces and overstriding. Elite runners typically run at 180+ spm.',
+              },
+              {
+                name: 'Vertical Oscillation',
+                good: '≤ 8 cm',
+                detail: 'How much you bounce up and down. Less is more efficient — energy spent moving up is wasted. Aim for a smooth, horizontal motion.',
+              },
+              {
+                name: 'Ground Contact Time',
+                good: '≤ 240 ms',
+                detail: 'Time your foot is on the ground. Shorter contact = quicker turnover = faster, more efficient running.',
+              },
+              {
+                name: 'Stride Length',
+                good: 'Improves with speed',
+                detail: 'Should increase naturally with pace — not by overstriding (landing heel-first far ahead of body).',
+              },
+            ].map(({ name, good, detail }) => (
+              <div key={name}>
+                <p className="font-medium text-text-primary">{name} <span className="text-green-400 font-mono">{good}</span></p>
+                <p className="opacity-70 mt-0.5">{detail}</p>
+              </div>
+            ))}
+          </div>
+          <p className="opacity-50 pt-1">Requires Apple Watch Series 4+ running iOS 16 or later.</p>
+        </div>
+      )}
+
+      {/* Run list */}
+      <div className="space-y-2">
+        <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Recent Runs</h2>
+        {[...runs].reverse().slice(0, 20).map((run) => {
+          const date = new Date(run.date + 'T00:00:00')
+          return (
+            <div key={run.date + run.durationMinutes} className="bg-surface rounded-xl border border-border px-4 py-3 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-text-primary">
+                  {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                </p>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-green-400">{run.distanceKm.toFixed(2)} km</p>
+                  <p className="text-xs text-text-secondary">{fmtDuration(run.durationMinutes)}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-secondary">
+                {run.paceSecsPerKm && run.paceSecsPerKm > 0 && (
+                  <span className="text-purple-400">{fmtPace(run.paceSecsPerKm)} /km</span>
+                )}
+                {run.heartRate && <span>❤️ {run.heartRate} bpm</span>}
+                {run.cadence && <span>👟 {Math.round(run.cadence)} spm</span>}
+                {run.verticalOscillation && <span>↕️ {run.verticalOscillation.toFixed(1)} cm</span>}
+                {run.groundContactTime && <span>⏱ {Math.round(run.groundContactTime)} ms</span>}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
