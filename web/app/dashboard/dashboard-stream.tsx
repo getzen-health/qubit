@@ -970,6 +970,7 @@ export function DashboardStream({
                 { href: '/zones', label: 'Training Zones' },
                 { href: '/recovery', label: 'Recovery & HRV' },
                 { href: '/vitals', label: 'Vitals' },
+                { href: '/bloodpressure', label: 'Blood Pressure' },
                 { href: '/vo2max', label: 'VO₂ Max' },
                 { href: '/cardiac', label: 'Cardiac Events' },
               ],
