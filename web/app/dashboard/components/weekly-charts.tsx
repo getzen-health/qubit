@@ -10,7 +10,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  ReferenceLine,
 } from 'recharts'
+
+const STEP_GOAL = 10000
 
 interface WeeklyChartsProps {
   summaries: Array<{
@@ -74,6 +77,12 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
               formatter={(value: number) => [value.toLocaleString(), 'Steps']}
             />
             <Bar dataKey="steps" fill="#22c55e" radius={[3, 3, 0, 0]} />
+            <ReferenceLine
+              y={STEP_GOAL}
+              stroke="rgba(255,255,255,0.25)"
+              strokeDasharray="4 3"
+              label={{ value: '10k goal', position: 'insideTopRight', fontSize: 10, fill: 'rgba(255,255,255,0.4)' }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
