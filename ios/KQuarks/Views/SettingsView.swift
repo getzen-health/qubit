@@ -117,11 +117,11 @@ struct SettingsView: View {
                         Label("About", systemImage: "info.circle")
                     }
 
-                    Link(destination: URL(string: "https://example.com/privacy")!) {
+                    Link(destination: URL(string: "https://kquarks.app/privacy")!) {
                         Label("Privacy Policy", systemImage: "hand.raised")
                     }
 
-                    Link(destination: URL(string: "https://example.com/terms")!) {
+                    Link(destination: URL(string: "https://kquarks.app/terms")!) {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                 }
@@ -142,7 +142,7 @@ struct SettingsView: View {
                     HStack {
                         Text("Version")
                         Spacer()
-                        Text("1.0.0")
+                        Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
                             .foregroundColor(.secondary)
                     }
                 }
