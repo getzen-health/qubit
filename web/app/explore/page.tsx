@@ -100,6 +100,7 @@ const SECTIONS: Section[] = [
       { label: 'Correlations', desc: 'How your metrics influence each other', href: '/correlations', emoji: '🔗' },
       { label: 'Compare Weeks', desc: 'This week vs last week comparison', href: '/compare', emoji: '↔️' },
       { label: 'Monthly Review', desc: 'Month-by-month summary view', href: '/monthly', emoji: '📆' },
+      { label: 'Daily Check-in', desc: 'Log energy, mood, and stress each day', href: '/checkin', emoji: '📋' },
       { label: 'AI Insights', desc: 'Claude-powered health analysis', href: '/insights', emoji: '✨' },
       { label: 'Sync Status', desc: 'Data coverage and device health', href: '/sync', emoji: '🔄' },
     ],
