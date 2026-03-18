@@ -1,4 +1,5 @@
 import SwiftUI
+import HealthKit
 
 /// Stream-based list dashboard - minimalistic, AI-first, expandable metrics
 struct DashboardListView: View {
@@ -180,14 +181,20 @@ struct DashboardListView: View {
 
                 // Sleep
                 if let formattedSleep = summary.formattedSleep {
+                    let sleepSublabel: String = {
+                        guard let ctx = viewModel.latestSleepContext, ctx.durationMinutes > 0 else { return "" }
+                        let deepPct = Int(Double(ctx.deepMinutes) / Double(ctx.durationMinutes) * 100)
+                        return "\(deepPct)% deep sleep"
+                    }()
+
                     MetricRowView(
                         icon: "moon.fill",
                         label: "Sleep",
                         value: formattedSleep,
-                        sublabel: "85% quality",
+                        sublabel: sleepSublabel,
                         color: .sleep
                     ) {
-                        AnyView(sleepDetails)
+                        AnyView(sleepDetails(summary: summary))
                     }
                 }
 
@@ -280,13 +287,28 @@ struct DashboardListView: View {
         }
     }
 
-    private var sleepDetails: some View {
+    private func sleepDetails(summary: TodayHealthSummary) -> some View {
         VStack(spacing: 8) {
-            MetricDetailRow(label: "Deep Sleep", value: "1h 23m", color: .sleep)
-            MetricDetailRow(label: "REM", value: "1h 45m", color: .hrv)
-            MetricDetailRow(label: "Light", value: "3h 52m", color: .secondary)
-            MetricDetailRow(label: "Awake", value: "22m", color: .warning)
+            if let sleepContext = viewModel.latestSleepContext {
+                MetricDetailRow(label: "Deep Sleep", value: formatMinutes(sleepContext.deepMinutes), color: .sleep)
+                MetricDetailRow(label: "REM", value: formatMinutes(sleepContext.remMinutes), color: .hrv)
+                MetricDetailRow(label: "Light", value: formatMinutes(sleepContext.coreMinutes), color: .secondary)
+                MetricDetailRow(label: "Awake", value: formatMinutes(sleepContext.awakeMinutes), color: .warning)
+            } else {
+                Text("No sleep data available")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
+    }
+
+    private func formatMinutes(_ minutes: Int) -> String {
+        let h = minutes / 60
+        let m = minutes % 60
+        if h > 0 {
+            return "\(h)h \(m)m"
+        }
+        return "\(m)m"
     }
 
     private func heartDetails(summary: TodayHealthSummary) -> some View {
@@ -339,6 +361,7 @@ class DashboardListViewModel {
     var strainTrend: Int? = nil
     var stepsTrend: Int? = nil
     var hrvTrend: Int? = nil
+    var latestSleepContext: AIInsightsService.SleepContext? = nil
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
@@ -355,6 +378,31 @@ class DashboardListViewModel {
             await MainActor.run {
                 todaySummary = summary
                 isLoading = false
+            }
+
+            // Fetch last night's sleep breakdown
+            let calendar = Calendar.current
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+            let sleepSamples = try? await healthKit.fetchSleepAnalysis(from: yesterday, to: Date())
+            if let samples = sleepSamples, !samples.isEmpty {
+                var deep = 0, rem = 0, core = 0, awake = 0
+                for sample in samples {
+                    let mins = Int(sample.endDate.timeIntervalSince(sample.startDate) / 60)
+                    switch HKCategoryValueSleepAnalysis(rawValue: sample.value) {
+                    case .asleepDeep: deep += mins
+                    case .asleepREM: rem += mins
+                    case .asleepCore, .asleepUnspecified: core += mins
+                    case .awake, .inBed: awake += mins
+                    default: break
+                    }
+                }
+                await MainActor.run {
+                    latestSleepContext = AIInsightsService.SleepContext(
+                        durationMinutes: deep + rem + core,
+                        deepMinutes: deep, remMinutes: rem,
+                        coreMinutes: core, awakeMinutes: awake
+                    )
+                }
             }
 
             // Load cached AI scores if available
