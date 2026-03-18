@@ -26,9 +26,10 @@ interface WeeklyChartsProps {
     recovery_score?: number
     strain_score?: number
   }>
+  weightData?: Array<{ date: string; weight_kg: number }>
 }
 
-export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
+export function WeeklyCharts({ summaries, weightData }: WeeklyChartsProps) {
   // Reverse to ascending order (oldest → newest left → right)
   // Append T00:00:00 to force local-time parsing and avoid UTC day-shift
   const chartData = [...summaries].reverse().map((s) => ({
@@ -282,6 +283,49 @@ export function WeeklyCharts({ summaries }: WeeklyChartsProps) {
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* Body Weight (30-day trend) */}
+      {weightData && weightData.length >= 3 && (() => {
+        const wChartData = [...weightData].reverse().map((d) => ({
+          date: new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          weight: +d.weight_kg.toFixed(1),
+        }))
+        return (
+          <div>
+            <h3 className="text-sm font-medium text-text-secondary mb-2">Body Weight (kg)</h3>
+            <ResponsiveContainer width="100%" height={160}>
+              <LineChart data={wChartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 11, fill: 'var(--color-text-secondary, #888)' }}
+                  axisLine={false}
+                  tickLine={false}
+                  interval="preserveStartEnd"
+                />
+                <YAxis hide domain={['auto', 'auto']} />
+                <Tooltip
+                  contentStyle={{
+                    background: 'var(--color-surface, #1a1a1a)',
+                    border: '1px solid var(--color-border, #333)',
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                  formatter={(value: number) => [`${value} kg`, 'Weight']}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="weight"
+                  stroke="#6366f1"
+                  strokeWidth={2}
+                  dot={{ fill: '#6366f1', r: 3 }}
+                  connectNulls={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )
+      })()}
     </div>
   )
 }

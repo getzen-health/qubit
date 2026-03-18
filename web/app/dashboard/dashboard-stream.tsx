@@ -391,7 +391,12 @@ export function DashboardStream({
 
         {/* 7-Day Trends */}
         <DataStreamSection title="7-Day Trends">
-          <WeeklyCharts summaries={summaries.slice(0, 7)} />
+          <WeeklyCharts
+            summaries={summaries.slice(0, 7)}
+            weightData={summaries
+              .filter((s) => s.weight_kg != null)
+              .map((s) => ({ date: s.date, weight_kg: s.weight_kg! }))}
+          />
         </DataStreamSection>
 
         {/* AI Insights */}
