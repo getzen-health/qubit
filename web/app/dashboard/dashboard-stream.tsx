@@ -977,6 +977,7 @@ export function DashboardStream({
               section: 'Sleep',
               links: [
                 { href: '/sleep', label: 'Sleep' },
+                { href: '/sleep/schedule', label: 'Sleep Schedule' },
                 { href: '/temperature', label: 'Wrist Temp' },
               ],
             },
