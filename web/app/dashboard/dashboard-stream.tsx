@@ -115,6 +115,17 @@ export function DashboardStream({
     }
   }
 
+  // Compute sleep streak (7+ hours = 420 min goal, skip today)
+  const SLEEP_GOAL_MINUTES = 420
+  let sleepStreak = 0
+  for (const day of summaries.slice(1)) {
+    if ((day.sleep_duration_minutes ?? 0) >= SLEEP_GOAL_MINUTES) {
+      sleepStreak++
+    } else {
+      break
+    }
+  }
+
   // Mock metrics (will be replaced with real data)
   const metrics = {
     sleep: {
@@ -315,6 +326,16 @@ export function DashboardStream({
               value={`${sleepHours}h ${sleepMins}m`}
               color="sleep"
             />
+            {sleepStreak > 0 && (
+              <MetricRow
+                icon={<Moon className="w-5 h-5" />}
+                label="Sleep Streak"
+                value={sleepStreak}
+                unit={sleepStreak === 1 ? 'night' : 'nights'}
+                sublabel="consecutive nights of 7+ hours"
+                color="sleep"
+              />
+            )}
             <MetricRow
               icon={<Heart className="w-5 h-5" />}
               label="Resting Heart Rate"
