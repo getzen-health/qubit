@@ -18,6 +18,12 @@ struct WorkoutAnalyticsView: View {
         (
             header: "Sport Analysis",
             entries: [
+                AnalyticsEntry(title: "Walking", subtitle: "Pace, distance & weekly volume", icon: "figure.walk", color: .green,
+                               destination: AnyView(WalkingAnalysisView())),
+                AnalyticsEntry(title: "Walking Patterns", subtitle: "DOW distribution, time-of-day & monthly distance trend", icon: "chart.bar.xaxis", color: .green,
+                               destination: AnyView(WalkingPatternView())),
+                AnalyticsEntry(title: "Walking Progression", subtitle: "12-month distance & pace trend with quarterly breakdown", icon: "chart.line.uptrend.xyaxis", color: .green,
+                               destination: AnyView(WalkingProgressionView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
                                destination: AnyView(RunningAnalysisView())),
                 AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,
