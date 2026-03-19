@@ -59,6 +59,9 @@ struct SleepView: View {
                         NavigationLink(destination: SleepEfficiencyView()) {
                             Image(systemName: "percent")
                         }
+                        NavigationLink(destination: SleepBreathingView()) {
+                            Image(systemName: "lungs")
+                        }
                     }
                 }
             }
