@@ -25,6 +25,9 @@ struct InsightsView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: YearInReviewView()) {
+                            Image(systemName: "calendar.badge.clock")
+                        }
                         NavigationLink(destination: WeeklyReportView()) {
                             Image(systemName: "calendar.badge.checkmark")
                         }
