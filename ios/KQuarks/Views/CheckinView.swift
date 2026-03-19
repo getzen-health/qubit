@@ -108,8 +108,13 @@ struct CheckinView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: MoodHistoryView()) {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: MoodHistoryView()) {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                        }
+                        NavigationLink(destination: WellnessInsightsView()) {
+                            Image(systemName: "heart.text.clipboard")
+                        }
                     }
                 }
                 if let c = vm.checkin, !vm.isEditing {

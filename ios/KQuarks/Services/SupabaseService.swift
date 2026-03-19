@@ -849,6 +849,77 @@ class SupabaseService {
         return DailyCheckin(id: row.id, date: row.date, energy: row.energy, mood: row.mood, stress: row.stress, notes: row.notes)
     }
 
+    // MARK: - Wellness Insights
+
+    struct WellnessInsightItem {
+        let date: String
+        let energy: Int?
+        let mood: Int?
+        let stress: Int?
+        let avgHrv: Double?
+        let restingHeartRate: Double?
+        let sleepDurationMinutes: Int?
+        let steps: Int?
+    }
+
+    func fetchWellnessInsightsData(days: Int = 90) async throws -> [WellnessInsightItem] {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let userId = session.user.id.uuidString
+        let since: String = {
+            let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+            return df.string(from: Calendar.current.date(byAdding: .day, value: -days, to: Date())!)
+        }()
+
+        struct CheckinRow: Decodable {
+            let date: String
+            let energy: Int?
+            let mood: Int?
+            let stress: Int?
+        }
+        struct SummaryRow: Decodable {
+            let date: String
+            let avg_hrv: Double?
+            let resting_heart_rate: Double?
+            let sleep_duration_minutes: Int?
+            let steps: Int?
+        }
+
+        async let checkinRows: [CheckinRow] = client.from("daily_checkins")
+            .select("date, energy, mood, stress")
+            .eq("user_id", value: userId)
+            .gte("date", value: since)
+            .order("date", ascending: false)
+            .execute()
+            .value
+
+        async let summaryRows: [SummaryRow] = client.from("daily_summaries")
+            .select("date, avg_hrv, resting_heart_rate, sleep_duration_minutes, steps")
+            .eq("user_id", value: userId)
+            .gte("date", value: since)
+            .order("date", ascending: false)
+            .execute()
+            .value
+
+        let (checkins, summaries) = try await (checkinRows, summaryRows)
+
+        let summaryMap = Dictionary(uniqueKeysWithValues: summaries.map { ($0.date, $0) })
+
+        return checkins.compactMap { c in
+            guard c.energy != nil || c.mood != nil || c.stress != nil else { return nil }
+            let s = summaryMap[c.date]
+            return WellnessInsightItem(
+                date: c.date,
+                energy: c.energy,
+                mood: c.mood,
+                stress: c.stress,
+                avgHrv: s?.avg_hrv,
+                restingHeartRate: s?.resting_heart_rate,
+                sleepDurationMinutes: s?.sleep_duration_minutes,
+                steps: s?.steps
+            )
+        }
+    }
+
     // MARK: - Correlation Analysis
 
     struct DailySummaryRow: Decodable {
