@@ -65,6 +65,9 @@ struct SleepView: View {
                         NavigationLink(destination: SleepImpactView()) {
                             Image(systemName: "bolt.heart.fill")
                         }
+                        NavigationLink(destination: SleepQualityScoreView()) {
+                            Image(systemName: "star.fill")
+                        }
                     }
                 }
             }
