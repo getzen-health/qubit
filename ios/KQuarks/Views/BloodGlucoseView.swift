@@ -70,6 +70,11 @@ struct BloodGlucoseView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blood Glucose")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            NavigationLink(destination: GlucosePatternView()) {
+                Image(systemName: "chart.bar.xaxis")
+            }
+        }
         .task { await load() }
     }
 
