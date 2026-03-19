@@ -23,6 +23,7 @@ const SECTIONS: Section[] = [
     title: 'Heart & Vitals',
     features: [
       { label: 'Heart Rate', desc: 'Resting HR trends and daily averages', href: '/heartrate', emoji: '❤️' },
+      { label: 'Daily HR Pattern', desc: '24-hour circadian heart rate rhythm', href: '/heartrate/patterns', emoji: '🕐' },
       { label: 'HRV Analysis', desc: 'Variability trends, baselines, and recovery', href: '/hrv', emoji: '💗' },
       { label: 'Training Zones', desc: 'Time in each HR zone across workouts', href: '/zones', emoji: '🎯' },
       { label: 'Oxygen (SpO2)', desc: 'Blood oxygen saturation day and night', href: '/oxygen', emoji: '🫁' },
@@ -49,6 +50,8 @@ const SECTIONS: Section[] = [
     features: [
       { label: 'All Workouts', desc: 'Complete workout log and stats', href: '/workouts', emoji: '🏋️' },
       { label: 'Running', desc: 'Pace trends, distance, and VDOT', href: '/running', emoji: '🏃' },
+      { label: 'Running Form', desc: 'Cadence, stride & biomechanics analysis', href: '/running/form', emoji: '🦶' },
+      { label: 'Workout Impact', desc: 'How training timing affects HRV recovery', href: '/workouts/impact', emoji: '🔋' },
       { label: 'Cycling', desc: 'Speed, distance, and ride history', href: '/cycling', emoji: '🚴' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'HIIT', desc: 'Intensity, frequency, and recovery impact', href: '/hiit', emoji: '⚡' },
