@@ -105,6 +105,7 @@ const SECTIONS: Section[] = [
       { label: 'Energy Balance', desc: 'Radar: aerobic base, threshold, VO₂ max, strength & recovery balance score', href: '/energy-balance', emoji: '⚡' },
       { label: 'Walking', desc: 'Pace trends, distance & weekly walking volume', href: '/walking', emoji: '🚶' },
       { label: 'Walking Patterns', desc: 'DOW distribution, time-of-day & monthly distance trend', href: '/walking/patterns', emoji: '📊' },
+      { label: 'Yoga & Mind-Body', desc: 'Session frequency, duration, type breakdown & parasympathetic benefit', href: '/yoga', emoji: '🧘' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
