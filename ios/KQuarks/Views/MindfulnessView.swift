@@ -46,6 +46,13 @@ struct MindfulnessView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Mindfulness")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: MindfulnessPatternView()) {
+                        Image(systemName: "chart.bar.xaxis")
+                    }
+                }
+            }
             .task { await loadHistory() }
             .onReceive(ticker) { t in now = t }
         }

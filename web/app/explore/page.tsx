@@ -118,6 +118,7 @@ const SECTIONS: Section[] = [
       { label: 'Fasting', desc: 'Intermittent fasting sessions and streaks', href: '/fasting', emoji: '⏳' },
       { label: 'Fasting Insights', desc: 'Protocol breakdown, streaks, duration trends & timing analysis', href: '/fasting/insights', emoji: '📊' },
       { label: 'Mindfulness', desc: 'Meditation and mindfulness minutes', href: '/mindfulness', emoji: '🧘' },
+      { label: 'Mindfulness Patterns', desc: 'When you meditate most: DOW trends, session duration & monthly volume', href: '/mindfulness/patterns', emoji: '📊' },
       { label: 'Mindfulness Impact', desc: 'How meditation sessions affect next-day HRV and recovery', href: '/mindfulness/impact', emoji: '✨' },
       { label: 'Daylight', desc: 'Time in natural light per day', href: '/daylight', emoji: '☀️' },
       { label: 'Hearing Health', desc: 'Noise exposure and headphone audio', href: '/hearing', emoji: '👂' },
