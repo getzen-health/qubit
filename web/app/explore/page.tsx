@@ -100,6 +100,7 @@ const SECTIONS: Section[] = [
       { label: 'Training Phases', desc: 'Auto-detect base, build, peak & taper from 52-week volume trend', href: '/periodization', emoji: '📆' },
       { label: 'Monotony & Strain', desc: "Coggan's training science — daily load variety & cumulative stress index", href: '/monotony', emoji: '📉' },
       { label: 'Stress vs Recovery', desc: '12-week scatter: training stress vs HRV recovery quality — quadrant analysis', href: '/stress-recovery', emoji: '⚖️' },
+      { label: 'ECG History', desc: 'Apple Watch ECG classification history — sinus rhythm %, AFib burden & monthly trend', href: '/ecg', emoji: '🫀' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },

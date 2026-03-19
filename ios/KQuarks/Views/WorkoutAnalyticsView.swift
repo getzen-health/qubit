@@ -111,6 +111,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingMonotonyView())),
                 AnalyticsEntry(title: "Stress vs Recovery", subtitle: "12-week scatter: training load vs HRV recovery — quadrant analysis", icon: "chart.scatter", color: .purple,
                                destination: AnyView(StressRecoveryView())),
+                AnalyticsEntry(title: "ECG History", subtitle: "Sinus rhythm %, AFib burden & classification timeline", icon: "waveform.path.ecg.rectangle.fill", color: .red,
+                               destination: AnyView(ECGAnalysisView())),
             ]
         ),
     ]
