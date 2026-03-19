@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Timer } from 'lucide-react'
 import { RunningClient } from './running-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -87,6 +87,9 @@ export default async function RunningPage() {
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
           <div className="flex items-center gap-2">
+            <Link href="/running/zones" className="text-xs text-orange-400 hover:text-orange-300 px-3 py-1.5 rounded-lg border border-orange-500/20 hover:border-orange-500/40 transition-colors flex items-center gap-1">
+              <Timer className="w-3 h-3" />Pace Zones
+            </Link>
             <Link href="/running/form" className="text-xs text-green-400 hover:text-green-300 px-3 py-1.5 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-colors">
               Form Analysis
             </Link>
