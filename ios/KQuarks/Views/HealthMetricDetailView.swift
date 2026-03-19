@@ -34,6 +34,13 @@ struct HealthMetricDetailView: View {
         .navigationTitle(dataType.displayName)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
+            if dataType == .floorsClimbed {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: FloorsPatternView()) {
+                        Image(systemName: "chart.bar.xaxis")
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Picker("Period", selection: $selectedDays) {
                     Text("7D").tag(7)
