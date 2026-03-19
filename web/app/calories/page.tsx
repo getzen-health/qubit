@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, BarChart2 } from 'lucide-react'
 import { CaloriesClient } from './calories-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -70,10 +70,18 @@ export default async function CaloriesPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Calorie Balance</h1>
             <p className="text-sm text-text-secondary">Intake vs. active burn · 30 days</p>
           </div>
+          <Link
+            href="/calories/patterns"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Calorie patterns"
+            title="Calorie Patterns"
+          >
+            <BarChart2 className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 

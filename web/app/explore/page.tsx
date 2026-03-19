@@ -42,6 +42,7 @@ const SECTIONS: Section[] = [
       { label: 'Steps & Activity', desc: 'Daily step counts, distance, and goals', href: '/steps', emoji: '🚶' },
       { label: 'Step Patterns', desc: 'When you walk most: day-of-week, seasonal & distribution', href: '/steps/patterns', emoji: '📊' },
       { label: 'Calories Burned', desc: 'Active calorie history and trends', href: '/calories', emoji: '🔥' },
+      { label: 'Calorie Patterns', desc: 'When you burn most: day-of-week, seasonal & distribution', href: '/calories/patterns', emoji: '📊' },
       { label: 'Floors Climbed', desc: 'Elevation and stair-climbing stats', href: '/floors', emoji: '🏗️' },
       { label: 'Activity Calendar', desc: 'GitHub-style workout heatmap grid', href: '/calendar', emoji: '📅' },
       { label: 'Year View', desc: 'Full year of daily step data at a glance', href: '/year', emoji: '📊' },
