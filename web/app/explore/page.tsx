@@ -30,6 +30,7 @@ const SECTIONS: Section[] = [
       { label: 'Oxygen (SpO2)', desc: 'Blood oxygen saturation day and night', href: '/oxygen', emoji: '🫁' },
       { label: 'Respiratory Rate', desc: 'Breathing rate trends and patterns', href: '/respiratory', emoji: '🌬️' },
       { label: 'Blood Pressure', desc: 'Systolic and diastolic readings over time', href: '/bloodpressure', emoji: '🩺' },
+      { label: 'Resting HR Analysis', desc: '6-month RHR trend, fitness classification & HRV correlation', href: '/heartrate/resting', emoji: '🫀' },
       { label: 'HR Recovery', desc: 'Post-workout HR drop rate & fitness classification', href: '/heartrate/recovery', emoji: '📉' },
       { label: 'Cardiac Events', desc: 'AFib, high, and low heart rate alerts', href: '/cardiac', emoji: '⚡' },
     ],
