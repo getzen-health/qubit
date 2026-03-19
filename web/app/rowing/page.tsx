@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2 } from 'lucide-react'
+import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import { RowingClient } from './rowing-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -41,6 +41,14 @@ export default async function RowingPage() {
             <h1 className="text-xl font-bold text-text-primary">Rowing</h1>
             <p className="text-sm text-text-secondary">Last 90 days · {sessions?.length ?? 0} sessions</p>
           </div>
+          <Link
+            href="/rowing/progression"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Rowing progression"
+            title="Rowing Progression"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           <Link
             href="/rowing/patterns"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"

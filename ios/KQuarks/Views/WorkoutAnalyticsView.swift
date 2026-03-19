@@ -32,6 +32,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SwimmingAnalysisView())),
                 AnalyticsEntry(title: "Swimming Patterns", subtitle: "DOW distribution, time-of-day & pace per 100m trend", icon: "chart.bar.xaxis", color: .cyan,
                                destination: AnyView(SwimmingPatternView())),
+                AnalyticsEntry(title: "Swimming Progression", subtitle: "12-month distance & pace per 100m trend", icon: "chart.line.uptrend.xyaxis", color: .cyan,
+                               destination: AnyView(SwimmingProgressionView())),
                 AnalyticsEntry(title: "Strength Training", subtitle: "Frequency, volume & sessions", icon: "figure.strengthtraining.traditional", color: .red,
                                destination: AnyView(StrengthAnalysisView())),
                 AnalyticsEntry(title: "Strength Patterns", subtitle: "DOW distribution, time-of-day & duration trend", icon: "chart.bar.xaxis", color: .red,
@@ -50,6 +52,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RowingAnalysisView())),
                 AnalyticsEntry(title: "Rowing Patterns", subtitle: "DOW distribution, time-of-day & 500m split trend", icon: "chart.bar.xaxis", color: .pink,
                                destination: AnyView(RowingPatternView())),
+                AnalyticsEntry(title: "Rowing Progression", subtitle: "12-month distance & 500m split trend", icon: "chart.line.uptrend.xyaxis", color: .pink,
+                               destination: AnyView(RowingProgressionView())),
             ]
         ),
         (
