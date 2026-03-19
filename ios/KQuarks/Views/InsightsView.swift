@@ -25,6 +25,9 @@ struct InsightsView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: HealthTimelineView()) {
+                            Image(systemName: "list.bullet.rectangle")
+                        }
                         NavigationLink(destination: YearInReviewView()) {
                             Image(systemName: "calendar.badge.clock")
                         }
