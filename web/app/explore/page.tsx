@@ -77,6 +77,7 @@ const SECTIONS: Section[] = [
     title: 'Sleep',
     features: [
       { label: 'Sleep Analysis', desc: 'Stages, quality, and 30-night trends', href: '/sleep', emoji: '😴' },
+      { label: 'Sleep Patterns', desc: 'When you sleep best: day-of-week, seasonal & duration histogram', href: '/sleep/patterns', emoji: '🌙' },
       { label: 'Sleep Stages', desc: 'Deep, REM, core & awake breakdown', href: '/sleep/stages', emoji: '🌊' },
       { label: 'Sleep Efficiency', desc: 'Time asleep vs time in bed (CBT-I)', href: '/sleep/efficiency', emoji: '💯' },
       { label: 'Sleep Schedule', desc: 'Bedtime consistency and chronotype', href: '/sleep/schedule', emoji: '🕐' },
