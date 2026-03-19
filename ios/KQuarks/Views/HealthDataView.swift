@@ -417,6 +417,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // HRV Recovery Zones
+                            NavigationLink(destination: HRVZonesView()) {
+                                HStack {
+                                    Image(systemName: "chart.bar.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HRV Recovery Zones")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Green / yellow / orange zone history")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Vitality Score — composite longevity index
                             NavigationLink(destination: LongevityView()) {
                                 HStack {
