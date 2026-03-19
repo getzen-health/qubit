@@ -43,6 +43,9 @@ struct InsightsView: View {
                         NavigationLink(destination: MonthlyHealthSummaryView()) {
                             Image(systemName: "calendar.circle")
                         }
+                        NavigationLink(destination: SmartNudgesView()) {
+                            Image(systemName: "wand.and.stars")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {

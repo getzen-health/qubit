@@ -811,6 +811,9 @@ struct HealthDataView: View {
                         NavigationLink(destination: StreaksView()) {
                             Image(systemName: "flame")
                         }
+                        NavigationLink(destination: SmartNudgesView()) {
+                            Image(systemName: "wand.and.stars")
+                        }
                     }
                 }
             }
