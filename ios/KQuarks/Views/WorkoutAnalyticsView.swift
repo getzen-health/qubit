@@ -57,6 +57,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutCalendarView())),
                 AnalyticsEntry(title: "Training Advisor", subtitle: "HRV-based weekly training plan", icon: "brain.head.profile", color: .cyan,
                                destination: AnyView(TrainingAdvisorView())),
+                AnalyticsEntry(title: "Workout Variety", subtitle: "Sport mix, diversity score & weekly balance", icon: "figure.mixed.cardio", color: .purple,
+                               destination: AnyView(WorkoutVarietyView())),
             ]
         ),
     ]
