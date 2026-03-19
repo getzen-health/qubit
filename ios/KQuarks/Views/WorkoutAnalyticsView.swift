@@ -43,6 +43,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingLoadView())),
                 AnalyticsEntry(title: "Running Form", subtitle: "Cadence, stride & vertical oscillation", icon: "figure.run.motion", color: .orange,
                                destination: AnyView(RunningFormView())),
+                AnalyticsEntry(title: "Pace Zones", subtitle: "80/20 easy vs hard distribution", icon: "timer", color: .orange,
+                               destination: AnyView(RunningPaceZonesView())),
                 AnalyticsEntry(title: "Race Predictor", subtitle: "5K, 10K, half & full via VDOT", icon: "stopwatch.fill", color: .green,
                                destination: AnyView(RacePredictorView())),
                 AnalyticsEntry(title: "Records & PRs", subtitle: "Your lifetime personal bests", icon: "trophy.fill", color: .yellow,
