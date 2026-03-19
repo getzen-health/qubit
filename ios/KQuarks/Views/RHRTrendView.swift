@@ -40,6 +40,13 @@ struct RHRTrendView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Resting Heart Rate")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: RHRPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 
