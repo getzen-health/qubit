@@ -111,6 +111,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // HRV deep-dive
+                            NavigationLink(destination: HRVDetailView()) {
+                                HStack {
+                                    Image(systemName: "waveform.path.ecg")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HRV Analysis")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Baseline, trends, patterns")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood pressure gets its own detailed view
                             NavigationLink(destination: BloodPressureView()) {
                                 HStack {
