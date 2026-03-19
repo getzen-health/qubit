@@ -106,6 +106,7 @@ const SECTIONS: Section[] = [
     features: [
       { label: 'Body Weight', desc: 'Weight trends and body fat percentage', href: '/body', emoji: '⚖️' },
       { label: 'Body Weight Trends', desc: 'Rate of change, DOW patterns, monthly progression & body fat tracking', href: '/body/trends', emoji: '📉' },
+      { label: 'Weight Patterns', desc: 'Monthly averages, day-of-week deviations, rate of change & body fat trends', href: '/body/patterns', emoji: '📊' },
       { label: 'VO₂ Max', desc: 'Cardiorespiratory fitness trend', href: '/vo2max', emoji: '🫀' },
       { label: 'VO₂ Max Patterns', desc: 'Monthly progression, fitness level history & 2-year trend', href: '/vo2max/patterns', emoji: '📊' },
       { label: 'Glucose', desc: 'Blood glucose readings over time', href: '/glucose', emoji: '🩸' },
