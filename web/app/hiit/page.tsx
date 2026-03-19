@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2 } from 'lucide-react'
+import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import { HiitClient } from './hiit-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -64,6 +64,14 @@ export default async function HiitPage() {
               Last 90 days · {sessions?.length ?? 0} sessions
             </p>
           </div>
+          <Link
+            href="/hiit/progression"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="HIIT progression"
+            title="HIIT Progression"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           <Link
             href="/hiit/patterns"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"

@@ -50,6 +50,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HIITAnalysisView())),
                 AnalyticsEntry(title: "HIIT Patterns", subtitle: "DOW distribution, time-of-day & weekly volume", icon: "chart.bar.xaxis", color: .yellow,
                                destination: AnyView(HIITPatternView())),
+                AnalyticsEntry(title: "HIIT Progression", subtitle: "12-month frequency, duration trend & calorie burn", icon: "chart.line.uptrend.xyaxis", color: .pink,
+                               destination: AnyView(HIITProgressionView())),
                 AnalyticsEntry(title: "Rowing", subtitle: "500m splits, distance & HR", icon: "figure.rowing", color: .cyan,
                                destination: AnyView(RowingAnalysisView())),
                 AnalyticsEntry(title: "Rowing Patterns", subtitle: "DOW distribution, time-of-day & 500m split trend", icon: "chart.bar.xaxis", color: .pink,
