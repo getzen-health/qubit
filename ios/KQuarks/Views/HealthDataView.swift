@@ -194,6 +194,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Circadian HR Pattern
+                            NavigationLink(destination: CircadianHRView()) {
+                                HStack {
+                                    Image(systemName: "clock.arrow.circlepath")
+                                        .font(.title2)
+                                        .foregroundStyle(.pink)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.pink.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Daily HR Pattern")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("24-hour circadian rhythm")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Respiratory Rate
                             NavigationLink(destination: RespiratoryRateView()) {
                                 HStack {
