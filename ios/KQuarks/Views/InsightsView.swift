@@ -46,6 +46,9 @@ struct InsightsView: View {
                         NavigationLink(destination: SmartNudgesView()) {
                             Image(systemName: "wand.and.stars")
                         }
+                        NavigationLink(destination: HealthHeatmapView()) {
+                            Image(systemName: "tablecells.fill")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
