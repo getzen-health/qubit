@@ -473,6 +473,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Fitness Profile — 6-dimension radar chart
+                            NavigationLink(destination: FitnessProfileView()) {
+                                HStack {
+                                    Image(systemName: "hexagon.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Fitness Profile")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("6-dimension health fingerprint")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Cardiac Events (AFib, high HR, low HR)
                             NavigationLink(destination: CardiacEventsView()) {
                                 HStack {
