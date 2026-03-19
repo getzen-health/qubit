@@ -45,6 +45,13 @@ struct WristTemperatureView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Wrist Temperature")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: TemperatureInsightsView()) {
+                    Image(systemName: "waveform.path.ecg")
+                }
+            }
+        }
         .task { await load() }
     }
 
