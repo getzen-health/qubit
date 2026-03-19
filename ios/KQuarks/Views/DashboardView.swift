@@ -154,8 +154,13 @@ struct DashboardView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: ReadinessView()) {
-                        Image(systemName: "gauge.with.dots.needle.67percent")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: HealthScoreView()) {
+                            Image(systemName: "chart.bar.doc.horizontal")
+                        }
+                        NavigationLink(destination: ReadinessView()) {
+                            Image(systemName: "gauge.with.dots.needle.67percent")
+                        }
                     }
                 }
             }
