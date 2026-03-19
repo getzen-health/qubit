@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, CalendarHeart, Layers } from 'lucide-react'
+import { ArrowLeft, CalendarHeart, Layers, BarChart2 } from 'lucide-react'
 import { HrvClient } from './hrv-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -60,6 +60,14 @@ export default async function HrvPage() {
               Heart rate variability · Last 90 days
             </p>
           </div>
+          <Link
+            href="/hrv/patterns"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="HRV patterns"
+            title="HRV Patterns"
+          >
+            <BarChart2 className="w-5 h-5" />
+          </Link>
           <Link
             href="/hrv/zones"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
