@@ -127,6 +127,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StressRecoveryView())),
                 AnalyticsEntry(title: "ECG History", subtitle: "Sinus rhythm %, AFib burden & classification timeline", icon: "waveform.path.ecg.rectangle.fill", color: .red,
                                destination: AnyView(ECGAnalysisView())),
+                AnalyticsEntry(title: "Walking Heart Rate", subtitle: "Passive walking HR as a daily fitness indicator trend", icon: "figure.walk.circle.fill", color: .teal,
+                               destination: AnyView(WalkingHeartRateView())),
                 AnalyticsEntry(title: "Cardiac Drift", subtitle: "HR drift in long runs — first vs second half aerobic base measure", icon: "arrow.up.right.heart.fill", color: .teal,
                                destination: AnyView(CardiacDriftView())),
                 AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
