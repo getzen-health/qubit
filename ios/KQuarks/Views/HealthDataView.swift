@@ -138,6 +138,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Race Predictor
+                            NavigationLink(destination: RacePredictorView()) {
+                                HStack {
+                                    Image(systemName: "stopwatch.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Race Predictor")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("5K, 10K, half & full marathon")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Respiratory Rate
                             NavigationLink(destination: RespiratoryRateView()) {
                                 HStack {
