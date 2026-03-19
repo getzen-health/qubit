@@ -126,6 +126,7 @@ const SECTIONS: Section[] = [
       { label: 'Daylight', desc: 'Time in natural light per day', href: '/daylight', emoji: '☀️' },
       { label: 'Daylight Patterns', desc: 'When you get most sunlight: DOW trends, seasonal analysis & goal achievement', href: '/daylight/patterns', emoji: '📊' },
       { label: 'Hearing Health', desc: 'Noise exposure and headphone audio', href: '/hearing', emoji: '👂' },
+      { label: 'Hearing Patterns', desc: 'DOW noise trends, time-of-day, headphone vs environment & monthly exposure', href: '/hearing/patterns', emoji: '📊' },
     ],
   },
   {

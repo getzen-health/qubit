@@ -64,6 +64,13 @@ struct HearingHealthView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Hearing Health")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: HearingPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 
