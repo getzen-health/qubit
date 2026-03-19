@@ -21,6 +21,7 @@ interface MobilityClientProps {
   stepLengthData: DataPoint[]
   asymmetryData: DataPoint[]
   doubleSupportData: DataPoint[]
+  steadinessData: DataPoint[]
 }
 
 const tooltipStyle = {
@@ -103,8 +104,8 @@ function MiniChart({
   )
 }
 
-export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubleSupportData }: MobilityClientProps) {
-  const hasAny = speedData.length > 0 || stepLengthData.length > 0 || asymmetryData.length > 0 || doubleSupportData.length > 0
+export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubleSupportData, steadinessData }: MobilityClientProps) {
+  const hasAny = speedData.length > 0 || stepLengthData.length > 0 || asymmetryData.length > 0 || doubleSupportData.length > 0 || steadinessData.length > 0
 
   if (!hasAny) {
     return (
@@ -128,6 +129,13 @@ export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubl
   const avgSpeed = avgValue(speedData)
   const latestAsymmetry = latestValue(asymmetryData)
   const latestStepLength = latestValue(stepLengthData)
+  const latestSteadiness = latestValue(steadinessData)
+
+  function steadinessZone(v: number): { label: string; color: string } {
+    if (v >= 60) return { label: 'OK', color: 'text-green-400' }
+    if (v >= 40) return { label: 'Low', color: 'text-orange-400' }
+    return { label: 'Very Low', color: 'text-red-400' }
+  }
 
   // Walking speed: typical healthy adult 1.2–1.6 m/s
   function speedColor(v: number) {
@@ -171,6 +179,15 @@ export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubl
             <p className="text-xs text-text-secondary mt-0.5">Asymmetry</p>
           </div>
         )}
+        {latestSteadiness !== null && (() => {
+          const zone = steadinessZone(latestSteadiness)
+          return (
+            <div className="bg-surface rounded-xl border border-border p-4 text-center">
+              <p className={`text-2xl font-bold ${zone.color}`}>{latestSteadiness.toFixed(0)}%</p>
+              <p className="text-xs text-text-secondary mt-0.5">Steadiness · {zone.label}</p>
+            </div>
+          )
+        })()}
       </div>
 
       {/* Charts */}
@@ -211,6 +228,17 @@ export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubl
         domain={[15, 50]}
         refLines={[{ y: 20, color: 'rgba(74,222,128,0.4)', label: '20%' }]}
       />
+      <MiniChart
+        data={steadinessData}
+        color="#4ade80"
+        label="Walking Steadiness (%)"
+        formatter={(v) => `${v.toFixed(0)}%`}
+        domain={[0, 100]}
+        refLines={[
+          { y: 60, color: 'rgba(74,222,128,0.4)', label: 'OK ≥60%' },
+          { y: 40, color: 'rgba(251,146,60,0.4)', label: 'Low ≥40%' },
+        ]}
+      />
 
       {/* Info */}
       <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-3">
@@ -232,6 +260,10 @@ export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubl
             {
               name: 'Double Support Time',
               detail: 'The percentage of your gait cycle where both feet are on the ground. Increases with age. Lower values indicate a more confident, dynamic gait.',
+            },
+            {
+              name: 'Walking Steadiness',
+              detail: 'iPhone's fall-risk metric (0–100%). OK is ≥60%, Low is 40–59%, Very Low is below 40%. Captures balance and gait stability over time using motion sensors.',
             },
           ].map(({ name, detail }) => (
             <div key={name}>

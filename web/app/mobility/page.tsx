@@ -22,7 +22,7 @@ export default async function MobilityPage() {
     .from('health_records')
     .select('type, value, start_time')
     .eq('user_id', user.id)
-    .in('type', ['walking_speed', 'walking_step_length', 'walking_asymmetry', 'walking_double_support'])
+    .in('type', ['walking_speed', 'walking_step_length', 'walking_asymmetry', 'walking_double_support', 'walking_steadiness'])
     .gte('start_time', startIso)
     .order('start_time', { ascending: true })
 
@@ -55,6 +55,7 @@ export default async function MobilityPage() {
   const stepLengthData = weeklyAvg('walking_step_length')
   const asymmetryData = weeklyAvg('walking_asymmetry')
   const doubleSupportData = weeklyAvg('walking_double_support')
+  const steadinessData = weeklyAvg('walking_steadiness')
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,6 +81,7 @@ export default async function MobilityPage() {
           stepLengthData={stepLengthData}
           asymmetryData={asymmetryData}
           doubleSupportData={doubleSupportData}
+          steadinessData={steadinessData}
         />
       </main>
       <BottomNav />

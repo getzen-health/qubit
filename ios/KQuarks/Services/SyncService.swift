@@ -363,6 +363,7 @@ class SyncService {
             (.walkingStepLength, "walking_step_length", .meter(), "m"),
             (.walkingAsymmetryPercentage, "walking_asymmetry", .percent(), "%"),
             (.walkingDoubleSupportPercentage, "walking_double_support", .percent(), "%"),
+            (.appleWalkingSteadiness, "walking_steadiness", .percent(), "%"),
         ]
         for (identifier, typeName, unit, unitStr) in mobilityTypes {
             let samples = try await healthKit.fetchSamples(
