@@ -87,6 +87,9 @@ struct WorkoutsView: View {
                         NavigationLink(destination: TrainingLoadView()) {
                             Image(systemName: "chart.bar.fill")
                         }
+                        NavigationLink(destination: RunningAnalysisView()) {
+                            Image(systemName: "figure.run")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
