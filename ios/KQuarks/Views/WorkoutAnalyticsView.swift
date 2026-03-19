@@ -61,6 +61,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutVarietyView())),
                 AnalyticsEntry(title: "Running Progression", subtitle: "12-month pace trend, monthly volume & quarterly breakdown", icon: "chart.line.uptrend.xyaxis", color: .orange,
                                destination: AnyView(RunningProgressionView())),
+                AnalyticsEntry(title: "Training Patterns", subtitle: "Day-of-week, time-of-day & weekly volume analysis", icon: "calendar.badge.clock", color: .teal,
+                               destination: AnyView(TrainingPatternView())),
             ]
         ),
     ]
