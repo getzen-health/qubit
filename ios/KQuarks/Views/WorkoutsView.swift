@@ -102,6 +102,9 @@ struct WorkoutsView: View {
                         NavigationLink(destination: StrengthAnalysisView()) {
                             Image(systemName: "figure.strengthtraining.traditional")
                         }
+                        NavigationLink(destination: HikingAnalysisView()) {
+                            Image(systemName: "figure.hiking")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
