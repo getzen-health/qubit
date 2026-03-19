@@ -30,10 +30,15 @@ struct BloodPressureView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showLogSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                HStack {
+                    NavigationLink(destination: BloodPressurePatternView()) {
+                        Image(systemName: "chart.bar.xaxis")
+                    }
+                    Button {
+                        showLogSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
