@@ -104,6 +104,7 @@ const SECTIONS: Section[] = [
       { label: 'VO₂ Max', desc: 'Cardiorespiratory fitness trend', href: '/vo2max', emoji: '🫀' },
       { label: 'Glucose', desc: 'Blood glucose readings over time', href: '/glucose', emoji: '🩸' },
       { label: 'Glucose Patterns', desc: 'Time-in-range, DOW trends, time-of-day & monthly glucose progression', href: '/glucose/patterns', emoji: '📊' },
+      { label: 'Walking Steadiness', desc: 'Gait stability score, fall risk & 90-day trend', href: '/walking-steadiness', emoji: '🚶' },
       { label: 'Mobility', desc: 'Flexibility and mobility tracking', href: '/mobility', emoji: '🤸' },
     ],
   },
