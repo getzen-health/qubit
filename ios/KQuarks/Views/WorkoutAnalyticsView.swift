@@ -20,6 +20,8 @@ struct WorkoutAnalyticsView: View {
             entries: [
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
                                destination: AnyView(RunningAnalysisView())),
+                AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,
+                               destination: AnyView(RunningPatternView())),
                 AnalyticsEntry(title: "Cycling", subtitle: "Speed, distance & weekly volume", icon: "figure.outdoor.cycle", color: .blue,
                                destination: AnyView(CyclingAnalysisView())),
                 AnalyticsEntry(title: "Swimming", subtitle: "Pace per 100m & pool sets", icon: "figure.pool.swim", color: .cyan,
