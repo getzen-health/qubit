@@ -108,6 +108,7 @@ const SECTIONS: Section[] = [
       { label: 'Hydration', desc: 'Daily water intake and targets', href: '/water', emoji: '💧' },
       { label: 'Fasting', desc: 'Intermittent fasting sessions and streaks', href: '/fasting', emoji: '⏳' },
       { label: 'Mindfulness', desc: 'Meditation and mindfulness minutes', href: '/mindfulness', emoji: '🧘' },
+      { label: 'Mindfulness Impact', desc: 'How meditation sessions affect next-day HRV and recovery', href: '/mindfulness/impact', emoji: '✨' },
       { label: 'Daylight', desc: 'Time in natural light per day', href: '/daylight', emoji: '☀️' },
       { label: 'Hearing Health', desc: 'Noise exposure and headphone audio', href: '/hearing', emoji: '👂' },
     ],
