@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2 } from 'lucide-react'
+import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import { CyclingClient } from './cycling-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -42,6 +42,14 @@ export default async function CyclingPage() {
             <h1 className="text-xl font-bold text-text-primary">Cycling Analytics</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/cycling/progression"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Cycling progression"
+            title="Cycling Progression"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           <Link
             href="/cycling/patterns"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"

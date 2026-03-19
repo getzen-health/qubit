@@ -26,6 +26,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CyclingAnalysisView())),
                 AnalyticsEntry(title: "Cycling Patterns", subtitle: "DOW distribution, time-of-day & speed trend", icon: "chart.bar.xaxis", color: .blue,
                                destination: AnyView(CyclingPatternView())),
+                AnalyticsEntry(title: "Cycling Progression", subtitle: "12-month distance & speed trend with elevation", icon: "chart.line.uptrend.xyaxis", color: .blue,
+                               destination: AnyView(CyclingProgressionView())),
                 AnalyticsEntry(title: "Swimming", subtitle: "Pace per 100m & pool sets", icon: "figure.pool.swim", color: .cyan,
                                destination: AnyView(SwimmingAnalysisView())),
                 AnalyticsEntry(title: "Swimming Patterns", subtitle: "DOW distribution, time-of-day & pace per 100m trend", icon: "chart.bar.xaxis", color: .cyan,
