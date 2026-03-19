@@ -90,6 +90,9 @@ struct WorkoutsView: View {
                         NavigationLink(destination: RunningAnalysisView()) {
                             Image(systemName: "figure.run")
                         }
+                        NavigationLink(destination: CyclingAnalysisView()) {
+                            Image(systemName: "figure.outdoor.cycle")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
