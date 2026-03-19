@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import {
   BarChart,
   Bar,
@@ -271,6 +272,39 @@ export function TrendsClient({ summaries }: Props) {
           </div>
         </div>
       )}
+
+      {/* Explore More */}
+      <div>
+        <h2 className="text-sm font-medium text-text-secondary mb-3 px-1">Explore More</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { href: '/score', emoji: '📊', label: 'Health Score', desc: 'Sleep · Activity · Recovery' },
+            { href: '/year', emoji: '🎉', label: 'Year in Review', desc: '365-day highlights' },
+            { href: '/compare', emoji: '↔️', label: 'Compare Weeks', desc: 'This week vs last' },
+            { href: '/recovery', emoji: '⚡', label: 'Recovery', desc: 'HRV & strain scores' },
+            { href: '/running', emoji: '🏃', label: 'Running', desc: 'Pace, distance & PRs' },
+            { href: '/cycling', emoji: '🚴', label: 'Cycling', desc: 'Speed & weekly volume' },
+            { href: '/swimming', emoji: '🏊', label: 'Swimming', desc: 'Pace per 100m' },
+            { href: '/strength', emoji: '💪', label: 'Strength', desc: 'Sessions & volume' },
+            { href: '/zones', emoji: '❤️', label: 'HR Zones', desc: 'Training zone breakdown' },
+            { href: '/vo2max', emoji: '🫁', label: 'Cardio Fitness', desc: 'VO₂ max trend' },
+            { href: '/hrv', emoji: '〰️', label: 'HRV Analysis', desc: 'Baseline & patterns' },
+            { href: '/training-load', emoji: '📈', label: 'Training Load', desc: 'ACWR & fatigue' },
+          ].map(({ href, emoji, label, desc }) => (
+            <Link
+              key={href}
+              href={href}
+              className="bg-surface border border-border rounded-xl p-3 flex items-start gap-3 hover:border-accent/50 transition-colors"
+            >
+              <span className="text-2xl leading-none mt-0.5">{emoji}</span>
+              <div className="min-w-0">
+                <p className="font-medium text-text-primary text-sm leading-tight">{label}</p>
+                <p className="text-xs text-text-secondary mt-0.5 leading-tight">{desc}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
