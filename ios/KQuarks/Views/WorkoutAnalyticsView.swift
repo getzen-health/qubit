@@ -115,6 +115,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(ECGAnalysisView())),
                 AnalyticsEntry(title: "Cardiac Drift", subtitle: "HR drift in long runs — first vs second half aerobic base measure", icon: "arrow.up.right.heart.fill", color: .teal,
                                destination: AnyView(CardiacDriftView())),
+                AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
+                               destination: AnyView(EnergySystemBalanceView())),
             ]
         ),
     ]
