@@ -111,6 +111,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Resting Heart Rate trend
+                            NavigationLink(destination: RHRTrendView()) {
+                                HStack {
+                                    Image(systemName: "heart.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Resting Heart Rate")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("6-month trend & fitness zone")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // HRV deep-dive
                             NavigationLink(destination: HRVDetailView()) {
                                 HStack {
