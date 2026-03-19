@@ -111,6 +111,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Respiratory Rate
+                            NavigationLink(destination: RespiratoryRateView()) {
+                                HStack {
+                                    Image(systemName: "wind")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Respiratory Rate")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Breathing rate during sleep")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Oxygen (SpO₂)
                             NavigationLink(destination: BloodOxygenView()) {
                                 HStack {
