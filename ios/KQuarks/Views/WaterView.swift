@@ -38,6 +38,11 @@ struct WaterView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Hydration")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                NavigationLink(destination: HydrationPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
             .task { await loadData() }
             .refreshable { await loadData() }
         }
