@@ -561,6 +561,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: WalkingSteadinessView()) {
+                                HStack {
+                                    Image(systemName: "figure.walk")
+                                        .font(.title2)
+                                        .foregroundStyle(.mint)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.mint.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Walking Steadiness")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Balance & fall risk assessment")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: MobilityView()) {
                                 HStack {
                                     Image(systemName: "figure.walk.motion")
@@ -657,6 +684,9 @@ struct HealthDataView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: BreathingView()) {
+                            Image(systemName: "wind")
+                        }
                         NavigationLink(destination: HistoryView()) {
                             Image(systemName: "calendar")
                         }
