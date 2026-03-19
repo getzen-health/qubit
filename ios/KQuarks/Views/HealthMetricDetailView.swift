@@ -41,6 +41,13 @@ struct HealthMetricDetailView: View {
                     }
                 }
             }
+            if dataType == .hrv {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: HRVDetailView()) {
+                        Image(systemName: "waveform.path.ecg")
+                    }
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Picker("Period", selection: $selectedDays) {
                     Text("7D").tag(7)
