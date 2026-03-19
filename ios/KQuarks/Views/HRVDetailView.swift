@@ -46,6 +46,11 @@ struct HRVDetailView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HRV Analysis")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            NavigationLink(destination: HRVCalendarView()) {
+                Image(systemName: "calendar.badge.checkmark")
+            }
+        }
         .task { await load() }
     }
 
