@@ -508,6 +508,33 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .activity {
+                            NavigationLink(destination: ActivitySummaryView()) {
+                                HStack {
+                                    Image(systemName: "chart.bar.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Activity Summary")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("This week vs last week with streak & goals")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivityRingsHistoryView()) {
                                 HStack {
                                     Image(systemName: "rays")
