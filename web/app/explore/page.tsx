@@ -168,6 +168,7 @@ const SECTIONS: Section[] = [
       { label: 'Daily Check-in', desc: 'Log energy, mood, and stress each day', href: '/checkin', emoji: '📋' },
       { label: 'Check-in Patterns', desc: 'When you feel best: DOW mood trends, stress peaks & score distributions', href: '/checkin/patterns', emoji: '📊' },
       { label: 'Fitness Profile', desc: '6-dimension health fingerprint: HRV, sleep, activity, cardiac, recovery & VO₂', href: '/fitness-profile', emoji: '🎯' },
+      { label: 'Performance Overview', desc: 'Cross-sport year-over-year comparison: pace, volume, sessions & cardiovascular markers', href: '/performance', emoji: '📊' },
       { label: 'AI Insights', desc: 'Claude-powered health analysis', href: '/insights', emoji: '✨' },
       { label: 'Smart Nudges', desc: 'Algorithmic health recommendations from your data', href: '/nudges', emoji: '🎯' },
       { label: 'Health Heatmap', desc: '90-day multi-metric grid: steps, sleep, HRV, calories & recovery', href: '/heatmap', emoji: '🗓️' },
