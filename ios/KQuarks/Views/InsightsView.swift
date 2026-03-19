@@ -40,6 +40,9 @@ struct InsightsView: View {
                         NavigationLink(destination: WorkoutSleepImpactView()) {
                             Image(systemName: "figure.run.circle")
                         }
+                        NavigationLink(destination: MonthlyHealthSummaryView()) {
+                            Image(systemName: "calendar.circle")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
