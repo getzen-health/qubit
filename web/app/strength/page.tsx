@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2 } from 'lucide-react'
+import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import { StrengthClient } from './strength-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -51,6 +51,14 @@ export default async function StrengthPage() {
             <h1 className="text-xl font-bold text-text-primary">Strength Training</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/strength/progression"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Strength progression"
+            title="Strength Progression"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           <Link
             href="/strength/patterns"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"

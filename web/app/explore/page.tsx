@@ -75,6 +75,7 @@ const SECTIONS: Section[] = [
       { label: 'Cycling Patterns', desc: 'DOW distribution, time-of-day, monthly distance & speed trend', href: '/cycling/patterns', emoji: '📊' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
+      { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },
       { label: 'HIIT', desc: 'Intensity, frequency, and recovery impact', href: '/hiit', emoji: '⚡' },
       { label: 'HIIT Patterns', desc: 'DOW distribution, time-of-day, weekly volume & heart rate trends', href: '/hiit/patterns', emoji: '📊' },
       { label: 'Rowing', desc: '500m splits, watts, and distance', href: '/rowing', emoji: '🚣' },
