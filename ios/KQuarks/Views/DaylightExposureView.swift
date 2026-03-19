@@ -52,6 +52,13 @@ struct DaylightExposureView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daylight Exposure")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: DaylightPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 
