@@ -110,6 +110,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Analytics & Insights',
     features: [
+      { label: 'Health Timeline', desc: 'Chronological feed of workouts, sleep & key events', href: '/timeline', emoji: '📜' },
       { label: "Today's Readiness", desc: 'HRV + sleep + load → training recommendation', href: '/ready', emoji: '🎯' },
       { label: 'Training Advisor', desc: 'HRV-guided weekly training plan', href: '/training-advisor', emoji: '🧠' },
       { label: 'Vitality Score', desc: 'Multi-metric longevity index', href: '/longevity', emoji: '⭐' },
