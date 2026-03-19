@@ -31,6 +31,7 @@ const SECTIONS: Section[] = [
       { label: 'Oxygen (SpO2)', desc: 'Blood oxygen saturation day and night', href: '/oxygen', emoji: '🫁' },
       { label: 'SpO₂ Patterns', desc: 'Night vs day, DOW trends, hourly & monthly SpO₂ analysis', href: '/oxygen/patterns', emoji: '📊' },
       { label: 'Respiratory Rate', desc: 'Breathing rate trends and patterns', href: '/respiratory', emoji: '🌬️' },
+      { label: 'Respiratory Patterns', desc: 'Night vs day, DOW trends, hourly & monthly breathing rate analysis', href: '/respiratory/patterns', emoji: '📊' },
       { label: 'Blood Pressure', desc: 'Systolic and diastolic readings over time', href: '/bloodpressure', emoji: '🩺' },
       { label: 'BP Patterns', desc: 'DOW trends, time-of-day, monthly progression & hypertension stage breakdown', href: '/bloodpressure/patterns', emoji: '📊' },
       { label: 'Resting HR Analysis', desc: '6-month RHR trend, fitness classification & HRV correlation', href: '/heartrate/resting', emoji: '🫀' },

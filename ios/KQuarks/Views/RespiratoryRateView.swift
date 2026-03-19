@@ -44,6 +44,13 @@ struct RespiratoryRateView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Respiratory Rate")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: RespiratoryPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 
