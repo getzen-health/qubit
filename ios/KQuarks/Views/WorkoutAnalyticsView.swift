@@ -97,6 +97,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingVolumeHistoryView())),
                 AnalyticsEntry(title: "Zone 2 Training", subtitle: "Aerobic base volume tracker — 52 weeks", icon: "heart.circle.fill", color: .green,
                                destination: AnyView(Zone2TrainingView())),
+                AnalyticsEntry(title: "Consistency Tracker", subtitle: "52-week session frequency, streaks & training days", icon: "calendar.badge.checkmark", color: .teal,
+                               destination: AnyView(WorkoutConsistencyView())),
             ]
         ),
     ]
