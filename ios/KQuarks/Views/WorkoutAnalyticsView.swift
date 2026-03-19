@@ -99,6 +99,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(Zone2TrainingView())),
                 AnalyticsEntry(title: "Consistency Tracker", subtitle: "52-week session frequency, streaks & training days", icon: "calendar.badge.checkmark", color: .teal,
                                destination: AnyView(WorkoutConsistencyView())),
+                AnalyticsEntry(title: "Lifetime Stats", subtitle: "All-time totals, milestones & year-over-year", icon: "star.circle.fill", color: .teal,
+                               destination: AnyView(LifetimeStatsView())),
             ]
         ),
     ]
