@@ -338,6 +338,33 @@ struct HealthDataView: View {
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
+
+                            NavigationLink(destination: HearingHealthView()) {
+                                HStack {
+                                    Image(systemName: "ear")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Hearing Health")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Noise & headphone exposure")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
