@@ -30,6 +30,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HikingAnalysisView())),
                 AnalyticsEntry(title: "HIIT", subtitle: "Peak HR, burn rate & intensity", icon: "bolt.heart.fill", color: .pink,
                                destination: AnyView(HIITAnalysisView())),
+                AnalyticsEntry(title: "Rowing", subtitle: "500m splits, distance & HR", icon: "figure.rowing", color: .cyan,
+                               destination: AnyView(RowingAnalysisView())),
             ]
         ),
         (
