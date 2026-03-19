@@ -46,8 +46,13 @@ struct SleepView: View {
             .navigationTitle("Sleep")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: SleepDebtView()) {
-                        Image(systemName: "moon.zzz.fill")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: SleepConsistencyView()) {
+                            Image(systemName: "clock.badge.checkmark")
+                        }
+                        NavigationLink(destination: SleepDebtView()) {
+                            Image(systemName: "moon.zzz.fill")
+                        }
                     }
                 }
             }
