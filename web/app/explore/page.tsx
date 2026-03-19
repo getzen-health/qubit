@@ -87,6 +87,7 @@ const SECTIONS: Section[] = [
       { label: 'Sleep Efficiency', desc: 'Time asleep vs time in bed (CBT-I)', href: '/sleep/efficiency', emoji: '💯' },
       { label: 'Sleep Schedule', desc: 'Bedtime consistency and chronotype', href: '/sleep/schedule', emoji: '🕐' },
       { label: 'Sleep Debt', desc: 'Cumulative debt, repayment tracking', href: '/sleep/debt', emoji: '💤' },
+      { label: 'Sleep Breathing', desc: 'Overnight respiratory rate & SpO₂ patterns', href: '/sleep/breathing', emoji: '🌬️' },
       { label: 'Chronotype', desc: 'Early bird vs night owl + social jet lag', href: '/sleep/chronotype', emoji: '🦉' },
       { label: 'Sleep Impact', desc: 'How sleep duration shapes next-day HRV & activity', href: '/sleep/impact', emoji: '⚡' },
       { label: 'Sleep Quality Score', desc: 'Nightly 0–100 score: duration + stages + efficiency', href: '/sleep/score', emoji: '⭐' },
