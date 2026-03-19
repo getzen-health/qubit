@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, CheckCircle2, Edit3 } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Edit3, TrendingUp } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import {
   AreaChart,
@@ -182,6 +182,13 @@ export default function CheckinPage() {
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
             </p>
           </div>
+          <Link
+            href="/checkin/insights"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            title="Wellness Insights"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           {hasToday && !editing && (
             <button
               onClick={() => setEditing(true)}
