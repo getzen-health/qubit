@@ -45,6 +45,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningFormView())),
                 AnalyticsEntry(title: "Pace Zones", subtitle: "80/20 easy vs hard distribution", icon: "timer", color: .orange,
                                destination: AnyView(RunningPaceZonesView())),
+                AnalyticsEntry(title: "Running Efficiency", subtitle: "AEI trend — speed per heartbeat", icon: "gauge.open.with.lines.needle.33percent", color: .green,
+                               destination: AnyView(RunningEfficiencyView())),
                 AnalyticsEntry(title: "Race Predictor", subtitle: "5K, 10K, half & full via VDOT", icon: "stopwatch.fill", color: .green,
                                destination: AnyView(RacePredictorView())),
                 AnalyticsEntry(title: "Records & PRs", subtitle: "Your lifetime personal bests", icon: "trophy.fill", color: .yellow,
