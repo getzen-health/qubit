@@ -55,6 +55,13 @@ struct WalkingSteadinessView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Walking Steadiness")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: WalkingSteadinessPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 
