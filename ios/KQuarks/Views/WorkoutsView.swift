@@ -80,8 +80,13 @@ struct WorkoutsView: View {
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: WorkoutAnalyticsView()) {
-                        Image(systemName: "chart.xyaxis.line")
+                    HStack(spacing: 4) {
+                        NavigationLink(destination: WorkoutCalendarView()) {
+                            Image(systemName: "calendar.badge.clock")
+                        }
+                        NavigationLink(destination: WorkoutAnalyticsView()) {
+                            Image(systemName: "chart.xyaxis.line")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
