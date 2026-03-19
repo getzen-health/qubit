@@ -78,6 +78,7 @@ const SECTIONS: Section[] = [
       { label: 'Sleep Debt', desc: 'Cumulative debt, repayment tracking', href: '/sleep/debt', emoji: '💤' },
       { label: 'Chronotype', desc: 'Early bird vs night owl + social jet lag', href: '/sleep/chronotype', emoji: '🦉' },
       { label: 'Wrist Temperature', desc: 'Nightly skin temperature deviations', href: '/temperature', emoji: '🌡️' },
+      { label: 'Temperature Insights', desc: 'HRV correlation & illness signal detection', href: '/temperature/insights', emoji: '🔬' },
     ],
   },
   {
