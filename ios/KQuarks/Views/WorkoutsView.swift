@@ -93,6 +93,9 @@ struct WorkoutsView: View {
                         NavigationLink(destination: CyclingAnalysisView()) {
                             Image(systemName: "figure.outdoor.cycle")
                         }
+                        NavigationLink(destination: HeartRateZonesView()) {
+                            Image(systemName: "heart.circle.fill")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
