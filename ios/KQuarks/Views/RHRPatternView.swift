@@ -182,29 +182,28 @@ struct RHRPatternView: View {
 
     // MARK: - Fitness Class Distribution Card
 
-    private func classRow(label: String, min: Int, max: Int, color: Color) -> some View {
-        let count = days.filter { $0.rhr >= min && $0.rhr <= max }.count
+    private func classRow(label: String, minBpm: Int, maxBpm: Int, color: Color) -> some View {
+        let count = days.filter { $0.rhr >= minBpm && $0.rhr <= maxBpm }.count
         guard count > 0 else { return AnyView(EmptyView()) }
+        let pct = Int(Double(count) / Double(Swift.max(n, 1)) * 100)
         return AnyView(HStack(spacing: 8) {
             Circle().fill(color.opacity(0.7)).frame(width: 10, height: 10)
             Text(label).font(.caption)
             Spacer()
-            Text("\(Int(Double(count) / Double(max(n, 1)) * 100))%")
-                .font(.caption.bold()).foregroundStyle(color)
-            Text("(\(count))")
-                .font(.caption2).foregroundStyle(.secondary)
+            Text("\(pct)%").font(.caption.bold()).foregroundStyle(color)
+            Text("(\(count))").font(.caption2).foregroundStyle(.secondary)
         })
     }
 
     private var classDistCard: some View {
         return VStack(alignment: .leading, spacing: 10) {
             Text("Fitness Classification").font(.headline)
-            classRow(label: "Athlete", min: 0, max: 44, color: .purple)
-            classRow(label: "Excellent", min: 45, max: 53, color: .green)
-            classRow(label: "Good", min: 54, max: 61, color: .mint)
-            classRow(label: "Above Avg", min: 62, max: 69, color: .yellow)
-            classRow(label: "Average", min: 70, max: 79, color: .orange)
-            classRow(label: "Below Avg", min: 80, max: 999, color: .red)
+            classRow(label: "Athlete", minBpm: 0, maxBpm: 44, color: .purple)
+            classRow(label: "Excellent", minBpm: 45, maxBpm: 53, color: .green)
+            classRow(label: "Good", minBpm: 54, maxBpm: 61, color: .mint)
+            classRow(label: "Above Avg", minBpm: 62, maxBpm: 69, color: .yellow)
+            classRow(label: "Average", minBpm: 70, maxBpm: 79, color: .orange)
+            classRow(label: "Below Avg", minBpm: 80, maxBpm: 999, color: .red)
         }
         .padding()
         .background(Color(.systemBackground))
