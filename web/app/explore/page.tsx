@@ -108,6 +108,7 @@ const SECTIONS: Section[] = [
     title: 'Nutrition & Lifestyle',
     features: [
       { label: 'Nutrition', desc: 'Meal logging and daily calorie intake', href: '/nutrition', emoji: '🥗' },
+      { label: 'Nutrition Patterns', desc: 'When you eat most: macro split, DOW trends & calorie distribution', href: '/nutrition/patterns', emoji: '📊' },
       { label: 'Macros', desc: 'Protein, carbs, and fat breakdown', href: '/macros', emoji: '📊' },
       { label: 'Hydration', desc: 'Daily water intake and targets', href: '/water', emoji: '💧' },
       { label: 'Hydration Patterns', desc: 'When you drink most: day-of-week, monthly & goal streaks', href: '/water/patterns', emoji: '📊' },

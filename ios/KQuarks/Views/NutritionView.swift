@@ -32,10 +32,15 @@ struct NutritionView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showLogMeal = true
-                    } label: {
-                        Image(systemName: "plus")
+                    HStack {
+                        NavigationLink(destination: NutritionPatternView()) {
+                            Image(systemName: "chart.bar.xaxis")
+                        }
+                        Button {
+                            showLogMeal = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
