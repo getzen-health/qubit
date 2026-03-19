@@ -452,6 +452,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: StepPatternView()) {
+                                HStack {
+                                    Image(systemName: "chart.bar.xaxis")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Step Pattern")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Hourly & weekday activity rhythm")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivityHeatmapView()) {
                                 HStack {
                                     Image(systemName: "calendar.badge.clock")
