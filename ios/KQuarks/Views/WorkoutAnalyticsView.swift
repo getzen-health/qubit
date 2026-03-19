@@ -101,6 +101,12 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutConsistencyView())),
                 AnalyticsEntry(title: "Lifetime Stats", subtitle: "All-time totals, milestones & year-over-year", icon: "star.circle.fill", color: .teal,
                                destination: AnyView(LifetimeStatsView())),
+                AnalyticsEntry(title: "Injury Risk Score", subtitle: "ACWR, consecutive days, HRV & resting HR risk factors", icon: "exclamationmark.triangle.fill", color: .orange,
+                               destination: AnyView(InjuryRiskView())),
+                AnalyticsEntry(title: "Fitness Age", subtitle: "VO₂ max-based biological fitness age vs chronological age", icon: "figure.run.circle.fill", color: .indigo,
+                               destination: AnyView(FitnessAgeView())),
+                AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
+                               destination: AnyView(PeriodizationView())),
             ]
         ),
     ]
