@@ -306,6 +306,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Vitality Score — composite longevity index
+                            NavigationLink(destination: LongevityView()) {
+                                HStack {
+                                    Image(systemName: "star.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.yellow)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.yellow.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Vitality Score")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Multi-metric longevity index")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Cardiac Events (AFib, high HR, low HR)
                             NavigationLink(destination: CardiacEventsView()) {
                                 HStack {
