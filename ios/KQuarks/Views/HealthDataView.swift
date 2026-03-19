@@ -278,6 +278,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Cardiac Events (AFib, high HR, low HR)
+                            NavigationLink(destination: CardiacEventsView()) {
+                                HStack {
+                                    Image(systemName: "heart.text.clipboard.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Cardiac Events")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("High HR, low HR & irregular rhythm")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood pressure gets its own detailed view
                             NavigationLink(destination: BloodPressureView()) {
                                 HStack {
