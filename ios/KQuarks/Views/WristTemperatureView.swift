@@ -164,11 +164,7 @@ struct WristTemperatureView: View {
                         yStart: .value("Start", 0),
                         yEnd: .value("Deviation", s.value)
                     )
-                    .foregroundStyle(s.value > 0.5 ? Color.red.opacity(0.7) :
-                                     s.value > 0.1 ? Color.orange.opacity(0.7) :
-                                     s.value < -0.5 ? Color.blue.opacity(0.7) :
-                                     s.value < -0.1 ? Color.cyan.opacity(0.7) :
-                                     Color.green.opacity(0.7))
+                    .foregroundStyle(tempBarColor(s.value))
                     .cornerRadius(2)
                 }
             }
@@ -184,6 +180,14 @@ struct WristTemperatureView: View {
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
+    }
+
+    private func tempBarColor(_ value: Double) -> Color {
+        if value > 0.5 { return Color.red.opacity(0.7) }
+        if value > 0.1 { return Color.orange.opacity(0.7) }
+        if value < -0.5 { return Color.blue.opacity(0.7) }
+        if value < -0.1 { return Color.cyan.opacity(0.7) }
+        return Color.green.opacity(0.7)
     }
 
     private var chartYDomain: ClosedRange<Double> {
