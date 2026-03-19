@@ -56,6 +56,9 @@ struct SleepView: View {
                         NavigationLink(destination: SleepStagesView()) {
                             Image(systemName: "chart.bar.fill")
                         }
+                        NavigationLink(destination: SleepEfficiencyView()) {
+                            Image(systemName: "percent")
+                        }
                     }
                 }
             }
