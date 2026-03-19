@@ -531,6 +531,9 @@ struct HealthDataView: View {
                         NavigationLink(destination: AchievementsView()) {
                             Image(systemName: "star.circle.fill")
                         }
+                        NavigationLink(destination: StreaksView()) {
+                            Image(systemName: "flame")
+                        }
                     }
                 }
             }
