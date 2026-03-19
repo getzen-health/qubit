@@ -93,6 +93,7 @@ const SECTIONS: Section[] = [
       { label: 'Workout Patterns', desc: 'Day-of-week, time-of-day & weekly volume analysis', href: '/workouts/patterns', emoji: '📆' },
       { label: 'Training Volume History', desc: '52-week stacked sport breakdown, rolling average & weekly table', href: '/workouts/volume', emoji: '📊' },
       { label: 'Zone 2 Training', desc: '52-week aerobic base tracker — Zone 2 minutes by sport with 3h/week target', href: '/zone2', emoji: '💚' },
+      { label: 'Training Consistency', desc: 'Session frequency, training days per week, streaks & sport breakdown over 52 weeks', href: '/workouts/consistency', emoji: '🗓️' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
