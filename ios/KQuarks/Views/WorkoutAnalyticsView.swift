@@ -93,6 +93,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutEfficiencyView())),
                 AnalyticsEntry(title: "Performance Overview", subtitle: "Cross-sport year-over-year comparison", icon: "chart.bar.doc.horizontal.fill", color: .blue,
                                destination: AnyView(PerformanceOverviewView())),
+                AnalyticsEntry(title: "Volume History", subtitle: "52-week training breakdown by sport", icon: "chart.bar.fill", color: .orange,
+                               destination: AnyView(TrainingVolumeHistoryView())),
             ]
         ),
     ]
