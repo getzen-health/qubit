@@ -105,6 +105,9 @@ struct WorkoutsView: View {
                         NavigationLink(destination: HikingAnalysisView()) {
                             Image(systemName: "figure.hiking")
                         }
+                        NavigationLink(destination: HIITAnalysisView()) {
+                            Image(systemName: "bolt.heart.fill")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
