@@ -115,6 +115,9 @@ struct CheckinView: View {
                         NavigationLink(destination: WellnessInsightsView()) {
                             Image(systemName: "heart.text.clipboard")
                         }
+                        NavigationLink(destination: CheckinPatternView()) {
+                            Image(systemName: "chart.bar.xaxis")
+                        }
                     }
                 }
                 if let c = vm.checkin, !vm.isEditing {

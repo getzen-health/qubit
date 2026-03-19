@@ -137,6 +137,7 @@ const SECTIONS: Section[] = [
       { label: 'Year in Review', desc: 'Annual health highlights and records', href: '/year', emoji: '🎊' },
       { label: 'Habits', desc: 'Daily habit tracking with streaks', href: '/habits', emoji: '🎯' },
       { label: 'Daily Check-in', desc: 'Log energy, mood, and stress each day', href: '/checkin', emoji: '📋' },
+      { label: 'Check-in Patterns', desc: 'When you feel best: DOW mood trends, stress peaks & score distributions', href: '/checkin/patterns', emoji: '📊' },
       { label: 'Fitness Profile', desc: '6-dimension health fingerprint: HRV, sleep, activity, cardiac, recovery & VO₂', href: '/fitness-profile', emoji: '🎯' },
       { label: 'AI Insights', desc: 'Claude-powered health analysis', href: '/insights', emoji: '✨' },
       { label: 'Smart Nudges', desc: 'Algorithmic health recommendations from your data', href: '/nudges', emoji: '🎯' },
