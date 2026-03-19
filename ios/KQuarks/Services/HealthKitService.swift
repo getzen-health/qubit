@@ -87,6 +87,7 @@ class HealthKitService {
         types.insert(HKQuantityType(.walkingStepLength))
         types.insert(HKQuantityType(.walkingAsymmetryPercentage))
         types.insert(HKQuantityType(.walkingDoubleSupportPercentage))
+        types.insert(HKQuantityType(.appleWalkingSteadiness))
 
         // Metabolic
         types.insert(HKQuantityType(.bloodGlucose))
