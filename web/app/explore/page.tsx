@@ -106,6 +106,7 @@ const SECTIONS: Section[] = [
       { label: 'Walking', desc: 'Pace trends, distance & weekly walking volume', href: '/walking', emoji: '🚶' },
       { label: 'Walking Patterns', desc: 'DOW distribution, time-of-day & monthly distance trend', href: '/walking/patterns', emoji: '📊' },
       { label: 'Yoga & Mind-Body', desc: 'Session frequency, duration, type breakdown & parasympathetic benefit', href: '/yoga', emoji: '🧘' },
+      { label: 'Race Goal Planner', desc: '16-week countdown & progressive mileage plan to your target race', href: '/race-planner', emoji: '🏁' },
       { label: 'Stair Climbing', desc: 'Session trends, kcal/min intensity & weekly climbing volume', href: '/stair-climbing', emoji: '🪜' },
       { label: 'Outdoor vs Indoor', desc: 'Environment split by sport, monthly trend & outdoor preference', href: '/outdoor-indoor', emoji: '☀️' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },

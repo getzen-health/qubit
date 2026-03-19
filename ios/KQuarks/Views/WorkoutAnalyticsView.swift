@@ -87,6 +87,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningEfficiencyView())),
                 AnalyticsEntry(title: "Race Predictor", subtitle: "5K, 10K, half & full via VDOT", icon: "stopwatch.fill", color: .green,
                                destination: AnyView(RacePredictorView())),
+                AnalyticsEntry(title: "Race Goal Planner", subtitle: "16-week countdown & progressive mileage plan to target race", icon: "flag.checkered.2.crossed", color: .red,
+                               destination: AnyView(RaceGoalPlannerView())),
                 AnalyticsEntry(title: "Records & PRs", subtitle: "Your lifetime personal bests", icon: "trophy.fill", color: .yellow,
                                destination: AnyView(RecordsView())),
                 AnalyticsEntry(title: "Sleep Impact", subtitle: "How workouts affect overnight HRV & sleep", icon: "bed.double.fill", color: .indigo,
