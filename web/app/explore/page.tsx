@@ -72,6 +72,7 @@ const SECTIONS: Section[] = [
       { label: 'Workout Impact', desc: 'How training timing affects HRV recovery', href: '/workouts/impact', emoji: '🔋' },
       { label: 'Cycling', desc: 'Speed, distance, and ride history', href: '/cycling', emoji: '🚴' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
+      { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'HIIT', desc: 'Intensity, frequency, and recovery impact', href: '/hiit', emoji: '⚡' },
       { label: 'Rowing', desc: '500m splits, watts, and distance', href: '/rowing', emoji: '🚣' },
       { label: 'Swimming', desc: 'Distance, HR, and session trends', href: '/swimming', emoji: '🏊' },
