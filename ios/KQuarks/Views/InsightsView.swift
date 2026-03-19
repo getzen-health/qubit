@@ -34,6 +34,9 @@ struct InsightsView: View {
                         NavigationLink(destination: CorrelationInsightsView()) {
                             Image(systemName: "chart.line.text.clipboard")
                         }
+                        NavigationLink(destination: WorkoutSleepImpactView()) {
+                            Image(systemName: "figure.run.circle")
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
