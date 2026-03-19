@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Activity, GitPullRequest } from 'lucide-react'
+import { ArrowLeft, Activity, GitPullRequest, BarChart2 } from 'lucide-react'
 import { HeartRateClient } from './heartrate-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -37,6 +37,14 @@ export default async function HeartRatePage() {
             <h1 className="text-xl font-bold text-text-primary">Heart Rate</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/heartrate/patterns"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Daily HR pattern"
+            title="Daily HR Pattern"
+          >
+            <BarChart2 className="w-5 h-5" />
+          </Link>
           <Link
             href="/hrv"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
