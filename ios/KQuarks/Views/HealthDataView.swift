@@ -249,6 +249,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // HR Recovery
+                            NavigationLink(destination: HeartRateRecoveryView()) {
+                                HStack {
+                                    Image(systemName: "arrow.down.heart.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HR Recovery")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Post-workout recovery rate")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Respiratory Rate
                             NavigationLink(destination: RespiratoryRateView()) {
                                 HStack {
