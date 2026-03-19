@@ -165,6 +165,34 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .heart {
+                            // Cardio Health Summary
+                            NavigationLink(destination: CardioHealthSummaryView()) {
+                                HStack {
+                                    Image(systemName: "heart.text.square.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Cardio Health Summary")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("HRV, RHR, VO₂ Max & HR Recovery")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // VO2 Max / Cardio Fitness
                             NavigationLink(destination: VO2MaxView()) {
                                 HStack {
