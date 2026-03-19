@@ -341,6 +341,33 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .activity {
+                            NavigationLink(destination: ActivityRingsHistoryView()) {
+                                HStack {
+                                    Image(systemName: "rays")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Activity Rings")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("30-day ring close history")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivityHeatmapView()) {
                                 HStack {
                                     Image(systemName: "calendar.badge.clock")
