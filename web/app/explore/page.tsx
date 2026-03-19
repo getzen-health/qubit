@@ -98,6 +98,7 @@ const SECTIONS: Section[] = [
       { label: 'Injury Risk Score', desc: 'ACWR, consecutive training days, HRV drop & resting HR elevation', href: '/injury-risk', emoji: '⚠️' },
       { label: 'Fitness Age', desc: 'VO₂ max-based biological fitness age vs chronological age', href: '/fitness-age', emoji: '🧬' },
       { label: 'Training Phases', desc: 'Auto-detect base, build, peak & taper from 52-week volume trend', href: '/periodization', emoji: '📆' },
+      { label: 'Monotony & Strain', desc: "Coggan's training science — daily load variety & cumulative stress index", href: '/monotony', emoji: '📉' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },

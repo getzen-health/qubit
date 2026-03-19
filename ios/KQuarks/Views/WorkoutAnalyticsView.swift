@@ -107,6 +107,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(FitnessAgeView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
+                AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
+                               destination: AnyView(TrainingMonotonyView())),
             ]
         ),
     ]
