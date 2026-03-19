@@ -62,6 +62,9 @@ struct SleepView: View {
                         NavigationLink(destination: SleepBreathingView()) {
                             Image(systemName: "lungs")
                         }
+                        NavigationLink(destination: SleepImpactView()) {
+                            Image(systemName: "bolt.heart.fill")
+                        }
                     }
                 }
             }
