@@ -53,6 +53,11 @@ struct FastingView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Fasting")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                NavigationLink(destination: FastingInsightsView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
             .task { await load() }
             .onReceive(timer) { t in now = t }
             .sheet(isPresented: $showStartSheet) {
