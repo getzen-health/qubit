@@ -182,31 +182,29 @@ struct RHRPatternView: View {
 
     // MARK: - Fitness Class Distribution Card
 
+    private func classRow(label: String, min: Int, max: Int, color: Color) -> some View {
+        let count = days.filter { $0.rhr >= min && $0.rhr <= max }.count
+        guard count > 0 else { return AnyView(EmptyView()) }
+        return AnyView(HStack(spacing: 8) {
+            Circle().fill(color.opacity(0.7)).frame(width: 10, height: 10)
+            Text(label).font(.caption)
+            Spacer()
+            Text("\(Int(Double(count) / Double(max(n, 1)) * 100))%")
+                .font(.caption.bold()).foregroundStyle(color)
+            Text("(\(count))")
+                .font(.caption2).foregroundStyle(.secondary)
+        })
+    }
+
     private var classDistCard: some View {
-        let classes: [(label: String, min: Int, max: Int, color: Color)] = [
-            ("Athlete", 0, 44, .purple),
-            ("Excellent", 45, 53, .green),
-            ("Good", 54, 61, .mint),
-            ("Above Avg", 62, 69, .yellow),
-            ("Average", 70, 79, .orange),
-            ("Below Avg", 80, 999, .red)
-        ]
         return VStack(alignment: .leading, spacing: 10) {
             Text("Fitness Classification").font(.headline)
-            ForEach(classes, id: \.label) { cls in
-                let count = days.filter { $0.rhr >= cls.min && $0.rhr <= cls.max }.count
-                if count > 0 {
-                    HStack(spacing: 8) {
-                        Circle().fill(cls.color.opacity(0.7)).frame(width: 10, height: 10)
-                        Text(cls.label).font(.caption)
-                        Spacer()
-                        Text("\(Int(Double(count) / Double(max(n, 1)) * 100))%")
-                            .font(.caption.bold()).foregroundStyle(cls.color)
-                        Text("(\(count))")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
-                }
-            }
+            classRow(label: "Athlete", min: 0, max: 44, color: .purple)
+            classRow(label: "Excellent", min: 45, max: 53, color: .green)
+            classRow(label: "Good", min: 54, max: 61, color: .mint)
+            classRow(label: "Above Avg", min: 62, max: 69, color: .yellow)
+            classRow(label: "Average", min: 70, max: 79, color: .orange)
+            classRow(label: "Below Avg", min: 80, max: 999, color: .red)
         }
         .padding()
         .background(Color(.systemBackground))
