@@ -63,6 +63,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningProgressionView())),
                 AnalyticsEntry(title: "Training Patterns", subtitle: "Day-of-week, time-of-day & weekly volume analysis", icon: "calendar.badge.clock", color: .teal,
                                destination: AnyView(TrainingPatternView())),
+                AnalyticsEntry(title: "Workout Efficiency", subtitle: "kcal/min by type — intensity across all sports", icon: "bolt.heart.fill", color: .yellow,
+                               destination: AnyView(WorkoutEfficiencyView())),
             ]
         ),
     ]
