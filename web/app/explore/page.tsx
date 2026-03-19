@@ -50,6 +50,7 @@ const SECTIONS: Section[] = [
     features: [
       { label: 'All Workouts', desc: 'Complete workout log and stats', href: '/workouts', emoji: '🏋️' },
       { label: 'Running', desc: 'Pace trends, distance, and VDOT', href: '/running', emoji: '🏃' },
+      { label: 'Running Efficiency', desc: 'Aerobic efficiency index and HR vs pace trends', href: '/running/efficiency', emoji: '⚡' },
       { label: 'Running Form', desc: 'Cadence, stride & biomechanics analysis', href: '/running/form', emoji: '🦶' },
       { label: 'Pace Zones', desc: '80/20 easy vs hard training distribution', href: '/running/zones', emoji: '⏱️' },
       { label: 'Training Calendar', desc: 'Monthly workout calendar with type coloring', href: '/workouts/calendar', emoji: '🗓️' },
