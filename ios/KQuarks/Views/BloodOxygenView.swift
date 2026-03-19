@@ -44,6 +44,13 @@ struct BloodOxygenView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blood Oxygen")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: SpO2PatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
     }
 

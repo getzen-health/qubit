@@ -29,6 +29,7 @@ const SECTIONS: Section[] = [
       { label: 'HRV Recovery Zones', desc: 'Green / yellow / orange zone history based on personal baseline', href: '/hrv/zones', emoji: '🟢' },
       { label: 'Training Zones', desc: 'Time in each HR zone across workouts', href: '/zones', emoji: '🎯' },
       { label: 'Oxygen (SpO2)', desc: 'Blood oxygen saturation day and night', href: '/oxygen', emoji: '🫁' },
+      { label: 'SpO₂ Patterns', desc: 'Night vs day, DOW trends, hourly & monthly SpO₂ analysis', href: '/oxygen/patterns', emoji: '📊' },
       { label: 'Respiratory Rate', desc: 'Breathing rate trends and patterns', href: '/respiratory', emoji: '🌬️' },
       { label: 'Blood Pressure', desc: 'Systolic and diastolic readings over time', href: '/bloodpressure', emoji: '🩺' },
       { label: 'BP Patterns', desc: 'DOW trends, time-of-day, monthly progression & hypertension stage breakdown', href: '/bloodpressure/patterns', emoji: '📊' },
