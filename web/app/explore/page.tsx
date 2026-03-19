@@ -55,6 +55,7 @@ const SECTIONS: Section[] = [
       { label: 'Year View', desc: 'Full year of daily step data at a glance', href: '/year', emoji: '📊' },
       { label: 'Activity Rings', desc: 'Apple Watch ring closure history', href: '/rings', emoji: '⭕' },
       { label: 'Training Load', desc: 'ATL, CTL, and TSB form analysis', href: '/training-load', emoji: '📈' },
+      { label: 'Training Patterns', desc: 'DOW distribution, time-of-day, weekly volume & workout type breakdown', href: '/training-load/patterns', emoji: '🗓️' },
       { label: 'Streaks', desc: 'Consecutive days of goal completion', href: '/streaks', emoji: '🔥' },
     ],
   },
