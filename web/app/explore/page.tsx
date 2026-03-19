@@ -25,6 +25,7 @@ const SECTIONS: Section[] = [
       { label: 'Heart Rate', desc: 'Resting HR trends and daily averages', href: '/heartrate', emoji: '❤️' },
       { label: 'Daily HR Pattern', desc: '24-hour circadian heart rate rhythm', href: '/heartrate/patterns', emoji: '🕐' },
       { label: 'HRV Analysis', desc: 'Variability trends, baselines, and recovery', href: '/hrv', emoji: '💗' },
+      { label: 'HRV Calendar', desc: '365-day recovery heatmap vs baseline', href: '/hrv/calendar', emoji: '📆' },
       { label: 'Training Zones', desc: 'Time in each HR zone across workouts', href: '/zones', emoji: '🎯' },
       { label: 'Oxygen (SpO2)', desc: 'Blood oxygen saturation day and night', href: '/oxygen', emoji: '🫁' },
       { label: 'Respiratory Rate', desc: 'Breathing rate trends and patterns', href: '/respiratory', emoji: '🌬️' },
