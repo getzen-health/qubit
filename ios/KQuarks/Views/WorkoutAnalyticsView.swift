@@ -109,6 +109,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
                                destination: AnyView(TrainingMonotonyView())),
+                AnalyticsEntry(title: "Stress vs Recovery", subtitle: "12-week scatter: training load vs HRV recovery — quadrant analysis", icon: "chart.scatter", color: .purple,
+                               destination: AnyView(StressRecoveryView())),
             ]
         ),
     ]
