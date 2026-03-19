@@ -47,6 +47,9 @@ struct SleepView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: SleepPatternView()) {
+                            Image(systemName: "chart.bar.doc.horizontal")
+                        }
                         NavigationLink(destination: SleepConsistencyView()) {
                             Image(systemName: "clock.badge.checkmark")
                         }
