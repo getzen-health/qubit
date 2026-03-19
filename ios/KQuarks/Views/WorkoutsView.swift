@@ -80,34 +80,8 @@ struct WorkoutsView: View {
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    HStack(spacing: 4) {
-                        NavigationLink(destination: RecordsView()) {
-                            Image(systemName: "trophy.fill")
-                        }
-                        NavigationLink(destination: TrainingLoadView()) {
-                            Image(systemName: "chart.bar.fill")
-                        }
-                        NavigationLink(destination: RunningAnalysisView()) {
-                            Image(systemName: "figure.run")
-                        }
-                        NavigationLink(destination: CyclingAnalysisView()) {
-                            Image(systemName: "figure.outdoor.cycle")
-                        }
-                        NavigationLink(destination: HeartRateZonesView()) {
-                            Image(systemName: "heart.circle.fill")
-                        }
-                        NavigationLink(destination: SwimmingAnalysisView()) {
-                            Image(systemName: "figure.pool.swim")
-                        }
-                        NavigationLink(destination: StrengthAnalysisView()) {
-                            Image(systemName: "figure.strengthtraining.traditional")
-                        }
-                        NavigationLink(destination: HikingAnalysisView()) {
-                            Image(systemName: "figure.hiking")
-                        }
-                        NavigationLink(destination: HIITAnalysisView()) {
-                            Image(systemName: "bolt.heart.fill")
-                        }
+                    NavigationLink(destination: WorkoutAnalyticsView()) {
+                        Image(systemName: "chart.xyaxis.line")
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
