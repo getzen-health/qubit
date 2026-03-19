@@ -188,6 +188,19 @@ export default function InsightsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-4 pb-24">
+        {/* Smart Nudges banner */}
+        <Link
+          href="/nudges"
+          className="flex items-center gap-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl hover:bg-purple-500/15 transition-colors"
+        >
+          <span className="text-xl">🎯</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-purple-300 leading-tight">Smart Nudges</p>
+            <p className="text-xs text-text-secondary opacity-70">Algorithmic recommendations from your data · No AI needed</p>
+          </div>
+          <span className="text-text-secondary text-xs">→</span>
+        </Link>
+
         {generateError && (
           <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400">
             {generateError}

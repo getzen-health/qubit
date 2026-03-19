@@ -126,6 +126,7 @@ const SECTIONS: Section[] = [
       { label: 'Habits', desc: 'Daily habit tracking with streaks', href: '/habits', emoji: '🎯' },
       { label: 'Daily Check-in', desc: 'Log energy, mood, and stress each day', href: '/checkin', emoji: '📋' },
       { label: 'AI Insights', desc: 'Claude-powered health analysis', href: '/insights', emoji: '✨' },
+      { label: 'Smart Nudges', desc: 'Algorithmic health recommendations from your data', href: '/nudges', emoji: '🎯' },
       { label: 'Sync Status', desc: 'Data coverage and device health', href: '/sync', emoji: '🔄' },
     ],
   },
