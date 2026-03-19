@@ -91,6 +91,7 @@ const SECTIONS: Section[] = [
       { label: 'Hiking Progression', desc: '12-month distance & elevation gain trend, first vs last 30 days & quarterly breakdown', href: '/hiking/progression', emoji: '📈' },
       { label: 'Running Progression', desc: '12-month pace trend, monthly volume & quarterly comparison', href: '/running/progression', emoji: '📈' },
       { label: 'Workout Patterns', desc: 'Day-of-week, time-of-day & weekly volume analysis', href: '/workouts/patterns', emoji: '📆' },
+      { label: 'Training Volume History', desc: '52-week stacked sport breakdown, rolling average & weekly table', href: '/workouts/volume', emoji: '📊' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
