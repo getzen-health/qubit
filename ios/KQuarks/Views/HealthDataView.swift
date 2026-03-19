@@ -106,6 +106,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Blood Glucose (CGM)
+                            NavigationLink(destination: BloodGlucoseView()) {
+                                HStack {
+                                    Image(systemName: "drop.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Blood Glucose")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("CGM, time in range & est. A1C")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             ForEach(selectedCategory.dataTypes.filter { $0 != .weight }, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
