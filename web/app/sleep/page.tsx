@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Thermometer, Clock, TrendingDown, Layers, Percent } from 'lucide-react'
+import { ArrowLeft, Thermometer, Clock, TrendingDown, Layers, Percent, Moon } from 'lucide-react'
 import { SleepPageClient } from './sleep-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -95,6 +95,14 @@ export default async function SleepPage() {
             title="Sleep Schedule"
           >
             <Clock className="w-5 h-5" />
+          </Link>
+          <Link
+            href="/sleep/chronotype"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Sleep chronotype"
+            title="Chronotype"
+          >
+            <Moon className="w-5 h-5" />
           </Link>
           <Link
             href="/temperature"
