@@ -151,15 +151,15 @@ struct SpO2PatternView: View {
     // MARK: - Summary Grid
 
     private var summaryGrid: some View {
-        HStack(spacing: 0) {
-            statCell(value: String(format: "%.1f%%", avgPct), label: "Avg SpO₂",
-                     color: spo2Color(avgPct))
+        let avgStr = String(format: "%.1f%%", avgPct)
+        let normalPctInt = n > 0 ? Int(Double(normalCount) / Double(n) * 100) : 0
+        let lowColor: Color = lowCount > 0 ? .red : .secondary
+        return HStack(spacing: 0) {
+            statCell(value: avgStr, label: "Avg SpO₂", color: spo2Color(avgPct))
             Divider().frame(height: 50)
-            statCell(value: "\(n > 0 ? Int(Double(normalCount) / Double(n) * 100) : 0)%",
-                     label: "Normal Range", sub: "≥ 95%", color: .green)
+            statCell(value: "\(normalPctInt)%", label: "Normal Range", sub: "≥ 95%", color: .green)
             Divider().frame(height: 50)
-            statCell(value: "\(lowCount)", label: "Low Events",
-                     sub: "< 90%", color: lowCount > 0 ? .red : .secondary)
+            statCell(value: "\(lowCount)", label: "Low Events", sub: "< 90%", color: lowColor)
         }
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -180,26 +180,32 @@ struct SpO2PatternView: View {
     // MARK: - Zone Card
 
     private var zoneCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let total = normalCount + mildCount + lowCount
+        return VStack(alignment: .leading, spacing: 10) {
             Text("Zone Breakdown").font(.headline)
-            let total = normalCount + mildCount + lowCount
-            ForEach([
-                ("Normal (≥ 95%)", normalCount, Color.green),
-                ("Mild (90–94%)", mildCount, Color.orange),
-                ("Low (< 90%)", lowCount, Color.red),
-            ].filter { $0.1 > 0 }, id: \.0) { label, count, color in
-                HStack(spacing: 8) {
-                    Circle().fill(color.opacity(0.7)).frame(width: 10, height: 10)
-                    Text(label).font(.caption)
-                    Spacer()
-                    Text("\(Int(Double(count) / Double(max(total, 1)) * 100))%").font(.caption.bold()).foregroundStyle(color)
-                    Text("(\(count))").font(.caption2).foregroundStyle(.secondary)
-                }
+            if normalCount > 0 {
+                zoneRow(label: "Normal (≥ 95%)", count: normalCount, total: total, color: .green)
+            }
+            if mildCount > 0 {
+                zoneRow(label: "Mild (90–94%)", count: mildCount, total: total, color: .orange)
+            }
+            if lowCount > 0 {
+                zoneRow(label: "Low (< 90%)", count: lowCount, total: total, color: .red)
             }
         }
         .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+
+    private func zoneRow(label: String, count: Int, total: Int, color: Color) -> some View {
+        HStack(spacing: 8) {
+            Circle().fill(color.opacity(0.7)).frame(width: 10, height: 10)
+            Text(label).font(.caption)
+            Spacer()
+            Text("\(Int(Double(count) / Double(max(total, 1)) * 100))%").font(.caption.bold()).foregroundStyle(color)
+            Text("(\(count))").font(.caption2).foregroundStyle(.secondary)
+        }
     }
 
     // MARK: - Night vs Day
