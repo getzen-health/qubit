@@ -36,6 +36,7 @@ const SECTIONS: Section[] = [
       { label: 'Blood Pressure', desc: 'Systolic and diastolic readings over time', href: '/bloodpressure', emoji: '🩺' },
       { label: 'BP Patterns', desc: 'DOW trends, time-of-day, monthly progression & hypertension stage breakdown', href: '/bloodpressure/patterns', emoji: '📊' },
       { label: 'Resting HR Analysis', desc: '6-month RHR trend, fitness classification & HRV correlation', href: '/heartrate/resting', emoji: '🫀' },
+      { label: 'Resting HR Patterns', desc: 'Fitness class breakdown, DOW trends, distribution & monthly RHR progression', href: '/heartrate/resting/patterns', emoji: '📊' },
       { label: 'Cardio Health', desc: 'HRV + RHR + VO₂ Max + HR Recovery combined overview', href: '/heartrate/cardio', emoji: '🫀' },
       { label: 'HR Recovery', desc: 'Post-workout HR drop rate & fitness classification', href: '/heartrate/recovery', emoji: '📉' },
       { label: 'Cardiac Events', desc: 'AFib, high, and low heart rate alerts', href: '/cardiac', emoji: '⚡' },

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Heart } from 'lucide-react'
+import { ArrowLeft, Heart, BarChart2 } from 'lucide-react'
 import { RHRClient } from './rhr-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -79,7 +79,7 @@ export default async function RHRPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <Heart className="w-5 h-5 text-red-400" />
             <div>
               <h1 className="text-xl font-bold text-text-primary">Resting Heart Rate</h1>
@@ -88,6 +88,14 @@ export default async function RHRPage() {
               </p>
             </div>
           </div>
+          <Link
+            href="/heartrate/resting/patterns"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="RHR patterns"
+            title="RHR Patterns"
+          >
+            <BarChart2 className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
