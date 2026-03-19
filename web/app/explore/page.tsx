@@ -70,6 +70,7 @@ const SECTIONS: Section[] = [
       { label: 'Swimming', desc: 'Distance, HR, and session trends', href: '/swimming', emoji: '🏊' },
       { label: 'Hiking', desc: 'Distance, elevation, and pace', href: '/hiking', emoji: '🥾' },
       { label: 'Running Progression', desc: '12-month pace trend, monthly volume & quarterly comparison', href: '/running/progression', emoji: '📈' },
+      { label: 'Workout Patterns', desc: 'Day-of-week, time-of-day & weekly volume analysis', href: '/workouts/patterns', emoji: '📆' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
       { label: 'Personal Records', desc: 'All-time bests across every metric', href: '/records', emoji: '🏆' },
