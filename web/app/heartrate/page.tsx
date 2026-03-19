@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Activity, GitPullRequest, BarChart2 } from 'lucide-react'
+import { ArrowLeft, Activity, GitPullRequest, BarChart2, TrendingDown } from 'lucide-react'
 import { HeartRateClient } from './heartrate-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -60,6 +60,14 @@ export default async function HeartRatePage() {
             title="Training Zones"
           >
             <Activity className="w-5 h-5" />
+          </Link>
+          <Link
+            href="/heartrate/recovery"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="HR recovery"
+            title="HR Recovery"
+          >
+            <TrendingDown className="w-5 h-5" />
           </Link>
         </div>
       </header>
