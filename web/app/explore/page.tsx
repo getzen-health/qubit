@@ -99,6 +99,7 @@ const SECTIONS: Section[] = [
     title: 'Body & Composition',
     features: [
       { label: 'Body Weight', desc: 'Weight trends and body fat percentage', href: '/body', emoji: '⚖️' },
+      { label: 'Body Weight Trends', desc: 'Rate of change, DOW patterns, monthly progression & body fat tracking', href: '/body/trends', emoji: '📉' },
       { label: 'VO₂ Max', desc: 'Cardiorespiratory fitness trend', href: '/vo2max', emoji: '🫀' },
       { label: 'Glucose', desc: 'Blood glucose readings over time', href: '/glucose', emoji: '🩸' },
       { label: 'Mobility', desc: 'Flexibility and mobility tracking', href: '/mobility', emoji: '🤸' },

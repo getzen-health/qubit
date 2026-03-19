@@ -37,11 +37,16 @@ struct BodyCompositionView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        logWeightText = samples.last.map { String(format: "%.1f", $0.kg) } ?? ""
-                        showLogWeight = true
-                    } label: {
-                        Image(systemName: "plus")
+                    HStack {
+                        NavigationLink(destination: BodyTrendsView()) {
+                            Image(systemName: "chart.bar.xaxis")
+                        }
+                        Button {
+                            logWeightText = samples.last.map { String(format: "%.1f", $0.kg) } ?? ""
+                            showLogWeight = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
