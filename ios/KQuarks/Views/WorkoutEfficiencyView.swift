@@ -451,24 +451,24 @@ struct WorkoutEfficiencyView: View {
         let typeColorMap: [String: Color] = Dictionary(
             uniqueKeysWithValues: typeStats.map { ($0.id, $0.color) }
         )
-        topSessions = validRecs
-            .filter { $0.durationMinutes >= 10 }
-            .map { w in
-                let key = w.workoutType.lowercased()
-                let cpm = (w.activeCalories ?? 0) / Double(w.durationMinutes)
-                return SessionStat(
-                    date: w.startTime,
-                    typeLabel: Self.prettyLabel(key),
-                    duration: w.durationMinutes,
-                    calories: w.activeCalories ?? 0,
-                    calPerMin: cpm,
-                    avgHr: w.avgHeartRate,
-                    color: typeColorMap[key] ?? .gray
-                )
-            }
-            .sorted { $0.calPerMin > $1.calPerMin }
-            .prefix(15)
-            .map { $0 }
+        let filteredRecs = validRecs.filter { $0.durationMinutes >= 10 }
+        var sessionList: [SessionStat] = []
+        for w in filteredRecs {
+            let key = w.workoutType.lowercased()
+            let cpm = (w.activeCalories ?? 0) / Double(w.durationMinutes)
+            let stat = SessionStat(
+                date: w.startTime,
+                typeLabel: Self.prettyLabel(key),
+                duration: w.durationMinutes,
+                calories: w.activeCalories ?? 0,
+                calPerMin: cpm,
+                avgHr: w.avgHeartRate,
+                color: typeColorMap[key] ?? .gray
+            )
+            sessionList.append(stat)
+        }
+        sessionList.sort { $0.calPerMin > $1.calPerMin }
+        topSessions = Array(sessionList.prefix(15))
 
         // ── Weekly trend for top 3 types by session count ─────────────────
         let topTypeKeys = typeMap
