@@ -53,6 +53,9 @@ struct SleepView: View {
                         NavigationLink(destination: SleepDebtView()) {
                             Image(systemName: "moon.zzz.fill")
                         }
+                        NavigationLink(destination: SleepStagesView()) {
+                            Image(systemName: "chart.bar.fill")
+                        }
                     }
                 }
             }
