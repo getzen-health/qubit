@@ -152,6 +152,13 @@ struct DashboardView: View {
             .task {
                 await viewModel.loadData()
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: ReadinessView()) {
+                        Image(systemName: "gauge.with.dots.needle.67percent")
+                    }
+                }
+            }
         }
     }
 }
