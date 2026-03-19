@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Timer, Gauge } from 'lucide-react'
+import { ArrowLeft, Timer, Gauge, TrendingUp } from 'lucide-react'
 import { RunningClient } from './running-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -95,6 +95,9 @@ export default async function RunningPage() {
             </Link>
             <Link href="/running/form" className="text-xs text-green-400 hover:text-green-300 px-3 py-1.5 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-colors">
               Form Analysis
+            </Link>
+            <Link href="/running/progression" className="text-xs text-yellow-400 hover:text-yellow-300 px-3 py-1.5 rounded-lg border border-yellow-500/20 hover:border-yellow-500/40 transition-colors flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />Progression
             </Link>
             <Link href="/race-predictor" className="text-xs text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-colors">
               Race Predictor
