@@ -86,6 +86,13 @@ struct RunningAnalysisView: View {
         .navigationTitle("Running")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: RunningFormView()) {
+                    Image(systemName: "figure.run.motion")
+                }
+            }
+        }
     }
 
     // MARK: - Summary Card
