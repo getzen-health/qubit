@@ -44,6 +44,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HikingAnalysisView())),
                 AnalyticsEntry(title: "Hiking Patterns", subtitle: "DOW distribution, time-of-day & elevation trend", icon: "chart.bar.xaxis", color: .green,
                                destination: AnyView(HikingPatternView())),
+                AnalyticsEntry(title: "Hiking Progression", subtitle: "12-month distance & elevation gain trend", icon: "chart.line.uptrend.xyaxis", color: .green,
+                               destination: AnyView(HikingProgressionView())),
                 AnalyticsEntry(title: "HIIT", subtitle: "Peak HR, burn rate & intensity", icon: "bolt.heart.fill", color: .pink,
                                destination: AnyView(HIITAnalysisView())),
                 AnalyticsEntry(title: "HIIT Patterns", subtitle: "DOW distribution, time-of-day & weekly volume", icon: "chart.bar.xaxis", color: .yellow,

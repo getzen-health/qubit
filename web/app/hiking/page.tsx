@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, BarChart2 } from 'lucide-react'
+import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import { HikingClient } from './hiking-client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -42,6 +42,14 @@ export default async function HikingPage() {
             <h1 className="text-xl font-bold text-text-primary">Hiking Analytics</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
+          <Link
+            href="/hiking/progression"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
+            aria-label="Hiking progression"
+            title="Hiking Progression"
+          >
+            <TrendingUp className="w-5 h-5" />
+          </Link>
           <Link
             href="/hiking/patterns"
             className="p-2 rounded-lg hover:bg-surface-secondary transition-colors text-text-secondary"
