@@ -51,6 +51,10 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RacePredictorView())),
                 AnalyticsEntry(title: "Records & PRs", subtitle: "Your lifetime personal bests", icon: "trophy.fill", color: .yellow,
                                destination: AnyView(RecordsView())),
+                AnalyticsEntry(title: "Sleep Impact", subtitle: "How workouts affect overnight HRV & sleep", icon: "bed.double.fill", color: .indigo,
+                               destination: AnyView(WorkoutSleepImpactView())),
+                AnalyticsEntry(title: "Workout Calendar", subtitle: "Monthly view colored by sport type", icon: "calendar.badge.clock", color: .teal,
+                               destination: AnyView(WorkoutCalendarView())),
             ]
         ),
     ]
