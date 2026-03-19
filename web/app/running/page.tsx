@@ -86,9 +86,14 @@ export default async function RunningPage() {
             <h1 className="text-xl font-bold text-text-primary">Running Analytics</h1>
             <p className="text-sm text-text-secondary">Last 90 days</p>
           </div>
-          <Link href="/race-predictor" className="text-xs text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-            Race Predictor
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/running/form" className="text-xs text-green-400 hover:text-green-300 px-3 py-1.5 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-colors">
+              Form Analysis
+            </Link>
+            <Link href="/race-predictor" className="text-xs text-blue-400 hover:text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+              Race Predictor
+            </Link>
+          </div>
         </div>
       </header>
 
