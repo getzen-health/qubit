@@ -191,6 +191,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutRecoveryOptimizerView())),
                 AnalyticsEntry(title: "Training Age", subtitle: "Years of consistent training — Bompa 2015 Novice/Intermediate/Advanced/Elite classification", icon: "calendar.badge.plus", color: .purple,
                                destination: AnyView(TrainingAgeView())),
+                AnalyticsEntry(title: "Circadian Performance", subtitle: "Peak training time from HR efficiency by time-of-day — Chtourou 2012, Kolbe 2019 circadian biology", icon: "sun.and.horizon.circle.fill", color: .orange,
+                               destination: AnyView(CircadianPerformanceView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
