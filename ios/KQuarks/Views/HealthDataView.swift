@@ -489,20 +489,20 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            // Audio Exposure
-                            NavigationLink(destination: AudioExposureView()) {
+                            // Audio Exposure Science
+                            NavigationLink(destination: AudioExposureScienceView()) {
                                 HStack {
-                                    Image(systemName: "ear.fill")
+                                    Image(systemName: "waveform.badge.exclamationmark")
                                         .font(.title2)
-                                        .foregroundStyle(.orange)
+                                        .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.purple.opacity(0.1))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
-                                        Text("Audio Exposure")
+                                        Text("Audio Exposure Science")
                                             .font(.headline)
                                             .foregroundStyle(.primary)
-                                        Text("Environmental noise & headphone levels — WHO guidelines")
+                                        Text("Cochlear damage science, noise dose limits & tinnitus research — WHO 2015: 80 dB safe limit; Kujawa 2009: hidden hearing loss before audiogram changes")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }
