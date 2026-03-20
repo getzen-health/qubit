@@ -319,6 +319,7 @@ const SECTIONS: Section[] = [
       { label: 'Nutrition', desc: 'Meal logging and daily calorie intake', href: '/nutrition', emoji: '🥗' },
       { label: 'Nutrition Patterns', desc: 'When you eat most: macro split, DOW trends & calorie distribution', href: '/nutrition/patterns', emoji: '📊' },
       { label: 'Macros', desc: 'Protein, carbs, and fat breakdown', href: '/macros', emoji: '📊' },
+      { label: 'Hydration Science', desc: 'Fluid physiology, electrolytes & performance — Sawka 2007: 2% BW loss = 2–4% aerobic drop; Coyle 2004: sodium retains 60% more fluid; Hew-Butler 2015 (IOC): over-drinking causes EAH; Armstrong 2012: caffeine does NOT dehydrate', href: '/hydration-science', emoji: '💧' },
       { label: 'Hydration', desc: 'Daily water intake and targets', href: '/water', emoji: '💧' },
       { label: 'Hydration Patterns', desc: 'When you drink most: day-of-week, monthly & goal streaks', href: '/water/patterns', emoji: '📊' },
       { label: 'Fasting', desc: 'Intermittent fasting sessions and streaks', href: '/fasting', emoji: '⏳' },
