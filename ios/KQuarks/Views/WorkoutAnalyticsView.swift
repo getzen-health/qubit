@@ -331,6 +331,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CardiacDriftView())),
                 AnalyticsEntry(title: "Aerobic Decoupling", subtitle: "Pace-to-HR efficiency across long runs — MAF training metric", icon: "waveform.path", color: .teal,
                                destination: AnyView(AerobicDecouplingView())),
+                AnalyticsEntry(title: "Nutrition Science", subtitle: "Protein synthesis, CHO metabolism & nutrient timing — Moore 2009: 20g protein maxes MPS; Jentjens 2004: 1.8 g/min CHO with glucose+fructose; Morton 2018: 1.62 g/kg/day optimal", icon: "fork.knife.circle.fill", color: .green,
+                               destination: AnyView(NutritionScienceView())),
                 AnalyticsEntry(title: "Energy Systems Science", subtitle: "ATP-PCr, glycolytic & aerobic science — Robergs 2004: lactate NOT fatigue cause; Seiler 2010: polarized 80/20; Brooks 2018: Zone 2 & lactate shuttle", icon: "bolt.circle.fill", color: .orange,
                                destination: AnyView(EnergySystemScienceView())),
                 AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
