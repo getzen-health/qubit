@@ -157,7 +157,7 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: SleepBreathingView()) {
+                            NavigationLink(destination: SleepApneaView()) {
                                 HStack {
                                     Image(systemName: "lungs.fill")
                                         .font(.title2)
@@ -166,10 +166,10 @@ struct HealthDataView: View {
                                         .background(Color.indigo.opacity(0.1))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sleep Breathing")
+                                        Text("Sleep Apnea")
                                             .font(.headline)
                                             .foregroundStyle(.primary)
-                                        Text("Overnight respiratory rate & apnea signals")
+                                        Text("AHI tracking, severity classification & CPAP context (Apple Watch S9+)")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }
