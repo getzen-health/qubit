@@ -355,6 +355,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WalkingHeartRateView())),
                 AnalyticsEntry(title: "Cardiac Drift", subtitle: "HR drift in long runs — first vs second half aerobic base measure", icon: "arrow.up.right.heart.fill", color: .teal,
                                destination: AnyView(CardiacDriftView())),
+                AnalyticsEntry(title: "Aerobic Decoupling Science", subtitle: "Pa:HR physiology, MAF method & heat adaptation — Maffetone 1996: <5% decoupling = aerobic base built; Seiler 2010: 80% Zone 1 volume drives adaptation", icon: "waveform.path", color: .teal,
+                               destination: AnyView(AerobicDecouplingScienceView())),
                 AnalyticsEntry(title: "Aerobic Decoupling", subtitle: "Pace-to-HR efficiency across long runs — MAF training metric", icon: "waveform.path", color: .teal,
                                destination: AnyView(AerobicDecouplingView())),
                 AnalyticsEntry(title: "Hydration Science", subtitle: "Fluid physiology, electrolytes & performance — Sawka 2007: 2% BW loss = 2–4% aerobic drop; Coyle 2004: sodium co-ingestion retains 60% more fluid; Hew-Butler 2015: EAH from over-drinking", icon: "drop.fill", color: .cyan,
