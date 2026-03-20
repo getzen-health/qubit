@@ -142,6 +142,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SkateboardingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
+                AnalyticsEntry(title: "Cross-Training Science", subtitle: "CrossFit physiology, metabolic conditioning & recovery — Smith 2013: Fran reaches 98% HRmax; Tabata 1996: +14% VO₂max +28% anaerobic in 6 weeks; Hak 2013: 3.1 injuries/1,000h; Boutcher 2011: HIIT reduces visceral fat 17%", icon: "figure.cross.training", color: .red,
+                               destination: AnyView(CrossTrainingScienceView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis Science", subtitle: "Serve biomechanics, movement science & energy systems — Roetert 1995: elite serves 180–200 km/h; Kovacs 2006: 300–500 direction changes/match; Abrams 2012: tennis elbow in 40–50% recreational players; Girard 2011: jump height drops 5.3% in five-set matches", icon: "figure.tennis", color: .yellow,

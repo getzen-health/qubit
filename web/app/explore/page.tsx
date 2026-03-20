@@ -129,6 +129,7 @@ const SECTIONS: Section[] = [
       { label: 'Golf Science', desc: 'Swing biomechanics, walking load & mental performance — Hume 2005: X-factor 45–55° drives clubhead speed 160–180 km/h; Murray 2017: 18 holes = 8–12 km; Farahmand 2009: golfers live 5 years longer; Bois 2009: pre-shot routine reduces variance 35%', href: '/golf-science', emoji: '⛳' },
       { label: 'Golf', desc: 'Distance walked, calories & monthly round frequency', href: '/golf', emoji: '⛳' },
       { label: 'Aerobic Decoupling', desc: 'Pace-to-HR efficiency across long runs — MAF training metric', href: '/aerobic-decoupling', emoji: '📉' },
+      { label: 'Cross-Training Science', desc: 'CrossFit physiology, metabolic conditioning & recovery — Tabata 1996: +14% VO₂max +28% anaerobic in 6 weeks; Smith 2013: Fran reaches 98% HRmax, lactate 12–18 mmol/L; Boutcher 2011: HIIT reduces visceral fat 17%; Hak 2013: 3.1 injuries/1,000h', href: '/cross-training-science', emoji: '🏋️' },
       { label: 'Cross-Training', desc: 'CrossFit & mixed cardio sessions, intensity & weekly volume', href: '/cross-training', emoji: '🏋️' },
       { label: 'Tennis Science', desc: 'Serve biomechanics, movement science & energy systems — Roetert 1995: elite serves 180–200 km/h; Kovacs 2006: 300–500 direction changes/match; Abrams 2012: tennis elbow in 40–50% recreational players; Girard 2011: jump height -5.3% in five-setters', href: '/tennis-science', emoji: '🎾' },
       { label: 'Tennis', desc: 'Match history, calories & monthly session frequency', href: '/tennis', emoji: '🎾' },
