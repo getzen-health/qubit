@@ -177,6 +177,7 @@ const SECTIONS: Section[] = [
       { label: 'State of Mind', desc: 'Mood valence trend, emotional label frequency & life-area associations (iOS 18+)', href: '/state-of-mind', emoji: '🧠' },
       { label: 'Zone Progression', desc: 'Monthly Z1–Z5 evolution, Seiler 80/20 polarization index & aerobic base trend', href: '/zones/progression', emoji: '📊' },
       { label: 'Power-to-Weight', desc: 'FTP W/kg ratio, British Cycling tier classification & weight impact simulator (iOS 17+)', href: '/cycling/power-to-weight', emoji: '⚡' },
+      { label: 'Overtraining Science', desc: 'OTS diagnosis criteria, sympathetic vs parasympathetic overtraining, cytokine hypothesis, HRV monitoring protocols & polarized training — Meeusen 2013 ECSS/ACSM consensus', href: '/overtraining-science', emoji: '🔬' },
       { label: 'Overtraining Warning', desc: 'Composite OTS detector: HRV trend + RHR elevation + ACWR + sleep deficit with Meeusen 2013 science', href: '/overtraining', emoji: '⚠️' },
       { label: 'Oral Hygiene', desc: 'Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch autodetection (Series 5+)', href: '/oral-hygiene', emoji: '🦷' },
       { label: 'Caffeine Analytics', desc: 'Daily intake, 5.5h half-life model, active caffeine at bedtime & sleep impact (Drake 2013)', href: '/caffeine', emoji: '☕' },
