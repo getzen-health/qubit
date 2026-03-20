@@ -271,6 +271,7 @@ const SECTIONS: Section[] = [
       { label: 'Standing Hours', desc: 'Daily stand hours, 12-hour goal streak, hourly pattern & sedentary science', href: '/standing', emoji: '🧍' },
       { label: '6-Min Walk Test', desc: 'Apple\'s estimated functional fitness distance — 90-day trend & age-group norms', href: '/six-minute-walk', emoji: '🚶' },
       { label: 'Active Energy', desc: 'Move ring calories, weekly totals, day-of-week patterns & Harvard Alumni energy science', href: '/active-energy', emoji: '🔥' },
+      { label: 'Metabolic Rate Science', desc: 'RMR measurement, metabolic adaptation & TDEE — Mifflin 1990: best predictive equation ±10%; Rosenbaum 2010: 10–15% adaptive suppression beyond FFM loss; Pontzer 2021 (Science): physical activity constrained not additive; Levine 2004: NEAT varies 2,000 kcal/day', href: '/metabolic-rate-science', emoji: '🔥' },
       { label: 'Basal Metabolic Rate', desc: 'Apple Watch BMR trend, Mifflin-St Jeor formula & TDEE estimate by activity level', href: '/metabolic-rate', emoji: '🔥' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
