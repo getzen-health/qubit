@@ -111,6 +111,7 @@ const SECTIONS: Section[] = [
       { label: 'Swimming', desc: 'Distance, HR, and session trends', href: '/swimming', emoji: '🏊' },
       { label: 'Swimming Patterns', desc: 'DOW distribution, time-of-day, monthly distance & pace per 100m', href: '/swimming/patterns', emoji: '📊' },
       { label: 'Swimming Progression', desc: '12-month pace trend, distance growth & first vs last 30 days', href: '/swimming/progression', emoji: '📈' },
+      { label: 'Hiking Science', desc: 'Terrain physiology, elevation biomechanics & nature neuroscience — Bratman 2015 PNAS: 90-min hike reduces sgPFC rumination; Stamatakis 2018: vigorous hill walking = 38% lower all-cause mortality; Gottschall 2005: 15% gradient = 75–90% gluteus maximus EMG', href: '/hiking-science', emoji: '🔬' },
       { label: 'Hiking', desc: 'Distance, elevation, and pace', href: '/hiking', emoji: '🥾' },
       { label: 'Hiking Patterns', desc: 'DOW distribution, time-of-day, monthly distance & elevation gain', href: '/hiking/patterns', emoji: '📊' },
       { label: 'Hiking Progression', desc: '12-month distance & elevation gain trend, first vs last 30 days & quarterly breakdown', href: '/hiking/progression', emoji: '📈' },

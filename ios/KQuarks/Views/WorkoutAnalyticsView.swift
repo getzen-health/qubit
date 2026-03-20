@@ -214,6 +214,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StrengthPatternView())),
                 AnalyticsEntry(title: "Strength Progression", subtitle: "12-month volume trend, duration trend & quarterly breakdown", icon: "chart.line.uptrend.xyaxis", color: .red,
                                destination: AnyView(StrengthProgressionView())),
+                AnalyticsEntry(title: "Hiking Science", subtitle: "Terrain physiology, elevation biomechanics & nature neuroscience — Bratman 2015 PNAS: 90-min hike reduces sgPFC activity; Stamatakis 2018: hill hiking = 38% lower all-cause mortality", icon: "mountain.2", color: .green,
+                               destination: AnyView(HikingScienceView())),
                 AnalyticsEntry(title: "Hiking", subtitle: "Distance, elevation & hike log", icon: "figure.hiking", color: .green,
                                destination: AnyView(HikingAnalysisView())),
                 AnalyticsEntry(title: "Hiking Patterns", subtitle: "DOW distribution, time-of-day & elevation trend", icon: "chart.bar.xaxis", color: .green,
