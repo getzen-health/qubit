@@ -124,6 +124,8 @@ const SECTIONS: Section[] = [
       { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },
       { label: 'Racquet Sports', desc: 'Pickleball, badminton, racquetball & squash — sport mix & session history', href: '/racquet', emoji: '🏸' },
       { label: 'Martial Arts & Combat', desc: 'Kickboxing, boxing, martial arts & wrestling — intensity & weekly volume', href: '/martial-arts', emoji: '🥊' },
+      { label: 'Jump Rope', desc: 'Skipping sessions, kcal/min intensity & weekly volume', href: '/jump-rope', emoji: '🪢' },
+      { label: 'Handwashing', desc: 'Daily handwashing events detected by Apple Watch — streaks & time-of-day', href: '/handwashing', emoji: '🧼' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },

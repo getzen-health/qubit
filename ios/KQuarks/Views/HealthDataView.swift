@@ -161,6 +161,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Handwashing
+                            NavigationLink(destination: HandwashingView()) {
+                                HStack {
+                                    Image(systemName: "hands.sparkles.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Handwashing")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Daily events, streaks & time-of-day pattern")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Glucose (CGM)
                             NavigationLink(destination: BloodGlucoseView()) {
                                 HStack {
