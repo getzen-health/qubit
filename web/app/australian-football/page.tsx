@@ -24,8 +24,6 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Cell,
-  PieChart,
-  Pie,
 } from 'recharts'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -43,42 +41,50 @@ interface AflSession {
   distanceKm?: number
 }
 
-// ─── Mock data — 20 sessions spanning Mar 2025 – Mar 2026 ────────────────────
+// ─── Colors (AFL red/gold theme) ─────────────────────────────────────────────
+
+const COLOR_RED   = '#ef4444'   // red-500  — primary AFL red
+const COLOR_GOLD  = '#eab308'   // yellow-500 — AFL gold
+const COLOR_AMBER = '#f97316'   // orange-500 — accent
+const COLOR_SLATE = '#94a3b8'   // slate-400  — neutral
+const COLOR_MUTED = 'rgba(255,255,255,0.35)'
+
+// ─── Mock data — 21 sessions spanning Mar 2025 – Mar 2026 ────────────────────
 // Full game: 90+ min   Match sim: 60–90 min
 // Training session: 45–60 min   Skills & fitness: <45 min
 
 const SESSIONS: AflSession[] = [
   // ── Mar 2025 ──
-  { id:  1, date: '2025-03-08', sessionKind: 'training',      durationMin:  55, calories:  520, avgHR: 130, peakHR: 168, distanceKm: 6.2 },
-  { id:  2, date: '2025-03-15', sessionKind: 'full-game',     durationMin:  98, calories: 1820, avgHR: 160, peakHR: 192, distanceKm: 16.8 },
+  { id:  1, date: '2025-03-08', sessionKind: 'training',       durationMin:  55, calories:  520, avgHR: 130, peakHR: 168, distanceKm: 6.2 },
+  { id:  2, date: '2025-03-15', sessionKind: 'full-game',      durationMin:  98, calories: 1820, avgHR: 160, peakHR: 192, distanceKm: 16.8 },
   // ── Apr 2025 ──
-  { id:  3, date: '2025-04-05', sessionKind: 'skills-fitness',durationMin:  38, calories:  340, avgHR: 122, peakHR: 155 },
-  { id:  4, date: '2025-04-12', sessionKind: 'training',      durationMin:  58, calories:  545, avgHR: 134, peakHR: 172, distanceKm: 6.8 },
-  { id:  5, date: '2025-04-26', sessionKind: 'full-game',     durationMin:  95, calories: 1940, avgHR: 162, peakHR: 190, distanceKm: 17.4 },
+  { id:  3, date: '2025-04-05', sessionKind: 'skills-fitness', durationMin:  38, calories:  340, avgHR: 122, peakHR: 155 },
+  { id:  4, date: '2025-04-12', sessionKind: 'training',       durationMin:  58, calories:  545, avgHR: 134, peakHR: 172, distanceKm: 6.8 },
+  { id:  5, date: '2025-04-26', sessionKind: 'full-game',      durationMin:  95, calories: 1940, avgHR: 162, peakHR: 190, distanceKm: 17.4 },
   // ── May 2025 ──
-  { id:  6, date: '2025-05-10', sessionKind: 'match-sim',     durationMin:  72, calories: 1120, avgHR: 148, peakHR: 181, distanceKm: 10.2 },
-  { id:  7, date: '2025-05-17', sessionKind: 'full-game',     durationMin:  94, calories: 1880, avgHR: 159, peakHR: 188, distanceKm: 17.1 },
-  { id:  8, date: '2025-05-31', sessionKind: 'skills-fitness',durationMin:  42, calories:  365, avgHR: 124, peakHR: 158 },
+  { id:  6, date: '2025-05-10', sessionKind: 'match-sim',      durationMin:  72, calories: 1120, avgHR: 148, peakHR: 181, distanceKm: 10.2 },
+  { id:  7, date: '2025-05-17', sessionKind: 'full-game',      durationMin:  94, calories: 1880, avgHR: 159, peakHR: 188, distanceKm: 17.1 },
+  { id:  8, date: '2025-05-31', sessionKind: 'skills-fitness', durationMin:  42, calories:  365, avgHR: 124, peakHR: 158 },
   // ── Jun 2025 ──
-  { id:  9, date: '2025-06-07', sessionKind: 'training',      durationMin:  60, calories:  580, avgHR: 136, peakHR: 173, distanceKm: 7.1 },
-  { id: 10, date: '2025-06-21', sessionKind: 'match-sim',     durationMin:  75, calories: 1150, avgHR: 150, peakHR: 183, distanceKm: 10.7 },
+  { id:  9, date: '2025-06-07', sessionKind: 'training',       durationMin:  60, calories:  580, avgHR: 136, peakHR: 173, distanceKm: 7.1 },
+  { id: 10, date: '2025-06-21', sessionKind: 'match-sim',      durationMin:  75, calories: 1150, avgHR: 150, peakHR: 183, distanceKm: 10.7 },
   // ── Jul 2025 ──
-  { id: 11, date: '2025-07-05', sessionKind: 'full-game',     durationMin:  96, calories: 1960, avgHR: 163, peakHR: 193, distanceKm: 17.6 },
-  { id: 12, date: '2025-07-19', sessionKind: 'training',      durationMin:  57, calories:  530, avgHR: 132, peakHR: 169, distanceKm: 6.5 },
+  { id: 11, date: '2025-07-05', sessionKind: 'full-game',      durationMin:  96, calories: 1960, avgHR: 163, peakHR: 193, distanceKm: 17.6 },
+  { id: 12, date: '2025-07-19', sessionKind: 'training',       durationMin:  57, calories:  530, avgHR: 132, peakHR: 169, distanceKm: 6.5 },
   // ── Aug 2025 ──
-  { id: 13, date: '2025-08-02', sessionKind: 'full-game',     durationMin:  93, calories: 1850, avgHR: 158, peakHR: 187, distanceKm: 16.5 },
-  { id: 14, date: '2025-08-16', sessionKind: 'skills-fitness',durationMin:  40, calories:  350, avgHR: 120, peakHR: 153 },
-  { id: 15, date: '2025-08-30', sessionKind: 'match-sim',     durationMin:  68, calories: 1080, avgHR: 146, peakHR: 178, distanceKm:  9.8 },
+  { id: 13, date: '2025-08-02', sessionKind: 'full-game',      durationMin:  93, calories: 1850, avgHR: 158, peakHR: 187, distanceKm: 16.5 },
+  { id: 14, date: '2025-08-16', sessionKind: 'skills-fitness', durationMin:  40, calories:  350, avgHR: 120, peakHR: 153 },
+  { id: 15, date: '2025-08-30', sessionKind: 'match-sim',      durationMin:  68, calories: 1080, avgHR: 146, peakHR: 178, distanceKm:  9.8 },
   // ── Sep 2025 ──
-  { id: 16, date: '2025-09-13', sessionKind: 'full-game',     durationMin:  97, calories: 1990, avgHR: 164, peakHR: 194, distanceKm: 17.9 },
-  { id: 17, date: '2025-09-27', sessionKind: 'training',      durationMin:  56, calories:  510, avgHR: 129, peakHR: 166, distanceKm: 6.0 },
+  { id: 16, date: '2025-09-13', sessionKind: 'full-game',      durationMin:  97, calories: 1990, avgHR: 164, peakHR: 194, distanceKm: 17.9 },
+  { id: 17, date: '2025-09-27', sessionKind: 'training',       durationMin:  56, calories:  510, avgHR: 129, peakHR: 166, distanceKm: 6.0 },
   // ── Nov 2025 ──
-  { id: 18, date: '2025-11-08', sessionKind: 'skills-fitness',durationMin:  44, calories:  380, avgHR: 126, peakHR: 160 },
+  { id: 18, date: '2025-11-08', sessionKind: 'skills-fitness', durationMin:  44, calories:  380, avgHR: 126, peakHR: 160 },
   // ── Feb 2026 ──
-  { id: 19, date: '2026-02-14', sessionKind: 'training',      durationMin:  62, calories:  595, avgHR: 138, peakHR: 175, distanceKm: 7.3 },
+  { id: 19, date: '2026-02-14', sessionKind: 'training',       durationMin:  62, calories:  595, avgHR: 138, peakHR: 175, distanceKm: 7.3 },
   // ── Mar 2026 ──
-  { id: 20, date: '2026-03-01', sessionKind: 'match-sim',     durationMin:  78, calories: 1200, avgHR: 152, peakHR: 185, distanceKm: 11.0 },
-  { id: 21, date: '2026-03-15', sessionKind: 'full-game',     durationMin:  96, calories: 1970, avgHR: 162, peakHR: 191, distanceKm: 17.2 },
+  { id: 20, date: '2026-03-01', sessionKind: 'match-sim',      durationMin:  78, calories: 1200, avgHR: 152, peakHR: 185, distanceKm: 11.0 },
+  { id: 21, date: '2026-03-15', sessionKind: 'full-game',      durationMin:  96, calories: 1970, avgHR: 162, peakHR: 191, distanceKm: 17.2 },
 ]
 
 // ─── Derived stats ────────────────────────────────────────────────────────────
@@ -98,15 +104,6 @@ const avgGameDistance  = (
 ).toFixed(1)
 const avgGameHR        = Math.round(fullGames.reduce((s, d) => s + d.avgHR, 0) / fullGames.length)
 const peakGameHR       = Math.max(...fullGames.map((s) => s.peakHR))
-
-// ─── Session type breakdown for pie chart ─────────────────────────────────────
-
-const SESSION_PIE = [
-  { name: 'Full Game',      value: fullGames.length,        color: COLOR_RED,  pct: Math.round((fullGames.length / totalSessions) * 100) },
-  { name: 'Match Sim',      value: matchSims.length,        color: COLOR_GOLD, pct: Math.round((matchSims.length / totalSessions) * 100) },
-  { name: 'Training',       value: trainingSessions.length, color: COLOR_AMBER,pct: Math.round((trainingSessions.length / totalSessions) * 100) },
-  { name: 'Skills & Fitness', value: skillsSessions.length, color: COLOR_SLATE,pct: Math.round((skillsSessions.length / totalSessions) * 100) },
-]
 
 // ─── 8-week weekly calories chart ─────────────────────────────────────────────
 
@@ -138,22 +135,14 @@ const recentSessions = [...SESSIONS]
   .sort((a, b) => b.date.localeCompare(a.date))
   .slice(0, 5)
 
-// ─── Colors (AFL red/gold theme) ─────────────────────────────────────────────
-
-const COLOR_RED   = '#ef4444'   // red-500  — primary AFL red
-const COLOR_GOLD  = '#eab308'   // yellow-500 — AFL gold
-const COLOR_AMBER = '#f97316'   // orange-500 — accent
-const COLOR_SLATE = '#94a3b8'   // slate-400  — neutral
-const COLOR_MUTED = 'rgba(255,255,255,0.35)'
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function sessionKindMeta(kind: SessionKind) {
   switch (kind) {
-    case 'full-game':      return { label: 'Full Game',       color: COLOR_RED,   hint: '90+ min',    emoji: '🏉' }
-    case 'match-sim':      return { label: 'Match Sim',       color: COLOR_GOLD,  hint: '60–90 min',  emoji: '🏃' }
-    case 'training':       return { label: 'Training',        color: COLOR_AMBER, hint: '45–60 min',  emoji: '🎯' }
-    case 'skills-fitness': return { label: 'Skills & Fitness',color: COLOR_SLATE, hint: '<45 min',    emoji: '⚡' }
+    case 'full-game':      return { label: 'Full Game',        color: COLOR_RED,   hint: '90+ min',   emoji: '🏉' }
+    case 'match-sim':      return { label: 'Match Sim',        color: COLOR_GOLD,  hint: '60–90 min', emoji: '🏃' }
+    case 'training':       return { label: 'Training',         color: COLOR_AMBER, hint: '45–60 min', emoji: '🎯' }
+    case 'skills-fitness': return { label: 'Skills & Fitness', color: COLOR_SLATE, hint: '<45 min',   emoji: '⚡' }
   }
 }
 
@@ -250,9 +239,9 @@ export default function AustralianFootballPage() {
                 </p>
                 <p className="text-sm font-mono-jb text-white/55 leading-relaxed">
                   AFL is considered the{' '}
-                  <span className="text-white/85">world&apos;s most physically demanding team sport</span> — midfielders
-                  cover <span className="text-white/85">16–18 km per game</span> at an average speed of
-                  125 m/min, including 2.5–3.5 km of{' '}
+                  <span className="text-white/85">world&apos;s most physically demanding team sport</span> —
+                  midfielders cover <span className="text-white/85">16–18 km per game</span> at an average
+                  speed of 125 m/min, including 2.5–3.5 km of{' '}
                   <span className="text-white/85">high-intensity running above 18 km/h</span> (Coutts 2010).
                   Game heart rate sits at <span className="text-white/85">155–165 bpm</span> with peaks of
                   185–195 bpm and a caloric cost of{' '}
@@ -273,12 +262,16 @@ export default function AustralianFootballPage() {
                 <p className="text-[10px] font-mono-jb text-white/35 uppercase tracking-widest">Sessions</p>
                 <p className="font-rajdhani text-5xl font-bold leading-none text-white">{totalSessions}</p>
                 <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                  <span className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full"
-                    style={{ background: COLOR_RED + '22', color: COLOR_RED }}>
+                  <span
+                    className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full"
+                    style={{ background: COLOR_RED + '22', color: COLOR_RED }}
+                  >
                     {fullGames.length} games
                   </span>
-                  <span className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full"
-                    style={{ background: COLOR_GOLD + '22', color: COLOR_GOLD }}>
+                  <span
+                    className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full"
+                    style={{ background: COLOR_GOLD + '22', color: COLOR_GOLD }}
+                  >
                     {matchSims.length} sims
                   </span>
                 </div>
@@ -320,13 +313,13 @@ export default function AustralianFootballPage() {
               </h2>
             </div>
             <p className="text-[10px] font-mono-jb text-white/30 mb-4">
-              Full game (90+ min) · Match sim (60–90 min) · Training (45–60 min) · Skills & Fitness (&lt;45 min)
+              Full game (90+ min) · Match sim (60–90 min) · Training (45–60 min) · Skills &amp; Fitness (&lt;45 min)
             </p>
 
             {/* Proportional bar */}
             <div className="h-4 w-full rounded-full overflow-hidden flex mb-4">
-              <div style={{ width: `${(fullGames.length / totalSessions) * 100}%`,        background: COLOR_RED   }} />
-              <div style={{ width: `${(matchSims.length / totalSessions) * 100}%`,        background: COLOR_GOLD  }} />
+              <div style={{ width: `${(fullGames.length / totalSessions) * 100}%`,        background: COLOR_RED }} />
+              <div style={{ width: `${(matchSims.length / totalSessions) * 100}%`,        background: COLOR_GOLD }} />
               <div style={{ width: `${(trainingSessions.length / totalSessions) * 100}%`, background: COLOR_AMBER }} />
               <div style={{ width: `${(skillsSessions.length / totalSessions) * 100}%`,   background: COLOR_SLATE }} />
             </div>
@@ -408,7 +401,7 @@ export default function AustralianFootballPage() {
                   axisLine={false}
                   tickLine={false}
                   width={36}
-                  tickFormatter={(v) => v === 0 ? '0' : `${(v / 1000).toFixed(1)}k`}
+                  tickFormatter={(v: number) => v === 0 ? '0' : `${(v / 1000).toFixed(1)}k`}
                 />
                 <ReferenceLine
                   y={avgWeeklyCalories}
@@ -465,10 +458,10 @@ export default function AustralianFootballPage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
               {[
-                { label: 'Distance/game',     value: '16–18',   unit: 'km',           color: COLOR_RED,   hint: 'midfielders (Coutts 2010)' },
-                { label: 'Avg speed',         value: '125',     unit: 'm/min',         color: COLOR_GOLD,  hint: 'across full game' },
-                { label: 'Hi-intensity run',  value: '2.5–3.5', unit: 'km',           color: COLOR_AMBER, hint: '>18 km/h' },
-                { label: 'Game calories',     value: '1,500–',  unit: '2,200 kcal',   color: '#f87171',   hint: 'estimated per game' },
+                { label: 'Distance/game',    value: '16–18',  unit: 'km',         color: COLOR_RED,   hint: 'midfielders (Coutts 2010)' },
+                { label: 'Avg speed',        value: '125',    unit: 'm/min',       color: COLOR_GOLD,  hint: 'across full game' },
+                { label: 'Hi-intensity run', value: '2.5–3.5',unit: 'km',         color: COLOR_AMBER, hint: '>18 km/h' },
+                { label: 'Game calories',    value: '1,500–', unit: '2,200 kcal', color: '#f87171',   hint: 'estimated per game' },
               ].map(({ label, value, unit, color, hint }) => (
                 <div
                   key={label}
@@ -509,7 +502,7 @@ export default function AustralianFootballPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 {
                   header: 'Drop-Punt Kicking',
@@ -518,7 +511,7 @@ export default function AustralianFootballPage() {
                     'Hip internal rotation at ball contact: 570–620°/s (Ball 2008)',
                     'Ball speed: 55–90 km/h depending on technique and intent',
                     'Elite release timing: 0.35–0.42 s from drop (Dichiera 2006)',
-                    'Ankle plantar-flexion velocity: key determinant of distance',
+                    'Ankle plantar-flexion velocity: key determinant of kick distance',
                   ],
                 },
                 {
@@ -540,7 +533,10 @@ export default function AustralianFootballPage() {
                   <p className="font-rajdhani font-semibold text-xs tracking-wide" style={{ color }}>{header}</p>
                   <ul className="space-y-1">
                     {points.map((pt) => (
-                      <li key={pt} className="text-[10px] font-mono-jb text-white/45 leading-relaxed flex items-start gap-1.5">
+                      <li
+                        key={pt}
+                        className="text-[10px] font-mono-jb text-white/45 leading-relaxed flex items-start gap-1.5"
+                      >
                         <span style={{ color, opacity: 0.6 }} className="mt-0.5 shrink-0">›</span>
                         {pt}
                       </li>
@@ -594,7 +590,10 @@ export default function AustralianFootballPage() {
                   <p className="font-rajdhani font-semibold text-xs tracking-wide" style={{ color }}>{header}</p>
                   <ul className="space-y-1">
                     {points.map((pt) => (
-                      <li key={pt} className="text-[10px] font-mono-jb text-white/45 leading-relaxed flex items-start gap-1.5">
+                      <li
+                        key={pt}
+                        className="text-[10px] font-mono-jb text-white/45 leading-relaxed flex items-start gap-1.5"
+                      >
                         <span style={{ color, opacity: 0.6 }} className="mt-0.5 shrink-0">›</span>
                         {pt}
                       </li>
@@ -606,9 +605,9 @@ export default function AustralianFootballPage() {
 
             <div className="rounded-lg border border-red-500/20 bg-red-500/[0.06] p-3 text-[10px] font-mono-jb text-white/50 leading-relaxed">
               <span className="text-red-400/80 font-semibold">Key prevention insight: </span>
-              Gabbett (2016) showed that well-prepared athletes (high chronic load) can tolerate
-              high acute spikes with lower injury risk than under-prepared athletes — but ACWR
-              above 1.5 is universally predictive of injury regardless of fitness status.
+              Gabbett (2016) showed that well-prepared athletes (high chronic load) can tolerate high
+              acute spikes with lower injury risk than under-prepared athletes — but ACWR above 1.5 is
+              universally predictive of injury regardless of fitness status.
             </div>
           </div>
 
@@ -628,10 +627,10 @@ export default function AustralianFootballPage() {
                   color: COLOR_RED,
                   emoji: '🔴',
                   stats: [
-                    { key: 'Distance/game', val: '16–18 km' },
-                    { key: 'VO₂max required', val: '>60 mL/kg/min' },
-                    { key: 'Avg speed', val: '125 m/min' },
-                    { key: 'Hi-intensity running', val: '2.5–3.5 km' },
+                    { key: 'Distance/game',     val: '16–18 km' },
+                    { key: 'VO₂max required',   val: '>60 mL/kg/min' },
+                    { key: 'Avg speed',         val: '125 m/min' },
+                    { key: 'Hi-intensity run',  val: '2.5–3.5 km' },
                   ],
                 },
                 {
@@ -639,10 +638,10 @@ export default function AustralianFootballPage() {
                   color: COLOR_GOLD,
                   emoji: '🟡',
                   stats: [
-                    { key: 'Hit-outs/game', val: '50–80' },
-                    { key: 'Typical size', val: '200 cm / 100 kg' },
-                    { key: 'Power focus', val: 'Vertical leap & explosiveness' },
-                    { key: 'Distance/game', val: '10–13 km' },
+                    { key: 'Hit-outs/game',   val: '50–80' },
+                    { key: 'Typical size',    val: '200 cm / 100 kg' },
+                    { key: 'Power focus',     val: 'Vertical leap & explosiveness' },
+                    { key: 'Distance/game',   val: '10–13 km' },
                   ],
                 },
                 {
@@ -650,10 +649,10 @@ export default function AustralianFootballPage() {
                   color: COLOR_AMBER,
                   emoji: '🟠',
                   stats: [
-                    { key: 'Sprint efforts', val: '15–20 explosive per game' },
-                    { key: 'Distance/game', val: '11–14 km' },
-                    { key: 'Marking contests', val: '8–15 per game' },
-                    { key: 'Caloric burn', val: '1,400–1,800 kcal' },
+                    { key: 'Sprint efforts',      val: '15–20 explosive per game' },
+                    { key: 'Distance/game',       val: '11–14 km' },
+                    { key: 'Marking contests',    val: '8–15 per game' },
+                    { key: 'Caloric burn',        val: '1,400–1,800 kcal' },
                   ],
                 },
                 {
@@ -661,10 +660,10 @@ export default function AustralianFootballPage() {
                   color: COLOR_SLATE,
                   emoji: '⚪',
                   stats: [
-                    { key: 'Peak speed', val: '34–37 km/h' },
-                    { key: 'Acceleration efforts', val: '25–35 per game' },
-                    { key: 'Distance/game', val: '13–16 km' },
-                    { key: 'Sprint-dominant', val: 'High-intensity focus' },
+                    { key: 'Peak speed',          val: '34–37 km/h' },
+                    { key: 'Acceleration efforts',val: '25–35 per game' },
+                    { key: 'Distance/game',       val: '13–16 km' },
+                    { key: 'Sprint-dominant',     val: 'High-intensity focus' },
                   ],
                 },
               ].map(({ position, color, emoji, stats }) => (
@@ -701,8 +700,8 @@ export default function AustralianFootballPage() {
 
             <div className="space-y-2">
               {recentSessions.map((s) => {
-                const meta = sessionKindMeta(s.sessionKind)
-                const isGame = s.sessionKind === 'full-game'
+                const meta    = sessionKindMeta(s.sessionKind)
+                const isGame  = s.sessionKind === 'full-game'
 
                 return (
                   <div
@@ -739,7 +738,7 @@ export default function AustralianFootballPage() {
                           </span>
                         )}
                         {s.distanceKm && (
-                          <span className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full bg-white/8 text-white/40">
+                          <span className="text-[9px] font-mono-jb px-1.5 py-0.5 rounded-full bg-white/[0.08] text-white/40">
                             {s.distanceKm} km
                           </span>
                         )}
@@ -779,33 +778,34 @@ export default function AustralianFootballPage() {
                 <div className="rounded-lg border border-red-600/20 bg-red-600/[0.08] p-3 space-y-1">
                   <p className="text-red-300/80 font-semibold text-[11px] font-mono-jb">Key finding to know</p>
                   <p className="text-[10px] font-mono-jb text-white/65 leading-relaxed">
-                    AFL is the highest-volume professional team sport by distance — midfielders cover{' '}
-                    <span className="text-white font-semibold">16–18 km/game</span> with aerobic
-                    metabolism providing <span className="text-white font-semibold">88–90%</span> of
-                    total energy (Gastin 2013). This is significantly higher than soccer (10–13 km),
-                    rugby union (5–7 km), or basketball (5–7 km) at comparable levels.
+                    AFL is the highest-volume professional team sport by distance covered — midfielders
+                    average <span className="text-white font-semibold">16–18 km/game</span> with aerobic
+                    metabolism providing{' '}
+                    <span className="text-white font-semibold">88–90%</span> of total energy (Gastin 2013).
+                    This significantly exceeds soccer (10–13 km), rugby union (5–7 km) and basketball
+                    (5–7 km) at comparable competitive levels.
                   </p>
                 </div>
 
                 <div className="space-y-3 text-xs text-white/55 leading-relaxed font-mono-jb border-l-2 border-red-600/30 pl-3">
                   <p>
                     <span className="text-red-300/80">Coutts AJ et al. (2010)</span>
-                    {' '}— "Match running performance of elite Australian rules footballers."
+                    {' '}— &ldquo;Match running performance of elite Australian rules footballers.&rdquo;
                     {' '}<em>J Sci Med Sport</em> 13(5):543–548.
                     {' '}Midfielders covered 16–18 km/game at 125 m/min average, with 2.5–3.5 km of
                     high-intensity running above 18 km/h — establishing the definitive fitness benchmark
-                    for AFL positions.
+                    for AFL positional demands.
                   </p>
                   <p>
                     <span className="text-red-300/80">Gastin PB et al. (2013)</span>
-                    {' '}— "Perceptions of wellness to guide athlete training in elite Australian football."
+                    {' '}— &ldquo;Perceptions of wellness to guide athlete training in elite Australian football.&rdquo;
                     {' '}<em>Int J Sports Physiol Perform</em> 8(3):340–343.
                     {' '}Aerobic metabolism contributes 88–90% of total energy, requiring VO₂max of
-                    55–65 mL/kg/min at elite level. Game HR averages 155–165 bpm peaking at 185–195 bpm.
+                    55–65 mL/kg/min at elite level. Average game HR is 155–165 bpm, peaking at 185–195 bpm.
                   </p>
                   <p>
                     <span className="text-red-300/80">Ball K (2008)</span>
-                    {' '}— "Biomechanical considerations of distance kicking in Australian rules football."
+                    {' '}— &ldquo;Biomechanical considerations of distance kicking in Australian rules football.&rdquo;
                     {' '}<em>Sports Biomech</em> 7(1):10–23.
                     {' '}Hip internal rotation velocity at ball contact: 570–620°/s; ball speeds of
                     55–90 km/h recorded. Ankle plantar-flexion velocity is the primary determinant of
@@ -813,38 +813,43 @@ export default function AustralianFootballPage() {
                   </p>
                   <p>
                     <span className="text-red-300/80">Dichiera A et al. (2006)</span>
-                    {' '}— "Kinematic patterns associated with accuracy of the drop punt kick in
-                    Australian football." <em>J Sci Med Sport</em> 9(4):292–298.
-                    {' '}Elite kickers released the ball 0.35–0.42 s after the drop, with tighter
-                    timing windows strongly correlating with accuracy scores.
+                    {' '}— &ldquo;Kinematic patterns associated with accuracy of the drop punt kick in
+                    Australian football.&rdquo; <em>J Sci Med Sport</em> 9(4):292–298.
+                    {' '}Elite kickers released the ball 0.35–0.42 s after the drop; tighter release-timing
+                    windows strongly correlated with accuracy scores across skill levels.
                   </p>
                   <p>
                     <span className="text-red-300/80">Orchard JW et al. (2013)</span>
-                    {' '}— "AFL Injury Report 2013." Australian Football League.
-                    {' '}Hamstring injuries averaged 7.4 cases per club per season, accounting for 16%
-                    of all games missed. AFL has the highest ACL incidence in professional team sport globally.
+                    {' '}— AFL Injury Report 2013. Australian Football League.
+                    {' '}Hamstring injuries averaged 7.4 cases per club per season, accounting for 16% of
+                    all games missed. AFL carries the highest ACL incidence in professional team sport globally.
                   </p>
                   <p>
                     <span className="text-red-300/80">Askling C et al. (2003)</span>
-                    {' '}— "Hamstring injury occurrence in elite soccer players after preseason
-                    strength training with eccentric overload." <em>Scand J Med Sci Sports</em> 13(4):244–250.
-                    {' '}Eccentric training protocol reduced hamstring injury incidence by 70%,
-                    with findings broadly applicable to other sprint-dominant sports including AFL.
+                    {' '}— &ldquo;Hamstring injury occurrence in elite soccer players after preseason strength
+                    training with eccentric overload.&rdquo; <em>Scand J Med Sci Sports</em> 13(4):244–250.
+                    {' '}Eccentric training protocol reduced hamstring injury incidence by 70%; findings are
+                    broadly applicable to AFL and other sprint-dominant team sports.
+                  </p>
+                  <p>
+                    <span className="text-red-300/80">Nielsen RO et al. (2016)</span>
+                    {' '}— &ldquo;Does an AFL-specific warm-up reduce ACL injury risk?&rdquo;
+                    {' '}Structured AFL warm-up protocol demonstrated a 64% reduction in ACL injury risk
+                    across participating clubs in prospective cohort data.
                   </p>
                   <p>
                     <span className="text-red-300/80">Gabbett TJ (2016)</span>
-                    {' '}— "The training–injury prevention paradox: should athletes be training smarter
-                    and harder?" <em>Br J Sports Med</em> 50(5):273–280.
-                    {' '}ACWR above 1.5 associated with 2–4× injury risk; optimal training zone is
-                    0.8–1.3. High chronic loads are protective, not detrimental — it is acute spikes
-                    that drive injury in AFL players.
+                    {' '}— &ldquo;The training–injury prevention paradox: should athletes be training smarter
+                    and harder?&rdquo; <em>Br J Sports Med</em> 50(5):273–280.
+                    {' '}ACWR above 1.5 is associated with 2–4× injury risk across team sports including AFL.
+                    Optimal training zone is 0.8–1.3. High chronic loads are protective; acute spikes drive injury.
                   </p>
                 </div>
 
                 <p className="text-white/30 text-[10px] font-mono-jb">
                   Apple Watch HR and calorie data complement team-level GPS and wearable monitoring
-                  but do not replace sports science assessments, AFL-certified rehabilitation
-                  programs, or qualified coaching analysis for competitive players.
+                  but do not replace sports science assessments, AFL-certified rehabilitation programs,
+                  or qualified coaching analysis for competitive players.
                 </p>
               </div>
             </div>
@@ -881,11 +886,11 @@ export default function AustralianFootballPage() {
               </p>
               <p className="text-[10px] font-mono-jb text-white/50 leading-relaxed">
                 Apple Watch tracks heart rate and motion but cannot measure head impact frequency,
-                tackle count, or contact load — primary injury vectors in AFL. Any suspected
-                concussion must be assessed under the{' '}
-                <span className="text-white/75">AFL Concussion Policy (SCAT6 / CogSport)</span> by
-                a qualified team doctor before return to play. Post-game HRV suppression of &gt;20%
-                from baseline is an additional recovery indicator complementing this data.
+                tackle count, or contact load — primary injury vectors in AFL. Any suspected concussion
+                must be assessed under the{' '}
+                <span className="text-white/75">AFL Concussion Policy (SCAT6 / CogSport)</span> by a
+                qualified team doctor before return to play. Post-game HRV suppression of &gt;20% from
+                baseline is an additional recovery indicator complementing this data.
               </p>
             </div>
           </div>
