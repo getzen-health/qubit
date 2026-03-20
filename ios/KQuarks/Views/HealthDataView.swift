@@ -472,6 +472,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Blood Oxygen Deep Dive (SpO₂)
+                            NavigationLink(destination: BloodOxygenDeepDiveView()) {
+                                HStack {
+                                    Image(systemName: "lungs.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("SpO₂ Deep Dive")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("30-day trend, nighttime avg & low alerts")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Oxygen (SpO₂)
                             NavigationLink(destination: BloodOxygenView()) {
                                 HStack {

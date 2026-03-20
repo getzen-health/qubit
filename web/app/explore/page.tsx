@@ -144,6 +144,7 @@ const SECTIONS: Section[] = [
       { label: 'VO₂ Max vs Age Norms', desc: 'Compare VO₂ max against HUNT study age-group percentiles & fitness age estimate', href: '/vo2max/norms', emoji: '🫁' },
       { label: 'Cycle-Synced Training', desc: 'Current menstrual phase, science-backed training tips & performance by phase', href: '/cycle/training', emoji: '🌸' },
       { label: 'Breathing Rate', desc: '30-day trend, baseline comparison & illness signal detection', href: '/respiratory/deep-dive', emoji: '🌬️' },
+      { label: 'Blood Oxygen Deep Dive', desc: '30-day SpO₂ trend, nighttime avg, low alerts & reference ranges', href: '/oxygen/deep-dive', emoji: '🫁' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
