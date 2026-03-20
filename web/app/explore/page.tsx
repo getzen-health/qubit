@@ -120,6 +120,8 @@ const SECTIONS: Section[] = [
       { label: 'Mindful Minutes', desc: 'Meditation streaks, weekly trend & time-of-day practice pattern', href: '/mindful', emoji: '🧘' },
       { label: 'Soccer', desc: 'Match distance, calorie intensity & monthly session frequency', href: '/soccer', emoji: '⚽' },
       { label: 'Lactate Threshold', desc: 'Estimated LT1 & LT2 from run data — training zones & HR-pace scatter', href: '/lactate', emoji: '🔬' },
+      { label: 'Basketball', desc: 'Session history, calorie burn & weekly volume', href: '/basketball', emoji: '🏀' },
+      { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
