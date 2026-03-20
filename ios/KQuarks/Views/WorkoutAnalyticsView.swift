@@ -66,6 +66,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(VolleyballAnalysisView())),
                 AnalyticsEntry(title: "Baseball & Softball", subtitle: "Game sessions, intermittent burst intensity & arm load — Escamilla & Andrews 2009 throwing biomechanics", icon: "figure.baseball", color: .blue,
                                destination: AnyView(BaseballSoftballView())),
+                AnalyticsEntry(title: "Rugby & Football", subtitle: "Match load, recovery gap & collision intensity — Cunniffe 2009: 35–40% match time >85% HRmax, Twist 2012: 72–96h muscle recovery", icon: "sportscourt.fill", color: .green,
+                               destination: AnyView(RugbyAnalysisView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
