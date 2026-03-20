@@ -34,6 +34,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(EllipticalAnalysisView())),
                 AnalyticsEntry(title: "Golf", subtitle: "Distance walked, calories & monthly round frequency", icon: "figure.golf", color: .green,
                                destination: AnyView(GolfAnalysisView())),
+                AnalyticsEntry(title: "Soccer", subtitle: "Match distance, calorie intensity & monthly session frequency", icon: "soccerball", color: .green,
+                               destination: AnyView(SoccerAnalysisView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
