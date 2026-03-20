@@ -187,6 +187,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(BiologicalAgeView())),
                 AnalyticsEntry(title: "Life Expectancy Impact", subtitle: "Years gained/lost per biomarker — VO₂ + steps + RHR + HRV + sleep vs. population", icon: "hourglass", color: .indigo,
                                destination: AnyView(LifeExpectancyView())),
+                AnalyticsEntry(title: "Recovery Optimizer", subtitle: "Per-session next-morning HRV & RHR recovery score by workout type — Buchheit 2014, Plews 2013", icon: "arrow.up.heart.fill", color: .cyan,
+                               destination: AnyView(WorkoutRecoveryOptimizerView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,

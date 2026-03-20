@@ -1359,6 +1359,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: ActivityFragmentationView()) {
+                                HStack {
+                                    Image(systemName: "arrow.left.arrow.right.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Activity Fragmentation")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("How broken-up your movement is — Diaz 2017 JAMA active/sedentary transition index")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: BasalMetabolicRateView()) {
                                 HStack {
                                     Image(systemName: "flame.circle.fill")

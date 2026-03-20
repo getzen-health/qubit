@@ -168,6 +168,8 @@ const SECTIONS: Section[] = [
       { label: 'Immune Stress Index', desc: 'Illness early warning: HRV drop + RHR elevation + wrist temp deviation + step reduction (iOS 16+)', href: '/immune-stress', emoji: '🛡️' },
       { label: 'Life Expectancy Impact', desc: 'Years gained/lost: VO₂ max + steps + RHR + HRV + sleep vs population — Myers 2002, Paluch 2021', href: '/life-expectancy', emoji: '⏳' },
       { label: 'Social Jet Lag', desc: 'Weekday vs weekend sleep timing mismatch (MSFsc) — Roenneberg 2012, 33% obesity risk per hour', href: '/social-jet-lag', emoji: '✈️' },
+      { label: 'Recovery Optimizer', desc: 'Per-session next-morning HRV & RHR recovery scoring by workout type — Buchheit 2014, Plews 2013', href: '/workout-recovery', emoji: '💚' },
+      { label: 'Activity Fragmentation', desc: 'How broken-up your movement is throughout the day — Diaz 2017 JAMA active/sedentary transition index', href: '/activity-fragmentation', emoji: '🔀' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
