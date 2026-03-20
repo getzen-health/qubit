@@ -173,6 +173,7 @@ const SECTIONS: Section[] = [
       { label: 'Caffeine Analytics', desc: 'Daily intake, 5.5h half-life model, active caffeine at bedtime & sleep impact (Drake 2013)', href: '/caffeine', emoji: '☕' },
       { label: 'Alcohol Tracker', desc: 'Drink count vs WHO guidelines, HRV & RHR next-day impact analysis (Colrain 2014)', href: '/alcohol', emoji: '🍷' },
       { label: 'Functional Fitness Battery', desc: 'VO₂ max + 6-min walk + steadiness + gait speed + stair speed — composite functional age', href: '/functional-fitness', emoji: '🏋️' },
+      { label: 'Medication Adherence Science', desc: 'Adherence research, chronic disease outcomes & reminder science — WHO 2003: only 50% of chronic patients take meds as prescribed; DiMatteo 2004: once-daily dosing improves adherence 26%; Park 2014: routine-tied alarms 40% more effective', href: '/medication-adherence-science', emoji: '💊' },
       { label: 'Medication Tracking', desc: 'FHIR clinical medication records, dosage history & HRV/RHR biomarker correlations (iOS 12+)', href: '/medications', emoji: '💊' },
       { label: 'Sleep Regularity Index', desc: 'Day-to-day sleep/wake consistency — Phillips 2021 mortality predictor, 60-night SRI trend', href: '/sleep/regularity', emoji: '🌙' },
       { label: 'Fall Risk Assessment', desc: 'STEADI gait score: gait speed + steadiness + double support + asymmetry + stair speed composite', href: '/fall-risk', emoji: '🛡️' },

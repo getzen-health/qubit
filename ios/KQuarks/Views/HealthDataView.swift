@@ -369,6 +369,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: MedicationAdherenceScienceView()) {
+                                HStack {
+                                    Image(systemName: "pill.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Medication Adherence Science")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Adherence research, chronic disease outcomes & reminder science — WHO 2003: only 50% of chronic patients take meds as prescribed")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: MedicationTrackingView()) {
                                 HStack {
                                     Image(systemName: "cross.case.fill")
