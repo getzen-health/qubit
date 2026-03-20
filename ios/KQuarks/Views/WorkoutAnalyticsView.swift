@@ -68,6 +68,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(BaseballSoftballView())),
                 AnalyticsEntry(title: "Rugby & Football", subtitle: "Match load, recovery gap & collision intensity — Cunniffe 2009: 35–40% match time >85% HRmax, Twist 2012: 72–96h muscle recovery", icon: "sportscourt.fill", color: .green,
                                destination: AnyView(RugbyAnalysisView())),
+                AnalyticsEntry(title: "Hockey & Lacrosse", subtitle: "Ice hockey, field hockey & lacrosse game load — Quinney 2008: 170–185 bpm during shifts, Spencer 2005: 9–12 km per field hockey game", icon: "figure.hockey", color: .cyan,
+                               destination: AnyView(HockeyAnalysisView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
