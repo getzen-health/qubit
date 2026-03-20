@@ -209,6 +209,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(ProgressiveOverloadView())),
                 AnalyticsEntry(title: "Workload Ratio (ACWR)", subtitle: "Injury risk from load spikes — Gabbett 2016: ACWR > 1.5 = 2-4× injury risk, sweet spot 0.8–1.3", icon: "shield.lefthalf.filled", color: .orange,
                                destination: AnyView(ACWRView())),
+                AnalyticsEntry(title: "EPOC — Afterburn Effect", subtitle: "Excess post-exercise O₂ consumption — LaForgia 2006: HIIT produces 6× more afterburn than steady-state", icon: "flame.circle.fill", color: .orange,
+                               destination: AnyView(EPOCView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
