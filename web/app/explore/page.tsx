@@ -131,6 +131,8 @@ const SECTIONS: Section[] = [
       { label: 'Open Water Swimming', desc: 'OWS pace per 100m, distance trend & monthly volume', href: '/open-water', emoji: '🌊' },
       { label: 'Functional Strength', desc: 'CrossFit, calisthenics & Olympic lifting — intensity & weekly volume', href: '/functional-strength', emoji: '🏋️' },
       { label: 'Training Polarization', desc: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", href: '/polarization', emoji: '🎯' },
+      { label: 'Rock Climbing', desc: 'Session duration, calorie intensity & weekly climbing volume', href: '/rock-climbing', emoji: '🧗' },
+      { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
