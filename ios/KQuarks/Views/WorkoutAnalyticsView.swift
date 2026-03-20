@@ -88,6 +88,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(BadmintonView())),
                 AnalyticsEntry(title: "Handball", subtitle: "Match load, throwing biomechanics & jump performance — Michalsik 2013: 4–6 km at high intensity/game; Wagner 2011: 80–120 km/h throwing velocity", icon: "figure.handball", color: .blue,
                                destination: AnyView(HandballView())),
+                AnalyticsEntry(title: "Curling", subtitle: "Sweeping load, position-based kcal & delivery mechanics — Lanovaz 2001: sweepers reach 75–85% HRmax; Headrick 2007: lead position 600–800 kcal/game", icon: "figure.curling", color: .cyan,
+                               destination: AnyView(CurlingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
