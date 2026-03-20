@@ -160,6 +160,7 @@ const SECTIONS: Section[] = [
       { label: 'Oral Hygiene', desc: 'Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch autodetection (Series 5+)', href: '/oral-hygiene', emoji: '🦷' },
       { label: 'Caffeine Analytics', desc: 'Daily intake, 5.5h half-life model, active caffeine at bedtime & sleep impact (Drake 2013)', href: '/caffeine', emoji: '☕' },
       { label: 'Alcohol Tracker', desc: 'Drink count vs WHO guidelines, HRV & RHR next-day impact analysis (Colrain 2014)', href: '/alcohol', emoji: '🍷' },
+      { label: 'Functional Fitness Battery', desc: 'VO₂ max + 6-min walk + steadiness + gait speed + stair speed — composite functional age', href: '/functional-fitness', emoji: '🏋️' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },

@@ -1221,6 +1221,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: FunctionalFitnessBatteryView()) {
+                                HStack {
+                                    Image(systemName: "figure.strengthtraining.functional.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Functional Fitness Battery")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("VO₂ max + 6-min walk + steadiness + gait speed + stair speed — composite functional age")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: BasalMetabolicRateView()) {
                                 HStack {
                                     Image(systemName: "flame.circle.fill")
