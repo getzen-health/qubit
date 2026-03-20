@@ -171,6 +171,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(VO2MaxTrendView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
                                destination: AnyView(LactateThresholdView())),
+                AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
+                               destination: AnyView(TrainingPolarizationView())),
             ]
         ),
     ]

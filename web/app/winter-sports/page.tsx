@@ -1,0 +1,64 @@
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { WinterSportsClient } from './winter-sports-client'
+import { BottomNav } from '@/components/bottom-nav'
+
+export const metadata = { title: 'Winter Sports' }
+
+const WINTER_SPORTS_TYPES = [
+  'DownhillSkiing',
+  'CrossCountrySkiing',
+  'Snowboarding',
+  'SnowSports',
+  'SkatingSports',
+]
+
+export default async function WinterSportsPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  // 2-year lookback to capture seasonal data
+  const since = new Date()
+  since.setFullYear(since.getFullYear() - 2)
+
+  const { data: sessions } = await supabase
+    .from('workout_records')
+    .select('id, start_time, workout_type, duration_minutes, active_calories, avg_heart_rate')
+    .eq('user_id', user.id)
+    .in('workout_type', WINTER_SPORTS_TYPES)
+    .gt('duration_minutes', 0)
+    .gte('start_time', since.toISOString())
+    .order('start_time', { ascending: true })
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+          <Link
+            href="/workouts"
+            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+            aria-label="Back to workouts"
+          >
+            <ArrowLeft className="w-5 h-5 text-text-secondary" />
+          </Link>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-text-primary">Winter Sports</h1>
+            <p className="text-sm text-text-secondary">
+              {(sessions ?? []).length} sessions · last 2 years
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+        <WinterSportsClient sessions={sessions ?? []} />
+      </main>
+      <BottomNav />
+    </div>
+  )
+}
