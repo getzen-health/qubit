@@ -112,6 +112,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(PrepRecoveryView())),
                 AnalyticsEntry(title: "Sailing", subtitle: "Dinghy hiking isometric demands & offshore physiology — Blackburn 1994: 60–80% MVC quad sustained 20+ min; Callewaert 2012: quad endurance (not cardio) limits performance", icon: "sailboat", color: .cyan,
                                destination: AnyView(SailingView())),
+                AnalyticsEntry(title: "Pickleball", subtitle: "America's fastest-growing sport — Decker 2023: averages 75–85% HRmax (vigorous intensity); Doose 2021: depression −11.7%; Casper 2021: 73% 12-month retention", icon: "figure.pickleball", color: .green,
+                               destination: AnyView(PickleballView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
