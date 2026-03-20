@@ -1313,9 +1313,32 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: GaitAnalysisView()) {
+                            NavigationLink(destination: GaitScienceView()) {
                                 HStack {
                                     Image(systemName: "figure.walk.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Gait Science")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: GaitAnalysisView()) {
+                                HStack {
+                                    Image(systemName: "figure.walk.circle")
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)

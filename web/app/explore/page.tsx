@@ -166,6 +166,7 @@ const SECTIONS: Section[] = [
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },
       { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
       { label: 'Detraining', desc: 'Training break detection, Mujika-Padilla VO₂ loss curve & retraining time estimates', href: '/detraining', emoji: '📉' },
+      { label: 'Gait Science', desc: 'Walking speed as vital sign, biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; Lord 2007: gait speed best fall predictor; Montero-Odasso 2012: dual-task gait detects MCI 7–12 years early', href: '/gait-science', emoji: '🚶' },
       { label: 'Gait Analysis', desc: 'Walking speed, step length, asymmetry & double support — passively measured fall & longevity risk metric', href: '/gait', emoji: '🚶' },
       { label: 'State of Mind', desc: 'Mood valence trend, emotional label frequency & life-area associations (iOS 18+)', href: '/state-of-mind', emoji: '🧠' },
       { label: 'Zone Progression', desc: 'Monthly Z1–Z5 evolution, Seiler 80/20 polarization index & aerobic base trend', href: '/zones/progression', emoji: '📊' },
