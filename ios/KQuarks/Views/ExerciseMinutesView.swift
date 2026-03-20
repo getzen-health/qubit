@@ -134,6 +134,13 @@ struct ExerciseMinutesView: View {
         .frame(maxWidth: .infinity).padding(.vertical, 8)
     }
 
+    private func weekColor(_ w: WeekBucket) -> Color {
+        if w.metGoal        { return Color.green.opacity(0.8) }
+        if w.totalMins >= 100 { return Color.yellow.opacity(0.7) }
+        if w.totalMins >= 50  { return Color.orange.opacity(0.5) }
+        return Color.gray.opacity(0.2)
+    }
+
     // MARK: - Weekly Progress Streaks
 
     private var weeklyProgressCard: some View {
@@ -145,10 +152,7 @@ struct ExerciseMinutesView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: 13), spacing: 3) {
                 ForEach(weeks.suffix(52)) { w in
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(w.metGoal ? Color.green.opacity(0.8) :
-                              w.totalMins >= 100 ? Color.yellow.opacity(0.7) :
-                              w.totalMins >= 50 ? Color.orange.opacity(0.5) :
-                              Color.gray.opacity(0.2))
+                        .fill(weekColor(w))
                         .aspectRatio(1, contentMode: .fit)
                         .help(String(format: "%.0f min", w.totalMins))
                 }
@@ -208,6 +212,22 @@ struct ExerciseMinutesView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
+    private struct DOWEntry: Identifiable {
+        let id: String
+        let day: String
+        let mins: Double
+    }
+
+    private func dowEntries() -> [DOWEntry] {
+        zip(dowLabels, dowAvg).map { DOWEntry(id: $0, day: $0, mins: $1) }
+    }
+
+    private func dowBarColor(_ mins: Double) -> Color {
+        if mins >= 21 { return Color.green.opacity(0.75) }
+        if mins >= 14 { return Color.teal.opacity(0.7) }
+        return Color.blue.opacity(0.5)
+    }
+
     // MARK: - Day of Week Pattern
 
     private var dowPatternChart: some View {
@@ -216,12 +236,10 @@ struct ExerciseMinutesView: View {
             Text("Average exercise minutes per day over the last 12 weeks")
                 .font(.caption).foregroundStyle(.secondary)
             Chart {
-                ForEach(Array(zip(dowLabels, dowAvg)), id: \.0) { day, mins in
-                    BarMark(x: .value("Day", day),
-                            y: .value("Minutes", mins))
-                    .foregroundStyle(mins >= 21 ? Color.green.opacity(0.75) :
-                                     mins >= 14 ? Color.teal.opacity(0.7) :
-                                     Color.blue.opacity(0.5))
+                ForEach(dowEntries()) { entry in
+                    BarMark(x: .value("Day", entry.day),
+                            y: .value("Minutes", entry.mins))
+                    .foregroundStyle(dowBarColor(entry.mins))
                     .cornerRadius(4)
                 }
                 RuleMark(y: .value("Daily Target", weekGoal / 5))
