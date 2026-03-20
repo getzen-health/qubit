@@ -129,6 +129,7 @@ const SECTIONS: Section[] = [
       { label: 'Golf', desc: 'Distance walked, calories & monthly round frequency', href: '/golf', emoji: '⛳' },
       { label: 'Aerobic Decoupling', desc: 'Pace-to-HR efficiency across long runs — MAF training metric', href: '/aerobic-decoupling', emoji: '📉' },
       { label: 'Cross-Training', desc: 'CrossFit & mixed cardio sessions, intensity & weekly volume', href: '/cross-training', emoji: '🏋️' },
+      { label: 'Tennis Science', desc: 'Serve biomechanics, movement science & energy systems — Roetert 1995: elite serves 180–200 km/h; Kovacs 2006: 300–500 direction changes/match; Abrams 2012: tennis elbow in 40–50% recreational players; Girard 2011: jump height -5.3% in five-setters', href: '/tennis-science', emoji: '🎾' },
       { label: 'Tennis', desc: 'Match history, calories & monthly session frequency', href: '/tennis', emoji: '🎾' },
       { label: 'HRV Session Recommender', desc: "Today's readiness zone & session suggestions based on HRV vs 30-day baseline", href: '/hrv/recommender', emoji: '🧠' },
       { label: 'VO₂ Max Trend', desc: 'Apple Watch VO₂ max estimates, fitness category & 12-month progression', href: '/vo2max', emoji: '🫁' },

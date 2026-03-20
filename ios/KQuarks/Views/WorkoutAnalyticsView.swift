@@ -140,6 +140,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
+                AnalyticsEntry(title: "Tennis Science", subtitle: "Serve biomechanics, movement science & energy systems — Roetert 1995: elite serves 180–200 km/h; Kovacs 2006: 300–500 direction changes/match; Abrams 2012: tennis elbow in 40–50% recreational players; Girard 2011: jump height drops 5.3% in five-set matches", icon: "figure.tennis", color: .yellow,
+                               destination: AnyView(TennisScienceView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
                                destination: AnyView(TennisAnalysisView())),
                 AnalyticsEntry(title: "Outdoor vs Indoor", subtitle: "Environment split by sport, monthly trend & preference", icon: "sun.and.horizon.fill", color: .yellow,
