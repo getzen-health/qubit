@@ -26,6 +26,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WalkingPatternView())),
                 AnalyticsEntry(title: "Walking Progression", subtitle: "12-month distance & pace trend with quarterly breakdown", icon: "chart.line.uptrend.xyaxis", color: .green,
                                destination: AnyView(WalkingProgressionView())),
+                AnalyticsEntry(title: "Yoga Science", subtitle: "Flexibility, pranayama & HRV, mental health neuroscience & strength — Cramer 2013: yoga reduces chronic LBP 48%; Streeter 2010: 27% GABA increase", icon: "figure.mind.and.body.fill", color: .purple,
+                               destination: AnyView(YogaScienceView())),
                 AnalyticsEntry(title: "Yoga & Mind-Body", subtitle: "Session frequency, duration & practice type breakdown", icon: "figure.mind.and.body", color: .purple,
                                destination: AnyView(YogaAnalysisView())),
                 AnalyticsEntry(title: "Pilates & Barre", subtitle: "Pilates, barre, flexibility & core training — type mix & duration", icon: "figure.pilates", color: .purple,

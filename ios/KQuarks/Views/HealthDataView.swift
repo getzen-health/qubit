@@ -791,6 +791,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // HR Recovery Science
+                            NavigationLink(destination: HeartRateRecoveryScienceView()) {
+                                HStack {
+                                    Image(systemName: "heart.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HRR Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Heart rate recovery physiology, mortality research & training protocols — Cole 1999 NEJM: HRR ≤12 bpm = 4× higher mortality")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // HR Recovery
                             NavigationLink(destination: HeartRateRecoveryView()) {
                                 HStack {
