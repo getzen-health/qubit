@@ -140,6 +140,7 @@ const SECTIONS: Section[] = [
       { label: 'Basketball Science', desc: 'Jump mechanics, shooting biomechanics & position-specific demands — McInnes 1995: guards 4.8 km/game; Ziv & Lidor 2010: NBA SF avg 67 cm vertical; Okazaki 2006: optimal arc 45–55°; Cheng 2016: fatigue reduces 3-point accuracy 3.5% in OT', href: '/basketball-science', emoji: '🏀' },
       { label: 'Lactate Threshold', desc: 'Estimated LT1 & LT2 from run data — training zones & HR-pace scatter', href: '/lactate', emoji: '🔬' },
       { label: 'Basketball', desc: 'Session history, calorie burn & weekly volume', href: '/basketball', emoji: '🏀' },
+      { label: 'Dance Science', desc: 'Movement biomechanics, metabolic demands & brain health — Verghese 2003: dancing reduces dementia risk 76%; Wyon 2004: dancers VO₂max 48–54; Rodrigues-Krause 2015: Zumba 6.1–8.5 METs; Müller 2017: dance > cycling for hippocampal growth', href: '/dance-science', emoji: '💃' },
       { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },
       { label: 'Racquet Sports', desc: 'Pickleball, badminton, racquetball & squash — sport mix & session history', href: '/racquet', emoji: '🏸' },
       { label: 'Martial Arts & Combat', desc: 'Kickboxing, boxing, martial arts & wrestling — intensity & weekly volume', href: '/martial-arts', emoji: '🥊' },

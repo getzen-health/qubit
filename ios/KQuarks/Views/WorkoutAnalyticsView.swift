@@ -46,6 +46,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(BasketballScienceView())),
                 AnalyticsEntry(title: "Basketball", subtitle: "Session history, calorie burn & weekly volume", icon: "basketball.fill", color: .orange,
                                destination: AnyView(BasketballAnalysisView())),
+                AnalyticsEntry(title: "Dance Science", subtitle: "Movement biomechanics, metabolic demands & brain health — Verghese 2003: dancing reduces dementia risk 76%; Wyon 2004: dancers VO₂max 48–54; Bronner 2006: 1.24 injuries/1,000h; Rodrigues-Krause 2015: Zumba 6.1–8.5 METs", icon: "music.note", color: .pink,
+                               destination: AnyView(DanceScienceView())),
                 AnalyticsEntry(title: "Dance & Aerobics", subtitle: "Dance, social dance & step training sessions — frequency & calorie trends", icon: "music.note", color: .pink,
                                destination: AnyView(DanceAnalysisView())),
                 AnalyticsEntry(title: "Racquet Sports", subtitle: "Pickleball, badminton, racquetball & squash — sport mix & session history", icon: "figure.badminton", color: .green,
