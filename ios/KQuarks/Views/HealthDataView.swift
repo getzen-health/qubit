@@ -19,6 +19,29 @@ struct HealthDataView: View {
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         if selectedCategory == .sleep {
+                            NavigationLink(destination: SleepScienceView()) {
+                                HStack {
+                                    Image(systemName: "moon.stars.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Science")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Sleep stages, performance impact & chronobiology — Walker 2017: SWS doubles GH; Mah 2011: +9% shooting accuracy with sleep extension; Van Dongen 2003: 6h/night ≡ 24h deprivation")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepView()) {
                                 HStack {
                                     Image(systemName: "moon.fill")

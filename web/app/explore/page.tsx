@@ -283,6 +283,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Sleep',
     features: [
+      { label: 'Sleep Science', desc: 'Sleep stages, performance & chronobiology — Walker 2017: SWS couples 80% of GH secretion; Mah 2011: sleep extension +9% shooting accuracy; Van Dongen 2003: 6h/night = 24h deprivation impairment; Leproult 2010: 5h/night reduces testosterone 10–15%', href: '/sleep-science', emoji: '🌙' },
       { label: 'Sleep Analysis', desc: 'Stages, quality, and 30-night trends', href: '/sleep', emoji: '😴' },
       { label: 'Sleep Patterns', desc: 'When you sleep best: day-of-week, seasonal & duration histogram', href: '/sleep/patterns', emoji: '🌙' },
       { label: 'Sleep Stages', desc: 'Deep, REM, core & awake breakdown', href: '/sleep/stages', emoji: '🌊' },
