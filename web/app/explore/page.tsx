@@ -167,6 +167,7 @@ const SECTIONS: Section[] = [
       { label: 'Biological Age', desc: 'Multi-biomarker age: HRV age + cardiovascular age + aerobic age + gait age — Levine 2018 PhenoAge', href: '/biological-age', emoji: '🧬' },
       { label: 'Immune Stress Index', desc: 'Illness early warning: HRV drop + RHR elevation + wrist temp deviation + step reduction (iOS 16+)', href: '/immune-stress', emoji: '🛡️' },
       { label: 'Life Expectancy Impact', desc: 'Years gained/lost: VO₂ max + steps + RHR + HRV + sleep vs population — Myers 2002, Paluch 2021', href: '/life-expectancy', emoji: '⏳' },
+      { label: 'Social Jet Lag', desc: 'Weekday vs weekend sleep timing mismatch (MSFsc) — Roenneberg 2012, 33% obesity risk per hour', href: '/social-jet-lag', emoji: '✈️' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },

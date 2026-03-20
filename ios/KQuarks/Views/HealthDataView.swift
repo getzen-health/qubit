@@ -207,6 +207,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SocialJetLagView()) {
+                                HStack {
+                                    Image(systemName: "clock.arrow.2.circlepath")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Social Jet Lag")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Weekday vs weekend sleep timing mismatch — MSFsc, Roenneberg 2012")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepChronotypeView()) {
                                 HStack {
                                     Image(systemName: "moon.circle.fill")
