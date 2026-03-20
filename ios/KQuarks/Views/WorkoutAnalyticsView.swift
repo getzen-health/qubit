@@ -74,6 +74,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrackAndFieldView())),
                 AnalyticsEntry(title: "Fitness Gaming", subtitle: "Exergaming: Ring Fit, Beat Saber, VR fitness — Peng 2011: 2–3× resting expenditure; Staiano 2011: 30–50% lower dropout vs. traditional exercise", icon: "gamecontroller.fill", color: .purple,
                                destination: AnyView(FitnessGamingView())),
+                AnalyticsEntry(title: "Disc Sports", subtitle: "Ultimate frisbee, disc golf & freestyle — Duthie 2003: 8–12 km per ultimate game, 30% sprint; Levy & Sherrin 2008: disc golf ≈ 4.1 METs", icon: "figure.disc.sports", color: .green,
+                               destination: AnyView(DiscSportsView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,

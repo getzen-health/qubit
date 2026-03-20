@@ -203,6 +203,7 @@ const SECTIONS: Section[] = [
       { label: 'Hockey & Lacrosse', desc: 'Ice hockey, field hockey & lacrosse load — Quinney 2008 (JSCR): 170–185 bpm during shifts; Spencer 2005: 9–12 km per field hockey game', href: '/hockey-lacrosse', emoji: '🏒' },
       { label: 'Track & Field', desc: 'Sprint vs. distance energy systems, VO₂max trend & periodization — Haugen 2019: elite 100m ground contact ≤80 ms; Jones & Carter 2000: 100m ≈ 70% anaerobic', href: '/track-field', emoji: '🏃' },
       { label: 'Fitness Gaming', desc: 'Exergaming intensity: Ring Fit, Beat Saber, VR fitness — Peng 2011: active gaming 2–3× resting; VR exergaming reaches 60–80% HRmax per Muro-De-La-Herran 2014', href: '/fitness-gaming', emoji: '🎮' },
+      { label: 'Disc Sports', desc: 'Ultimate frisbee, disc golf & freestyle — Duthie 2003: 8–12 km per ultimate game, 30% sprint; Levy & Sherrin 2008: disc golf ≈ 4.1 METs moderate activity', href: '/disc-sports', emoji: '🥏' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
