@@ -30,6 +30,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(YogaScienceView())),
                 AnalyticsEntry(title: "Yoga & Mind-Body", subtitle: "Session frequency, duration & practice type breakdown", icon: "figure.mind.and.body", color: .purple,
                                destination: AnyView(YogaAnalysisView())),
+                AnalyticsEntry(title: "Pilates Science", subtitle: "Core anatomy, back rehabilitation, neuromotor control & Pilates vs yoga — Wells 2014: LBP −36%; Hodges 1996: multifidus as lumbar stabilizer", icon: "figure.pilates", color: .pink,
+                               destination: AnyView(PilatesScienceView())),
                 AnalyticsEntry(title: "Pilates & Barre", subtitle: "Pilates, barre, flexibility & core training — type mix & duration", icon: "figure.pilates", color: .purple,
                                destination: AnyView(PilatesBarreView())),
                 AnalyticsEntry(title: "Mental Health Science", subtitle: "Exercise & depression, cognitive health & mindfulness — Blumenthal 1999: exercise = sertraline efficacy; Erickson 2011: +2% hippocampal volume; Hofmann 2010: MBSR reduces anxiety d=0.97; Davidson 2003: meditation +30% antibody titers", icon: "brain.filled.head.profile", color: .purple,

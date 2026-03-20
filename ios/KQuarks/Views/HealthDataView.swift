@@ -930,6 +930,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Blood Oxygen Science
+                            NavigationLink(destination: BloodOxygenScienceView()) {
+                                HStack {
+                                    Image(systemName: "lungs.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Blood Oxygen Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("SpO₂ physiology, hypoxia, altitude acclimatization & sleep apnea detection — Levine 1997: LHTI; Apple Watch FDA-cleared OSA screening (watchOS 11)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Oxygen Deep Dive (SpO₂)
                             NavigationLink(destination: BloodOxygenDeepDiveView()) {
                                 HStack {
