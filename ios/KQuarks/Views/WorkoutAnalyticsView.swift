@@ -283,6 +283,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutConsistencyView())),
                 AnalyticsEntry(title: "Lifetime Stats", subtitle: "All-time totals, milestones & year-over-year", icon: "star.circle.fill", color: .teal,
                                destination: AnyView(LifetimeStatsView())),
+                AnalyticsEntry(title: "Injury Prevention Science", subtitle: "ACWR, tissue adaptation & overuse injury — Gabbett 2016: ACWR 0.8–1.3 sweet spot; Magnusson 2010: tendons adapt 10× slower than muscle; Hreljac 2004: training errors cause 60–70% of overuse injuries; FIFA 11+ reduces injury 30–50%", icon: "exclamationmark.shield.fill", color: .orange,
+                               destination: AnyView(InjuryScienceView())),
                 AnalyticsEntry(title: "Injury Risk Score", subtitle: "ACWR, consecutive days, HRV & resting HR risk factors", icon: "exclamationmark.triangle.fill", color: .orange,
                                destination: AnyView(InjuryRiskView())),
                 AnalyticsEntry(title: "Fitness Age", subtitle: "VO₂ max-based biological fitness age vs chronological age", icon: "figure.run.circle.fill", color: .indigo,

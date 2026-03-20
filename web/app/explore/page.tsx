@@ -115,6 +115,7 @@ const SECTIONS: Section[] = [
       { label: 'Zone 2 Training', desc: '52-week aerobic base tracker — Zone 2 minutes by sport with 3h/week target', href: '/zone2', emoji: '💚' },
       { label: 'Training Consistency', desc: 'Session frequency, training days per week, streaks & sport breakdown over 52 weeks', href: '/workouts/consistency', emoji: '🗓️' },
       { label: 'Lifetime Stats', desc: 'All-time totals, milestone badges & year-over-year comparison', href: '/workouts/lifetime', emoji: '🏅' },
+      { label: 'Injury Prevention Science', desc: 'ACWR, tissue adaptation & overuse injury — Gabbett 2016: ACWR 0.8–1.3 sweet spot, >1.5 = 6× risk; Magnusson 2010: tendons adapt 10× slower than muscle; Hreljac 2004: training errors = 60–70% of overuse injuries; FIFA 11+ reduces injury 30–50%', href: '/injury-prevention-science', emoji: '🛡️' },
       { label: 'Injury Risk Score', desc: 'ACWR, consecutive training days, HRV drop & resting HR elevation', href: '/injury-risk', emoji: '⚠️' },
       { label: 'Fitness Age', desc: 'VO₂ max-based biological fitness age vs chronological age', href: '/fitness-age', emoji: '🧬' },
       { label: 'Training Phases', desc: 'Auto-detect base, build, peak & taper from 52-week volume trend', href: '/periodization', emoji: '📆' },
