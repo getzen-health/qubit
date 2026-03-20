@@ -159,6 +159,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RecordsView())),
                 AnalyticsEntry(title: "Sleep Impact", subtitle: "How workouts affect overnight HRV & sleep", icon: "bed.double.fill", color: .indigo,
                                destination: AnyView(WorkoutSleepImpactView())),
+                AnalyticsEntry(title: "Sleep-Training Balance", subtitle: "Weekly training hours vs sleep hours — Mah 2011 (Sleep): extending sleep 10h improved sprint times 4%", icon: "moon.and.stars.fill", color: .indigo,
+                               destination: AnyView(SleepTrainingBalanceView())),
                 AnalyticsEntry(title: "Workout Calendar", subtitle: "Monthly view colored by sport type", icon: "calendar.badge.clock", color: .teal,
                                destination: AnyView(WorkoutCalendarView())),
                 AnalyticsEntry(title: "Training Advisor", subtitle: "HRV-based weekly training plan", icon: "brain.head.profile", color: .cyan,
