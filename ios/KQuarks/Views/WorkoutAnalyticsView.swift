@@ -120,6 +120,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HikingPatternView())),
                 AnalyticsEntry(title: "Hiking Progression", subtitle: "12-month distance & elevation gain trend", icon: "chart.line.uptrend.xyaxis", color: .green,
                                destination: AnyView(HikingProgressionView())),
+                AnalyticsEntry(title: "Elevation Analysis", subtitle: "GPS route elevation gain from runs & hikes — Minetti 2002: +6% grade costs 2× flat energy, Gimenez 2013: hilly runs cause 2–3× more muscle damage", icon: "mountain.2.fill", color: .orange,
+                               destination: AnyView(ElevationAnalysisView())),
                 AnalyticsEntry(title: "HIIT", subtitle: "Peak HR, burn rate & intensity", icon: "bolt.heart.fill", color: .pink,
                                destination: AnyView(HIITAnalysisView())),
                 AnalyticsEntry(title: "HIIT Patterns", subtitle: "DOW distribution, time-of-day & weekly volume", icon: "chart.bar.xaxis", color: .yellow,
