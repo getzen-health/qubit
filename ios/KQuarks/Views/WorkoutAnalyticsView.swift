@@ -114,6 +114,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SailingView())),
                 AnalyticsEntry(title: "Pickleball", subtitle: "America's fastest-growing sport — Decker 2023: averages 75–85% HRmax (vigorous intensity); Doose 2021: depression −11.7%; Casper 2021: 73% 12-month retention", icon: "figure.pickleball", color: .green,
                                destination: AnyView(PickleballView())),
+                AnalyticsEntry(title: "Bowling", subtitle: "67M US participants — Stuelcken 2005: wrist 700–900°/s at release; Lam 2013: 200–500 RPM rev rate; Piasecki 2018: 30–45% medial epicondylitis at >70 games/week; Dorsel 2001: spare conversion predicts score", icon: "figure.bowling", color: .blue,
+                               destination: AnyView(BowlingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
