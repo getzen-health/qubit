@@ -157,6 +157,7 @@ const SECTIONS: Section[] = [
       { label: 'Zone Progression', desc: 'Monthly Z1–Z5 evolution, Seiler 80/20 polarization index & aerobic base trend', href: '/zones/progression', emoji: '📊' },
       { label: 'Power-to-Weight', desc: 'FTP W/kg ratio, British Cycling tier classification & weight impact simulator (iOS 17+)', href: '/cycling/power-to-weight', emoji: '⚡' },
       { label: 'Overtraining Warning', desc: 'Composite OTS detector: HRV trend + RHR elevation + ACWR + sleep deficit with Meeusen 2013 science', href: '/overtraining', emoji: '⚠️' },
+      { label: 'Oral Hygiene', desc: 'Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch autodetection (Series 5+)', href: '/oral-hygiene', emoji: '🦷' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },

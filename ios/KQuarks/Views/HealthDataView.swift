@@ -323,6 +323,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: OralHygieneView()) {
+                                HStack {
+                                    Image(systemName: "mouth.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.mint)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.mint.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Oral Hygiene")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch Series 5+")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Handwashing
                             NavigationLink(destination: HandwashingView()) {
                                 HStack {
