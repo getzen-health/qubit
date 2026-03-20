@@ -85,6 +85,7 @@ const SECTIONS: Section[] = [
       { label: 'Symptoms Log', desc: 'Manually-logged symptom history — fatigue, headache, chest pain, shortness of breath & more', href: '/symptoms', emoji: '🩺' },
       { label: 'Workout Effort Score', desc: 'Apple\'s 1–10 session effort rating, load trends & 80:20 intensity balance (iOS 17+)', href: '/workouts/effort', emoji: '🔥' },
       { label: 'Cycling Speed', desc: 'Session avg & max speed, zone distribution & 90-day trend (iOS 17+)', href: '/cycling/speed', emoji: '🚴' },
+      { label: 'Diving Analytics', desc: 'Underwater depth, water temperature, no-deco limits & dive log — Apple Watch Ultra', href: '/diving', emoji: '🤿' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },
