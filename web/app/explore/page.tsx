@@ -90,6 +90,7 @@ const SECTIONS: Section[] = [
       { label: 'Cycling Speed', desc: 'Session avg & max speed, zone distribution & 90-day trend (iOS 17+)', href: '/cycling/speed', emoji: '🚴' },
       { label: 'Diving Analytics', desc: 'Underwater depth, water temperature, no-deco limits & dive log — Apple Watch Ultra', href: '/diving', emoji: '🤿' },
       { label: 'Max HR Analysis', desc: 'Observed HRmax from workouts vs. Fox/Tanaka/Nes formulas — calibrate your zones precisely', href: '/heartrate/max', emoji: '❤️' },
+      { label: 'Strength Training Science', desc: 'Hypertrophy, neural adaptations & periodization — Schoenfeld 2010: 3 hypertrophy mechanisms; Morton 2016: 30–80% 1RM all equal for size; Krieger 2010: 10–20 sets/muscle optimal; Rhea 2003: daily undulating periodization +29% vs linear +14%', href: '/strength-science', emoji: '💪' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },

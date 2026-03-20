@@ -192,6 +192,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SwimmingStrokeEfficiencyView())),
                 AnalyticsEntry(title: "Rowing Stroke Rate", subtitle: "SPM trend, zone distribution (steady–sprint) & power science", icon: "oar.2.crossed", color: .blue,
                                destination: AnyView(RowingStrokeRateView())),
+                AnalyticsEntry(title: "Strength Training Science", subtitle: "Hypertrophy mechanisms, neural adaptations & periodization — Schoenfeld 2010: 3 mechanisms; Morton 2016: 30–80% 1RM all work; Krieger 2010: 10–20 sets/muscle optimal; Rhea 2003: DUP +29% vs linear +14%", icon: "figure.strengthtraining.traditional", color: .red,
+                               destination: AnyView(StrengthScienceView())),
                 AnalyticsEntry(title: "Strength Training", subtitle: "Frequency, volume & sessions", icon: "figure.strengthtraining.traditional", color: .red,
                                destination: AnyView(StrengthAnalysisView())),
                 AnalyticsEntry(title: "Strength Patterns", subtitle: "DOW distribution, time-of-day & duration trend", icon: "chart.bar.xaxis", color: .red,
