@@ -1164,6 +1164,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SixMinuteWalkView()) {
+                                HStack {
+                                    Image(systemName: "figure.walk.motion")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("6-Min Walk Test")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Apple's estimated functional fitness & 90-day trend")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: WalkingSteadinessView()) {
                                 HStack {
                                     Image(systemName: "figure.walk")
