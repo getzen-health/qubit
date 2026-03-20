@@ -267,6 +267,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HeatAcclimatizationView())),
                 AnalyticsEntry(title: "Sport-Specific Load", subtitle: "CTL/ATL breakdown per sport — Impellizzeri 2004: pooling across sports masks fatigue & underpreparedness", icon: "figure.mixed.cardio", color: .purple,
                                destination: AnyView(SportSpecificLoadView())),
+                AnalyticsEntry(title: "Load vs Performance", subtitle: "Validates whether higher CTL translates to better running efficiency — Bannister 1991 PMC, Lucia 2000 running economy", icon: "chart.dots.scatter", color: .indigo,
+                               destination: AnyView(TrainingPerformanceCorrelationView())),
                 AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
                                destination: AnyView(TrainingPolarizationView())),
                 AnalyticsEntry(title: "Critical Speed", subtitle: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", icon: "gauge.with.dots.needle.67percent", color: .teal,
