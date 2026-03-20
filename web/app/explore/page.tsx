@@ -192,6 +192,7 @@ const SECTIONS: Section[] = [
       { label: 'Gait Analysis', desc: 'Walking speed, step length, asymmetry & double support — passively measured fall & longevity risk metric', href: '/gait', emoji: '🚶' },
       { label: 'State of Mind', desc: 'Mood valence trend, emotional label frequency & life-area associations (iOS 18+)', href: '/state-of-mind', emoji: '🧠' },
       { label: 'Zone Progression', desc: 'Monthly Z1–Z5 evolution, Seiler 80/20 polarization index & aerobic base trend', href: '/zones/progression', emoji: '📊' },
+      { label: 'Power-to-Weight Science', desc: 'W/kg physics, British Cycling tiers, race applications & body composition — di Prampero 1979: climbing speed ∝ W/kg; Coggan 2003: 2.0–6.0+ W/kg tiers; Lucia 2001: Tour climbers 5.7–6.4 W/kg', href: '/power-to-weight-science', emoji: '⚡' },
       { label: 'Power-to-Weight', desc: 'FTP W/kg ratio, British Cycling tier classification & weight impact simulator (iOS 17+)', href: '/cycling/power-to-weight', emoji: '⚡' },
       { label: 'Overtraining Science', desc: 'OTS diagnosis criteria, sympathetic vs parasympathetic overtraining, cytokine hypothesis, HRV monitoring protocols & polarized training — Meeusen 2013 ECSS/ACSM consensus', href: '/overtraining-science', emoji: '🔬' },
       { label: 'Overtraining Warning', desc: 'Composite OTS detector: HRV trend + RHR elevation + ACWR + sleep deficit with Meeusen 2013 science', href: '/overtraining', emoji: '⚠️' },

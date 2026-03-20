@@ -190,6 +190,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CyclingProgressionView())),
                 AnalyticsEntry(title: "Cycling Cadence", subtitle: "RPM trend, zone distribution & optimal 85–100 RPM target — Apple Watch Ultra", icon: "speedometer", color: .green,
                                destination: AnyView(CyclingCadenceView())),
+                AnalyticsEntry(title: "Power-to-Weight Science", subtitle: "W/kg physics, British Cycling tiers & body composition — di Prampero 1979: climbing speed ∝ W/kg; Coggan 2003: classification from 2.0 to 6.0+ W/kg; Lucia 2001: Tour climbers 5.7–6.4 W/kg", icon: "bolt.fill", color: .yellow,
+                               destination: AnyView(PowerToWeightScienceView())),
                 AnalyticsEntry(title: "Power-to-Weight", subtitle: "FTP W/kg ratio, British Cycling tier & weight impact simulator (iOS 17+)", icon: "bolt.fill", color: .yellow,
                                destination: AnyView(PowerToWeightView())),
                 AnalyticsEntry(title: "Cycling Speed", subtitle: "Session avg & max speed, zone distribution & 90-day trend (iOS 17+)", icon: "gauge.with.needle.fill", color: .teal,
