@@ -1543,6 +1543,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: FastingScienceView()) {
+                                HStack {
+                                    Image(systemName: "timer")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Fasting Science")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Autophagy, metabolic switching & hormonal response — Ohsumi 2016 (Nobel): autophagy peaks 24–48h; Sutton 2018: TRE improves insulin sensitivity 38%; Ho 1988: 24h fasting raises GH 5×")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: MetabolicRateScienceView()) {
                                 HStack {
                                     Image(systemName: "flame.fill")

@@ -324,6 +324,7 @@ const SECTIONS: Section[] = [
       { label: 'Hydration Science', desc: 'Fluid physiology, electrolytes & performance — Sawka 2007: 2% BW loss = 2–4% aerobic drop; Coyle 2004: sodium retains 60% more fluid; Hew-Butler 2015 (IOC): over-drinking causes EAH; Armstrong 2012: caffeine does NOT dehydrate', href: '/hydration-science', emoji: '💧' },
       { label: 'Hydration', desc: 'Daily water intake and targets', href: '/water', emoji: '💧' },
       { label: 'Hydration Patterns', desc: 'When you drink most: day-of-week, monthly & goal streaks', href: '/water/patterns', emoji: '📊' },
+      { label: 'Fasting Science', desc: 'Autophagy, metabolic switching & hormonal response — Ohsumi 2016 (Nobel): autophagy peaks 24–48h; Sutton 2018: TRE improves insulin sensitivity 38%; Ho 1988: 24h fast raises GH 5×; Mattson 2014: β-HB inhibits NLRP3 inflammasome', href: '/fasting-science', emoji: '⏱️' },
       { label: 'Fasting', desc: 'Intermittent fasting sessions and streaks', href: '/fasting', emoji: '⏳' },
       { label: 'Fasting Insights', desc: 'Protocol breakdown, streaks, duration trends & timing analysis', href: '/fasting/insights', emoji: '📊' },
       { label: 'Mindfulness', desc: 'Meditation and mindfulness minutes', href: '/mindfulness', emoji: '🧘' },
