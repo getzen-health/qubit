@@ -635,6 +635,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: RespiratoryPatternView()) {
+                                HStack {
+                                    Image(systemName: "waveform")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Respiratory Patterns")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Day-of-week & monthly breathing rate patterns")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Oxygen Deep Dive (SpO₂)
                             NavigationLink(destination: BloodOxygenDeepDiveView()) {
                                 HStack {
@@ -733,6 +760,60 @@ struct HealthDataView: View {
                                             .font(.headline)
                                             .foregroundStyle(.primary)
                                         Text("Baseline, trends, patterns")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: RHRPatternView()) {
+                                HStack {
+                                    Image(systemName: "heart.text.square")
+                                        .font(.title2)
+                                        .foregroundStyle(.pink)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.pink.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("RHR Patterns")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Day-of-week, monthly & distribution analysis")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: HRVCalendarView()) {
+                                HStack {
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HRV Calendar")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("52-week heatmap — daily HRV vs personal baseline")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }
@@ -1312,6 +1393,33 @@ struct HealthDataView: View {
                                             .font(.headline)
                                             .foregroundStyle(.primary)
                                         Text("Noise & headphone exposure")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: CorrelationInsightsView()) {
+                                HStack {
+                                    Image(systemName: "chart.line.text.clipboard")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Health Correlations")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("How sleep, HRV & steps influence each other — 60-day Pearson analysis")
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }
