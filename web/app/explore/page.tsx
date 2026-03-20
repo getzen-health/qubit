@@ -214,6 +214,7 @@ const SECTIONS: Section[] = [
       { label: 'Step Aerobics', desc: 'Intensity zones by kcal/min & VO₂max gains — Olson 1996: 8" step = 65–75% VO₂max ≈ running 5–6 mph; Macfarlane 2012: +9% VO₂max in 8 weeks; lower impact than running', href: '/step-aerobics', emoji: '🪜' },
       { label: 'Table Tennis', desc: 'Match intensity, rally physics & reaction time — Zagatto 2010: match VO₂ 45–65% with rally bursts to 85%; Yuza 1992: elite reaction time 250–300 ms (25% faster than untrained)', href: '/table-tennis', emoji: '🏓' },
       { label: 'Cricket', desc: 'Bowling load, fielding intensity & batting demands — Petersen 2010: fast bowlers 6–9× BW ground reaction force; Duffield 2008: T20 fielding 80–85% HRmax; Noakes: 0.15 s batting decision window', href: '/cricket', emoji: '🏏' },
+      { label: 'Water Polo', desc: 'Eggbeater kick energy cost, jump height & match intensity — Smith 1998: 48% of match at >80% HRmax; eggbeater kick = 35–50% of total kcal; 40–80 cm jumps from water (Lupo 2010)', href: '/water-polo', emoji: '🤽' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

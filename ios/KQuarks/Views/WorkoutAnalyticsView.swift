@@ -96,6 +96,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TableTennisView())),
                 AnalyticsEntry(title: "Cricket", subtitle: "Bowling workload, fielding intensity & batting demand — Petersen 2010: fast bowlers produce 6–9× BW GRF; Duffield 2008: T20 fielding averages 80–85% HRmax", icon: "figure.cricket", color: .green,
                                destination: AnyView(CricketView())),
+                AnalyticsEntry(title: "Water Polo", subtitle: "Eggbeater kick energy cost, explosive jump height & match intensity — Smith 1998: 48% of match at >80% HRmax; eggbeater = 35–50% of total match kcal", icon: "figure.water.fitness", color: .cyan,
+                               destination: AnyView(WaterPoloView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
