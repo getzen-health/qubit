@@ -280,6 +280,7 @@ const SECTIONS: Section[] = [
       { label: 'Mindfulness Impact', desc: 'How meditation sessions affect next-day HRV and recovery', href: '/mindfulness/impact', emoji: '✨' },
       { label: 'Daylight', desc: 'Time in natural light per day', href: '/daylight', emoji: '☀️' },
       { label: 'Daylight Patterns', desc: 'When you get most sunlight: DOW trends, seasonal analysis & goal achievement', href: '/daylight/patterns', emoji: '📊' },
+      { label: 'Audiogram', desc: 'Hearing threshold by frequency — WHO 2021: early 4–6 kHz noise notch detection before speech frequencies are affected', href: '/audiogram', emoji: '🎧' },
       { label: 'Hearing Health', desc: 'Noise exposure and headphone audio', href: '/hearing', emoji: '👂' },
       { label: 'Hearing Patterns', desc: 'DOW noise trends, time-of-day, headphone vs environment & monthly exposure', href: '/hearing/patterns', emoji: '📊' },
     ],

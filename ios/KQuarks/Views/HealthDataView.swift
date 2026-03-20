@@ -1917,6 +1917,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: AudiogramView()) {
+                                HStack {
+                                    Image(systemName: "ear.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Audiogram")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Hearing threshold by frequency — noise notch detection")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: HearingHealthView()) {
                                 HStack {
                                     Image(systemName: "ear")
