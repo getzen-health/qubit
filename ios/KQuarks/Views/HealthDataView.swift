@@ -940,6 +940,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: MaxHRAnalysisView()) {
+                                HStack {
+                                    Image(systemName: "waveform.path.ecg")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Max HR Analysis")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Observed HRmax vs. formulas, by sport & zone calibration")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood pressure gets its own detailed view
                             NavigationLink(destination: BloodPressureView()) {
                                 HStack {
