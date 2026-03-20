@@ -209,6 +209,7 @@ const SECTIONS: Section[] = [
       { label: 'Fencing', desc: 'Explosive bout analysis, tournament load & weapon demands — Turner 2014: 30–50 actions/bout at 80–85% HRmax; Roi 2008: lunge generates 2× bodyweight ground force', href: '/fencing', emoji: '🤺' },
       { label: 'Gymnastics', desc: 'Strength standards, energy systems & injury prevention — Prassas 2006: floor routine 80% anaerobic; Naughton 2000: gymnastics raises BMD 10–30% above controls', href: '/gymnastics', emoji: '🤸' },
       { label: 'Badminton', desc: "World's fastest racquet sport — Phomsoupha 2015: shuttle 493 km/h; Gawin 2015: 1300–2000 direction changes/match; Liddle 1996: 85–90% HRmax during play", href: '/badminton', emoji: '🏸' },
+      { label: 'Handball', desc: 'Match load, throwing biomechanics & jump performance — Michalsik 2013: 4–6 km at high intensity per game; Wagner 2011: 80–120 km/h throwing velocity at elite level', href: '/handball', emoji: '🤾' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

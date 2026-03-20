@@ -86,6 +86,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(GymnasticsView())),
                 AnalyticsEntry(title: "Badminton", subtitle: "World's fastest racquet sport — Phomsoupha 2015: shuttle 493 km/h; Gawin 2015: 1300–2000 direction changes/match; Liddle 1996: 85–90% HRmax average", icon: "figure.badminton", color: .red,
                                destination: AnyView(BadmintonView())),
+                AnalyticsEntry(title: "Handball", subtitle: "Match load, throwing biomechanics & jump performance — Michalsik 2013: 4–6 km at high intensity/game; Wagner 2011: 80–120 km/h throwing velocity", icon: "figure.handball", color: .blue,
+                               destination: AnyView(HandballView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
