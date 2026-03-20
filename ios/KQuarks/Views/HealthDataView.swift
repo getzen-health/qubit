@@ -280,6 +280,31 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: WristTemperatureScienceView()) {
+                                HStack {
+                                    Image(systemName: "thermometer.sun.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Wrist Temperature Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Thermoregulation, circadian biology, illness detection & fertility tracking")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: WristTemperatureView()) {
                                 HStack {
                                     Image(systemName: "thermometer.medium")

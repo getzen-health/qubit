@@ -313,6 +313,7 @@ const SECTIONS: Section[] = [
       { label: 'Chronotype', desc: 'Early bird vs night owl + social jet lag', href: '/sleep/chronotype', emoji: '🦉' },
       { label: 'Sleep Impact', desc: 'How sleep duration shapes next-day HRV & activity', href: '/sleep/impact', emoji: '⚡' },
       { label: 'Sleep Quality Score', desc: 'Nightly 0–100 score: duration + stages + efficiency', href: '/sleep/score', emoji: '⭐' },
+      { label: 'Wrist Temperature Science', desc: 'Thermoregulation, circadian biology, illness detection & fertility tracking — Kräuchi 1999 Nature: peripheral vasodilation drives sleep onset; Obermeyer 2022 Nat Med: fever detected 1–2 days before symptoms; Barron 2021: ovulation tracking via nightly deviation', href: '/wrist-temperature-science', emoji: '🔬' },
       { label: 'Wrist Temperature', desc: 'Nightly skin temperature deviations', href: '/temperature', emoji: '🌡️' },
       { label: 'Temperature Insights', desc: 'HRV correlation & illness signal detection', href: '/temperature/insights', emoji: '🔬' },
     ],
