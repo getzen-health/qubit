@@ -416,6 +416,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Breathing Rate Deep Dive
+                            NavigationLink(destination: BreathingRateView()) {
+                                HStack {
+                                    Image(systemName: "lungs.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Breathing Rate Deep Dive")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("30-day trend, baseline vs current & illness signals")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Respiratory Rate
                             NavigationLink(destination: RespiratoryRateView()) {
                                 HStack {
