@@ -2,101 +2,112 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Thermometer } from 'lucide-react'
-import { TempInsightsClient } from './temp-insights-client'
+import { TemperatureInsightsClient, type TemperatureInsightsData, type NightlyDeviation, type DeviationStatus } from './temperature-insights-client'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Temperature Insights' }
+export const metadata = { title: 'Wrist Temperature Insights' }
 
-export default async function TempInsightsPage() {
+// ─── Mock data ────────────────────────────────────────────────────────────────
+
+function buildMockData(): TemperatureInsightsData {
+  // 30-day nightly deviations ending 2026-03-19
+  // Mostly −0.2 to +0.4°C with two elevated nights (+1.1°C, +1.15°C) and a couple of lows
+  const rawValues: Array<{ offset: number; deviation: number }> = [
+    { offset: 29, deviation:  0.18 },
+    { offset: 28, deviation: -0.12 },
+    { offset: 27, deviation:  0.31 },
+    { offset: 26, deviation:  0.05 },
+    { offset: 25, deviation: -0.22 },
+    { offset: 24, deviation:  0.27 },
+    { offset: 23, deviation:  0.14 },
+    { offset: 22, deviation: -0.08 },
+    { offset: 21, deviation:  0.38 },
+    { offset: 20, deviation:  0.22 },
+    // elevated bout: offsets 19–18 (+1°C nights)
+    { offset: 19, deviation:  1.15 },
+    { offset: 18, deviation:  1.10 },
+    // recovery
+    { offset: 17, deviation:  0.61 },
+    { offset: 16, deviation:  0.34 },
+    { offset: 15, deviation:  0.19 },
+    { offset: 14, deviation: -0.17 },
+    { offset: 13, deviation:  0.08 },
+    { offset: 12, deviation:  0.24 },
+    { offset: 11, deviation: -0.31 },
+    { offset: 10, deviation:  0.10 },
+    // low night
+    { offset:  9, deviation: -0.62 },
+    { offset:  8, deviation: -0.18 },
+    { offset:  7, deviation:  0.29 },
+    { offset:  6, deviation:  0.07 },
+    { offset:  5, deviation:  0.35 },
+    { offset:  4, deviation: -0.14 },
+    { offset:  3, deviation:  0.21 },
+    { offset:  2, deviation:  0.16 },
+    { offset:  1, deviation:  0.08 },
+    { offset:  0, deviation:  0.23 },
+  ]
+
+  function classify(deviation: number): DeviationStatus {
+    if (deviation >= 1.0) return 'elevated'
+    if (deviation < -0.5) return 'low'
+    return 'normal'
+  }
+
+  const today = new Date('2026-03-19')
+
+  // Build daily array oldest→newest (left→right on chart)
+  const daily: NightlyDeviation[] = rawValues
+    .sort((a, b) => b.offset - a.offset)
+    .map(({ offset, deviation }) => {
+      const d = new Date(today)
+      d.setDate(d.getDate() - offset)
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      return {
+        date: label,
+        deviation,
+        status: classify(deviation),
+      }
+    })
+    .reverse() // ascending for Recharts left→right
+
+  const allDeviations = rawValues.map((v) => v.deviation)
+  const avg30d = +(allDeviations.reduce((s, v) => s + v, 0) / allDeviations.length).toFixed(2)
+  const peak30d = +Math.max(...allDeviations).toFixed(2)
+  const nightsAbove1C = allDeviations.filter((v) => v >= 1.0).length
+
+  // Consecutive elevated nights counting from most recent night backwards
+  const sorted = rawValues.slice().sort((a, b) => a.offset - b.offset) // offset 0 = today at index 0
+  let consecutiveElevated = 0
+  for (const { deviation } of sorted) {
+    if (classify(deviation) === 'elevated') consecutiveElevated++
+    else break
+  }
+
+  // Last night = offset 0
+  const lastNight = rawValues.find((v) => v.offset === 0)!
+
+  return {
+    lastNightDeviation: lastNight.deviation,
+    lastNightStatus: classify(lastNight.deviation),
+    avg30d,
+    peak30d,
+    nightsAbove1C,
+    consecutiveElevated,
+    daily,
+  }
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default async function TemperatureInsightsPage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const ninetyDaysAgo = new Date()
-  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
-  const startIso = ninetyDaysAgo.toISOString()
-
-  const [{ data: tempRecords }, { data: summaries }] = await Promise.all([
-    supabase
-      .from('health_records')
-      .select('start_time, value')
-      .eq('user_id', user.id)
-      .eq('type', 'wrist_temperature')
-      .gte('start_time', startIso)
-      .order('start_time', { ascending: true }),
-    supabase
-      .from('daily_summaries')
-      .select('date, avg_hrv, sleep_duration_minutes, resting_heart_rate')
-      .eq('user_id', user.id)
-      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
-      .order('date', { ascending: true }),
-  ])
-
-  // Deduplicate temp to one reading per night
-  const tempByDay = new Map<string, number>()
-  for (const r of tempRecords ?? []) {
-    const day = r.start_time.slice(0, 10)
-    if (!tempByDay.has(day)) tempByDay.set(day, r.value)
-  }
-
-  // Index summaries by date
-  const summaryByDate = new Map(
-    (summaries ?? []).map(s => [s.date, s])
-  )
-
-  // Build correlation points
-  interface TempPoint {
-    date: string
-    temp: number           // deviation in °C
-    nextDayHrv: number | null
-    sleepHours: number | null
-    rhr: number | null
-    category: 'elevated' | 'normal' | 'low'
-  }
-
-  const points: TempPoint[] = Array.from(tempByDay.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, temp]) => {
-      // Next-day date
-      const nextDay = new Date(date + 'T12:00:00')
-      nextDay.setDate(nextDay.getDate() + 1)
-      const nextDayStr = nextDay.toISOString().slice(0, 10)
-      const todaySummary = summaryByDate.get(date)
-      const nextDaySummary = summaryByDate.get(nextDayStr)
-
-      return {
-        date,
-        temp,
-        nextDayHrv: nextDaySummary?.avg_hrv ?? null,
-        sleepHours: todaySummary?.sleep_duration_minutes
-          ? todaySummary.sleep_duration_minutes / 60
-          : null,
-        rhr: todaySummary?.resting_heart_rate ?? null,
-        category: temp > 0.3 ? 'elevated' : temp < -0.3 ? 'low' : 'normal',
-      }
-    })
-
-  // Consecutive elevated nights (illness signal)
-  let maxConsecElevated = 0
-  let curConsec = 0
-  for (const p of points) {
-    if (p.category === 'elevated') { curConsec++; maxConsecElevated = Math.max(maxConsecElevated, curConsec) }
-    else curConsec = 0
-  }
-
-  // Average next-day HRV by temp category
-  const avgHrvByCategory = (cat: 'elevated' | 'normal' | 'low') => {
-    const vals = points.filter(p => p.category === cat && p.nextDayHrv !== null).map(p => p.nextDayHrv!)
-    return vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null
-  }
-
-  const hrv = {
-    elevated: avgHrvByCategory('elevated'),
-    normal: avgHrvByCategory('normal'),
-    low: avgHrvByCategory('low'),
-  }
+  const data = buildMockData()
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,11 +123,9 @@ export default async function TempInsightsPage() {
           <div className="flex items-center gap-2">
             <Thermometer className="w-5 h-5 text-orange-400" />
             <div>
-              <h1 className="text-xl font-bold text-text-primary">Temperature Insights</h1>
+              <h1 className="text-xl font-bold text-text-primary">Wrist Temperature Insights</h1>
               <p className="text-sm text-text-secondary">
-                {points.length > 0
-                  ? `${points.length} nights · correlations with HRV & sleep`
-                  : 'Wrist temp correlations'}
+                Nightly deviation from personal baseline · 30-day view
               </p>
             </div>
           </div>
@@ -124,11 +133,7 @@ export default async function TempInsightsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <TempInsightsClient
-          points={points}
-          hrv={hrv}
-          maxConsecElevated={maxConsecElevated}
-        />
+        <TemperatureInsightsClient data={data} />
       </main>
       <BottomNav />
     </div>
