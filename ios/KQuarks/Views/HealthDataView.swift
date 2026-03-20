@@ -1382,6 +1382,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: VILPAView()) {
+                                HStack {
+                                    Image(systemName: "bolt.heart.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("VILPA")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Vigorous Intermittent Lifestyle Activity — Stamatakis 2022 Nature Medicine: ≥3 bouts/day, 38% mortality reduction")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: BasalMetabolicRateView()) {
                                 HStack {
                                     Image(systemName: "flame.circle.fill")
