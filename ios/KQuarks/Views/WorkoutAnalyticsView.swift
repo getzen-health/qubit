@@ -181,6 +181,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutGoalTrackerView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
                                destination: AnyView(VO2MaxTrendView())),
+                AnalyticsEntry(title: "VO₂ Max vs Age Norms", subtitle: "Compare your VO₂ max against HUNT study age-group percentiles & fitness age", icon: "chart.bar.xaxis.ascending.badge.clock", color: .purple,
+                               destination: AnyView(VO2MaxAgeNormsView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
                                destination: AnyView(LactateThresholdView())),
                 AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
