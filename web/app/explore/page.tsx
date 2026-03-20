@@ -78,6 +78,7 @@ const SECTIONS: Section[] = [
       { label: 'Stroke Efficiency', desc: 'SWOLF score, distance-per-stroke & stroke rate analysis for pool swimmers', href: '/swimming/stroke', emoji: '🏊' },
       { label: 'Rowing Stroke Rate', desc: 'SPM trend, zone distribution (steady-state to sprint) & power science', href: '/rowing/stroke-rate', emoji: '🚣' },
       { label: 'Running Power', desc: 'Critical power, Z1–Z5 zones, normalized power & trend — Apple Watch Ultra / Stryd', href: '/running/power', emoji: '⚡' },
+      { label: 'Cycling Power', desc: 'FTP, Z1–Z7 power zones, power curve & TSS — compatible power meters (iOS 17+)', href: '/cycling/power', emoji: '🔋' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },
