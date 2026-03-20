@@ -84,6 +84,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CyclingProgressionView())),
                 AnalyticsEntry(title: "Cycling Cadence", subtitle: "RPM trend, zone distribution & optimal 85–100 RPM target — Apple Watch Ultra", icon: "speedometer", color: .green,
                                destination: AnyView(CyclingCadenceView())),
+                AnalyticsEntry(title: "Power-to-Weight", subtitle: "FTP W/kg ratio, British Cycling tier & weight impact simulator (iOS 17+)", icon: "bolt.fill", color: .yellow,
+                               destination: AnyView(PowerToWeightView())),
                 AnalyticsEntry(title: "Cycling Speed", subtitle: "Session avg & max speed, zone distribution & 90-day trend (iOS 17+)", icon: "gauge.with.needle.fill", color: .teal,
                                destination: AnyView(CyclingSpeedView())),
                 AnalyticsEntry(title: "Cycling Power", subtitle: "FTP, power zones (Z1–Z7), power curve & TSS — compatible power meters", icon: "bolt.circle.fill", color: .yellow,
