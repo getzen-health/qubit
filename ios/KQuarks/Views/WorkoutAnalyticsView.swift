@@ -223,6 +223,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CriticalSpeedView())),
                 AnalyticsEntry(title: "Running Streaks", subtitle: "Current & longest streak, 90-day activity heatmap & weekly frequency", icon: "flame.fill", color: .orange,
                                destination: AnyView(RunningStreakView())),
+                AnalyticsEntry(title: "Detraining", subtitle: "Training break detection, Mujika-Padilla VO₂ loss curve & retraining estimates", icon: "arrow.down.heart.fill", color: .red,
+                               destination: AnyView(DetrainingView())),
             ]
         ),
     ]

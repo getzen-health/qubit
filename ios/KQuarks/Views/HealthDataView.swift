@@ -1129,6 +1129,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: GaitAnalysisView()) {
+                                HStack {
+                                    Image(systemName: "figure.walk.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Gait Analysis")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Walking speed, step length, asymmetry & double support — passively measured")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: BasalMetabolicRateView()) {
                                 HStack {
                                     Image(systemName: "flame.circle.fill")

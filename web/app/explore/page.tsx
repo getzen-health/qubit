@@ -151,6 +151,8 @@ const SECTIONS: Section[] = [
       { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },
       { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
+      { label: 'Detraining', desc: 'Training break detection, Mujika-Padilla VO₂ loss curve & retraining time estimates', href: '/detraining', emoji: '📉' },
+      { label: 'Gait Analysis', desc: 'Walking speed, step length, asymmetry & double support — passively measured fall & longevity risk metric', href: '/gait', emoji: '🚶' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
