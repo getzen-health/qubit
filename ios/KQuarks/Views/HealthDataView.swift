@@ -184,6 +184,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SleepRegularityIndexView()) {
+                                HStack {
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Regularity Index")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Day-to-day sleep/wake consistency score — Phillips 2021 mortality predictor")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepChronotypeView()) {
                                 HStack {
                                     Image(systemName: "moon.circle.fill")
