@@ -26,6 +26,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WalkingProgressionView())),
                 AnalyticsEntry(title: "Yoga & Mind-Body", subtitle: "Session frequency, duration & practice type breakdown", icon: "figure.mind.and.body", color: .purple,
                                destination: AnyView(YogaAnalysisView())),
+                AnalyticsEntry(title: "Pilates & Barre", subtitle: "Pilates, barre, flexibility & core training — type mix & duration", icon: "figure.pilates", color: .purple,
+                               destination: AnyView(PilatesBarreView())),
                 AnalyticsEntry(title: "Mindful Minutes", subtitle: "Meditation streaks, session trends & time-of-day practice pattern", icon: "brain.head.profile", color: .purple,
                                destination: AnyView(MindfulMinutesView())),
                 AnalyticsEntry(title: "Stair Climbing", subtitle: "Session trends, kcal/min intensity & weekly volume", icon: "figure.stair.stepper", color: .orange,
