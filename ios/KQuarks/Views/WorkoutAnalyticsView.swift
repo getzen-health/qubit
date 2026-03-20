@@ -195,6 +195,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CircadianPerformanceView())),
                 AnalyticsEntry(title: "Interval Detector", subtitle: "Auto-detects interval structure from HR spread in HIIT & running — Buchheit & Laursen 2013", icon: "waveform.path.ecg.rectangle.fill", color: .orange,
                                destination: AnyView(IntervalDetectorView())),
+                AnalyticsEntry(title: "Exercise Snacks", subtitle: "Short ≤15-min workout sessions — Gillen 2016: 3×10 min equals 45 min continuous", icon: "bolt.circle.fill", color: .green,
+                               destination: AnyView(ExerciseSnacksView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
