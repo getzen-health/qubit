@@ -323,6 +323,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: MedicationTrackingView()) {
+                                HStack {
+                                    Image(systemName: "cross.case.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Medication Tracking")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("FHIR clinical medication records, dosage history & biomarker correlations")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: AlcoholTrackingView()) {
                                 HStack {
                                     Image(systemName: "wineglass.fill")
