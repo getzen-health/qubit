@@ -152,6 +152,7 @@ const SECTIONS: Section[] = [
       { label: 'Floors Climbed', desc: 'Daily stair climbing trend, 10-floor goal streak & cardiovascular evidence', href: '/floors/deep-dive', emoji: '🏗️' },
       { label: 'Standing Hours', desc: 'Daily stand hours, 12-hour goal streak, hourly pattern & sedentary science', href: '/standing', emoji: '🧍' },
       { label: '6-Min Walk Test', desc: 'Apple\'s estimated functional fitness distance — 90-day trend & age-group norms', href: '/six-minute-walk', emoji: '🚶' },
+      { label: 'Active Energy', desc: 'Move ring calories, weekly totals, day-of-week patterns & Harvard Alumni energy science', href: '/active-energy', emoji: '🔥' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },

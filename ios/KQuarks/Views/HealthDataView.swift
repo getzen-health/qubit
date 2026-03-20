@@ -975,6 +975,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: ActiveEnergyBudgetView()) {
+                                HStack {
+                                    Image(systemName: "flame.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Active Energy")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Move ring calories, weekly totals & day-of-week patterns")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivitySummaryView()) {
                                 HStack {
                                     Image(systemName: "chart.bar.fill")
