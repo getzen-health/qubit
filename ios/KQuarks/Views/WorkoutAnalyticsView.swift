@@ -145,6 +145,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(EnergySystemBalanceView())),
                 AnalyticsEntry(title: "HRV Session Recommender", subtitle: "Today's readiness zone & session suggestions based on HRV vs baseline", icon: "brain.head.profile", color: .green,
                                destination: AnyView(HRVSessionRecommenderView())),
+                AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
+                               destination: AnyView(VO2MaxTrendView())),
             ]
         ),
     ]
