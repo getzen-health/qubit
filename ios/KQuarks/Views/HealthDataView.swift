@@ -679,6 +679,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // VO₂max Science
+                            NavigationLink(destination: VO2MaxScienceView()) {
+                                HStack {
+                                    Image(systemName: "lungs.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("VO₂max Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Physiology, longevity research, training protocols & Apple Watch accuracy — Mandsager 2018: elite fitness = 5× lower mortality")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // VO2 Max / Cardio Fitness
                             NavigationLink(destination: VO2MaxView()) {
                                 HStack {
