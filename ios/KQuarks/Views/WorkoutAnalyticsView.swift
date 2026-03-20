@@ -70,6 +70,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(BoxingView())),
                 AnalyticsEntry(title: "Wrestling", subtitle: "Takedown mechanics, mat conditioning & weight management — Yoon 2002: match HR 175–190 bpm; blood lactate 8–14 mmol/L; Fogelholm 1994: 5% BW dehydration reduces anaerobic power 9.5%; cauliflower ear prevention", icon: "figure.wrestling", color: .indigo,
                                destination: AnyView(WrestlingView())),
+                AnalyticsEntry(title: "Jump Rope Science", subtitle: "Metabolic demand, neuromotor coordination & athlete applications — Baker 1999: 120 RPM = 11–12 METs (running 8 mph); Ozer 2011: 22–30% coordination improvement vs running", icon: "figure.jumprope", color: .cyan,
+                               destination: AnyView(JumpRopeScienceView())),
                 AnalyticsEntry(title: "Jump Rope", subtitle: "Skipping sessions, kcal/min intensity & weekly volume", icon: "figure.jumprope", color: .cyan,
                                destination: AnyView(JumpRopeView())),
                 AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
