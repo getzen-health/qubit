@@ -155,6 +155,7 @@ const SECTIONS: Section[] = [
       { label: 'Resting HR Deep Dive', desc: '12-month RHR trend, AHA fitness classification & day-of-week pattern', href: '/heartrate/resting/deep-dive', emoji: '❤️' },
       { label: 'Sleep Architecture', desc: 'REM, Core & Deep stage breakdown, efficiency & 30-night trends', href: '/sleep/architecture', emoji: '🌙' },
       { label: 'Workout Goals', desc: 'Weekly session target, goal streak & sport breakdown over 13 weeks', href: '/workouts/goals', emoji: '🏆' },
+      { label: 'Cardio Fitness Trajectory', desc: 'VO₂ max rate of change, 6-month projection & adaptation science', href: '/vo2max/trajectory', emoji: '📈' },
       { label: 'VO₂ Max vs Age Norms', desc: 'Compare VO₂ max against HUNT study age-group percentiles & fitness age estimate', href: '/vo2max/norms', emoji: '🫁' },
       { label: 'Cycle-Synced Training', desc: 'Current menstrual phase, science-backed training tips & performance by phase', href: '/cycle/training', emoji: '🌸' },
       { label: 'Breathing Rate', desc: '30-day trend, baseline comparison & illness signal detection', href: '/respiratory/deep-dive', emoji: '🌬️' },
