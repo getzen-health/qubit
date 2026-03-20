@@ -201,6 +201,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WorkoutGoalTrackerView())),
                 AnalyticsEntry(title: "Cycle-Synced Training", subtitle: "Current phase, training tips & performance by menstrual cycle phase", icon: "figure.run.circle.fill", color: .pink,
                                destination: AnyView(CycleTrainingView())),
+                AnalyticsEntry(title: "PAI Score", subtitle: "NTNU-validated weekly fitness score — time in HR zones vs 100 PAI longevity target", icon: "waveform.path.ecg.rectangle.fill", color: .green,
+                               destination: AnyView(PAIScoreView())),
                 AnalyticsEntry(title: "Cardio Fitness Trajectory", subtitle: "VO₂ max rate of change, 6-month projection & adaptation benchmarks", icon: "chart.line.uptrend.xyaxis.circle.fill", color: .purple,
                                destination: AnyView(CardioFitnessTrajectoryView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
