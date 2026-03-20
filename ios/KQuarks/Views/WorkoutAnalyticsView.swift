@@ -94,6 +94,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StepAerobicsView())),
                 AnalyticsEntry(title: "Table Tennis", subtitle: "Match intensity, rally physics & reaction time — Zagatto 2010: match VO₂ 45–65% with bursts to 85%; Yuza 1992: elite reaction time 250–300 ms — 25% faster than untrained", icon: "figure.table.tennis", color: .blue,
                                destination: AnyView(TableTennisView())),
+                AnalyticsEntry(title: "Cricket", subtitle: "Bowling workload, fielding intensity & batting demand — Petersen 2010: fast bowlers produce 6–9× BW GRF; Duffield 2008: T20 fielding averages 80–85% HRmax", icon: "figure.cricket", color: .green,
+                               destination: AnyView(CricketView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
