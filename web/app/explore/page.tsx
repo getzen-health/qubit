@@ -65,6 +65,8 @@ const SECTIONS: Section[] = [
     title: 'Workouts',
     features: [
       { label: 'All Workouts', desc: 'Complete workout log and stats', href: '/workouts', emoji: '🏋️' },
+      { label: 'Walking Science', desc: 'Step count health outcomes, gait biomechanics, cognitive benefits & optimal walking protocols — Paluch 2021 JAMA 7k steps, Studenski 2011 gait speed vital sign, Morris 1953 the original busmen study', href: '/walking-science', emoji: '🔬' },
+      { label: 'Running Science', desc: 'Biomechanics, VO₂max adaptations, race physiology & injury prevention — Saunders 2004 RE, Heiderscheit 2011 cadence, Seiler 2010 80/20 polarization, Coyle 2007 LT', href: '/running-science', emoji: '🔬' },
       { label: 'Running', desc: 'Pace trends, distance, and VDOT', href: '/running', emoji: '🏃' },
       { label: 'Running Patterns', desc: 'DOW distribution, time-of-day, monthly distance & pace trend', href: '/running/patterns', emoji: '📊' },
       { label: 'Running Efficiency', desc: 'Aerobic efficiency index and HR vs pace trends', href: '/running/efficiency', emoji: '⚡' },

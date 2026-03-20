@@ -18,6 +18,8 @@ struct WorkoutAnalyticsView: View {
         (
             header: "Sport Analysis",
             entries: [
+                AnalyticsEntry(title: "Walking Science", subtitle: "Step count health outcomes, gait biomechanics, cognitive benefits & optimal protocols — Paluch 2021 JAMA, Studenski 2011 JAMA", icon: "figure.walk.circle.fill", color: .green,
+                               destination: AnyView(WalkingScienceView())),
                 AnalyticsEntry(title: "Walking", subtitle: "Pace, distance & weekly volume", icon: "figure.walk", color: .green,
                                destination: AnyView(WalkingAnalysisView())),
                 AnalyticsEntry(title: "Walking Patterns", subtitle: "DOW distribution, time-of-day & monthly distance trend", icon: "chart.bar.xaxis", color: .green,
@@ -162,6 +164,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningCadenceView())),
                 AnalyticsEntry(title: "Running Biomechanics", subtitle: "Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (Apple Watch Ultra / S8+, iOS 16+)", icon: "figure.run.square.stack.fill", color: .purple,
                                destination: AnyView(RunningBiomechanicsView())),
+                AnalyticsEntry(title: "Running Science", subtitle: "Biomechanics, VO₂max adaptations, race physiology & injury prevention — Saunders 2004, Seiler 2010, Heiderscheit 2011", icon: "figure.run.circle.fill", color: .orange,
+                               destination: AnyView(RunningScienceView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
                                destination: AnyView(RunningAnalysisView())),
                 AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,
