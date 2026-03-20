@@ -102,6 +102,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SquashView())),
                 AnalyticsEntry(title: "Archery", subtitle: "Cardiac timing, shoulder isometric load & breath control — Shing 2015: elite archers time release to cardiac diastole; Clarys 1990: posterior deltoid at 65–80% MVC per draw", icon: "figure.archery", color: .indigo,
                                destination: AnyView(ArcheryView())),
+                AnalyticsEntry(title: "Tai Chi", subtitle: "Balance, blood pressure & neurological benefits — Wolf 1996: 47.5% fall risk reduction; Yeh 2011: −15.6 mmHg SBP; Li 2012 (NEJM): superior to resistance training for Parkinson's balance", icon: "figure.taichi", color: .teal,
+                               destination: AnyView(TaiChiView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
