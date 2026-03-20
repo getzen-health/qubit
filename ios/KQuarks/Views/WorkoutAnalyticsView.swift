@@ -76,6 +76,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(AustralianFootballView())),
                 AnalyticsEntry(title: "Hockey & Lacrosse", subtitle: "Ice hockey, field hockey & lacrosse game load — Quinney 2008: 170–185 bpm during shifts, Spencer 2005: 9–12 km per field hockey game", icon: "figure.hockey", color: .cyan,
                                destination: AnyView(HockeyAnalysisView())),
+                AnalyticsEntry(title: "Lacrosse", subtitle: "Shot physics, cradling centripetal mechanics & game load — Kelly 2012: 5.5–7.5 km/game; Goss 2013: MLL shot 130–160 km/h; Barber 2017: shoulder = 26% of injuries; box vs. field lacrosse intensity differences", icon: "figure.lacrosse", color: .purple,
+                               destination: AnyView(LacrosseView())),
                 AnalyticsEntry(title: "Track & Field", subtitle: "Sprint vs. distance breakdown, energy systems & VO₂max — Haugen 2019: elite 100m ground contact ≤80 ms, Jones & Carter 2000: energy system split by event", icon: "figure.run.circle", color: .orange,
                                destination: AnyView(TrackAndFieldView())),
                 AnalyticsEntry(title: "Fitness Gaming", subtitle: "Exergaming: Ring Fit, Beat Saber, VR fitness — Peng 2011: 2–3× resting expenditure; Staiano 2011: 30–50% lower dropout vs. traditional exercise", icon: "gamecontroller.fill", color: .purple,
