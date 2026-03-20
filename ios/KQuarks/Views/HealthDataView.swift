@@ -1155,6 +1155,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: ExerciseBloodPressureView()) {
+                                HStack {
+                                    Image(systemName: "heart.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Exercise & Blood Pressure")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Does your training lower your BP? — Cornelissen 2013: aerobic exercise reduces SBP by 3.5 mmHg")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
