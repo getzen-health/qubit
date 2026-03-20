@@ -204,6 +204,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HIITPatternView())),
                 AnalyticsEntry(title: "HIIT Progression", subtitle: "12-month frequency, duration trend & calorie burn", icon: "chart.line.uptrend.xyaxis", color: .pink,
                                destination: AnyView(HIITProgressionView())),
+                AnalyticsEntry(title: "Rowing Science", subtitle: "Stroke biomechanics, VO₂ demands & ergometer training science — Hagerman 1984: 98–100% VO₂max at race pace; Kleshnev 2016: legs 55–65% of power output; Hosea 1990: 72% of elite rowers report LBP; Steinacker 1993: rowing engages 86% of total muscle mass", icon: "figure.rowing", color: .cyan,
+                               destination: AnyView(RowingScienceView())),
                 AnalyticsEntry(title: "Rowing", subtitle: "500m splits, distance & HR", icon: "figure.rowing", color: .cyan,
                                destination: AnyView(RowingAnalysisView())),
                 AnalyticsEntry(title: "Rowing Patterns", subtitle: "DOW distribution, time-of-day & 500m split trend", icon: "chart.bar.xaxis", color: .pink,

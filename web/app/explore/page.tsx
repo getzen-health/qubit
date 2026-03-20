@@ -95,6 +95,7 @@ const SECTIONS: Section[] = [
       { label: 'HIIT', desc: 'Intensity, frequency, and recovery impact', href: '/hiit', emoji: '⚡' },
       { label: 'HIIT Patterns', desc: 'DOW distribution, time-of-day, weekly volume & heart rate trends', href: '/hiit/patterns', emoji: '📊' },
       { label: 'HIIT Progression', desc: '12-month session frequency, duration trend, calorie burn & quarterly breakdown', href: '/hiit/progression', emoji: '📈' },
+      { label: 'Rowing Science', desc: 'Stroke biomechanics, VO₂ demands & ergometer training science — Hagerman 1984: 98–100% VO₂max at race pace; Kleshnev 2016: legs 55–65% of power output; Steinacker 1993: rowing engages 86% of total muscle mass; Hosea 1990: 72% of elite rowers report LBP', href: '/rowing-science', emoji: '🚣' },
       { label: 'Rowing', desc: '500m splits, watts, and distance', href: '/rowing', emoji: '🚣' },
       { label: 'Rowing Patterns', desc: 'DOW distribution, time-of-day, monthly distance & 500m split trend', href: '/rowing/patterns', emoji: '📊' },
       { label: 'Rowing Progression', desc: '12-month 500m split trend, distance growth & first vs last 30 days', href: '/rowing/progression', emoji: '📈' },
