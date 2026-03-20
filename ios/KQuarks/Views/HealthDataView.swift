@@ -867,6 +867,33 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .activity {
+                            NavigationLink(destination: ExerciseMinutesView()) {
+                                HStack {
+                                    Image(systemName: "figure.run")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Exercise Minutes")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("WHO 150 min/week goal progress & streak history")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivitySummaryView()) {
                                 HStack {
                                     Image(systemName: "chart.bar.fill")

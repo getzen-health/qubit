@@ -148,6 +148,7 @@ const SECTIONS: Section[] = [
       { label: 'Pilates & Barre', desc: 'Pilates, barre, flexibility & core training — type mix, duration & mind-body benefits', href: '/pilates', emoji: '🧘' },
       { label: 'Temperature Insights', desc: 'Illness signal detection, cycle correlation & 30-day wrist temperature deviation trend', href: '/temperature/insights', emoji: '🌡️' },
       { label: 'Daily Readiness', desc: 'Composite 0–100 score from HRV, resting HR & sleep — training recommendations by zone', href: '/ready', emoji: '🎯' },
+      { label: 'Exercise Minutes', desc: 'WHO 150 min/week goal tracker — 52-week history, streak & day-of-week pattern', href: '/exercise-minutes', emoji: '🏃' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
