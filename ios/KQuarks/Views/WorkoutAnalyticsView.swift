@@ -263,6 +263,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(VO2MaxAgeNormsView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
                                destination: AnyView(LactateThresholdView())),
+                AnalyticsEntry(title: "Heat Acclimatization", subtitle: "Summer training adaptation — Lorenzo 2010: 10-day heat training +4.5% plasma volume, +6.4% VO₂max", icon: "thermometer.sun.fill", color: .orange,
+                               destination: AnyView(HeatAcclimatizationView())),
                 AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
                                destination: AnyView(TrainingPolarizationView())),
                 AnalyticsEntry(title: "Critical Speed", subtitle: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", icon: "gauge.with.dots.needle.67percent", color: .teal,
