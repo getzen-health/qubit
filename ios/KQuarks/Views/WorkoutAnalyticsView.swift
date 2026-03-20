@@ -203,6 +203,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(ExerciseSnacksView())),
                 AnalyticsEntry(title: "Weekly Balance", subtitle: "4-dimension scorecard: cardio + strength + flexibility + recovery — WHO 2020, ACSM 2022", icon: "4.square.fill", color: .teal,
                                destination: AnyView(WeeklyBalanceView())),
+                AnalyticsEntry(title: "Training Load (CTL/ATL)", subtitle: "Bannister 1991 fitness-fatigue model: CTL fitness base, ATL fatigue, TSB form — Performance Management Chart", icon: "chart.line.uptrend.xyaxis.circle.fill", color: .blue,
+                               destination: AnyView(ChronicTrainingLoadView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,

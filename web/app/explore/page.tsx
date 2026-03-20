@@ -178,6 +178,7 @@ const SECTIONS: Section[] = [
       { label: 'Exercise Snacks', desc: 'Short ≤15-min workout sessions — Gillen 2016 MSSE: 3×10 min = same VO₂ benefit as 45 min continuous', href: '/exercise-snacks', emoji: '⚡' },
       { label: 'Running Cadence', desc: 'Steps per minute trend, 165–175 spm optimal zone — Heiderscheit 2011: higher cadence reduces knee loading 20%', href: '/running/cadence', emoji: '🏃' },
       { label: 'Weekly Balance', desc: '4-dimension scorecard: cardio + strength + flexibility + recovery vs WHO 2020 & ACSM 2022 targets', href: '/weekly-balance', emoji: '⚖️' },
+      { label: 'Training Load (CTL/ATL)', desc: 'Bannister 1991 fitness-fatigue model: CTL fitness, ATL fatigue, TSB form — Performance Management Chart', href: '/training-load', emoji: '📈' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
