@@ -82,6 +82,7 @@ const SECTIONS: Section[] = [
       { label: 'Stair Speed', desc: 'Ascent & descent speed — validated fall risk indicator, passively captured by iPhone 8+', href: '/stair-speed', emoji: '🪜' },
       { label: 'UV Exposure', desc: 'Daily UV radiation (J/m²), WHO risk categories & Vitamin D synthesis science', href: '/uv-exposure', emoji: '☀️' },
       { label: 'Sleep Apnea', desc: 'AHI trend, severity classification (Normal/Mild/Moderate/Severe) & CPAP context — Apple Watch S9+', href: '/sleep/apnea', emoji: '😴' },
+      { label: 'Symptoms Log', desc: 'Manually-logged symptom history — fatigue, headache, chest pain, shortness of breath & more', href: '/symptoms', emoji: '🩺' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },

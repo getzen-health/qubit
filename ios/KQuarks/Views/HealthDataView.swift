@@ -1514,6 +1514,34 @@ struct HealthDataView: View {
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
+
+                            NavigationLink(destination: SymptomsLogView()) {
+                                HStack {
+                                    Image(systemName: "cross.case.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Symptoms Log")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("30-day log of logged symptoms with severity & patterns")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
