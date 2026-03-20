@@ -94,6 +94,7 @@ const SECTIONS: Section[] = [
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },
+      { label: 'HIIT Science', desc: 'Interval physiology, adaptations & protocols — Tabata 1996: 4 min = +14% VO₂max +28% anaerobic; Wisløff 2007: 4×4 min raises VO₂max 46% post-MI; Boutcher 2011: visceral fat −17%; Buchheit 2013: 90–95% HRmax = optimal zone', href: '/hiit-science', emoji: '⚡' },
       { label: 'HIIT', desc: 'Intensity, frequency, and recovery impact', href: '/hiit', emoji: '⚡' },
       { label: 'HIIT Patterns', desc: 'DOW distribution, time-of-day, weekly volume & heart rate trends', href: '/hiit/patterns', emoji: '📊' },
       { label: 'HIIT Progression', desc: '12-month session frequency, duration trend, calorie burn & quarterly breakdown', href: '/hiit/progression', emoji: '📈' },

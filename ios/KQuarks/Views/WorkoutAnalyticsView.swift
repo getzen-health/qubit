@@ -208,6 +208,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HikingProgressionView())),
                 AnalyticsEntry(title: "Elevation Analysis", subtitle: "GPS route elevation gain from runs & hikes — Minetti 2002: +6% grade costs 2× flat energy, Gimenez 2013: hilly runs cause 2–3× more muscle damage", icon: "mountain.2.fill", color: .orange,
                                destination: AnyView(ElevationAnalysisView())),
+                AnalyticsEntry(title: "HIIT Science", subtitle: "Intervals, physiology & protocols — Tabata 1996: 4 min = +14% VO₂max +28% anaerobic; Wisløff 2007: 4×4 = +46% VO₂max post-MI; Boutcher 2011: HIIT reduces visceral fat 17%; Buchheit 2013: 90–95% HRmax is the sweet spot", icon: "bolt.heart.fill", color: .pink,
+                               destination: AnyView(HIITScienceView())),
                 AnalyticsEntry(title: "HIIT", subtitle: "Peak HR, burn rate & intensity", icon: "bolt.heart.fill", color: .pink,
                                destination: AnyView(HIITAnalysisView())),
                 AnalyticsEntry(title: "HIIT Patterns", subtitle: "DOW distribution, time-of-day & weekly volume", icon: "chart.bar.xaxis", color: .yellow,
