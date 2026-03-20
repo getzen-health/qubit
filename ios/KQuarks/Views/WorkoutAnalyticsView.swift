@@ -133,6 +133,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HeartRateZonesView())),
                 AnalyticsEntry(title: "Zone Progression", subtitle: "Monthly Z1–Z5 evolution, polarization index & Seiler 80/20 trend", icon: "chart.bar.doc.horizontal", color: .purple,
                                destination: AnyView(HRZoneProgressionView())),
+                AnalyticsEntry(title: "Overtraining Warning", subtitle: "Composite OTS detector: HRV trend, RHR elevation, ACWR & sleep deficit", icon: "exclamationmark.triangle.fill", color: .red,
+                               destination: AnyView(OvertrainingWarningView())),
                 AnalyticsEntry(title: "Training Load", subtitle: "Acute:chronic ratio & fatigue", icon: "chart.bar.fill", color: .purple,
                                destination: AnyView(TrainingLoadView())),
                 AnalyticsEntry(title: "Running Power", subtitle: "Critical power, power zones (Z1–Z5), NP & trend — Apple Watch Ultra", icon: "bolt.fill", color: .orange,
