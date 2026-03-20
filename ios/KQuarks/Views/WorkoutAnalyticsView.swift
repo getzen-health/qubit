@@ -74,6 +74,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(OutdoorIndoorView())),
                 AnalyticsEntry(title: "Running Cadence", subtitle: "Steps per minute trend, optimal 165–175 spm target — Heiderscheit 2011 injury prevention science", icon: "figure.run.motion", color: .orange,
                                destination: AnyView(RunningCadenceView())),
+                AnalyticsEntry(title: "Running Biomechanics", subtitle: "Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (Apple Watch Ultra / S8+, iOS 16+)", icon: "figure.run.square.stack.fill", color: .purple,
+                               destination: AnyView(RunningBiomechanicsView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
                                destination: AnyView(RunningAnalysisView())),
                 AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,
