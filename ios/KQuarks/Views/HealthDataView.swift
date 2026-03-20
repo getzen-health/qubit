@@ -867,6 +867,33 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .activity {
+                            NavigationLink(destination: FlightsClimbedSummaryView()) {
+                                HStack {
+                                    Image(systemName: "figure.stair.stepper")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Floors Climbed")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Daily floors, 30-day trend & 10-floor goal streak")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ExerciseMinutesView()) {
                                 HStack {
                                     Image(systemName: "figure.run")
