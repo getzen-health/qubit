@@ -72,6 +72,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TennisAnalysisView())),
                 AnalyticsEntry(title: "Outdoor vs Indoor", subtitle: "Environment split by sport, monthly trend & preference", icon: "sun.and.horizon.fill", color: .yellow,
                                destination: AnyView(OutdoorIndoorView())),
+                AnalyticsEntry(title: "Running Cadence", subtitle: "Steps per minute trend, optimal 165–175 spm target — Heiderscheit 2011 injury prevention science", icon: "figure.run.motion", color: .orange,
+                               destination: AnyView(RunningCadenceView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
                                destination: AnyView(RunningAnalysisView())),
                 AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,

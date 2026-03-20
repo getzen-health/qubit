@@ -175,6 +175,7 @@ const SECTIONS: Section[] = [
       { label: 'Circadian Performance', desc: 'Peak training window from HR efficiency by time-of-day — Chtourou 2012, Kolbe 2019 circadian biology', href: '/circadian-performance', emoji: '🌞' },
       { label: 'Interval Detector', desc: 'Auto-detects interval structure from HR spread in HIIT & running — Buchheit & Laursen 2013 HIIT taxonomy', href: '/interval-detector', emoji: '📊' },
       { label: 'Exercise Snacks', desc: 'Short ≤15-min workout sessions — Gillen 2016 MSSE: 3×10 min = same VO₂ benefit as 45 min continuous', href: '/exercise-snacks', emoji: '⚡' },
+      { label: 'Running Cadence', desc: 'Steps per minute trend, 165–175 spm optimal zone — Heiderscheit 2011: higher cadence reduces knee loading 20%', href: '/running/cadence', emoji: '🏃' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
