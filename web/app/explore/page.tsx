@@ -170,6 +170,7 @@ const SECTIONS: Section[] = [
       { label: 'Social Jet Lag', desc: 'Weekday vs weekend sleep timing mismatch (MSFsc) — Roenneberg 2012, 33% obesity risk per hour', href: '/social-jet-lag', emoji: '✈️' },
       { label: 'Recovery Optimizer', desc: 'Per-session next-morning HRV & RHR recovery scoring by workout type — Buchheit 2014, Plews 2013', href: '/workout-recovery', emoji: '💚' },
       { label: 'Activity Fragmentation', desc: 'How broken-up your movement is throughout the day — Diaz 2017 JAMA active/sedentary transition index', href: '/activity-fragmentation', emoji: '🔀' },
+      { label: 'Training Age', desc: 'Years of consistent training — Bompa 2015 Novice/Intermediate/Advanced/Elite classification & sport history', href: '/training-age', emoji: '📅' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
