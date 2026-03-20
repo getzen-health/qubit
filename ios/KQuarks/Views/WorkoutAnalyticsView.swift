@@ -46,6 +46,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(MartialArtsView())),
                 AnalyticsEntry(title: "Jump Rope", subtitle: "Skipping sessions, kcal/min intensity & weekly volume", icon: "figure.jumprope", color: .cyan,
                                destination: AnyView(JumpRopeView())),
+                AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
+                               destination: AnyView(WinterSportsView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
