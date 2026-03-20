@@ -156,6 +156,7 @@ const SECTIONS: Section[] = [
       { label: 'Resting HR Deep Dive', desc: '12-month RHR trend, AHA fitness classification & day-of-week pattern', href: '/heartrate/resting/deep-dive', emoji: '❤️' },
       { label: 'Sleep Architecture', desc: 'REM, Core & Deep stage breakdown, efficiency & 30-night trends', href: '/sleep/architecture', emoji: '🌙' },
       { label: 'Workout Goals', desc: 'Weekly session target, goal streak & sport breakdown over 13 weeks', href: '/workouts/goals', emoji: '🏆' },
+      { label: "Athlete's Heart", desc: '12-month composite: RHR + HRV + VO₂ max adaptation progress & physiology timeline', href: '/athletes-heart', emoji: '❤️‍🔥' },
       { label: 'PAI Score', desc: 'NTNU weekly fitness score — time in HR zones vs 100 PAI longevity target', href: '/pai', emoji: '🏃' },
       { label: 'Running Pacing', desc: 'Negative splits, pacing consistency (CV) & within-run speed analysis', href: '/running/pacing', emoji: '⏱️' },
       { label: 'Cardio Fitness Trajectory', desc: 'VO₂ max rate of change, 6-month projection & adaptation science', href: '/vo2max/trajectory', emoji: '📈' },
