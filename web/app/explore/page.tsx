@@ -176,6 +176,7 @@ const SECTIONS: Section[] = [
       { label: 'Winter Sports', desc: 'Skiing, snowboarding, cross-country & ice skating — seasonal sport history', href: '/winter-sports', emoji: '⛷️' },
       { label: 'Cross-Country Skiing', desc: "World's highest VO₂max sport — Ingjer 1991: Dæhlie 96 mL/kg/min; Seiler 2009: 80/20 polarization model; Holmberg 2005: double-poling 500–700 W peak; Stray-Gundersen 1992: live-high-train-low boosts hemoglobin 5% in 4 weeks", href: '/cross-country-skiing', emoji: '⛷️' },
       { label: 'Water & Paddle Sports', desc: 'Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix', href: '/water-sports', emoji: '🏄' },
+      { label: 'Triathlon Science', desc: 'Multi-sport physiology, brick adaptation & race strategy — Hausswirth 1997: quad recruitment −8–15% in T2; Laursen 2012: optimal Ironman bike 68–72% FTP; Pfeiffer 2012: GI distress in 30–50% of Ironman athletes', href: '/triathlon-science', emoji: '🏊' },
       { label: 'Triathlon', desc: 'Swim/bike/run volume split, brick workout detection & race-type distribution target', href: '/triathlon', emoji: '🏊' },
       { label: 'Open Water Swimming', desc: 'OWS pace per 100m, distance trend & monthly volume', href: '/open-water', emoji: '🌊' },
       { label: 'Functional Strength', desc: 'CrossFit, calisthenics & Olympic lifting — intensity & weekly volume', href: '/functional-strength', emoji: '🏋️' },

@@ -84,6 +84,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SurfingView())),
                 AnalyticsEntry(title: "Diving Analytics", subtitle: "Underwater depth, water temperature & no-deco limits — Apple Watch Ultra", icon: "water.waves", color: .cyan,
                                destination: AnyView(DivingAnalyticsView())),
+                AnalyticsEntry(title: "Triathlon Science", subtitle: "Multi-sport physiology, brick adaptation & race strategy — Hausswirth 1997: quad recruitment drops 8–15% in first 2 km post-bike; Laursen 2012: optimal Ironman bike 68–72% FTP; Pfeiffer 2012: GI issues in 30–50% of Ironman athletes", icon: "sportscourt.fill", color: .blue,
+                               destination: AnyView(TriathlonScienceView())),
                 AnalyticsEntry(title: "Triathlon", subtitle: "Swim/bike/run volume split, brick workout detection & race-type distribution target", icon: "sportscourt.fill", color: .blue,
                                destination: AnyView(TriathlonView())),
                 AnalyticsEntry(title: "Open Water Swimming", subtitle: "OWS pace per 100m, distance trend & monthly volume", icon: "figure.pool.swim", color: .cyan,
