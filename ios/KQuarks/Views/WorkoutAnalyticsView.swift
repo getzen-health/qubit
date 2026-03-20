@@ -52,6 +52,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WaterSportsView())),
                 AnalyticsEntry(title: "Open Water Swimming", subtitle: "OWS pace per 100m, distance trend & monthly volume", icon: "figure.pool.swim", color: .cyan,
                                destination: AnyView(OpenWaterSwimmingView())),
+                AnalyticsEntry(title: "Functional Strength", subtitle: "CrossFit, calisthenics & Olympic lifting — intensity & weekly volume", icon: "figure.strengthtraining.functional", color: .orange,
+                               destination: AnyView(FunctionalStrengthView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
