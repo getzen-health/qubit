@@ -80,6 +80,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RockClimbingScienceView())),
                 AnalyticsEntry(title: "Rock Climbing", subtitle: "Session duration, calorie intensity & weekly climbing volume", icon: "figure.climbing", color: .brown,
                                destination: AnyView(RockClimbingView())),
+                AnalyticsEntry(title: "Volleyball Science", subtitle: "Jump biomechanics, energy systems & beach vs indoor science — Marques 2009: elite jump 80–90 cm; Forthomme 2005: spike IR velocity 4,500–5,000°/s; Lian 2005: patellar tendinopathy in 45% of elite players; Giatsis 2011: beach VB burns 30–40% more kcal/min", icon: "volleyball.fill", color: .yellow,
+                               destination: AnyView(VolleyballScienceView())),
                 AnalyticsEntry(title: "Volleyball", subtitle: "Session frequency, calorie burn & heart rate intensity", icon: "volleyball.fill", color: .yellow,
                                destination: AnyView(VolleyballAnalysisView())),
                 AnalyticsEntry(title: "Baseball & Softball", subtitle: "Game sessions, intermittent burst intensity & arm load — Escamilla & Andrews 2009 throwing biomechanics", icon: "figure.baseball", color: .blue,

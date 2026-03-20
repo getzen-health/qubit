@@ -159,6 +159,7 @@ const SECTIONS: Section[] = [
       { label: 'Training Polarization', desc: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", href: '/polarization', emoji: '🎯' },
       { label: 'Rock Climbing Science', desc: 'Finger physiology, movement biomechanics & injury prevention — Schweizer 2001: A2 pulley force 380–420 N; MacLeod 2007: elite flexor CSA 40% larger; Mermier 2000: technique accounts for 48% of performance; Bollen 1988: A2 rupture = 30% of climbing injuries', href: '/rock-climbing-science', emoji: '🧗' },
       { label: 'Rock Climbing', desc: 'Session duration, calorie intensity & weekly climbing volume', href: '/rock-climbing', emoji: '🧗' },
+      { label: 'Volleyball Science', desc: 'Jump biomechanics, energy systems & beach vs indoor science — Marques 2009: elite vertical 80–90 cm; Forthomme 2005: spike IR 4,500–5,000°/s; Lian 2005: 45% patellar tendinopathy prevalence; Giatsis 2011: beach burns 30–40% more kcal/min', href: '/volleyball-science', emoji: '🏐' },
       { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },
       { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
