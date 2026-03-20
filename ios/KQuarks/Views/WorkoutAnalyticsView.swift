@@ -90,6 +90,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HandballView())),
                 AnalyticsEntry(title: "Curling", subtitle: "Sweeping load, position-based kcal & delivery mechanics — Lanovaz 2001: sweepers reach 75–85% HRmax; Headrick 2007: lead position 600–800 kcal/game", icon: "figure.curling", color: .cyan,
                                destination: AnyView(CurlingView())),
+                AnalyticsEntry(title: "Step Aerobics", subtitle: "Intensity zones by kcal/min & VO₂max gains — Olson 1996: 8\" step = 65–75% VO₂max ≈ running 5–6 mph; Macfarlane 2012: +9% VO₂max in 8 weeks; Lossing 1997: 1.5–1.8× BW tibial force (vs 2–3× running)", icon: "figure.step.training", color: .orange,
+                               destination: AnyView(StepAerobicsView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,

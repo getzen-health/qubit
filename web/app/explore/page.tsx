@@ -211,6 +211,7 @@ const SECTIONS: Section[] = [
       { label: 'Badminton', desc: "World's fastest racquet sport — Phomsoupha 2015: shuttle 493 km/h; Gawin 2015: 1300–2000 direction changes/match; Liddle 1996: 85–90% HRmax during play", href: '/badminton', emoji: '🏸' },
       { label: 'Handball', desc: 'Match load, throwing biomechanics & jump performance — Michalsik 2013: 4–6 km at high intensity per game; Wagner 2011: 80–120 km/h throwing velocity at elite level', href: '/handball', emoji: '🤾' },
       { label: 'Curling', desc: 'Sweeping cardio, position-based kcal & delivery mechanics — Lanovaz 2001: sweepers reach 75–85% HRmax; lead position burns 600–800 kcal per game', href: '/curling', emoji: '🥌' },
+      { label: 'Step Aerobics', desc: 'Intensity zones by kcal/min & VO₂max gains — Olson 1996: 8" step = 65–75% VO₂max ≈ running 5–6 mph; Macfarlane 2012: +9% VO₂max in 8 weeks; lower impact than running', href: '/step-aerobics', emoji: '🪜' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
