@@ -140,6 +140,7 @@ const SECTIONS: Section[] = [
       { label: 'Stair Climbing Science', desc: 'Cardiovascular demand, muscle biomechanics, longevity research & training protocols — Ekelund 2019 BMJ: 4 flights/day = 17% lower CVD mortality; 8–14 METs = among highest per-minute exercise value available', href: '/stair-climbing-science', emoji: '🔬' },
       { label: 'Stair Climbing', desc: 'Session trends, kcal/min intensity & weekly climbing volume', href: '/stair-climbing', emoji: '🪜' },
       { label: 'Outdoor vs Indoor', desc: 'Environment split by sport, monthly trend & outdoor preference', href: '/outdoor-indoor', emoji: '☀️' },
+      { label: 'Elliptical Science', desc: 'Cardiovascular physiology, joint biomechanics & rehabilitation — Porcari 1998: elliptical at matched RPE produces identical VO₂ to treadmill with 45% less peak knee loading; Lu 2007: 63% reduction in hip contact force vs running', href: '/elliptical-science', emoji: '🔬' },
       { label: 'Elliptical', desc: 'Session volume, calorie burn intensity & duration trend', href: '/elliptical', emoji: '🏋️' },
       { label: 'Golf Science', desc: 'Swing biomechanics, walking load & mental performance — Hume 2005: X-factor 45–55° drives clubhead speed 160–180 km/h; Murray 2017: 18 holes = 8–12 km; Farahmand 2009: golfers live 5 years longer; Bois 2009: pre-shot routine reduces variance 35%', href: '/golf-science', emoji: '⛳' },
       { label: 'Golf', desc: 'Distance walked, calories & monthly round frequency', href: '/golf', emoji: '⛳' },

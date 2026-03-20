@@ -42,6 +42,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StairClimbingScienceView())),
                 AnalyticsEntry(title: "Stair Climbing", subtitle: "Session trends, kcal/min intensity & weekly volume", icon: "figure.stair.stepper", color: .orange,
                                destination: AnyView(StairClimbingView())),
+                AnalyticsEntry(title: "Elliptical Science", subtitle: "Cardiovascular physiology, joint biomechanics & rehab — Porcari 1998: elliptical at matched RPE = identical VO₂ to treadmill with 45% less knee loading", icon: "figure.elliptical", color: .cyan,
+                               destination: AnyView(EllipticalScienceView())),
                 AnalyticsEntry(title: "Elliptical", subtitle: "Session volume, calorie intensity & duration trend", icon: "figure.elliptical", color: .cyan,
                                destination: AnyView(EllipticalAnalysisView())),
                 AnalyticsEntry(title: "Golf Science", subtitle: "Swing biomechanics, walking load & mental performance — Hume 2005: X-factor 45–55° drives clubhead speed 160–180 km/h; Murray 2017: 18 holes = 8–12 km; Farahmand 2009: golfers live 5 years longer; McHardy 2007: LBP = 35% of all injuries", icon: "figure.golf", color: .green,
