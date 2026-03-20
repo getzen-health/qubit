@@ -128,6 +128,7 @@ const SECTIONS: Section[] = [
       { label: 'Handwashing', desc: 'Daily handwashing events detected by Apple Watch — streaks & time-of-day', href: '/handwashing', emoji: '🧼' },
       { label: 'Winter Sports', desc: 'Skiing, snowboarding, cross-country & ice skating — seasonal sport history', href: '/winter-sports', emoji: '⛷️' },
       { label: 'Water & Paddle Sports', desc: 'Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix', href: '/water-sports', emoji: '🏄' },
+      { label: 'Open Water Swimming', desc: 'OWS pace per 100m, distance trend & monthly volume', href: '/open-water', emoji: '🌊' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
