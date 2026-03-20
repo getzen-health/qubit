@@ -177,6 +177,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HRVDeepDiveView())),
                 AnalyticsEntry(title: "Resting HR Deep Dive", subtitle: "12-month RHR trend, fitness classification & day-of-week pattern", icon: "heart.fill", color: .red,
                                destination: AnyView(RestingHRDeepDiveView())),
+                AnalyticsEntry(title: "Workout Goals", subtitle: "Weekly session target, goal streak & sport breakdown over 13 weeks", icon: "trophy.fill", color: .yellow,
+                               destination: AnyView(WorkoutGoalTrackerView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
                                destination: AnyView(VO2MaxTrendView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
