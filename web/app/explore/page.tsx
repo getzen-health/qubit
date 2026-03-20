@@ -41,6 +41,7 @@ const SECTIONS: Section[] = [
       { label: 'Cardio Health', desc: 'HRV + RHR + VO₂ Max + HR Recovery combined overview', href: '/heartrate/cardio', emoji: '🫀' },
       { label: 'HRR Science', desc: 'Heart rate recovery physiology, vagal reactivation, mortality research & training protocols — Cole 1999 NEJM: HRR ≤12 bpm = 4× higher 6-year mortality; Imai 1994 Lancet: vagal reactivation mechanism', href: '/hrr-science', emoji: '🔬' },
       { label: 'HR Recovery', desc: 'Post-workout HR drop rate & fitness classification', href: '/heartrate/recovery', emoji: '📉' },
+      { label: 'AFib Science', desc: 'AFib physiology, ECG accuracy, stroke risk (CHA₂DS₂-VASc), treatment options & Apple Watch screening — Perez 2019 NEJM Apple Heart Study (419k participants); 84% PPV for AFib notification', href: '/afib-science', emoji: '🔬' },
       { label: 'Cardiac Events', desc: 'AFib, high, and low heart rate alerts', href: '/cardiac', emoji: '⚡' },
       { label: 'AFib Burden', desc: 'Daily AFib burden %, weekly trend & stroke risk context (iOS 16+)', href: '/afib-burden', emoji: '🫀' },
       { label: 'HR Reserve', desc: 'Karvonen zones, 90-day HRR trend & fitness classification', href: '/heartrate/reserve', emoji: '💜' },

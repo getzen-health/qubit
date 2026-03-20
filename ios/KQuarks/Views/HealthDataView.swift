@@ -1259,6 +1259,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // AFib Science
+                            NavigationLink(destination: AFibScienceView()) {
+                                HStack {
+                                    Image(systemName: "waveform.path.ecg.rectangle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("AFib Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("AFib physiology, ECG accuracy, stroke risk (CHA₂DS₂-VASc), treatment & Apple Watch FDA-cleared screening — Perez 2019 NEJM Apple Heart Study")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Cardiac Events (AFib, high HR, low HR)
                             NavigationLink(destination: CardiacEventsView()) {
                                 HStack {
