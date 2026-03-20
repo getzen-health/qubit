@@ -92,6 +92,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CurlingView())),
                 AnalyticsEntry(title: "Step Aerobics", subtitle: "Intensity zones by kcal/min & VO₂max gains — Olson 1996: 8\" step = 65–75% VO₂max ≈ running 5–6 mph; Macfarlane 2012: +9% VO₂max in 8 weeks; Lossing 1997: 1.5–1.8× BW tibial force (vs 2–3× running)", icon: "figure.step.training", color: .orange,
                                destination: AnyView(StepAerobicsView())),
+                AnalyticsEntry(title: "Table Tennis", subtitle: "Match intensity, rally physics & reaction time — Zagatto 2010: match VO₂ 45–65% with bursts to 85%; Yuza 1992: elite reaction time 250–300 ms — 25% faster than untrained", icon: "figure.table.tennis", color: .blue,
+                               destination: AnyView(TableTennisView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
