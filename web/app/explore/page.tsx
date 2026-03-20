@@ -40,6 +40,7 @@ const SECTIONS: Section[] = [
       { label: 'Cardio Health', desc: 'HRV + RHR + VO₂ Max + HR Recovery combined overview', href: '/heartrate/cardio', emoji: '🫀' },
       { label: 'HR Recovery', desc: 'Post-workout HR drop rate & fitness classification', href: '/heartrate/recovery', emoji: '📉' },
       { label: 'Cardiac Events', desc: 'AFib, high, and low heart rate alerts', href: '/cardiac', emoji: '⚡' },
+      { label: 'AFib Burden', desc: 'Daily AFib burden %, weekly trend & stroke risk context (iOS 16+)', href: '/afib-burden', emoji: '🫀' },
       { label: 'HR Reserve', desc: 'Karvonen zones, 90-day HRR trend & fitness classification', href: '/heartrate/reserve', emoji: '💜' },
     ],
   },
