@@ -189,6 +189,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Audio Exposure
+                            NavigationLink(destination: AudioExposureView()) {
+                                HStack {
+                                    Image(systemName: "ear.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Audio Exposure")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Environmental noise & headphone levels — WHO guidelines")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Glucose (CGM)
                             NavigationLink(destination: BloodGlucoseView()) {
                                 HStack {
