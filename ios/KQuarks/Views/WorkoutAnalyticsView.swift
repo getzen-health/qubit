@@ -225,6 +225,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningStreakView())),
                 AnalyticsEntry(title: "Detraining", subtitle: "Training break detection, Mujika-Padilla VO₂ loss curve & retraining estimates", icon: "arrow.down.heart.fill", color: .red,
                                destination: AnyView(DetrainingView())),
+                AnalyticsEntry(title: "State of Mind", subtitle: "Mood valence trend, emotional labels & life-area associations (iOS 18+)", icon: "heart.text.square.fill", color: .pink,
+                               destination: AnyView(StateOfMindView())),
             ]
         ),
     ]
