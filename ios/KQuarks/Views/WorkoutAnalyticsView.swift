@@ -54,6 +54,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WaterSportsView())),
                 AnalyticsEntry(title: "Diving Analytics", subtitle: "Underwater depth, water temperature & no-deco limits — Apple Watch Ultra", icon: "water.waves", color: .cyan,
                                destination: AnyView(DivingAnalyticsView())),
+                AnalyticsEntry(title: "Triathlon", subtitle: "Swim/bike/run volume split, brick workout detection & race-type distribution target", icon: "sportscourt.fill", color: .blue,
+                               destination: AnyView(TriathlonView())),
                 AnalyticsEntry(title: "Open Water Swimming", subtitle: "OWS pace per 100m, distance trend & monthly volume", icon: "figure.pool.swim", color: .cyan,
                                destination: AnyView(OpenWaterSwimmingView())),
                 AnalyticsEntry(title: "Functional Strength", subtitle: "CrossFit, calisthenics & Olympic lifting — intensity & weekly volume", icon: "figure.strengthtraining.functional", color: .orange,
