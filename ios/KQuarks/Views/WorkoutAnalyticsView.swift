@@ -84,6 +84,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(FencingView())),
                 AnalyticsEntry(title: "Gymnastics", subtitle: "Strength standards, injury prevention & energy systems — Prassas 2006: floor 80% anaerobic; Naughton 2000: gymnastics increases BMD 10–30% above controls", icon: "figure.gymnastics", color: .purple,
                                destination: AnyView(GymnasticsView())),
+                AnalyticsEntry(title: "Badminton", subtitle: "World's fastest racquet sport — Phomsoupha 2015: shuttle 493 km/h; Gawin 2015: 1300–2000 direction changes/match; Liddle 1996: 85–90% HRmax average", icon: "figure.badminton", color: .red,
+                               destination: AnyView(BadmintonView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
