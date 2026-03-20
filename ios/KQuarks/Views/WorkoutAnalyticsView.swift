@@ -151,6 +151,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HRVSessionRecommenderView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
                                destination: AnyView(VO2MaxTrendView())),
+                AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
+                               destination: AnyView(LactateThresholdView())),
             ]
         ),
     ]
