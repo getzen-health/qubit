@@ -38,6 +38,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(GolfAnalysisView())),
                 AnalyticsEntry(title: "Soccer", subtitle: "Match distance, calorie intensity & monthly session frequency", icon: "soccerball", color: .green,
                                destination: AnyView(SoccerAnalysisView())),
+                AnalyticsEntry(title: "Soccer Science Deep Dive", subtitle: "GPS demands, positional profiles & heading brain health — Bradley 2009: 30–60 sprints/game; Di Salvo 2007: box-to-box midfielders 12.8 km/game; Lipton 2013: >1,000 headers/year linked to impaired memory", icon: "soccerball.inverse", color: .green,
+                               destination: AnyView(SoccerScienceView())),
                 AnalyticsEntry(title: "Basketball", subtitle: "Session history, calorie burn & weekly volume", icon: "basketball.fill", color: .orange,
                                destination: AnyView(BasketballAnalysisView())),
                 AnalyticsEntry(title: "Dance & Aerobics", subtitle: "Dance, social dance & step training sessions — frequency & calorie trends", icon: "music.note", color: .pink,

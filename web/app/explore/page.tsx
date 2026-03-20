@@ -134,6 +134,7 @@ const SECTIONS: Section[] = [
       { label: 'VO₂ Max Trend', desc: 'Apple Watch VO₂ max estimates, fitness category & 12-month progression', href: '/vo2max', emoji: '🫁' },
       { label: 'Mindful Minutes', desc: 'Meditation streaks, weekly trend & time-of-day practice pattern', href: '/mindful', emoji: '🧘' },
       { label: 'Soccer', desc: 'Match distance, calorie intensity & monthly session frequency', href: '/soccer', emoji: '⚽' },
+      { label: 'Soccer Science Deep Dive', desc: 'GPS demands, positional profiles & heading brain health — Bradley 2009: 30–60 sprints/game; Di Salvo 2007: midfielders 12.8 km/game; Lipton 2013: >1,000 headers/year linked to impaired memory; FIFA 11+ reduces ACL 50%', href: '/soccer-science', emoji: '⚽' },
       { label: 'Lactate Threshold', desc: 'Estimated LT1 & LT2 from run data — training zones & HR-pace scatter', href: '/lactate', emoji: '🔬' },
       { label: 'Basketball', desc: 'Session history, calorie burn & weekly volume', href: '/basketball', emoji: '🏀' },
       { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },
