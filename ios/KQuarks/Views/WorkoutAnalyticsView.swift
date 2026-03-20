@@ -72,6 +72,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RugbyAnalysisView())),
                 AnalyticsEntry(title: "American Football", subtitle: "Positional demands, concussion science & explosive performance — Brechue 2010: NFL Combine data by position; McKee 2023: CTE in 110/111 donated NFL brains; Mihalik 2011: neck strength reduces angular acceleration 20–33%", icon: "football.fill", color: .brown,
                                destination: AnyView(AmericanFootballView())),
+                AnalyticsEntry(title: "Australian Football (AFL)", subtitle: "World's most demanding team sport — Coutts 2010: midfielders run 16–18 km/game; Gastin 2013: 88–90% aerobic; Ball 2008: punt kick hip rotation 570–620°/s; Orchard 2013: hamstring = most common injury 7.4/club/season", icon: "soccerball.inverse", color: .red,
+                               destination: AnyView(AustralianFootballView())),
                 AnalyticsEntry(title: "Hockey & Lacrosse", subtitle: "Ice hockey, field hockey & lacrosse game load — Quinney 2008: 170–185 bpm during shifts, Spencer 2005: 9–12 km per field hockey game", icon: "figure.hockey", color: .cyan,
                                destination: AnyView(HockeyAnalysisView())),
                 AnalyticsEntry(title: "Track & Field", subtitle: "Sprint vs. distance breakdown, energy systems & VO₂max — Haugen 2019: elite 100m ground contact ≤80 ms, Jones & Carter 2000: energy system split by event", icon: "figure.run.circle", color: .orange,
