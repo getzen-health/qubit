@@ -164,6 +164,7 @@ const SECTIONS: Section[] = [
       { label: 'Medication Tracking', desc: 'FHIR clinical medication records, dosage history & HRV/RHR biomarker correlations (iOS 12+)', href: '/medications', emoji: '💊' },
       { label: 'Sleep Regularity Index', desc: 'Day-to-day sleep/wake consistency — Phillips 2021 mortality predictor, 60-night SRI trend', href: '/sleep/regularity', emoji: '🌙' },
       { label: 'Fall Risk Assessment', desc: 'STEADI gait score: gait speed + steadiness + double support + asymmetry + stair speed composite', href: '/fall-risk', emoji: '🛡️' },
+      { label: 'Biological Age', desc: 'Multi-biomarker age: HRV age + cardiovascular age + aerobic age + gait age — Levine 2018 PhenoAge', href: '/biological-age', emoji: '🧬' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },

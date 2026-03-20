@@ -183,6 +183,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(InjuryRiskView())),
                 AnalyticsEntry(title: "Fitness Age", subtitle: "VO₂ max-based biological fitness age vs chronological age", icon: "figure.run.circle.fill", color: .indigo,
                                destination: AnyView(FitnessAgeView())),
+                AnalyticsEntry(title: "Biological Age", subtitle: "Multi-biomarker age: HRV + RHR + VO₂ + gait speed — Levine 2018 PhenoAge methodology", icon: "dna", color: .teal,
+                               destination: AnyView(BiologicalAgeView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
