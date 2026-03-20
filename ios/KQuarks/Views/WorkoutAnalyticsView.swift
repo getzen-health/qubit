@@ -80,6 +80,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WheelchairFitnessView())),
                 AnalyticsEntry(title: "Handcycling", subtitle: "Upper-body aerobic zones & efficiency — Hettinga 2010: recumbent handcycling achieves 85–95% of upright cycling VO₂; Fischer 2014: 12-week training → VO₂peak +16%", icon: "figure.hand.cycling", color: .cyan,
                                destination: AnyView(HandcyclingView())),
+                AnalyticsEntry(title: "Fencing", subtitle: "Explosive bout analysis, tournament load & weapon demands — Turner 2014: 30–50 actions/bout at 80–85% HRmax; Roi 2008: lunge = 2× bodyweight GRF in 0.5–1.5 s", icon: "figure.fencing", color: .red,
+                               destination: AnyView(FencingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
