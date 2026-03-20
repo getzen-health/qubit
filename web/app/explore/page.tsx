@@ -24,6 +24,7 @@ const SECTIONS: Section[] = [
     features: [
       { label: 'Heart Rate', desc: 'Resting HR trends and daily averages', href: '/heartrate', emoji: '❤️' },
       { label: 'Daily HR Pattern', desc: '24-hour circadian heart rate rhythm', href: '/heartrate/patterns', emoji: '🕐' },
+      { label: 'HRV Science', desc: 'Autonomic physiology, health outcomes, HRV-guided training & Apple Watch accuracy — Plews 2013: 7-day rolling avg r=0.72 with performance; Buchheit 2014: HRV-guided training improves VO₂max 85% more than calendar-based', href: '/hrv-science', emoji: '🔬' },
       { label: 'HRV Analysis', desc: 'Variability trends, baselines, and recovery', href: '/hrv', emoji: '💗' },
       { label: 'HRV Calendar', desc: '365-day recovery heatmap vs baseline', href: '/hrv/calendar', emoji: '📆' },
       { label: 'HRV Patterns', desc: 'DOW trends, sleep correlation, monthly progression & zone distribution', href: '/hrv/patterns', emoji: '📊' },
@@ -135,6 +136,7 @@ const SECTIONS: Section[] = [
       { label: 'Yoga & Mind-Body', desc: 'Session frequency, duration, type breakdown & parasympathetic benefit', href: '/yoga', emoji: '🧘' },
       { label: 'Race Goal Planner', desc: '16-week countdown & progressive mileage plan to your target race', href: '/race-planner', emoji: '🏁' },
       { label: 'Walking Heart Rate', desc: 'Passive walking HR as a daily fitness indicator — trend & fitness level', href: '/heartrate/walking', emoji: '🚶‍♂️' },
+      { label: 'Stair Climbing Science', desc: 'Cardiovascular demand, muscle biomechanics, longevity research & training protocols — Ekelund 2019 BMJ: 4 flights/day = 17% lower CVD mortality; 8–14 METs = among highest per-minute exercise value available', href: '/stair-climbing-science', emoji: '🔬' },
       { label: 'Stair Climbing', desc: 'Session trends, kcal/min intensity & weekly climbing volume', href: '/stair-climbing', emoji: '🪜' },
       { label: 'Outdoor vs Indoor', desc: 'Environment split by sport, monthly trend & outdoor preference', href: '/outdoor-indoor', emoji: '☀️' },
       { label: 'Elliptical', desc: 'Session volume, calorie burn intensity & duration trend', href: '/elliptical', emoji: '🏋️' },

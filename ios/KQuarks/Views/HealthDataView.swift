@@ -1014,6 +1014,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // HRV Science
+                            NavigationLink(destination: HRVScienceView()) {
+                                HStack {
+                                    Image(systemName: "waveform.path.ecg.rectangle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("HRV Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Autonomic physiology, health outcomes, HRV-guided training & Apple Watch accuracy — Plews 2013: 7-day rolling avg r=0.72 with performance")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // HRV deep-dive
                             NavigationLink(destination: HRVDetailView()) {
                                 HStack {

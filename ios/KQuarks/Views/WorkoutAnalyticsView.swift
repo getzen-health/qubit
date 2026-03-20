@@ -36,6 +36,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(MentalHealthScienceView())),
                 AnalyticsEntry(title: "Mindful Minutes", subtitle: "Meditation streaks, session trends & time-of-day practice pattern", icon: "brain.head.profile", color: .purple,
                                destination: AnyView(MindfulMinutesView())),
+                AnalyticsEntry(title: "Stair Climbing Science", subtitle: "Cardiovascular demand, muscle biomechanics, longevity research & protocols — Ekelund 2019 BMJ: 4 flights/day = 17% lower CVD mortality", icon: "figure.stair.stepper", color: .orange,
+                               destination: AnyView(StairClimbingScienceView())),
                 AnalyticsEntry(title: "Stair Climbing", subtitle: "Session trends, kcal/min intensity & weekly volume", icon: "figure.stair.stepper", color: .orange,
                                destination: AnyView(StairClimbingView())),
                 AnalyticsEntry(title: "Elliptical", subtitle: "Session volume, calorie intensity & duration trend", icon: "figure.elliptical", color: .cyan,
