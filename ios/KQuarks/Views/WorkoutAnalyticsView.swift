@@ -153,6 +153,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingPatternView())),
                 AnalyticsEntry(title: "Workout Efficiency", subtitle: "kcal/min by type — intensity across all sports", icon: "bolt.heart.fill", color: .yellow,
                                destination: AnyView(WorkoutEfficiencyView())),
+                AnalyticsEntry(title: "Workout Effort Score", subtitle: "Apple's 1–10 effort rating, session load & 80:20 balance (iOS 17+)", icon: "flame.fill", color: .orange,
+                               destination: AnyView(PhysicalEffortView())),
                 AnalyticsEntry(title: "Performance Overview", subtitle: "Cross-sport year-over-year comparison", icon: "chart.bar.doc.horizontal.fill", color: .blue,
                                destination: AnyView(PerformanceOverviewView())),
                 AnalyticsEntry(title: "Volume History", subtitle: "52-week training breakdown by sport", icon: "chart.bar.fill", color: .orange,
