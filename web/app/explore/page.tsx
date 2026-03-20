@@ -118,6 +118,7 @@ const SECTIONS: Section[] = [
       { label: 'Running Progression', desc: '12-month pace trend, monthly volume & quarterly comparison', href: '/running/progression', emoji: '📈' },
       { label: 'Workout Patterns', desc: 'Day-of-week, time-of-day & weekly volume analysis', href: '/workouts/patterns', emoji: '📆' },
       { label: 'Training Volume History', desc: '52-week stacked sport breakdown, rolling average & weekly table', href: '/workouts/volume', emoji: '📊' },
+      { label: 'Zone 2 Science', desc: 'Mitochondrial biogenesis, fat oxidation & elite polarized training — Holloszy 1967: 100% mitochondrial density increase; Seiler 2010: 75–80% elite volume at Zone 2; Brooks 2018: lactate shuttle maximal at Zone 2; Mandsager 2018: each MET gain = 13% lower mortality', href: '/zone2-science', emoji: '🔬' },
       { label: 'Zone 2 Training', desc: '52-week aerobic base tracker — Zone 2 minutes by sport with 3h/week target', href: '/zone2', emoji: '💚' },
       { label: 'Training Consistency', desc: 'Session frequency, training days per week, streaks & sport breakdown over 52 weeks', href: '/workouts/consistency', emoji: '🗓️' },
       { label: 'Lifetime Stats', desc: 'All-time totals, milestone badges & year-over-year comparison', href: '/workouts/lifetime', emoji: '🏅' },

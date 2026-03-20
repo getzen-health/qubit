@@ -295,6 +295,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(PerformanceOverviewView())),
                 AnalyticsEntry(title: "Volume History", subtitle: "52-week training breakdown by sport", icon: "chart.bar.fill", color: .orange,
                                destination: AnyView(TrainingVolumeHistoryView())),
+                AnalyticsEntry(title: "Zone 2 Science", subtitle: "Mitochondrial biogenesis, fat oxidation & elite polarized training — Holloszy 1967: 100% mitochondrial density increase; Seiler 2010: 75–80% elite volume at Zone 2; Brooks 2018: lactate shuttle maximal at Zone 2", icon: "heart.circle.fill", color: .green,
+                               destination: AnyView(Zone2ScienceView())),
                 AnalyticsEntry(title: "Zone 2 Training", subtitle: "Aerobic base volume tracker — 52 weeks", icon: "heart.circle.fill", color: .green,
                                destination: AnyView(Zone2TrainingView())),
                 AnalyticsEntry(title: "Consistency Tracker", subtitle: "52-week session frequency, streaks & training days", icon: "calendar.badge.checkmark", color: .teal,
