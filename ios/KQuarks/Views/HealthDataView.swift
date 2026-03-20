@@ -1451,6 +1451,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SweatRateView()) {
+                                HStack {
+                                    Image(systemName: "drop.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sweat Rate")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Fluid loss per hour from weigh-ins near workouts — Sawka 2007 ACSM: >2% mass loss impairs performance")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivitySummaryView()) {
                                 HStack {
                                     Image(systemName: "chart.bar.fill")
