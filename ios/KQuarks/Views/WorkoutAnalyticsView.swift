@@ -108,6 +108,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CoreTrainingView())),
                 AnalyticsEntry(title: "Flexibility", subtitle: "Myth-busting stretching science — Harvey 2002: stretching does NOT prevent injury; Simic 2013: pre-exercise static stretch impairs strength −5.5%; what actually works for ROM", icon: "figure.flexibility", color: .purple,
                                destination: AnyView(FlexibilityView())),
+                AnalyticsEntry(title: "Prep & Recovery", subtitle: "Warm-up science, PAP & recovery modalities — Fradkin 2010: warm-up improves performance in 79% of studies (+4.7%); McGowan 2015: PAP adds +5–12% power; ice bath trade-offs", icon: "arrow.clockwise.heart", color: .green,
+                               destination: AnyView(PrepRecoveryView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
