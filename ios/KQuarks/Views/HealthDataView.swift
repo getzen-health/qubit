@@ -1040,6 +1040,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: LongevityScienceView()) {
+                                HStack {
+                                    Image(systemName: "heart.text.square.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Longevity Science")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Exercise & mortality, biomarkers & cellular aging — Kodama 2009: each 1 MET = 13% mortality reduction; Mandsager 2018: low CRF = 500% higher mortality vs elite fitness")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Vitality Score — composite longevity index
                             NavigationLink(destination: LongevityView()) {
                                 HStack {

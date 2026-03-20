@@ -342,6 +342,7 @@ const SECTIONS: Section[] = [
       { label: 'Health Timeline', desc: 'Chronological feed of workouts, sleep & key events', href: '/timeline', emoji: '📜' },
       { label: "Today's Readiness", desc: 'HRV + sleep + load → training recommendation', href: '/ready', emoji: '🎯' },
       { label: 'Training Advisor', desc: 'HRV-guided weekly training plan', href: '/training-advisor', emoji: '🧠' },
+      { label: 'Longevity Science', desc: 'Exercise & mortality, biomarkers & cellular aging — Kodama 2009: each 1 MET = 13% mortality reduction; Mandsager 2018 (JAMA): low CRF = 500% higher mortality vs elite fitness; Werner 2019: athletes have telomeres 9–14 years younger; Stamatakis 2018: 2 strength sessions/week −23% all-cause mortality', href: '/longevity-science', emoji: '🌱' },
       { label: 'Vitality Score', desc: 'Multi-metric longevity index', href: '/longevity', emoji: '⭐' },
       { label: 'Weekly Report', desc: 'This week vs last week comparison', href: '/week', emoji: '📅' },
       { label: 'Health Score', desc: 'Composite daily health score', href: '/score', emoji: '🌟' },
