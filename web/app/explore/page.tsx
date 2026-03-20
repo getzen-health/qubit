@@ -142,6 +142,7 @@ const SECTIONS: Section[] = [
       { label: 'Tennis', desc: 'Match history, calories & monthly session frequency', href: '/tennis', emoji: '🎾' },
       { label: 'HRV Session Recommender', desc: "Today's readiness zone & session suggestions based on HRV vs 30-day baseline", href: '/hrv/recommender', emoji: '🧠' },
       { label: 'VO₂ Max Trend', desc: 'Apple Watch VO₂ max estimates, fitness category & 12-month progression', href: '/vo2max', emoji: '🫁' },
+      { label: 'Mental Health Science', desc: 'Exercise & depression, cognitive health & mindfulness — Blumenthal 1999: exercise = sertraline for MDD; Erickson 2011: aerobic exercise +2% hippocampal volume; Hofmann 2010: MBSR reduces anxiety d=0.97; Davidson 2003: meditation +30% antibody titers', href: '/mental-health-science', emoji: '🧠' },
       { label: 'Mindful Minutes', desc: 'Meditation streaks, weekly trend & time-of-day practice pattern', href: '/mindful', emoji: '🧘' },
       { label: 'Soccer', desc: 'Match distance, calorie intensity & monthly session frequency', href: '/soccer', emoji: '⚽' },
       { label: 'Soccer Science Deep Dive', desc: 'GPS demands, positional profiles & heading brain health — Bradley 2009: 30–60 sprints/game; Di Salvo 2007: midfielders 12.8 km/game; Lipton 2013: >1,000 headers/year linked to impaired memory; FIFA 11+ reduces ACL 50%', href: '/soccer-science', emoji: '⚽' },
