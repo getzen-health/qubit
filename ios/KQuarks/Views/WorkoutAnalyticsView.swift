@@ -178,6 +178,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CyclingSpeedView())),
                 AnalyticsEntry(title: "Cycling Power", subtitle: "FTP, power zones (Z1–Z7), power curve & TSS — compatible power meters", icon: "bolt.circle.fill", color: .yellow,
                                destination: AnyView(CyclingPowerView())),
+                AnalyticsEntry(title: "Swimming Science", subtitle: "Stroke biomechanics, hydrodynamics & physiology — Toussaint 1988: elite propulsive force 60–80 N; Pendergast 1977: active drag 5–10× passive; Holmér 1974: elite VO₂max 65–75 mL/kg/min; Mujika 1995: 2–3 week taper adds 1–3% race velocity", icon: "figure.pool.swim", color: .cyan,
+                               destination: AnyView(SwimmingScienceView())),
                 AnalyticsEntry(title: "Swimming", subtitle: "Pace per 100m & pool sets", icon: "figure.pool.swim", color: .cyan,
                                destination: AnyView(SwimmingAnalysisView())),
                 AnalyticsEntry(title: "Swimming Patterns", subtitle: "DOW distribution, time-of-day & pace per 100m trend", icon: "chart.bar.xaxis", color: .cyan,

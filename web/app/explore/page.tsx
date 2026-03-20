@@ -99,6 +99,7 @@ const SECTIONS: Section[] = [
       { label: 'Rowing', desc: '500m splits, watts, and distance', href: '/rowing', emoji: '🚣' },
       { label: 'Rowing Patterns', desc: 'DOW distribution, time-of-day, monthly distance & 500m split trend', href: '/rowing/patterns', emoji: '📊' },
       { label: 'Rowing Progression', desc: '12-month 500m split trend, distance growth & first vs last 30 days', href: '/rowing/progression', emoji: '📈' },
+      { label: 'Swimming Science', desc: 'Stroke biomechanics, hydrodynamics & physiology — Toussaint 1988: propulsive force 60–80 N; Pendergast 1977: active drag 5–10× passive; Chollet 2000: IdC overlap improves velocity 3–5%; Mujika 1995: taper adds 1–3% race velocity', href: '/swimming-science', emoji: '🏊' },
       { label: 'Swimming', desc: 'Distance, HR, and session trends', href: '/swimming', emoji: '🏊' },
       { label: 'Swimming Patterns', desc: 'DOW distribution, time-of-day, monthly distance & pace per 100m', href: '/swimming/patterns', emoji: '📊' },
       { label: 'Swimming Progression', desc: '12-month pace trend, distance growth & first vs last 30 days', href: '/swimming/progression', emoji: '📈' },
