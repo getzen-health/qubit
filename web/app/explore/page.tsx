@@ -205,6 +205,7 @@ const SECTIONS: Section[] = [
       { label: 'Fitness Gaming', desc: 'Exergaming intensity: Ring Fit, Beat Saber, VR fitness — Peng 2011: active gaming 2–3× resting; VR exergaming reaches 60–80% HRmax per Muro-De-La-Herran 2014', href: '/fitness-gaming', emoji: '🎮' },
       { label: 'Disc Sports', desc: 'Ultimate frisbee, disc golf & freestyle — Duthie 2003: 8–12 km per ultimate game, 30% sprint; Levy & Sherrin 2008: disc golf ≈ 4.1 METs moderate activity', href: '/disc-sports', emoji: '🥏' },
       { label: 'Wheelchair Fitness', desc: 'Push load, intensity & shoulder health — de Groot 2008: wheeling exercise cardioprotective for SCI; van der Woude 2006: long strokes reduce shoulder forces 30–40%', href: '/wheelchair-fitness', emoji: '♿' },
+      { label: 'Handcycling', desc: 'Upper-body aerobic zones — Hettinga 2010: recumbent handcycling achieves 85–95% of upright cycling VO₂; Fischer 2014: 12-week training → VO₂peak +16%', href: '/handcycling', emoji: '🚲' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

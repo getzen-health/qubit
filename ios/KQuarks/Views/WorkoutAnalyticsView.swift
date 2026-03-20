@@ -78,6 +78,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(DiscSportsView())),
                 AnalyticsEntry(title: "Wheelchair Fitness", subtitle: "Push load, intensity & shoulder health — de Groot 2008: wheeling exercise cardioprotective for SCI; van der Woude 2006: long strokes reduce shoulder forces 30–40%", icon: "figure.roll", color: .blue,
                                destination: AnyView(WheelchairFitnessView())),
+                AnalyticsEntry(title: "Handcycling", subtitle: "Upper-body aerobic zones & efficiency — Hettinga 2010: recumbent handcycling achieves 85–95% of upright cycling VO₂; Fischer 2014: 12-week training → VO₂peak +16%", icon: "figure.hand.cycling", color: .cyan,
+                               destination: AnyView(HandcyclingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
