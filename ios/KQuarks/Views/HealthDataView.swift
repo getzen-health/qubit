@@ -384,6 +384,34 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .heart {
+                            // Daily Readiness
+                            NavigationLink(destination: DailyReadinessView()) {
+                                HStack {
+                                    Image(systemName: "gauge.with.dots.needle.67percent")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Daily Readiness")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("0–100 score from HRV, resting HR & sleep")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Cardio Health Summary
                             NavigationLink(destination: CardioHealthSummaryView()) {
                                 HStack {
