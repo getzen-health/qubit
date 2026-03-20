@@ -385,6 +385,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(VO2MaxTrendView())),
                 AnalyticsEntry(title: "VO₂ Max vs Age Norms", subtitle: "Compare your VO₂ max against HUNT study age-group percentiles & fitness age", icon: "chart.bar.xaxis.ascending.badge.clock", color: .purple,
                                destination: AnyView(VO2MaxAgeNormsView())),
+                AnalyticsEntry(title: "Lactate Threshold Science", subtitle: "Two-threshold physiology, zone training & LT improvement — Faude 2009: LT2 predicts 91% of marathon time variance; Seiler 2010: 80/20 polarized training", icon: "waveform.path.ecg", color: .orange,
+                               destination: AnyView(LactateThresholdScienceView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,
                                destination: AnyView(LactateThresholdView())),
                 AnalyticsEntry(title: "MAS Training Zones", subtitle: "Maximal aerobic speed from VO₂max — personalized pace zones, Billat 2001 interval protocols (vVO₂max)", icon: "gauge.open.with.lines.needle.67percent", color: .orange,
