@@ -100,6 +100,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WaterPoloView())),
                 AnalyticsEntry(title: "Squash", subtitle: "The most aerobically intense racquet sport — Todd 1998: 85–95% HRmax sustained; Wilkinson 2009: lactate 6–10 mmol/L; Novas 2003: 18 direction changes/min in 9.75×6.4 m court", icon: "figure.squash", color: .red,
                                destination: AnyView(SquashView())),
+                AnalyticsEntry(title: "Archery", subtitle: "Cardiac timing, shoulder isometric load & breath control — Shing 2015: elite archers time release to cardiac diastole; Clarys 1990: posterior deltoid at 65–80% MVC per draw", icon: "figure.archery", color: .indigo,
+                               destination: AnyView(ArcheryView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
