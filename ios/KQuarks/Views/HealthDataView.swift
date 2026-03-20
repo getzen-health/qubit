@@ -1290,6 +1290,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: ImmuneStressIndexView()) {
+                                HStack {
+                                    Image(systemName: "cross.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.mint)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.mint.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Immune Stress Index")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("HRV drop + RHR elevation + temp deviation + step reduction — illness early warning")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: FallRiskAssessmentView()) {
                                 HStack {
                                     Image(systemName: "figure.fall.circle.fill")
