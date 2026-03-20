@@ -123,6 +123,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HeartRateZonesView())),
                 AnalyticsEntry(title: "Training Load", subtitle: "Acute:chronic ratio & fatigue", icon: "chart.bar.fill", color: .purple,
                                destination: AnyView(TrainingLoadView())),
+                AnalyticsEntry(title: "Running Power", subtitle: "Critical power, power zones (Z1–Z5), NP & trend — Apple Watch Ultra", icon: "bolt.fill", color: .orange,
+                               destination: AnyView(RunningPowerZonesView())),
                 AnalyticsEntry(title: "Running Form", subtitle: "Cadence, stride & vertical oscillation", icon: "figure.run.motion", color: .orange,
                                destination: AnyView(RunningFormView())),
                 AnalyticsEntry(title: "Pace Zones", subtitle: "80/20 easy vs hard distribution", icon: "timer", color: .orange,
