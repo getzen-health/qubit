@@ -88,6 +88,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SwimmingProgressionView())),
                 AnalyticsEntry(title: "Stroke Efficiency", subtitle: "SWOLF score, distance-per-stroke & stroke rate — pool swim analytics", icon: "figure.pool.swim", color: .teal,
                                destination: AnyView(SwimmingStrokeEfficiencyView())),
+                AnalyticsEntry(title: "Rowing Stroke Rate", subtitle: "SPM trend, zone distribution (steady–sprint) & power science", icon: "oar.2.crossed", color: .blue,
+                               destination: AnyView(RowingStrokeRateView())),
                 AnalyticsEntry(title: "Strength Training", subtitle: "Frequency, volume & sessions", icon: "figure.strengthtraining.traditional", color: .red,
                                destination: AnyView(StrengthAnalysisView())),
                 AnalyticsEntry(title: "Strength Patterns", subtitle: "DOW distribution, time-of-day & duration trend", icon: "chart.bar.xaxis", color: .red,
