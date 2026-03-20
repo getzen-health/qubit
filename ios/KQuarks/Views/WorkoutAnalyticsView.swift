@@ -34,6 +34,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StairClimbingView())),
                 AnalyticsEntry(title: "Elliptical", subtitle: "Session volume, calorie intensity & duration trend", icon: "figure.elliptical", color: .cyan,
                                destination: AnyView(EllipticalAnalysisView())),
+                AnalyticsEntry(title: "Golf Science", subtitle: "Swing biomechanics, walking load & mental performance — Hume 2005: X-factor 45–55° drives clubhead speed 160–180 km/h; Murray 2017: 18 holes = 8–12 km; Farahmand 2009: golfers live 5 years longer; McHardy 2007: LBP = 35% of all injuries", icon: "figure.golf", color: .green,
+                               destination: AnyView(GolfScienceView())),
                 AnalyticsEntry(title: "Golf", subtitle: "Distance walked, calories & monthly round frequency", icon: "figure.golf", color: .green,
                                destination: AnyView(GolfAnalysisView())),
                 AnalyticsEntry(title: "Soccer", subtitle: "Match distance, calorie intensity & monthly session frequency", icon: "soccerball", color: .green,
