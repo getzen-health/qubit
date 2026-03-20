@@ -187,6 +187,7 @@ const SECTIONS: Section[] = [
       { label: 'Cognitive Performance', desc: 'Daily brain score from sleep + HRV + training load — Killgore 2010, Czeisler 2011: sleep deprivation ≈ 0.05% BAC impairment', href: '/cognitive-performance', emoji: '🧠' },
       { label: 'Fiber Type Estimator', desc: 'Slow vs fast-twitch tendency from workout intensity — Costill 1976: elite marathoners 73% ST, sprinters 24% ST', href: '/fiber-type', emoji: '💪' },
       { label: 'Substrate Metabolism', desc: 'Fat vs carbohydrate oxidation per intensity — Brooks 1994 crossover concept, Achten 2004: peak fat burn at Zone 2', href: '/substrate-metabolism', emoji: '🔬' },
+      { label: 'Bone Loading', desc: 'Weekly bone impact score from running (×2.5), walking (×1.2) & stairs — Wolff\'s Law, Nikander 2010 Br J Sports Med', href: '/bone-loading', emoji: '🦴' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

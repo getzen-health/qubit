@@ -1474,6 +1474,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: BoneLoadingView()) {
+                                HStack {
+                                    Image(systemName: "figure.run.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.green.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Bone Loading")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Weekly bone impact score from running (×2.5), walking (×1.2) & stairs — Wolff's Law, Nikander 2010")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivitySummaryView()) {
                                 HStack {
                                     Image(systemName: "chart.bar.fill")
