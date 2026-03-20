@@ -42,6 +42,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(DanceAnalysisView())),
                 AnalyticsEntry(title: "Racquet Sports", subtitle: "Pickleball, badminton, racquetball & squash — sport mix & session history", icon: "figure.badminton", color: .green,
                                destination: AnyView(RacquetSportsView())),
+                AnalyticsEntry(title: "Martial Arts & Combat", subtitle: "Kickboxing, boxing, martial arts & wrestling — intensity & weekly volume", icon: "figure.kickboxing", color: .red,
+                               destination: AnyView(MartialArtsView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
