@@ -48,6 +48,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(JumpRopeView())),
                 AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
                                destination: AnyView(WinterSportsView())),
+                AnalyticsEntry(title: "Water & Paddle Sports", subtitle: "Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix", icon: "figure.surfing", color: .blue,
+                               destination: AnyView(WaterSportsView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
                                destination: AnyView(CrossTrainingView())),
                 AnalyticsEntry(title: "Tennis", subtitle: "Session history, calories & monthly match frequency", icon: "figure.tennis", color: .yellow,
