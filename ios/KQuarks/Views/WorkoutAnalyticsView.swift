@@ -106,6 +106,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TaiChiView())),
                 AnalyticsEntry(title: "Core Training", subtitle: "McGill Big 3, inner/outer unit anatomy & frequency science — Reed 2012: targeted core work reduces chronic LBP 35%; Stokes 2010: +4.6% running performance in 6 weeks", icon: "figure.core.training", color: .blue,
                                destination: AnyView(CoreTrainingView())),
+                AnalyticsEntry(title: "Flexibility", subtitle: "Myth-busting stretching science — Harvey 2002: stretching does NOT prevent injury; Simic 2013: pre-exercise static stretch impairs strength −5.5%; what actually works for ROM", icon: "figure.flexibility", color: .purple,
+                               destination: AnyView(FlexibilityView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
