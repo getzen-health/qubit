@@ -532,6 +532,32 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Handwashing Science
+                            NavigationLink(destination: HandwashingScienceView()) {
+                                HStack {
+                                    Image(systemName: "hands.sparkles.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Handwashing Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Infection prevention, Apple Watch detection & WHO 20-second evidence")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                            .buttonStyle(.plain)
+
                             // Handwashing
                             NavigationLink(destination: HandwashingView()) {
                                 HStack {
