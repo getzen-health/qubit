@@ -116,6 +116,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(PickleballView())),
                 AnalyticsEntry(title: "Bowling", subtitle: "67M US participants — Stuelcken 2005: wrist 700–900°/s at release; Lam 2013: 200–500 RPM rev rate; Piasecki 2018: 30–45% medial epicondylitis at >70 games/week; Dorsel 2001: spare conversion predicts score", icon: "figure.bowling", color: .blue,
                                destination: AnyView(BowlingView())),
+                AnalyticsEntry(title: "Skateboarding", subtitle: "Ollie biomechanics, balance adaptation & injury prevention — Roces 2001: pop generates 3–5× BW GRF; Rinaldi 2014: skaters show 30% smaller balance sway; Schieber 1996: wrist guards reduce fracture risk 85%", icon: "figure.skateboarding", color: .orange,
+                               destination: AnyView(SkateboardingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
