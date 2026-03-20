@@ -207,6 +207,7 @@ const SECTIONS: Section[] = [
       { label: 'Wheelchair Fitness', desc: 'Push load, intensity & shoulder health — de Groot 2008: wheeling exercise cardioprotective for SCI; van der Woude 2006: long strokes reduce shoulder forces 30–40%', href: '/wheelchair-fitness', emoji: '♿' },
       { label: 'Handcycling', desc: 'Upper-body aerobic zones — Hettinga 2010: recumbent handcycling achieves 85–95% of upright cycling VO₂; Fischer 2014: 12-week training → VO₂peak +16%', href: '/handcycling', emoji: '🚲' },
       { label: 'Fencing', desc: 'Explosive bout analysis, tournament load & weapon demands — Turner 2014: 30–50 actions/bout at 80–85% HRmax; Roi 2008: lunge generates 2× bodyweight ground force', href: '/fencing', emoji: '🤺' },
+      { label: 'Gymnastics', desc: 'Strength standards, energy systems & injury prevention — Prassas 2006: floor routine 80% anaerobic; Naughton 2000: gymnastics raises BMD 10–30% above controls', href: '/gymnastics', emoji: '🤸' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

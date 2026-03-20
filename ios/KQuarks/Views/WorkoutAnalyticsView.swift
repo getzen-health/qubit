@@ -82,6 +82,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HandcyclingView())),
                 AnalyticsEntry(title: "Fencing", subtitle: "Explosive bout analysis, tournament load & weapon demands — Turner 2014: 30–50 actions/bout at 80–85% HRmax; Roi 2008: lunge = 2× bodyweight GRF in 0.5–1.5 s", icon: "figure.fencing", color: .red,
                                destination: AnyView(FencingView())),
+                AnalyticsEntry(title: "Gymnastics", subtitle: "Strength standards, injury prevention & energy systems — Prassas 2006: floor 80% anaerobic; Naughton 2000: gymnastics increases BMD 10–30% above controls", icon: "figure.gymnastics", color: .purple,
+                               destination: AnyView(GymnasticsView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
