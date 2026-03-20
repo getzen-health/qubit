@@ -199,6 +199,7 @@ const SECTIONS: Section[] = [
       { label: 'Rugby & Football', desc: 'Match load, recovery gap & collision demands — Cunniffe 2009 (JSCR): 35–40% match time >85% HRmax; Twist 2012: 72–96h post-match muscle recovery', href: '/rugby-football', emoji: '🏉' },
       { label: 'Exercise & Blood Pressure', desc: 'Does your training lower your BP? — Cornelissen 2013 (JACC): aerobic exercise reduces SBP 3.5 mmHg, DBP 2.5 mmHg in meta-analysis of 93 trials', href: '/exercise-blood-pressure', emoji: '❤️' },
       { label: 'Elevation Analysis', desc: 'GPS route elevation gain from runs & hikes — Minetti 2002 (J Appl Physiol): +6% grade costs 2× flat energy; Gimenez 2013: hilly runs cause 2–3× more muscle damage', href: '/elevation-analysis', emoji: '⛰️' },
+      { label: 'MAS Training Zones', desc: 'Maximal aerobic speed from VO₂max — Billat 2001 (Eur J Appl Physiol): intervals at 100% MAS are the most potent VO₂max stimulus', href: '/mas-training', emoji: '🏃' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
