@@ -157,6 +157,7 @@ const SECTIONS: Section[] = [
       { label: 'Sleep Architecture', desc: 'REM, Core & Deep stage breakdown, efficiency & 30-night trends', href: '/sleep/architecture', emoji: '🌙' },
       { label: 'Workout Goals', desc: 'Weekly session target, goal streak & sport breakdown over 13 weeks', href: '/workouts/goals', emoji: '🏆' },
       { label: 'PAI Score', desc: 'NTNU weekly fitness score — time in HR zones vs 100 PAI longevity target', href: '/pai', emoji: '🏃' },
+      { label: 'Running Pacing', desc: 'Negative splits, pacing consistency (CV) & within-run speed analysis', href: '/running/pacing', emoji: '⏱️' },
       { label: 'Cardio Fitness Trajectory', desc: 'VO₂ max rate of change, 6-month projection & adaptation science', href: '/vo2max/trajectory', emoji: '📈' },
       { label: 'VO₂ Max vs Age Norms', desc: 'Compare VO₂ max against HUNT study age-group percentiles & fitness age estimate', href: '/vo2max/norms', emoji: '🫁' },
       { label: 'Cycle-Synced Training', desc: 'Current menstrual phase, science-backed training tips & performance by phase', href: '/cycle/training', emoji: '🌸' },

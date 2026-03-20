@@ -135,6 +135,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningPowerZonesView())),
                 AnalyticsEntry(title: "Running Form", subtitle: "Cadence, stride & vertical oscillation", icon: "figure.run.motion", color: .orange,
                                destination: AnyView(RunningFormView())),
+                AnalyticsEntry(title: "Pacing Analysis", subtitle: "Negative splits, pacing CV & within-run speed variation (iOS 16+)", icon: "gauge.with.dots.needle.67percent", color: .orange,
+                               destination: AnyView(RunningPacingView())),
                 AnalyticsEntry(title: "Pace Zones", subtitle: "80/20 easy vs hard distribution", icon: "timer", color: .orange,
                                destination: AnyView(RunningPaceZonesView())),
                 AnalyticsEntry(title: "Running Efficiency", subtitle: "AEI trend — speed per heartbeat", icon: "gauge.open.with.lines.needle.33percent", color: .green,
