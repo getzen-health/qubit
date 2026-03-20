@@ -213,6 +213,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(EPOCView())),
                 AnalyticsEntry(title: "Glycogen Status", subtitle: "Muscle fuel store estimates from workout energy — Bergström 1967, Burke 2011: replenishment timing & race readiness", icon: "bolt.heart.fill", color: .green,
                                destination: AnyView(GlycogenStatusView())),
+                AnalyticsEntry(title: "Cognitive Performance", subtitle: "Daily brain score from sleep + HRV + training load — Killgore 2010, Czeisler 2011 sleep-cognition science", icon: "brain.head.profile", color: .cyan,
+                               destination: AnyView(CognitivePerformanceView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,

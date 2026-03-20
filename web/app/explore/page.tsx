@@ -184,6 +184,7 @@ const SECTIONS: Section[] = [
       { label: 'EPOC — Afterburn Effect', desc: 'Estimated post-exercise calorie burn — LaForgia 2006 J Sports Sci: HIIT produces 6× more afterburn than steady-state', href: '/epoc', emoji: '🔥' },
       { label: 'Sweat Rate', desc: 'Fluid loss per hour from workout weigh-ins — Sawka 2007 ACSM: >2% body mass loss impairs performance', href: '/sweat-rate', emoji: '💧' },
       { label: 'Glycogen Status', desc: 'Muscle fuel store estimates from workout energy — Bergström 1967: glycogen depletion = fatigue, Burke 2011 replenishment timing', href: '/glycogen-status', emoji: '⚡' },
+      { label: 'Cognitive Performance', desc: 'Daily brain score from sleep + HRV + training load — Killgore 2010, Czeisler 2011: sleep deprivation ≈ 0.05% BAC impairment', href: '/cognitive-performance', emoji: '🧠' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
