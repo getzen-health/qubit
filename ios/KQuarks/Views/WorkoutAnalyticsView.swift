@@ -72,6 +72,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(HockeyAnalysisView())),
                 AnalyticsEntry(title: "Track & Field", subtitle: "Sprint vs. distance breakdown, energy systems & VO₂max — Haugen 2019: elite 100m ground contact ≤80 ms, Jones & Carter 2000: energy system split by event", icon: "figure.run.circle", color: .orange,
                                destination: AnyView(TrackAndFieldView())),
+                AnalyticsEntry(title: "Fitness Gaming", subtitle: "Exergaming: Ring Fit, Beat Saber, VR fitness — Peng 2011: 2–3× resting expenditure; Staiano 2011: 30–50% lower dropout vs. traditional exercise", icon: "gamecontroller.fill", color: .purple,
+                               destination: AnyView(FitnessGamingView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
