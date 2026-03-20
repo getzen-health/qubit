@@ -74,6 +74,7 @@ const SECTIONS: Section[] = [
       { label: 'Cycling', desc: 'Speed, distance, and ride history', href: '/cycling', emoji: '🚴' },
       { label: 'Cycling Patterns', desc: 'DOW distribution, time-of-day, monthly distance & speed trend', href: '/cycling/patterns', emoji: '📊' },
       { label: 'Cycling Progression', desc: '12-month distance & speed trend, elevation, and quarterly breakdown', href: '/cycling/progression', emoji: '📈' },
+      { label: 'Cycling Cadence', desc: 'RPM trend, zone distribution & Faria 2005 optimal 85–100 RPM science — Apple Watch Ultra', href: '/cycling/cadence', emoji: '⚙️' },
       { label: 'Strength Training', desc: 'Session frequency and recovery HRV', href: '/strength', emoji: '💪' },
       { label: 'Strength Patterns', desc: 'DOW distribution, time-of-day, weekly volume & session duration trends', href: '/strength/patterns', emoji: '📊' },
       { label: 'Strength Progression', desc: '12-month volume trend, duration progression & quarterly breakdown', href: '/strength/progression', emoji: '📈' },
