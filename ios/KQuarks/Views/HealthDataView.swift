@@ -49,6 +49,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SleepArchitectureView()) {
+                                HStack {
+                                    Image(systemName: "moon.zzz.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Architecture")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("REM, Core & Deep stage breakdown — 30 nights")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepChronotypeView()) {
                                 HStack {
                                     Image(systemName: "moon.circle.fill")

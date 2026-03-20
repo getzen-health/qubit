@@ -139,6 +139,7 @@ const SECTIONS: Section[] = [
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
       { label: 'Resting HR Deep Dive', desc: '12-month RHR trend, AHA fitness classification & day-of-week pattern', href: '/heartrate/resting/deep-dive', emoji: '❤️' },
+      { label: 'Sleep Architecture', desc: 'REM, Core & Deep stage breakdown, efficiency & 30-night trends', href: '/sleep/architecture', emoji: '🌙' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
