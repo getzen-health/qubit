@@ -323,6 +323,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: CaffeineAnalyticsView()) {
+                                HStack {
+                                    Image(systemName: "cup.and.saucer.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.brown)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.brown.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Caffeine Analytics")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Daily intake, half-life model & bedtime impact on sleep quality")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: OralHygieneView()) {
                                 HStack {
                                     Image(systemName: "mouth.fill")
