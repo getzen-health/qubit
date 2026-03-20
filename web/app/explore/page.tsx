@@ -193,6 +193,7 @@ const SECTIONS: Section[] = [
       { label: 'Heat Acclimatization', desc: 'Summer training adaptation — Lorenzo 2010 (J Appl Physiol): 10 days heat training +4.5% plasma volume, +6.4% VO₂max in temperate conditions', href: '/heat-acclimatization', emoji: '🌡️' },
       { label: 'Sport-Specific Load', desc: 'CTL/ATL breakdown per sport — Impellizzeri 2004 (Int J Sports Med): pooling across sports masks per-sport fatigue for multi-sport athletes', href: '/sport-specific-load', emoji: '🏊' },
       { label: 'Load vs Performance', desc: 'Validates if higher CTL actually improves running efficiency — Bannister 1991 PMC, Lucia 2000 (MSSE) running economy correlation', href: '/load-vs-performance', emoji: '📈' },
+      { label: 'Walking Asymmetry', desc: 'Left/right step timing imbalance — Schmid 2019 (Gait & Posture): >5% asymmetry = 2.5× higher knee OA risk, iOS 14+ passive capture', href: '/walking-asymmetry', emoji: '🦿' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

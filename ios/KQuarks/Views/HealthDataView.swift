@@ -1497,6 +1497,29 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: WalkingAsymmetryView()) {
+                                HStack {
+                                    Image(systemName: "figure.walk.motion")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Walking Asymmetry")
+                                            .font(.headline).foregroundStyle(.primary)
+                                        Text("Left/right step timing imbalance — Schmid 2019: >5% asymmetry = 2.5× higher knee OA risk")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: ActivitySummaryView()) {
                                 HStack {
                                     Image(systemName: "chart.bar.fill")
