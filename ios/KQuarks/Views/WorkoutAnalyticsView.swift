@@ -30,6 +30,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(StairClimbingView())),
                 AnalyticsEntry(title: "Elliptical", subtitle: "Session volume, calorie intensity & duration trend", icon: "figure.elliptical", color: .cyan,
                                destination: AnyView(EllipticalAnalysisView())),
+                AnalyticsEntry(title: "Golf", subtitle: "Distance walked, calories & monthly round frequency", icon: "figure.golf", color: .green,
+                               destination: AnyView(GolfAnalysisView())),
                 AnalyticsEntry(title: "Outdoor vs Indoor", subtitle: "Environment split by sport, monthly trend & preference", icon: "sun.and.horizon.fill", color: .yellow,
                                destination: AnyView(OutdoorIndoorView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,
@@ -133,6 +135,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WalkingHeartRateView())),
                 AnalyticsEntry(title: "Cardiac Drift", subtitle: "HR drift in long runs — first vs second half aerobic base measure", icon: "arrow.up.right.heart.fill", color: .teal,
                                destination: AnyView(CardiacDriftView())),
+                AnalyticsEntry(title: "Aerobic Decoupling", subtitle: "Pace-to-HR efficiency across long runs — MAF training metric", icon: "waveform.path", color: .teal,
+                               destination: AnyView(AerobicDecouplingView())),
                 AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
                                destination: AnyView(EnergySystemBalanceView())),
             ]

@@ -111,6 +111,8 @@ const SECTIONS: Section[] = [
       { label: 'Stair Climbing', desc: 'Session trends, kcal/min intensity & weekly climbing volume', href: '/stair-climbing', emoji: '🪜' },
       { label: 'Outdoor vs Indoor', desc: 'Environment split by sport, monthly trend & outdoor preference', href: '/outdoor-indoor', emoji: '☀️' },
       { label: 'Elliptical', desc: 'Session volume, calorie burn intensity & duration trend', href: '/elliptical', emoji: '🏋️' },
+      { label: 'Golf', desc: 'Distance walked, calories & monthly round frequency', href: '/golf', emoji: '⛳' },
+      { label: 'Aerobic Decoupling', desc: 'Pace-to-HR efficiency across long runs — MAF training metric', href: '/aerobic-decoupling', emoji: '📉' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
