@@ -205,6 +205,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WeeklyBalanceView())),
                 AnalyticsEntry(title: "Training Load (CTL/ATL)", subtitle: "Bannister 1991 fitness-fatigue model: CTL fitness base, ATL fatigue, TSB form — Performance Management Chart", icon: "chart.line.uptrend.xyaxis.circle.fill", color: .blue,
                                destination: AnyView(ChronicTrainingLoadView())),
+                AnalyticsEntry(title: "Progressive Overload", subtitle: "Week-over-week volume tracking vs 10% rule — Matveyev 1965, Hreljac 2004 injury risk thresholds", icon: "arrow.up.bar.chart", color: .green,
+                               destination: AnyView(ProgressiveOverloadView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
