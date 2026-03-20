@@ -180,6 +180,7 @@ const SECTIONS: Section[] = [
       { label: 'Weekly Balance', desc: '4-dimension scorecard: cardio + strength + flexibility + recovery vs WHO 2020 & ACSM 2022 targets', href: '/weekly-balance', emoji: '⚖️' },
       { label: 'Training Load (CTL/ATL)', desc: 'Bannister 1991 fitness-fatigue model: CTL fitness, ATL fatigue, TSB form — Performance Management Chart', href: '/training-load', emoji: '📈' },
       { label: 'Progressive Overload', desc: 'Week-over-week volume tracking vs 10% rule — Matveyev 1965 periodization, Hreljac 2004 injury risk', href: '/progressive-overload', emoji: '📊' },
+      { label: 'Workload Ratio (ACWR)', desc: 'Injury risk from load spikes — Gabbett 2016 Br J Sports Med: ACWR > 1.5 = 2–4× injury risk, sweet spot 0.8–1.3', href: '/acwr', emoji: '🛡️' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },

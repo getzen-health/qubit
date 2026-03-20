@@ -207,6 +207,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(ChronicTrainingLoadView())),
                 AnalyticsEntry(title: "Progressive Overload", subtitle: "Week-over-week volume tracking vs 10% rule — Matveyev 1965, Hreljac 2004 injury risk thresholds", icon: "arrow.up.bar.chart", color: .green,
                                destination: AnyView(ProgressiveOverloadView())),
+                AnalyticsEntry(title: "Workload Ratio (ACWR)", subtitle: "Injury risk from load spikes — Gabbett 2016: ACWR > 1.5 = 2-4× injury risk, sweet spot 0.8–1.3", icon: "shield.lefthalf.filled", color: .orange,
+                               destination: AnyView(ACWRView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
