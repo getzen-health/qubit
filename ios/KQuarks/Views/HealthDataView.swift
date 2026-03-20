@@ -129,6 +129,33 @@ struct HealthDataView: View {
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
+
+                            NavigationLink(destination: BodyTemperatureInsightsView()) {
+                                HStack {
+                                    Image(systemName: "thermometer.high")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Temperature Insights")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Illness signals, cycle correlation & 30-day trend")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
                         } else if selectedCategory == .body {
                             NavigationLink(destination: BodyCompositionView()) {
                                 HStack {
