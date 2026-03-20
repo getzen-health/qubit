@@ -199,6 +199,22 @@ struct StandingHoursView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
+    private struct HourEntry: Identifiable {
+        let id: Int
+        let hour: Int
+        let pct: Double
+    }
+
+    private func hourlyEntries() -> [HourEntry] {
+        (6...22).map { h in HourEntry(id: h, hour: h, pct: Double(hourlyPattern[h]) / 30.0) }
+    }
+
+    private func hourBarColor(_ pct: Double) -> Color {
+        if pct >= 0.7 { return Color.blue.opacity(0.8) }
+        if pct >= 0.4 { return Color.blue.opacity(0.5) }
+        return Color.blue.opacity(0.25)
+    }
+
     // MARK: - Hourly Pattern
 
     private var hourlyCard: some View {
@@ -207,16 +223,11 @@ struct StandingHoursView: View {
             Text("Hours when you most often have a stand (averaged over 30 days)")
                 .font(.caption).foregroundStyle(.secondary)
 
-            let standableHours = Array(6...22)  // 6am to 10pm
-            let data = standableHours.map { h in (hour: h, pct: Double(hourlyPattern[h]) / 30.0) }
-
             Chart {
-                ForEach(data, id: \.hour) { item in
-                    BarMark(x: .value("Hour", item.hour),
-                            y: .value("Stand Rate", item.pct))
-                    .foregroundStyle(item.pct >= 0.7 ? Color.blue.opacity(0.8) :
-                                     item.pct >= 0.4 ? Color.blue.opacity(0.5) :
-                                     Color.blue.opacity(0.25))
+                ForEach(hourlyEntries()) { entry in
+                    BarMark(x: .value("Hour", entry.hour),
+                            y: .value("Stand Rate", entry.pct))
+                    .foregroundStyle(hourBarColor(entry.pct))
                     .cornerRadius(3)
                 }
             }
