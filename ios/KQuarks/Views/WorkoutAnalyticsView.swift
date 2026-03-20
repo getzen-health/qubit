@@ -52,6 +52,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(WinterSportsView())),
                 AnalyticsEntry(title: "Water & Paddle Sports", subtitle: "Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix", icon: "figure.surfing", color: .blue,
                                destination: AnyView(WaterSportsView())),
+                AnalyticsEntry(title: "Surfing Deep Dive", subtitle: "Paddle mechanics, pop-up biomechanics & surf fitness — Farley 2012: paddling = 54% of session; Nathanson 2002: board impact = 55% of injuries; Rinaldi 2014: exostosis risk in cold water", icon: "wave.3.forward", color: .cyan,
+                               destination: AnyView(SurfingView())),
                 AnalyticsEntry(title: "Diving Analytics", subtitle: "Underwater depth, water temperature & no-deco limits — Apple Watch Ultra", icon: "water.waves", color: .cyan,
                                destination: AnyView(DivingAnalyticsView())),
                 AnalyticsEntry(title: "Triathlon", subtitle: "Swim/bike/run volume split, brick workout detection & race-type distribution target", icon: "sportscourt.fill", color: .blue,
