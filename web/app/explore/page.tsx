@@ -172,6 +172,7 @@ const SECTIONS: Section[] = [
       { label: 'Activity Fragmentation', desc: 'How broken-up your movement is throughout the day — Diaz 2017 JAMA active/sedentary transition index', href: '/activity-fragmentation', emoji: '🔀' },
       { label: 'Training Age', desc: 'Years of consistent training — Bompa 2015 Novice/Intermediate/Advanced/Elite classification & sport history', href: '/training-age', emoji: '📅' },
       { label: 'VILPA', desc: 'Vigorous Intermittent Lifestyle Activity — Stamatakis 2022 Nature Medicine: ≥3 bouts/day, 38% mortality reduction', href: '/vilpa', emoji: '⚡' },
+      { label: 'Sedentary Breaks', desc: 'Longest sitting streak & break frequency — Biswas 2015 Ann Intern Med: >11hrs/day = 40% mortality risk independent of exercise', href: '/sedentary-breaks', emoji: '🪑' },
       { label: 'Circadian Performance', desc: 'Peak training window from HR efficiency by time-of-day — Chtourou 2012, Kolbe 2019 circadian biology', href: '/circadian-performance', emoji: '🌞' },
       { label: 'Interval Detector', desc: 'Auto-detects interval structure from HR spread in HIIT & running — Buchheit & Laursen 2013 HIIT taxonomy', href: '/interval-detector', emoji: '📊' },
       { label: 'Exercise Snacks', desc: 'Short ≤15-min workout sessions — Gillen 2016 MSSE: 3×10 min = same VO₂ benefit as 45 min continuous', href: '/exercise-snacks', emoji: '⚡' },
