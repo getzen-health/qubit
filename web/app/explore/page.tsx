@@ -135,6 +135,7 @@ const SECTIONS: Section[] = [
       { label: 'Mindful Minutes', desc: 'Meditation streaks, weekly trend & time-of-day practice pattern', href: '/mindful', emoji: '🧘' },
       { label: 'Soccer', desc: 'Match distance, calorie intensity & monthly session frequency', href: '/soccer', emoji: '⚽' },
       { label: 'Soccer Science Deep Dive', desc: 'GPS demands, positional profiles & heading brain health — Bradley 2009: 30–60 sprints/game; Di Salvo 2007: midfielders 12.8 km/game; Lipton 2013: >1,000 headers/year linked to impaired memory; FIFA 11+ reduces ACL 50%', href: '/soccer-science', emoji: '⚽' },
+      { label: 'Basketball Science', desc: 'Jump mechanics, shooting biomechanics & position-specific demands — McInnes 1995: guards 4.8 km/game; Ziv & Lidor 2010: NBA SF avg 67 cm vertical; Okazaki 2006: optimal arc 45–55°; Cheng 2016: fatigue reduces 3-point accuracy 3.5% in OT', href: '/basketball-science', emoji: '🏀' },
       { label: 'Lactate Threshold', desc: 'Estimated LT1 & LT2 from run data — training zones & HR-pace scatter', href: '/lactate', emoji: '🔬' },
       { label: 'Basketball', desc: 'Session history, calorie burn & weekly volume', href: '/basketball', emoji: '🏀' },
       { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },

@@ -40,6 +40,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(SoccerAnalysisView())),
                 AnalyticsEntry(title: "Soccer Science Deep Dive", subtitle: "GPS demands, positional profiles & heading brain health — Bradley 2009: 30–60 sprints/game; Di Salvo 2007: box-to-box midfielders 12.8 km/game; Lipton 2013: >1,000 headers/year linked to impaired memory", icon: "soccerball.inverse", color: .green,
                                destination: AnyView(SoccerScienceView())),
+                AnalyticsEntry(title: "Basketball Science", subtitle: "Jump mechanics, shooting biomechanics & position-specific demands — McInnes 1995: guards 4.8 km/game; Ziv & Lidor 2010: NBA SF avg 67 cm vertical; Okazaki 2006: optimal shot arc 45–55°; Cheng 2016: fatigue reduces 3-point accuracy 3.5% in OT", icon: "basketball.fill", color: .orange,
+                               destination: AnyView(BasketballScienceView())),
                 AnalyticsEntry(title: "Basketball", subtitle: "Session history, calorie burn & weekly volume", icon: "basketball.fill", color: .orange,
                                destination: AnyView(BasketballAnalysisView())),
                 AnalyticsEntry(title: "Dance & Aerobics", subtitle: "Dance, social dance & step training sessions — frequency & calorie trends", icon: "music.note", color: .pink,
