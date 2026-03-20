@@ -48,6 +48,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(MartialArtsView())),
                 AnalyticsEntry(title: "Boxing", subtitle: "Punch biomechanics, round energy systems & brain health — Turner 2011: elite boxers generate 2.4–4.8 kN; Dunn 2016: avg 175–185 bpm per round; Davis 2002: PCr+glycolytic = 90% of early-round energy", icon: "figure.boxing", color: .red,
                                destination: AnyView(BoxingView())),
+                AnalyticsEntry(title: "Wrestling", subtitle: "Takedown mechanics, mat conditioning & weight management — Yoon 2002: match HR 175–190 bpm; blood lactate 8–14 mmol/L; Fogelholm 1994: 5% BW dehydration reduces anaerobic power 9.5%; cauliflower ear prevention", icon: "figure.wrestling", color: .indigo,
+                               destination: AnyView(WrestlingView())),
                 AnalyticsEntry(title: "Jump Rope", subtitle: "Skipping sessions, kcal/min intensity & weekly volume", icon: "figure.jumprope", color: .cyan,
                                destination: AnyView(JumpRopeView())),
                 AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
