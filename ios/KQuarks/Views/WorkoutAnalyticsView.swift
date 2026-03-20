@@ -179,6 +179,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RestingHRDeepDiveView())),
                 AnalyticsEntry(title: "Workout Goals", subtitle: "Weekly session target, goal streak & sport breakdown over 13 weeks", icon: "trophy.fill", color: .yellow,
                                destination: AnyView(WorkoutGoalTrackerView())),
+                AnalyticsEntry(title: "Cycle-Synced Training", subtitle: "Current phase, training tips & performance by menstrual cycle phase", icon: "figure.run.circle.fill", color: .pink,
+                               destination: AnyView(CycleTrainingView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
                                destination: AnyView(VO2MaxTrendView())),
                 AnalyticsEntry(title: "VO₂ Max vs Age Norms", subtitle: "Compare your VO₂ max against HUNT study age-group percentiles & fitness age", icon: "chart.bar.xaxis.ascending.badge.clock", color: .purple,
