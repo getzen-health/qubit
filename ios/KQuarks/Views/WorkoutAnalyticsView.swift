@@ -64,6 +64,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RockClimbingView())),
                 AnalyticsEntry(title: "Volleyball", subtitle: "Session frequency, calorie burn & heart rate intensity", icon: "volleyball.fill", color: .yellow,
                                destination: AnyView(VolleyballAnalysisView())),
+                AnalyticsEntry(title: "Baseball & Softball", subtitle: "Game sessions, intermittent burst intensity & arm load — Escamilla & Andrews 2009 throwing biomechanics", icon: "figure.baseball", color: .blue,
+                               destination: AnyView(BaseballSoftballView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,

@@ -195,6 +195,7 @@ const SECTIONS: Section[] = [
       { label: 'Load vs Performance', desc: 'Validates if higher CTL actually improves running efficiency — Bannister 1991 PMC, Lucia 2000 (MSSE) running economy correlation', href: '/load-vs-performance', emoji: '📈' },
       { label: 'Walking Asymmetry', desc: 'Left/right step timing imbalance — Schmid 2019 (Gait & Posture): >5% asymmetry = 2.5× higher knee OA risk, iOS 14+ passive capture', href: '/walking-asymmetry', emoji: '🦿' },
       { label: 'Walking Speed', desc: 'The sixth vital sign — Studenski 2011 (JAMA): each 0.1 m/s faster = ~12% lower 10-year mortality; 0.8 m/s clinical threshold', href: '/walking-speed', emoji: '🚶' },
+      { label: 'Baseball & Softball', desc: 'Game sessions, burst intensity & arm load — Escamilla & Andrews 2009 (Sports Med): throwing generates up to 64 Nm elbow valgus stress', href: '/baseball-softball', emoji: '⚾' },
       { label: 'Running Biomechanics', desc: 'Ground contact time, vertical oscillation & stride length — Morin 2011, Tartaruga 2012 (iOS 16+, Watch Ultra/S8+)', href: '/running/biomechanics', emoji: '🦾' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
