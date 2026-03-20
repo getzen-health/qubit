@@ -76,6 +76,87 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SleepQualityScoreView()) {
+                                HStack {
+                                    Image(systemName: "star.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.yellow)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.yellow.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Quality Score")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Nightly 0–100 score: duration, stages & efficiency")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: SleepDebtView()) {
+                                HStack {
+                                    Image(systemName: "moon.haze.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.purple.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Debt")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Cumulative deficit & repayment tracking")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
+                            NavigationLink(destination: SleepEfficiencyView()) {
+                                HStack {
+                                    Image(systemName: "gauge.with.dots.needle.67percent")
+                                        .font(.title2)
+                                        .foregroundStyle(.teal)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.teal.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Efficiency")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Time asleep vs time in bed (CBT-I target ≥85%)")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepChronotypeView()) {
                                 HStack {
                                     Image(systemName: "moon.circle.fill")
