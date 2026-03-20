@@ -173,6 +173,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(EnergySystemBalanceView())),
                 AnalyticsEntry(title: "HRV Session Recommender", subtitle: "Today's readiness zone & session suggestions based on HRV vs baseline", icon: "brain.head.profile", color: .green,
                                destination: AnyView(HRVSessionRecommenderView())),
+                AnalyticsEntry(title: "HRV Deep Dive", subtitle: "12-month SDNN trend, ANS balance, monthly averages & science", icon: "waveform.path.ecg", color: .green,
+                               destination: AnyView(HRVDeepDiveView())),
                 AnalyticsEntry(title: "VO₂ Max Trend", subtitle: "Apple Watch VO₂ max estimates, fitness category & 12-month progression", icon: "lungs.fill", color: .purple,
                                destination: AnyView(VO2MaxTrendView())),
                 AnalyticsEntry(title: "Lactate Threshold", subtitle: "Estimated LT1 & LT2 from run data — training zones & HR-pace scatter", icon: "waveform.path.ecg", color: .orange,

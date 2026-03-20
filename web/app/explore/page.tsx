@@ -137,6 +137,7 @@ const SECTIONS: Section[] = [
       { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
+      { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
