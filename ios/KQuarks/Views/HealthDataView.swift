@@ -1407,6 +1407,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: UVExposureView()) {
+                                HStack {
+                                    Image(systemName: "sun.max.trianglebadge.exclamationmark")
+                                        .font(.title2)
+                                        .foregroundStyle(.orange)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.orange.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("UV Exposure")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Daily UV radiation, WHO categories & Vitamin D science")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: HearingHealthView()) {
                                 HStack {
                                     Image(systemName: "ear")
