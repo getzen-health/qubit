@@ -177,6 +177,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(LactateThresholdView())),
                 AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
                                destination: AnyView(TrainingPolarizationView())),
+                AnalyticsEntry(title: "Critical Speed", subtitle: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", icon: "gauge.with.dots.needle.67percent", color: .teal,
+                               destination: AnyView(CriticalSpeedView())),
             ]
         ),
     ]
