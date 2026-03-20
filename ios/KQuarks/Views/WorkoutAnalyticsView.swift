@@ -215,6 +215,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(GlycogenStatusView())),
                 AnalyticsEntry(title: "Cognitive Performance", subtitle: "Daily brain score from sleep + HRV + training load — Killgore 2010, Czeisler 2011 sleep-cognition science", icon: "brain.head.profile", color: .cyan,
                                destination: AnyView(CognitivePerformanceView())),
+                AnalyticsEntry(title: "Fiber Type Estimator", subtitle: "Slow vs fast-twitch tendency from workout intensity profile — Costill 1976: elite runners 73% ST, sprinters 24% ST", icon: "figure.strengthtraining.traditional", color: .purple,
+                               destination: AnyView(FiberTypeView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
