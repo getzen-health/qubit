@@ -70,6 +70,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RugbyAnalysisView())),
                 AnalyticsEntry(title: "Hockey & Lacrosse", subtitle: "Ice hockey, field hockey & lacrosse game load — Quinney 2008: 170–185 bpm during shifts, Spencer 2005: 9–12 km per field hockey game", icon: "figure.hockey", color: .cyan,
                                destination: AnyView(HockeyAnalysisView())),
+                AnalyticsEntry(title: "Track & Field", subtitle: "Sprint vs. distance breakdown, energy systems & VO₂max — Haugen 2019: elite 100m ground contact ≤80 ms, Jones & Carter 2000: energy system split by event", icon: "figure.run.circle", color: .orange,
+                               destination: AnyView(TrackAndFieldView())),
                 AnalyticsEntry(title: "Equestrian Sports", subtitle: "Horseback riding, dressage & trail sessions — duration & monthly history", icon: "figure.equestrian.sports", color: .brown,
                                destination: AnyView(EquestrianView())),
                 AnalyticsEntry(title: "Cross-Training", subtitle: "CrossFit & mixed cardio sessions, intensity & weekly volume", icon: "figure.cross.training", color: .red,
