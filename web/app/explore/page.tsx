@@ -154,6 +154,7 @@ const SECTIONS: Section[] = [
       { label: 'Detraining', desc: 'Training break detection, Mujika-Padilla VO₂ loss curve & retraining time estimates', href: '/detraining', emoji: '📉' },
       { label: 'Gait Analysis', desc: 'Walking speed, step length, asymmetry & double support — passively measured fall & longevity risk metric', href: '/gait', emoji: '🚶' },
       { label: 'State of Mind', desc: 'Mood valence trend, emotional label frequency & life-area associations (iOS 18+)', href: '/state-of-mind', emoji: '🧠' },
+      { label: 'Zone Progression', desc: 'Monthly Z1–Z5 evolution, Seiler 80/20 polarization index & aerobic base trend', href: '/zones/progression', emoji: '📊' },
       { label: 'Audio Exposure', desc: 'Environmental noise & headphone levels — WHO guidelines, daily log & trend', href: '/audio-exposure', emoji: '👂' },
       { label: 'Equestrian Sports', desc: 'Horseback riding, dressage & trail sessions — duration & monthly history', href: '/equestrian', emoji: '🐴' },
       { label: 'HRV Deep Dive', desc: '12-month SDNN trend, ANS balance indicators, monthly averages & science', href: '/hrv/deep-dive', emoji: '💚' },
