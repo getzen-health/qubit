@@ -211,6 +211,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(ACWRView())),
                 AnalyticsEntry(title: "EPOC — Afterburn Effect", subtitle: "Excess post-exercise O₂ consumption — LaForgia 2006: HIIT produces 6× more afterburn than steady-state", icon: "flame.circle.fill", color: .orange,
                                destination: AnyView(EPOCView())),
+                AnalyticsEntry(title: "Glycogen Status", subtitle: "Muscle fuel store estimates from workout energy — Bergström 1967, Burke 2011: replenishment timing & race readiness", icon: "bolt.heart.fill", color: .green,
+                               destination: AnyView(GlycogenStatusView())),
                 AnalyticsEntry(title: "Training Phases", subtitle: "Auto-detect base, build, peak & taper from 52-week volume", icon: "calendar.badge.clock", color: .blue,
                                destination: AnyView(PeriodizationView())),
                 AnalyticsEntry(title: "Monotony & Strain", subtitle: "Coggan's training science — daily load variety & cumulative stress", icon: "waveform.path.ecg", color: .indigo,
