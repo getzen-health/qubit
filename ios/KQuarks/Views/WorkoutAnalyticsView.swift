@@ -337,6 +337,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(GlycogenStatusView())),
                 AnalyticsEntry(title: "Cognitive Performance", subtitle: "Daily brain score from sleep + HRV + training load — Killgore 2010, Czeisler 2011 sleep-cognition science", icon: "brain.head.profile", color: .cyan,
                                destination: AnyView(CognitivePerformanceView())),
+                AnalyticsEntry(title: "Fiber Type Science", subtitle: "ST/FT physiology, ACTN3 genetics & sport-specific profiles — Costill 1976: elite marathoners 73% ST vs 24% sprinters; Simoneau 1995: 70% genetic determination; Bouchard 2015: trainability varies 4× by genotype", icon: "figure.strengthtraining.traditional", color: .purple,
+                               destination: AnyView(FiberTypeScienceView())),
                 AnalyticsEntry(title: "Fiber Type Estimator", subtitle: "Slow vs fast-twitch tendency from workout intensity profile — Costill 1976: elite runners 73% ST, sprinters 24% ST", icon: "figure.strengthtraining.traditional", color: .purple,
                                destination: AnyView(FiberTypeView())),
                 AnalyticsEntry(title: "Substrate Metabolism", subtitle: "Fat vs carb oxidation per workout intensity — Brooks 1994 crossover, Achten 2004: peak fat burn at 40–65% VO₂max", icon: "chart.pie.fill", color: .orange,
