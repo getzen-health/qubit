@@ -157,6 +157,7 @@ const SECTIONS: Section[] = [
       { label: 'Open Water Swimming', desc: 'OWS pace per 100m, distance trend & monthly volume', href: '/open-water', emoji: '🌊' },
       { label: 'Functional Strength', desc: 'CrossFit, calisthenics & Olympic lifting — intensity & weekly volume', href: '/functional-strength', emoji: '🏋️' },
       { label: 'Training Polarization', desc: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", href: '/polarization', emoji: '🎯' },
+      { label: 'Rock Climbing Science', desc: 'Finger physiology, movement biomechanics & injury prevention — Schweizer 2001: A2 pulley force 380–420 N; MacLeod 2007: elite flexor CSA 40% larger; Mermier 2000: technique accounts for 48% of performance; Bollen 1988: A2 rupture = 30% of climbing injuries', href: '/rock-climbing-science', emoji: '🧗' },
       { label: 'Rock Climbing', desc: 'Session duration, calorie intensity & weekly climbing volume', href: '/rock-climbing', emoji: '🧗' },
       { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },

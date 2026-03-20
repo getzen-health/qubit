@@ -76,6 +76,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(OpenWaterSwimmingView())),
                 AnalyticsEntry(title: "Functional Strength", subtitle: "CrossFit, calisthenics & Olympic lifting — intensity & weekly volume", icon: "figure.strengthtraining.functional", color: .orange,
                                destination: AnyView(FunctionalStrengthView())),
+                AnalyticsEntry(title: "Rock Climbing Science", subtitle: "Finger physiology, movement biomechanics & injury prevention — Schweizer 2001: A2 pulley force 380–420 N in crimping; MacLeod 2007: elite flexor CSA 40% larger; Pieber 2012: 4.2 injuries/1,000h; España-Romero 2009: forearm VO₂peak 4× resting", icon: "figure.climbing", color: .brown,
+                               destination: AnyView(RockClimbingScienceView())),
                 AnalyticsEntry(title: "Rock Climbing", subtitle: "Session duration, calorie intensity & weekly climbing volume", icon: "figure.climbing", color: .brown,
                                destination: AnyView(RockClimbingView())),
                 AnalyticsEntry(title: "Volleyball", subtitle: "Session frequency, calorie burn & heart rate intensity", icon: "volleyball.fill", color: .yellow,
