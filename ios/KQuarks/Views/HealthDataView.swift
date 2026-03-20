@@ -133,6 +133,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Cycle Tracking
+                            NavigationLink(destination: CycleTrackingView()) {
+                                HStack {
+                                    Image(systemName: "calendar.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.pink)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.pink.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Cycle Tracking")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Phase analysis & training recommendations")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Glucose (CGM)
                             NavigationLink(destination: BloodGlucoseView()) {
                                 HStack {

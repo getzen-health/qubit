@@ -28,6 +28,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(YogaAnalysisView())),
                 AnalyticsEntry(title: "Stair Climbing", subtitle: "Session trends, kcal/min intensity & weekly volume", icon: "figure.stair.stepper", color: .orange,
                                destination: AnyView(StairClimbingView())),
+                AnalyticsEntry(title: "Elliptical", subtitle: "Session volume, calorie intensity & duration trend", icon: "figure.elliptical", color: .cyan,
+                               destination: AnyView(EllipticalAnalysisView())),
                 AnalyticsEntry(title: "Outdoor vs Indoor", subtitle: "Environment split by sport, monthly trend & preference", icon: "sun.and.horizon.fill", color: .yellow,
                                destination: AnyView(OutdoorIndoorView())),
                 AnalyticsEntry(title: "Running", subtitle: "Pace, distance & PRs", icon: "figure.run", color: .orange,

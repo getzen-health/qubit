@@ -110,6 +110,7 @@ const SECTIONS: Section[] = [
       { label: 'Walking Heart Rate', desc: 'Passive walking HR as a daily fitness indicator — trend & fitness level', href: '/heartrate/walking', emoji: '🚶‍♂️' },
       { label: 'Stair Climbing', desc: 'Session trends, kcal/min intensity & weekly climbing volume', href: '/stair-climbing', emoji: '🪜' },
       { label: 'Outdoor vs Indoor', desc: 'Environment split by sport, monthly trend & outdoor preference', href: '/outdoor-indoor', emoji: '☀️' },
+      { label: 'Elliptical', desc: 'Session volume, calorie burn intensity & duration trend', href: '/elliptical', emoji: '🏋️' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
@@ -147,6 +148,7 @@ const SECTIONS: Section[] = [
       { label: 'Walking Steadiness', desc: 'Gait stability score, fall risk & 90-day trend', href: '/walking-steadiness', emoji: '🚶' },
       { label: 'Steadiness Patterns', desc: 'DOW trends, zone history & monthly gait stability progression', href: '/walking-steadiness/patterns', emoji: '📊' },
       { label: 'Mobility', desc: 'Flexibility and mobility tracking', href: '/mobility', emoji: '🤸' },
+      { label: 'Cycle Tracking', desc: 'Menstrual phase analysis & cycle-synced training recommendations', href: '/cycle', emoji: '📅' },
     ],
   },
   {
