@@ -139,6 +139,7 @@ const SECTIONS: Section[] = [
       { label: 'Dance & Aerobics', desc: 'Dance, social dance & step training sessions — frequency & calorie trends', href: '/dance', emoji: '💃' },
       { label: 'Racquet Sports', desc: 'Pickleball, badminton, racquetball & squash — sport mix & session history', href: '/racquet', emoji: '🏸' },
       { label: 'Martial Arts & Combat', desc: 'Kickboxing, boxing, martial arts & wrestling — intensity & weekly volume', href: '/martial-arts', emoji: '🥊' },
+      { label: 'Boxing', desc: 'Punch biomechanics, round energy systems & brain health — Turner 2011: elite boxers 2.4–4.8 kN punch force; Dunn 2016: avg 175–185 bpm per round; Davis 2002: PCr+glycolytic = 90% of early-round energy; Bernick 2019: cumulative exposure drives white matter changes', href: '/boxing', emoji: '🥊' },
       { label: 'Jump Rope', desc: 'Skipping sessions, kcal/min intensity & weekly volume', href: '/jump-rope', emoji: '🪢' },
       { label: 'Handwashing', desc: 'Daily handwashing events detected by Apple Watch — streaks & time-of-day', href: '/handwashing', emoji: '🧼' },
       { label: 'Winter Sports', desc: 'Skiing, snowboarding, cross-country & ice skating — seasonal sport history', href: '/winter-sports', emoji: '⛷️' },

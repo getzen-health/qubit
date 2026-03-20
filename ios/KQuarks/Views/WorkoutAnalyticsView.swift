@@ -46,6 +46,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RacquetSportsView())),
                 AnalyticsEntry(title: "Martial Arts & Combat", subtitle: "Kickboxing, boxing, martial arts & wrestling — intensity & weekly volume", icon: "figure.kickboxing", color: .red,
                                destination: AnyView(MartialArtsView())),
+                AnalyticsEntry(title: "Boxing", subtitle: "Punch biomechanics, round energy systems & brain health — Turner 2011: elite boxers generate 2.4–4.8 kN; Dunn 2016: avg 175–185 bpm per round; Davis 2002: PCr+glycolytic = 90% of early-round energy", icon: "figure.boxing", color: .red,
+                               destination: AnyView(BoxingView())),
                 AnalyticsEntry(title: "Jump Rope", subtitle: "Skipping sessions, kcal/min intensity & weekly volume", icon: "figure.jumprope", color: .cyan,
                                destination: AnyView(JumpRopeView())),
                 AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
