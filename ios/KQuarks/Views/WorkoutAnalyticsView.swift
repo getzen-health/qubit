@@ -331,6 +331,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(CardiacDriftView())),
                 AnalyticsEntry(title: "Aerobic Decoupling", subtitle: "Pace-to-HR efficiency across long runs — MAF training metric", icon: "waveform.path", color: .teal,
                                destination: AnyView(AerobicDecouplingView())),
+                AnalyticsEntry(title: "Energy Systems Science", subtitle: "ATP-PCr, glycolytic & aerobic science — Robergs 2004: lactate NOT fatigue cause; Seiler 2010: polarized 80/20; Brooks 2018: Zone 2 & lactate shuttle", icon: "bolt.circle.fill", color: .orange,
+                               destination: AnyView(EnergySystemScienceView())),
                 AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
                                destination: AnyView(EnergySystemBalanceView())),
                 AnalyticsEntry(title: "HRV Session Recommender", subtitle: "Today's readiness zone & session suggestions based on HRV vs baseline", icon: "brain.head.profile", color: .green,

@@ -120,6 +120,7 @@ const SECTIONS: Section[] = [
       { label: 'Stress vs Recovery', desc: '12-week scatter: training stress vs HRV recovery quality — quadrant analysis', href: '/stress-recovery', emoji: '⚖️' },
       { label: 'ECG History', desc: 'Apple Watch ECG classification history — sinus rhythm %, AFib burden & monthly trend', href: '/ecg', emoji: '🫀' },
       { label: 'Cardiac Drift', desc: 'HR drift in long runs — first vs second half aerobic fitness measure', href: '/cardiac-drift', emoji: '📈' },
+      { label: 'Energy Systems Science', desc: 'ATP-PCr, glycolytic & aerobic systems — Hultman 1986: PCr depletes in 5–10s; Robergs 2004: lactate NOT cause of fatigue; Seiler 2010: polarized 80/20 model; Brooks 2018: Zone 2 maximizes mitochondrial adaptation', href: '/energy-system-science', emoji: '⚡' },
       { label: 'Energy Balance', desc: 'Radar: aerobic base, threshold, VO₂ max, strength & recovery balance score', href: '/energy-balance', emoji: '⚡' },
       { label: 'Walking', desc: 'Pace trends, distance & weekly walking volume', href: '/walking', emoji: '🚶' },
       { label: 'Walking Patterns', desc: 'DOW distribution, time-of-day & monthly distance trend', href: '/walking/patterns', emoji: '📊' },
