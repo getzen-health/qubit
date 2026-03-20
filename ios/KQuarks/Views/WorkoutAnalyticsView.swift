@@ -403,6 +403,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingPerformanceCorrelationView())),
                 AnalyticsEntry(title: "Training Polarization", subtitle: "Seiler's 80/20 model — easy vs hard split across all sports with weekly trend", icon: "chart.pie.fill", color: .indigo,
                                destination: AnyView(TrainingPolarizationView())),
+                AnalyticsEntry(title: "Critical Speed Science", subtitle: "CS/W' physiology, race pacing & performance prediction — Jones 2010: CS = highest lactate steady-state; Monod 1965: Total distance = CS × t + D'", icon: "gauge.with.dots.needle.67percent", color: .teal,
+                               destination: AnyView(CriticalSpeedScienceView())),
                 AnalyticsEntry(title: "Critical Speed", subtitle: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", icon: "gauge.with.dots.needle.67percent", color: .teal,
                                destination: AnyView(CriticalSpeedView())),
                 AnalyticsEntry(title: "Running Streaks", subtitle: "Current & longest streak, 90-day activity heatmap & weekly frequency", icon: "flame.fill", color: .orange,

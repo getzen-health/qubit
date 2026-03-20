@@ -184,6 +184,7 @@ const SECTIONS: Section[] = [
       { label: 'Rock Climbing', desc: 'Session duration, calorie intensity & weekly climbing volume', href: '/rock-climbing', emoji: '🧗' },
       { label: 'Volleyball Science', desc: 'Jump biomechanics, energy systems & beach vs indoor science — Marques 2009: elite vertical 80–90 cm; Forthomme 2005: spike IR 4,500–5,000°/s; Lian 2005: 45% patellar tendinopathy prevalence; Giatsis 2011: beach burns 30–40% more kcal/min', href: '/volleyball-science', emoji: '🏐' },
       { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
+      { label: 'Critical Speed Science', desc: "CS/W' physiology, race pacing & performance prediction — Monod 1965: Total distance = CS × t + D'; Jones 2010: CS = maximal lactate steady-state; Vanhatalo 2011: CS explains 85–95% of performance variance in trained runners", href: '/critical-speed-science', emoji: '🔬' },
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },
       { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
       { label: 'Detraining', desc: 'Training break detection, Mujika-Padilla VO₂ loss curve & retraining time estimates', href: '/detraining', emoji: '📉' },
