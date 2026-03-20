@@ -143,6 +143,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(AerobicDecouplingView())),
                 AnalyticsEntry(title: "Energy Balance", subtitle: "Radar: aerobic base, threshold, VO₂ max, strength & recovery score", icon: "pentagon.fill", color: .teal,
                                destination: AnyView(EnergySystemBalanceView())),
+                AnalyticsEntry(title: "HRV Session Recommender", subtitle: "Today's readiness zone & session suggestions based on HRV vs baseline", icon: "brain.head.profile", color: .green,
+                               destination: AnyView(HRVSessionRecommenderView())),
             ]
         ),
     ]

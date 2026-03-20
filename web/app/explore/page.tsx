@@ -115,6 +115,7 @@ const SECTIONS: Section[] = [
       { label: 'Aerobic Decoupling', desc: 'Pace-to-HR efficiency across long runs — MAF training metric', href: '/aerobic-decoupling', emoji: '📉' },
       { label: 'Cross-Training', desc: 'CrossFit & mixed cardio sessions, intensity & weekly volume', href: '/cross-training', emoji: '🏋️' },
       { label: 'Tennis', desc: 'Match history, calories & monthly session frequency', href: '/tennis', emoji: '🎾' },
+      { label: 'HRV Session Recommender', desc: "Today's readiness zone & session suggestions based on HRV vs 30-day baseline", href: '/hrv/recommender', emoji: '🧠' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },
