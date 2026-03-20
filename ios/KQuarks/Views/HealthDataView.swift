@@ -563,6 +563,34 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            // Blood Glucose Science
+                            NavigationLink(destination: BloodGlucoseScienceView()) {
+                                HStack {
+                                    Image(systemName: "drop.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Blood Glucose Science")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("CGM metrics, insulin resistance, exercise & glucose, metabolic flexibility — ADA 2023, DPP trial, Zeevi 2015 Cell personalized nutrition")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             // Blood Glucose (CGM)
                             NavigationLink(destination: BloodGlucoseView()) {
                                 HStack {

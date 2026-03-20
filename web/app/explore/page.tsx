@@ -313,6 +313,7 @@ const SECTIONS: Section[] = [
       { label: 'Weight Patterns', desc: 'Monthly averages, day-of-week deviations, rate of change & body fat trends', href: '/body/patterns', emoji: '📊' },
       { label: 'VO₂ Max', desc: 'Cardiorespiratory fitness trend', href: '/vo2max', emoji: '🫀' },
       { label: 'VO₂ Max Patterns', desc: 'Monthly progression, fitness level history & 2-year trend', href: '/vo2max/patterns', emoji: '📊' },
+      { label: 'Blood Glucose Science', desc: 'CGM metrics, insulin resistance mechanisms, exercise & glucose dynamics, metabolic flexibility — ADA 2023 TIR standards, DPP trial 58% T2D prevention, Zeevi 2015 Cell personalized glycemic response', href: '/blood-glucose-science', emoji: '🔬' },
       { label: 'Glucose', desc: 'Blood glucose readings over time', href: '/glucose', emoji: '🩸' },
       { label: 'Glucose Patterns', desc: 'Time-in-range, DOW trends, time-of-day & monthly glucose progression', href: '/glucose/patterns', emoji: '📊' },
       { label: 'Walking Steadiness', desc: 'Gait stability score, fall risk & 90-day trend', href: '/walking-steadiness', emoji: '🚶' },
