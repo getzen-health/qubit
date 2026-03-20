@@ -134,6 +134,7 @@ const SECTIONS: Section[] = [
       { label: 'Rock Climbing', desc: 'Session duration, calorie intensity & weekly climbing volume', href: '/rock-climbing', emoji: '🧗' },
       { label: 'Volleyball', desc: 'Session frequency, calorie burn & heart rate intensity', href: '/volleyball', emoji: '🏐' },
       { label: 'Critical Speed', desc: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", href: '/critical-speed', emoji: '⚡' },
+      { label: 'Running Streaks', desc: 'Current & longest streak, 90-day activity heatmap & weekly frequency', href: '/running/streaks', emoji: '🔥' },
       { label: 'Workout Efficiency', desc: 'kcal/min by type — compare intensity across all sports', href: '/workouts/efficiency', emoji: '⚡' },
       { label: 'Race Predictor', desc: 'Predict race times with Riegel formula', href: '/race-predictor', emoji: '🏁' },
       { label: 'Workout Variety', desc: 'Balance across workout types', href: '/variety', emoji: '🎨' },

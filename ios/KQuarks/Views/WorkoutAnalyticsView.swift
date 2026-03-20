@@ -179,6 +179,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(TrainingPolarizationView())),
                 AnalyticsEntry(title: "Critical Speed", subtitle: "Estimated aerobic-anaerobic threshold from run data — CS, D' & training zones", icon: "gauge.with.dots.needle.67percent", color: .teal,
                                destination: AnyView(CriticalSpeedView())),
+                AnalyticsEntry(title: "Running Streaks", subtitle: "Current & longest streak, 90-day activity heatmap & weekly frequency", icon: "flame.fill", color: .orange,
+                               destination: AnyView(RunningStreakView())),
             ]
         ),
     ]
