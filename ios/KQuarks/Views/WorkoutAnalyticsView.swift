@@ -54,6 +54,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(JumpRopeView())),
                 AnalyticsEntry(title: "Winter Sports", subtitle: "Skiing, snowboarding, cross-country & ice skating — seasonal sport history", icon: "snowflake", color: .blue,
                                destination: AnyView(WinterSportsView())),
+                AnalyticsEntry(title: "Cross-Country Skiing", subtitle: "World's highest VO₂max sport — Ingjer 1991: Dæhlie 96 mL/kg/min; Seiler 2009: 80/20 polarization; Holmberg 2005: double-poling 500–700 W; Stray-Gundersen 1992: live-high-train-low boosts hemoglobin 5%", icon: "figure.skiing.crosscountry", color: .cyan,
+                               destination: AnyView(CrossCountrySkiingView())),
                 AnalyticsEntry(title: "Water & Paddle Sports", subtitle: "Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix", icon: "figure.surfing", color: .blue,
                                destination: AnyView(WaterSportsView())),
                 AnalyticsEntry(title: "Surfing Deep Dive", subtitle: "Paddle mechanics, pop-up biomechanics & surf fitness — Farley 2012: paddling = 54% of session; Nathanson 2002: board impact = 55% of injuries; Rinaldi 2014: exostosis risk in cold water", icon: "wave.3.forward", color: .cyan,

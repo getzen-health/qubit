@@ -144,6 +144,7 @@ const SECTIONS: Section[] = [
       { label: 'Jump Rope', desc: 'Skipping sessions, kcal/min intensity & weekly volume', href: '/jump-rope', emoji: '🪢' },
       { label: 'Handwashing', desc: 'Daily handwashing events detected by Apple Watch — streaks & time-of-day', href: '/handwashing', emoji: '🧼' },
       { label: 'Winter Sports', desc: 'Skiing, snowboarding, cross-country & ice skating — seasonal sport history', href: '/winter-sports', emoji: '⛷️' },
+      { label: 'Cross-Country Skiing', desc: "World's highest VO₂max sport — Ingjer 1991: Dæhlie 96 mL/kg/min; Seiler 2009: 80/20 polarization model; Holmberg 2005: double-poling 500–700 W peak; Stray-Gundersen 1992: live-high-train-low boosts hemoglobin 5% in 4 weeks", href: '/cross-country-skiing', emoji: '⛷️' },
       { label: 'Water & Paddle Sports', desc: 'Surfing, paddleboarding, kayaking & water fitness — sessions & sport mix', href: '/water-sports', emoji: '🏄' },
       { label: 'Triathlon', desc: 'Swim/bike/run volume split, brick workout detection & race-type distribution target', href: '/triathlon', emoji: '🏊' },
       { label: 'Open Water Swimming', desc: 'OWS pace per 100m, distance trend & monthly volume', href: '/open-water', emoji: '🌊' },
