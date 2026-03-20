@@ -157,6 +157,33 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
+                            NavigationLink(destination: SleepBreathingView()) {
+                                HStack {
+                                    Image(systemName: "lungs.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.indigo)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.indigo.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Sleep Breathing")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Overnight respiratory rate & apnea signals")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: SleepChronotypeView()) {
                                 HStack {
                                     Image(systemName: "moon.circle.fill")
@@ -867,6 +894,33 @@ struct HealthDataView: View {
                                 HealthDataRow(dataType: dataType)
                             }
                         } else if selectedCategory == .activity {
+                            NavigationLink(destination: StandingHoursView()) {
+                                HStack {
+                                    Image(systemName: "figure.stand")
+                                        .font(.title2)
+                                        .foregroundStyle(.blue)
+                                        .frame(width: 44, height: 44)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(10)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Standing Hours")
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                        Text("Daily stand hours, 12-hr goal streak & hourly pattern")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding()
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(12)
+                            }
+                            .buttonStyle(.plain)
+
                             NavigationLink(destination: FlightsClimbedSummaryView()) {
                                 HStack {
                                     Image(systemName: "figure.stair.stepper")
