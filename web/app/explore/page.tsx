@@ -73,6 +73,7 @@ const SECTIONS: Section[] = [
       { label: 'Training Calendar', desc: 'Monthly workout calendar with type coloring', href: '/workouts/calendar', emoji: '🗓️' },
       { label: 'Yearly Progress', desc: '12-month training volume & year-over-year comparison', href: '/workouts/yearly', emoji: '📈' },
       { label: 'Workout Impact', desc: 'How training timing affects HRV recovery', href: '/workouts/impact', emoji: '🔋' },
+      { label: 'Cycling Science', desc: 'Power & FTP, pedaling biomechanics & physiology — Allen 2010: FTP = 95% of 20-min max; elite 5.5–6.5 W/kg; Leirdal 2011: 90 RPM cuts type II fiber use 18%; Bassett 2000: elite VO₂max 75–90; Bini 2014: 85% of cyclists sustain season injury', href: '/cycling-science', emoji: '🚴' },
       { label: 'Cycling', desc: 'Speed, distance, and ride history', href: '/cycling', emoji: '🚴' },
       { label: 'Cycling Patterns', desc: 'DOW distribution, time-of-day, monthly distance & speed trend', href: '/cycling/patterns', emoji: '📊' },
       { label: 'Cycling Progression', desc: '12-month distance & speed trend, elevation, and quarterly breakdown', href: '/cycling/progression', emoji: '📈' },

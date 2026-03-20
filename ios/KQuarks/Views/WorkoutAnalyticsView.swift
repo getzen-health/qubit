@@ -164,6 +164,8 @@ struct WorkoutAnalyticsView: View {
                                destination: AnyView(RunningAnalysisView())),
                 AnalyticsEntry(title: "Running Patterns", subtitle: "DOW distribution, time-of-day & pace trend", icon: "chart.bar.xaxis", color: .green,
                                destination: AnyView(RunningPatternView())),
+                AnalyticsEntry(title: "Cycling Science", subtitle: "Power & FTP, pedaling biomechanics & physiology — Allen 2010: FTP = 95% of 20-min max; Bassett 2000: elite VO₂max 75–90 mL/kg/min; Leirdal 2011: 90 RPM cuts type II fiber use 18%; Bini 2014: 85% of cyclists sustain season injury", icon: "figure.outdoor.cycle", color: .blue,
+                               destination: AnyView(CyclingScienceView())),
                 AnalyticsEntry(title: "Cycling", subtitle: "Speed, distance & weekly volume", icon: "figure.outdoor.cycle", color: .blue,
                                destination: AnyView(CyclingAnalysisView())),
                 AnalyticsEntry(title: "Cycling Patterns", subtitle: "DOW distribution, time-of-day & speed trend", icon: "chart.bar.xaxis", color: .blue,
