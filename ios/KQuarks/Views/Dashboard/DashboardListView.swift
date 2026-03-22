@@ -264,6 +264,22 @@ struct DashboardListView: View {
                         }
                         .padding()
                     }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: GLP1View()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "syringe.fill")
+                                .font(.title3)
+                                .foregroundStyle(.purple)
+                            Text("GLP-1 / Zepbound")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
                 }
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))

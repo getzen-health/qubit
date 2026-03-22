@@ -654,7 +654,7 @@ struct GLP1View: View {
                             x: .value("Date", r.date),
                             y: .value("mg/dL", r.mgdl)
                         )
-                        .foregroundStyle(GlucoseZone.from(mgdl: r.mgdl).color.opacity(0.8))
+                        .foregroundStyle(glucoseColor(mgdl: r.mgdl).opacity(0.8))
                         .symbolSize(16)
                     }
                 }
@@ -676,6 +676,16 @@ struct GLP1View: View {
         .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func glucoseColor(mgdl: Double) -> Color {
+        switch mgdl {
+        case ..<54:   return .red
+        case ..<70:   return .orange
+        case ...140:  return .green
+        case ...180:  return .yellow
+        default:      return .red
+        }
     }
 
     private func glucoseStat(label: String, value: String, color: Color) -> some View {
