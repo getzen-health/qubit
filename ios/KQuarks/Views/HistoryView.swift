@@ -155,10 +155,8 @@ struct HistoryView: View {
                             Text(workout.workoutType)
                                 .font(.subheadline.weight(.medium))
                             Text("\(workout.durationMinutes)min" +
-                                (workout.activeCalories != nil ? " · \(Int(workout.activeCalories!)) kcal" : "") +
-                                (workout.distanceMeters != nil && workout.distanceMeters! > 0
-                                    ? String(format: " · %.1f km", workout.distanceMeters! / 1000)
-                                    : ""))
+                                (workout.activeCalories.map { " · \(Int($0)) kcal" } ?? "") +
+                                (workout.distanceMeters.flatMap { $0 > 0 ? String(format: " · %.1f km", $0 / 1000) : nil } ?? ""))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

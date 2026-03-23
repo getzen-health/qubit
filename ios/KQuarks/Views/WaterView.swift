@@ -192,7 +192,9 @@ struct WaterView: View {
             try await SupabaseService.shared.logWater(amountMl: ml)
             todayTotal = (try? await SupabaseService.shared.getTodayWaterTotal()) ?? (todayTotal + ml)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        } catch { }
+        } catch {
+            print("[WaterView] addWater failed: \(error)")
+        }
     }
 
     private func loadData() async {

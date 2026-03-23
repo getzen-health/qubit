@@ -74,7 +74,9 @@ final class HabitsViewModel {
             let (h, c) = try await SupabaseService.shared.fetchHabits(userId: session.user.id.uuidString)
             habits = h
             completions = c
-        } catch { }
+        } catch {
+            print("[HabitsView] load failed: \(error)")
+        }
     }
 
     func toggle(_ habit: Habit) async {
@@ -104,7 +106,9 @@ final class HabitsViewModel {
         do {
             try await SupabaseService.shared.createHabit(name: name, emoji: emoji)
             await load()
-        } catch { }
+        } catch {
+            print("[HabitsView] addHabit failed: \(error)")
+        }
     }
 
     func archiveHabit(_ habit: Habit) async {

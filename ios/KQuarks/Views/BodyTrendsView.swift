@@ -477,7 +477,9 @@ struct BodyTrendsView: View {
                     avgBf: bfBucket.isEmpty ? nil : bfBucket.reduce(0, +) / Double(bfBucket.count)
                 )
             }
-        } catch { }
+        } catch {
+            print("[BodyTrendsView] loadData failed: \(error)")
+        }
     }
 
     private func dateFromString(_ s: String) -> Date {

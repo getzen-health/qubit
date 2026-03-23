@@ -539,7 +539,9 @@ struct CheckinPatternView: View {
             energyDist = dist(\.energy)
             moodDist   = dist(\.mood)
             stressDist = dist(\.stress)
-        } catch { }
+        } catch {
+            print("[CheckinPatternView] loadData failed: \(error)")
+        }
     }
 
     private func dateFromString(_ s: String) -> Date {

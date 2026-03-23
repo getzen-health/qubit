@@ -62,7 +62,6 @@ struct HandwashingView: View {
     // MARK: - State
 
     @State private var dayBuckets: [DayBucket] = []
-    @State private var weekBuckets: [WeekBucket] = []
     @State private var totalEvents: Int = 0
     @State private var dailyAvg: Double = 0
     @State private var currentStreak: Int = 0
@@ -95,6 +94,7 @@ struct HandwashingView: View {
         .navigationTitle("Handwashing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card
@@ -266,7 +266,7 @@ struct HandwashingView: View {
             hasNoData = true; return
         }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date(timeIntervalSinceNow: -30 * 86400)
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
             let pred = HKQuery.predicateForSamples(withStart: thirtyDaysAgo, end: Date())
@@ -310,7 +310,8 @@ struct HandwashingView: View {
         var streak = 0
         while uniqueDays.contains(streakDate) {
             streak += 1
-            streakDate = cal.date(byAdding: .day, value: -1, to: streakDate)!
+            guard let prev = cal.date(byAdding: .day, value: -1, to: streakDate) else { break }
+            streakDate = prev
         }
         currentStreak = streak
     }

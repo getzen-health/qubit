@@ -119,6 +119,7 @@ struct OralHygieneView: View {
         .navigationTitle("Oral Hygiene")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading brushing data…")
@@ -353,7 +354,7 @@ struct OralHygieneView: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: end) ?? Date(timeIntervalSinceNow: -90 * 86400)
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 

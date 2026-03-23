@@ -461,7 +461,9 @@ struct BloodPressurePatternView: View {
                     pct: Int(Double(count) / n * 100)
                 )
             }
-        } catch { }
+        } catch {
+            print("[BloodPressurePatternView] loadData failed: \(error)")
+        }
     }
 }
 

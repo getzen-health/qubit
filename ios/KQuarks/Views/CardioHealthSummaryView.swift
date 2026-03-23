@@ -442,7 +442,7 @@ struct CardioHealthSummaryView: View {
         // Approximate VO2 Max from recovery_score (0-100 → 30-60 ml/kg/min scale, rough)
         let recoveryScores = sorted.compactMap { $0.recovery_score }
         let latestRecovery = recoveryScores.last.map { Double($0) }
-        let vo2Approx = latestRecovery.map { 30.0 + ($0 / 100.0) * 30.0 }  // very rough proxy
+        _ = latestRecovery.map { 30.0 + ($0 / 100.0) * 30.0 }  // rough proxy; not yet wired to snapshot
 
         // HRR: not in daily_summaries; mark as unavailable
         let snapshot = CardioSnapshot(

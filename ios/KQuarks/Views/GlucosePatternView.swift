@@ -431,7 +431,9 @@ struct GlucosePatternView: View {
                 let inR = Double(bucket.filter { $0.mgdl >= targetLow && $0.mgdl <= targetHigh }.count) / bn * 100
                 return GlucoseMonthStat(label: monthLabels[m-1], count: bucket.count, avgMgdl: avg, inRangePct: inR)
             }
-        } catch { }
+        } catch {
+            print("[GlucosePatternView] loadData failed: \(error)")
+        }
     }
 }
 

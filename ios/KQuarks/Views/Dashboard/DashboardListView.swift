@@ -711,13 +711,12 @@ class DashboardListViewModel {
                     default: break
                     }
                 }
-                await MainActor.run {
-                    latestSleepContext = AIInsightsService.SleepContext(
-                        durationMinutes: deep + rem + core,
-                        deepMinutes: deep, remMinutes: rem,
-                        coreMinutes: core, awakeMinutes: awake
-                    )
-                }
+                let sleepCtx = AIInsightsService.SleepContext(
+                    durationMinutes: deep + rem + core,
+                    deepMinutes: deep, remMinutes: rem,
+                    coreMinutes: core, awakeMinutes: awake
+                )
+                await MainActor.run { latestSleepContext = sleepCtx }
             }
 
             // Fetch latest body weight
@@ -823,9 +822,8 @@ class DashboardListViewModel {
                     break
                 }
             }
-            await MainActor.run {
-                currentStreak = streak
-            }
+            let capturedStreak = streak
+            await MainActor.run { currentStreak = capturedStreak }
 
             // Compute sleep streak (7h = 420 min goal, newest first, skip today)
             let sleepGoalMinutes = 420
@@ -837,7 +835,8 @@ class DashboardListViewModel {
                     break
                 }
             }
-            await MainActor.run { sleepStreak = sleepStreakCount }
+            let capturedSleepStreak = sleepStreakCount
+            await MainActor.run { sleepStreak = capturedSleepStreak }
 
             // Compute workout streak (consecutive days with ≥1 workout, skip today)
             let wCal = Calendar.current
@@ -860,7 +859,8 @@ class DashboardListViewModel {
                     break
                 }
             }
-            await MainActor.run { workoutStreak = workoutStreakCount }
+            let capturedWorkoutStreak = workoutStreakCount
+            await MainActor.run { workoutStreak = capturedWorkoutStreak }
         } catch {
             // Trends are non-critical, silently fail
         }
