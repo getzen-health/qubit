@@ -250,7 +250,7 @@ struct StreaksView: View {
                     streak = 1
                 } else {
                     // Check consecutive
-                    if let prevDate = Self.df.date(from: prev!),
+                    if let prev = prev, let prevDate = Self.df.date(from: prev),
                        let curDate = Self.df.date(from: date) {
                         let diff = prevDate.timeIntervalSince(curDate) / 86400
                         if abs(diff - 1) < 0.5 {

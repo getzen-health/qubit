@@ -233,7 +233,7 @@ struct HeartRateRecoveryView: View {
     private var byTypeData: [(type: String, avg: Double, count: Int)] {
         var buckets: [String: [Double]] = [:]
         for pt in validPoints {
-            buckets[pt.workoutType, default: []].append(pt.hrr1!)
+            if let hrr1 = pt.hrr1 { buckets[pt.workoutType, default: []].append(hrr1) }
         }
         return buckets.map { entry -> (type: String, avg: Double, count: Int) in
             let avg = entry.value.reduce(0, +) / Double(entry.value.count)

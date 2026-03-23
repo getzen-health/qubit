@@ -107,9 +107,8 @@ struct RHRTrendView: View {
                 }
             }
 
-            if samples.count >= 2 {
-                let first = samples.first!.value
-                let last = latest!
+            if samples.count >= 2, let last = latest {
+                let first = samples.first?.value ?? last
                 let diff = last - first
                 let isImprovement = diff <= 0
                 HStack(spacing: 4) {
