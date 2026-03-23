@@ -395,7 +395,7 @@ struct BodyTrendsView: View {
             earliestWeight = weights.first ?? 0
             minWeight = weights.min() ?? 0
             maxWeight = weights.max() ?? 0
-            avgWeight = weights.reduce(0, +) / Double(weights.count)
+            avgWeight = weights.isEmpty ? 0 : weights.reduce(0, +) / Double(weights.count)
             totalChange = latestWeight - earliestWeight
 
             // Weekly change

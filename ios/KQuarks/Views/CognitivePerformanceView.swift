@@ -418,7 +418,7 @@ struct CognitivePerformanceView: View {
             let sleepH = dailySleepH[cursor] ?? 0
             let sleepScore = min(100, sleepH / 8.0 * 100)
 
-            let todayHRV = dailyHRV[cursor].map { vals in vals.reduce(0, +) / Double(vals.count) }
+            let todayHRV = dailyHRV[cursor].flatMap { vals in vals.isEmpty ? nil : vals.reduce(0, +) / Double(vals.count) }
             let baselineHRV = hrv7DayAvg(before: cursor)
             let hrvScore: Double
             if let h = todayHRV, let b = baselineHRV, b > 0 {
