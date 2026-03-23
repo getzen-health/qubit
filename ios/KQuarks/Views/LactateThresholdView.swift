@@ -343,7 +343,7 @@ struct LactateThresholdView: View {
                 avgHR: avgHR,
                 pace: pace,
                 durationMins: w.duration / 60,
-                effortClass: .easy  // placeholder — classified below
+                effortClass: .easy
             ))
         }
 

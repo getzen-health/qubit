@@ -45,6 +45,21 @@ struct FastingView: View {
                         // History
                         if !history.isEmpty {
                             historySection
+                        } else if !isLoading {
+                            VStack(spacing: 8) {
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .font(.system(size: 32))
+                                    .foregroundStyle(.tertiary)
+                                Text("No fasting history yet")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Text("Complete your first fast to see it here.")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 24)
                         }
                     }
                 }
@@ -91,7 +106,6 @@ struct FastingView: View {
                             .font(.system(size: 38, weight: .bold, design: .monospaced))
                             .foregroundStyle(progress >= 1 ? .green : .primary)
                             .contentTransition(.numericText())
-                            .id(now) // force refresh every second
                         Text("/ \(targetHours)h")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -278,7 +292,9 @@ struct FastingView: View {
                 }
             }
             history = try await SupabaseService.shared.getFastingHistory(limit: 10)
-        } catch { }
+        } catch {
+            print("[FastingView] load failed: \(error)")
+        }
     }
 
     private func startFast() async {
@@ -292,7 +308,9 @@ struct FastingView: View {
             isActive = true
             elapsedHours = 0
             NotificationService.shared.scheduleFastingMilestones(targetHours: selectedProtocol.hours, startedAt: start)
-        } catch { }
+        } catch {
+            print("[FastingView] startFast failed: \(error)")
+        }
     }
 
     private func endFast() async {
@@ -305,7 +323,9 @@ struct FastingView: View {
             elapsedHours = 0
             startedAt = nil
             history = try await SupabaseService.shared.getFastingHistory(limit: 10)
-        } catch { }
+        } catch {
+            print("[FastingView] endFast failed: \(error)")
+        }
     }
 
     private func formatDuration(_ seconds: Double) -> String {

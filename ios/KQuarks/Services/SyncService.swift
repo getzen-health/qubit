@@ -453,7 +453,7 @@ class SyncService {
             for sample in samples {
                 let cal = Calendar.current
                 let dayStart = cal.startOfDay(for: sample.startDate)
-                let dayEnd = cal.date(byAdding: .day, value: 1, to: dayStart)!
+                let dayEnd = cal.date(byAdding: .day, value: 1, to: dayStart) ?? Date(timeInterval: 86400, since: dayStart)
                 let key = ISO8601DateFormatter().string(from: dayStart).prefix(10).description
                 var value = sample.quantity.doubleValue(for: metric.unit)
                 if metric.identifier == .dietaryWater { value *= 1000 } // convert L to mL

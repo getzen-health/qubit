@@ -348,21 +348,25 @@ struct OvertrainingWarningView: View {
         let now = Date()
         let cal = Calendar.current
 
-        // Fetch 35 days of data (7 recent + 28 baseline)
+        // Fetch 35 days of data (7 recent + 28 baseline) + 7-week weekly aggregates for history chart
         let start35 = cal.date(byAdding: .day, value: -35, to: now)!
         let start7  = cal.date(byAdding: .day, value: -7,  to: now)!
         let start28 = cal.date(byAdding: .day, value: -28, to: now)!
+        let start7w = cal.date(byAdding: .weekOfYear, value: -7, to: now)!
 
-        async let recentHRV  = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start7, to: now)
-        async let baseHRV    = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start35, to: now)
-        async let recentRHR  = fetchDailyAvg(type: rhrType, unit: HKUnit(from: "count/min"),    from: start7, to: now)
-        async let baseRHR    = fetchDailyAvg(type: rhrType, unit: HKUnit(from: "count/min"),    from: start35, to: now)
-        async let recent7WOs = fetchWorkoutMinutes(from: start7,  to: now)
-        async let chronic28  = fetchWorkoutMinutes(from: start28, to: now)
+        async let recentHRV   = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start7, to: now)
+        async let baseHRV     = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start35, to: now)
+        async let recentRHR   = fetchDailyAvg(type: rhrType, unit: HKUnit(from: "count/min"),    from: start7, to: now)
+        async let baseRHR     = fetchDailyAvg(type: rhrType, unit: HKUnit(from: "count/min"),    from: start35, to: now)
+        async let recent7WOs  = fetchWorkoutMinutes(from: start7,  to: now)
+        async let chronic28   = fetchWorkoutMinutes(from: start28, to: now)
         async let recentSleep = fetchSleepHours(from: start7, to: now)
         async let baseSleep   = fetchSleepHours(from: start35, to: now)
+        async let weeklyHRV   = fetchWeeklyAvg(type: hrvType, unit: HKUnit(from: "ms"),          from: start7w, to: now)
+        async let weeklyRHR   = fetchWeeklyAvg(type: rhrType, unit: HKUnit(from: "count/min"),   from: start7w, to: now)
 
-        let (rHRV, bHRV, rRHR, bRHR, acute, chronic, rSleep, bSleep) = await (recentHRV, baseHRV, recentRHR, baseRHR, recent7WOs, chronic28, recentSleep, baseSleep)
+        let (rHRV, bHRV, rRHR, bRHR, acute, chronic, rSleep, bSleep, wHRV, wRHR) =
+            await (recentHRV, baseHRV, recentRHR, baseRHR, recent7WOs, chronic28, recentSleep, baseSleep, weeklyHRV, weeklyRHR)
 
         // --- HRV Signal ---
         let hrv7avg = avg(rHRV)
@@ -448,14 +452,27 @@ struct OvertrainingWarningView: View {
         ]
         let total = computed.reduce(0) { $0 + $1.score }
 
-        // Build weekly score history (simplified — recompute for last 7 weeks)
+        // Build weekly score history using real HealthKit weekly HRV + RHR averages
         var weekly: [(date: Date, score: Int)] = []
-        for w in stride(from: -6, through: 0, by: 1) {
-            let weekStart = cal.date(byAdding: .weekOfYear, value: w, to: now)!
-            // Use a simplified proxy score from available data
-            let proxyScore = Int.random(in: 0...4) // placeholder when no per-week data
-            weekly.append((date: weekStart, score: w == 0 ? total : proxyScore))
+        for (i, wPt) in wHRV.enumerated() {
+            let weekRHRVal = i < wRHR.count ? wRHR[i].value : nil
+            var weekScore = 0
+            if let b30 = hrv30avg, b30 > 0 {
+                let pctDrop = (b30 - wPt.value) / b30
+                if pctDrop >= 0.20 { weekScore += 3 }
+                else if pctDrop >= 0.10 { weekScore += 2 }
+                else if pctDrop >= 0.05 { weekScore += 1 }
+            }
+            if let rhrVal = weekRHRVal, let b30 = rhr30avg {
+                let delta = rhrVal - b30
+                if delta >= 10 { weekScore += 3 }
+                else if delta >= 5 { weekScore += 2 }
+                else if delta >= 3 { weekScore += 1 }
+            }
+            let isCurrentWeek = (i == wHRV.count - 1)
+            weekly.append((date: wPt.date, score: isCurrentWeek ? total : min(weekScore, 12)))
         }
+        if weekly.isEmpty { weekly.append((date: now, score: total)) }
 
         await MainActor.run {
             signals = computed
@@ -514,6 +531,30 @@ struct OvertrainingWarningView: View {
             ) { _, samples, _ in
                 let total = (samples as? [HKWorkout])?.reduce(0.0) { $0 + $1.duration / 60.0 } ?? 0
                 cont.resume(returning: total)
+            }
+            healthStore.execute(q)
+        }
+    }
+
+    private func fetchWeeklyAvg(type: HKQuantityType, unit: HKUnit, from start: Date, to end: Date) async -> [(date: Date, value: Double)] {
+        await withCheckedContinuation { cont in
+            let anchorDate = Calendar.current.dateInterval(of: .weekOfYear, for: end)?.start ?? start
+            let pred = HKQuery.predicateForSamples(withStart: start, end: end)
+            let q = HKStatisticsCollectionQuery(
+                quantityType: type,
+                quantitySamplePredicate: pred,
+                options: .discreteAverage,
+                anchorDate: anchorDate,
+                intervalComponents: DateComponents(weekOfYear: 1)
+            )
+            q.initialResultsHandler = { _, coll, _ in
+                var result: [(date: Date, value: Double)] = []
+                coll?.enumerateStatistics(from: start, to: end) { stats, _ in
+                    if let qty = stats.averageQuantity() {
+                        result.append((date: stats.startDate, value: qty.doubleValue(for: unit)))
+                    }
+                }
+                cont.resume(returning: result)
             }
             healthStore.execute(q)
         }

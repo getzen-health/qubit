@@ -41,7 +41,9 @@ final class CheckinViewModel {
                 stress = c.stress
                 notes  = c.notes ?? ""
             }
-        } catch { }
+        } catch {
+            print("[CheckinViewModel] load failed: \(error)")
+        }
     }
 
     func save() async {
@@ -56,7 +58,9 @@ final class CheckinViewModel {
             savedAt = Date()
             await load()
             isEditing = false
-        } catch { }
+        } catch {
+            print("[CheckinViewModel] save failed: \(error)")
+        }
     }
 
     func startEdit() {
@@ -153,6 +157,11 @@ struct CheckinView: View {
                 Text(Date().formatted(date: .long, time: .omitted))
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let saved = vm.savedAt {
+                    Text("Updated at \(saved.formatted(date: .omitted, time: .shortened))")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
             }
             .padding(.top, 8)
 

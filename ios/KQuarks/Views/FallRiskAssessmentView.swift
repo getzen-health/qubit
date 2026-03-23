@@ -403,13 +403,12 @@ struct FallRiskAssessmentView: View {
                        score: min(stairScore, 2), interpretation: stairInterp, color: stairColor),
         ]
 
-        // Simulate 6-month trend (simplified)
+        // Estimated 6-month trend: project a slight linear improvement toward current score
         var trend: [TrendPoint] = []
         let calendar = Calendar.current
         for i in 0..<6 {
             if let date = calendar.date(byAdding: .month, value: i - 5, to: Date()) {
-                let noise = Double.random(in: -0.5...0.5)
-                trend.append(TrendPoint(date: date, totalScore: max(0, Double(total) + noise - Double(5 - i) * 0.1)))
+                trend.append(TrendPoint(date: date, totalScore: max(0, Double(total) - Double(5 - i) * 0.1)))
             }
         }
 
