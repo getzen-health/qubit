@@ -315,7 +315,7 @@ struct ExerciseMinutesView: View {
 
         let cal = Calendar.current
         var calMon = Calendar.current; calMon.firstWeekday = 2
-        let yearAgo = cal.date(byAdding: .year, value: -1, to: Date())!
+        let yearAgo = cal.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let minUnit = HKUnit.minute()
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in
@@ -379,7 +379,7 @@ struct ExerciseMinutesView: View {
         longestStreak = longest
 
         // Day-of-week averages (last 12 weeks)
-        let twelveWeeksAgo = cal.date(byAdding: .weekOfYear, value: -12, to: Date())!
+        let twelveWeeksAgo = cal.date(byAdding: .weekOfYear, value: -12, to: Date()) ?? Date()
         var dowSums = Array(repeating: 0.0, count: 7)
         var dowCounts = Array(repeating: 0, count: 7)
         for (day, mins) in dayMap where day >= twelveWeeksAgo {

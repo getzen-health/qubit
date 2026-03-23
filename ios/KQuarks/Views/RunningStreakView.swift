@@ -255,7 +255,7 @@ struct RunningStreakView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, distType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let mUnit = HKUnit.meter()
         let cal = Calendar.current
 
@@ -285,7 +285,7 @@ struct RunningStreakView: View {
         // Build 90-day grid starting from Monday before ninetyDaysAgo
         var gridStart = ninetyDaysAgo
         while cal.component(.weekday, from: gridStart) != 2 {  // 2 = Monday
-            gridStart = cal.date(byAdding: .day, value: -1, to: gridStart)!
+            gridStart = cal.date(byAdding: .day, value: -1, to: gridStart) ?? Date()
         }
 
         var grid: [DayActivity] = []
@@ -294,7 +294,7 @@ struct RunningStreakView: View {
         while d <= today {
             let ran = runDayMap[d] != nil
             grid.append(DayActivity(id: d, date: d, ran: ran, distanceKm: runDayMap[d] ?? 0))
-            d = cal.date(byAdding: .day, value: 1, to: d)!
+            d = cal.date(byAdding: .day, value: 1, to: d) ?? Date()
         }
         dayGrid = grid
 
@@ -303,7 +303,7 @@ struct RunningStreakView: View {
         var checkDay = today
         while let km = runDayMap[checkDay], km > 0 {
             streak += 1
-            checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
+            checkDay = cal.date(byAdding: .day, value: -1, to: checkDay) ?? Date()
         }
         currentStreak = streak
 

@@ -321,7 +321,7 @@ struct TrainingPerformanceCorrelationView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -7, to: end)!  // extra month for CTL warmup
+        let start = calendar.date(byAdding: .month, value: -7, to: end) ?? Date()  // extra month for CTL warmup
 
         var allWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -393,11 +393,11 @@ struct TrainingPerformanceCorrelationView: View {
                 weekRuns[ws, default: 0] += 1
             }
 
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         // Build week points (discard first month = CTL warmup)
-        let warmupEnd = calendar.date(byAdding: .month, value: 1, to: workouts.first?.startDate ?? end)!
+        let warmupEnd = calendar.date(byAdding: .month, value: 1, to: workouts.first?.startDate ?? end) ?? Date()
         let allWeeks = weekCTL.keys.sorted().filter { $0 >= weekStart(for: warmupEnd) }
         let built: [WeekPoint] = allWeeks.map { ws in
             let c = weekCTL[ws] ?? 0

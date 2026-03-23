@@ -274,8 +274,8 @@ struct LongevityView: View {
         defer { isLoading = false }
 
         let now = Date()
-        let start30 = Calendar.current.date(byAdding: .day, value: -30, to: now)!
-        let start90 = Calendar.current.date(byAdding: .day, value: -90, to: now)!
+        let start30 = Calendar.current.date(byAdding: .day, value: -30, to: now) ?? Date()
+        let start90 = Calendar.current.date(byAdding: .day, value: -90, to: now) ?? Date()
 
         // Fetch all metrics concurrently
         async let vo2Samples = try? healthKit.fetchSamples(for: .vo2Max, from: start90, to: now, limit: 10)

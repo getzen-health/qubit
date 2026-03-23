@@ -350,10 +350,10 @@ struct OvertrainingWarningView: View {
         let cal = Calendar.current
 
         // Fetch 35 days of data (7 recent + 28 baseline) + 7-week weekly aggregates for history chart
-        let start35 = cal.date(byAdding: .day, value: -35, to: now)!
-        let start7  = cal.date(byAdding: .day, value: -7,  to: now)!
-        let start28 = cal.date(byAdding: .day, value: -28, to: now)!
-        let start7w = cal.date(byAdding: .weekOfYear, value: -7, to: now)!
+        let start35 = cal.date(byAdding: .day, value: -35, to: now) ?? Date()
+        let start7  = cal.date(byAdding: .day, value: -7,  to: now) ?? Date()
+        let start28 = cal.date(byAdding: .day, value: -28, to: now) ?? Date()
+        let start7w = cal.date(byAdding: .weekOfYear, value: -7, to: now) ?? Date()
 
         async let recentHRV   = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start7, to: now)
         async let baseHRV     = fetchDailyAvg(type: hrvType, unit: HKUnit(from: "ms"),           from: start35, to: now)

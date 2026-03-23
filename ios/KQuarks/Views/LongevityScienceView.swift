@@ -131,7 +131,7 @@ struct LongevityScienceView: View {
         }
 
         let endDate = Date()
-        let startDate = Calendar.current.date(byAdding: .day, value: -56, to: endDate)!
+        let startDate = Calendar.current.date(byAdding: .day, value: -56, to: endDate) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
 
         async let vo2 = fetchAvg(type: vo2Type, predicate: predicate, unit: HKUnit(from: "mL/kg/min"))

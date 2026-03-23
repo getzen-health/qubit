@@ -370,7 +370,7 @@ struct HeartRateZonesView: View {
         // In a real app this would come from user profile. We use latest resting HR to refine.
         userMaxHR = 185 // default estimate; could be set from user profile
 
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let cal = Calendar.current
 
         // Fetch all workouts then get HR samples per workout

@@ -170,7 +170,7 @@ final class NotificationService {
     }
 
     private func scheduleWeeklyReview() async {
-        let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date()))!
+        let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
         let summaries = (try? await HealthKitService.shared.fetchWeekSummaries(days: 7)) ?? []
         let workouts = (try? await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date())) ?? []
 
@@ -260,7 +260,7 @@ final class NotificationService {
     func cacheHRVValue(_ hrv: Double) {
         var history = loadHRVHistory()
         history.append((Date(), hrv))
-        let cutoff = Calendar.current.date(byAdding: .day, value: -35, to: Date())!
+        let cutoff = Calendar.current.date(byAdding: .day, value: -35, to: Date()) ?? Date()
         history = history.filter { $0.0 > cutoff }
         let json = history.map { ["ts": $0.0.timeIntervalSince1970, "hrv": $0.1] }
         if let data = try? JSONSerialization.data(withJSONObject: json) {
@@ -278,7 +278,7 @@ final class NotificationService {
         guard history.count >= 7 else { return }
 
         // Baseline: all entries older than 3 days (avoids comparing against the current dip)
-        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
+        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()
         let baseline = history.filter { $0.0 < threeDaysAgo }
         guard baseline.count >= 5 else { return }
         let baselineAvg = baseline.map { $0.1 }.reduce(0, +) / Double(baseline.count)

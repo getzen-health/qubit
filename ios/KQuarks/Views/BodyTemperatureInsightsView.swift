@@ -280,7 +280,7 @@ struct BodyTemperatureInsightsView: View {
         let tempType = HKQuantityType(.appleSleepingWristTemperature)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [tempType])) != nil else { return }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let cal = Calendar.current
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in

@@ -260,7 +260,7 @@ struct MartialArtsView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, kcalType, hrType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
 

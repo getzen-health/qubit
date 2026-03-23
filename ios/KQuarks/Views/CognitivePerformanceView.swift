@@ -312,8 +312,8 @@ struct CognitivePerformanceView: View {
         }
 
         let end = Date()
-        let start60 = calendar.date(byAdding: .day, value: -60, to: end)!
-        let start30 = calendar.date(byAdding: .day, value: -30, to: end)!
+        let start60 = calendar.date(byAdding: .day, value: -60, to: end) ?? Date()
+        let start30 = calendar.date(byAdding: .day, value: -30, to: end) ?? Date()
 
         // Sleep
         var sleepSamples: [HKCategorySample] = []
@@ -398,12 +398,12 @@ struct CognitivePerformanceView: View {
         var atl = 0.0, ctl = 0.0
 
         // Walk 60-day window to warm up TSB
-        var cursor60 = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -60, to: Date())!)
+        var cursor60 = calendar.startOfDay(for: calendar.date(byAdding: .day, value: -60, to: Date()) ?? Date())
         while cursor60 < start {
             let t = dailyKcal[cursor60] ?? 0
             atl = atl * eAtl + t * (1 - eAtl)
             ctl = ctl * eCtl + t * (1 - eCtl)
-            cursor60 = calendar.date(byAdding: .day, value: 1, to: cursor60)!
+            cursor60 = calendar.date(byAdding: .day, value: 1, to: cursor60) ?? Date()
         }
 
         // Build day results
@@ -439,7 +439,7 @@ struct CognitivePerformanceView: View {
                 hrvScore: hrvScore,
                 loadScore: tsbScore
             ))
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         let todayKey = calendar.startOfDay(for: Date())

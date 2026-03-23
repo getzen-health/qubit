@@ -355,7 +355,7 @@ private struct RunningPacingContent: View {
         }
 
         let end   = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: end) ?? Date()
         let sort  = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 
         // Fetch recent outdoor running workouts

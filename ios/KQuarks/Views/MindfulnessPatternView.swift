@@ -136,7 +136,7 @@ struct MindfulnessPatternView: View {
         let dates = Set(sessions.map { Calendar.current.startOfDay(for: $0.date) }).sorted()
         guard !dates.isEmpty else { return 0 }
         let today = Calendar.current.startOfDay(for: Date())
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today) ?? Date()
         guard let last = dates.last, last == today || last == yesterday else { return 0 }
         var streak = 1
         for i in stride(from: dates.count - 2, through: 0, by: -1) {

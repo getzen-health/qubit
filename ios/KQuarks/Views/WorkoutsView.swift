@@ -120,7 +120,7 @@ struct WorkoutsView: View {
     private func loadWorkouts() async {
         isLoading = true
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: selectedPeriod.dateComponent, value: -selectedPeriod.value, to: Date())!
+        let startDate = calendar.date(byAdding: selectedPeriod.dateComponent, value: -selectedPeriod.value, to: Date()) ?? Date()
         workouts = (try? await healthKit.fetchWorkouts(from: startDate, to: Date())) ?? []
         isLoading = false
     }

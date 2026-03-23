@@ -55,7 +55,7 @@ final class HabitsViewModel {
         let cal = Calendar.current
         var streak = 0
         for i in 0..<90 {
-            let d = cal.date(byAdding: .day, value: -i, to: Date())!
+            let d = cal.date(byAdding: .day, value: -i, to: Date()) ?? Date()
             let ds = df.string(from: d)
             if dates.contains(ds) {
                 streak += 1

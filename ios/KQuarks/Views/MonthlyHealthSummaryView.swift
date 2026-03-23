@@ -79,8 +79,8 @@ struct MonthlyHealthSummaryView: View {
     private var lastMonthRange: (start: Date, end: Date) {
         let now = Date()
         let thisStart = cal.date(from: cal.dateComponents([.year, .month], from: now))!
-        let lastStart = cal.date(byAdding: .month, value: -1, to: thisStart)!
-        let lastEnd   = cal.date(byAdding: .second, value: -1, to: thisStart)!
+        let lastStart = cal.date(byAdding: .month, value: -1, to: thisStart) ?? Date()
+        let lastEnd   = cal.date(byAdding: .second, value: -1, to: thisStart) ?? Date()
         return (lastStart, lastEnd)
     }
 

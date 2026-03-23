@@ -239,7 +239,7 @@ struct WalkingProgressionView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, distType])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
 
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
             let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [

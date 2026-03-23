@@ -405,7 +405,7 @@ struct WorkoutConsistencyView: View {
                 WeekSlot(id: isoKey, weekLabel: "\(monthStr) W\(weekOfMonth)"),
                 at: 0
             )
-            monday = cal.date(byAdding: .day, value: -7, to: monday)!
+            monday = cal.date(byAdding: .day, value: -7, to: monday) ?? Date()
         }
 
         let df = DateFormatter()

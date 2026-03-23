@@ -296,7 +296,7 @@ struct RacePredictorView: View {
         // Fetch VO2Max
         let vo2Samples = (try? await healthKit.fetchSamples(
             for: .vo2Max,
-            from: Calendar.current.date(byAdding: .month, value: -3, to: Date())!,
+            from: Calendar.current.date(byAdding: .month, value: -3, to: Date()) ?? Date(),
             to: Date()
         )) ?? []
         if let latest = vo2Samples.sorted(by: { $0.startDate < $1.startDate }).last {
@@ -304,7 +304,7 @@ struct RacePredictorView: View {
         }
 
         // Fetch best recent run
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let workouts = (try? await healthKit.fetchWorkouts(from: start, to: Date())) ?? []
         let runs = workouts.filter { $0.workoutActivityType == .running }
         if let best = runs.compactMap({ w -> BestRun? in

@@ -321,7 +321,7 @@ struct AudioExposureView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [envType, hpType])) != nil else { return }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let dbUnit = HKUnit.decibelAWeightedSoundPressureLevel()
         let cal = Calendar.current
 
@@ -356,7 +356,7 @@ struct AudioExposureView: View {
                 headphoneAvgDB: hpMap[d],
                 headphonePeakDB: nil
             ))
-            d = cal.date(byAdding: .day, value: 1, to: d)!
+            d = cal.date(byAdding: .day, value: 1, to: d) ?? Date()
         }
         dailyData = allDays.filter { $0.envAvgDB != nil || $0.headphoneAvgDB != nil }
 

@@ -333,7 +333,7 @@ struct RunningPaceZonesView: View {
         defer { isLoading = false }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: end) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
         let workoutPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             predicate,

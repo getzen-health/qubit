@@ -307,7 +307,7 @@ struct TrainingPolarizationView: View {
             hasNoData = true; return
         }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
 
         // Get all workouts with HR data

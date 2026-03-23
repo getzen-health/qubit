@@ -128,7 +128,7 @@ struct CriticalSpeedScienceView: View {
         }
 
         let endDate = Date()
-        let startDate = Calendar.current.date(byAdding: .day, value: -365, to: endDate)!
+        let startDate = Calendar.current.date(byAdding: .day, value: -365, to: endDate) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
 
         // Get VO2max

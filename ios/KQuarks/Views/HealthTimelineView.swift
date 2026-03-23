@@ -185,8 +185,8 @@ struct HealthTimelineView: View {
 
         let cal = Calendar.current
         let today = Date()
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: today)!
-        let twoYearsAgo   = cal.date(byAdding: .year, value: -2, to: today)!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: today) ?? Date()
+        let twoYearsAgo   = cal.date(byAdding: .year, value: -2, to: today) ?? Date()
 
         async let wkts = try? healthKit.fetchWorkouts(from: thirtyDaysAgo, to: today)
         async let stepsCur = try? healthKit.fetchDailyStats(for: .stepCount,

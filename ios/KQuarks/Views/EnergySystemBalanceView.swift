@@ -402,7 +402,7 @@ struct EnergySystemBalanceView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: typesToRead)) != nil else { return }
 
         let cal = Calendar.current
-        let fourWeeksAgo = cal.date(byAdding: .weekOfYear, value: -4, to: Date())!
+        let fourWeeksAgo = cal.date(byAdding: .weekOfYear, value: -4, to: Date()) ?? Date()
 
         let allWorkouts: [HKWorkout] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(
@@ -517,8 +517,8 @@ struct EnergySystemBalanceView: View {
         // Build weekly trend buckets
         var trends: [WeekTrend] = []
         for weekOffset in 0..<4 {
-            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(3 - weekOffset), to: Date())!, cal: cal)
-            let weekEnd = cal.date(byAdding: .day, value: 7, to: monday)!
+            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(3 - weekOffset), to: Date()) ?? Date(), cal: cal)
+            let weekEnd = cal.date(byAdding: .day, value: 7, to: monday) ?? Date()
             let weekWorkouts = allWorkouts.filter { $0.startDate >= monday && $0.startDate < weekEnd }
 
             var wAerobic = 0.0, wThreshold = 0.0, wVO2 = 0.0, wStrength = 0, wRest = 0

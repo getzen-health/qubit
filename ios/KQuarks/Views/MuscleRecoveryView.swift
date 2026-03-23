@@ -357,7 +357,7 @@ struct MuscleRecoveryView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .day, value: -7, to: end)!  // last 7 days enough for recovery tracking
+        let start = calendar.date(byAdding: .day, value: -7, to: end) ?? Date()  // last 7 days enough for recovery tracking
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in

@@ -381,7 +381,7 @@ struct WorkoutCalendarView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let sixMonthsAgo = cal.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = cal.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: sixMonthsAgo, end: Date(), options: .strictStartDate)
         let descriptor = HKSampleQueryDescriptor(
             predicates: [.workout(predicate)],

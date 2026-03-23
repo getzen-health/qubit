@@ -437,7 +437,7 @@ struct ExerciseBloodPressureView: View {
         )) != nil else { isLoading = false; return }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
 
         // Fetch BP correlations
         var bpSamples: [HKCorrelation] = []
@@ -487,7 +487,7 @@ struct ExerciseBloodPressureView: View {
         var weeklyPoints: [WeeklyPoint] = []
         var weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: start))!
         while weekCursor <= end {
-            let weekEnd = calendar.date(byAdding: .weekOfYear, value: 1, to: weekCursor)!
+            let weekEnd = calendar.date(byAdding: .weekOfYear, value: 1, to: weekCursor) ?? Date()
             let weekBP = readings.filter { $0.date >= weekCursor && $0.date < weekEnd }
             let weekWorkouts = aerobicWorkouts.filter { $0.startDate >= weekCursor && $0.startDate < weekEnd }
 

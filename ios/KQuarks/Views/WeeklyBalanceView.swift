@@ -297,7 +297,7 @@ struct WeeklyBalanceView: View {
         let weekEnd = now
 
         // Past 8 weeks for history
-        let historyStart = calendar.date(byAdding: .weekOfYear, value: -8, to: weekStart)!
+        let historyStart = calendar.date(byAdding: .weekOfYear, value: -8, to: weekStart) ?? Date()
 
         async let workoutsResult = fetchWorkouts(start: historyStart, end: now)
         async let sleepResult = fetchSleepMinutes(start: historyStart, end: now)
@@ -337,7 +337,7 @@ struct WeeklyBalanceView: View {
         var history: [WeeklyHistory] = []
         var cursor = historyStart
         while cursor < weekStart {
-            let wEnd = calendar.date(byAdding: .weekOfYear, value: 1, to: cursor)!
+            let wEnd = calendar.date(byAdding: .weekOfYear, value: 1, to: cursor) ?? Date()
             let wWorkouts = workouts.filter { $0.startDate >= cursor && $0.startDate < wEnd }
             history.append(WeeklyHistory(
                 weekStart: cursor,
@@ -447,7 +447,7 @@ struct WeeklyBalanceView: View {
         var sleepTotal = 0.0; var sleepDays = 0
         while day <= weekEnd {
             if let m = sleepMap[calendar.startOfDay(for: day)] { sleepTotal += m; sleepDays += 1 }
-            day = calendar.date(byAdding: .day, value: 1, to: day)!
+            day = calendar.date(byAdding: .day, value: 1, to: day) ?? Date()
         }
         let avgSleep = sleepDays > 0 ? sleepTotal / Double(sleepDays) : 0
         let sleepScore = min(100, avgSleep / 420 * 100)
@@ -484,7 +484,7 @@ struct WeeklyBalanceView: View {
         var day = weekStart; var total = 0.0; var count = 0
         while day <= weekEnd {
             if let m = sleepMap[calendar.startOfDay(for: day)] { total += m; count += 1 }
-            day = calendar.date(byAdding: .day, value: 1, to: day)!
+            day = calendar.date(byAdding: .day, value: 1, to: day) ?? Date()
         }
         if count == 0 { return "No sleep data" }
         let avg = total / Double(count)

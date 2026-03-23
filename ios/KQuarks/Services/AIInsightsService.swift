@@ -104,7 +104,7 @@ class AIInsightsService {
         let weekHistory = try await healthKit.fetchWeekSummaries(days: 7)
 
         let calendar = Calendar.current
-        let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date())!
+        let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         let workouts = try await healthKit.fetchWorkouts(from: weekAgo, to: Date())
         let sleepSamples = try await healthKit.fetchSleepAnalysis(from: weekAgo, to: Date())
 

@@ -339,7 +339,7 @@ struct SubstrateMetabolismView: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in

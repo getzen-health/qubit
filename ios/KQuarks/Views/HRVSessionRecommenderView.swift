@@ -313,7 +313,7 @@ struct HRVSessionRecommenderView: View {
             hasNoHRV = true; return
         }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let msUnit = HKUnit.secondUnit(with: .milli)
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in

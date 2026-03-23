@@ -301,7 +301,7 @@ struct TrainingVolumeHistoryView: View {
         for _ in 0..<52 {
             weekBuckets.insert((monday: monday, running: 0, cycling: 0, swimming: 0,
                                  strength: 0, hiit: 0, hiking: 0, rowing: 0, other: 0), at: 0)
-            monday = cal.date(byAdding: .day, value: -7, to: monday)!
+            monday = cal.date(byAdding: .day, value: -7, to: monday) ?? Date()
         }
 
         // Map workout types to groups

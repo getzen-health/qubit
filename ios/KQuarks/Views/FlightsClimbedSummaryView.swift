@@ -260,7 +260,7 @@ struct FlightsClimbedSummaryView: View {
 
         let cal = Calendar.current
         var calMon = Calendar.current; calMon.firstWeekday = 2
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
 
         // Use statistics collection for daily sums
         let stats: HKStatisticsCollection? = await withCheckedContinuation { cont in

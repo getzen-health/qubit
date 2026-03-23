@@ -401,7 +401,7 @@ struct HRZoneProgressionView: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .month, value: -12, to: end)!
+        let start = Calendar.current.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         // 1. Fetch all workouts in the last 12 months
         let workouts = await fetchWorkouts(from: start, to: end)
@@ -416,7 +416,7 @@ struct HRZoneProgressionView: View {
         while current <= end {
             let monthStart = calendar.startOfDay(for: calendar.dateInterval(of: .month, for: current)!.start)
             bucketMap[monthStart] = ZoneMinutes()
-            current = calendar.date(byAdding: .month, value: 1, to: current)!
+            current = calendar.date(byAdding: .month, value: 1, to: current) ?? Date()
         }
 
         // 3. Process workouts concurrently (batching to avoid overload)

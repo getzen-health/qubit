@@ -255,7 +255,7 @@ struct GoalsHistoryView: View {
         defer { isLoading = false }
 
         let today = Date()
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: today)!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: today) ?? Date()
 
         async let stepsData   = try? healthKit.fetchDailyStats(for: .stepCount, from: thirtyDaysAgo, to: today, isDiscrete: false)
         async let calsData    = try? healthKit.fetchDailyStats(for: .activeEnergyBurned, from: thirtyDaysAgo, to: today, isDiscrete: false)

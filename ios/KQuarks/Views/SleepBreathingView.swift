@@ -303,7 +303,7 @@ struct SleepBreathingView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let sixtyDaysAgo = Calendar.current.date(byAdding: .day, value: -60, to: Date())!
+        let sixtyDaysAgo = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
         guard let samples = try? await healthKit.fetchSamples(
             for: .respiratoryRate,
             from: sixtyDaysAgo,
@@ -324,7 +324,7 @@ struct SleepBreathingView: View {
             // Normalize: samples between 6pm–midnight → use next calendar day
             let keyDate: Date
             if hour >= 18 {
-                keyDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: sampleDate)!)
+                keyDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: sampleDate) ?? Date())
             } else {
                 keyDate = calendar.startOfDay(for: sampleDate)
             }

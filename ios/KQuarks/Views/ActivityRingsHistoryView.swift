@@ -311,7 +311,7 @@ struct ActivityRingsHistoryView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let summaries = (try? await healthKit.fetchActivitySummaries(from: start, to: Date())) ?? []
         days = summaries.compactMap { summary -> RingDay? in
             guard let date = summary.dateComponents(for: .current).date else { return nil }

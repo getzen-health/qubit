@@ -246,7 +246,7 @@ struct VO2MaxView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let start = Calendar.current.date(byAdding: .year, value: -2, to: Date())!
+        let start = Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date()
         let raw = (try? await healthKit.fetchSamples(for: .vo2Max, from: start, to: Date())) ?? []
         let unit = HKUnit.literUnit(with: .milli)
             .unitDivided(by: HKUnit.gramUnit(with: .kilo).unitMultiplied(by: .minute()))

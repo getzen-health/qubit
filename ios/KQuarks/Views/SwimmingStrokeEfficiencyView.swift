@@ -350,7 +350,7 @@ struct SwimmingStrokeEfficiencyView: View {
         guard (try? await healthStore.requestAuthorization(
             toShare: [], read: [strokeType, workoutType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
 
         // Fetch swimming workouts
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in

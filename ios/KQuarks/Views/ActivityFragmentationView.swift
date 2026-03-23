@@ -289,7 +289,7 @@ struct ActivityFragmentationView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
         let interval = DateComponents(minute: 15)
         let anchor = calendar.startOfDay(for: start)
 

@@ -346,7 +346,7 @@ struct CardiacEventsView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
 
         async let highRaw = (try? await healthKit.fetchCategoryEvents(.highHeartRateEvent, from: start, to: Date())) ?? []
         async let lowRaw = (try? await healthKit.fetchCategoryEvents(.lowHeartRateEvent, from: start, to: Date())) ?? []

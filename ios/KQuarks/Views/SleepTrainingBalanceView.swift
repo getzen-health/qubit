@@ -357,7 +357,7 @@ struct SleepTrainingBalanceView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .weekOfYear, value: -12, to: end)!
+        let start = calendar.date(byAdding: .weekOfYear, value: -12, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -437,7 +437,7 @@ struct SleepTrainingBalanceView: View {
                 avgSleepHours: avgSleep,
                 sleepSessions: sleepVals.count
             ))
-            cursor = calendar.date(byAdding: .weekOfYear, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .weekOfYear, value: 1, to: cursor) ?? Date()
         }
         return result
     }

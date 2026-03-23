@@ -299,7 +299,7 @@ struct BloodOxygenView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let raw = (try? await healthKit.fetchSamples(for: .oxygenSaturation, from: start, to: Date())) ?? []
         let unit = HKUnit.percent()
         samples = raw.map { (date: $0.startDate, value: $0.quantity.doubleValue(for: unit) * 100) }

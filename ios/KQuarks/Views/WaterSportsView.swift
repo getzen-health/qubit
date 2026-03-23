@@ -262,7 +262,7 @@ struct WaterSportsView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, kcalType, hrType, distType])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let kmUnit = HKUnit.meterUnit(with: .kilo)

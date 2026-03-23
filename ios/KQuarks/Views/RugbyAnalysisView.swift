@@ -394,7 +394,7 @@ struct RugbyAnalysisView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -12, to: end)!
+        let start = calendar.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -435,7 +435,7 @@ struct RugbyAnalysisView: View {
             weekMap[weekStart] = (cur.kcal + s.kcal, cur.sessions + 1)
         }
 
-        var weekCursor = calendar.date(byAdding: .month, value: -3, to: end)!
+        var weekCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
         weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: weekCursor))!
         var weekLoads: [WeekLoad] = []
         while weekCursor <= end {
@@ -446,7 +446,7 @@ struct RugbyAnalysisView: View {
                 kcal: data.kcal,
                 sessions: data.sessions
             ))
-            weekCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: weekCursor)!
+            weekCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: weekCursor) ?? Date()
         }
 
         let totalKcal = sessions.map(\.kcal).reduce(0, +)

@@ -281,7 +281,7 @@ struct UVExposureView: View {
         else { return }
 
         let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let joulesPerM2 = HKUnit(from: "J/m^2")
 
         // Daily cumulative sums

@@ -336,7 +336,7 @@ struct FiberTypeView: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .month, value: -6, to: end)!
+        let start = Calendar.current.date(byAdding: .month, value: -6, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in

@@ -232,7 +232,7 @@ struct ActivityHeatmapView: View {
                 if current <= today {
                     week.append(HeatmapDay(date: current))
                 }
-                current = cal.date(byAdding: .day, value: 1, to: current)!
+                current = cal.date(byAdding: .day, value: 1, to: current) ?? Date()
             }
             if !week.isEmpty { weeks.append(week) }
         }

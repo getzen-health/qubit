@@ -158,7 +158,7 @@ struct Zone2ScienceView: View {
         }
 
         let endDate = Date()
-        let startDate = Calendar.current.date(byAdding: .day, value: -56, to: endDate)!
+        let startDate = Calendar.current.date(byAdding: .day, value: -56, to: endDate) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
 
         let workouts: [HKWorkout] = await withCheckedContinuation { continuation in
@@ -196,7 +196,7 @@ struct Zone2ScienceView: View {
             }
         }
 
-        let last30Start = Calendar.current.date(byAdding: .day, value: -30, to: endDate)!
+        let last30Start = Calendar.current.date(byAdding: .day, value: -30, to: endDate) ?? Date()
         let z2Last30 = aerobicWorkouts
             .filter { $0.startDate >= last30Start }
             .compactMap { w -> Double? in

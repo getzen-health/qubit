@@ -412,7 +412,7 @@ struct TriathlonView: View {
         }
 
         let end   = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -84, to: end)! // 12 weeks
+        let start = Calendar.current.date(byAdding: .day, value: -84, to: end) ?? Date() // 12 weeks
         let pred  = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort  = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 

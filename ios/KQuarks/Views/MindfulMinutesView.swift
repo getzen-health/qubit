@@ -300,7 +300,7 @@ struct MindfulMinutesView: View {
             hasNoData = true; return
         }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
             let pred = HKQuery.predicateForSamples(withStart: ninetyDaysAgo, end: Date())
@@ -341,7 +341,7 @@ struct MindfulMinutesView: View {
         var streak = 0
         while uniqueDays.contains(streakDate) {
             streak += 1
-            streakDate = cal.date(byAdding: .day, value: -1, to: streakDate)!
+            streakDate = cal.date(byAdding: .day, value: -1, to: streakDate) ?? Date()
         }
         currentStreak = streak
 

@@ -386,7 +386,7 @@ struct AlcoholTrackingView: View {
         } catch { isLoading = false; return }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -91, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -91, to: end) ?? Date()
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
@@ -418,11 +418,11 @@ struct AlcoholTrackingView: View {
         }
 
         // Build daily points for 90 days
-        var current = cal.date(byAdding: .day, value: 1, to: start)!
+        var current = cal.date(byAdding: .day, value: 1, to: start) ?? Date()
         var drinkDays: [DrinkDay] = []
         while current <= end {
             let key = cal.startOfDay(for: current)
-            let nextKey = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: key)!)
+            let nextKey = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: key) ?? Date())
             let nextHRV = hrvMap[nextKey].map { $0.reduce(0,+) / Double($0.count) }
             let nextRHR = rhrMap[nextKey].map { $0.reduce(0,+) / Double($0.count) }
             drinkDays.append(DrinkDay(
@@ -431,7 +431,7 @@ struct AlcoholTrackingView: View {
                 nextDayHRV: nextHRV,
                 nextDayRHR: nextRHR
             ))
-            current = cal.date(byAdding: .day, value: 1, to: current)!
+            current = cal.date(byAdding: .day, value: 1, to: current) ?? Date()
         }
 
         // Weekly summaries

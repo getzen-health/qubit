@@ -337,7 +337,7 @@ struct SweatRateView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -180, to: end)!
+        let start = calendar.date(byAdding: .day, value: -180, to: end) ?? Date()
 
         // Fetch all body mass samples
         var massSamples: [HKQuantitySample] = []

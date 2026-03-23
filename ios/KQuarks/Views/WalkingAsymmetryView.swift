@@ -349,7 +349,7 @@ struct WalkingAsymmetryView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
         let interval = DateComponents(day: 1)
         let anchor = calendar.startOfDay(for: start)
 

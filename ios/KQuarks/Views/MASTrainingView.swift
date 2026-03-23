@@ -409,7 +409,7 @@ struct MASTrainingView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -12, to: end)!
+        let start = calendar.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         // Fetch VO2Max samples
         var vo2Samples: [HKQuantitySample] = []
@@ -435,7 +435,7 @@ struct MASTrainingView: View {
         let currentMASVal = currentVO2 > 0 ? currentVO2 / 3.5 : 0
 
         // Fetch recent running workouts
-        let start90 = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start90 = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
         var runWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
             let pred = HKQuery.predicateForSamples(withStart: start90, end: end)

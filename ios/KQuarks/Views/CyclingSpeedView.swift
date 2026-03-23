@@ -354,7 +354,7 @@ struct CyclingSpeedView: View {
         let speedType = HKQuantityType(.cyclingSpeed)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [speedType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let mps = HKUnit.meter().unitDivided(by: .second())
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in

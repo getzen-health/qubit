@@ -392,7 +392,7 @@ struct StressRecoveryView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: typesToRead)) != nil else { return }
 
         let cal = Calendar.current
-        let twelveWeeksAgo = cal.date(byAdding: .weekOfYear, value: -12, to: Date())!
+        let twelveWeeksAgo = cal.date(byAdding: .weekOfYear, value: -12, to: Date()) ?? Date()
 
         // Fetch workouts
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
@@ -417,13 +417,13 @@ struct StressRecoveryView: View {
         // All 12-week bucket list
         var allWeeks: [Date] = []
         for i in 0..<12 {
-            allWeeks.append(mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(11 - i), to: Date())!, cal: cal))
+            allWeeks.append(mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(11 - i), to: Date()) ?? Date(), cal: cal))
         }
         let allLoads = allWeeks.map { weeklyMins[$0] ?? 0 }
         let maxLoad = allLoads.max() ?? 1
 
         // Fetch HRV samples (last 28 days for baseline + 12-week for tracking)
-        let extendedStart = cal.date(byAdding: .day, value: -28, to: twelveWeeksAgo)!
+        let extendedStart = cal.date(byAdding: .day, value: -28, to: twelveWeeksAgo) ?? Date()
         let hrvSamples: [HKQuantitySample] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(
                 sampleType: HKQuantityType(.heartRateVariabilitySDNN),
@@ -463,7 +463,7 @@ struct StressRecoveryView: View {
 
         for (idx, monday) in allWeeks.enumerated() {
             let load = allLoads[idx]
-            let weekEnd = cal.date(byAdding: .day, value: 7, to: monday)!
+            let weekEnd = cal.date(byAdding: .day, value: 7, to: monday) ?? Date()
 
             // Stress score: % of max weekly load, normalized 0-100
             let stressScore = maxLoad > 0 ? min(load / maxLoad * 100, 100) : 0

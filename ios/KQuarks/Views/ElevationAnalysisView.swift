@@ -334,7 +334,7 @@ struct ElevationAnalysisView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
 
         // Fetch outdoor running + hiking workouts
         var rawWorkouts: [HKWorkout] = []
@@ -382,7 +382,7 @@ struct ElevationAnalysisView: View {
             let d = monthMap[monthCursor] ?? (0, 0)
             monthly.append(MonthGain(label: monthFmt.string(from: monthCursor), date: monthCursor,
                                      totalGainM: d.gain, workouts: d.count))
-            monthCursor = calendar.date(byAdding: .month, value: 1, to: monthCursor)!
+            monthCursor = calendar.date(byAdding: .month, value: 1, to: monthCursor) ?? Date()
         }
 
         let totalGain = result.map(\.gainMeters).reduce(0, +)

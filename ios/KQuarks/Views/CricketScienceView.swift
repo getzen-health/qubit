@@ -95,7 +95,7 @@ struct CricketScienceView: View {
         let types: Set<HKObjectType> = [HKObjectType.workoutType()]
         guard (try? await store.requestAuthorization(toShare: [], read: types)) != nil else { isLoading = false; return }
         let now = Date()
-        let start = Calendar.current.date(byAdding: .weekOfYear, value: -52, to: now)!
+        let start = Calendar.current.date(byAdding: .weekOfYear, value: -52, to: now) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: start, end: now)
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(sampleType: .workoutType(), predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in

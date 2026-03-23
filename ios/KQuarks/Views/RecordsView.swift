@@ -137,7 +137,7 @@ struct RecordsView: View {
     private func loadRecords() async {
         isLoading = true
         let calendar = Calendar.current
-        let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: Date()) ?? Date()
 
         // Fetch 365-day summaries for daily bests
         let summaries = (try? await healthKit.fetchWeekSummaries(days: 365)) ?? []

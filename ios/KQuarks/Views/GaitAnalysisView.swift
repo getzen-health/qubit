@@ -470,7 +470,7 @@ struct GaitAnalysisView: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: end) ?? Date()
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let interval = DateComponents(day: 1)
 
@@ -496,7 +496,7 @@ struct GaitAnalysisView: View {
                 asymmetry:     asymMap[key].map { $0 * 100 },     // fraction → %
                 doubleSupport: dblMap[key].map  { $0 * 100 }      // fraction → %
             ))
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
+            current = calendar.date(byAdding: .day, value: 1, to: current) ?? Date()
         }
 
         await MainActor.run {

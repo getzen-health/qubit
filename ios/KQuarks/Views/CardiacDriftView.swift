@@ -343,7 +343,7 @@ struct CardiacDriftView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, hrType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
 
         // Fetch running workouts ≥ 45 minutes
         let longRuns: [HKWorkout] = await withCheckedContinuation { cont in

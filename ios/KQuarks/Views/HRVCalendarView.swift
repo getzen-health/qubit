@@ -31,8 +31,8 @@ struct HRVCalendarView: View {
         // End on the Saturday of this week
         let todayWeekday = cal.component(.weekday, from: today) - 1  // 0=Sun
         let daysToSat = (6 - todayWeekday + 7) % 7
-        let endDate = cal.date(byAdding: .day, value: daysToSat, to: today)!
-        let startDate = cal.date(byAdding: .day, value: -363, to: endDate)!  // 52 weeks - 1 day
+        let endDate = cal.date(byAdding: .day, value: daysToSat, to: today) ?? Date()
+        let startDate = cal.date(byAdding: .day, value: -363, to: endDate) ?? Date()  // 52 weeks - 1 day
 
         // Build array of 364 days, grouped into 52 weeks of 7
         var weeks: [[HRVDay?]] = []
@@ -47,7 +47,7 @@ struct HRVCalendarView: View {
                 weeks.append(weekDays)
                 weekDays = []
             }
-            current = cal.date(byAdding: .day, value: 1, to: current)!
+            current = cal.date(byAdding: .day, value: 1, to: current) ?? Date()
         }
         if !weekDays.isEmpty { weeks.append(weekDays) }
         return weeks

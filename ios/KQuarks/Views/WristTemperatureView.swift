@@ -304,7 +304,7 @@ struct WristTemperatureView: View {
         isLoading = true
         defer { isLoading = false }
         if #available(iOS 16.0, *) {
-            let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+            let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
             let raw = (try? await healthKit.fetchSamples(for: .appleSleepingWristTemperature, from: start, to: Date())) ?? []
             let unit = HKUnit.degreeCelsius()
             // Apple provides nightly averages; take one per date (latest per night)

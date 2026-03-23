@@ -397,7 +397,7 @@ struct ECGAnalysisView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [ecgType])) != nil else { return }
 
         let pred = HKQuery.predicateForSamples(
-            withStart: Calendar.current.date(byAdding: .year, value: -2, to: Date())!,
+            withStart: Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date(),
             end: Date()
         )
 

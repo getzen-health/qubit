@@ -317,7 +317,7 @@ struct ChronicTrainingLoadView: View {
 
         let end = Date()
         // 180 days: 42-day warm-up + 138 days of visible history
-        let start = calendar.date(byAdding: .day, value: -180, to: end)!
+        let start = calendar.date(byAdding: .day, value: -180, to: end) ?? Date()
 
         var workouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -360,7 +360,7 @@ struct ChronicTrainingLoadView: View {
             ctl = ctl * eCtl + trimp * (1 - eCtl)
             atl = atl * eAtl + trimp * (1 - eAtl)
             results.append(DayLoad(date: cursor, trimp: trimp, atl: atl, ctl: ctl, tsb: ctl - atl))
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         let last = results.last

@@ -296,7 +296,7 @@ struct HRVDeepDiveView: View {
         let hrvType = HKQuantityType(.heartRateVariabilitySDNN)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [hrvType])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let msUnit = HKUnit.secondUnit(with: .milli)
         let cal = Calendar.current
         let df = DateFormatter(); df.dateFormat = "yyyy-MM"

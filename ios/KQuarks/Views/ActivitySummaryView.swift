@@ -373,8 +373,8 @@ struct ActivitySummaryView: View {
         var weekStart = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today)
         weekStart.weekday = 2  // Monday
         let thisMonday = cal.date(from: weekStart) ?? today
-        let lastMonday = cal.date(byAdding: .day, value: -7, to: thisMonday)!
-        let fourWeeksAgo = cal.date(byAdding: .day, value: -28, to: thisMonday)!
+        let lastMonday = cal.date(byAdding: .day, value: -7, to: thisMonday) ?? Date()
+        let fourWeeksAgo = cal.date(byAdding: .day, value: -28, to: thisMonday) ?? Date()
 
         async let stepsThis  = try? healthKit.fetchDailyStats(for: .stepCount,        from: thisMonday,  to: today, isDiscrete: false)
         async let calsThis   = try? healthKit.fetchDailyStats(for: .activeEnergyBurned, from: thisMonday, to: today, isDiscrete: false)

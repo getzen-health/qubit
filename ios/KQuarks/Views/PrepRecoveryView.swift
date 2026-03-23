@@ -400,7 +400,7 @@ struct PrepRecoveryView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -12, to: end)!
+        let start = calendar.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -432,14 +432,14 @@ struct PrepRecoveryView: View {
             let cur = weekMap[ws] ?? (0, 0)
             weekMap[ws] = (cur.sessions + 1, cur.totalMin + s.durationMin)
         }
-        var wCursor = calendar.date(byAdding: .month, value: -3, to: end)!
+        var wCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
         wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor))!
         var weekLoads: [WeekLoad] = []
         while wCursor <= end {
             let d = weekMap[wCursor] ?? (0, 0)
             weekLoads.append(WeekLoad(label: weekFmt.string(from: wCursor), date: wCursor,
                                       sessions: d.sessions, totalMin: d.totalMin))
-            wCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: wCursor)!
+            wCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: wCursor) ?? Date()
         }
 
         let totalMin = sessions.map(\.durationMin).reduce(0, +)

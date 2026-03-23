@@ -287,7 +287,7 @@ struct VILPAView: View {
         }
 
         let now = Date()
-        let start = calendar.date(byAdding: .day, value: -30, to: now)!
+        let start = calendar.date(byAdding: .day, value: -30, to: now) ?? Date()
 
         // Fetch workouts for exclusion windows
         let workoutWindows = await fetchWorkoutWindows(start: start, end: now)
@@ -396,7 +396,7 @@ struct VILPAView: View {
         while cursor <= now {
             let key = calendar.startOfDay(for: cursor)
             filled.append(existingByDate[key] ?? DayVILPA(date: key, boutCount: 0, avgBoutDurationSecs: 0, totalVilpaMins: 0))
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         // Bucket bout durations

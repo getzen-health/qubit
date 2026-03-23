@@ -279,7 +279,7 @@ struct WinterSportsView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, kcalType, hrType, distType])) != nil else { return }
 
         // Look back 2 years to capture seasonal data
-        let twoYearsAgo = Calendar.current.date(byAdding: .year, value: -2, to: Date())!
+        let twoYearsAgo = Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date()
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let kmUnit = HKUnit.meterUnit(with: .kilo)

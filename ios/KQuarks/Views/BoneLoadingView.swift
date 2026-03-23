@@ -301,8 +301,8 @@ struct BoneLoadingView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -56, to: end)!  // 8 weeks
-        let start30 = calendar.date(byAdding: .day, value: -30, to: end)!
+        let start = calendar.date(byAdding: .day, value: -56, to: end) ?? Date()  // 8 weeks
+        let start30 = calendar.date(byAdding: .day, value: -30, to: end) ?? Date()
 
         let interval = DateComponents(day: 1)
         let anchor = calendar.startOfDay(for: start)
@@ -396,7 +396,7 @@ struct BoneLoadingView: View {
             let fl = dailyFlights[day] ?? 0
             let cur = weekMap[ws] ?? (runSteps: 0, walkSteps: 0, flights: 0)
             weekMap[ws] = (runSteps: cur.runSteps + run, walkSteps: cur.walkSteps + walk, flights: cur.flights + fl)
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         let weeklyList = weekMap.sorted { $0.key < $1.key }.map { ws, vals in
@@ -404,7 +404,7 @@ struct BoneLoadingView: View {
                           runSteps: vals.runSteps, walkSteps: vals.walkSteps, flightsClimbed: vals.flights)
         }
 
-        let last30start = calendar.date(byAdding: .day, value: -30, to: end)!
+        let last30start = calendar.date(byAdding: .day, value: -30, to: end) ?? Date()
         let recentDays = weeklyList.filter { $0.weekStart >= weekStart(for: last30start) }
         let totalRun  = recentDays.map(\.runSteps).reduce(0, +)
         let totalWalk = recentDays.map(\.walkSteps).reduce(0, +)

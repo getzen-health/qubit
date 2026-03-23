@@ -268,7 +268,7 @@ struct ExerciseSnacksView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 

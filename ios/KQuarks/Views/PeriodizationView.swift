@@ -404,7 +404,7 @@ struct PeriodizationView: View {
         let workoutType = HKObjectType.workoutType()
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType])) != nil else { return }
 
-        let fiftyTwoWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -52, to: Date())!
+        let fiftyTwoWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -52, to: Date()) ?? Date()
         let allWorkouts: [HKWorkout] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(
                 sampleType: workoutType,
@@ -430,7 +430,7 @@ struct PeriodizationView: View {
         // Generate all 52 week buckets
         var allBuckets: [WeekBucket] = []
         for offset in 0..<52 {
-            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(51 - offset), to: Date())!, cal: cal)
+            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(51 - offset), to: Date()) ?? Date(), cal: cal)
             let mins = weekMap[monday] ?? 0
             allBuckets.append(WeekBucket(id: monday, monday: monday, totalMinutes: mins, phase: .offSeason))
         }

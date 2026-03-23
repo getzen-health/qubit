@@ -348,7 +348,7 @@ struct WalkingHeartRateView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [walkingHRType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in

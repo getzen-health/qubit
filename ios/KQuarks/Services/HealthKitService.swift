@@ -209,9 +209,9 @@ class HealthKitService {
         var summaries: [DaySummaryForAI] = []
 
         for dayOffset in 0..<days {
-            let date = calendar.date(byAdding: .day, value: -dayOffset, to: now)!
+            let date = calendar.date(byAdding: .day, value: -dayOffset, to: now) ?? Date()
             let startOfDay = calendar.startOfDay(for: date)
-            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
 
             async let steps = fetchSum(for: .stepCount, from: startOfDay, to: endOfDay)
             async let calories = fetchSum(for: .activeEnergyBurned, from: startOfDay, to: endOfDay)
@@ -244,7 +244,7 @@ class HealthKitService {
         let calendar = Calendar.current
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
-        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday)!
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? Date()
 
         let quantityType = HKQuantityType(identifier)
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictStartDate)
@@ -299,6 +299,7 @@ class HealthKitService {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 
+        let unit = preferredUnit(for: identifier)
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKSampleQuery(
                 sampleType: quantityType,
@@ -314,7 +315,6 @@ class HealthKitService {
                     continuation.resume(returning: nil)
                     return
                 }
-                let unit = self.preferredUnit(for: identifier)
                 continuation.resume(returning: sample.quantity.doubleValue(for: unit))
             }
             self.healthStore.execute(query)
@@ -332,12 +332,7 @@ class HealthKitService {
             options: .strictStartDate
         )
 
-        let query = HKStatisticsQuery(
-            quantityType: quantityType,
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum
-        ) { _, _, _ in }
-
+        let unit = preferredUnit(for: identifier)
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKStatisticsQuery(
                 quantityType: quantityType,
@@ -349,7 +344,6 @@ class HealthKitService {
                     return
                 }
 
-                let unit = self.preferredUnit(for: identifier)
                 let value = statistics?.sumQuantity()?.doubleValue(for: unit)
                 continuation.resume(returning: value)
             }
@@ -363,6 +357,7 @@ class HealthKitService {
 
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 
+        let unit = preferredUnit(for: identifier)
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKSampleQuery(
                 sampleType: quantityType,
@@ -380,7 +375,6 @@ class HealthKitService {
                     return
                 }
 
-                let unit = self.preferredUnit(for: identifier)
                 let value = sample.quantity.doubleValue(for: unit)
                 continuation.resume(returning: value)
             }
@@ -425,7 +419,7 @@ class HealthKitService {
     func fetchLastNightSleep() async throws -> Double? {
         let calendar = Calendar.current
         let now = Date()
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: now))!
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: now)) ?? Date()
 
         let sleepType = HKCategoryType(.sleepAnalysis)
 
@@ -791,7 +785,7 @@ class HealthKitService {
 
     func fetchMindfulnessSessions(days: Int = 30) async throws -> [HKCategorySample] {
         guard isHealthDataAvailable else { return [] }
-        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         return try await fetchCategoryEvents(.mindfulSession, from: startDate, to: Date())
     }
 
@@ -822,7 +816,7 @@ class HealthKitService {
 
     func fetchBloodPressureReadings(days: Int = 30) async throws -> [BPReading] {
         guard isHealthDataAvailable else { return [] }
-        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let startDate = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: .strictEndDate)
         let correlationType = HKCorrelationType(.bloodPressure)
         let sysType = HKQuantityType(.bloodPressureSystolic)

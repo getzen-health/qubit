@@ -263,7 +263,7 @@ private struct RunningFormContent: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let cal = Calendar.current
 
         let cadRaw: [HKQuantitySample] = [] // runningCadence not available in this SDK

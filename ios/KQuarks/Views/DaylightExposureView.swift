@@ -284,7 +284,7 @@ struct DaylightExposureView: View {
         isLoading = true
         defer { isLoading = false }
         if #available(iOS 17.0, *) {
-            let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+            let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
             let raw = (try? await healthKit.fetchSamples(for: .timeInDaylight, from: start, to: Date())) ?? []
             let unit = HKUnit.minute()
             let cal = Calendar.current

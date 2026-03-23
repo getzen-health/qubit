@@ -83,7 +83,7 @@ struct StreaksView: View {
 
     private var today: String { Self.df.string(from: Date()) }
     private var yesterday: String {
-        Self.df.string(from: Calendar.current.date(byAdding: .day, value: -1, to: Date())!)
+        Self.df.string(from: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date())
     }
 
     private var streakGrid: some View {
@@ -235,7 +235,7 @@ struct StreaksView: View {
 
     private func computeStreak(days: [String], isGoalMet: (String) -> Bool) -> StreakResult {
         let today = Self.df.string(from: Date())
-        let yesterday = Self.df.string(from: Calendar.current.date(byAdding: .day, value: -1, to: Date())!)
+        let yesterday = Self.df.string(from: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date())
         let sorted = days.filter { $0 <= today }.sorted(by: >)
 
         var current = 0
@@ -288,7 +288,7 @@ struct StreaksView: View {
 
         let cal = Calendar.current
         let now = Date()
-        let start = cal.date(byAdding: .day, value: -60, to: cal.startOfDay(for: now))!
+        let start = cal.date(byAdding: .day, value: -60, to: cal.startOfDay(for: now)) ?? Date()
 
         // Fetch steps per day
         async let stepsRaw = (try? await healthKit.fetchWeekData(for: .stepCount, isDiscrete: false, days: 60)) ?? []
@@ -416,7 +416,7 @@ private struct StreakHeatmap: View {
 
     private var days: [String] {
         (0..<28).reversed().map { offset in
-            Self.df.string(from: Calendar.current.date(byAdding: .day, value: -offset, to: Date())!)
+            Self.df.string(from: Calendar.current.date(byAdding: .day, value: -offset, to: Date()) ?? Date())
         }
     }
 

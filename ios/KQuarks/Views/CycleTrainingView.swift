@@ -250,7 +250,7 @@ struct CycleTrainingView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [flowType, workoutType, hrType])) != nil else { return }
 
-        let threeMonthsAgo = Calendar.current.date(byAdding: .month, value: -3, to: Date())!
+        let threeMonthsAgo = Calendar.current.date(byAdding: .month, value: -3, to: Date()) ?? Date()
         let cal = Calendar.current
 
         // Fetch menstrual flow events

@@ -266,7 +266,7 @@ struct OutdoorIndoorView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, kcalType])) != nil else { return }
 
-        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
 
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
             let pred = HKQuery.predicateForSamples(withStart: sixMonthsAgo, end: Date())

@@ -334,7 +334,7 @@ struct EPOCView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -60, to: end)!
+        let start = calendar.date(byAdding: .day, value: -60, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -406,7 +406,7 @@ struct EPOCView: View {
                       workoutCount: epocWorkouts.filter { weekStart(for: $0.date) == k }.count)
         }
 
-        let recent7 = epocWorkouts.filter { $0.date >= calendar.date(byAdding: .day, value: -7, to: Date())! }
+        let recent7 = epocWorkouts.filter { $0.date >= calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date() }
         let weekTotal = recent7.map(\.epocKcal).reduce(0, +)
         let avgEPOC = epocWorkouts.isEmpty ? nil : epocWorkouts.map(\.epocKcal).reduce(0, +) / Double(epocWorkouts.count)
         let best = epocWorkouts.max { $0.epocKcal < $1.epocKcal }

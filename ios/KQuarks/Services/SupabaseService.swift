@@ -252,7 +252,7 @@ class SupabaseService {
     func fetchWorkoutRecords(for date: Date) async throws -> [WorkoutRecord] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
         let startOfDay = Calendar.current.startOfDay(for: date)
-        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
         return try await client
             .from("workout_records")
             .select()
@@ -267,8 +267,8 @@ class SupabaseService {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
         // Sleep for "date" means sleep that ended on that date or the morning of
         let startOfDay = Calendar.current.startOfDay(for: date)
-        let noon = Calendar.current.date(byAdding: .hour, value: 12, to: startOfDay)!
-        let previousNoon = Calendar.current.date(byAdding: .day, value: -1, to: noon)!
+        let noon = Calendar.current.date(byAdding: .hour, value: 12, to: startOfDay) ?? Date()
+        let previousNoon = Calendar.current.date(byAdding: .day, value: -1, to: noon) ?? Date()
         return try await client
             .from("sleep_records")
             .select()
@@ -284,7 +284,7 @@ class SupabaseService {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date()) ?? Date()
 
         let response: [DailySummary] = try await client
             .from("daily_summaries")
@@ -301,7 +301,7 @@ class SupabaseService {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date()) ?? Date()
 
         let response: [SleepRecord] = try await client
             .from("sleep_records")
@@ -318,7 +318,7 @@ class SupabaseService {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .day, value: -days, to: Date())!
+        let startDate = calendar.date(byAdding: .day, value: -days, to: Date()) ?? Date()
 
         let response: [WorkoutRecord] = try await client
             .from("workout_records")
@@ -388,7 +388,7 @@ class SupabaseService {
     func getWeekWaterHistory() async throws -> [(date: String, ml: Int)] {
         guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-        let since = df.string(from: Calendar.current.date(byAdding: .day, value: -6, to: Date())!)
+        let since = df.string(from: Calendar.current.date(byAdding: .day, value: -6, to: Date()) ?? Date())
 
         struct Row: Decodable { let date: String; let total_ml: Int }
         let rows: [Row] = try await client.from("daily_water")
@@ -457,7 +457,7 @@ class SupabaseService {
             }
         }
 
-        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date())!)
+        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date())
 
         let sessions: [FastingSession] = try await client
             .from("fasting_sessions")
@@ -505,7 +505,7 @@ class SupabaseService {
             }
         }
 
-        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date())!)
+        let since = ISO8601DateFormatter().string(from: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date())
 
         let sessions: [FastingSession] = try await client
             .from("fasting_sessions")
@@ -673,7 +673,7 @@ class SupabaseService {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
 
         struct MealRow: Decodable {
             let id: String
@@ -717,7 +717,7 @@ class SupabaseService {
     func fetchHabits(userId: String) async throws -> ([Habit], [HabitCompletion]) {
         let since: String = {
             let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-            return df.string(from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!)
+            return df.string(from: Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date())
         }()
 
         struct HabitRow: Decodable {
@@ -803,7 +803,7 @@ class SupabaseService {
 
     func fetchRecentCheckins(days: Int = 14) async throws -> [DailyCheckin] {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
-        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
 
@@ -872,7 +872,7 @@ class SupabaseService {
         let userId = session.user.id.uuidString
         let since: String = {
             let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-            return df.string(from: Calendar.current.date(byAdding: .day, value: -days, to: Date())!)
+            return df.string(from: Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date())
         }()
 
         struct CheckinRow: Decodable {
@@ -947,7 +947,7 @@ class SupabaseService {
 
     func fetchDailySummariesForCorrelation(days: Int = 60) async throws -> [DailySummaryRow] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
-        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         return try await client.from("daily_summaries")
             .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")
@@ -959,7 +959,7 @@ class SupabaseService {
 
     func fetchAllDailySummaries(days: Int = 365) async throws -> [DailySummaryRow] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
-        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let since = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         return try await client.from("daily_summaries")
             .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")

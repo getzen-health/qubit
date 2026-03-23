@@ -84,7 +84,7 @@ struct SleepView: View {
     private func loadSleep() async {
         isLoading = true
         let calendar = Calendar.current
-        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let samples = (try? await healthKit.fetchSleepAnalysis(from: thirtyDaysAgo, to: Date())) ?? []
         sessions = groupSamplesIntoSessions(samples)
         isLoading = false

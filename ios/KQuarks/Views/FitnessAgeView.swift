@@ -415,7 +415,7 @@ struct FitnessAgeView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [vo2Type])) != nil else { return }
 
         // Fetch latest VO2 Max
-        let pred = HKQuery.predicateForSamples(withStart: Calendar.current.date(byAdding: .year, value: -2, to: Date())!, end: Date())
+        let pred = HKQuery.predicateForSamples(withStart: Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date(), end: Date())
         let vo2Samples: [HKQuantitySample] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(
                 sampleType: vo2Type, predicate: pred, limit: HKObjectQueryNoLimit,

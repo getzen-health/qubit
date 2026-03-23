@@ -227,7 +227,7 @@ struct EquestrianView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, kcalType, hrType])) != nil else { return }
 
-        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let cal = Calendar.current

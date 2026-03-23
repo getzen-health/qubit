@@ -450,7 +450,7 @@ struct RaceGoalPlannerView: View {
             buildPlan(); return
         }
 
-        let fourWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -4, to: Date())!
+        let fourWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -4, to: Date()) ?? Date()
 
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
             let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [

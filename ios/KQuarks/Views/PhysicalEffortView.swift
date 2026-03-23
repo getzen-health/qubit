@@ -328,8 +328,8 @@ private struct PhysicalEffortContent: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [effortType, workoutType])) != nil
         else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
-        let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
+        let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
 
         // Fetch workouts
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in

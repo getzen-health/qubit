@@ -360,7 +360,7 @@ private struct PowerToWeightContent: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .month, value: -12, to: end)!
+        let start = Calendar.current.date(byAdding: .month, value: -12, to: end) ?? Date()
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let sortAsc = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
         let sortDesc = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
@@ -379,7 +379,7 @@ private struct PowerToWeightContent: View {
         var monthPoints: [DataPoint] = []
         var currentDate = start
         while currentDate <= end {
-            let monthEnd = calendar.date(byAdding: .month, value: 1, to: currentDate)!
+            let monthEnd = calendar.date(byAdding: .month, value: 1, to: currentDate) ?? Date()
             let monthFTP  = ftpAll.filter  { $0.startDate >= currentDate && $0.startDate < monthEnd }.last
             let monthMass = massAll.filter { $0.startDate >= currentDate && $0.startDate < monthEnd }.last
 

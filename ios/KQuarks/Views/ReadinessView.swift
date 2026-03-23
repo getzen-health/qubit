@@ -359,7 +359,7 @@ struct ReadinessView: View {
         defer { isLoading = false }
 
         let today = Date()
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: today)!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: today) ?? Date()
 
         // Fetch 30 days of HRV, RHR, and sleep
         let hrv30 = (try? await healthKit.fetchSamples(for: .heartRateVariabilitySDNN, from: thirtyDaysAgo, to: today)) ?? []
@@ -410,7 +410,7 @@ struct ReadinessView: View {
 
         // Sleep score: hours vs 8h goal
         let sleepGoalMins = 480.0
-        let lastNightStart = Calendar.current.date(byAdding: .hour, value: -18, to: today)!
+        let lastNightStart = Calendar.current.date(byAdding: .hour, value: -18, to: today) ?? Date()
         let lastNightSamples = sleep30.filter { $0.endDate >= lastNightStart && $0.endDate <= today }
         let sleepSamples = lastNightSamples.filter {
             switch HKCategoryValueSleepAnalysis(rawValue: $0.value) {
@@ -459,12 +459,12 @@ struct ReadinessView: View {
         var pts: [HistoryPoint] = []
         for dayOffset in -6...0 {
             guard let day = cal.date(byAdding: .day, value: dayOffset, to: todayStart) else { continue }
-            let dayEnd = cal.date(byAdding: .day, value: 1, to: day)!
+            let dayEnd = cal.date(byAdding: .day, value: 1, to: day) ?? Date()
 
             let dHRV = hrvDays.filter { $0.date >= day && $0.date < dayEnd }.last?.value
             let dRHR = rhrDays.filter { $0.date >= day && $0.date < dayEnd }.last?.value
 
-            let nightStart = cal.date(byAdding: .hour, value: -18, to: day)!
+            let nightStart = cal.date(byAdding: .hour, value: -18, to: day) ?? Date()
             let dSleepSamples = sleep30.filter {
                 $0.endDate >= nightStart && $0.endDate <= dayEnd
             }.filter {

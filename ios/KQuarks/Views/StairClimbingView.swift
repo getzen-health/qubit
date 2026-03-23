@@ -298,7 +298,7 @@ struct StairClimbingView: View {
             read: [workoutType, kcalType, hrType, flightsType]
         )) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
 
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in
             let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [

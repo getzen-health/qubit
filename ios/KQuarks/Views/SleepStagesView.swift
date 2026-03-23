@@ -289,7 +289,7 @@ struct SleepStagesView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
         let samples = (try? await healthKit.fetchSleepAnalysis(from: start, to: Date())) ?? []
 
         // Group by wake date

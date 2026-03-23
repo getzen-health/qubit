@@ -263,7 +263,7 @@ struct CriticalSpeedView: View {
 
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, distType])) != nil else { return }
 
-        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         let mUnit = HKUnit.meter()
 
         let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [

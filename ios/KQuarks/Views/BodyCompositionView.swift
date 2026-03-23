@@ -248,7 +248,7 @@ struct BodyCompositionView: View {
     // MARK: - Helpers
 
     private var filteredSamples: [WeightSample] {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -selectedRange, to: Date())!
+        let cutoff = Calendar.current.date(byAdding: .day, value: -selectedRange, to: Date()) ?? Date()
         return samples.filter { $0.date >= cutoff }
     }
 
@@ -265,7 +265,7 @@ struct BodyCompositionView: View {
     private func loadData() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -365, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -365, to: Date()) ?? Date()
         let raw = (try? await HealthKitService.shared.fetchSamples(
             for: .bodyMass, from: start, to: Date()
         )) ?? []

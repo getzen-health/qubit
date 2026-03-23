@@ -393,7 +393,7 @@ struct HIITAnalysisView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let all = (try? await healthKit.fetchWorkouts(from: start, to: Date())) ?? []
         let hiitWorkouts = all.filter { $0.workoutActivityType == .highIntensityIntervalTraining }
 

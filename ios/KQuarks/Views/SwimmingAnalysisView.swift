@@ -340,7 +340,7 @@ struct SwimmingAnalysisView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let allWorkouts = (try? await healthKit.fetchWorkouts(from: start, to: Date())) ?? []
         swims = allWorkouts
             .filter { $0.workoutActivityType == .swimming }

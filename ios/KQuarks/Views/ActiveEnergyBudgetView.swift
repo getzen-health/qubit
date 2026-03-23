@@ -302,7 +302,7 @@ struct ActiveEnergyBudgetView: View {
 
         let cal = Calendar.current
         var calMon = Calendar.current; calMon.firstWeekday = 2
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
 
         let stats: HKStatisticsCollection? = await withCheckedContinuation { cont in
             var comps = DateComponents(); comps.day = 1

@@ -303,7 +303,7 @@ struct VO2MaxTrendView: View {
             hasNoData = true; return
         }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let mlKgMin = HKUnit.literUnit(with: .milli).unitDivided(by: HKUnit.gramUnit(with: .kilo).unitMultiplied(by: HKUnit.minute()))
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in
@@ -326,7 +326,7 @@ struct VO2MaxTrendView: View {
         category = classify(latest)
 
         // 6-month comparison
-        let sixMonthMark = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthMark = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         let nearSixMonths = readings.min(by: { abs($0.date.timeIntervalSince(sixMonthMark)) < abs($1.date.timeIntervalSince(sixMonthMark)) })
         sixMonthsAgo = nearSixMonths?.value ?? 0
         trend = sixMonthsAgo > 0 ? latest - sixMonthsAgo : 0

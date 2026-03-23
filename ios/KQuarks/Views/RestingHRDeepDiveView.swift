@@ -336,7 +336,7 @@ struct RestingHRDeepDiveView: View {
         let rhrType = HKQuantityType(.restingHeartRate)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [rhrType])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let bpmUnit = HKUnit.count().unitDivided(by: .minute())
         let cal = Calendar.current
         let df = DateFormatter(); df.dateFormat = "yyyy-MM"

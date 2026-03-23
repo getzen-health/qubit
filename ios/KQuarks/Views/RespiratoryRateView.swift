@@ -328,7 +328,7 @@ struct RespiratoryRateView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let raw = (try? await healthKit.fetchSamples(for: .respiratoryRate, from: start, to: Date())) ?? []
         let unit = HKUnit.count().unitDivided(by: .minute())
         samples = raw.map { (date: $0.startDate, value: $0.quantity.doubleValue(for: unit)) }

@@ -359,7 +359,7 @@ struct InjuryRiskView: View {
 
         let cal = Calendar.current
         let now = Date()
-        let twentyEightDaysAgo = cal.date(byAdding: .day, value: -28, to: now)!
+        let twentyEightDaysAgo = cal.date(byAdding: .day, value: -28, to: now) ?? Date()
 
         // Fetch workouts
         let workouts = (try? await fetchWorkouts(from: twentyEightDaysAgo, to: now)) ?? []
@@ -375,7 +375,7 @@ struct InjuryRiskView: View {
         // Generate DayLoad array for all 28 days
         var loads: [DayLoad] = []
         for offset in 0..<28 {
-            let dayStart = cal.startOfDay(for: cal.date(byAdding: .day, value: -(27 - offset), to: now)!)
+            let dayStart = cal.startOfDay(for: cal.date(byAdding: .day, value: -(27 - offset), to: now) ?? Date())
             let mins = dayMinutesMap[dayStart] ?? 0
             loads.append(DayLoad(id: dayStart, date: dayStart, minutes: mins))
         }
@@ -407,7 +407,7 @@ struct InjuryRiskView: View {
         // Consecutive training days
         var streak = 0
         for offset in 0..<28 {
-            let dayStart = cal.startOfDay(for: cal.date(byAdding: .day, value: -offset, to: now)!)
+            let dayStart = cal.startOfDay(for: cal.date(byAdding: .day, value: -offset, to: now) ?? Date())
             if (dayMinutesMap[dayStart] ?? 0) > 0 {
                 streak += 1
             } else {

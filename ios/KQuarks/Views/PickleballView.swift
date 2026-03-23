@@ -402,7 +402,7 @@ struct PickleballView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -12, to: end)!
+        let start = calendar.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -434,14 +434,14 @@ struct PickleballView: View {
             let cur = weekMap[ws] ?? (0, 0)
             weekMap[ws] = (cur.kcal + s.kcal, cur.sessions + 1)
         }
-        var wCursor = calendar.date(byAdding: .month, value: -3, to: end)!
+        var wCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
         wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor))!
         var weekLoads: [WeekLoad] = []
         while wCursor <= end {
             let d = weekMap[wCursor] ?? (0, 0)
             weekLoads.append(WeekLoad(label: weekFmt.string(from: wCursor), date: wCursor,
                                       kcal: d.kcal, sessions: d.sessions))
-            wCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: wCursor)!
+            wCursor = calendar.date(byAdding: .weekOfYear, value: 1, to: wCursor) ?? Date()
         }
 
         let avgKpm = sessions.isEmpty ? 0.0 : sessions.map(\.kcalPerMin).reduce(0, +) / Double(sessions.count)

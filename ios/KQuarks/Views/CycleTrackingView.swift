@@ -309,7 +309,7 @@ struct CycleTrackingView: View {
             hasNoData = true; return
         }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
             let pred = HKQuery.predicateForSamples(withStart: oneYearAgo, end: Date())

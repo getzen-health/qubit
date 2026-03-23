@@ -254,7 +254,7 @@ struct CircadianHRView: View {
         defer { isLoading = false }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -14, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -14, to: end) ?? Date()
 
         let type = HKQuantityType(.heartRate)
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)

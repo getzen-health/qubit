@@ -286,7 +286,7 @@ struct HealthScoreView: View {
 
         let cal = Calendar.current
         let end = Date()
-        let start = cal.date(byAdding: .day, value: -30, to: end)!
+        let start = cal.date(byAdding: .day, value: -30, to: end) ?? Date()
 
         // Fetch raw data concurrently
         async let sleepRaw = (try? await healthKit.fetchSleepAnalysis(from: start, to: end)) ?? []

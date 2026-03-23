@@ -212,7 +212,7 @@ struct TrainingLoadView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let ninety = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninety = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let workouts = (try? await healthKit.fetchWorkouts(from: ninety, to: Date())) ?? []
         guard !workouts.isEmpty else { return }
 
@@ -239,8 +239,8 @@ struct TrainingLoadView: View {
 
         // ACWR: acute = last 7 days load / 7, chronic = last 28 days load / 28
         let now = Date()
-        let sevenDaysAgo = cal.date(byAdding: .day, value: -7, to: now)!
-        let twentyEightDaysAgo = cal.date(byAdding: .day, value: -28, to: now)!
+        let sevenDaysAgo = cal.date(byAdding: .day, value: -7, to: now) ?? Date()
+        let twentyEightDaysAgo = cal.date(byAdding: .day, value: -28, to: now) ?? Date()
 
         let acuteWorkouts = workouts.filter { $0.startDate >= sevenDaysAgo }
         let chronicWorkouts = workouts.filter { $0.startDate >= twentyEightDaysAgo }

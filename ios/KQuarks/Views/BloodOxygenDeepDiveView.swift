@@ -279,7 +279,7 @@ struct BloodOxygenDeepDiveView: View {
         let spo2Type = HKQuantityType(.oxygenSaturation)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [spo2Type])) != nil else { return }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let pctUnit = HKUnit.percent()
         let cal = Calendar.current
 

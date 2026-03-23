@@ -109,7 +109,7 @@ class SyncService {
 
         let calendar = Calendar.current
         let now = Date()
-        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -7, to: now)!
+        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -7, to: now) ?? Date()
 
         var records: [HealthRecordUpload] = []
 
@@ -532,7 +532,7 @@ class SyncService {
 
         let calendar = Calendar.current
         let now = Date()
-        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -7, to: now)!
+        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -7, to: now) ?? Date()
 
         let sleepSamples = try await healthKit.fetchSleepAnalysis(from: startDate, to: now)
 
@@ -619,7 +619,7 @@ class SyncService {
 
         let calendar = Calendar.current
         let now = Date()
-        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -30, to: now)!
+        let startDate = lastSyncDate ?? calendar.date(byAdding: .day, value: -30, to: now) ?? Date()
 
         let workouts = try await healthKit.fetchWorkouts(from: startDate, to: now)
 
@@ -678,7 +678,7 @@ class SyncService {
             let calendar = Calendar.current
             let now = Date()
             let endDate = calendar.startOfDay(for: now) // up to start of today (today handled by regular sync)
-            let startDate = calendar.date(byAdding: .day, value: -daysBack, to: endDate)!
+            let startDate = calendar.date(byAdding: .day, value: -daysBack, to: endDate) ?? Date()
 
             await MainActor.run { historicalSyncProgress = 0.05 }
 
@@ -707,7 +707,7 @@ class SyncService {
             var d = startDate
             while d < endDate {
                 allDates.append(d)
-                d = calendar.date(byAdding: .day, value: 1, to: d)!
+                d = calendar.date(byAdding: .day, value: 1, to: d) ?? Date()
             }
 
             let total = Double(allDates.count)

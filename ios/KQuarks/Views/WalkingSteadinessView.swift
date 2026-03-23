@@ -345,7 +345,7 @@ struct WalkingSteadinessView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
         samples = (try? await healthKit.fetchSamples(for: .appleWalkingSteadiness, from: start, to: Date())) ?? []
     }
 }

@@ -291,7 +291,7 @@ struct SportSpecificLoadView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .day, value: -180, to: end)!  // 6 months for CTL warmup
+        let start = calendar.date(byAdding: .day, value: -180, to: end) ?? Date()  // 6 months for CTL warmup
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -344,11 +344,11 @@ struct SportSpecificLoadView: View {
                 atlMap[cat] = eAtl * (atlMap[cat] ?? 0) + (1 - eAtl) * tss
             }
 
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         // Last-7-days TSS per sport
-        let last7Start = calendar.date(byAdding: .day, value: -7, to: end)!
+        let last7Start = calendar.date(byAdding: .day, value: -7, to: end) ?? Date()
         var last7: [SportCategory: Double] = [:]
         for w in workouts where w.startDate >= last7Start {
             let cat = SportCategory.classify(w.workoutActivityType)

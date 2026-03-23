@@ -296,7 +296,7 @@ struct SleepApneaView: View {
             toShare: [], read: [respiratoryType, sleepType])) != nil else { return }
 
         let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
 
         // Try to query sleepApneaEvent if available (iOS 18+)
         var apneaAvailable = false

@@ -336,7 +336,7 @@ struct GlycogenStatusView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .day, value: -30, to: end)!
+        let start = calendar.date(byAdding: .day, value: -30, to: end) ?? Date()
 
         // Fetch recent body mass for capacity estimate
         var massSamples: [HKQuantitySample] = []
@@ -392,11 +392,11 @@ struct GlycogenStatusView: View {
         formatter.dateFormat = "MMM d"
         var glycogenG = capacity  // start full
         var dayList: [DayGlycogen] = []
-        var cursor = calendar.date(byAdding: .day, value: -14, to: end)!
+        var cursor = calendar.date(byAdding: .day, value: -14, to: end) ?? Date()
 
         while cursor <= end {
             let dayStart = calendar.startOfDay(for: cursor)
-            let dayEnd   = calendar.date(byAdding: .day, value: 1, to: dayStart)!
+            let dayEnd   = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? Date()
 
             let dayWorkouts = wkList.filter { $0.date >= dayStart && $0.date < dayEnd }
             let usedG = dayWorkouts.map(\.glycogenUsedG).reduce(0, +)
@@ -413,7 +413,7 @@ struct GlycogenStatusView: View {
                 netG: glycogenG,
                 pctFull: glycogenG / capacity * 100
             ))
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         let currentPctVal = dayList.last?.pctFull ?? 100

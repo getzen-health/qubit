@@ -300,7 +300,7 @@ struct StairSpeedView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [ascentType, descentType])) != nil
         else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let cal = Calendar.current
         let mps = HKUnit.meter().unitDivided(by: .second())
 

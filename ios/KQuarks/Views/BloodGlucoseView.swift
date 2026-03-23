@@ -413,7 +413,7 @@ struct BloodGlucoseView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let raw = (try? await healthKit.fetchSamples(for: .bloodGlucose, from: start, to: Date())) ?? []
         readings = raw
             .map { GlucoseReading(date: $0.startDate, mgdl: $0.quantity.doubleValue(for: unit)) }

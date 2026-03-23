@@ -62,7 +62,7 @@ struct GLP1View: View {
 
     /// Weight readings from start date onwards (or last 90 days if no start date).
     var trackedWeightReadings: [(date: Date, kg: Double)] {
-        let cutoff = startDate ?? Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let cutoff = startDate ?? Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         return weightReadings.filter { $0.date >= cutoff }
     }
 
@@ -119,7 +119,7 @@ struct GLP1View: View {
     // MARK: - Computed: Glucose
 
     var avgGlucose7Day: Double? {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+        let cutoff = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         let recent = glucoseReadings.filter { $0.date >= cutoff }
         guard !recent.isEmpty else { return nil }
         return recent.map(\.mgdl).reduce(0, +) / Double(recent.count)
@@ -843,10 +843,10 @@ struct GLP1View: View {
 
         let cal = Calendar.current
         let now = Date()
-        let start90 = cal.date(byAdding: .day, value: -90, to: now)!
-        let start30 = cal.date(byAdding: .day, value: -30, to: now)!
+        let start90 = cal.date(byAdding: .day, value: -90, to: now) ?? Date()
+        let start30 = cal.date(byAdding: .day, value: -30, to: now) ?? Date()
         let todayStart = cal.startOfDay(for: now)
-        let weekStart = cal.date(byAdding: .day, value: -7, to: now)!
+        let weekStart = cal.date(byAdding: .day, value: -7, to: now) ?? Date()
 
         // Weight — 90 days
         let kgUnit = HKUnit.gramUnit(with: .kilo)

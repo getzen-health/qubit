@@ -423,7 +423,7 @@ private struct AFibBurdenContent: View {
         }
 
         let end   = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -90, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -90, to: end) ?? Date()
         let pred  = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort  = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
         let pctUnit = HKUnit.percent()

@@ -697,7 +697,7 @@ class DashboardListViewModel {
 
             // Fetch last night's sleep breakdown
             let calendar = Calendar.current
-            let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date())) ?? Date()
             let sleepSamples = try? await healthKit.fetchSleepAnalysis(from: yesterday, to: Date())
             if let samples = sleepSamples, !samples.isEmpty {
                 var deep = 0, rem = 0, core = 0, awake = 0
@@ -725,7 +725,7 @@ class DashboardListViewModel {
             }
 
             // Count workouts this week
-            let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+            let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
             let weekWorkouts = (try? await healthKit.fetchWorkouts(from: weekStart, to: Date())) ?? []
             await MainActor.run { weeklyWorkoutCount = weekWorkouts.count }
 
@@ -840,7 +840,7 @@ class DashboardListViewModel {
 
             // Compute workout streak (consecutive days with ≥1 workout, skip today)
             let wCal = Calendar.current
-            let sixtyDaysAgo = wCal.date(byAdding: .day, value: -60, to: Date())!
+            let sixtyDaysAgo = wCal.date(byAdding: .day, value: -60, to: Date()) ?? Date()
             let allWorkouts = (try? await healthKit.fetchWorkouts(from: sixtyDaysAgo, to: Date())) ?? []
             var workoutDaySet = Set<String>()
             let isoFmt = ISO8601DateFormatter()
@@ -849,12 +849,12 @@ class DashboardListViewModel {
                 workoutDaySet.insert(isoFmt.string(from: wCal.startOfDay(for: workout.startDate)))
             }
             var workoutStreakCount = 0
-            var checkDay = wCal.date(byAdding: .day, value: -1, to: wCal.startOfDay(for: Date()))!
+            var checkDay = wCal.date(byAdding: .day, value: -1, to: wCal.startOfDay(for: Date())) ?? Date()
             for _ in 0..<60 {
                 let key = isoFmt.string(from: checkDay)
                 if workoutDaySet.contains(key) {
                     workoutStreakCount += 1
-                    checkDay = wCal.date(byAdding: .day, value: -1, to: checkDay)!
+                    checkDay = wCal.date(byAdding: .day, value: -1, to: checkDay) ?? Date()
                 } else {
                     break
                 }

@@ -332,7 +332,7 @@ struct SleepImpactView: View {
                   let date = df.date(from: row.date) else { continue }
 
             // Next day
-            let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+            let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? Date()
             let nextKey = df.string(from: nextDate)
             let nextRow = byDate[nextKey]
 

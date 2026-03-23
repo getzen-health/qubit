@@ -307,7 +307,7 @@ struct StandingHoursView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [standType])) != nil else { return }
 
         let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(sampleType: standType,

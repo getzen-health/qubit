@@ -199,14 +199,14 @@ struct InsightItem: Identifiable {
                 priority: .normal
             ),
             InsightItem(
-                date: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
+                date: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
                 category: .heart,
                 title: "HRV Trending Up",
                 content: "Your heart rate variability has increased by 15% over the past week, indicating improved recovery.",
                 priority: .normal
             ),
             InsightItem(
-                date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
+                date: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
                 category: .recovery,
                 title: "Consider a Rest Day",
                 content: "Your resting heart rate is elevated and HRV is lower than usual. Your body might need extra recovery today.",

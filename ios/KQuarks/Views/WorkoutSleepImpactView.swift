@@ -288,7 +288,7 @@ struct WorkoutSleepImpactView: View {
         for w in workouts where w.durationMinutes >= 10 {
             let endDate = w.endTime
             let endHour = calendar.component(.hour, from: endDate)
-            let nextDay = calendar.date(byAdding: .day, value: 1, to: endDate)!
+            let nextDay = calendar.date(byAdding: .day, value: 1, to: endDate) ?? Date()
             let nextDayStr = df.string(from: nextDay)
             guard let hrv = hrvByDate[nextDayStr] else { continue }
 

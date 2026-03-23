@@ -42,7 +42,7 @@ struct GetSleepDurationIntent: AppIntent {
 
     func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
         let calendar = Calendar.current
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date()))!
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: Date())) ?? Date()
         let samples = (try? await HealthKitService.shared.fetchSleepAnalysis(from: yesterday, to: Date())) ?? []
         let minutes = samples.filter {
             if case .asleepDeep? = HKCategoryValueSleepAnalysis(rawValue: $0.value) { return true }
@@ -65,7 +65,7 @@ struct GetWeeklyWorkoutsIntent: AppIntent {
     static var description = IntentDescription("Shows how many workouts you've done this week.")
 
     func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
-        let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+        let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         let workouts = (try? await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date())) ?? []
         let count = workouts.count
         let word = count == 1 ? "workout" : "workouts"

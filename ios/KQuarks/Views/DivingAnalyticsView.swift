@@ -321,7 +321,7 @@ struct DivingAnalyticsView: View {
         let tempType = HKQuantityType(.waterTemperature)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [depthType, tempType])) != nil else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let metres = HKUnit.meter()
         let celsius = HKUnit.degreeCelsius()
 

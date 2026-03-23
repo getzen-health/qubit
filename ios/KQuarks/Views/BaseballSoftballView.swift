@@ -328,7 +328,7 @@ struct BaseballSoftballView: View {
         }
 
         let end   = Date()
-        let start = calendar.date(byAdding: .month, value: -12, to: end)!
+        let start = calendar.date(byAdding: .month, value: -12, to: end) ?? Date()
 
         var rawWorkouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -382,7 +382,7 @@ struct BaseballSoftballView: View {
                 softballSessions: data.softball,
                 totalKcal: data.kcal
             ))
-            cursor = calendar.date(byAdding: .month, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .month, value: 1, to: cursor) ?? Date()
         }
 
         let total   = sessions.map(\.kcal).reduce(0, +)

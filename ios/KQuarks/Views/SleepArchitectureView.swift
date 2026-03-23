@@ -271,7 +271,7 @@ struct SleepArchitectureView: View {
         let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [sleepType])) != nil else { return }
 
-        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let cal = Calendar.current
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in

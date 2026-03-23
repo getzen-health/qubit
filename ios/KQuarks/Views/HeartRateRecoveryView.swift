@@ -414,7 +414,7 @@ struct HeartRateRecoveryView: View {
             return
         }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let workoutPredicate = HKQuery.predicateForSamples(withStart: ninetyDaysAgo, end: Date())
         let hrPredicate = HKQuery.predicateForSamples(withStart: ninetyDaysAgo, end: Date())
 
@@ -459,14 +459,14 @@ struct HeartRateRecoveryView: View {
                 // Peak HR: max in last 5 min of workout
                 var peak = 0.0
                 for offset in stride(from: -5, through: 0, by: 1) {
-                    let checkDate = Calendar.current.date(byAdding: .minute, value: offset, to: endDate)!
+                    let checkDate = Calendar.current.date(byAdding: .minute, value: offset, to: endDate) ?? Date()
                     if let v = avgHr(at: checkDate), v > peak { peak = v }
                 }
                 guard peak > 100 else { continue }
 
                 // HRR1 and HRR2
-                let hr1Date = Calendar.current.date(byAdding: .minute, value: 1, to: endDate)!
-                let hr2Date = Calendar.current.date(byAdding: .minute, value: 2, to: endDate)!
+                let hr1Date = Calendar.current.date(byAdding: .minute, value: 1, to: endDate) ?? Date()
+                let hr2Date = Calendar.current.date(byAdding: .minute, value: 2, to: endDate) ?? Date()
                 let hrr1 = avgHr(at: hr1Date).map { peak - $0 }
                 let hrr2 = avgHr(at: hr2Date).map { peak - $0 }
 

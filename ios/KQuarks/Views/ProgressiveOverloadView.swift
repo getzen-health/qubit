@@ -323,7 +323,7 @@ struct ProgressiveOverloadView: View {
         }
 
         let end = Date()
-        let start = calendar.date(byAdding: .weekOfYear, value: -12, to: end)!
+        let start = calendar.date(byAdding: .weekOfYear, value: -12, to: end) ?? Date()
 
         var workouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -395,7 +395,7 @@ struct ProgressiveOverloadView: View {
                 wowChangePct: wow
             ))
             prevMins = mins
-            ws = calendar.date(byAdding: .weekOfYear, value: 1, to: ws)!
+            ws = calendar.date(byAdding: .weekOfYear, value: 1, to: ws) ?? Date()
         }
 
         // Compliance: % of non-first weeks with WoW ≤ 10%

@@ -158,8 +158,8 @@ struct HandwashingScienceView: View {
         }
 
         let endDate = Date()
-        let start30d = Calendar.current.date(byAdding: .day, value: -30, to: endDate)!
-        let start8w = Calendar.current.date(byAdding: .day, value: -56, to: endDate)!
+        let start30d = Calendar.current.date(byAdding: .day, value: -30, to: endDate) ?? Date()
+        let start8w = Calendar.current.date(byAdding: .day, value: -56, to: endDate) ?? Date()
         let predicate30d = HKQuery.predicateForSamples(withStart: start30d, end: endDate)
         let predicate8w = HKQuery.predicateForSamples(withStart: start8w, end: endDate)
 

@@ -314,7 +314,7 @@ struct SleepConsistencyView: View {
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        let start = Calendar.current.date(byAdding: .day, value: -14, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -14, to: Date()) ?? Date()
         let samples = (try? await healthKit.fetchSleepAnalysis(from: start, to: Date())) ?? []
         nights = groupSamplesToNights(samples)
     }

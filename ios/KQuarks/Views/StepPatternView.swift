@@ -310,7 +310,7 @@ struct StepPatternView: View {
         defer { isLoading = false }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -14, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -14, to: end) ?? Date()
         let stepType = HKQuantityType(.stepCount)
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
         let anchorDate = Calendar.current.startOfDay(for: end)

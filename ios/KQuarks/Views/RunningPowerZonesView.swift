@@ -343,7 +343,7 @@ struct RunningPowerZonesView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [powerType])) != nil
         else { return }
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         let cal = Calendar.current
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in

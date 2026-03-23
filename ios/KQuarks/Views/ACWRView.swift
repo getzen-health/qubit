@@ -318,7 +318,7 @@ struct ACWRView: View {
 
         let end = Date()
         // 90 days: 28-day warm-up + 62 days visible
-        let start = calendar.date(byAdding: .day, value: -90, to: end)!
+        let start = calendar.date(byAdding: .day, value: -90, to: end) ?? Date()
 
         var workouts: [HKWorkout] = []
         await withCheckedContinuation { cont in
@@ -360,7 +360,7 @@ struct ACWRView: View {
             ctl = ctl * eCtl + trimp * (1 - eCtl)
             let acwr: Double? = ctl > 1 ? atl / ctl : nil
             results.append(DayACWR(date: cursor, atl: atl, ctl: ctl, acwr: acwr))
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
+            cursor = calendar.date(byAdding: .day, value: 1, to: cursor) ?? Date()
         }
 
         let last = results.last

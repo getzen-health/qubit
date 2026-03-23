@@ -339,7 +339,7 @@ struct RunningProgressionView: View {
 
         let hk = HealthKitService.shared
         let cal = Calendar.current
-        let oneYearAgo = cal.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = cal.date(byAdding: .year, value: -1, to: Date()) ?? Date()
 
         // Fetch running workouts from HealthKit
         let allSamples = (try? await hk.fetchWorkouts(from: oneYearAgo, to: Date())) ?? []

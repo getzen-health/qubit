@@ -290,7 +290,7 @@ struct VO2MaxAgeNormsView: View {
         guard let vo2Type = HKQuantityType.quantityType(forIdentifier: .vo2Max) else { return }
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [vo2Type])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let unit = HKUnit(from: "ml/kg/min")
 
         let raw: [HKQuantitySample] = await withCheckedContinuation { cont in

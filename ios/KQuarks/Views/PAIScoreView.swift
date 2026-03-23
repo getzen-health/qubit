@@ -444,8 +444,8 @@ struct PAIScoreView: View {
         }
 
         let end      = Date()
-        let start7   = Calendar.current.date(byAdding: .day, value: -7, to: end)!
-        let start84  = Calendar.current.date(byAdding: .day, value: -84, to: end)!
+        let start7   = Calendar.current.date(byAdding: .day, value: -7, to: end) ?? Date()
+        let start84  = Calendar.current.date(byAdding: .day, value: -84, to: end) ?? Date()
 
         // Fetch all workouts in last 84 days
         let pred84 = HKQuery.predicateForSamples(withStart: start84, end: end)

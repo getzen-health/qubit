@@ -365,7 +365,7 @@ struct HearingHealthView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let unit = HKUnit.decibelAWeightedSoundPressureLevel()
         let cal = Calendar.current
 

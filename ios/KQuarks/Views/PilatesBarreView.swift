@@ -332,7 +332,7 @@ struct PilatesBarreView: View {
         let workoutType = HKObjectType.workoutType()
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType])) != nil else { return }
 
-        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
         let cal = Calendar.current
 
         var allSessions: [Session] = []

@@ -381,7 +381,7 @@ struct DailyReadinessView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [hrvType, rhrType, sleepType])) != nil else { return }
 
         let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let msUnit = HKUnit.secondUnit(with: .milli)
 

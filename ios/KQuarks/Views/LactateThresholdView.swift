@@ -305,7 +305,7 @@ struct LactateThresholdView: View {
             hasNoData = true; return
         }
 
-        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
 
         let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [
             HKQuery.predicateForSamples(withStart: sixMonthsAgo, end: Date()),

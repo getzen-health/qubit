@@ -285,7 +285,7 @@ struct WorkoutGoalTrackerView: View {
         let workoutType = HKObjectType.workoutType()
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType])) != nil else { return }
 
-        let thirteenWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -13, to: Date())!
+        let thirteenWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -13, to: Date()) ?? Date()
         var cal = Calendar.current; cal.firstWeekday = 2  // Monday start
 
         let workouts: [HKWorkout] = await withCheckedContinuation { cont in

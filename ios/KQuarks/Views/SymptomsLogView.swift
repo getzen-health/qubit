@@ -305,7 +305,7 @@ struct SymptomsLogView: View {
         guard (try? await healthStore.requestAuthorization(toShare: [], read: Set(types))) != nil else { return }
 
         let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date())!
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let pred = HKQuery.predicateForSamples(withStart: thirtyDaysAgo, end: Date())
 
         var allEvents: [SymptomEvent] = []

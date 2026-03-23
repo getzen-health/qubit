@@ -340,7 +340,7 @@ struct YearInReviewView: View {
 
         let cal = Calendar.current
         let end = Date()
-        let start = cal.date(byAdding: .day, value: -365, to: end)!
+        let start = cal.date(byAdding: .day, value: -365, to: end) ?? Date()
 
         // Concurrent fetches
         async let stepRaw = (try? await healthKit.fetchSamples(for: .stepCount, from: start, to: end)) ?? []

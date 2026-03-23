@@ -321,7 +321,7 @@ struct SleepEfficiencyView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date())!
+        let start = Calendar.current.date(byAdding: .day, value: -60, to: Date()) ?? Date()
         guard let samples = try? await healthKit.fetchSleepAnalysis(from: start, to: Date()) else { return }
 
         let cal = Calendar.current

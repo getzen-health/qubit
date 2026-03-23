@@ -296,7 +296,7 @@ struct MaxHRAnalysisView: View {
         let hrType = HKQuantityType(.heartRate)
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType, hrType])) != nil else { return }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let bpm = HKUnit(from: "count/min")
 
         // Fetch workouts
@@ -354,7 +354,7 @@ struct MaxHRAnalysisView: View {
 
         truePeak = peaks.map(\.maxHR).max() ?? 0
 
-        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
+        let ninetyDaysAgo = Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
         recentPeak = peaks.filter { $0.date >= ninetyDaysAgo }.map(\.maxHR).max() ?? truePeak
 
         // Estimate age from typical range — default 35 if unknown

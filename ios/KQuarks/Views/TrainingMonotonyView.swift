@@ -399,7 +399,7 @@ struct TrainingMonotonyView: View {
         let workoutType = HKObjectType.workoutType()
         guard (try? await healthStore.requestAuthorization(toShare: [], read: [workoutType])) != nil else { return }
 
-        let twelveWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -12, to: Date())!
+        let twelveWeeksAgo = Calendar.current.date(byAdding: .weekOfYear, value: -12, to: Date()) ?? Date()
         let allWorkouts: [HKWorkout] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(
                 sampleType: workoutType,
@@ -425,12 +425,12 @@ struct TrainingMonotonyView: View {
         // Build weekly buckets with monotony/strain
         var metrics: [WeekMetrics] = []
         for weekOffset in 0..<12 {
-            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(11 - weekOffset), to: Date())!, cal: cal)
+            let monday = mondayOf(date: cal.date(byAdding: .weekOfYear, value: -(11 - weekOffset), to: Date()) ?? Date(), cal: cal)
 
             // Get all 7 days of this week
             var dailyLoads: [Double] = []
             for dayOffset in 0..<7 {
-                let day = cal.date(byAdding: .day, value: dayOffset, to: monday)!
+                let day = cal.date(byAdding: .day, value: dayOffset, to: monday) ?? Date()
                 dailyLoads.append(dayMap[day] ?? 0)
             }
 
