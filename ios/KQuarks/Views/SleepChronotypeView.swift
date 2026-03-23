@@ -381,7 +381,7 @@ struct SleepChronotypeView: View {
                 // Use the "night key" = date string of the morning wake day
                 let wakeDate = sample.endDate
                 let wakeCal = cal.dateComponents([.year, .month, .day], from: wakeDate)
-                let key = "\(wakeCal.year!)-\(String(format: "%02d", wakeCal.month!))-\(String(format: "%02d", wakeCal.day!))"
+                let key = "\(wakeCal.year ?? 0)-\(String(format: "%02d", wakeCal.month ?? 0))-\(String(format: "%02d", wakeCal.day ?? 0))"
 
                 if let existing = nightGroups[key] {
                     nightGroups[key] = (

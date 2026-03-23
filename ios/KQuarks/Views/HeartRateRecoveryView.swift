@@ -492,7 +492,7 @@ struct HeartRateRecoveryView: View {
         let cal = Calendar.current
         let comps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         return String(format: "%04d-%02d-%02dT%02d:%02d",
-                      comps.year!, comps.month!, comps.day!, comps.hour!, comps.minute!)
+                      comps.year ?? 0, comps.month ?? 0, comps.day ?? 0, comps.hour ?? 0, comps.minute ?? 0)
     }
 }
 

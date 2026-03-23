@@ -265,7 +265,7 @@ struct HealthTimelineView: View {
         var seenDates = Set<String>()
         for (date, steps) in stepsData {
             let dayKey = cal.dateComponents([.year, .month, .day], from: date)
-            let dayStr = "\(dayKey.year!)-\(dayKey.month!)-\(dayKey.day!)"
+            let dayStr = "\(dayKey.year ?? 0)-\(dayKey.month ?? 0)-\(dayKey.day ?? 0)"
             if seenDates.contains(dayStr) { continue }
             seenDates.insert(dayStr)
 

@@ -99,7 +99,7 @@ struct WorkoutCalendarView: View {
 
     private func dateKey(_ date: Date) -> String {
         let c = cal.dateComponents([.year, .month, .day], from: date)
-        return "\(c.year!)-\(String(format: "%02d", c.month!))-\(String(format: "%02d", c.day!))"
+        return "\(c.year ?? 0)-\(String(format: "%02d", c.month ?? 0))-\(String(format: "%02d", c.day ?? 0))"
     }
 
     // MARK: - Body
