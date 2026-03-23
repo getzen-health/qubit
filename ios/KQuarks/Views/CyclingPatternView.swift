@@ -274,7 +274,7 @@ struct CyclingPatternView: View {
 
     private var monthlySpeedChart: some View {
         let speedMonths = monthStats.filter { $0.avgSpeedKph != nil }
-        let bestSpeed = speedMonths.map { $0.avgSpeedKph! }.max() ?? 0
+        let bestSpeed = speedMonths.compactMap(\.avgSpeedKph).max() ?? 0
         let improving = speedMonths.count >= 2 &&
             (speedMonths.last?.avgSpeedKph ?? 0) > (speedMonths.first?.avgSpeedKph ?? 0)
 

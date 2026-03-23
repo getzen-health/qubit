@@ -337,7 +337,7 @@ struct RunningPatternView: View {
 
     private var monthlyPaceChart: some View {
         let paceMonths = monthStats.filter { $0.avgPaceSecs != nil }
-        let bestPace = paceMonths.map { $0.avgPaceSecs! }.min() ?? 0
+        let bestPace = paceMonths.compactMap(\.avgPaceSecs).min() ?? 0
         let improving = paceMonths.count >= 2 &&
             (paceMonths.last?.avgPaceSecs ?? .infinity) < (paceMonths.first?.avgPaceSecs ?? 0)
 

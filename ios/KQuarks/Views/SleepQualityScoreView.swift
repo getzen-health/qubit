@@ -168,8 +168,8 @@ struct SleepQualityScoreView: View {
     private var summaryCards: some View {
         HStack(spacing: 10) {
             miniCard(label: "Avg Score", value: "\(avgScore)", color: grade(avgScore).color)
-            miniCard(label: "Excellent", value: "\(excellentCount)n", color: .green)
-            miniCard(label: "Poor", value: "\(poorCount)n", color: .red)
+            miniCard(label: "Excellent", value: "\(excellentCount)", color: .green)
+            miniCard(label: "Poor", value: "\(poorCount)", color: .red)
             if let b = bestNight {
                 miniCard(label: "Best", value: "\(b.totalScore)", color: .yellow)
             }

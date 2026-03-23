@@ -16,14 +16,14 @@ struct HRVDetailView: View {
 
     private var baseline: Double? {
         guard !validRows.isEmpty else { return nil }
-        let values = validRows.map { $0.avg_hrv! }
+        let values = validRows.compactMap(\.avg_hrv)
         return values.reduce(0, +) / Double(values.count)
     }
 
     private var sevenDayAvg: Double? {
         let recent = validRows.suffix(7)
         guard !recent.isEmpty else { return nil }
-        return recent.map { $0.avg_hrv! }.reduce(0, +) / Double(recent.count)
+        return recent.compactMap(\.avg_hrv).reduce(0, +) / Double(recent.count)
     }
 
     var body: some View {

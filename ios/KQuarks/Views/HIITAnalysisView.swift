@@ -213,7 +213,7 @@ struct HIITAnalysisView: View {
     private var maxHRTrendChart: some View {
         let hrSessions = sessions.filter { $0.maxHR != nil }
         guard hrSessions.count >= 3 else { return AnyView(EmptyView()) }
-        let hrs = hrSessions.map { $0.maxHR! }
+        let hrs = hrSessions.compactMap(\.maxHR)
 
         return AnyView(VStack(alignment: .leading, spacing: 8) {
             Text("Peak Heart Rate Trend")

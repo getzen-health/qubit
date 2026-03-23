@@ -418,7 +418,7 @@ struct CardioHealthSummaryView: View {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
 
-        let withHRV = sorted.filter { $0.avg_hrv != nil && $0.avg_hrv! > 0 }
+        let withHRV = sorted.filter { ($0.avg_hrv ?? 0) > 0 }
         let withRHR = sorted.filter { _ in false }
         _ = withRHR // suppress warning
 

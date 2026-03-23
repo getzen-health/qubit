@@ -52,12 +52,12 @@ struct CircadianHRView: View {
 
     private var lowestSlot: HourSlot? {
         hourlyData.filter { $0.avg != nil && $0.count >= 2 }
-            .min(by: { $0.avg! < $1.avg! })
+            .min(by: { ($0.avg ?? 0) < ($1.avg ?? 0) })
     }
 
     private var peakSlot: HourSlot? {
         hourlyData.filter { s in s.hour >= 8 && s.hour <= 20 && s.avg != nil }
-            .max(by: { $0.avg! < $1.avg! })
+            .max(by: { ($0.avg ?? 0) < ($1.avg ?? 0) })
     }
 
     private var totalReadings: Int {

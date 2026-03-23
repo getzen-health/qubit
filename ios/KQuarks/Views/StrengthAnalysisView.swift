@@ -272,7 +272,7 @@ struct StrengthAnalysisView: View {
                 .font(.headline)
                 .padding(.horizontal, 4)
 
-            let hrs = hrSessions.map { $0.avgHR! }
+            let hrs = hrSessions.compactMap(\.avgHR)
             let minHR = (hrs.min() ?? 100) - 5
             let maxHR = (hrs.max() ?? 160) + 5
 

@@ -414,8 +414,10 @@ struct MindfulnessImpactView: View {
 
         // 6. Scatter data
         scatterPairs = validPairs
-            .filter { $0.minsMeditated > 0 && $0.nextHrv != nil }
-            .map { (mins: $0.minsMeditated, hrv: $0.nextHrv!) }
+            .compactMap { r -> (mins: Double, hrv: Double)? in
+                guard r.minsMeditated > 0, let hrv = r.nextHrv else { return nil }
+                return (mins: r.minsMeditated, hrv: hrv)
+            }
     }
 
     // MARK: - Helpers

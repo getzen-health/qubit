@@ -142,7 +142,7 @@ private struct RunningBiomechanicsContent: View {
             Text("Time each foot is on the ground per step. Target: < 240ms. Lower = faster, more efficient stride.")
                 .font(.caption2).foregroundStyle(.secondary)
 
-            let gctPoints = points.filter { $0.gct != nil }.map { ($0.date, $0.gct!) }
+            let gctPoints = points.compactMap { p in p.gct.map { (p.date, $0) } }
             if gctPoints.isEmpty {
                 Text("No ground contact time data").font(.caption).foregroundStyle(.secondary)
             } else {

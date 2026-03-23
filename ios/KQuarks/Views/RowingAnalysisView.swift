@@ -245,7 +245,7 @@ struct RowingAnalysisView: View {
 
     private var splitTrendChart: some View {
         let splitSessions = sessions.filter { $0.split500m != nil }
-        let splits = splitSessions.map { $0.split500m! }
+        let splits = splitSessions.compactMap(\.split500m)
         let minSplit = max(60, (splits.min() ?? 120) - 15)
         let maxSplit = (splits.max() ?? 200) + 15
 
@@ -318,7 +318,8 @@ struct RowingAnalysisView: View {
 
     private var distanceChart: some View {
         let distSessions = sessions.filter { $0.distanceKm != nil }
-        let avgDist = distSessions.map { $0.distanceKm! }.reduce(0, +) / Double(distSessions.count)
+        let distVals = distSessions.compactMap(\.distanceKm)
+        let avgDist = distVals.isEmpty ? 0 : distVals.reduce(0, +) / Double(distVals.count)
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Distance per Session")
@@ -360,8 +361,8 @@ struct RowingAnalysisView: View {
 
     private var hrTrendChart: some View {
         let hrSessions = sessions.filter { $0.avgHR != nil }
-        let hrs = hrSessions.map { $0.avgHR! }
-        let avgHR = hrs.reduce(0, +) / Double(hrs.count)
+        let hrs = hrSessions.compactMap(\.avgHR)
+        let avgHR = hrs.isEmpty ? 0 : hrs.reduce(0, +) / Double(hrs.count)
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Average Heart Rate")

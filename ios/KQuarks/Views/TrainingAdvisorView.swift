@@ -432,7 +432,7 @@ struct TrainingAdvisorView: View {
         df.dateFormat = "yyyy-MM-dd"
 
         let sorted = rows.sorted { $0.date < $1.date }
-        let withHRV = sorted.filter { $0.avg_hrv != nil && $0.avg_hrv! > 0 }
+        let withHRV = sorted.filter { ($0.avg_hrv ?? 0) > 0 }
 
         guard withHRV.count >= 7 else { return }
 
@@ -453,7 +453,7 @@ struct TrainingAdvisorView: View {
         hrvDevPct = baseline28 > 0 ? ((currentHRVAvg - baseline28) / baseline28) * 100 : 0
 
         // HRV trend points (last 14 days)
-        let last14 = sorted.suffix(14).filter { $0.avg_hrv != nil && $0.avg_hrv! > 0 }
+        let last14 = sorted.suffix(14).filter { ($0.avg_hrv ?? 0) > 0 }
         hrvPoints = last14.compactMap { row -> HRVPoint? in
             guard let hrv = row.avg_hrv, let date = df.date(from: row.date) else { return nil }
             return HRVPoint(date: date, hrv: hrv, label: row.date)
