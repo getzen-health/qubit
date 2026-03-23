@@ -315,6 +315,19 @@ struct DashboardListView: View {
             InsightsSectionView(insights: viewModel.insights)
                 .padding(.horizontal, 16)
 
+            // Last synced footer
+            if let last = viewModel.lastSyncDate {
+                Label {
+                    (Text("Synced ") + Text(last, style: .relative) + Text(" ago"))
+                        .font(.caption2)
+                } icon: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption2)
+                }
+                .foregroundStyle(.tertiary)
+                .padding(.top, 4)
+            }
+
             Spacer(minLength: 100)
         }
         .padding(.top, 8)
