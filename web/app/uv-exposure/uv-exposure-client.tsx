@@ -11,8 +11,8 @@ import {
   Cell,
   ReferenceLine,
 } from 'recharts'
-import type { UVExposureData, UVDay, UVCategory } from './page'
-import { getUVCategory } from './page'
+import type { UVExposureData, UVDay, UVCategory } from './uv-exposure-types'
+import { getUVCategory } from './uv-exposure-types'
 
 interface Props {
   data: UVExposureData

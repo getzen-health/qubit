@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, FlameIcon } from 'lucide-react'
+import { ArrowLeft, Flame } from 'lucide-react'
 import {
   BarChart,
   Bar,
@@ -197,7 +197,7 @@ export default function VilpaPage() {
               Vigorous Intermittent Lifestyle Physical Activity
             </p>
           </div>
-          <FlameIcon className="w-5 h-5 text-orange-400 shrink-0" />
+          <Flame className="w-5 h-5 text-orange-400 shrink-0" />
         </div>
       </header>
 

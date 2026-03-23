@@ -263,7 +263,7 @@ export function MobilityClient({ speedData, stepLengthData, asymmetryData, doubl
             },
             {
               name: 'Walking Steadiness',
-              detail: 'iPhone's fall-risk metric (0–100%). OK is ≥60%, Low is 40–59%, Very Low is below 40%. Captures balance and gait stability over time using motion sensors.',
+              detail: "iPhone's fall-risk metric (0–100%). OK is ≥60%, Low is 40–59%, Very Low is below 40%. Captures balance and gait stability over time using motion sensors.",
             },
           ].map(({ name, detail }) => (
             <div key={name}>

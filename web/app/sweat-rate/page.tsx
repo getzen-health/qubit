@@ -14,8 +14,6 @@ import {
   ReferenceLine,
 } from 'recharts'
 
-export const metadata = { title: 'Sweat Rate Estimator' }
-
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
 type IntensityLevel = 'Optimal' | 'Mild' | 'Caution' | 'Significant'

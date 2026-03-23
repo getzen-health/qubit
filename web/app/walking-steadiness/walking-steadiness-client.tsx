@@ -268,7 +268,7 @@ export function WalkingSteadinessClient({ data }: { data: SteadinessData }) {
           </div>
           <div className="flex items-start gap-2 text-xs">
             <span className="text-red-400 mt-0.5">●</span>
-            <span className="text-text-secondary"><span className="text-text-primary font-medium">Very Low (< 40%)</span> — Significantly reduced stability, high fall risk</span>
+            <span className="text-text-secondary"><span className="text-text-primary font-medium">{'Very Low (< 40%)'}</span> — Significantly reduced stability, high fall risk</span>
           </div>
         </div>
         <p className="text-xs text-text-secondary opacity-60 mt-3">

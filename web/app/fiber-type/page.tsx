@@ -354,8 +354,6 @@ function FactorBar({ factor }: { factor: EvidenceFactor }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export const metadata = { title: 'Muscle Fiber Type Estimator' }
-
 export default function FiberTypePage() {
   const cfg = CATEGORY_CONFIG[CATEGORY]
 

@@ -78,7 +78,7 @@ const SCIENCE_CARDS = [
       {
         citation: 'Turner 2011 — Journal of Sports Sciences (Fencing lunge mechanics)',
         detail:
-          'The lunge is the primary attacking action in all three weapons. Rear-leg peak ground reaction force averages 2.8–3.2× body weight during the propulsive phase. Front foot touchdown impact force: 1.4–1.8× BW — absorbed by the front knee in a semi-extended position. Total attack time from en garde to target contact: 150 ms (sabre), 170 ms (foil), 200 ms (épée). The sabre is fastest because right-of-way rules incentivise the most explosive possible first movement; épée's no-right-of-way rule allows more measured, accurate attacks.',
+          "The lunge is the primary attacking action in all three weapons. Rear-leg peak ground reaction force averages 2.8–3.2× body weight during the propulsive phase. Front foot touchdown impact force: 1.4–1.8× BW — absorbed by the front knee in a semi-extended position. Total attack time from en garde to target contact: 150 ms (sabre), 170 ms (foil), 200 ms (épée). The sabre is fastest because right-of-way rules incentivise the most explosive possible first movement; épée's no-right-of-way rule allows more measured, accurate attacks.",
         stat: 'Rear-leg GRF: 2.8–3.2× BW; attack time: sabre 150 ms, foil 170 ms, épée 200 ms',
       },
       {

@@ -2,7 +2,7 @@
 // Evidence-based guide covering core anatomy, back rehabilitation, neuromotor control, and Pilates vs other practices.
 
 import Link from 'next/link'
-import { ArrowLeft, FlaskConical, Layers, Activity, Zap, GitCompare } from 'lucide-react'
+import { ArrowLeft, FlaskConical, Layers, Activity, Zap, GitCompareArrows } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
 // ─── Reformer Progressions Table ─────────────────────────────────────────────
@@ -650,7 +650,7 @@ export default function PilatesSciencePage() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden">
             <div className="px-4 py-3 border-b border-white/[0.07]">
               <div className="flex items-center gap-2">
-                <GitCompare className="w-4 h-4 text-orange-400" />
+                <GitCompareArrows className="w-4 h-4 text-orange-400" />
                 <h2 className="font-rajdhani font-semibold text-sm tracking-wide text-white/80">
                   Pilates vs Comparators — Outcome Summary
                 </h2>
@@ -762,5 +762,5 @@ function CardIcon({
   if (type === 'layers') return <Layers className={cls} style={{ color }} />
   if (type === 'activity') return <Activity className={cls} style={{ color }} />
   if (type === 'zap') return <Zap className={cls} style={{ color }} />
-  return <GitCompare className={cls} style={{ color }} />
+  return <GitCompareArrows className={cls} style={{ color }} />
 }

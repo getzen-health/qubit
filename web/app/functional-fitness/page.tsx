@@ -9,7 +9,7 @@ import {
   Footprints,
   Activity,
   Zap,
-  Stairs,
+  TrendingUp,
   FlaskConical,
 } from 'lucide-react'
 import {
@@ -126,7 +126,7 @@ const MOCK_COMPONENTS: Component[] = [
     bgColor: 'bg-orange-500/10',
     borderColor: 'border-orange-500/20',
     barColor: '#f97316',
-    Icon: Stairs,
+    Icon: TrendingUp,
     description: 'Bhatt 2013 — cardiovascular mortality predictor',
   },
 ]

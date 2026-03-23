@@ -301,8 +301,6 @@ function BestDaysTable() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export const metadata = { title: 'Cognitive Performance Score' }
-
 export default function CognitivePerformancePage() {
   const todayLevel = classifyScore(TODAY_SCORE)
   const cfg = LEVEL_CONFIG[todayLevel]
