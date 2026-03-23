@@ -26,17 +26,16 @@ final class HabitsViewModel {
     var isAdding = false
 
     private let dowLabels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+    private static let dateFmt: DateFormatter = {
+        let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; return f
+    }()
 
     var todayDow: String {
         let idx = Calendar.current.component(.weekday, from: Date()) - 1
         return dowLabels[idx]
     }
 
-    var todayStr: String {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        return df.string(from: Date())
-    }
+    var todayStr: String { Self.dateFmt.string(from: Date()) }
 
     var todayHabits: [Habit] {
         habits.filter { $0.target_days.contains(todayDow) }
@@ -52,10 +51,11 @@ final class HabitsViewModel {
 
     func streak(for habitId: String) -> Int {
         let dates = Set(completions.filter { $0.habit_id == habitId }.map { $0.date })
+        let df = Self.dateFmt
+        let cal = Calendar.current
         var streak = 0
         for i in 0..<90 {
-            let d = Calendar.current.date(byAdding: .day, value: -i, to: Date())!
-            let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+            let d = cal.date(byAdding: .day, value: -i, to: Date())!
             let ds = df.string(from: d)
             if dates.contains(ds) {
                 streak += 1
