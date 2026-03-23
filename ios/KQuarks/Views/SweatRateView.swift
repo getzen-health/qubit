@@ -90,6 +90,7 @@ struct SweatRateView: View {
         .navigationTitle("Sweat Rate Estimator")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - No Data View

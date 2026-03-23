@@ -66,6 +66,7 @@ struct BodyCompositionView: View {
                 Text("Enter your current body weight in kilograms.")
             }
             .task { await loadData() }
+            .refreshable { await loadData() }
         }
     }
 

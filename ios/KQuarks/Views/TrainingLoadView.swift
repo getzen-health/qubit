@@ -32,6 +32,7 @@ struct TrainingLoadView: View {
         .navigationTitle("Training Load")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - ACWR Card

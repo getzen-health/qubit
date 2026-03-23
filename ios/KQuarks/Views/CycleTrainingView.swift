@@ -110,6 +110,7 @@ struct CycleTrainingView: View {
         .navigationTitle("Cycle-Synced Training")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Current Phase Card

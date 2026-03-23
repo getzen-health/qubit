@@ -56,6 +56,7 @@ struct JumpRopeView: View {
         .navigationTitle("Jump Rope")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var summaryCard: some View {

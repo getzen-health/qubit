@@ -74,6 +74,7 @@ struct DanceAnalysisView: View {
         .navigationTitle("Dance & Aerobics")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var summaryCard: some View {

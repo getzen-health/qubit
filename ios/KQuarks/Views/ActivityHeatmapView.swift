@@ -31,6 +31,7 @@ struct ActivityHeatmapView: View {
         .navigationTitle("Activity Calendar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Legend
@@ -111,7 +112,6 @@ struct ActivityHeatmapView: View {
     // MARK: - Stats Card
 
     private var statsCard: some View {
-        let totalDays = dayData.count
         let activeDays = dayData.values.filter { $0 >= 1000 }.count
         let goalDays = dayData.values.filter { $0 >= stepGoal }.count
         let totalSteps = dayData.values.reduce(0, +)

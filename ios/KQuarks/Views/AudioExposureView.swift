@@ -85,6 +85,7 @@ struct AudioExposureView: View {
         .navigationTitle("Audio Exposure")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -79,6 +79,7 @@ private struct RunningPacingContent: View {
         .navigationTitle("Running Pacing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

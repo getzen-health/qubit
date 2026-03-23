@@ -54,6 +54,7 @@ struct MindfulnessView: View {
                 }
             }
             .task { await loadHistory() }
+            .refreshable { await loadHistory() }
             .onReceive(ticker) { t in now = t }
         }
     }

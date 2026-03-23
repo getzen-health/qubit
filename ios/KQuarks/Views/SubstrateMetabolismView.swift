@@ -110,6 +110,7 @@ struct SubstrateMetabolismView: View {
         .navigationTitle("Substrate Metabolism")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary

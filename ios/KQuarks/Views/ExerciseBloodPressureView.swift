@@ -115,6 +115,7 @@ struct ExerciseBloodPressureView: View {
         .navigationTitle("Exercise & Blood Pressure")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

@@ -48,6 +48,7 @@ struct RHRTrendView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

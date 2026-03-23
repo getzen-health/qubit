@@ -124,6 +124,7 @@ struct DetrainingView: View {
         .navigationTitle("Detraining Model")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Current Form Card

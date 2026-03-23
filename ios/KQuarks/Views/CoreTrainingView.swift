@@ -122,6 +122,7 @@ struct CoreTrainingView: View {
         .navigationTitle("Core Training")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

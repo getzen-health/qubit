@@ -103,6 +103,7 @@ struct WinterSportsView: View {
         .navigationTitle("Winter Sports")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

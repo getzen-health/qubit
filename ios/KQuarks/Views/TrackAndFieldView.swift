@@ -130,6 +130,7 @@ struct TrackAndFieldView: View {
         .navigationTitle("Track & Field")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

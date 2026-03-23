@@ -133,6 +133,7 @@ struct AudiogramView: View {
         .navigationTitle("Audiogram")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Classification Card
@@ -394,8 +395,8 @@ struct AudiogramView: View {
         let audiograms: [Audiogram] = rawSamples.map { sample in
             let points = sample.sensitivityPoints.map { p -> Audiogram.FreqPoint in
                 let freq  = p.frequency.doubleValue(for: hz)
-                let left  = try? p.leftEarSensitivity?.doubleValue(for: dBHL)
-                let right = try? p.rightEarSensitivity?.doubleValue(for: dBHL)
+                let left  = p.leftEarSensitivity?.doubleValue(for: dBHL)
+                let right = p.rightEarSensitivity?.doubleValue(for: dBHL)
                 return Audiogram.FreqPoint(freqHz: freq, leftDBHL: left, rightDBHL: right)
             }
             return Audiogram(date: sample.startDate, label: fmt.string(from: sample.startDate), points: points)

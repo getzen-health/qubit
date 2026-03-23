@@ -95,6 +95,7 @@ struct ActivityFragmentationView: View {
         .navigationTitle("Activity Fragmentation")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards
@@ -292,8 +293,7 @@ struct ActivityFragmentationView: View {
         let interval = DateComponents(minute: 15)
         let anchor = calendar.startOfDay(for: start)
 
-        var collection: HKStatisticsCollection?
-        await withCheckedContinuation { continuation in
+        let collection: HKStatisticsCollection? = await withCheckedContinuation { continuation in
             let query = HKStatisticsCollectionQuery(
                 quantityType: stepType,
                 quantitySamplePredicate: HKQuery.predicateForSamples(withStart: start, end: end),
@@ -301,10 +301,7 @@ struct ActivityFragmentationView: View {
                 anchorDate: anchor,
                 intervalComponents: interval
             )
-            query.initialResultsHandler = { _, results, _ in
-                collection = results
-                continuation.resume()
-            }
+            query.initialResultsHandler = { _, results, _ in continuation.resume(returning: results) }
             healthStore.execute(query)
         }
         if let results = collection {

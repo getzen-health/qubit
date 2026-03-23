@@ -79,6 +79,7 @@ struct SleepEfficiencyView: View {
         .navigationTitle("Sleep Efficiency")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

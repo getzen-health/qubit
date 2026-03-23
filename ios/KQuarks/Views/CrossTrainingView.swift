@@ -58,6 +58,7 @@ struct CrossTrainingView: View {
         .navigationTitle("Cross-Training")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary

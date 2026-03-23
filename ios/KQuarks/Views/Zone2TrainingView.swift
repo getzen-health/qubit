@@ -67,6 +67,7 @@ struct Zone2TrainingView: View {
         .navigationTitle("Zone 2 Training")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Weekly Status Card

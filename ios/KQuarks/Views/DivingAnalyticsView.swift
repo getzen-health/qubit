@@ -104,6 +104,7 @@ struct DivingAnalyticsView: View {
         .navigationTitle("Diving Analytics")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -89,6 +89,7 @@ struct VILPAView: View {
         .navigationTitle("VILPA")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

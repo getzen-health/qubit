@@ -52,6 +52,7 @@ struct HRVDetailView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card
@@ -323,7 +324,7 @@ struct HRVDetailView: View {
             let weekday = Calendar.current.component(.weekday, from: date) - 1  // 0=Sun
             buckets[weekday, default: []].append(hrv)
         }
-        return buckets.mapValues { vals in vals.reduce(0, +) / Double(vals.count) }
+        return buckets.mapValues { vals in vals.isEmpty ? 0 : vals.reduce(0, +) / Double(vals.count) }
     }
 }
 

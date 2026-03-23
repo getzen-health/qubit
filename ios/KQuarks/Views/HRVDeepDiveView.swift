@@ -88,6 +88,7 @@ struct HRVDeepDiveView: View {
         .navigationTitle("HRV Deep Dive")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

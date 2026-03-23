@@ -125,6 +125,7 @@ struct RugbyAnalysisView: View {
         .navigationTitle("Rugby & Football")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

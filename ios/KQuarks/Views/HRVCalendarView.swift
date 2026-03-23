@@ -93,6 +93,7 @@ struct HRVCalendarView: View {
         .navigationTitle("HRV Calendar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards
@@ -349,7 +350,6 @@ struct HRVCalendarView: View {
     }
 
     private func groupByMonth() -> [(label: String, avg: Double)] {
-        let cal = Calendar.current
         let mf = DateFormatter()
         mf.dateFormat = "MMM yy"
         var buckets: [String: [Double]] = [:]

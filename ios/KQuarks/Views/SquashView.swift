@@ -116,6 +116,7 @@ struct SquashView: View {
         .navigationTitle("Squash")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

@@ -121,6 +121,7 @@ struct BowlingView: View {
         .navigationTitle("Bowling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

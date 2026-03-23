@@ -49,6 +49,7 @@ struct FitnessProfileView: View {
         .navigationTitle("Fitness Profile")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // ── Overall card ──────────────────────────────────────────────────────────

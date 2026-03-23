@@ -94,6 +94,7 @@ struct RunningPaceZonesView: View {
         .navigationTitle("Pace Zones")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Empty state

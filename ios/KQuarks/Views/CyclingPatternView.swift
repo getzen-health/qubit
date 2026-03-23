@@ -79,6 +79,7 @@ struct CyclingPatternView: View {
         .navigationTitle("Cycling Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary cards

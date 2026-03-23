@@ -93,6 +93,7 @@ struct RunningCadenceView: View {
         .navigationTitle("Running Cadence")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

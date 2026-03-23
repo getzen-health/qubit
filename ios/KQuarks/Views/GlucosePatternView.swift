@@ -78,6 +78,7 @@ struct GlucosePatternView: View {
         .navigationTitle("Glucose Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Empty state

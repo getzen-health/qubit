@@ -62,6 +62,7 @@ struct ActivitySummaryView: View {
         .navigationTitle("Activity Summary")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Comparison Header

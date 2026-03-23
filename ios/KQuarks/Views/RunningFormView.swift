@@ -49,6 +49,7 @@ private struct RunningFormContent: View {
         .navigationTitle("Running Form")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

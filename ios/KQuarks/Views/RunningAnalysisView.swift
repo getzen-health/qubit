@@ -86,6 +86,7 @@ struct RunningAnalysisView: View {
         .navigationTitle("Running")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: RunningFormView()) {

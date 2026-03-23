@@ -60,6 +60,7 @@ struct SwimmingProgressionView: View {
         .navigationTitle("Swimming Progression")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

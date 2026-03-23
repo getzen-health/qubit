@@ -88,6 +88,7 @@ struct SedentaryBreakView: View {
         .navigationTitle("Sedentary Breaks")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards
@@ -259,8 +260,7 @@ struct SedentaryBreakView: View {
         let interval = DateComponents(minute: 15)
         let anchor = calendar.startOfDay(for: start)
 
-        var collection: HKStatisticsCollection?
-        await withCheckedContinuation { cont in
+        let collection: HKStatisticsCollection? = await withCheckedContinuation { cont in
             let q = HKStatisticsCollectionQuery(
                 quantityType: stepType,
                 quantitySamplePredicate: HKQuery.predicateForSamples(withStart: start, end: end),
@@ -268,9 +268,7 @@ struct SedentaryBreakView: View {
                 anchorDate: anchor,
                 intervalComponents: interval
             )
-            q.initialResultsHandler = { _, results, _ in
-                collection = results; cont.resume()
-            }
+            q.initialResultsHandler = { _, results, _ in cont.resume(returning: results) }
             healthStore.execute(q)
         }
 

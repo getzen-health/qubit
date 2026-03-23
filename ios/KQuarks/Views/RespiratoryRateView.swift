@@ -52,6 +52,7 @@ struct RespiratoryRateView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

@@ -122,6 +122,7 @@ struct CurlingView: View {
         .navigationTitle("Curling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

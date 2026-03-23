@@ -113,6 +113,7 @@ struct WorkoutsView: View {
             .task(id: selectedPeriod) {
                 await loadWorkouts()
             }
+            .refreshable { await loadWorkouts() }
         }
     }
 

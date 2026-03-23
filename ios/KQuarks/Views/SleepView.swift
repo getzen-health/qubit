@@ -77,6 +77,7 @@ struct SleepView: View {
             .task {
                 await loadSleep()
             }
+            .refreshable { await loadSleep() }
         }
     }
 

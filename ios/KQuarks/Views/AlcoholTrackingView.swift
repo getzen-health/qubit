@@ -145,6 +145,7 @@ struct AlcoholTrackingView: View {
         .navigationTitle("Alcohol Tracker")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading beverage data…")

@@ -57,6 +57,7 @@ struct BasketballAnalysisView: View {
         .navigationTitle("Basketball")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var summaryCard: some View {

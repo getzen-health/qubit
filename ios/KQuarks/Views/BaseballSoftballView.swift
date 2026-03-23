@@ -103,6 +103,7 @@ struct BaseballSoftballView: View {
         .navigationTitle("Baseball & Softball")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

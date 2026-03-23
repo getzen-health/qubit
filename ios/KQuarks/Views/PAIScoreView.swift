@@ -139,6 +139,7 @@ struct PAIScoreView: View {
         .navigationTitle("PAI Score")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Weekly Score Card

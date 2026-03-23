@@ -88,6 +88,7 @@ private struct RunningBiomechanicsContent: View {
         .navigationTitle("Running Biomechanics")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

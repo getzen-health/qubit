@@ -125,6 +125,7 @@ struct WorkoutCalendarView: View {
         .navigationTitle("Training Calendar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Cards

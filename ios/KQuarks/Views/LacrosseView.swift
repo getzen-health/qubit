@@ -55,6 +55,7 @@ struct LacrosseView: View {
         .navigationTitle("Lacrosse")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

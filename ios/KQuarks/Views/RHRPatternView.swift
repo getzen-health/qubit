@@ -139,6 +139,7 @@ struct RHRPatternView: View {
         .navigationTitle("RHR Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

@@ -90,6 +90,7 @@ struct LactateThresholdView: View {
         .navigationTitle("Lactate Threshold")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Threshold Card

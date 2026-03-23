@@ -120,6 +120,7 @@ struct PrepRecoveryView: View {
         .navigationTitle("Prep & Recovery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

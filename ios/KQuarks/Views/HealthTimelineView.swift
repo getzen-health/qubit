@@ -86,6 +86,7 @@ struct HealthTimelineView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Scroll Content

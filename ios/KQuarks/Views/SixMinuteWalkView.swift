@@ -91,6 +91,7 @@ struct SixMinuteWalkView: View {
         .navigationTitle("6-Min Walk Test")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

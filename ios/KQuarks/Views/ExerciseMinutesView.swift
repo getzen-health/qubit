@@ -67,6 +67,7 @@ struct ExerciseMinutesView: View {
         .navigationTitle("Exercise Minutes")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

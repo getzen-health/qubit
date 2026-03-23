@@ -48,6 +48,7 @@ struct BloodPressureView: View {
             LogBPView()
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Latest Card

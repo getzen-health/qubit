@@ -149,6 +149,7 @@ struct MuscleRecoveryView: View {
         .navigationTitle("Muscle Recovery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Overview Card

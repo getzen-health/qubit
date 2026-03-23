@@ -86,6 +86,7 @@ struct BloodOxygenDeepDiveView: View {
         .navigationTitle("Blood Oxygen (SpO₂)")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

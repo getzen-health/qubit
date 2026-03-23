@@ -70,6 +70,7 @@ struct TrainingPerformanceCorrelationView: View {
         .navigationTitle("Load vs Performance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Insight Card

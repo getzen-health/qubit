@@ -109,6 +109,7 @@ struct StressRecoveryView: View {
         .navigationTitle("Stress & Recovery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Current Status Card

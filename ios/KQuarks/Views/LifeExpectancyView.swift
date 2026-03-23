@@ -69,6 +69,7 @@ struct LifeExpectancyView: View {
         .navigationTitle("Life Expectancy")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Calculating impact…")

@@ -56,6 +56,7 @@ struct TennisAnalysisView: View {
         .navigationTitle("Tennis")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary

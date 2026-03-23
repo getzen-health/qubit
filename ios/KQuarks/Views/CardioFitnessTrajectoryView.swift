@@ -122,6 +122,7 @@ struct CardioFitnessTrajectoryView: View {
         .navigationTitle("Cardio Fitness Trajectory")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Trajectory Status

@@ -193,6 +193,7 @@ struct MindfulnessPatternView: View {
         .navigationTitle("Mindfulness Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

@@ -73,6 +73,7 @@ struct WorkoutVarietyView: View {
         .navigationTitle("Workout Variety")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

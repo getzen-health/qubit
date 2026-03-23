@@ -128,6 +128,7 @@ struct HeatAcclimatizationView: View {
         .navigationTitle("Heat Acclimatization")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Status Card

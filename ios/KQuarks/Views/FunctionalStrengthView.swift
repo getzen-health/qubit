@@ -58,6 +58,7 @@ struct FunctionalStrengthView: View {
         .navigationTitle("Functional Strength")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var summaryCard: some View {

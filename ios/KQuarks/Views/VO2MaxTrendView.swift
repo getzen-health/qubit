@@ -112,6 +112,7 @@ struct VO2MaxTrendView: View {
         .navigationTitle("VO₂ Max Trend")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Status Card

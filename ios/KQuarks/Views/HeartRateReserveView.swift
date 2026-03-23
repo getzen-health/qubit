@@ -98,6 +98,7 @@ struct HeartRateReserveView: View {
         .navigationTitle("Heart Rate Reserve")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

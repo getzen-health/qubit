@@ -79,6 +79,7 @@ struct MaxHRAnalysisView: View {
         .navigationTitle("Max HR Analysis")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

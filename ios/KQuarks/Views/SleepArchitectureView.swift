@@ -63,6 +63,7 @@ struct SleepArchitectureView: View {
         .navigationTitle("Sleep Architecture")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

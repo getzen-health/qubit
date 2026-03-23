@@ -64,6 +64,7 @@ struct SoccerAnalysisView: View {
         .navigationTitle("Soccer")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

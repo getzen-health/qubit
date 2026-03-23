@@ -120,6 +120,7 @@ struct PickleballView: View {
         .navigationTitle("Pickleball")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

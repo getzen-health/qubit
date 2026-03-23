@@ -119,6 +119,7 @@ struct PadelScienceView: View {
         .navigationTitle("Padel Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

@@ -88,6 +88,7 @@ struct StrengthPatternView: View {
         .navigationTitle("Strength Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary cards

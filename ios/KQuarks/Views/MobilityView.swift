@@ -59,6 +59,7 @@ struct MobilityView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

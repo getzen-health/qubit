@@ -146,6 +146,7 @@ struct SpO2PatternView: View {
         .navigationTitle("SpO₂ Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

@@ -54,6 +54,7 @@ struct HealthHeatmapView: View {
         .navigationTitle("Health Heatmap")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Header

@@ -30,6 +30,7 @@ struct MoodHistoryView: View {
         .navigationTitle("Mood History")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Averages

@@ -105,6 +105,7 @@ struct BoneLoadingView: View {
         .navigationTitle("Bone Loading")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary
@@ -307,24 +308,22 @@ struct BoneLoadingView: View {
         let anchor = calendar.startOfDay(for: start)
 
         // Step count collection
-        var stepCollection: HKStatisticsCollection?
-        await withCheckedContinuation { cont in
+        let stepCollection: HKStatisticsCollection? = await withCheckedContinuation { cont in
             let q = HKStatisticsCollectionQuery(
                 quantityType: stepType,
                 quantitySamplePredicate: HKQuery.predicateForSamples(withStart: start, end: end),
                 options: .cumulativeSum, anchorDate: anchor, intervalComponents: interval)
-            q.initialResultsHandler = { _, results, _ in stepCollection = results; cont.resume() }
+            q.initialResultsHandler = { _, results, _ in cont.resume(returning: results) }
             healthStore.execute(q)
         }
 
         // Flight count collection
-        var flightCollection: HKStatisticsCollection?
-        await withCheckedContinuation { cont in
+        let flightCollection: HKStatisticsCollection? = await withCheckedContinuation { cont in
             let q = HKStatisticsCollectionQuery(
                 quantityType: flightType,
                 quantitySamplePredicate: HKQuery.predicateForSamples(withStart: start, end: end),
                 options: .cumulativeSum, anchorDate: anchor, intervalComponents: interval)
-            q.initialResultsHandler = { _, results, _ in flightCollection = results; cont.resume() }
+            q.initialResultsHandler = { _, results, _ in cont.resume(returning: results) }
             healthStore.execute(q)
         }
 

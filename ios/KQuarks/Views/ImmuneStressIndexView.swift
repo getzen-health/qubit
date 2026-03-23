@@ -92,6 +92,7 @@ private struct ImmuneStressContent: View {
         .navigationTitle("Immune Stress Index")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Analyzing immune signals…")
@@ -326,7 +327,6 @@ private struct ImmuneStressContent: View {
         let cal = Calendar.current
         let now = Date()
         let since30 = cal.date(byAdding: .day, value: -30, to: now) ?? now
-        let since7  = cal.date(byAdding: .day, value: -7,  to: now) ?? now
 
         async let hrv30  = fetchDailyAvg(.heartRateVariabilitySDNN, since: since30, unit: HKUnit(from: "ms"))
         async let rhr30  = fetchDailyAvg(.restingHeartRate, since: since30, unit: .count().unitDivided(by: .minute()))

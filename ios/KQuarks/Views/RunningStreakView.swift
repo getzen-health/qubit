@@ -52,6 +52,7 @@ struct RunningStreakView: View {
         .navigationTitle("Running Streaks")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Streak Card
@@ -117,11 +118,6 @@ struct RunningStreakView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("90-Day Activity Map").font(.headline)
             Text("Each square = one day").font(.caption).foregroundStyle(.secondary)
-
-            // Build rows of 7 (weeks)
-            let weeks = stride(from: 0, to: dayGrid.count, by: 7).map {
-                Array(dayGrid[$0 ..< min($0 + 7, dayGrid.count)])
-            }
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
                 // Day labels

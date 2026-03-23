@@ -97,6 +97,7 @@ struct TriathlonScienceView: View {
         .navigationTitle("Triathlon Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private var volumeRatio: String {

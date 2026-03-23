@@ -62,6 +62,7 @@ struct SleepRegularityIndexView: View {
         .navigationTitle("Sleep Regularity")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Analyzing sleep patterns…")

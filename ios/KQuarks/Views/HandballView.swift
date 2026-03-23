@@ -118,13 +118,14 @@ struct HandballView: View {
         .navigationTitle("Handball")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card
 
     private var summaryCard: some View {
         let matchSessions = sessions.filter { $0.sessionType == .match }.count
-        let totalKcal = sessions.map(\.kcal).reduce(0, +)
+        _ = sessions.map(\.kcal).reduce(0, +)
 
         return VStack(spacing: 14) {
             HStack(spacing: 0) {

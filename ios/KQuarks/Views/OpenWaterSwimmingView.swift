@@ -63,6 +63,7 @@ struct OpenWaterSwimmingView: View {
         .navigationTitle("Open Water Swimming")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

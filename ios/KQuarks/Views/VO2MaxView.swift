@@ -40,6 +40,7 @@ struct VO2MaxView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card
@@ -92,9 +93,8 @@ struct VO2MaxView: View {
                 }
             }
 
-            if samples.count >= 2 {
-                let first = samples.first!.value
-                let last = latest!
+            if samples.count >= 2, let firstSample = samples.first, let last = latest {
+                let first = firstSample.value
                 let change = last - first
                 HStack {
                     Image(systemName: change >= 0 ? "arrow.up.right" : "arrow.down.right")

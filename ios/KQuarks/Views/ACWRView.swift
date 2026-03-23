@@ -98,6 +98,7 @@ struct ACWRView: View {
         .navigationTitle("Workload Ratio (ACWR)")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

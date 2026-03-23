@@ -138,6 +138,7 @@ struct HRVSessionRecommenderView: View {
         .navigationTitle("Today's Recommendation")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Readiness Card

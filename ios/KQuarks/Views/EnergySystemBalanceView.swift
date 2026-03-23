@@ -72,6 +72,7 @@ struct EnergySystemBalanceView: View {
         .navigationTitle("Energy Balance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Balance Card

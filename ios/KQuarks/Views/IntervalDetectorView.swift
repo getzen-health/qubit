@@ -91,6 +91,7 @@ struct IntervalDetectorView: View {
         .navigationTitle("Interval Detector")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

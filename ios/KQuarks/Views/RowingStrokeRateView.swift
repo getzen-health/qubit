@@ -93,6 +93,7 @@ struct RowingStrokeRateView: View {
         .navigationTitle("Rowing Stroke Rate")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

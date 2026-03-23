@@ -133,6 +133,7 @@ struct MASTrainingView: View {
         .navigationTitle("MAS Training Zones")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

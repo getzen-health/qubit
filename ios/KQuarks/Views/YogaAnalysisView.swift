@@ -83,6 +83,7 @@ struct YogaAnalysisView: View {
         .navigationTitle("Yoga & Mind-Body")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

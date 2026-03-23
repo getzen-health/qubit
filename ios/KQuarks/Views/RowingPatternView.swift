@@ -82,6 +82,7 @@ struct RowingPatternView: View {
         .navigationTitle("Rowing Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

@@ -68,6 +68,7 @@ struct WorkoutGoalTrackerView: View {
             goalPickerSheet
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Goal Card

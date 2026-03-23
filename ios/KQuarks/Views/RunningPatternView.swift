@@ -79,6 +79,7 @@ struct RunningPatternView: View {
         .navigationTitle("Running Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary cards
@@ -504,7 +505,7 @@ struct RunningPatternView: View {
             }
 
             // DOW
-            var comps = cal.dateComponents([.weekday], from: w.startDate)
+            let comps = cal.dateComponents([.weekday], from: w.startDate)
             let wd = ((comps.weekday ?? 1) + 5) % 7 + 1
             dowRuns[wd, default: 0] += 1
             dowKm[wd, default: 0.0] += km

@@ -149,6 +149,7 @@ struct FiberTypeView: View {
         .navigationTitle("Fiber Type Estimator")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Spectrum Card

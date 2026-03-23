@@ -87,6 +87,7 @@ struct ClimbingScienceView: View {
         .navigationTitle("Competition Climbing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Data Loading

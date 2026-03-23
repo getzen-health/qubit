@@ -65,6 +65,7 @@ struct ActiveEnergyBudgetView: View {
         .navigationTitle("Active Energy")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

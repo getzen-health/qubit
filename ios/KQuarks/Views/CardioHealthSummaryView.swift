@@ -171,6 +171,7 @@ struct CardioHealthSummaryView: View {
         .navigationTitle("Cardio Health")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Overall Card

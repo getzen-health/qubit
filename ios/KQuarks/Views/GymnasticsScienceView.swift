@@ -85,6 +85,7 @@ struct GymnasticsScienceView: View {
         .navigationTitle("Gymnastics Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

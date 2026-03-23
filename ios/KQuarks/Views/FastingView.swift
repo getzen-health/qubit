@@ -74,6 +74,7 @@ struct FastingView: View {
                 }
             }
             .task { await load() }
+            .refreshable { await load() }
             .onReceive(timer) { t in now = t }
             .sheet(isPresented: $showStartSheet) {
                 startSheet

@@ -77,6 +77,7 @@ struct SleepBreathingView: View {
         .navigationTitle("Sleep Breathing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

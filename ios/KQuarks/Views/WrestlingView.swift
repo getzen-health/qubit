@@ -55,6 +55,7 @@ struct WrestlingView: View {
         .navigationTitle("Wrestling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

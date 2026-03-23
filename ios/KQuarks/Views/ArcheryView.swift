@@ -121,6 +121,7 @@ struct ArcheryView: View {
         .navigationTitle("Archery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

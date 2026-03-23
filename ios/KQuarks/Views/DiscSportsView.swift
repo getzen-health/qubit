@@ -115,6 +115,7 @@ struct DiscSportsView: View {
         .navigationTitle("Disc Sports")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

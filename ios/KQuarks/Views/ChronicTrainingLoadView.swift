@@ -92,6 +92,7 @@ struct ChronicTrainingLoadView: View {
         .navigationTitle("Training Load (CTL/ATL)")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

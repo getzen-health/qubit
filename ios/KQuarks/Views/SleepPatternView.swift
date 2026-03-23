@@ -78,6 +78,7 @@ struct SleepPatternView: View {
         .navigationTitle("Sleep Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

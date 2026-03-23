@@ -141,6 +141,7 @@ struct TriathlonView: View {
         .navigationTitle("Triathlon")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Discipline Summary Cards

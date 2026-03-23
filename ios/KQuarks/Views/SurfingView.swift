@@ -56,6 +56,7 @@ struct SurfingView: View {
         .navigationTitle("Surfing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

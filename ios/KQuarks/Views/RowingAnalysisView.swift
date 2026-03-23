@@ -118,6 +118,7 @@ struct RowingAnalysisView: View {
         .navigationTitle("Rowing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

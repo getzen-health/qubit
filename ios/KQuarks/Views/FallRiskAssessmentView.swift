@@ -84,6 +84,7 @@ struct FallRiskAssessmentView: View {
         .navigationTitle("Fall Risk Assessment")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Assessing risk factors…")

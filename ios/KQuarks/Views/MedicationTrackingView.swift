@@ -74,6 +74,7 @@ struct MedicationTrackingView: View {
         .navigationTitle("Medication Tracking")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading health records…")

@@ -119,6 +119,7 @@ struct SquashScienceView: View {
         .navigationTitle("Squash Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

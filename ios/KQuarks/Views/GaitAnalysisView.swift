@@ -169,6 +169,7 @@ struct GaitAnalysisView: View {
         .navigationTitle("Gait Analysis")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading gait data…")
@@ -514,7 +515,6 @@ struct GaitAnalysisView: View {
     ) async -> [Date: Double] {
         guard let type = HKQuantityType.quantityType(forIdentifier: typeId) else { return [:] }
         return await withCheckedContinuation { cont in
-            var result: [Date: Double] = [:]
             let query = HKStatisticsCollectionQuery(
                 quantityType: type,
                 quantitySamplePredicate: pred,
@@ -523,12 +523,13 @@ struct GaitAnalysisView: View {
                 intervalComponents: interval
             )
             query.initialResultsHandler = { _, collection, _ in
+                var localResult: [Date: Double] = [:]
                 collection?.enumerateStatistics(from: start, to: end) { stats, _ in
                     if let q = stats.averageQuantity() {
-                        result[stats.startDate] = q.doubleValue(for: unit)
+                        localResult[stats.startDate] = q.doubleValue(for: unit)
                     }
                 }
-                cont.resume(returning: result)
+                cont.resume(returning: localResult)
             }
             healthStore.execute(query)
         }

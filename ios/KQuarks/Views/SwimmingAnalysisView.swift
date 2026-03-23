@@ -82,6 +82,7 @@ struct SwimmingAnalysisView: View {
         .navigationTitle("Swimming")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

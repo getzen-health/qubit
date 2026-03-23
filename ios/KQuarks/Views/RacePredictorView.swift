@@ -107,6 +107,7 @@ struct RacePredictorView: View {
         .navigationTitle("Race Predictor")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - VO2Max Card

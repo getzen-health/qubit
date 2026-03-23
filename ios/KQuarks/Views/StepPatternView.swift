@@ -109,6 +109,7 @@ struct StepPatternView: View {
         .navigationTitle("Step Pattern")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Empty state

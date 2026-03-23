@@ -108,6 +108,7 @@ struct InjuryRiskView: View {
         .navigationTitle("Injury Risk")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Risk Gauge Card

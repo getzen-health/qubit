@@ -128,6 +128,7 @@ struct FitnessGamingView: View {
         .navigationTitle("Fitness Gaming")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

@@ -76,6 +76,7 @@ struct BiologicalAgeView: View {
         .navigationTitle("Biological Age")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Computing biological age…")

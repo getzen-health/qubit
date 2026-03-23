@@ -93,6 +93,7 @@ struct CircadianHRView: View {
         .navigationTitle("Daily HR Pattern")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Empty state

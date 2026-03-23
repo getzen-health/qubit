@@ -83,6 +83,7 @@ struct RunningProgressionView: View {
         .navigationTitle("Running Progression")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

@@ -117,6 +117,7 @@ struct BasalMetabolicRateView: View {
         .navigationTitle("Basal Metabolic Rate")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

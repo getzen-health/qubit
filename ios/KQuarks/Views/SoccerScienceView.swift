@@ -55,6 +55,7 @@ struct SoccerScienceView: View {
         .navigationTitle("Soccer Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

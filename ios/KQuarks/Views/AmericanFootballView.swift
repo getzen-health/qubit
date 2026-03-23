@@ -56,6 +56,7 @@ struct AmericanFootballView: View {
         .navigationTitle("American Football")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

@@ -126,6 +126,7 @@ struct HockeyAnalysisView: View {
         .navigationTitle("Hockey & Lacrosse")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

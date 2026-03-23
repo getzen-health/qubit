@@ -82,6 +82,7 @@ struct HIITProgressionView: View {
         .navigationTitle("HIIT Progression")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

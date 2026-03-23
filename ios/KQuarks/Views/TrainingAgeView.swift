@@ -127,6 +127,7 @@ struct TrainingAgeView: View {
         .navigationTitle("Training Age")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

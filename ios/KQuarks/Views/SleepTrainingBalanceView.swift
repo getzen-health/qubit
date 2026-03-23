@@ -105,6 +105,7 @@ struct SleepTrainingBalanceView: View {
         .navigationTitle("Sleep-Training Balance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Status Card

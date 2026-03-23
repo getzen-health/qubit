@@ -55,6 +55,7 @@ struct AustralianFootballView: View {
         .navigationTitle("Australian Football")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

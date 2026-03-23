@@ -88,6 +88,7 @@ struct TrainingPolarizationView: View {
         .navigationTitle("Training Polarization")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Overall Card

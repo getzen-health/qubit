@@ -48,6 +48,7 @@ struct WalkingProgressionView: View {
         .navigationTitle("Walking Progression")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Monthly Distance

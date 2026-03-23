@@ -34,6 +34,7 @@ struct LongevityView: View {
         .navigationTitle("Vitality Score")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Score Card

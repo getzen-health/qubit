@@ -119,6 +119,7 @@ struct CricketView: View {
         .navigationTitle("Cricket")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

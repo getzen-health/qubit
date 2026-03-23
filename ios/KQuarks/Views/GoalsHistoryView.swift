@@ -75,6 +75,7 @@ struct GoalsHistoryView: View {
         .navigationTitle("Goals History")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Row

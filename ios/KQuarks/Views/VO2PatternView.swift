@@ -83,6 +83,7 @@ struct VO2PatternView: View {
         .navigationTitle("VO₂ Max History")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

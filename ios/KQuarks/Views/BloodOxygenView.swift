@@ -52,6 +52,7 @@ struct BloodOxygenView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card
@@ -227,7 +228,6 @@ struct BloodOxygenView: View {
     private var statsCard: some View {
         let values = samples.map(\.value)
         let minVal = values.min() ?? 0
-        let maxVal = values.max() ?? 0
         let avgVal = values.reduce(0, +) / Double(values.count)
         let pctNormal = Double(values.filter { $0 >= 95 }.count) / Double(values.count) * 100
 

@@ -59,6 +59,7 @@ struct SkateboardingView: View {
         .navigationTitle("Skateboarding")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

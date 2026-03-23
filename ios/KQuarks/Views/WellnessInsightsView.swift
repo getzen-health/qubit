@@ -56,6 +56,7 @@ struct WellnessInsightsView: View {
         .navigationTitle("Wellness Insights")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Averages

@@ -142,6 +142,7 @@ struct SportSpecificLoadView: View {
         .navigationTitle("Sport-Specific Load")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Overview Card

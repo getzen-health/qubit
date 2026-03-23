@@ -71,6 +71,7 @@ struct StrengthProgressionView: View {
         .navigationTitle("Strength Progression")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

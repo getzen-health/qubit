@@ -107,6 +107,7 @@ struct ReadinessView: View {
         .navigationTitle("Daily Readiness")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

@@ -45,6 +45,7 @@ struct HistoryView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: selectedDate) { _, _ in Task { await load() } }
             .task { await load() }
+            .refreshable { await load() }
         }
     }
 

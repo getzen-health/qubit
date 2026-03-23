@@ -125,6 +125,7 @@ struct StepAerobicsView: View {
         .navigationTitle("Step Aerobics")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

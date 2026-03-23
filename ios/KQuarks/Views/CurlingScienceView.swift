@@ -87,6 +87,7 @@ struct CurlingScienceView: View {
         .navigationTitle("Curling Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

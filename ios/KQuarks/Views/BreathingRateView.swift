@@ -85,6 +85,7 @@ struct BreathingRateView: View {
         .navigationTitle("Breathing Rate")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card
@@ -275,7 +276,6 @@ struct BreathingRateView: View {
 
         let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
         let brUnit = HKUnit.count().unitDivided(by: .minute())
-        let cal = Calendar.current
         var calMon = Calendar.current; calMon.firstWeekday = 2
         let df = DateFormatter(); df.dateFormat = "yyyy-'W'ww"
 

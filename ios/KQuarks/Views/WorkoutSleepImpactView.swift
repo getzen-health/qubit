@@ -58,6 +58,7 @@ struct WorkoutSleepImpactView: View {
         .navigationTitle("Workout & Recovery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Recommendation

@@ -29,6 +29,7 @@ struct WeeklyReportView: View {
         .navigationTitle("Weekly Report")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Period Header

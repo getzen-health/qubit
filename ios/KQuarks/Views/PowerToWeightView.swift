@@ -115,6 +115,7 @@ private struct PowerToWeightContent: View {
         .navigationTitle("Power-to-Weight")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading FTP & weight data…")
@@ -263,7 +264,7 @@ private struct PowerToWeightContent: View {
             Text("How does body mass change your W/kg ratio at current FTP?")
                 .font(.caption).foregroundStyle(.secondary)
 
-            if let ftp = latestFTP, let currentKg = latestMass {
+            if latestFTP != nil, let currentKg = latestMass {
                 HStack {
                     Text(String(format: "%.1f kg", hypotheticalMass))
                         .font(.subheadline).bold()

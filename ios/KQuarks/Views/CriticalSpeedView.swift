@@ -77,6 +77,7 @@ struct CriticalSpeedView: View {
         .navigationTitle("Critical Speed")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Critical Speed Card

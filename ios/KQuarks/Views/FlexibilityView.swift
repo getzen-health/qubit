@@ -125,6 +125,7 @@ struct FlexibilityView: View {
         .navigationTitle("Flexibility")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

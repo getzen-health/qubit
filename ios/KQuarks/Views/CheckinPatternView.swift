@@ -79,6 +79,7 @@ struct CheckinPatternView: View {
         .navigationTitle("Check-in Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Empty state

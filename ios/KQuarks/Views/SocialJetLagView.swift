@@ -88,6 +88,7 @@ struct SocialJetLagView: View {
         .navigationTitle("Social Jet Lag")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Computing sleep timing…")

@@ -134,6 +134,7 @@ struct SleepChronotypeView: View {
         .navigationTitle("Chronotype")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Chronotype Card

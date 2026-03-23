@@ -85,6 +85,7 @@ struct RacquetSportsView: View {
         .navigationTitle("Racquet Sports")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

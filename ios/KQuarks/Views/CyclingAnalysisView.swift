@@ -73,6 +73,7 @@ struct CyclingAnalysisView: View {
         .navigationTitle("Cycling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

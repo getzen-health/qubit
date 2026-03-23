@@ -116,6 +116,7 @@ struct ElevationAnalysisView: View {
         .navigationTitle("Elevation Analysis")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

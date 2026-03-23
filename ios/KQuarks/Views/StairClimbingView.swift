@@ -62,6 +62,7 @@ struct StairClimbingView: View {
         .navigationTitle("Stair Climbing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

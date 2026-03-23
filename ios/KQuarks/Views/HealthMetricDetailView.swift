@@ -58,6 +58,7 @@ struct HealthMetricDetailView: View {
             }
         }
         .task { await loadData() }
+        .refreshable { await loadData() }
         .onChange(of: selectedDays) {
             Task { await loadData() }
         }

@@ -112,6 +112,7 @@ struct EPOCView: View {
         .navigationTitle("EPOC — Afterburn Effect")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary

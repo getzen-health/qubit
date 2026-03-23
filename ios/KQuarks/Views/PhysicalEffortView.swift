@@ -113,6 +113,7 @@ private struct PhysicalEffortContent: View {
         .navigationTitle("Workout Effort")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

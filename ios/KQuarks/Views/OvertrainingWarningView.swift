@@ -105,6 +105,7 @@ struct OvertrainingWarningView: View {
         .navigationTitle("Overtraining Warning")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Analyzing biomarker trends…")

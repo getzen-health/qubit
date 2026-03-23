@@ -96,6 +96,7 @@ struct WorkoutEfficiencyView: View {
         .navigationTitle("Workout Efficiency")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Row

@@ -111,6 +111,7 @@ struct CaloriePatternView: View {
         .navigationTitle("Calorie Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Sub-views

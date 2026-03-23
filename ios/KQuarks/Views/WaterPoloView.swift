@@ -118,6 +118,7 @@ struct WaterPoloView: View {
         .navigationTitle("Water Polo")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

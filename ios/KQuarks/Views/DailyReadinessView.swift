@@ -111,6 +111,7 @@ struct DailyReadinessView: View {
         .navigationTitle("Daily Readiness")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Today Card

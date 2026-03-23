@@ -96,6 +96,7 @@ struct UVExposureView: View {
         .navigationTitle("UV Exposure")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

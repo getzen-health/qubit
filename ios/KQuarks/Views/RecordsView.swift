@@ -30,6 +30,7 @@ struct RecordsView: View {
         .navigationTitle("Personal Records")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadRecords() }
+        .refreshable { await loadRecords() }
     }
 
     // MARK: - Sections

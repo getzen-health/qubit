@@ -102,6 +102,7 @@ struct TrackAndFieldScienceView: View {
         .navigationTitle("Track & Field Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

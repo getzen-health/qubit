@@ -54,6 +54,7 @@ struct SleepStagesView: View {
         .navigationTitle("Sleep Stages")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Averages Grid

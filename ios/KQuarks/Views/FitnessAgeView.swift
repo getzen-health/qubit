@@ -77,6 +77,7 @@ struct FitnessAgeView: View {
         .navigationTitle("Fitness Age")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

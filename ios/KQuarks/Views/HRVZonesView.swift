@@ -96,6 +96,7 @@ struct HRVZonesView: View {
         .navigationTitle("HRV Zones")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Sub-views

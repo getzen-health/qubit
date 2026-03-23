@@ -57,6 +57,7 @@ struct VolleyballAnalysisView: View {
         .navigationTitle("Volleyball")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -87,6 +87,7 @@ struct HeartRateZonesView: View {
         .navigationTitle("Heart Rate Zones")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Max HR Card

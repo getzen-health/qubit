@@ -133,6 +133,7 @@ struct CyclingPowerView: View {
         .navigationTitle("Cycling Power")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - FTP Card

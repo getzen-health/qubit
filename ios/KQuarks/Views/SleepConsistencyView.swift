@@ -89,6 +89,7 @@ struct SleepConsistencyView: View {
         .navigationTitle("Sleep Consistency")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Score Card

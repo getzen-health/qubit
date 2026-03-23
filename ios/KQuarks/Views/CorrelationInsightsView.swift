@@ -29,6 +29,7 @@ struct CorrelationInsightsView: View {
         .navigationTitle("Correlations")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var header: some View {

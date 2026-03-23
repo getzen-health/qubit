@@ -87,6 +87,7 @@ struct SurfingScienceView: View {
         .navigationTitle("Surfing Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

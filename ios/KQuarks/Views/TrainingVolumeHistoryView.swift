@@ -71,6 +71,7 @@ struct TrainingVolumeHistoryView: View {
         .navigationTitle("Volume History")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

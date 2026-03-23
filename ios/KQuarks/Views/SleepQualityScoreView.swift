@@ -102,6 +102,7 @@ struct SleepQualityScoreView: View {
         .navigationTitle("Sleep Quality Score")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Score Card

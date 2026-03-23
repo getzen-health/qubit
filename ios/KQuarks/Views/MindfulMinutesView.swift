@@ -100,6 +100,7 @@ struct MindfulMinutesView: View {
         .navigationTitle("Mindful Minutes")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -89,6 +89,7 @@ struct HeartRateRecoveryView: View {
         .navigationTitle("HR Recovery")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero

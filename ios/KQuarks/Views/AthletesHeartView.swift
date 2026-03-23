@@ -91,6 +91,7 @@ struct AthletesHeartView: View {
         .navigationTitle("Athlete's Heart")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Adaptation Summary Banner

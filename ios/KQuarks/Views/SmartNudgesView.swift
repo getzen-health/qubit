@@ -52,6 +52,7 @@ struct SmartNudgesView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Sections

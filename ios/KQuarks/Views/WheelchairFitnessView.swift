@@ -141,6 +141,7 @@ struct WheelchairFitnessView: View {
         .navigationTitle("Wheelchair Fitness")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

@@ -85,6 +85,7 @@ struct HealthScoreView: View {
         .navigationTitle("Health Score")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Card

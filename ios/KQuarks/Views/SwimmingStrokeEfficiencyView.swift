@@ -109,6 +109,7 @@ struct SwimmingStrokeEfficiencyView: View {
         .navigationTitle("Stroke Efficiency")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

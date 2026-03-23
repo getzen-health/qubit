@@ -69,6 +69,7 @@ struct OutdoorIndoorView: View {
         .navigationTitle("Outdoor vs Indoor")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

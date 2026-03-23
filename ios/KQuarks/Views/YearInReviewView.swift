@@ -57,6 +57,7 @@ struct YearInReviewView: View {
         .navigationTitle("Year in Review")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Hero Header

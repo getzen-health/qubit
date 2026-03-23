@@ -121,6 +121,7 @@ struct SailingView: View {
         .navigationTitle("Sailing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

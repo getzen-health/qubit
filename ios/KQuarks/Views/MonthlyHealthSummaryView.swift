@@ -106,6 +106,7 @@ struct MonthlyHealthSummaryView: View {
         .navigationTitle("Monthly Summary")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Month Header

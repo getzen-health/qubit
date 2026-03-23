@@ -87,6 +87,7 @@ struct PaddleSportsScienceView: View {
         .navigationTitle("Paddle Sports Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

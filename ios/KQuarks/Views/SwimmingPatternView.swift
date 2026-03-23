@@ -79,6 +79,7 @@ struct SwimmingPatternView: View {
         .navigationTitle("Swimming Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Cards

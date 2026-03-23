@@ -89,6 +89,7 @@ struct ExerciseSnacksView: View {
         .navigationTitle("Exercise Snacks")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

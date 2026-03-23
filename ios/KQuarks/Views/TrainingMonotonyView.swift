@@ -90,6 +90,7 @@ struct TrainingMonotonyView: View {
         .navigationTitle("Monotony & Strain")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

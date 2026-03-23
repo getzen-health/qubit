@@ -67,6 +67,7 @@ struct ActivityRingsHistoryView: View {
         .navigationTitle("Activity Rings")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

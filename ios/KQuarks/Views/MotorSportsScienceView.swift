@@ -87,6 +87,7 @@ struct MotorSportsScienceView: View {
         .navigationTitle("Motor Sports Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

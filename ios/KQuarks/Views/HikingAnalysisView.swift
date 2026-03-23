@@ -78,6 +78,7 @@ struct HikingAnalysisView: View {
         .navigationTitle("Hiking")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

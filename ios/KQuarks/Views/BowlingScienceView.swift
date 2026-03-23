@@ -87,6 +87,7 @@ struct BowlingScienceView: View {
         .navigationTitle("Bowling Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

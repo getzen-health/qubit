@@ -88,6 +88,7 @@ struct WeeklyBalanceView: View {
         .navigationTitle("Weekly Balance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

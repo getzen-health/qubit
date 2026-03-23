@@ -55,6 +55,7 @@ struct BoxingView: View {
         .navigationTitle("Boxing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

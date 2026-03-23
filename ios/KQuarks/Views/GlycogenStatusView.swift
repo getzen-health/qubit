@@ -128,6 +128,7 @@ struct GlycogenStatusView: View {
         .navigationTitle("Glycogen Status")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Status Card

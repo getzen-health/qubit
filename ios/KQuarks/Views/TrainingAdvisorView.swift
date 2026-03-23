@@ -126,6 +126,7 @@ struct TrainingAdvisorView: View {
         .navigationTitle("Training Advisor")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Week Type Banner

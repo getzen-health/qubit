@@ -69,6 +69,7 @@ struct HIITPatternView: View {
         .navigationTitle("HIIT Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     private var summaryCards: some View {
@@ -291,7 +292,7 @@ struct HIITPatternView: View {
             totalMins += mins
             if mins > longestSessionMins { longestSessionMins = mins }
 
-            var comps = cal.dateComponents([.weekday], from: w.startDate)
+            let comps = cal.dateComponents([.weekday], from: w.startDate)
             let wd = ((comps.weekday ?? 1) + 5) % 7 + 1
             dowSessions[wd, default: 0] += 1
 

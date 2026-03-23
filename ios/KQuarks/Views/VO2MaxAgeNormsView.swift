@@ -73,6 +73,7 @@ struct VO2MaxAgeNormsView: View {
         .navigationTitle("VO₂ Max & Age Norms")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

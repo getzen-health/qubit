@@ -87,6 +87,7 @@ struct DownhillSkiingScienceView: View {
         .navigationTitle("Downhill Skiing Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

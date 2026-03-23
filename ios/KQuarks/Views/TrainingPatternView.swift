@@ -70,6 +70,7 @@ struct TrainingPatternView: View {
         .navigationTitle("Training Patterns")
         .navigationBarTitleDisplayMode(.large)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary cards
@@ -434,7 +435,7 @@ struct TrainingPatternView: View {
         let dowLabels  = [1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat", 7: "Sun"]
 
         for w in workouts {
-            var comps = cal.dateComponents([.weekday], from: w.startDate)
+            let comps = cal.dateComponents([.weekday], from: w.startDate)
             // Convert from 1=Sun to 1=Mon
             let wd = ((comps.weekday ?? 1) + 5) % 7 + 1
             dowSessions[wd, default: 0] += 1
@@ -483,7 +484,6 @@ struct TrainingPatternView: View {
         // ── Summary stats ─────────────────────────────────────────────────────
         let total = workouts.count
         let avgMins = total > 0 ? workouts.map { $0.duration / 60 }.reduce(0, +) / Double(total) : 0
-        let weekCount = max(1, Double(weeks.count))
         let avgPerWeek = Double(total) / (90.0 / 7.0)
 
         // Preferred day and time

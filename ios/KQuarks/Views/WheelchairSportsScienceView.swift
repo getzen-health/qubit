@@ -87,6 +87,7 @@ struct WheelchairSportsScienceView: View {
         .navigationTitle("Wheelchair Sports Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

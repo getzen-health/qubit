@@ -76,7 +76,7 @@ struct GLP1View: View {
             grouped[weekStart, default: []].append(r.kg)
         }
         return grouped
-            .map { (date: $0.key, kg: $0.value.reduce(0, +) / Double($0.value.count)) }
+            .map { (date: $0.key, kg: $0.value.isEmpty ? 0 : $0.value.reduce(0, +) / Double($0.value.count)) }
             .sorted { $0.date < $1.date }
     }
 
@@ -107,7 +107,8 @@ struct GLP1View: View {
             return max(45, ibw)
         }
         // Fallback: 85% of current weight (approximates lean + modest fat target)
-        return (currentWeightKg ?? startWeightKg > 0 ? startWeightKg : 80) * 0.85
+        let fallback = startWeightKg > 0 ? startWeightKg : 80.0
+        return (currentWeightKg ?? fallback) * 0.85
     }
 
     /// Daily protein target: 1.6 g per kg ideal body weight.
@@ -177,6 +178,7 @@ struct GLP1View: View {
             )
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Onboarding View

@@ -128,6 +128,7 @@ struct HRZoneProgressionView: View {
         .navigationTitle("Zone Progression")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Analyzing 12 months of workouts…")

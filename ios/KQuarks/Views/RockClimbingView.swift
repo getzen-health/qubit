@@ -58,6 +58,7 @@ struct RockClimbingView: View {
         .navigationTitle("Rock Climbing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

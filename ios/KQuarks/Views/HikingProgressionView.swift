@@ -86,6 +86,7 @@ struct HikingProgressionView: View {
         .navigationTitle("Hiking Progression")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

@@ -114,6 +114,7 @@ struct CyclingSpeedView: View {
             }
         }
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

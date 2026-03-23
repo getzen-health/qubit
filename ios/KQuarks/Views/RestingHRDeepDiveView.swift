@@ -107,6 +107,7 @@ struct RestingHRDeepDiveView: View {
         .navigationTitle("Resting HR Deep Dive")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

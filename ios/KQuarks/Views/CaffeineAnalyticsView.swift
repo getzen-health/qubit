@@ -118,6 +118,7 @@ struct CaffeineAnalyticsView: View {
         .navigationTitle("Caffeine Analytics")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading caffeine data…")

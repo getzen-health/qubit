@@ -101,6 +101,7 @@ struct NutritionPatternView: View {
         .navigationTitle("Nutrition Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary

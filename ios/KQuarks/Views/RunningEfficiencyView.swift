@@ -112,6 +112,7 @@ struct RunningEfficiencyView: View {
         .navigationTitle("Running Efficiency")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Cards
@@ -134,7 +135,6 @@ struct RunningEfficiencyView: View {
     private var trendBanner: some View {
         let improving = (trend ?? 0) > 0.002
         let declining = (trend ?? 0) < -0.002
-        let isGood = improving
 
         return HStack(alignment: .top, spacing: 12) {
             Text(improving ? "📈" : declining ? "📉" : "➡️")

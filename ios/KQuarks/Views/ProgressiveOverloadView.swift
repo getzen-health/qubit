@@ -112,6 +112,7 @@ struct ProgressiveOverloadView: View {
         .navigationTitle("Progressive Overload")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

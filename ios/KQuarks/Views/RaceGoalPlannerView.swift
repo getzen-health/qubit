@@ -114,12 +114,9 @@ struct RaceGoalPlannerView: View {
         .navigationTitle("Race Goal Planner")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
-        .onChange(of: selectedDistanceRaw) { _ in
-            buildPlan()
-        }
-        .onChange(of: targetDateDouble) { _ in
-            buildPlan()
-        }
+        .refreshable { await load() }
+        .onChange(of: selectedDistanceRaw) { buildPlan() }
+        .onChange(of: targetDateDouble) { buildPlan() }
     }
 
     // MARK: - Goal Setter

@@ -87,6 +87,7 @@ struct OpenWaterSwimmingScienceView: View {
         .navigationTitle("Open Water Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

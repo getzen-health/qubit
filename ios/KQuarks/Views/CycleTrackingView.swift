@@ -95,6 +95,7 @@ struct CycleTrackingView: View {
         .navigationTitle("Cycle Tracking")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Current Phase Card

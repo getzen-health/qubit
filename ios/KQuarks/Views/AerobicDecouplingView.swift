@@ -96,6 +96,7 @@ struct AerobicDecouplingView: View {
         .navigationTitle("Aerobic Decoupling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

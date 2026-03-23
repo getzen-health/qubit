@@ -119,6 +119,7 @@ struct GymnasticsView: View {
         .navigationTitle("Gymnastics")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

@@ -56,6 +56,7 @@ struct CrossCountrySkiingView: View {
         .navigationTitle("Cross-Country Skiing")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

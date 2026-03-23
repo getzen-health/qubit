@@ -119,6 +119,7 @@ struct TaiChiView: View {
         .navigationTitle("Tai Chi")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

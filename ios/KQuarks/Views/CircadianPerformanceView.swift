@@ -81,6 +81,7 @@ struct CircadianPerformanceView: View {
         .navigationTitle("Circadian Performance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Cards

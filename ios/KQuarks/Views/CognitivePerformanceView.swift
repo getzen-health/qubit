@@ -105,6 +105,7 @@ struct CognitivePerformanceView: View {
         .navigationTitle("Cognitive Performance")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Today Card

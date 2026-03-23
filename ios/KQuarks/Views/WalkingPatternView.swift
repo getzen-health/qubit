@@ -54,6 +54,7 @@ struct WalkingPatternView: View {
         .navigationTitle("Walking Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - DOW Chart

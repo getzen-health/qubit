@@ -100,6 +100,7 @@ struct SleepApneaView: View {
         .navigationTitle("Sleep Apnea")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -92,6 +92,7 @@ struct StairSpeedView: View {
         .navigationTitle("Stair Speed")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

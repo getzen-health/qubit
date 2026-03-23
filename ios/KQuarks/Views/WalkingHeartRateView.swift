@@ -95,6 +95,7 @@ struct WalkingHeartRateView: View {
         .navigationTitle("Walking Heart Rate")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

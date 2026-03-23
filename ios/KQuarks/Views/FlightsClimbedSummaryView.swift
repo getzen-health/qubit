@@ -68,6 +68,7 @@ struct FlightsClimbedSummaryView: View {
         .navigationTitle("Floors Climbed")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

@@ -81,6 +81,7 @@ struct SleepImpactView: View {
         .navigationTitle("Sleep Impact")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Optimal Banner

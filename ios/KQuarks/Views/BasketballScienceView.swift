@@ -55,6 +55,7 @@ struct BasketballScienceView: View {
         .navigationTitle("Basketball Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Stats Row

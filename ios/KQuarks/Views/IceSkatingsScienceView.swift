@@ -87,6 +87,7 @@ struct IceSkatingScienceView: View {
         .navigationTitle("Ice Skating Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

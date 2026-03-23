@@ -139,6 +139,7 @@ struct HearingPatternView: View {
         .navigationTitle("Hearing Patterns")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Grid

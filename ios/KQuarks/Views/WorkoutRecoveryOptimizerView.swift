@@ -93,6 +93,7 @@ struct WorkoutRecoveryOptimizerView: View {
         .navigationTitle("Recovery Optimizer")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Analyzing post-workout recovery…")

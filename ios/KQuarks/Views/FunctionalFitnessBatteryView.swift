@@ -72,6 +72,7 @@ struct FunctionalFitnessBatteryView: View {
         .navigationTitle("Functional Fitness")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Running fitness battery…")

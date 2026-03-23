@@ -124,6 +124,7 @@ struct HandcyclingView: View {
         .navigationTitle("Handcycling")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     // MARK: - Summary Card

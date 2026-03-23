@@ -111,6 +111,7 @@ struct RunningPowerZonesView: View {
         .navigationTitle("Running Power")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - Summary Card

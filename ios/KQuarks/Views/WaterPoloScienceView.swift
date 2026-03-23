@@ -87,6 +87,7 @@ struct WaterPoloScienceView: View {
         .navigationTitle("Water Polo Science")
         .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
+        .refreshable { await loadData() }
     }
 
     private func loadData() async {

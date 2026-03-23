@@ -141,6 +141,7 @@ private struct AFibBurdenContent: View {
         .navigationTitle("AFib Burden")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
+        .refreshable { await load() }
     }
 
     // MARK: - No AFib State
