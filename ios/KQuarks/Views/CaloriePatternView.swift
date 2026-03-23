@@ -117,18 +117,18 @@ struct CaloriePatternView: View {
 
     private var statCards: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            CalStatCard(value: "\(Int(mean).formatted())", label: "Daily Average", sub: "kcal active burn", color: .orange)
-            CalStatCard(value: "\(consistencyScore)", label: consistencyLabel, sub: "consistency score", color: consistencyColor)
+            CalorieStatCard(value: "\(Int(mean).formatted())", label: "Daily Average", sub: "kcal active burn", color: .orange)
+            CalorieStatCard(value: "\(consistencyScore)", label: consistencyLabel, sub: "consistency score", color: consistencyColor)
 
             if weekdayAvg > weekendAvg {
-                CalStatCard(value: "+\(Int(weekdayAvg - weekendAvg).formatted())", label: "Weekdays higher", sub: "vs weekends", color: .orange)
+                CalorieStatCard(value: "+\(Int(weekdayAvg - weekendAvg).formatted())", label: "Weekdays higher", sub: "vs weekends", color: .orange)
             } else if weekendAvg > weekdayAvg {
-                CalStatCard(value: "+\(Int(weekendAvg - weekdayAvg).formatted())", label: "Weekends higher", sub: "vs weekdays", color: .orange)
+                CalorieStatCard(value: "+\(Int(weekendAvg - weekdayAvg).formatted())", label: "Weekends higher", sub: "vs weekdays", color: .orange)
             } else {
-                CalStatCard(value: "±\(Int(stddev).formatted())", label: "Variability", sub: "std dev (kcal)", color: .secondary)
+                CalorieStatCard(value: "±\(Int(stddev).formatted())", label: "Variability", sub: "std dev (kcal)", color: .secondary)
             }
 
-            CalStatCard(value: "\(totalDays)", label: "Days Analysed", sub: "last 12 months", color: .blue)
+            CalorieStatCard(value: "\(totalDays)", label: "Days Analysed", sub: "last 12 months", color: .blue)
         }
     }
 
@@ -445,7 +445,7 @@ struct CaloriePatternView: View {
 
 // MARK: - Stat Card
 
-private struct CalStatCard: View {
+private struct CalorieStatCard: View {
     let value: String
     let label: String
     let sub: String

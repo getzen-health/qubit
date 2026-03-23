@@ -289,7 +289,7 @@ struct OutdoorIndoorView: View {
 
         for w in workouts {
             let isOutdoor = w.workoutActivityType.isOutdoor
-            let sport = w.workoutActivityType.displayName
+            let sport = w.workoutActivityType.outdoorDisplayName
             let kcal = w.statistics(for: kcalType)?.sumQuantity()?.doubleValue(for: kcalUnit) ?? 0
             let durationMins = w.duration / 60
 
@@ -345,7 +345,7 @@ private extension HKWorkoutActivityType {
         }
     }
 
-    var displayName: String {
+    var outdoorDisplayName: String {
         switch self {
         case .running:                      return "Running"
         case .cycling:                      return "Cycling"

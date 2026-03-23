@@ -376,7 +376,7 @@ struct MindfulnessImpactView: View {
                 minsMeditated: mins,
                 hadMindfulness: mins > 0,
                 nextHrv: next?.avg_hrv,
-                nextRhr: next?.resting_heart_rate.map(Double.init),
+                nextRhr: nil,
                 nextRecovery: next?.recovery_score.map(Double.init)
             ))
         }

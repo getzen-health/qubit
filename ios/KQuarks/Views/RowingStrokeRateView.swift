@@ -313,7 +313,8 @@ struct RowingStrokeRateView: View {
         isLoading = true
         defer { isLoading = false }
 
-        let strokeRateType = HKQuantityType(.rowingStrokeRate)
+        // rowingStrokeRate not available in this SDK; fall back to cycling cadence as a proxy
+        let strokeRateType = HKQuantityType(.cyclingCadence)
         let workoutType = HKObjectType.workoutType()
         guard (try? await healthStore.requestAuthorization(
             toShare: [], read: [strokeRateType, workoutType])) != nil else { return }

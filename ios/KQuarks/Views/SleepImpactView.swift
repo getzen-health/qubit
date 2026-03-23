@@ -4,7 +4,7 @@ import HealthKit
 
 // MARK: - Models
 
-private struct SleepNight: Identifiable {
+private struct ImpactSleepNight: Identifiable {
     let id = UUID()
     let date: Date
     let sleepHours: Double
@@ -23,11 +23,11 @@ private struct HourBucket: Identifiable {
 // MARK: - SleepImpactView
 
 struct SleepImpactView: View {
-    @State private var nights: [SleepNight] = []
+    @State private var nights: [ImpactSleepNight] = []
     @State private var isLoading = false
 
-    private var hrvScatter: [SleepNight] { nights.filter { $0.nextDayHrv != nil } }
-    private var stepsScatter: [SleepNight] { nights.filter { $0.nextDaySteps != nil } }
+    private var hrvScatter: [ImpactSleepNight] { nights.filter { $0.nextDayHrv != nil } }
+    private var stepsScatter: [ImpactSleepNight] { nights.filter { $0.nextDaySteps != nil } }
 
     private var avgSleepHours: Double {
         guard !nights.isEmpty else { return 0 }
@@ -325,7 +325,7 @@ struct SleepImpactView: View {
         let sorted = rows.sorted { $0.date < $1.date }
         let byDate = Dictionary(sorted.map { ($0.date, $0) }, uniquingKeysWith: { f, _ in f })
 
-        var result: [SleepNight] = []
+        var result: [ImpactSleepNight] = []
         for (i, row) in sorted.enumerated() {
             guard let sleepMin = row.sleep_duration_minutes, sleepMin > 60,
                   let date = df.date(from: row.date) else { continue }
@@ -335,7 +335,7 @@ struct SleepImpactView: View {
             let nextKey = df.string(from: nextDate)
             let nextRow = byDate[nextKey]
 
-            result.append(SleepNight(
+            result.append(ImpactSleepNight(
                 date: date,
                 sleepHours: Double(sleepMin) / 60,
                 nextDayHrv: nextRow?.avg_hrv,

@@ -152,32 +152,38 @@ struct FitnessProfileView: View {
         return CGPoint(x: cx + r * cos(angle), y: cy + r * sin(angle))
     }
 
+    private func radarRingPath(n: Int, cx: Double, cy: Double, maxR: Double, level: Double) -> Path {
+        var path = Path()
+        for i in 0..<n {
+            let angle = (Double(i) * (2 * .pi / Double(n))) - .pi / 2
+            let pt = CGPoint(x: cx + maxR * level * cos(angle), y: cy + maxR * level * sin(angle))
+            if i == 0 { path.move(to: pt) } else { path.addLine(to: pt) }
+        }
+        path.closeSubpath()
+        return path
+    }
+
+    private func radarSpokePath(n: Int, i: Int, cx: Double, cy: Double, maxR: Double) -> Path {
+        let angle = (Double(i) * (2 * .pi / Double(n))) - .pi / 2
+        var path = Path()
+        path.move(to: CGPoint(x: cx, y: cy))
+        path.addLine(to: CGPoint(x: cx + maxR * cos(angle), y: cy + maxR * sin(angle)))
+        return path
+    }
+
     private func radarGrid(in size: CGSize) -> some View {
         let n = dimensions.count
-        let cx = size.width / 2
-        let cy = size.height / 2
+        let cx = Double(size.width / 2)
+        let cy = Double(size.height / 2)
         let maxR = Double(min(size.width, size.height)) * 0.38
-
         return Canvas { context, _ in
-            // Rings at 25%, 50%, 75%, 100%
             for level in [0.25, 0.5, 0.75, 1.0] {
-                var path = Path()
-                for i in 0..<n {
-                    let angle = (Double(i) * (2 * .pi / Double(n))) - .pi / 2
-                    let pt = CGPoint(x: cx + maxR * level * cos(angle), y: cy + maxR * level * sin(angle))
-                    if i == 0 { path.move(to: pt) } else { path.addLine(to: pt) }
-                }
-                path.closeSubpath()
-                context.stroke(path, with: .color(.white.opacity(0.08)), lineWidth: 1)
+                context.stroke(radarRingPath(n: n, cx: cx, cy: cy, maxR: maxR, level: level),
+                               with: .color(.white.opacity(0.08)), lineWidth: 1)
             }
-            // Spokes
             for i in 0..<n {
-                let angle = (Double(i) * (2 * .pi / Double(n))) - .pi / 2
-                let outer = CGPoint(x: cx + maxR * cos(angle), y: cy + maxR * sin(angle))
-                var path = Path()
-                path.move(to: CGPoint(x: cx, y: cy))
-                path.addLine(to: outer)
-                context.stroke(path, with: .color(.white.opacity(0.08)), lineWidth: 1)
+                context.stroke(radarSpokePath(n: n, i: i, cx: cx, cy: cy, maxR: maxR),
+                               with: .color(.white.opacity(0.08)), lineWidth: 1)
             }
         }
     }

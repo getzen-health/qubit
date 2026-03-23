@@ -393,7 +393,6 @@ struct WorkoutRecoveryOptimizerView: View {
             let calories = Int(workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0)
 
             results.append(RecoveredSession(
-                id: workout.uuid,
                 date: workout.startDate,
                 workoutType: workoutTypeName(workout.workoutActivityType),
                 durationMins: duration,

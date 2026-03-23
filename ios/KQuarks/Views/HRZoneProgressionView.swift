@@ -195,41 +195,59 @@ struct HRZoneProgressionView: View {
         .padding(.horizontal)
     }
 
+    private var monthlyChartTitle: String {
+        selectedView == .stacked ? "Zone Minutes per Month" : "Zone Share per Month"
+    }
+
+    @ViewBuilder
+    private func zoneLegend() -> some View {
+        HStack(spacing: 12) {
+            ForEach(0..<zoneNames.count, id: \.self) { i in
+                HStack(spacing: 4) {
+                    Circle().fill(zoneColors[i]).frame(width: 8, height: 8)
+                    Text(zoneNames[i]).font(.caption2)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func monthlyChartContent(isPct: Bool) -> some View {
+        Chart {
+            ForEach(months) { bucket in
+                ForEach(monthlyBars(bucket: bucket, pct: isPct), id: \.zone) { bar in
+                    BarMark(x: .value("Month", bucket.label), y: .value("Minutes", bar.value))
+                        .foregroundStyle(zoneColors[bar.idx].gradient)
+                }
+            }
+        }
+        .chartYAxisLabel(isPct ? "%" : "Minutes")
+        .frame(height: 220)
+    }
+
     private var monthlyChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(selectedView == .stacked ? "Zone Minutes per Month" : "Zone Share per Month")
-                .font(.subheadline).bold()
-
-            // Legend
-            HStack(spacing: 12) {
-                ForEach(Array(zip(zoneNames, zoneColors)), id: \.0) { name, color in
-                    HStack(spacing: 4) {
-                        Circle().fill(color).frame(width: 8, height: 8)
-                        Text(name).font(.caption2)
-                    }
-                }
-            }
-
-            Chart {
-                ForEach(months) { bucket in
-                    let values = zoneValues(bucket.zones, pct: selectedView == .percentage)
-                    ForEach(Array(zip(zoneNames, values).enumerated()), id: \.offset) { idx, pair in
-                        BarMark(
-                            x: .value("Month", bucket.label),
-                            y: .value("Minutes", pair.1)
-                        )
-                        .foregroundStyle(zoneColors[idx].gradient)
-                        .position(by: .none)
-                    }
-                }
-            }
-            .chartYAxisLabel(selectedView == .stacked ? "Minutes" : "%")
-            .frame(height: 220)
+        let isPct = selectedView == .percentage
+        return VStack(alignment: .leading, spacing: 8) {
+            Text(monthlyChartTitle).font(.subheadline).bold()
+            zoneLegend()
+            monthlyChartContent(isPct: isPct)
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
+    }
+
+    private struct MonthlyBar: Identifiable {
+        let id = UUID()
+        let zone: String
+        let idx: Int
+        let value: Double
+    }
+
+    private func monthlyBars(bucket: MonthBucket, pct: Bool) -> [MonthlyBar] {
+        let vals = zoneValues(bucket.zones, pct: pct)
+        return vals.enumerated().map { MonthlyBar(zone: zoneNames[$0.offset], idx: $0.offset, value: $0.element) }
     }
 
     private func zoneValues(_ z: ZoneMinutes, pct: Bool) -> [Double] {
@@ -248,14 +266,7 @@ struct HRZoneProgressionView: View {
             if all.total > 0 {
                 ForEach(Array(zip(zoneLabels, zoneColors).enumerated()), id: \.offset) { idx, pair in
                     let (label, color) = pair
-                    let mins: Double
-                    switch idx {
-                    case 0: mins = all.z1
-                    case 1: mins = all.z2
-                    case 2: mins = all.z3
-                    case 3: mins = all.z4
-                    default: mins = all.z5
-                    }
+                    let mins: Double = idx == 0 ? all.z1 : idx == 1 ? all.z2 : idx == 2 ? all.z3 : idx == 3 ? all.z4 : all.z5
                     let pct = mins / all.total * 100
 
                     HStack(spacing: 8) {

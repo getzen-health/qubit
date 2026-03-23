@@ -180,7 +180,7 @@ struct HeartRateRecoveryView: View {
                 .padding(.horizontal, 4)
 
             // 5-point rolling avg
-            let rolling = computeRolling(points: validPoints.compactMap(\.hrr1))
+            let rolling = computeRolling(validPoints.compactMap(\.hrr1))
 
             Chart {
                 // Reference lines
@@ -234,8 +234,9 @@ struct HeartRateRecoveryView: View {
         for pt in validPoints {
             buckets[pt.workoutType, default: []].append(pt.hrr1!)
         }
-        return buckets.map { (type, vals) in
-            (type: type, avg: vals.reduce(0, +) / Double(vals.count), count: vals.count)
+        return buckets.map { entry -> (type: String, avg: Double, count: Int) in
+            let avg = entry.value.reduce(0, +) / Double(entry.value.count)
+            return (type: entry.key, avg: avg, count: entry.value.count)
         }
         .filter { $0.count >= 2 }
         .sorted { $0.avg > $1.avg }

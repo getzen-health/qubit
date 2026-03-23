@@ -450,14 +450,13 @@ struct HydrationPatternView: View {
         do {
             // Fetch water target
             struct NutRow: Decodable { let water_target_ml: Int? }
-            if let nutRow: NutRow = try? await SupabaseService.shared.client
+            if let nutRow: NutRow = (try? await SupabaseService.shared.client
                 .from("user_nutrition_settings")
                 .select("water_target_ml")
                 .eq("user_id", value: userId.uuidString)
                 .limit(1)
                 .execute()
-                .value
-                .first {
+                .value as [NutRow])?.first {
                 targetMl = Double(nutRow.water_target_ml ?? 2500)
             }
 

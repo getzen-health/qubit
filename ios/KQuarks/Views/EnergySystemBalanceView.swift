@@ -154,90 +154,55 @@ struct EnergySystemBalanceView: View {
 
     // MARK: - Radar Chart
 
+    private func radarPolygonPath(center: CGPoint, r: CGFloat) -> Path {
+        var p = Path()
+        for (i, d) in dimensions.enumerated() {
+            let angle = angleFor(index: i)
+            let val = Double(r) * d.score / 100.0
+            let pt = CGPoint(x: Double(center.x) + Darwin.cos(angle) * val, y: Double(center.y) + Darwin.sin(angle) * val)
+            if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+        }
+        p.closeSubpath()
+        return p
+    }
+
+    @ViewBuilder
+    private func radarDots(center: CGPoint, r: CGFloat) -> some View {
+        ForEach(Array(dimensions.enumerated()), id: \.element.id) { i, d in
+            let angle = angleFor(index: i)
+            let val = Double(r) * d.score / 100.0
+            let rDouble = Double(r)
+            let cx = Double(center.x); let cy = Double(center.y)
+            let pt = CGPoint(x: cx + Darwin.cos(angle) * val, y: cy + Darwin.sin(angle) * val)
+            let labelPt = CGPoint(x: cx + Darwin.cos(angle) * (rDouble + 20), y: cy + Darwin.sin(angle) * (rDouble + 20))
+            Circle().fill(d.color).frame(width: 8, height: 8).position(pt)
+            Text(d.shortName).font(.caption2.bold()).foregroundStyle(d.color).position(labelPt)
+        }
+    }
+
     private var radarCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Energy System Radar")
-                .font(.headline)
-
+            Text("Energy System Radar").font(.headline)
             GeometryReader { geo in
                 let size = min(geo.size.width, geo.size.height)
                 let center = CGPoint(x: size / 2, y: size / 2)
                 let r = size / 2 - 32
-
                 ZStack {
-                    // Grid circles
                     ForEach([0.25, 0.50, 0.75, 1.0], id: \.self) { pct in
-                        Circle()
-                            .stroke(Color.secondary.opacity(0.15), lineWidth: 1)
-                            .frame(width: r * 2 * pct, height: r * 2 * pct)
-                            .position(center)
+                        Circle().stroke(Color.secondary.opacity(0.15), lineWidth: 1)
+                            .frame(width: r * 2 * pct, height: r * 2 * pct).position(center)
                     }
-
-                    // Axis lines
                     ForEach(0..<5, id: \.self) { i in
-                        let angle = angleFor(index: i)
                         Path { p in
+                            let a = angleFor(index: i)
                             p.move(to: center)
-                            p.addLine(to: CGPoint(
-                                x: center.x + cos(angle) * r,
-                                y: center.y + sin(angle) * r
-                            ))
-                        }
-                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                            p.addLine(to: CGPoint(x: Double(center.x) + Darwin.cos(a) * Double(r), y: Double(center.y) + Darwin.sin(a) * Double(r)))
+                        }.stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                     }
-
-                    // Filled polygon
                     if dimensions.count == 5 {
-                        Path { p in
-                            for (i, d) in dimensions.enumerated() {
-                                let angle = angleFor(index: i)
-                                let val = d.score / 100.0 * r
-                                let pt = CGPoint(
-                                    x: center.x + cos(angle) * val,
-                                    y: center.y + sin(angle) * val
-                                )
-                                if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
-                            }
-                            p.closeSubpath()
-                        }
-                        .fill(Color.teal.opacity(0.25))
-
-                        Path { p in
-                            for (i, d) in dimensions.enumerated() {
-                                let angle = angleFor(index: i)
-                                let val = d.score / 100.0 * r
-                                let pt = CGPoint(
-                                    x: center.x + cos(angle) * val,
-                                    y: center.y + sin(angle) * val
-                                )
-                                if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
-                            }
-                            p.closeSubpath()
-                        }
-                        .stroke(Color.teal, lineWidth: 2)
-
-                        // Dots + labels
-                        ForEach(Array(dimensions.enumerated()), id: \.element.id) { i, d in
-                            let angle = angleFor(index: i)
-                            let val = d.score / 100.0 * r
-                            let pt = CGPoint(
-                                x: center.x + cos(angle) * val,
-                                y: center.y + sin(angle) * val
-                            )
-                            Circle()
-                                .fill(d.color)
-                                .frame(width: 8, height: 8)
-                                .position(pt)
-
-                            let labelPt = CGPoint(
-                                x: center.x + cos(angle) * (r + 20),
-                                y: center.y + sin(angle) * (r + 20)
-                            )
-                            Text(d.shortName)
-                                .font(.caption2.bold())
-                                .foregroundStyle(d.color)
-                                .position(labelPt)
-                        }
+                        radarPolygonPath(center: center, r: r).fill(Color.teal.opacity(0.25))
+                        radarPolygonPath(center: center, r: r).stroke(Color.teal, lineWidth: 2)
+                        radarDots(center: center, r: r)
                     }
                 }
             }

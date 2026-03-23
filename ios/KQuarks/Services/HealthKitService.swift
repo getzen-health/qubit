@@ -68,14 +68,8 @@ class HealthKitService {
         // Activity rings (Apple Watch stand hours)
         types.insert(HKObjectType.activitySummaryType())
 
-        // Sleep breathing disturbances (Watch Series 4+, iOS 16+)
-        if #available(iOS 16.0, *) {
-            types.insert(HKCategoryType(.sleepBreathingDisturbances))
-        }
-
         // Running form metrics (Apple Watch, iOS 16+)
         if #available(iOS 16.0, *) {
-            types.insert(HKQuantityType(.runningCadence))
             types.insert(HKQuantityType(.runningStrideLength))
             types.insert(HKQuantityType(.runningVerticalOscillation))
             types.insert(HKQuantityType(.runningGroundContactTime))

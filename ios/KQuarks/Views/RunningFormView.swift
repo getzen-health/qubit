@@ -265,7 +265,7 @@ private struct RunningFormContent: View {
         let start = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
         let cal = Calendar.current
 
-        async let cadRaw = (try? await healthKit.fetchSamples(for: .runningCadence, from: start, to: Date())) ?? []
+        let cadRaw: [HKQuantitySample] = [] // runningCadence not available in this SDK
         async let strideRaw = (try? await healthKit.fetchSamples(for: .runningStrideLength, from: start, to: Date())) ?? []
         async let vertRaw = (try? await healthKit.fetchSamples(for: .runningVerticalOscillation, from: start, to: Date())) ?? []
         async let groundRaw = (try? await healthKit.fetchSamples(for: .runningGroundContactTime, from: start, to: Date())) ?? []

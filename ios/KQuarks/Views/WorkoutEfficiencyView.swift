@@ -150,7 +150,7 @@ struct WorkoutEfficiencyView: View {
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 4)) {
                     AxisGridLine()
-                    AxisValueLabel(format: .number.precision(.fractionLength(0)))
+                    AxisValueLabel(format: FloatingPointFormatStyle<Double>.number.precision(.fractionLength(0)))
                 }
             }
             .chartYAxis {
@@ -263,7 +263,7 @@ struct WorkoutEfficiencyView: View {
             .chartYAxis {
                 AxisMarks(values: .automatic(desiredCount: 4)) {
                     AxisGridLine()
-                    AxisValueLabel(format: .number.precision(.fractionLength(0)))
+                    AxisValueLabel(format: FloatingPointFormatStyle<Double>.number.precision(.fractionLength(0)))
                 }
             }
             .frame(height: 160)

@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Model
 
-struct DailyCheckin: Decodable, Equatable {
+struct DailyCheckin: Decodable, Equatable, Identifiable {
     let id: String
     let date: String
     let energy: Int?

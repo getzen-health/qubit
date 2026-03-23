@@ -208,14 +208,11 @@ struct SleepChronotypeView: View {
         let severity = sjl < 0.5 ? "Low" : sjl < 1.5 ? "Moderate" : "High"
         let color: Color = sjl < 0.5 ? .green : sjl < 1.5 ? .yellow : .red
         let icon = sjl < 0.5 ? "checkmark.circle.fill" : sjl < 1.5 ? "exclamationmark.triangle.fill" : "xmark.circle.fill"
-        let message: String
-        if sjl < 0.5 {
-            message = "Your weekday and weekend sleep are well-aligned. Minimal circadian disruption."
-        } else if sjl < 1.5 {
-            message = "You sleep later on weekends — like flying 1–1.5 time zones each week. Affects energy and metabolism."
-        } else {
-            message = "High social jet lag is linked to fatigue, metabolic risk, and mood issues. Align your sleep schedule across all days."
-        }
+        let message: String = sjl < 0.5
+            ? "Your weekday and weekend sleep are well-aligned. Minimal circadian disruption."
+            : sjl < 1.5
+                ? "You sleep later on weekends — like flying 1–1.5 time zones each week. Affects energy and metabolism."
+                : "High social jet lag is linked to fatigue, metabolic risk, and mood issues. Align your sleep schedule across all days."
 
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
@@ -395,14 +392,14 @@ struct SleepChronotypeView: View {
                 }
             }
 
-            let computed: [NightPoint] = nightGroups.compactMap { (key, session) in
+            let computed: [NightPoint] = nightGroups.compactMap { (key, session) -> NightPoint? in
                 let duration = session.end.timeIntervalSince(session.start) / 3600
                 guard duration >= 2 else { return nil }  // exclude naps
 
                 let midDate = Date(timeInterval: session.end.timeIntervalSince(session.start) / 2, since: session.start)
                 let midHour = Double(cal.component(.hour, from: midDate)) + Double(cal.component(.minute, from: midDate)) / 60
 
-                let weekday = cal.component(.weekday, from: session.startDate)  // 1=Sun
+                let weekday = cal.component(.weekday, from: session.start)  // 1=Sun
                 let isWeekend = weekday == 1 || weekday == 7
 
                 return NightPoint(

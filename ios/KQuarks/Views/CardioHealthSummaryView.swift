@@ -418,10 +418,7 @@ struct CardioHealthSummaryView: View {
         df.dateFormat = "yyyy-MM-dd"
 
         let withHRV = sorted.filter { $0.avg_hrv != nil && $0.avg_hrv! > 0 }
-        let withRHR = sorted.filter {
-            // resting_heart_rate not in DailySummaryRow — use recovery_score as proxy absent
-            false
-        }
+        let withRHR = sorted.filter { _ in false }
         _ = withRHR // suppress warning
 
         // HRV: last 7 days vs 28-day baseline

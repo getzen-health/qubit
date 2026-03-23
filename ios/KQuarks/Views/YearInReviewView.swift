@@ -280,24 +280,24 @@ struct YearInReviewView: View {
             }
 
             if let best = s.bestStepDay {
-                PRRow(icon: "shoeprints.fill", color: .green, label: "Best Step Day",
+                PRRow(icon: "shoeprints.fill", label: "Best Step Day",
                       value: best.steps.formatted() + " steps",
-                      subtitle: best.date.formatted(date: .long, time: .omitted))
+                      sub: best.date.formatted(date: .long, time: .omitted), color: .green)
             }
             if let lw = s.longestWorkout {
-                PRRow(icon: "trophy.fill", color: .red, label: "Longest Workout",
+                PRRow(icon: "trophy.fill", label: "Longest Workout",
                       value: String(format: "%.0f min — %@", lw.mins, lw.type),
-                      subtitle: lw.date.formatted(date: .long, time: .omitted))
+                      sub: lw.date.formatted(date: .long, time: .omitted), color: .red)
             }
             if let hrv = s.highestHRV {
-                PRRow(icon: "waveform.path.ecg", color: .purple, label: "Best HRV",
+                PRRow(icon: "waveform.path.ecg", label: "Best HRV",
                       value: String(format: "%.0f ms", hrv.value),
-                      subtitle: hrv.date.formatted(date: .long, time: .omitted))
+                      sub: hrv.date.formatted(date: .long, time: .omitted), color: .purple)
             }
             if let rhr = s.lowestRHR {
-                PRRow(icon: "heart.fill", color: .pink, label: "Lowest Resting HR",
+                PRRow(icon: "heart.fill", label: "Lowest Resting HR",
                       value: String(format: "%.0f bpm", rhr.value),
-                      subtitle: rhr.date.formatted(date: .long, time: .omitted))
+                      sub: rhr.date.formatted(date: .long, time: .omitted), color: .pink)
             }
         }
         .padding()

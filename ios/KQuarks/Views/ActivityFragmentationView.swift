@@ -171,7 +171,7 @@ struct ActivityFragmentationView: View {
             .chartYAxis {
                 AxisMarks(values: [0, 0.35, 0.55, 1.0]) { val in
                     AxisGridLine()
-                    AxisValueLabel(format: .number.precision(.fractionLength(2)))
+                    AxisValueLabel(format: FloatingPointFormatStyle<Double>.number.precision(.fractionLength(2)))
                 }
             }
             .chartXAxis {

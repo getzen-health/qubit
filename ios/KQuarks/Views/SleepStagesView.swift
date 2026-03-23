@@ -96,7 +96,7 @@ struct SleepStagesView: View {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 2).fill(Color(.systemFill)).frame(height: 4)
                     RoundedRectangle(cornerRadius: 2).fill(color)
-                        .frame(width: geo.size.width * CGFloat(min(pct, 100) / 100), height: 4)
+                        .frame(width: geo.size.width * CGFloat(Swift.min(pct, 100) / 100), height: 4)
                 }
             }.frame(height: 4)
         }
@@ -146,12 +146,17 @@ struct SleepStagesView: View {
     // MARK: - Trend Chart
 
     private var trendChart: some View {
-        let data = stagedNights.suffix(30).reversed().map { n in
-            (
-                date: n.date,
-                deep: n.totalMinutes > 0 ? Double(n.deepMinutes) / Double(n.totalMinutes) * 100 : 0,
-                rem:  n.totalMinutes > 0 ? Double(n.remMinutes)  / Double(n.totalMinutes) * 100 : 0
-            )
+        struct StagePct: Identifiable {
+            let id: Date
+            let date: Date
+            let deep: Double
+            let rem: Double
+        }
+        let data: [StagePct] = stagedNights.suffix(30).reversed().map { n in
+            let total = Double(n.totalMinutes)
+            let deep = total > 0 ? Double(n.deepMinutes) / total * 100 : 0
+            let rem  = total > 0 ? Double(n.remMinutes)  / total * 100 : 0
+            return StagePct(id: n.date, date: n.date, deep: deep, rem: rem)
         }
 
         return VStack(alignment: .leading, spacing: 8) {
@@ -160,7 +165,7 @@ struct SleepStagesView: View {
                 .padding(.horizontal, 4)
 
             Chart {
-                ForEach(data, id: \.date) { point in
+                ForEach(data) { point in
                     LineMark(x: .value("Date", point.date, unit: .day),
                              y: .value("Deep %", point.deep))
                     .foregroundStyle(Color.indigo)

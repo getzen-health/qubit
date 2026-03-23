@@ -105,7 +105,7 @@ struct NutritionView: View {
                     let remaining = max(calorieTarget - caloriesConsumed, 0)
                     Text("\(remaining) kcal")
                         .font(.subheadline.bold())
-                        .foregroundStyle(remaining > 0 ? .primary : .green)
+                        .foregroundStyle(remaining > 0 ? Color.primary : Color.green)
                 }
             }
         }

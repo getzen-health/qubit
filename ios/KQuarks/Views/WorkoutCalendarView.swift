@@ -267,8 +267,7 @@ struct WorkoutCalendarView: View {
     @ViewBuilder
     private func dayDetailCard(date: String) -> some View {
         let ws = workoutsByDate[date] ?? []
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
+        let df: DateFormatter = { let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; return f }()
         let label = df.date(from: date).map {
             $0.formatted(.dateTime.weekday(.wide).month(.wide).day())
         } ?? date
@@ -401,7 +400,7 @@ struct WorkoutCalendarView: View {
                     typeName: typeName,
                     durationMins: w.duration / 60,
                     distanceKm: distanceKm > 0 ? distanceKm : nil,
-                    calories: w.totalActiveCaloriesBurned?.doubleValue(for: .kilocalorie()),
+                    calories: w.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
                     startDate: w.startDate
                 )
                 byDate[key, default: []].append(entry)

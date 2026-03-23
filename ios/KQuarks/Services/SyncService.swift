@@ -304,7 +304,6 @@ class SyncService {
             for workout in runningWorkouts {
                 struct FormMetric { let identifier: HKQuantityTypeIdentifier; let type: String; let unit: HKUnit }
                 let formMetrics = [
-                    FormMetric(identifier: .runningCadence, type: "running_cadence", unit: HKUnit.count().unitDivided(by: .minute())),
                     FormMetric(identifier: .runningStrideLength, type: "running_stride_length", unit: .meter()),
                     FormMetric(identifier: .runningVerticalOscillation, type: "running_vertical_oscillation", unit: .meterUnit(with: .centi)),
                     FormMetric(identifier: .runningGroundContactTime, type: "running_ground_contact_time", unit: .secondUnit(with: .milli)),
@@ -323,10 +322,10 @@ class SyncService {
                         userId: userId,
                         type: metric.type,
                         value: avg,
-                        unit: metric.identifier == .runningGroundContactTime ? "ms" :
-                              metric.identifier == .runningVerticalOscillation ? "cm" :
-                              metric.identifier == .runningStrideLength ? "m" :
-                              metric.identifier == .runningPower ? "W" : "spm",
+                        unit: metric.identifier == HKQuantityTypeIdentifier.runningGroundContactTime ? "ms" :
+                              metric.identifier == HKQuantityTypeIdentifier.runningVerticalOscillation ? "cm" :
+                              metric.identifier == HKQuantityTypeIdentifier.runningStrideLength ? "m" :
+                              metric.identifier == HKQuantityTypeIdentifier.runningPower ? "W" : "spm",
                         source: workout.sourceRevision.source.name,
                         startTime: workout.startDate,
                         endTime: workout.endDate
@@ -434,22 +433,7 @@ class SyncService {
             }
         }
 
-        // Fetch sleep breathing disturbances (Watch Series 4+, iOS 16+)
-        if #available(iOS 16.0, *) {
-            let breathingEvents = try await healthKit.fetchCategoryEvents(.sleepBreathingDisturbances, from: startDate, to: now)
-            for event in breathingEvents {
-                // value 0 = not elevated, 1 = elevated
-                records.append(HealthRecordUpload(
-                    userId: userId,
-                    type: "sleep_breathing_disturbances",
-                    value: Double(event.value), // 0 = normal, 1 = elevated
-                    unit: "category",
-                    source: event.sourceRevision.source.name,
-                    startTime: event.startDate,
-                    endTime: event.endDate
-                ))
-            }
-        }
+        // Sleep breathing disturbances: .sleepBreathingDisturbances not available in this SDK version
 
         // Dietary macros (from third-party apps writing to Apple Health, aggregated by day)
         struct DietaryMetric { let identifier: HKQuantityTypeIdentifier; let type: String; let unit: HKUnit; let unitName: String }
@@ -755,7 +739,8 @@ class SyncService {
                     avgHrv: dayHrv,
                     recoveryScore: nil,
                     strainScore: nil,
-                    weightKg: nil
+                    weightKg: nil,
+                    bodyFatPercent: nil
                 )
                 try await supabase.uploadDailySummary(upload)
                 let progress = 0.45 + 0.35 * Double(i + 1) / total

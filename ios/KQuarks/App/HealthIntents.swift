@@ -433,16 +433,6 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             systemImageName: "waveform.path.ecg"
         )
         AppShortcut(
-            intent: LogWaterIntent(),
-            phrases: [
-                "Log water in \(.applicationName)",
-                "I drank water in \(.applicationName)",
-                "Add water in \(.applicationName)"
-            ],
-            shortTitle: "Log Water",
-            systemImageName: "drop.fill"
-        )
-        AppShortcut(
             intent: StartFastIntent(),
             phrases: [
                 "Start fasting in \(.applicationName)",
@@ -452,44 +442,13 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             systemImageName: "timer"
         )
         AppShortcut(
-            intent: CheckFastIntent(),
-            phrases: [
-                "Check my fast in \(.applicationName)",
-                "How long have I been fasting in \(.applicationName)",
-                "Fasting status in \(.applicationName)"
-            ],
-            shortTitle: "Fasting Status",
-            systemImageName: "timer.circle"
-        )
-        AppShortcut(
-            intent: EndFastIntent(),
-            phrases: [
-                "End my fast in \(.applicationName)",
-                "Stop fasting in \(.applicationName)",
-                "Break my fast in \(.applicationName)"
-            ],
-            shortTitle: "End Fast",
-            systemImageName: "timer.circle.fill"
-        )
-        AppShortcut(
             intent: LogCheckinIntent(),
             phrases: [
                 "Log my check-in in \(.applicationName)",
-                "Daily check-in in \(.applicationName)",
-                "Log how I feel in \(.applicationName)"
+                "Daily check-in in \(.applicationName)"
             ],
             shortTitle: "Daily Check-in",
             systemImageName: "checklist"
-        )
-        AppShortcut(
-            intent: GetHabitsProgressIntent(),
-            phrases: [
-                "How are my habits in \(.applicationName)",
-                "Habit progress in \(.applicationName)",
-                "Check my habits in \(.applicationName)"
-            ],
-            shortTitle: "Habit Progress",
-            systemImageName: "checklist.checked"
         )
     }
 }

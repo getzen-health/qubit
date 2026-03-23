@@ -436,7 +436,7 @@ struct SkateboardingView: View {
             return
         }
 
-        let predicate = HKQuery.predicateForWorkouts(with: .skateboarding)
+        let predicate = HKQuery.predicateForWorkouts(with: .skatingSports)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 
         let fetchedWorkouts: [HKWorkout] = await withCheckedContinuation { continuation in

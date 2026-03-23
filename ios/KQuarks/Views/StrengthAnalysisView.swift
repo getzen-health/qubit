@@ -318,15 +318,18 @@ struct StrengthAnalysisView: View {
             }
 
             if let longest = longestSession {
-                PRRow(icon: "clock.fill", color: .red, label: "Longest Session",
-                      value: longest.formattedDuration, subtitle: longest.date.formatted(date: .abbreviated, time: .omitted))
+                PRRow(icon: "clock.fill", label: "Longest Session",
+                      value: longest.formattedDuration,
+                      sub: longest.date.formatted(date: .abbreviated, time: .omitted),
+                      color: .red)
             }
 
-            PRRow(icon: "flame.fill", color: .orange, label: "Best Week",
-                  value: "\(mostSessionsWeek) sessions", subtitle: "most in any single week")
+            PRRow(icon: "flame.fill", label: "Best Week",
+                  value: "\(mostSessionsWeek) sessions", sub: "most in any single week", color: .orange)
 
-            PRRow(icon: "figure.strengthtraining.traditional", color: .purple, label: "90-Day Total",
-                  value: formatHours(sessions.map(\.durationSecs).reduce(0, +)), subtitle: "\(sessions.count) sessions")
+            PRRow(icon: "figure.strengthtraining.traditional", label: "90-Day Total",
+                  value: formatHours(sessions.map(\.durationSecs).reduce(0, +)),
+                  sub: "\(sessions.count) sessions", color: .purple)
         }
         .padding()
         .background(Color(.systemBackground))

@@ -505,14 +505,13 @@ struct NutritionPatternView: View {
                 let carbs_target_g: Double?
                 let fat_target_g: Double?
             }
-            if let settings: NutSettings = try? await SupabaseService.shared.client
+            if let settings: NutSettings = (try? await SupabaseService.shared.client
                 .from("user_nutrition_settings")
                 .select("calorie_target, protein_target_g, carbs_target_g, fat_target_g")
                 .eq("user_id", value: userId.uuidString)
                 .limit(1)
                 .execute()
-                .value
-                .first {
+                .value as [NutSettings])?.first {
                 calTarget = settings.calorie_target ?? 2000
                 protTarget = settings.protein_target_g ?? 150
                 carbTarget = settings.carbs_target_g ?? 250

@@ -432,11 +432,7 @@ struct GaitAnalysisView: View {
                         .frame(width: 60, alignment: .trailing)
                 }
                 .overlay(alignment: .leading) {
-                    if let s = latestSpeed {
-                        let pct = s / 1.4
-                        // tiny indicator
-                        _ = pct
-                    }
+                    EmptyView()
                 }
             }
 

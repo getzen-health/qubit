@@ -7,7 +7,7 @@ import Supabase
 class SupabaseService {
     static let shared = SupabaseService()
 
-    private let client: SupabaseClient
+    let client: SupabaseClient
 
     var currentUser: User?
     var isAuthenticated: Bool { currentUser != nil }

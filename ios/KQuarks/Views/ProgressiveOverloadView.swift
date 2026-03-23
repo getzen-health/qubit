@@ -365,7 +365,7 @@ struct ProgressiveOverloadView: View {
             let mins = w.duration / 60
             weeklyMins[ws, default: 0] += mins
 
-            let sportName = w.workoutActivityType.displayName
+            let sportName = w.workoutActivityType.overloadDisplayName
             weeklyBySport[ws, default: [:]][sportName, default: 0] += mins
             if sportIconMap[sportName] == nil {
                 sportIconMap[sportName] = w.workoutActivityType.emoji
@@ -444,7 +444,7 @@ struct ProgressiveOverloadView: View {
 // MARK: - HKWorkoutActivityType helpers
 
 private extension HKWorkoutActivityType {
-    var displayName: String {
+    var overloadDisplayName: String {
         switch self {
         case .running:        return "Running"
         case .cycling:        return "Cycling"

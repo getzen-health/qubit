@@ -208,18 +208,21 @@ struct HikingAnalysisView: View {
                     .font(.subheadline.weight(.semibold))
             }
             if let longest = longestHike {
-                PRRow(icon: "map.fill", color: .green, label: "Longest Hike",
+                PRRow(icon: "map.fill", label: "Longest Hike",
                       value: longest.formattedDistance,
-                      subtitle: longest.date.formatted(date: .abbreviated, time: .omitted) + " · " + longest.formattedDuration)
+                      sub: longest.date.formatted(date: .abbreviated, time: .omitted) + " · " + longest.formattedDuration,
+                      color: .green)
             }
             if let highEl = highestElevationHike, let floors = highEl.floors {
-                PRRow(icon: "mountain.2.fill", color: .teal, label: "Most Elevation",
+                PRRow(icon: "mountain.2.fill", label: "Most Elevation",
                       value: String(format: "%.0f floors", floors),
-                      subtitle: highEl.date.formatted(date: .abbreviated, time: .omitted))
+                      sub: highEl.date.formatted(date: .abbreviated, time: .omitted),
+                      color: .teal)
             }
-            PRRow(icon: "figure.hiking", color: .brown, label: "90-Day Total",
+            PRRow(icon: "figure.hiking", label: "90-Day Total",
                   value: String(format: "%.0f km", totalDistanceKm),
-                  subtitle: "\(hikes.count) hikes")
+                  sub: "\(hikes.count) hikes",
+                  color: .brown)
         }
         .padding()
         .background(Color(.systemBackground))

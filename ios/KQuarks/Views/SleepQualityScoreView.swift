@@ -401,56 +401,45 @@ struct SleepQualityScoreView: View {
             byDay[wakeDay, default: []].append(s)
         }
 
-        nights = byDay.compactMap { (dc, daySamples) -> ScoredNight? in
-            guard let date = cal.date(from: dc) else { return nil }
-
-            var deep = 0, rem = 0, core = 0, awake = 0
-            for s in daySamples {
-                let mins = Int(s.endDate.timeIntervalSince(s.startDate) / 60)
-                switch HKCategoryValueSleepAnalysis(rawValue: s.value) {
-                case .asleepDeep:                    deep  += mins
-                case .asleepREM:                     rem   += mins
-                case .asleepCore, .asleepUnspecified:core  += mins
-                case .awake, .inBed:                 awake += mins
-                default: break
-                }
-            }
-
-            let totalSleep = deep + rem + core
-            guard totalSleep > 60 else { return nil }
-
-            let hours = Double(totalSleep) / 60.0
-            let deepPct = deep > 0 ? Double(deep) / Double(totalSleep) : nil
-            let remPct  = rem  > 0 ? Double(rem)  / Double(totalSleep) : nil
-
-            // Efficiency = sleep / (sleep + awake)
-            let totalInBed = totalSleep + awake
-            let eff: Double? = totalInBed > 0
-                ? min(100.0, Double(totalSleep) / Double(totalInBed) * 100.0)
-                : nil
-
-            let dScore = scoreDuration(hours)
-            let sScore = scoreStages(deepPct: deepPct, remPct: remPct)
-            let eScore = scoreEfficiency(eff)
-            let total  = Int(Double(dScore) * 0.4 + Double(sScore) * 0.3 + Double(eScore) * 0.3)
-
-            return ScoredNight(
-                date: date,
-                sleepHours: hours,
-                deepPct: deepPct.map { $0 * 100 },
-                remPct: remPct.map { $0 * 100 },
-                efficiency: eff,
-                durationScore: dScore,
-                stagesScore: sScore,
-                efficiencyScore: eScore,
-                totalScore: total,
-                grade: ScoredNight.Grade.from(score: total)
-            )
+        nights = byDay.compactMap { entry -> ScoredNight? in
+            scoredNight(dc: entry.key, daySamples: entry.value, cal: cal)
         }
         .sorted { $0.date < $1.date }
     }
 
     // MARK: - Scoring Helpers
+
+    private func scoredNight(dc: DateComponents, daySamples: [HKCategorySample], cal: Calendar) -> ScoredNight? {
+        guard let date = cal.date(from: dc) else { return nil }
+        var deep = 0, rem = 0, core = 0, awake = 0
+        for s in daySamples {
+            let mins = Int(s.endDate.timeIntervalSince(s.startDate) / 60)
+            switch HKCategoryValueSleepAnalysis(rawValue: s.value) {
+            case .asleepDeep: deep += mins
+            case .asleepREM: rem += mins
+            case .asleepCore: core += mins
+            case .asleepUnspecified: core += mins
+            case .awake: awake += mins
+            case .inBed: awake += mins
+            default: break
+            }
+        }
+        let totalSleep = deep + rem + core
+        guard totalSleep > 60 else { return nil }
+        let hours = Double(totalSleep) / 60.0
+        let deepPct = deep > 0 ? Double(deep) / Double(totalSleep) : nil
+        let remPct  = rem  > 0 ? Double(rem)  / Double(totalSleep) : nil
+        let totalInBed = totalSleep + awake
+        let eff: Double? = totalInBed > 0 ? min(100.0, Double(totalSleep) / Double(totalInBed) * 100.0) : nil
+        let dScore = scoreDuration(hours)
+        let sScore = scoreStages(deepPct: deepPct, remPct: remPct)
+        let eScore = scoreEfficiency(eff)
+        let total  = Int(Double(dScore) * 0.4 + Double(sScore) * 0.3 + Double(eScore) * 0.3)
+        return ScoredNight(date: date, sleepHours: hours, deepPct: deepPct.map { $0 * 100 },
+                           remPct: remPct.map { $0 * 100 }, efficiency: eff,
+                           durationScore: dScore, stagesScore: sScore, efficiencyScore: eScore,
+                           totalScore: total, grade: ScoredNight.Grade.from(score: total))
+    }
 
     private func scoreDuration(_ h: Double) -> Int {
         if h >= 8 && h <= 9 { return 100 }

@@ -7,12 +7,12 @@ import HealthKit
 /// Tracks bedtime and wake-time consistency over the last 14 nights.
 /// Regular sleep timing is as important as duration for circadian health.
 struct SleepConsistencyView: View {
-    @State private var nights: [SleepNight] = []
+    @State private var nights: [ConsSleepNight] = []
     @State private var isLoading = false
 
     private let healthKit = HealthKitService.shared
 
-    struct SleepNight: Identifiable {
+    struct ConsSleepNight: Identifiable {
         let id = UUID()
         let date: Date          // wake date
         let bedtime: Date       // when sleep started
@@ -319,14 +319,14 @@ struct SleepConsistencyView: View {
         nights = groupSamplesToNights(samples)
     }
 
-    private func groupSamplesToNights(_ samples: [HKCategorySample]) -> [SleepNight] {
+    private func groupSamplesToNights(_ samples: [HKCategorySample]) -> [ConsSleepNight] {
         let cal = Calendar.current
         var byDay: [DateComponents: [HKCategorySample]] = [:]
         for s in samples {
             let key = cal.dateComponents([.year, .month, .day], from: s.endDate)
             byDay[key, default: []].append(s)
         }
-        return byDay.compactMap { (comps, daySamples) -> SleepNight? in
+        return byDay.compactMap { (comps, daySamples) -> ConsSleepNight? in
             guard let wakeDate = cal.date(from: comps) else { return nil }
             let sleepSamples = daySamples.filter {
                 switch HKCategoryValueSleepAnalysis(rawValue: $0.value) {
@@ -339,7 +339,7 @@ struct SleepConsistencyView: View {
             let latest = sleepSamples.max(by: { $0.endDate < $1.endDate })!
             let totalMins = sleepSamples.reduce(0) { $0 + Int($1.endDate.timeIntervalSince($1.startDate) / 60) }
             guard totalMins > 60 else { return nil }
-            return SleepNight(date: wakeDate, bedtime: earliest.startDate, wakeTime: latest.endDate, totalMinutes: totalMins)
+            return ConsSleepNight(date: wakeDate, bedtime: earliest.startDate, wakeTime: latest.endDate, totalMinutes: totalMins)
         }
         .sorted { $0.date < $1.date }
     }

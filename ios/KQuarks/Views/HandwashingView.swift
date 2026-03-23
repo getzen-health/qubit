@@ -167,7 +167,7 @@ struct HandwashingView: View {
                     }
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .week)) { _ in
+                AxisMarks(values: .stride(by: .weekOfYear)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 }
             }

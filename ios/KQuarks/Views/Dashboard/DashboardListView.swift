@@ -205,7 +205,7 @@ struct DashboardListView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "checklist")
                                 .font(.title3)
-                                .foregroundStyle(.accentColor)
+                                .foregroundStyle(Color.accentColor)
                             Text("Habits")
                                 .font(.subheadline.weight(.medium))
                                 .foregroundStyle(.primary)

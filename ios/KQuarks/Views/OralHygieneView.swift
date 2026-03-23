@@ -158,7 +158,7 @@ struct OralHygieneView: View {
     private var summaryStats: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
 
-            StatCard(title: "Current Streak",
+            OralStatCard(title: "Current Streak",
                      value: "\(currentStreak)",
                      unit: "days",
                      icon: "flame.fill",
@@ -166,7 +166,7 @@ struct OralHygieneView: View {
                      badge: currentStreak >= 7 ? "On fire!" : currentStreak >= 3 ? "Good" : "Keep going",
                      badgeColor: currentStreak >= 7 ? .orange : .yellow)
 
-            StatCard(title: "Goal Rate",
+            OralStatCard(title: "Goal Rate",
                      value: String(format: "%.0f%%", goalPct),
                      unit: "days met 2× goal",
                      icon: "checkmark.circle.fill",
@@ -174,7 +174,7 @@ struct OralHygieneView: View {
                      badge: goalPct >= 80 ? "Excellent" : goalPct >= 50 ? "Good" : "Needs work",
                      badgeColor: goalPct >= 80 ? .green : goalPct >= 50 ? .yellow : .red)
 
-            StatCard(title: "Avg Sessions/Day",
+            OralStatCard(title: "Avg Sessions/Day",
                      value: String(format: "%.1f", avgSessions),
                      unit: "of 2 recommended",
                      icon: "clock.fill",
@@ -182,7 +182,7 @@ struct OralHygieneView: View {
                      badge: avgSessions >= 1.8 ? "On target" : "Below ADA",
                      badgeColor: avgSessions >= 1.8 ? .green : .orange)
 
-            StatCard(title: "Avg Duration",
+            OralStatCard(title: "Avg Duration",
                      value: String(format: "%.0f", avgDuration),
                      unit: "seconds (120s goal)",
                      icon: "timer",
@@ -405,7 +405,7 @@ struct OralHygieneView: View {
 
 // MARK: - StatCard helper
 
-private struct StatCard: View {
+private struct OralStatCard: View {
     let title: String
     let value: String
     let unit: String

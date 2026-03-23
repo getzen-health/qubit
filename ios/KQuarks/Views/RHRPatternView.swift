@@ -318,7 +318,6 @@ struct RHRPatternView: View {
             .select("date, resting_heart_rate")
             .eq("user_id", value: userId.uuidString)
             .gte("date", value: df.string(from: oneYearAgo))
-            .not("resting_heart_rate", operator: "is", value: "null")
             .gt("resting_heart_rate", value: 30)
             .lt("resting_heart_rate", value: 120)
             .order("date", ascending: true)

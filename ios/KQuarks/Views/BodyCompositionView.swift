@@ -111,9 +111,9 @@ struct BodyCompositionView: View {
             let change = filtered.count > 1 ? current - filtered.first!.kg : 0
 
             HStack(spacing: 12) {
-                StatCard(title: "Current", value: String(format: "%.1f kg", current), color: .primary)
-                StatCard(title: "Change", value: String(format: "%+.1f kg", change), color: change < 0 ? .green : change > 0 ? .orange : .secondary)
-                StatCard(title: "Range", value: String(format: "%.1f–%.1f", min, max), color: .secondary)
+                BodyStatCard(title: "Current", value: String(format: "%.1f kg", current), color: .primary)
+                BodyStatCard(title: "Change", value: String(format: "%+.1f kg", change), color: change < 0 ? .green : change > 0 ? .orange : .secondary)
+                BodyStatCard(title: "Range", value: String(format: "%.1f–%.1f", min, max), color: .secondary)
             }
             .padding(.horizontal)
         }
@@ -276,7 +276,7 @@ struct BodyCompositionView: View {
 
 // MARK: - StatCard
 
-private struct StatCard: View {
+private struct BodyStatCard: View {
     let title: String
     let value: String
     let color: Color

@@ -19,7 +19,7 @@ struct CorrelationInsightsView: View {
                 } else {
                     header
                     ForEach(insights) { insight in
-                        InsightCard(insight: insight)
+                        CorrelationInsightCard(insight: insight)
                     }
                 }
             }
@@ -223,7 +223,7 @@ struct CorrelationInsightsView: View {
 
 // MARK: - Insight Card
 
-private struct InsightCard: View {
+private struct CorrelationInsightCard: View {
     let insight: CorrelationInsight
 
     private var strengthText: String {

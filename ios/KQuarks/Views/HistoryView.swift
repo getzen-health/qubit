@@ -120,10 +120,10 @@ struct HistoryView: View {
                     }
                     if let deep = record.deepMinutes, let rem = record.remMinutes {
                         HStack(spacing: 16) {
-                            SleepStagePill(label: "Deep", minutes: deep, color: .indigo)
-                            SleepStagePill(label: "REM", minutes: rem, color: .blue)
+                            HistorySleepStagePill(label: "Deep", minutes: deep, color: .indigo)
+                            HistorySleepStagePill(label: "REM", minutes: rem, color: .blue)
                             if let core = record.coreMinutes {
-                                SleepStagePill(label: "Core", minutes: core, color: .cyan)
+                                HistorySleepStagePill(label: "Core", minutes: core, color: .cyan)
                             }
                         }
                     }
@@ -252,7 +252,7 @@ private struct StatTile: View {
     }
 }
 
-private struct SleepStagePill: View {
+private struct HistorySleepStagePill: View {
     let label: String
     let minutes: Int
     let color: Color

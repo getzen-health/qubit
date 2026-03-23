@@ -15,7 +15,7 @@ import HealthKit
 /// regulation). Normal architecture: ~20-25% REM, 15-20% Deep, 50-60% Core.
 struct SleepArchitectureView: View {
 
-    struct SleepNight: Identifiable {
+    struct ArchSleepNight: Identifiable {
         let id: Date
         let date: Date
         let totalMins: Double
@@ -33,7 +33,7 @@ struct SleepArchitectureView: View {
         }
     }
 
-    @State private var nights: [SleepNight] = []
+    @State private var nights: [ArchSleepNight] = []
     @State private var avgTotal: Double = 0
     @State private var avgREM: Double = 0
     @State private var avgCore: Double = 0
@@ -305,9 +305,9 @@ struct SleepArchitectureView: View {
             nightMap[nightDate] = cur
         }
 
-        let allNights = nightMap.compactMap { date, v -> SleepNight? in
+        let allNights = nightMap.compactMap { date, v -> ArchSleepNight? in
             guard v.total >= 60 else { return nil }  // filter very short records
-            return SleepNight(id: date, date: date,
+            return ArchSleepNight(id: date, date: date,
                               totalMins: v.total, remMins: v.rem,
                               coreMins: v.core, deepMins: v.deep, awakeMins: v.awake)
         }.sorted { $0.date < $1.date }

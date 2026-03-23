@@ -341,9 +341,10 @@ struct RunningProgressionView: View {
         let oneYearAgo = cal.date(byAdding: .year, value: -1, to: Date())!
 
         // Fetch running workouts from HealthKit
-        let samples = (try? await hk.fetchWorkouts(ofType: .running, from: oneYearAgo, to: Date())) ?? []
+        let allSamples = (try? await hk.fetchWorkouts(from: oneYearAgo, to: Date())) ?? []
+        let samples = allSamples.filter { $0.workoutActivityType == .running }
         let rawRuns = samples.compactMap { w -> (date: Date, distKm: Double, durationMins: Int, paceSecsPerKm: Double)? in
-            let km = w.totalDistance?.doubleValue(for: .meterUnit(with: .kilo)) ?? 0
+            let km = w.totalDistance?.doubleValue(for: HKUnit.meterUnit(with: .kilo)) ?? 0
             guard km > 0.5 else { return nil }
             let mins = Int(w.duration / 60)
             let pace = km > 0 ? w.duration / km : 0  // secs per km
@@ -366,7 +367,7 @@ struct RunningProgressionView: View {
             return (slope: slope, intercept: my - slope * mx)
         }
 
-        let paces = rawRuns.map(\.paceSecsPerKm)
+        let paces = rawRuns.map { $0.paceSecsPerKm }
         let (slope, intercept) = linReg(paces)
         slopeSecsPerRun = slope
 

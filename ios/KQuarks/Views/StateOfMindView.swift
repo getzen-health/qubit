@@ -416,7 +416,7 @@ private struct StateOfMindContent: View {
                         valence:      sample.valence,
                         labels:       sample.labels.map { Self.labelName($0) },
                         associations: sample.associations.map { Self.associationName($0) },
-                        kind:         sample.kind == .daily ? "daily" : "momentary"
+                        kind:         sample.kind == .dailyMood ? "daily" : "momentary"
                     )
                 }
                 Task { @MainActor in

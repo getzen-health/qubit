@@ -316,7 +316,6 @@ struct FloorsPatternView: View {
             .select("date, floors_climbed")
             .eq("user_id", value: userId.uuidString)
             .gte("date", value: df.string(from: oneYearAgo))
-            .not("floors_climbed", operator: "is", value: "null")
             .gt("floors_climbed", value: 0)
             .order("date", ascending: true)
             .execute()

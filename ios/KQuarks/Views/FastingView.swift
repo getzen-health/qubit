@@ -184,37 +184,36 @@ struct FastingView: View {
 
     // MARK: - Start sheet
 
+    @ViewBuilder
+    private func startSheetProtocolRow(_ proto: FastProtocol) -> some View {
+        Button { selectedProtocol = proto } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(proto.title).font(.body).foregroundStyle(.primary)
+                    Text(proto.description).font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                if selectedProtocol == proto {
+                    Image(systemName: "checkmark").foregroundStyle(Color.accentColor)
+                }
+            }
+        }
+    }
+
     private var startSheet: some View {
         NavigationStack {
             Form {
                 Section("Protocol") {
                     ForEach(FastProtocol.allCases, id: \.self) { proto in
-                        Button {
-                            selectedProtocol = proto
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(proto.title).font(.body).foregroundStyle(.primary)
-                                    Text(proto.description).font(.caption).foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                if selectedProtocol == proto {
-                                    Image(systemName: "checkmark").foregroundStyle(.accentColor)
-                                }
-                            }
-                        }
+                        startSheetProtocolRow(proto)
                     }
                 }
             }
             .navigationTitle("Start Fast")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { showStartSheet = false } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Start") {
-                        showStartSheet = false
-                        Task { await startFast() }
-                    }
+                    Button("Start") { showStartSheet = false; Task { await startFast() } }
                 }
             }
         }
@@ -232,8 +231,8 @@ struct FastingView: View {
             VStack(spacing: 0) {
                 ForEach(Array(history.prefix(10).enumerated()), id: \.offset) { i, session in
                     HStack(spacing: 12) {
-                        Image(systemName: session.completed ? "checkmark.circle.fill" : "xmark.circle")
-                            .foregroundStyle(session.completed ? .green : .secondary)
+                        Image(systemName: session.completed ?? false ? "checkmark.circle.fill" : "xmark.circle")
+                            .foregroundStyle(session.completed ?? false ? .green : .secondary)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(session.protocol)
                                 .font(.subheadline.weight(.medium))
@@ -245,7 +244,7 @@ struct FastingView: View {
                         if let hours = session.actualHours {
                             Text(String(format: "%.1fh", hours))
                                 .font(.subheadline.bold())
-                                .foregroundStyle(session.completed ? .green : .secondary)
+                                .foregroundStyle(session.completed ?? false ? .green : .secondary)
                         }
                     }
                     .padding()

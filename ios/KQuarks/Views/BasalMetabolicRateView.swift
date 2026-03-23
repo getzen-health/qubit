@@ -352,18 +352,15 @@ struct BasalMetabolicRateView: View {
                     .frame(maxWidth: .infinity)
                 }
 
-                let interpretation: String
-                if abs(delta) < 50 {
-                    interpretation = "Excellent agreement — Apple Watch estimate closely matches the formula."
-                } else if abs(delta) < 150 {
-                    interpretation = delta > 0
-                        ? "Apple Watch estimates slightly higher BMR — possibly from detected fidgeting or NEAT."
-                        : "Apple Watch estimates slightly lower — common in athletes with efficient metabolisms."
-                } else {
-                    interpretation = delta > 0
-                        ? "Apple Watch BMR significantly higher — check body weight entry accuracy."
-                        : "Apple Watch BMR lower than formula — update weight in Health app for accuracy."
-                }
+                let interpretation: String = abs(delta) < 50
+                    ? "Excellent agreement — Apple Watch estimate closely matches the formula."
+                    : abs(delta) < 150
+                        ? (delta > 0
+                            ? "Apple Watch estimates slightly higher BMR — possibly from detected fidgeting or NEAT."
+                            : "Apple Watch estimates slightly lower — common in athletes with efficient metabolisms.")
+                        : (delta > 0
+                            ? "Apple Watch BMR significantly higher — check body weight entry accuracy."
+                            : "Apple Watch BMR lower than formula — update weight in Health app for accuracy.")
                 Text(interpretation)
                     .font(.caption)
                     .foregroundStyle(.secondary)
