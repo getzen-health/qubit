@@ -214,7 +214,7 @@ struct DanceScienceView: View {
         let type = HKObjectType.workoutType()
         guard (try? await store.requestAuthorization(toShare: [], read: [type])) != nil else { isLoading = false; return }
 
-        let danceTypes: [HKWorkoutActivityType] = [.dance, .socialDance, .cardioDance, .danceInspiredTraining]
+        let danceTypes: [HKWorkoutActivityType] = [.socialDance, .cardioDance, .barre, .pilates]
         let predicates = danceTypes.map { HKQuery.predicateForWorkouts(with: $0) }
         let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
