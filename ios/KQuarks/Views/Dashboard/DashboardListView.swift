@@ -867,21 +867,61 @@ class DashboardListViewModel {
     }
 
     func generatePrimaryInsight() -> String {
+        // Sleep-based insight takes precedence when sleep context is available
+        if let sleep = latestSleepContext {
+            let totalHrs = Double(sleep.durationMinutes) / 60
+            let deepPct = sleep.durationMinutes > 0 ? Double(sleep.deepMinutes) / Double(sleep.durationMinutes) * 100 : 0
+            if sleep.durationMinutes < 300 {
+                return "You slept under 5 hours last night. Prioritise recovery — avoid high-intensity training today."
+            }
+            if deepPct < 10 && sleep.durationMinutes > 360 {
+                return "Your deep sleep was low last night (\(Int(deepPct))%). Recovery may be impaired — consider lighter activity."
+            }
+            if totalHrs >= 7.5 && recoveryScore >= 75 {
+                return "Great sleep and strong recovery (\(recoveryScore)%). An excellent day for a hard training session."
+            }
+        }
+        // Recovery-based insight
         if recoveryScore >= 80 {
-            return "Your recovery is excellent. Today is ideal for high-intensity training."
+            if currentStreak > 0 {
+                return "Excellent recovery with a \(currentStreak)-day step streak. Today is ideal for high-intensity training."
+            }
+            return "Your recovery is excellent (\(recoveryScore)%). Today is ideal for high-intensity training."
         }
         if recoveryScore >= 60 {
-            return "You're moderately recovered. Consider a balanced workout today."
+            if weeklyWorkoutCount >= 4 {
+                return "You're moderately recovered after \(weeklyWorkoutCount) workouts this week. Consider an active recovery session today."
+            }
+            return "You're moderately recovered (\(recoveryScore)%). A balanced workout or tempo session works well today."
         }
-        return "Your recovery is low. Prioritize rest and light activity today."
+        if strainScore >= 14 {
+            return "High strain score (\(String(format: "%.1f", strainScore))/21) with low recovery. Rest or light movement is recommended."
+        }
+        return "Your recovery is low (\(recoveryScore)%). Prioritize rest, hydration, and light activity today."
     }
 
     func generateSecondaryInsight() -> String? {
-        if let trend = hrvTrend, trend > 10 {
-            return "HRV trending up \(trend)% this week — a positive adaptation sign."
+        if let trend = hrvTrend {
+            if trend > 10 {
+                return "HRV trending up \(trend)% this week — a positive adaptation sign."
+            }
+            if trend < -15 {
+                return "HRV dropped \(abs(trend))% this week — your body may need more recovery."
+            }
         }
-        if let trend = stepsTrend, trend > 20 {
-            return "You're \(trend)% more active than your weekly average. Great momentum!"
+        if let trend = stepsTrend {
+            if trend > 20 {
+                return "You're \(trend)% more active than your weekly average. Great momentum!"
+            }
+            if trend < -30 {
+                return "Activity is down \(abs(trend))% vs. your recent average. Try to move more today."
+            }
+        }
+        if sleepStreak > 2 {
+            return "\(sleepStreak)-night sleep streak — consistent sleep is a top recovery driver."
+        }
+        if workoutStreak > 2 {
+            return "\(workoutStreak)-day workout streak — impressive consistency!"
         }
         return nil
     }
