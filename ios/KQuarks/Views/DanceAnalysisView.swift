@@ -52,7 +52,7 @@ struct DanceAnalysisView: View {
     @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
-    private let activityTypes: [HKWorkoutActivityType] = [.dance, .socialDance, .stepTraining]
+    private let activityTypes: [HKWorkoutActivityType] = [.cardioDance, .socialDance, .stepTraining]
 
     var body: some View {
         ScrollView {

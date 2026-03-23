@@ -440,7 +440,7 @@ struct BodyTrendsView: View {
                 let dow = Calendar.current.component(.weekday, from: dateFromString(r.date)) - 1
                 if dow >= 0 && dow < 7, let w = r.weight_kg { dowBuckets[dow].append(w) }
             }
-            let maxDiff = dowBuckets.compactMap { b -> Double? in
+            _ = dowBuckets.compactMap { b -> Double? in
                 guard !b.isEmpty else { return nil }
                 return abs(b.reduce(0, +) / Double(b.count) - avgWeight)
             }.max() ?? 0.1

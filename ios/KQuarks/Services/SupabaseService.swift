@@ -118,8 +118,9 @@ class SupabaseService {
 
     func updateLastSyncAt() async {
         guard let userId = currentSession?.user.id else { return }
-        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
-        let deviceName = UIDevice.current.name
+        let (deviceId, deviceName) = await MainActor.run {
+            (UIDevice.current.identifierForVendor?.uuidString ?? "unknown", UIDevice.current.name)
+        }
 
         struct DeviceUpsert: Encodable {
             let userId: UUID
@@ -136,19 +137,23 @@ class SupabaseService {
             }
         }
 
-        try? await client
-            .from("user_devices")
-            .upsert(
-                DeviceUpsert(
-                    userId: userId,
-                    deviceName: deviceName,
-                    deviceType: "iphone",
-                    deviceId: deviceId,
-                    lastSyncAt: Date()
-                ),
-                onConflict: "user_id,device_id"
-            )
-            .execute()
+        do {
+            try await client
+                .from("user_devices")
+                .upsert(
+                    DeviceUpsert(
+                        userId: userId,
+                        deviceName: deviceName,
+                        deviceType: "iphone",
+                        deviceId: deviceId,
+                        lastSyncAt: Date()
+                    ),
+                    onConflict: "user_id,device_id"
+                )
+                .execute()
+        } catch {
+            print("[SupabaseService] updateLastSyncAt failed: \(error)")
+        }
     }
 
     func saveUserGoals(stepGoal: Int, calorieGoal: Int, sleepGoalMinutes: Int) async throws {

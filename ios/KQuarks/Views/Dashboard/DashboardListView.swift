@@ -18,6 +18,31 @@ struct DashboardListView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    // Sync error banner
+                    if let syncErr = viewModel.syncError {
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                            Text(syncErr)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                            Spacer()
+                            Button {
+                                viewModel.syncError = nil
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(12)
+                        .background(Color.orange.opacity(0.12))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                    }
+
                     if viewModel.isLoading {
                         ProgressView()
                             .padding(.top, 80)
@@ -633,10 +658,16 @@ class DashboardListViewModel {
     var bodyWeightKg: Double? = nil
     var weeklyWorkoutCount: Int = 0
     var weeklyData: [DaySummaryForAI] = []
+    var lastSyncDate: Date?
+    var syncError: String?
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
     private let aiService = AIInsightsService.shared
+
+    init() {
+        lastSyncDate = SyncService.shared.lastSyncDate
+    }
 
     func loadData() async {
         await MainActor.run {
@@ -713,12 +744,17 @@ class DashboardListViewModel {
     func sync() async {
         await MainActor.run {
             isSyncing = true
+            syncError = nil
         }
 
         await syncService.performFullSync()
 
         await MainActor.run {
             isSyncing = false
+            lastSyncDate = syncService.lastSyncDate
+            if let err = syncService.syncError {
+                syncError = err.localizedDescription
+            }
         }
 
         await loadData()

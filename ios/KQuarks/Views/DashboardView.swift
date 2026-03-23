@@ -18,20 +18,56 @@ struct DashboardView: View {
                         }
                         Spacer()
 
-                        // Sync button
-                        Button {
-                            Task {
-                                await viewModel.sync()
+                        // Sync button + last sync time
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Button {
+                                Task {
+                                    await viewModel.sync()
+                                }
+                            } label: {
+                                Image(systemName: viewModel.isSyncing ? "arrow.triangle.2.circlepath" : "arrow.clockwise")
+                                    .font(.title2)
+                                    .rotationEffect(.degrees(viewModel.isSyncing ? 360 : 0))
+                                    .animation(viewModel.isSyncing ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: viewModel.isSyncing)
                             }
-                        } label: {
-                            Image(systemName: viewModel.isSyncing ? "arrow.triangle.2.circlepath" : "arrow.clockwise")
-                                .font(.title2)
-                                .rotationEffect(.degrees(viewModel.isSyncing ? 360 : 0))
-                                .animation(viewModel.isSyncing ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: viewModel.isSyncing)
+                            .disabled(viewModel.isSyncing)
+
+                            if viewModel.isSyncing {
+                                Text("Syncing…")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            } else if let last = viewModel.lastSyncDate {
+                                Text(last, style: .relative)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        .disabled(viewModel.isSyncing)
                     }
                     .padding(.horizontal)
+
+                    // Sync error banner
+                    if let syncErr = viewModel.syncError {
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                            Text(syncErr)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                            Spacer()
+                            Button {
+                                viewModel.syncError = nil
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(12)
+                        .background(Color.orange.opacity(0.12))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                    }
 
                     if viewModel.isLoading {
                         ProgressView()
@@ -326,9 +362,15 @@ class DashboardViewModel {
     var isLoading = false
     var isSyncing = false
     var error: String?
+    var lastSyncDate: Date?
+    var syncError: String?
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
+
+    init() {
+        lastSyncDate = syncService.lastSyncDate
+    }
 
     func loadData() async {
         await MainActor.run {
@@ -353,12 +395,17 @@ class DashboardViewModel {
     func sync() async {
         await MainActor.run {
             isSyncing = true
+            syncError = nil
         }
 
         await syncService.performFullSync()
 
         await MainActor.run {
             isSyncing = false
+            lastSyncDate = syncService.lastSyncDate
+            if let err = syncService.syncError {
+                syncError = err.localizedDescription
+            }
         }
 
         // Reload data after sync

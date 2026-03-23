@@ -507,7 +507,6 @@ struct HydrationPatternView: View {
             longestStreak = longest
 
             var current = 0
-            let today = df.string(from: Date())
             let waterByDate = Dictionary(uniqueKeysWithValues: entries.map { ($0.date, $0.ml) })
             for i in 1...365 {
                 guard let d = cal.date(byAdding: .day, value: -i, to: Date()) else { break }
