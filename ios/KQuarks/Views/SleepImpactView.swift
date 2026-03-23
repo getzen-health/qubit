@@ -38,7 +38,7 @@ struct SleepImpactView: View {
         var buckets: [Double: [Double]] = [:]
         for n in hrvScatter {
             let b = (n.sleepHours * 2).rounded() / 2  // 0.5h buckets
-            buckets[b, default: []].append(n.nextDayHrv!)
+            if let hrv = n.nextDayHrv { buckets[b, default: []].append(hrv) }
         }
         return buckets
             .filter { $0.value.count >= 2 }

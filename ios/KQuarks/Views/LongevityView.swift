@@ -394,7 +394,7 @@ struct LongevityMetrics {
         let scored = metricScores.filter { $0.score != nil }
         guard !scored.isEmpty else { return nil }
         let totalWeight = scored.reduce(0.0) { $0 + $1.weight }
-        let weighted = scored.reduce(0.0) { $0 + ($1.score! * $1.weight) }
+        let weighted = scored.reduce(0.0) { $0 + (($1.score ?? 0) * $1.weight) }
         return (weighted / totalWeight).rounded()
     }
 

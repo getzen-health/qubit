@@ -89,9 +89,8 @@ struct RHRTrendView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    if samples.count >= 2 {
-                        let first = samples.first!.value
-                        let last = latest!
+                    if samples.count >= 2, let last = latest {
+                        let first = samples.first?.value ?? last
                         let diff = last - first
                         VStack(alignment: .trailing, spacing: 2) {
                             HStack(spacing: 4) {
