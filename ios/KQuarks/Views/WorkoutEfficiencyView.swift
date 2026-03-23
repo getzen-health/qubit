@@ -236,10 +236,6 @@ struct WorkoutEfficiencyView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            // Build per-type series from weeklyTrend
-            let allTypes = weeklyTrend.flatMap { $0.values.map { $0.type } }
-            let uniqueTypes = Array(NSOrderedSet(array: allTypes)) as! [String]
-
             Chart {
                 ForEach(weeklyTrend) { week in
                     ForEach(week.values, id: \.type) { point in

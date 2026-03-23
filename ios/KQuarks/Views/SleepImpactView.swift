@@ -326,7 +326,7 @@ struct SleepImpactView: View {
         let byDate = Dictionary(sorted.map { ($0.date, $0) }, uniquingKeysWith: { f, _ in f })
 
         var result: [ImpactSleepNight] = []
-        for (i, row) in sorted.enumerated() {
+        for (_, row) in sorted.enumerated() {
             guard let sleepMin = row.sleep_duration_minutes, sleepMin > 60,
                   let date = df.date(from: row.date) else { continue }
 

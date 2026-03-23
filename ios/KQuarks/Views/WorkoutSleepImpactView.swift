@@ -293,16 +293,11 @@ struct WorkoutSleepImpactView: View {
 
             // Time slot
             let slot: String
-            let slotColor: Color
             switch endHour {
-            case 5..<11:
-                slot = "Morning"; slotColor = .blue
-            case 11..<17:
-                slot = "Afternoon"; slotColor = .green
-            case 17..<22:
-                slot = "Evening"; slotColor = .orange
-            default:
-                slot = "Night"; slotColor = .red
+            case 5..<11:  slot = "Morning"
+            case 11..<17: slot = "Afternoon"
+            case 17..<22: slot = "Evening"
+            default:      slot = "Night"
             }
             slotData[slot, default: []].append(hrv)
 

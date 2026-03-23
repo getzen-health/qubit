@@ -390,7 +390,7 @@ struct CyclingPatternView: View {
             if km > longestKm { longestKm = km }
             let speedKph = mins > 0 ? km / (mins / 60) : nil
 
-            var comps = cal.dateComponents([.weekday], from: w.startDate)
+            let comps = cal.dateComponents([.weekday], from: w.startDate)
             let wd = ((comps.weekday ?? 1) + 5) % 7 + 1
             dowRides[wd, default: 0] += 1
             dowKm[wd, default: 0.0] += km

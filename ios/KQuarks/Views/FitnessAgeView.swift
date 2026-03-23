@@ -375,7 +375,7 @@ struct FitnessAgeView: View {
     }
 
     private func chartPoints() -> [ChartPoint] {
-        guard let vo2 = latestVO2Max else { return [] }
+        guard latestVO2Max != nil else { return [] }
         let isMale = biologicalSex == .male
         let chronGroup = ageGroup(for: chronologicalAge ?? 0)
 

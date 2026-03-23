@@ -197,7 +197,7 @@ enum WorkoutType: CaseIterable {
         case .hiking: return .hiking
         case .elliptical: return .elliptical
         case .rowing: return .rowing
-        case .dance: return .dance
+        case .dance: return .cardioDance
         case .other: return .functionalStrengthTraining
         }
     }

@@ -389,7 +389,7 @@ struct StrengthPatternView: View {
             if mins > longestMins { longestMins = mins }
             durationPoints.append(DurationPoint(id: w.startDate, mins: mins))
 
-            var comps = cal.dateComponents([.weekday], from: w.startDate)
+            let comps = cal.dateComponents([.weekday], from: w.startDate)
             let wd = ((comps.weekday ?? 1) + 5) % 7 + 1
             dowSessions[wd, default: 0] += 1
             dowMins[wd, default: 0.0] += mins

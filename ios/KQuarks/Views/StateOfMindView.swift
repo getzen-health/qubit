@@ -145,6 +145,7 @@ private struct StateOfMindContent: View {
         .navigationTitle("State of Mind")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadData() }
+        .refreshable { await loadData() }
         .overlay {
             if isLoading {
                 ProgressView("Loading mood data…")
@@ -399,7 +400,7 @@ private struct StateOfMindContent: View {
         }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -30, to: end)!
+        let start = Calendar.current.date(byAdding: .day, value: -30, to: end) ?? Date(timeIntervalSinceNow: -30 * 86400)
         let pred = HKQuery.predicateForSamples(withStart: start, end: end)
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
@@ -461,7 +462,7 @@ private struct StateOfMindContent: View {
         case .stressed:     return "stressed"
         case .surprised:    return "surprised"
         case .worried:      return "worried"
-        @unknown default:   return "other"
+        default:            return "other"
         }
     }
 

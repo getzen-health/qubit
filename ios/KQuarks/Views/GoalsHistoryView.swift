@@ -269,10 +269,6 @@ struct GoalsHistoryView: View {
             cal.date(byAdding: .day, value: offset - 29, to: today)
         }.map { cal.startOfDay(for: $0) }
 
-        // Align the 30-day sequence with the first weekday for the grid
-        let firstWeekday = cal.component(.weekday, from: dateSeq.first ?? today) - 1 // 0=Sun
-        let paddedDates: [Date?] = Array(repeating: nil, count: firstWeekday) + dateSeq.map { Optional($0) }
-
         // Steps track
         let stepGoal = goals.stepsGoal
         let stepDays: [GoalDay] = dateSeq.map { d in

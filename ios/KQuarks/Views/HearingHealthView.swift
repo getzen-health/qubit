@@ -301,7 +301,7 @@ struct HearingHealthView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
-                    if event.id != loudEvents.sorted { $0.db > $1.db }.prefix(5).last?.id {
+                    if event.id != loudEvents.sorted(by: { $0.db > $1.db }).prefix(5).last?.id {
                         Divider().padding(.leading, 52)
                     }
                 }

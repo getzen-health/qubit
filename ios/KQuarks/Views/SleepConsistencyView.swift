@@ -237,7 +237,6 @@ struct SleepConsistencyView: View {
 
     private var statsCard: some View {
         let durations = nights.map { Double($0.totalMinutes) }
-        let avgDuration = durations.reduce(0, +) / Double(durations.count)
         let durationSD = standardDeviation(durations)
 
         return VStack(spacing: 0) {

@@ -438,7 +438,6 @@ struct ECGAnalysisView: View {
         latestDate = ecgRecords.last?.date
 
         // Build monthly buckets
-        let cal = Calendar.current
         var monthMap: [String: (Int, Int, Int)] = [:]  // key: "YYYY-MM" → (sinus, afib, inconclusive)
         let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
