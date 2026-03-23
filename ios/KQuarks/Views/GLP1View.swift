@@ -685,7 +685,7 @@ struct GLP1View: View {
         case ..<54:   return .red
         case ..<70:   return .orange
         case ...140:  return .green
-        case ...180:  return .yellow
+        case ...180:  return .orange
         default:      return .red
         }
     }
