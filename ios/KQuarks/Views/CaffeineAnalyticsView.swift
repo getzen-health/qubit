@@ -116,7 +116,7 @@ struct CaffeineAnalyticsView: View {
             .padding(.vertical)
         }
         .navigationTitle("Caffeine Analytics")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

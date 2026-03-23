@@ -86,7 +86,7 @@ struct StrengthPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Strength Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

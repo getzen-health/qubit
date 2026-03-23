@@ -22,7 +22,7 @@ struct HRVScienceView: View {
             .padding()
         }
         .navigationTitle("HRV Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

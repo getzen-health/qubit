@@ -23,7 +23,7 @@ struct EnergySystemScienceView: View {
             .padding()
         }
         .navigationTitle("Energy Systems Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

@@ -77,7 +77,7 @@ struct CyclingPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycling Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

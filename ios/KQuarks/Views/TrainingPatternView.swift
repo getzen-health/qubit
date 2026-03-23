@@ -68,7 +68,7 @@ struct TrainingPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

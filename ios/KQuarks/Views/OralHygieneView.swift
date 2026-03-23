@@ -117,7 +117,7 @@ struct OralHygieneView: View {
             .padding(.vertical)
         }
         .navigationTitle("Oral Hygiene")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

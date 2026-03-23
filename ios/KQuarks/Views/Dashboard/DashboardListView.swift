@@ -58,7 +58,7 @@ struct DashboardListView: View {
                 await viewModel.loadData()
             }
             .navigationTitle(greeting)
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {

@@ -143,7 +143,7 @@ private struct StateOfMindContent: View {
             .padding(.vertical)
         }
         .navigationTitle("State of Mind")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

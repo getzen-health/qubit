@@ -47,7 +47,7 @@ struct FitnessProfileView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Fitness Profile")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -23,7 +23,7 @@ struct Zone2ScienceView: View {
             .padding()
         }
         .navigationTitle("Zone 2 Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

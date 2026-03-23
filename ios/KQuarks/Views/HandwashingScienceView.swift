@@ -23,7 +23,7 @@ struct HandwashingScienceView: View {
             .padding()
         }
         .navigationTitle("Handwashing Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

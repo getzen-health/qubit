@@ -23,7 +23,7 @@ struct JumpRopeScienceView: View {
             .padding()
         }
         .navigationTitle("Jump Rope Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

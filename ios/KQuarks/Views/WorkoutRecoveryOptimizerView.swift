@@ -91,7 +91,7 @@ struct WorkoutRecoveryOptimizerView: View {
             .padding(.vertical)
         }
         .navigationTitle("Recovery Optimizer")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

@@ -22,7 +22,7 @@ struct WalkingScienceView: View {
             .padding()
         }
         .navigationTitle("Walking Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

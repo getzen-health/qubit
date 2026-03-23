@@ -20,7 +20,7 @@ struct AFibScienceView: View {
             .padding()
         }
         .navigationTitle("AFib Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

@@ -77,7 +77,7 @@ struct SwimmingPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Swimming Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

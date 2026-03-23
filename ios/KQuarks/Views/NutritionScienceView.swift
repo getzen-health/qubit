@@ -24,7 +24,7 @@ struct NutritionScienceView: View {
             .padding()
         }
         .navigationTitle("Nutrition Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

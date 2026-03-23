@@ -20,7 +20,7 @@ struct HeartRateRecoveryScienceView: View {
             .padding()
         }
         .navigationTitle("HRR Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

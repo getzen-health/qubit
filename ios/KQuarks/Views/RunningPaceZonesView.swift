@@ -92,7 +92,7 @@ struct RunningPaceZonesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Pace Zones")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

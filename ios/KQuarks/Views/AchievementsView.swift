@@ -16,7 +16,7 @@ struct AchievementsView: View {
                 }
             }
             .navigationTitle("Achievements")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .task { await load() }
             .refreshable { await load() }
         }

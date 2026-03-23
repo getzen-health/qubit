@@ -80,7 +80,7 @@ struct RowingPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Rowing Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

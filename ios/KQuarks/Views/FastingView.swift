@@ -225,6 +225,7 @@ struct FastingView: View {
                 }
             }
             .navigationTitle("Start Fast")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { showStartSheet = false } }
                 ToolbarItem(placement: .confirmationAction) {

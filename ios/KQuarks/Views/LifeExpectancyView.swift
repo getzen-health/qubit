@@ -67,7 +67,7 @@ struct LifeExpectancyView: View {
             .padding(.vertical)
         }
         .navigationTitle("Life Expectancy")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

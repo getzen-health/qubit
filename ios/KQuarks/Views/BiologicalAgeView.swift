@@ -74,7 +74,7 @@ struct BiologicalAgeView: View {
             .padding(.vertical)
         }
         .navigationTitle("Biological Age")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

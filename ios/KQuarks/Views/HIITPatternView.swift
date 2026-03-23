@@ -67,7 +67,7 @@ struct HIITPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HIIT Patterns")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

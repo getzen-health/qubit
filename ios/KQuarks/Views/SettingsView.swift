@@ -241,6 +241,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear { biometricEnabled = biometric.isEnabled }
             .alert("Sign Out", isPresented: $showingSignOutAlert) {
                 Button("Cancel", role: .cancel) { }
@@ -373,6 +374,7 @@ struct AISettingsView: View {
             }
         }
         .navigationTitle("AI Provider")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("Settings Saved", isPresented: $showSavedAlert) {
             Button("OK") { }
         }
@@ -455,6 +457,7 @@ struct AboutView: View {
             }
         }
         .navigationTitle("About")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

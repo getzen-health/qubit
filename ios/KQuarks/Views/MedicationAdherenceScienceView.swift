@@ -36,7 +36,7 @@ struct MedicationAdherenceScienceView: View {
             .padding()
         }
         .navigationTitle("Medication Adherence Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

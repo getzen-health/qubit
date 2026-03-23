@@ -22,6 +22,7 @@ struct InsightsView: View {
                 }
             }
             .navigationTitle("Insights")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 4) {

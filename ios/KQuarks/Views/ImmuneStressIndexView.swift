@@ -90,7 +90,7 @@ private struct ImmuneStressContent: View {
             .padding(.vertical)
         }
         .navigationTitle("Immune Stress Index")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {
@@ -509,7 +509,7 @@ struct ImmuneStressIndexView: View {
             }
             .padding()
             .navigationTitle("Immune Stress Index")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

@@ -19,7 +19,7 @@ struct VO2MaxScienceView: View {
             .padding()
         }
         .navigationTitle("VO₂max Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

@@ -110,7 +110,7 @@ struct RunningEfficiencyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Running Efficiency")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

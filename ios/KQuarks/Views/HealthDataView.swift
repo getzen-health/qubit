@@ -2422,6 +2422,7 @@ struct HealthDataView: View {
                 }
             }
             .navigationTitle("Health Data")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {

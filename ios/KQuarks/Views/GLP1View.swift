@@ -155,7 +155,7 @@ struct GLP1View: View {
             }
         }
         .navigationTitle("GLP-1 Tracker")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if glp1Enabled {
                 ToolbarItem(placement: .topBarTrailing) {

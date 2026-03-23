@@ -113,7 +113,7 @@ private struct PowerToWeightContent: View {
             .padding(.vertical)
         }
         .navigationTitle("Power-to-Weight")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

@@ -28,7 +28,7 @@ struct RecordsView: View {
             }
         }
         .navigationTitle("Personal Records")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadRecords() }
         .refreshable { await loadRecords() }
     }

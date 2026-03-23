@@ -72,7 +72,7 @@ struct MedicationTrackingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Medication Tracking")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

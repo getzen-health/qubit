@@ -143,7 +143,7 @@ struct AlcoholTrackingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Alcohol Tracker")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

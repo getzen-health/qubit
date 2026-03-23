@@ -26,7 +26,7 @@ struct CyclingScienceView: View {
             .padding()
         }
         .navigationTitle("Cycling Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

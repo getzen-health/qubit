@@ -21,7 +21,7 @@ struct CriticalSpeedScienceView: View {
             .padding()
         }
         .navigationTitle("Critical Speed Science")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

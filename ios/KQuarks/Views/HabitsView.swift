@@ -147,6 +147,7 @@ struct HabitsView: View {
                 }
             }
             .navigationTitle("Habits")
+            .navigationBarTitleDisplayMode(.inline)
             .environment(\.editMode, $editMode)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

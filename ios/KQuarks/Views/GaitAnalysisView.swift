@@ -167,7 +167,7 @@ struct GaitAnalysisView: View {
             .padding(.vertical)
         }
         .navigationTitle("Gait Analysis")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {
