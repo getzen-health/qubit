@@ -21,6 +21,7 @@ struct ScannedProduct: Identifiable {
     let healthScore: ProductHealthScore
     let ingredients: String?
     let categories: [String]
+    let novaGroup: Int?
 }
 
 struct ProductHealthScore {
@@ -305,6 +306,8 @@ struct ProductDetailView: View {
     @State private var isSaving = false
     @State private var showSaved = false
     @State private var selectedMealType: MealTypeOption = .snack
+    @State private var alternatives: [ScannedProduct] = []
+    @State private var isLoadingAlternatives = false
 
     var body: some View {
         NavigationStack {
@@ -317,6 +320,7 @@ struct ProductDetailView: View {
                         ingredientsCard(ingredients)
                     }
                     logButton
+                    betterAlternativesSection
                 }
                 .padding()
             }
@@ -404,6 +408,10 @@ struct ProductDetailView: View {
                             .foregroundStyle(.white)
                             .clipShape(Capsule())
                     }
+                }
+
+                if let nova = product.novaGroup {
+                    NOVABadge(group: nova)
                 }
 
                 Text("per \(product.servingSize)")
@@ -508,6 +516,85 @@ struct ProductDetailView: View {
         default:  return .red
         }
     }
+
+    @ViewBuilder private var betterAlternativesSection: some View {
+        if product.healthScore.score < 75 {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundStyle(.blue)
+                    Text("Healthier Alternatives")
+                        .font(.headline)
+                    Spacer()
+                    if isLoadingAlternatives {
+                        ProgressView().scaleEffect(0.7)
+                    }
+                }
+
+                if alternatives.isEmpty && !isLoadingAlternatives {
+                    Text("Scan similar products to compare")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(alternatives) { alt in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(alt.name).font(.subheadline).lineLimit(1)
+                                if let brand = alt.brand {
+                                    Text(brand).font(.caption).foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                            Text("\(alt.healthScore.score)")
+                                .font(.headline.bold())
+                                .foregroundStyle(alt.healthScore.displayColor)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color(.tertiarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                }
+
+                // NOVA 4 warning
+                if let nova = product.novaGroup, nova == 4 {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Ultra-processed food (NOVA 4). Associated with increased cardiovascular risk (BMJ 2024).")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(10)
+                    .background(Color.orange.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .task {
+                await fetchAlternatives()
+            }
+        }
+    }
+
+    private func fetchAlternatives() async {
+        guard product.healthScore.score < 75, let category = product.categories.first else { return }
+        isLoadingAlternatives = true
+        defer { isLoadingAlternatives = false }
+
+        do {
+            let results = try await OpenFoodFactsService.search(query: category)
+            alternatives = results
+                .filter { $0.healthScore.score > product.healthScore.score }
+                .sorted { $0.healthScore.score > $1.healthScore.score }
+                .prefix(3)
+                .map { $0 }
+        } catch {
+            // silently fail — alternatives are nice-to-have
+        }
+    }
 }
 
 // MARK: - NutrientBadge
@@ -531,6 +618,41 @@ private struct NutrientBadge: View {
         .padding(10)
         .background(color.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - NOVABadge
+
+private struct NOVABadge: View {
+    let group: Int
+
+    var label: String {
+        switch group {
+        case 1: return "NOVA 1 · Unprocessed"
+        case 2: return "NOVA 2 · Culinary"
+        case 3: return "NOVA 3 · Processed"
+        default: return "NOVA 4 · Ultra-processed"
+        }
+    }
+
+    var color: Color {
+        switch group {
+        case 1: return .green
+        case 2: return Color(red: 0.6, green: 0.8, blue: 0)
+        case 3: return .orange
+        default: return .red
+        }
+    }
+
+    var body: some View {
+        Text(label)
+            .font(.caption.bold())
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.15))
+            .foregroundStyle(color)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(color.opacity(0.4), lineWidth: 1))
     }
 }
 
@@ -676,6 +798,8 @@ struct OpenFoodFactsService {
             isOrganic: isOrganic
         )
 
+        let novaGroup = additivesTags.isEmpty ? nil : detectNovaGroup(additivesTags)
+
         func num(_ key100: String, _ keyServing: String) -> Double {
             let v = hasServing ? nutriments[keyServing] : nutriments[key100]
             if let d = v as? Double { return d }
@@ -699,8 +823,30 @@ struct OpenFoodFactsService {
             imageURL: (p["image_url"] as? String).flatMap { URL(string: $0) },
             healthScore: score,
             ingredients: p["ingredients_text"] as? String,
-            categories: (p["categories_tags"] as? [String])?.prefix(5).map { $0 } ?? []
+            categories: (p["categories_tags"] as? [String])?.prefix(5).map { $0 } ?? [],
+            novaGroup: novaGroup
         )
+    }
+
+    private static func detectNovaGroup(_ additivesTags: [String]) -> Int {
+        let nova4Codes: Set<String> = [
+            "en:e471", "en:e472a", "en:e472b", "en:e472c", "en:e472e",
+            "en:e476", "en:e481", "en:e482", "en:e433", "en:e434",
+            "en:e435", "en:e436", "en:e150c", "en:e150d", "en:e171",
+            "en:e950", "en:e951", "en:e952", "en:e954", "en:e955",
+            "en:e960", "en:e961", "en:e962"
+        ]
+        let nova4Prefixes = ["en:e1", "en:e47", "en:e48"]
+
+        let hasNova4 = additivesTags.contains { tag in
+            nova4Codes.contains(tag) ||
+            nova4Prefixes.contains(where: { tag.hasPrefix($0) && tag != "en:e160a" })
+        }
+
+        if hasNova4 { return 4 }
+        if additivesTags.count > 5 { return 3 }
+        if !additivesTags.isEmpty { return 2 }
+        return 1
     }
 
     // Yuka-style 0-100 scoring (mirrors web/lib/product-scoring.ts)
