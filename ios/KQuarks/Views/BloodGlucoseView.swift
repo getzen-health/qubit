@@ -10,14 +10,14 @@ import HealthKit
 struct BloodGlucoseView: View {
     @State private var readings: [GlucoseReading] = []
     @State private var isLoading = true
+    @AppStorage("glucoseLowThreshold") private var low: Double = 70
+    @AppStorage("glucoseHighThreshold") private var high: Double = 180
 
     private let healthKit = HealthKitService.shared
     private let unit = HKUnit(from: "mg/dL")
 
     // Time-in-range boundaries (mg/dL)
-    private let low: Double = 70
     private let targetHigh: Double = 140   // post-meal target (less strict than medical TIR)
-    private let high: Double = 180         // clinical TIR upper bound
 
     struct GlucoseReading: Identifiable {
         let id = UUID()

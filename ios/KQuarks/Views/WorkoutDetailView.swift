@@ -193,35 +193,11 @@ struct WorkoutDetailView: View {
 
             if !hrZones.isEmpty {
                 Section("Heart Rate Zones") {
-                    let totalSecs = hrZones.reduce(0) { $0 + $1.seconds }
-                    ForEach(hrZones) { zone in
-                        HStack(spacing: 10) {
-                            Circle()
-                                .fill(zone.color)
-                                .frame(width: 10, height: 10)
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack {
-                                    Text(zone.label).font(.subheadline)
-                                    Spacer()
-                                    Text(formatDuration(zone.seconds))
-                                        .font(.subheadline.monospacedDigit())
-                                }
-                                GeometryReader { geo in
-                                    RoundedRectangle(cornerRadius: 3)
-                                        .fill(zone.color.opacity(0.3))
-                                        .frame(
-                                            width: geo.size.width * CGFloat(zone.seconds / max(totalSecs, 1)),
-                                            height: 5
-                                        )
-                                }
-                                .frame(height: 5)
-                                Text(zone.bpmRange)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .padding(.vertical, 2)
+                    // Convert zones to minutes for donut chart
+                    let zonesWithMinutes = hrZones.map { zone in
+                        (name: zone.label, minutes: Int(zone.seconds / 60), color: zone.color)
                     }
+                    HRZoneDonutChart(zones: zonesWithMinutes)
                 }
             }
             

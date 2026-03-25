@@ -42,11 +42,11 @@ function unitLabel(unit: GlucoseUnit): string {
   return unit === 'mmol' ? 'mmol/L' : 'mg/dL'
 }
 
-function classify(mgdl: number): { label: string; color: string } {
-  if (mgdl < 70) return { label: 'Low', color: '#60a5fa' }
+function classify(mgdl: number, lowThreshold: number = 70, highThreshold: number = 180): { label: string; color: string } {
+  if (mgdl < lowThreshold) return { label: 'Low', color: '#60a5fa' }
   if (mgdl < 100) return { label: 'Normal', color: '#4ade80' }
   if (mgdl < 126) return { label: 'Elevated', color: '#facc15' }
-  if (mgdl < 180) return { label: 'High', color: '#fb923c' }
+  if (mgdl < highThreshold) return { label: 'High', color: '#fb923c' }
   return { label: 'Very High', color: '#f87171' }
 }
 
@@ -77,10 +77,19 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
   const [timeRange, setTimeRange] = useState<TimeRange>('24h')
   const [readings, setReadings] = useState<GlucoseReading[]>(initialReadings)
   const [isLoading, setIsLoading] = useState(false)
+  const [lowThreshold, setLowThreshold] = useState(70)
+  const [highThreshold, setHighThreshold] = useState(180)
+  const [isSaving, setIsSaving] = useState(false)
+  const [showThresholdSettings, setShowThresholdSettings] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem('glucose_unit')
     if (stored === 'mgdl' || stored === 'mmol') setUnit(stored)
+    
+    const storedLow = localStorage.getItem('glucose_low_threshold')
+    const storedHigh = localStorage.getItem('glucose_high_threshold')
+    if (storedLow) setLowThreshold(Number(storedLow))
+    if (storedHigh) setHighThreshold(Number(storedHigh))
   }, [])
 
   useEffect(() => {
@@ -113,6 +122,31 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
     localStorage.setItem('glucose_unit', next)
   }
 
+  async function saveThresholds() {
+    setIsSaving(true)
+    try {
+      localStorage.setItem('glucose_low_threshold', String(lowThreshold))
+      localStorage.setItem('glucose_high_threshold', String(highThreshold))
+      
+      const res = await fetch('/api/user-preferences/glucose-thresholds', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          glucose_low_threshold_mgdl: lowThreshold,
+          glucose_high_threshold_mgdl: highThreshold,
+          glucose_alerts_enabled: true 
+        }),
+      })
+      if (!res.ok) {
+        console.error('Failed to save thresholds')
+      }
+    } catch (err) {
+      console.error('Failed to save glucose thresholds:', err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   if (readings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -130,15 +164,15 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
   const minMgdl = Math.min(...mgdlValues)
   const maxMgdl = Math.max(...mgdlValues)
   const latest = readings[readings.length - 1]
-  const latestCat = classify(latest.mgdl)
+  const latestCat = classify(latest.mgdl, lowThreshold, highThreshold)
 
   // Estimated A1c from average glucose: eA1C = (avgMgdl + 46.7) / 28.7
   const estA1c = ((avgMgdl + 46.7) / 28.7).toFixed(1)
 
-  // Low / in-range / high counts
-  const lowCount = readings.filter((r) => r.mgdl < 70).length
-  const inRangeCount = readings.filter((r) => r.mgdl >= 70 && r.mgdl <= 180).length
-  const highCount = readings.filter((r) => r.mgdl > 180).length
+  // Low / in-range / high counts using configured thresholds
+  const lowCount = readings.filter((r) => r.mgdl < lowThreshold).length
+  const inRangeCount = readings.filter((r) => r.mgdl >= lowThreshold && r.mgdl <= highThreshold).length
+  const highCount = readings.filter((r) => r.mgdl > highThreshold).length
   const timeInRange = Math.round((inRangeCount / readings.length) * 100)
 
   // Time series (last 200 points max)
@@ -169,14 +203,14 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
   const hourlyKey = unit === 'mmol' ? 'avgMmol' : 'avgMgdl'
   const yDomain = unit === 'mmol' ? [2.2, 16.7] : [40, 300]
   const yDomainHourly = unit === 'mmol' ? [3.3, 11.1] : [60, 200]
-  const refLow = toUnit(70, unit)
+  const refLow = toUnit(lowThreshold, unit)
   const refNormal = toUnit(100, unit)
-  const refHigh = toUnit(180, unit)
+  const refHigh = toUnit(highThreshold, unit)
 
-  // Time-in-range range labels
-  const tirLowLabel = unit === 'mmol' ? '< 3.9 mmol/L' : '< 70 mg/dL'
-  const tirInLabel = unit === 'mmol' ? '3.9–10.0 mmol/L' : '70–180 mg/dL'
-  const tirHighLabel = unit === 'mmol' ? '> 10.0 mmol/L' : '> 180 mg/dL'
+  // Time-in-range range labels with configurable thresholds
+  const tirLowLabel = unit === 'mmol' ? `< ${(lowThreshold / MGDL_TO_MMOL).toFixed(1)} mmol/L` : `< ${lowThreshold} mg/dL`
+  const tirInLabel = unit === 'mmol' ? `${(lowThreshold / MGDL_TO_MMOL).toFixed(1)}–${(highThreshold / MGDL_TO_MMOL).toFixed(1)} mmol/L` : `${lowThreshold}–${highThreshold} mg/dL`
+  const tirHighLabel = unit === 'mmol' ? `> ${(highThreshold / MGDL_TO_MMOL).toFixed(1)} mmol/L` : `> ${highThreshold} mg/dL`
 
   return (
     <div className="space-y-6">
@@ -200,13 +234,59 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
         </div>
 
         {/* Unit toggle */}
-        <button
-          onClick={toggleUnit}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-surface hover:bg-surface-secondary transition-colors"
-        >
-          Show in <span className="text-accent">{unit === 'mgdl' ? 'mmol/L' : 'mg/dL'}</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={toggleUnit}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-surface hover:bg-surface-secondary transition-colors"
+          >
+            Show in <span className="text-accent">{unit === 'mgdl' ? 'mmol/L' : 'mg/dL'}</span>
+          </button>
+          <button
+            onClick={() => setShowThresholdSettings(!showThresholdSettings)}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-surface hover:bg-surface-secondary transition-colors"
+            title="Configure alert thresholds"
+          >
+            ⚙️ Thresholds
+          </button>
+        </div>
       </div>
+
+      {/* Alert threshold settings */}
+      {showThresholdSettings && (
+        <div className="flex flex-col gap-2 p-4 bg-zinc-800 rounded-xl border border-border">
+          <h3 className="text-sm font-semibold text-white">Alert Thresholds</h3>
+          <p className="text-xs text-zinc-400 mb-2">Customize your glucose alert boundaries (mg/dL)</p>
+          <div className="flex gap-4 flex-wrap">
+            <label className="flex flex-col gap-1 text-xs text-zinc-400">
+              Low (mg/dL)
+              <input 
+                type="number" 
+                min={40} 
+                max={100} 
+                value={lowThreshold}
+                onChange={e => setLowThreshold(+e.target.value)}
+                onBlur={saveThresholds}
+                disabled={isSaving}
+                className="bg-zinc-700 text-white rounded px-2 py-1 w-24 disabled:opacity-50"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-zinc-400">
+              High (mg/dL)
+              <input 
+                type="number" 
+                min={120} 
+                max={300} 
+                value={highThreshold}
+                onChange={e => setHighThreshold(+e.target.value)}
+                onBlur={saveThresholds}
+                disabled={isSaving}
+                className="bg-zinc-700 text-white rounded px-2 py-1 w-24 disabled:opacity-50"
+              />
+            </label>
+          </div>
+          {isSaving && <p className="text-xs text-zinc-500">Saving...</p>}
+        </div>
+      )}
 
       {/* Latest reading */}
       <div className="bg-surface rounded-xl border border-border p-5 flex items-center justify-between">
@@ -340,7 +420,7 @@ export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps)
       <div className="space-y-2">
         <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Recent Readings</h2>
         {[...readings].reverse().slice(0, 20).map((r, i) => {
-          const cat = classify(r.mgdl)
+          const cat = classify(r.mgdl, lowThreshold, highThreshold)
           return (
             <div key={i} className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between">
               <p className="text-sm text-text-secondary">{fmtDateTime(r.timestamp)}</p>
