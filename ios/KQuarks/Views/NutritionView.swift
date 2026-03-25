@@ -8,6 +8,7 @@ struct NutritionView: View {
     @State private var meals: [SupabaseService.MealEntry] = []
     @State private var isLoading = true
     @State private var showLogMeal = false
+    @State private var showScanner = false
     @State private var selectedMealType: MealTypeOption = .breakfast
 
     private let calorieTarget = 2000
@@ -37,6 +38,11 @@ struct NutritionView: View {
                             Image(systemName: "chart.bar.xaxis")
                         }
                         Button {
+                            showScanner = true
+                        } label: {
+                            Image(systemName: "barcode.viewfinder")
+                        }
+                        Button {
                             showLogMeal = true
                         } label: {
                             Image(systemName: "plus")
@@ -48,6 +54,11 @@ struct NutritionView: View {
                 Task { await load() }
             }) {
                 LogMealView(initialMealType: selectedMealType)
+            }
+            .sheet(isPresented: $showScanner, onDismiss: {
+                Task { await load() }
+            }) {
+                FoodScannerView()
             }
             .task { await load() }
             .refreshable { await load() }

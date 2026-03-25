@@ -1,0 +1,758 @@
+import SwiftUI
+import AVFoundation
+
+// MARK: - Models
+
+struct ScannedProduct: Identifiable {
+    let id = UUID()
+    let barcode: String
+    let name: String
+    let brand: String?
+    let quantity: String?
+    let calories: Int
+    let protein: Double
+    let carbs: Double
+    let fat: Double
+    let fiber: Double
+    let sugar: Double
+    let sodium: Double
+    let servingSize: String
+    let imageURL: URL?
+    let healthScore: ProductHealthScore
+    let ingredients: String?
+    let categories: [String]
+}
+
+struct ProductHealthScore {
+    let score: Int
+    let grade: String
+    let color: String
+    let nutriScore: String?
+
+    var displayColor: Color {
+        switch score {
+        case 75...100: return .green
+        case 50..<75:  return Color(red: 0.6, green: 0.8, blue: 0)
+        case 25..<50:  return .orange
+        default:       return .red
+        }
+    }
+
+    var emoji: String {
+        switch score {
+        case 75...100: return "✅"
+        case 50..<75:  return "🟡"
+        case 25..<50:  return "🟠"
+        default:       return "🔴"
+        }
+    }
+
+    var label: String {
+        switch score {
+        case 75...100: return "Excellent"
+        case 50..<75:  return "Good"
+        case 25..<50:  return "Poor"
+        default:       return "Avoid"
+        }
+    }
+}
+
+// MARK: - FoodScannerView
+
+struct FoodScannerView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var isScanning = false
+    @State private var scannedProduct: ScannedProduct?
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var searchQuery = ""
+    @State private var showManualSearch = false
+    @State private var showProductSheet = false
+    @State private var cameraPermissionDenied = false
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                if isScanning && !cameraPermissionDenied {
+                    BarcodeScannerRepresentable { barcode in
+                        isScanning = false
+                        Task { await lookupBarcode(barcode) }
+                    }
+                    .ignoresSafeArea()
+
+                    VStack {
+                        Spacer()
+                        scanOverlay
+                    }
+                } else {
+                    searchView
+                }
+
+                if isLoading {
+                    loadingOverlay
+                }
+            }
+            .navigationTitle("Food Scanner")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        withAnimation { isScanning.toggle() }
+                    } label: {
+                        Image(systemName: isScanning ? "list.bullet" : "barcode.viewfinder")
+                    }
+                    .disabled(cameraPermissionDenied)
+                }
+            }
+            .sheet(item: $scannedProduct) { product in
+                ProductDetailView(product: product)
+            }
+            .alert("Camera Access Required", isPresented: $cameraPermissionDenied) {
+                Button("Open Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Allow camera access in Settings to scan barcodes.")
+            }
+            .alert("Error", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(errorMessage ?? "")
+            }
+        }
+    }
+
+    // MARK: - Search View
+
+    private var searchView: some View {
+        VStack(spacing: 0) {
+            searchBar
+
+            if cameraPermissionDenied {
+                cameraPermissionBanner
+            }
+
+            Spacer()
+
+            VStack(spacing: 16) {
+                Image(systemName: "barcode.viewfinder")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.secondary)
+
+                Text("Scan a barcode")
+                    .font(.title2.bold())
+
+                Text("Point your camera at any food product barcode to get its health score.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 32)
+
+                Button {
+                    checkCameraAndStartScanning()
+                } label: {
+                    Label("Start Scanning", systemImage: "camera.fill")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+                .padding(.horizontal, 32)
+            }
+
+            Spacer()
+        }
+    }
+
+    private var searchBar: some View {
+        HStack {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField("Search product by name...", text: $searchQuery)
+                .submitLabel(.search)
+                .onSubmit {
+                    guard !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+                    Task { await searchByName() }
+                }
+        }
+        .padding(12)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding()
+    }
+
+    private var cameraPermissionBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "camera.slash.fill")
+                .foregroundStyle(.orange)
+            Text("Camera access denied. Use search or enable in Settings.")
+                .font(.caption)
+            Spacer()
+        }
+        .padding()
+        .background(Color.orange.opacity(0.1))
+    }
+
+    // MARK: - Scanner Overlay
+
+    private var scanOverlay: some View {
+        VStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(Color.white.opacity(0.8), lineWidth: 2)
+                .frame(width: 260, height: 120)
+                .overlay(
+                    Rectangle()
+                        .fill(Color.clear)
+                        .overlay(
+                            Rectangle()
+                                .frame(height: 2)
+                                .foregroundStyle(Color.green.opacity(0.8))
+                        )
+                )
+
+            Text("Center barcode in frame")
+                .font(.caption)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
+
+            searchBar
+                .padding(.bottom, 30)
+        }
+        .padding(.bottom, 16)
+    }
+
+    private var loadingOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.35).ignoresSafeArea()
+            VStack(spacing: 12) {
+                ProgressView()
+                    .scaleEffect(1.4)
+                    .tint(.white)
+                Text("Looking up product…")
+                    .foregroundStyle(.white)
+                    .font(.subheadline)
+            }
+            .padding(24)
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+    }
+
+    // MARK: - Actions
+
+    private func checkCameraAndStartScanning() {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            isScanning = true
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    if granted { isScanning = true } else { cameraPermissionDenied = true }
+                }
+            }
+        default:
+            cameraPermissionDenied = true
+        }
+    }
+
+    private func lookupBarcode(_ barcode: String) async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let product = try await OpenFoodFactsService.lookupBarcode(barcode)
+            scannedProduct = product
+        } catch OpenFoodFactsError.notFound {
+            errorMessage = "Product not found. Try searching by name."
+        } catch {
+            errorMessage = "Failed to look up product. Check your connection."
+        }
+    }
+
+    private func searchByName() async {
+        let query = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard query.count >= 2 else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let results = try await OpenFoodFactsService.search(query: query)
+            if let first = results.first {
+                scannedProduct = first
+            } else {
+                errorMessage = "No products found for \"\(query)\"."
+            }
+        } catch {
+            errorMessage = "Search failed. Check your connection."
+        }
+    }
+}
+
+// MARK: - ProductDetailView
+
+struct ProductDetailView: View {
+    let product: ScannedProduct
+    @Environment(\.dismiss) private var dismiss
+    @State private var isSaving = false
+    @State private var showSaved = false
+    @State private var selectedMealType: MealTypeOption = .snack
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    productHeader
+                    healthScoreCard
+                    nutritionCard
+                    if let ingredients = product.ingredients, !ingredients.isEmpty {
+                        ingredientsCard(ingredients)
+                    }
+                    logButton
+                }
+                .padding()
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Product")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+            }
+            .alert("Logged!", isPresented: $showSaved) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text("\(product.name) has been added to your \(selectedMealType.label).")
+            }
+        }
+    }
+
+    private var productHeader: some View {
+        HStack(spacing: 16) {
+            if let url = product.imageURL {
+                AsyncImage(url: url) { img in
+                    img.resizable().aspectRatio(contentMode: .fit)
+                } placeholder: {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(.secondarySystemBackground))
+                        .overlay(Image(systemName: "photo").foregroundStyle(.tertiary))
+                }
+                .frame(width: 80, height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(product.name)
+                    .font(.headline)
+                    .lineLimit(2)
+                if let brand = product.brand {
+                    Text(brand).font(.subheadline).foregroundStyle(.secondary)
+                }
+                if let qty = product.quantity {
+                    Text(qty).font(.caption).foregroundStyle(.tertiary)
+                }
+            }
+            Spacer()
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private var healthScoreCard: some View {
+        HStack(spacing: 20) {
+            ZStack {
+                Circle()
+                    .stroke(product.healthScore.displayColor.opacity(0.2), lineWidth: 10)
+                    .frame(width: 90, height: 90)
+                Circle()
+                    .trim(from: 0, to: Double(product.healthScore.score) / 100)
+                    .stroke(product.healthScore.displayColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .frame(width: 90, height: 90)
+                    .rotationEffect(.degrees(-90))
+                VStack(spacing: 0) {
+                    Text("\(product.healthScore.score)")
+                        .font(.title2.bold())
+                    Text("/100").font(.caption2).foregroundStyle(.secondary)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("\(product.healthScore.emoji) \(product.healthScore.label)")
+                    .font(.title3.bold())
+                    .foregroundStyle(product.healthScore.displayColor)
+
+                if let nutriScore = product.healthScore.nutriScore {
+                    HStack(spacing: 4) {
+                        Text("Nutri-Score")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(nutriScore.uppercased())
+                            .font(.caption.bold())
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(nutriScoreColor(nutriScore))
+                            .foregroundStyle(.white)
+                            .clipShape(Capsule())
+                    }
+                }
+
+                Text("per \(product.servingSize)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private var nutritionCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Nutrition").font(.headline)
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                NutrientBadge(label: "Calories", value: "\(product.calories)", unit: "kcal", color: .orange)
+                NutrientBadge(label: "Protein", value: String(format: "%.1f", product.protein), unit: "g", color: .blue)
+                NutrientBadge(label: "Carbs", value: String(format: "%.1f", product.carbs), unit: "g", color: .purple)
+                NutrientBadge(label: "Fat", value: String(format: "%.1f", product.fat), unit: "g", color: .red)
+                NutrientBadge(label: "Fiber", value: String(format: "%.1f", product.fiber), unit: "g", color: .green)
+                NutrientBadge(label: "Sugar", value: String(format: "%.1f", product.sugar), unit: "g", color: .yellow)
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func ingredientsCard(_ ingredients: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Ingredients").font(.headline)
+            Text(ingredients)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private var logButton: some View {
+        VStack(spacing: 12) {
+            Picker("Meal Type", selection: $selectedMealType) {
+                ForEach(MealTypeOption.allCases, id: \.self) { type in
+                    Label(type.label, systemImage: type.icon).tag(type)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            Button {
+                Task { await logMeal() }
+            } label: {
+                Group {
+                    if isSaving {
+                        ProgressView().tint(.white)
+                    } else {
+                        Label("Add to Meal Log", systemImage: "plus.circle.fill")
+                            .font(.headline)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.accentColor)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .disabled(isSaving)
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func logMeal() async {
+        isSaving = true
+        defer { isSaving = false }
+
+        do {
+            try await SupabaseService.shared.logMeal(
+                mealType: selectedMealType.rawValue,
+                name: product.name,
+                calories: product.calories,
+                protein: product.protein,
+                carbs: product.carbs,
+                fat: product.fat
+            )
+            showSaved = true
+        } catch {
+            // Silently fail — user can try again
+        }
+    }
+
+    private func nutriScoreColor(_ grade: String) -> Color {
+        switch grade.lowercased() {
+        case "a": return .green
+        case "b": return Color(red: 0.6, green: 0.8, blue: 0)
+        case "c": return .yellow
+        case "d": return .orange
+        default:  return .red
+        }
+    }
+}
+
+// MARK: - NutrientBadge
+
+private struct NutrientBadge: View {
+    let label: String
+    let value: String
+    let unit: String
+    let color: Color
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(value + unit)
+                .font(.subheadline.bold())
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(10)
+        .background(color.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - AVFoundation Barcode Scanner
+
+struct BarcodeScannerRepresentable: UIViewControllerRepresentable {
+    let onScan: (String) -> Void
+
+    func makeUIViewController(context: Context) -> BarcodeScannerViewController {
+        let vc = BarcodeScannerViewController()
+        vc.onScan = onScan
+        return vc
+    }
+
+    func updateUIViewController(_ uiViewController: BarcodeScannerViewController, context: Context) {}
+}
+
+final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    var onScan: ((String) -> Void)?
+
+    private var captureSession: AVCaptureSession?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var hasScanned = false
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupCamera()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let session = captureSession, !session.isRunning {
+            DispatchQueue.global(qos: .userInitiated).async { session.startRunning() }
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        captureSession?.stopRunning()
+    }
+
+    private func setupCamera() {
+        let session = AVCaptureSession()
+
+        guard let device = AVCaptureDevice.default(for: .video),
+              let input = try? AVCaptureDeviceInput(device: device) else { return }
+
+        session.addInput(input)
+
+        let output = AVCaptureMetadataOutput()
+        session.addOutput(output)
+        output.setMetadataObjectsDelegate(self, queue: .main)
+        output.metadataObjectTypes = [.ean8, .ean13, .upce, .code128, .qr]
+
+        let preview = AVCaptureVideoPreviewLayer(session: session)
+        preview.frame = view.layer.bounds
+        preview.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(preview)
+        self.previewLayer = preview
+
+        captureSession = session
+        DispatchQueue.global(qos: .userInitiated).async { session.startRunning() }
+    }
+
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        guard !hasScanned,
+              let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
+              let barcode = object.stringValue,
+              !barcode.isEmpty else { return }
+
+        hasScanned = true
+        captureSession?.stopRunning()
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        onScan?(barcode)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer?.frame = view.layer.bounds
+    }
+}
+
+// MARK: - OpenFoodFacts iOS Service
+
+enum OpenFoodFactsError: Error {
+    case notFound
+    case networkError
+}
+
+struct OpenFoodFactsService {
+    private static let baseURL = "https://world.openfoodfacts.org"
+    private static let userAgent = "KQuarks/1.0 (iOS; https://github.com/qxlsz/kquarks)"
+
+    static func lookupBarcode(_ barcode: String) async throws -> ScannedProduct {
+        let fields = "product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity"
+        guard let url = URL(string: "\(baseURL)/api/v2/product/\(barcode).json?fields=\(fields)") else {
+            throw OpenFoodFactsError.networkError
+        }
+
+        var req = URLRequest(url: url)
+        req.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+
+        guard let status = json?["status"] as? Int, status == 1,
+              let product = json?["product"] as? [String: Any] else {
+            throw OpenFoodFactsError.notFound
+        }
+
+        return parseProduct(product, barcode: barcode)
+    }
+
+    static func search(query: String) async throws -> [ScannedProduct] {
+        guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "\(baseURL)/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=5&fields=id,product_name,brands,image_url,nutriscore_grade,additives_tags,allergens_tags,labels_tags,nutriments,serving_size,ingredients_text,quantity") else {
+            throw OpenFoodFactsError.networkError
+        }
+
+        var req = URLRequest(url: url)
+        req.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        let products = json?["products"] as? [[String: Any]] ?? []
+
+        return products
+            .filter { ($0["product_name"] as? String)?.isEmpty == false }
+            .map { parseProduct($0, barcode: $0["id"] as? String ?? "") }
+    }
+
+    private static func parseProduct(_ p: [String: Any], barcode: String) -> ScannedProduct {
+        let nutriments = p["nutriments"] as? [String: Any] ?? [:]
+        let hasServing = nutriments["energy-kcal_serving"] != nil
+        let labels = p["labels_tags"] as? [String] ?? []
+        let isOrganic = labels.contains { $0.contains("organic") || $0.contains("bio") }
+        let additivesTags = p["additives_tags"] as? [String] ?? []
+        let nutriscoreGrade = p["nutriscore_grade"] as? String
+
+        let score = calculateHealthScore(
+            nutriscoreGrade: nutriscoreGrade,
+            additivesTags: additivesTags,
+            isOrganic: isOrganic
+        )
+
+        func num(_ key100: String, _ keyServing: String) -> Double {
+            let v = hasServing ? nutriments[keyServing] : nutriments[key100]
+            if let d = v as? Double { return d }
+            if let i = v as? Int { return Double(i) }
+            return 0
+        }
+
+        return ScannedProduct(
+            barcode: barcode,
+            name: (p["product_name"] as? String) ?? "Unknown Product",
+            brand: p["brands"] as? String,
+            quantity: p["quantity"] as? String,
+            calories: Int(num("energy-kcal_100g", "energy-kcal_serving")),
+            protein: num("proteins_100g", "proteins_serving"),
+            carbs: num("carbohydrates_100g", "carbohydrates_serving"),
+            fat: num("fat_100g", "fat_serving"),
+            fiber: num("fiber_100g", "fiber_serving"),
+            sugar: num("sugars_100g", "sugars_serving"),
+            sodium: num("sodium_100g", "sodium_serving"),
+            servingSize: (p["serving_size"] as? String) ?? "100g",
+            imageURL: (p["image_url"] as? String).flatMap { URL(string: $0) },
+            healthScore: score,
+            ingredients: p["ingredients_text"] as? String,
+            categories: (p["categories_tags"] as? [String])?.prefix(5).map { $0 } ?? []
+        )
+    }
+
+    // Yuka-style 0-100 scoring (mirrors web/lib/product-scoring.ts)
+    private static func calculateHealthScore(
+        nutriscoreGrade: String?,
+        additivesTags: [String],
+        isOrganic: Bool
+    ) -> ProductHealthScore {
+        // High-risk additive E-numbers (subset of the web scoring engine)
+        let highRiskAdditives: Set<String> = [
+            "en:e102", "en:e104", "en:e110", "en:e122", "en:e123",
+            "en:e124", "en:e129", "en:e131", "en:e133", "en:e150d",
+            "en:e211", "en:e212", "en:e213", "en:e220", "en:e250",
+            "en:e621", "en:e951", "en:e952", "en:e954", "en:e955",
+        ]
+        let moderateRiskAdditives: Set<String> = [
+            "en:e150a", "en:e150b", "en:e150c", "en:e160b",
+            "en:e171", "en:e172", "en:e249", "en:e251",
+        ]
+
+        let hasHighRisk = additivesTags.contains { highRiskAdditives.contains($0) }
+        let moderateCount = additivesTags.filter { moderateRiskAdditives.contains($0) }.count
+        let additivePenalty = min(30, (hasHighRisk ? 20 : 0) + moderateCount * 3)
+
+        let nutriScoreBase: Int
+        switch nutriscoreGrade?.lowercased() {
+        case "a": nutriScoreBase = 100
+        case "b": nutriScoreBase = 75
+        case "c": nutriScoreBase = 50
+        case "d": nutriScoreBase = 25
+        case "e": nutriScoreBase = 0
+        default:  nutriScoreBase = 50
+        }
+
+        let organicBonus = isOrganic ? 10 : 0
+        var raw = Int(Double(nutriScoreBase) * 0.6) + (30 - additivePenalty) + organicBonus
+        if hasHighRisk { raw = min(raw, 24) }
+        let finalScore = max(0, min(100, raw))
+
+        let grade: String
+        switch finalScore {
+        case 75...100: grade = "A"
+        case 50..<75:  grade = "B"
+        case 25..<50:  grade = "C"
+        default:       grade = "D"
+        }
+
+        return ProductHealthScore(
+            score: finalScore,
+            grade: grade,
+            color: finalScore >= 75 ? "green" : finalScore >= 50 ? "yellow" : finalScore >= 25 ? "orange" : "red",
+            nutriScore: nutriscoreGrade
+        )
+    }
+}
