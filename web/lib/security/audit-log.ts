@@ -32,6 +32,7 @@ export type AuditResource =
   | 'workout'
   | 'ai_settings'
   | 'ai_chat'
+  | 'predictions'
 
 interface AuditLogEntry {
   user_id: string
