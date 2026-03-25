@@ -22,7 +22,7 @@ enum DeepLinkDestination: Hashable {
 @Observable
 final class DeepLinkHandler {
     static let shared = DeepLinkHandler()
-    @Published var pendingDestination: DeepLinkDestination?
+    var pendingDestination: DeepLinkDestination?
     
     func handleDeepLink(_ url: URL) {
         guard url.scheme == "kquarks" else { return }

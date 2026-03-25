@@ -8,6 +8,7 @@ struct WorkoutDetailView: View {
 
     @State private var avgHeartRate: Double?
     @State private var hrZones: [HRZoneTime] = []
+    @State private var splits: [SplitRow] = []
     private let healthKit = HealthKitService.shared
 
     struct HRZoneTime: Identifiable {
@@ -16,6 +17,14 @@ struct WorkoutDetailView: View {
         let bpmRange: String
         let color: Color
         let seconds: TimeInterval
+    }
+    
+    struct SplitRow: Identifiable {
+        let id = UUID()
+        let kilometer: Int
+        let pace: String
+        let heartRate: Int?
+        let elevation: Double?
     }
 
     private static let zones: [(label: String, bpmRange: String, color: Color, max: Double)] = [
@@ -47,6 +56,50 @@ struct WorkoutDetailView: View {
             guard zoneSecs[idx] > 0 else { return nil }
             return HRZoneTime(id: idx, label: z.label, bpmRange: z.bpmRange, color: z.color, seconds: zoneSecs[idx])
         }
+    }
+    
+    private func calculateSplits(from route: [CLLocationCoordinate2D], heartRates: [(date: Date, bpm: Double)]) -> [SplitRow] {
+        guard !route.isEmpty, route.count > 1 else { return [] }
+        
+        var splits: [SplitRow] = []
+        var distanceAccum = 0.0
+        var kmIndex = 1
+        var kmStartIdx = 0
+        
+        for i in 1..<route.count {
+            let from = route[i - 1]
+            let to = route[i]
+            let segmentDistance = CLLocationCoordinate2D.distance(from: from, to: to)
+            distanceAccum += segmentDistance
+            
+            if distanceAccum >= 1000 {
+                let kmStart = route[kmStartIdx]
+                let kmEnd = route[i]
+                let fraction = (distanceAccum - 1000) / segmentDistance
+                
+                let timeForKm = Double(kmIndex - 1) * (workout.duration / Double(Int(distanceAccum / 1000)))
+                let timePerKm = workout.duration / Double(max(1, Int(distanceAccum / 1000)))
+                let paceSeconds = timePerKm
+                let paceMin = Int(paceSeconds) / 60
+                let paceSec = Int(paceSeconds) % 60
+                let paceStr = "\(paceMin):\(String(format: "%02d", paceSec)) /km"
+                
+                let avgHr = heartRates.isEmpty ? nil : Int(heartRates.reduce(0.0) { $0 + $1.bpm } / Double(heartRates.count))
+                
+                splits.append(SplitRow(
+                    kilometer: kmIndex,
+                    pace: paceStr,
+                    heartRate: avgHr,
+                    elevation: nil
+                ))
+                
+                kmIndex += 1
+                distanceAccum = 0
+                kmStartIdx = i
+            }
+        }
+        
+        return splits
     }
 
     var body: some View {
@@ -171,6 +224,30 @@ struct WorkoutDetailView: View {
                     }
                 }
             }
+            
+            // Splits section for running/walking/cycling
+            let paceTypes: [HKWorkoutActivityType] = [.running, .walking, .hiking, .cycling]
+            if paceTypes.contains(workout.workoutActivityType) && !splits.isEmpty {
+                Section("Splits") {
+                    ForEach(splits) { split in
+                        HStack {
+                            Text("KM \(split.kilometer)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .frame(width: 50, alignment: .leading)
+                            Text(split.pace)
+                                .font(.subheadline)
+                                .bold()
+                            Spacer()
+                            if let hr = split.heartRate {
+                                Label("\(hr)", systemImage: "heart.fill")
+                                    .foregroundColor(.red)
+                                    .font(.caption)
+                            }
+                        }
+                    }
+                }
+            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(workout.workoutActivityType.name)
@@ -185,9 +262,16 @@ struct WorkoutDetailView: View {
         .task {
             async let hr = healthKit.fetchAverageHeartRate(during: workout)
             async let samples = healthKit.fetchHeartRateSamples(during: workout)
+            async let route = healthKit.fetchWorkoutRoute(for: workout)
+            
             avgHeartRate = try? await hr
             if let s = try? await samples, !s.isEmpty {
                 hrZones = computeZones(from: s)
+            }
+            
+            if let r = try? await route, !r.isEmpty {
+                let samples = try? await samples
+                splits = calculateSplits(from: r, heartRates: samples ?? [])
             }
         }
     }
@@ -360,5 +444,13 @@ struct WorkoutRouteMapView: View {
 #Preview {
     NavigationStack {
         Text("WorkoutDetailView preview")
+    }
+}
+
+extension CLLocationCoordinate2D {
+    static func distance(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) -> Double {
+        let location1 = CLLocation(latitude: from.latitude, longitude: from.longitude)
+        let location2 = CLLocation(latitude: to.latitude, longitude: to.longitude)
+        return location1.distance(from: location2)
     }
 }

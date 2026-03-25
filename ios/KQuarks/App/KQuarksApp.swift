@@ -47,19 +47,8 @@ struct KQuarksApp: App {
                     HealthKitService.shared.setupBackgroundDelivery()
                 }
                 .onOpenURL { url in
-                    if let deepLink = DeepLinkHandler.handleDeepLink(url) {
-                        handleDeepLink(deepLink)
-                    }
+                    DeepLinkHandler.shared.handleDeepLink(url)
                 }
-        }
-    }
-
-    private func handleDeepLink(_ deepLink: DeepLink) {
-        switch deepLink.action {
-        case .dashboard, .foodScan, .readiness, .social:
-            // Tab navigation will be handled by passing the tab selection
-            // through an observable state or environment variable
-            break
         }
     }
 }

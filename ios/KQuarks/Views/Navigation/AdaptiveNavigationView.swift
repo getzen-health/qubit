@@ -5,7 +5,8 @@ import SwiftUI
 /// - TabView on iPhone (compact width)
 struct AdaptiveNavigationView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
+    
+    @State private var deepLinkHandler = DeepLinkHandler.shared
     @State private var selectedSidebarItem: SidebarItem? = .dashboard
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var selectedTab: Int = 0
@@ -19,6 +20,32 @@ struct AdaptiveNavigationView: View {
             // iPhone: Tab view
             iPhoneNavigationView
         }
+        .onChange(of: deepLinkHandler.pendingDestination) { _, destination in
+            handleDeepLinkNavigation(destination)
+        }
+    }
+    
+    // MARK: - Deep Link Navigation
+    
+    private func handleDeepLinkNavigation(_ destination: DeepLinkDestination?) {
+        guard let destination = destination else { return }
+        
+        // Map deep link destination to tab index
+        switch destination {
+        case .foodScanner, .foodDiary, .foodHistory:
+            selectedTab = 0 // Dashboard tab (contains food scanner)
+        case .readiness, .sleep, .workouts, .water, .hrv, .body, .glucose, .vitals:
+            selectedTab = 1 // Health tab
+        case .insights, .achievements, .social:
+            selectedTab = 3 // Insights tab (social/achievements)
+        case .settings, .profile:
+            selectedTab = 4 // Settings tab
+        case .habits:
+            selectedTab = 3 // Insights tab
+        }
+        
+        // Clear the pending destination after handling
+        deepLinkHandler.pendingDestination = nil
     }
 
     // MARK: - iPad Navigation
