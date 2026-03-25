@@ -12,6 +12,7 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { createClient } from '@/lib/supabase/client'
+import Link from 'next/link'
 
 interface RunData {
   date: string
@@ -386,6 +387,22 @@ export function RunningClient({ runs }: RunningClientProps) {
             </div>
           )
         })}
+      </div>
+
+      {/* Deep-dive links */}
+      <div className="grid grid-cols-2 gap-3">
+        <Link href="/running/race-predictor"
+          className="bg-surface rounded-2xl p-4 border border-border flex flex-col gap-1 hover:bg-surface/80 transition-colors">
+          <span className="text-xl">🏁</span>
+          <p className="text-sm font-semibold text-text-primary">Race Predictor</p>
+          <p className="text-xs text-text-secondary">5K → Marathon times</p>
+        </Link>
+        <Link href="/running/pacing"
+          className="bg-surface rounded-2xl p-4 border border-border flex flex-col gap-1 hover:bg-surface/80 transition-colors">
+          <span className="text-xl">⚡</span>
+          <p className="text-sm font-semibold text-text-primary">Pacing Analysis</p>
+          <p className="text-xs text-text-secondary">Splits & negative splits</p>
+        </Link>
       </div>
     </div>
   )
