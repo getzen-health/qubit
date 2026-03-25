@@ -1,5 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
+import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
 interface OFFProduct {
   id?: string
@@ -18,22 +24,26 @@ interface OFFProduct {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const category = searchParams.get('category')?.trim()
-  const currentScore = parseInt(searchParams.get('currentScore') ?? '0', 10)
+const querySchema = z.object({
+  category: z.string().min(2).max(100),
+  currentScore: z.coerce.number().int().min(0).max(100).default(0),
+})
 
-  if (!category) {
-    return NextResponse.json({ error: 'category is required' }, { status: 400 })
-  }
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'foodScan',
+    requireAuth: true,
+    querySchema,
+    auditAction: 'READ',
+    auditResource: 'food_product',
+  },
+  async (request: NextRequest, { query }) => {
+    const { category, currentScore } = query as z.infer<typeof querySchema>
 
-  // Only suggest alternatives if current product is mediocre or poor
-  if (currentScore >= 75) {
-    return NextResponse.json({ alternatives: [] })
-  }
+    if (currentScore >= 75) {
+      return secureJsonResponse({ alternatives: [] })
+    }
 
-  try {
-    // Search OpenFoodFacts for products in same category with Nutri-Score A or B
     const url = new URL(`https://world.openfoodfacts.org/category/${encodeURIComponent(category)}.json`)
     url.searchParams.set('fields', 'id,product_name,brands,image_url,nutriscore_grade,additives_tags,allergens_tags,labels_tags,nutriments')
     url.searchParams.set('page_size', '40')
@@ -45,13 +55,12 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
-      return NextResponse.json({ alternatives: [] })
+      return secureJsonResponse({ alternatives: [] })
     }
 
     const data = await response.json()
     const rawProducts: OFFProduct[] = data.products ?? []
 
-    // Score all products, keep only those better than current
     const scored = rawProducts
       .filter((p) => p.product_name && (p.nutriscore_grade === 'a' || p.nutriscore_grade === 'b'))
       .map((p) => {
@@ -82,9 +91,6 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.healthScore.score - a.healthScore.score)
       .slice(0, 5)
 
-    return NextResponse.json({ alternatives: scored })
-  } catch (error) {
-    console.error('Alternatives lookup error:', error)
-    return NextResponse.json({ alternatives: [] })
+    return secureJsonResponse({ alternatives: scored })
   }
-}
+)

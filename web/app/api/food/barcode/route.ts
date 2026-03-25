@@ -1,5 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
+import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+  barcodeSchema,
+} from '@/lib/security'
 
 interface OpenFoodFactsProduct {
   product_name?: string
@@ -33,16 +40,21 @@ interface OpenFoodFactsProduct {
   packaging?: string
 }
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const barcode = searchParams.get('code')
+const querySchema = barcodeSchema.extend({
+  code: z.string().min(8).max(14).regex(/^[0-9]+$/, 'Barcode must be numeric'),
+}).omit({ barcode: true })
 
-  if (!barcode) {
-    return NextResponse.json({ error: 'Barcode is required' }, { status: 400 })
-  }
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'foodScan',
+    requireAuth: true,
+    querySchema,
+    auditAction: 'READ',
+    auditResource: 'food_product',
+  },
+  async (request: NextRequest, { query }) => {
+    const { code: barcode } = query as z.infer<typeof querySchema>
 
-  try {
-    // Use Open Food Facts API (free, no API key needed)
     const response = await fetch(
       `https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity`,
       {
@@ -53,19 +65,18 @@ export async function GET(request: NextRequest) {
     )
 
     if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to fetch product data' }, { status: 500 })
+      return secureErrorResponse('Failed to fetch product data', 500)
     }
 
     const data = await response.json()
 
     if (data.status !== 1 || !data.product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+      return secureErrorResponse('Product not found', 404)
     }
 
     const product: OpenFoodFactsProduct = data.product
     const nutriments = product.nutriments || {}
 
-    // Prefer serving size values, fall back to 100g
     const hasServing = nutriments['energy-kcal_serving'] !== undefined
 
     const isOrganic = (product.labels_tags ?? []).some(
@@ -107,15 +118,11 @@ export async function GET(request: NextRequest) {
       servingSize: product.serving_size || '100g',
       barcode: product.code,
       imageUrl: product.image_url,
-      // Yuka-style scoring
       healthScore,
       ingredients: product.ingredients_text || null,
       categories: product.categories_tags?.slice(0, 5) ?? [],
     }
 
-    return NextResponse.json({ food })
-  } catch (error) {
-    console.error('Barcode lookup error:', error)
-    return NextResponse.json({ error: 'Failed to lookup barcode' }, { status: 500 })
+    return secureJsonResponse({ food })
   }
-}
+)

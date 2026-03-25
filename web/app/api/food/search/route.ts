@@ -1,5 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
+import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
 interface OFFSearchProduct {
   id?: string
@@ -18,18 +24,24 @@ interface OFFSearchProduct {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const query = searchParams.get('q')?.trim()
-  const page = parseInt(searchParams.get('page') ?? '1', 10)
+const querySchema = z.object({
+  q: z.string().min(2, 'Query too short').max(200, 'Query too long'),
+  page: z.coerce.number().int().min(1).max(100).default(1),
+})
 
-  if (!query) {
-    return NextResponse.json({ error: 'Search query is required' }, { status: 400 })
-  }
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'foodScan',
+    requireAuth: true,
+    querySchema,
+    auditAction: 'READ',
+    auditResource: 'food_product',
+  },
+  async (request: NextRequest, { query }) => {
+    const { q, page } = query as z.infer<typeof querySchema>
 
-  try {
     const url = new URL('https://world.openfoodfacts.org/cgi/search.pl')
-    url.searchParams.set('search_terms', query)
+    url.searchParams.set('search_terms', q)
     url.searchParams.set('search_simple', '1')
     url.searchParams.set('action', 'process')
     url.searchParams.set('json', '1')
@@ -47,7 +59,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to search products' }, { status: 500 })
+      return secureErrorResponse('Failed to search products', 500)
     }
 
     const data = await response.json()
@@ -84,14 +96,11 @@ export async function GET(request: NextRequest) {
         }
       })
 
-    return NextResponse.json({
+    return secureJsonResponse({
       products,
       total: data.count ?? products.length,
       page,
       pageSize: 20,
     })
-  } catch (error) {
-    console.error('Food search error:', error)
-    return NextResponse.json({ error: 'Failed to search products' }, { status: 500 })
   }
-}
+)
