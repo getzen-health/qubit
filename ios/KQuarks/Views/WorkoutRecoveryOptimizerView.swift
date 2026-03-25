@@ -199,7 +199,8 @@ struct WorkoutRecoveryOptimizerView: View {
     }
 
     private var trendCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let recoverymax = recentPoints.map(\.score).max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 10) {
             Label("Recovery Score Trend", systemImage: "chart.line.uptrend.xyaxis")
                 .font(.subheadline).bold()
 
@@ -220,7 +221,7 @@ struct WorkoutRecoveryOptimizerView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
             }
             .frame(height: 140)
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...recoverymax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())

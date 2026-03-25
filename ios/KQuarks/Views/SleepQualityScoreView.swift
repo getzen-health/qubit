@@ -292,7 +292,7 @@ struct SleepQualityScoreView: View {
             let avg = dayNights.isEmpty ? 0.0 : Double(dayNights.reduce(0) { $0 + $1.totalScore }) / Double(dayNights.count)
             return (day, avg)
         }
-        let maxScore = dowData.map { $0.1 }.max() ?? 0
+        let dowmax = dowData.map { $0.1 }.max().map { Swift.max($0, 10) } ?? 100
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Average Score by Day of Week")
@@ -306,12 +306,12 @@ struct SleepQualityScoreView: View {
                             x: .value("Day", day),
                             y: .value("Score", score)
                         )
-                        .foregroundStyle(score == maxScore ? Color.green : Color.indigo.opacity(0.6))
+                        .foregroundStyle(score == dowmax ? Color.green : Color.indigo.opacity(0.6))
                         .cornerRadius(4)
                     }
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...dowmax)
             .frame(height: 120)
             .padding()
             .background(Color(.systemBackground))

@@ -217,7 +217,8 @@ struct WorkoutConsistencyView: View {
     // MARK: - Training Days Chart
 
     private var trainingDaysChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let daysmax = weeks.map(\.dayCount).max().map { Swift.max($0, 1) } ?? 7
+        return VStack(alignment: .leading, spacing: 8) {
             Text("Training Days per Week")
                 .font(.headline)
                 .padding(.horizontal, 4)
@@ -236,7 +237,7 @@ struct WorkoutConsistencyView: View {
                     .cornerRadius(2)
                 }
             }
-            .chartYScale(domain: 0...7)
+            .chartYScale(domain: 0...daysmax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: 1)) { val in
                     if let s = val.as(String.self), s.contains("W1") {

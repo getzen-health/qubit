@@ -179,7 +179,8 @@ struct TrainingPolarizationView: View {
     // MARK: - Weekly Trend Chart
 
     private var weeklyTrendChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let pctmax = weekPoints.map(\.easyPct).max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 8) {
             Text("Weekly Easy% Trend")
                 .font(.headline)
             Text("Target: ≥ 70% easy sessions")
@@ -211,7 +212,7 @@ struct TrainingPolarizationView: View {
                 }
             }
             .chartYAxisLabel("%")
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...pctmax)
             .frame(height: 160)
         }
         .padding()
