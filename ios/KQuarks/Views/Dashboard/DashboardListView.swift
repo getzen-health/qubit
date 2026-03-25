@@ -315,6 +315,82 @@ struct DashboardListView: View {
             InsightsSectionView(insights: viewModel.insights)
                 .padding(.horizontal, 16)
 
+            // AI Features
+            VStack(alignment: .leading, spacing: 8) {
+                Text("AI Features")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                    .padding(.horizontal, 16)
+                VStack(spacing: 0) {
+                    NavigationLink(destination: BriefingHistoryView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "sun.horizon.fill")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+                            Text("Morning Briefings")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: AnomalyAlertView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.title3)
+                                .foregroundStyle(.red)
+                            Text("Health Alerts")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: HealthChatView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "bubble.left.and.bubble.right.fill")
+                                .font(.title3)
+                                .foregroundStyle(.indigo)
+                            Text("Health Coach")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: PredictiveInsightsView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.title3)
+                                .foregroundStyle(.teal)
+                            Text("Week Ahead")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                }
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 16)
+            }
+
             // Last synced footer
             if let last = viewModel.lastSyncDate {
                 Label {
