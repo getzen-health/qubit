@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { WorkoutShareButton } from './workout-share-button'
 
 const WORKOUT_ICONS: Record<string, string> = {
   Running: '🏃',
@@ -53,6 +54,23 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
   if (!workout) notFound()
 
+  // Fetch user profile for personalized max HR; fall back to age-based formula (220 - age)
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('max_heart_rate, age, date_of_birth')
+    .eq('user_id', user.id)
+    .single()
+
+  const profileMaxHR = profile?.max_heart_rate
+  const ageBasedMaxHR = (() => {
+    if (profile?.date_of_birth) {
+      const age = new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear()
+      return Math.round(220 - age)
+    }
+    if (profile?.age) return Math.round(220 - profile.age)
+    return null
+  })()
+
   // Fetch heart rate samples within workout window for zone analysis
   const workoutEnd = workout.end_time
     ?? new Date(new Date(workout.start_time).getTime() + workout.duration_minutes * 60000).toISOString()
@@ -66,7 +84,8 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
     .order('start_time', { ascending: true })
 
   // Compute HR zones (5-zone model based on % of max HR)
-  const maxHR = workout.max_heart_rate ?? 190
+  // Priority: workout's own max HR → user profile max HR → age-based 220-age → 190 generic
+  const maxHR = workout.max_heart_rate ?? profileMaxHR ?? ageBasedMaxHR ?? 190
   const zones = [
     { label: 'Zone 1', desc: 'Easy', pctMin: 50, pctMax: 60, color: '#6366f1' },
     { label: 'Zone 2', desc: 'Aerobic', pctMin: 60, pctMax: 70, color: '#22c55e' },
@@ -158,7 +177,12 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <h1 className="text-xl font-bold text-text-primary">{workout.workout_type}</h1>
+          <h1 className="text-xl font-bold text-text-primary flex-1">{workout.workout_type}</h1>
+          <WorkoutShareButton
+            date={startDate.toISOString().slice(0, 10)}
+            calories={workout.active_calories > 0 ? Math.round(workout.active_calories) : undefined}
+            avgHeartRate={workout.avg_heart_rate > 0 ? workout.avg_heart_rate : undefined}
+          />
         </div>
       </header>
 
@@ -205,7 +229,11 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
         {hasZoneData && (
           <div className="bg-surface rounded-xl border border-border p-4">
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-1">Heart Rate Zones</h2>
-            <p className="text-xs text-text-secondary mb-3">Based on {maxHR} bpm max HR</p>
+            <p className="text-xs text-text-secondary mb-3">
+              Based on {maxHR} bpm max HR
+              {!workout.max_heart_rate && !profileMaxHR && ageBasedMaxHR && ' (age-based estimate)'}
+              {!workout.max_heart_rate && !profileMaxHR && !ageBasedMaxHR && ' (generic fallback — set age in profile for accuracy)'}
+            </p>
             {/* Zone stacked bar */}
             <div className="flex h-4 rounded-full overflow-hidden mb-4">
               {zones.map((zone, i) => {
