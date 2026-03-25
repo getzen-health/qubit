@@ -192,20 +192,34 @@ function buildEmailHtml(
 }
 
 async function sendEmail(to: string, subject: string, html: string, resendKey: string): Promise<boolean> {
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${resendKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "KQuarks <digest@kquarks.app>",
-      to,
-      subject,
-      html,
-    }),
-  })
-  return res.ok
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "KQuarks <digest@kquarks.app>",
+        to,
+        subject,
+        html,
+      }),
+      signal: AbortSignal.timeout(15000), // 15s timeout for email sending
+    })
+    if (!res.ok) {
+      const err = await res.text()
+      console.error("Resend API error:", err)
+      return false
+    }
+    return true
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "TimeoutError") {
+      console.error("Resend API timed out")
+      return false
+    }
+    throw e
+  }
 }
 
 Deno.serve(async (req: Request) => {
