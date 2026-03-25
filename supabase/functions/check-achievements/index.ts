@@ -355,13 +355,15 @@ Deno.serve(async (req: Request) => {
     })
   }
 
-  const { userId } = await req.json().catch(() => ({}))
-  if (!userId) {
-    return new Response(JSON.stringify({ error: "userId required" }), {
-      status: 400,
+  const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!)
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.replace("Bearer ", ""))
+  if (authError || !user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     })
   }
+  const userId = user.id
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,

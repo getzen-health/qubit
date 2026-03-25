@@ -290,9 +290,10 @@ Deno.serve(async (req: Request) => {
     })
   }
 
-  const { user_id, date } = body
-  if (!user_id || !date) {
-    return new Response(JSON.stringify({ error: "user_id and date are required" }), {
+  const { date } = body
+  const user_id = _jwtUser.id
+  if (!date) {
+    return new Response(JSON.stringify({ error: "date is required" }), {
       status: 400,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     })

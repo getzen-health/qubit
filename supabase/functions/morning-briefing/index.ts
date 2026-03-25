@@ -93,17 +93,7 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "Unauthorized" }, 401)
   }
 
-  // Parse request body
-  let userId: string
-  try {
-    const body = await req.json()
-    if (!body?.user_id || typeof body.user_id !== "string") {
-      return jsonResponse({ error: "Missing or invalid user_id in request body" }, 400)
-    }
-    userId = body.user_id
-  } catch {
-    return jsonResponse({ error: "Invalid JSON in request body" }, 400)
-  }
+  const userId = jwtUser.id
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 

@@ -327,16 +327,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "Supabase environment not configured" }, 500)
   }
 
-  let userId: string
-  try {
-    const body = await req.json()
-    if (!body?.user_id || typeof body.user_id !== "string") {
-      return jsonResponse({ error: "Missing or invalid user_id in request body" }, 400)
-    }
-    userId = body.user_id
-  } catch {
-    return jsonResponse({ error: "Invalid JSON in request body" }, 400)
+  const supabaseAdmin = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!)
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.replace("Bearer ", ""))
+  if (authError || !user) {
+    return jsonResponse({ error: "Unauthorized" }, 401)
   }
+  const userId = user.id
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 

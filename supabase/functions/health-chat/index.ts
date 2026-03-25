@@ -107,15 +107,18 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "Supabase environment not configured" }, 500)
   }
 
+  const supabaseAdmin = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!)
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.replace("Bearer ", ""))
+  if (authError || !user) {
+    return jsonResponse({ error: "Unauthorized" }, 401)
+  }
+
   // Parse and validate request body
   let body: RequestBody
   try {
     const raw = await req.json()
     if (!raw?.message || typeof raw.message !== "string") {
       return jsonResponse({ error: "Missing or invalid 'message' field" }, 400)
-    }
-    if (!raw?.user_id || typeof raw.user_id !== "string") {
-      return jsonResponse({ error: "Missing or invalid 'user_id' field" }, 400)
     }
     const history: HistoryMessage[] = Array.isArray(raw.history)
       ? raw.history.filter(
@@ -127,7 +130,7 @@ Deno.serve(async (req: Request) => {
             ((m as Record<string, unknown>).role === "user" || (m as Record<string, unknown>).role === "assistant"),
         )
       : []
-    body = { message: raw.message, history, user_id: raw.user_id }
+    body = { message: raw.message, history, user_id: user.id }
   } catch {
     return jsonResponse({ error: "Invalid JSON in request body" }, 400)
   }
