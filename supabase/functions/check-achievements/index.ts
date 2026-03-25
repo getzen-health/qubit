@@ -161,6 +161,140 @@ const ALL_ACHIEVEMENTS: Record<string, Omit<Achievement, "type">> = {
     description: "Logged your energy, mood, and stress for 30 days straight.",
     icon: "🧘",
   },
+
+  // Additional step milestones
+  step_streak_3: {
+    title: "3-Day Streak",
+    description: "3 consecutive days hitting your step goal.",
+    icon: "🔥",
+  },
+  goal_getter: {
+    title: "Goal Getter",
+    description: "Hit your step goal at least once.",
+    icon: "🎯",
+  },
+  ten_thousander: {
+    title: "Ten-Thousander",
+    description: "Walked 10,000+ steps in a single day.",
+    icon: "💪",
+  },
+
+  // Additional sleep achievements
+  first_sleep: {
+    title: "Rest Tracked",
+    description: "Had sleep data recorded in KQuarks.",
+    icon: "😴",
+  },
+  quality_sleep: {
+    title: "Quality Sleep",
+    description: "Averaged 7+ hours of sleep per night.",
+    icon: "🌙",
+  },
+  sleep_30: {
+    title: "Sleep Veteran",
+    description: "30+ nights of sleep tracked with 7h+ average.",
+    icon: "🏆",
+  },
+
+  // Additional HRV achievements
+  hrv_tracking: {
+    title: "HRV Tracker",
+    description: "Recorded HRV data for 7+ days.",
+    icon: "💗",
+  },
+  recovery_star: {
+    title: "Recovery Star",
+    description: "HRV above personal baseline on 10+ of last 30 days.",
+    icon: "🌟",
+  },
+  baseline_beater: {
+    title: "Baseline Beater",
+    description: "HRV above baseline on 20+ of last 30 days.",
+    icon: "🏆",
+  },
+
+  // Additional activity achievements
+  calorie_burner: {
+    title: "Calorie Burner",
+    description: "Burned 400+ active calories in a single day.",
+    icon: "🔥",
+  },
+  high_energy: {
+    title: "High Energy",
+    description: "Burned 600+ active calories in a day (10+ times).",
+    icon: "⚡",
+  },
+  calorie_legend: {
+    title: "Calorie Legend",
+    description: "Burned 1,000+ active calories in a single day.",
+    icon: "🌋",
+  },
+  data_champion: {
+    title: "Data Champion",
+    description: "Tracked health data for 200+ days — fully committed to your health journey.",
+    icon: "🌟",
+  },
+
+  // Additional data tracking achievements
+  serial_syncer: {
+    title: "Serial Syncer",
+    description: "Synced 100 days of health data.",
+    icon: "📡",
+  },
+  year_in_data: {
+    title: "Year in Data",
+    description: "Synced 365 days of health data — a full picture of your health.",
+    icon: "📊",
+  },
+
+  // Additional workout achievements
+  regular: {
+    title: "Regular",
+    description: "20+ workout days in the past year.",
+    icon: "📅",
+  },
+  dedicated: {
+    title: "Dedicated",
+    description: "50+ workout days in the past year.",
+    icon: "🔥",
+  },
+  runner: {
+    title: "Runner",
+    description: "Completed 10+ running workouts.",
+    icon: "🏃",
+  },
+  calorie_crusher: {
+    title: "Calorie Crusher",
+    description: "Burned 500+ active calories in a single workout.",
+    icon: "🔥",
+  },
+  iron_person: {
+    title: "Iron Person",
+    description: "20+ strength training sessions in the past year.",
+    icon: "🦾",
+  },
+  distance_runner: {
+    title: "Distance Explorer",
+    description: "Covered 500+ km total across all workouts.",
+    icon: "🗺️",
+  },
+  century_workouts: {
+    title: "Century Club",
+    description: "Logged 100+ workout days in the past year.",
+    icon: "🌟",
+  },
+
+  // Balance achievements
+  balanced_gold: {
+    title: "Balanced Life — Gold",
+    description: "10+ days hitting steps, sleep, and HRV goals simultaneously.",
+    icon: "⚖️",
+  },
+  balanced_legendary: {
+    title: "Balanced Life — Legendary",
+    description: "30+ days of perfect balance: steps, sleep, and HRV all above target.",
+    icon: "🌟",
+  },
 }
 
 async function checkAndGrant(
@@ -218,16 +352,35 @@ async function checkAndGrant(
     if ((row.steps ?? 0) >= stepGoal) stepStreak++
     else break
   }
+  if (stepStreak >= 3) await grant("step_streak_3")
   if (stepStreak >= 7) await grant("steps_streak_7")
   if (stepStreak >= 30) await grant("steps_streak_30")
 
   // Total steps (requires all-time data — use 90-day as proxy)
   const totalSteps = s.reduce((acc, r) => acc + (r.steps ?? 0), 0)
   if (totalSteps >= 1_000_000) await grant("steps_million")
+  
+  // Goal getter - hit step goal at least once
+  if (stepStreak >= 1 || s.some((row) => (row.steps ?? 0) >= stepGoal)) {
+    await grant("goal_getter")
+  }
+  
+  // Ten thousander - single day 10k+ steps
+  if (maxSteps >= 10000) await grant("ten_thousander")
 
   // Sleep
   const maxSleep = s.reduce((m, r) => Math.max(m, r.sleep_duration_minutes ?? 0), 0)
+  const sleepDaysTotal = s.filter((r) => (r.sleep_duration_minutes ?? 0) >= 420).length
+  
+  if (sleepDaysTotal >= 1) await grant("first_sleep")
   if (maxSleep >= 480) await grant("sleep_8h")
+  if (sleepDaysTotal >= 30) await grant("sleep_30")
+  
+  // Quality sleep - average 7+ hours
+  const avgSleep = s.length > 0 
+    ? s.reduce((acc, r) => acc + (r.sleep_duration_minutes ?? 0), 0) / s.length 
+    : 0
+  if (avgSleep >= 420) await grant("quality_sleep")
 
   let sleepStreak = 0
   for (const row of s) {
@@ -237,15 +390,65 @@ async function checkAndGrant(
   if (sleepStreak >= 7) await grant("sleep_streak_7")
 
   // HRV
+  const hrvDays = s.filter((r) => (r.avg_hrv ?? 0) > 0)
   const maxHRV = s.reduce((m, r) => Math.max(m, r.avg_hrv ?? 0), 0)
+  
+  if (hrvDays.length >= 7) await grant("hrv_tracking")
   if (maxHRV >= 50) await grant("hrv_50")
   if (maxHRV >= 70) await grant("hrv_70")
+  
+  // HRV baseline beater - check last 30 days
+  const last30 = s.slice(0, 30)
+  const baseline28 = last30.slice(8, 30)
+  const baselineAvg = baseline28.length > 0
+    ? baseline28.reduce((acc, r) => acc + (r.avg_hrv ?? 0), 0) / baseline28.length
+    : 0
+  const aboveBaselineDays = last30.filter((r) => baselineAvg > 0 && (r.avg_hrv ?? 0) > baselineAvg).length
+  if (aboveBaselineDays >= 10) await grant("recovery_star")
+  if (aboveBaselineDays >= 20) await grant("baseline_beater")
 
   // Recovery
   const maxRecovery = s.reduce((m, r) => Math.max(m, r.recovery_score ?? 0), 0)
   if (maxRecovery >= 90) await grant("recovery_90")
 
+  // ── Activity ─────────────────────────────────────────────────────────────────
+  const maxDayCals = s.reduce((m, r) => Math.max(m, r.active_calories ?? 0), 0)
+  const highCalDays = s.filter((r) => (r.active_calories ?? 0) >= 600).length
+  
+  if (maxDayCals >= 400) await grant("calorie_burner")
+  if (highCalDays >= 10) await grant("high_energy")
+  if (maxDayCals >= 1000) await grant("calorie_legend")
+  if (s.length >= 200) await grant("data_champion")
+  if (s.length >= 100) await grant("serial_syncer")
+  if (s.length >= 365) await grant("year_in_data")
+  
+  // Balance achievements - days hitting steps, sleep, and HRV all above target
+  const medianHrv = (() => {
+    const hrvValues = hrvDays
+      .map(r => r.avg_hrv)
+      .filter((v): v is number => v !== null && v > 0)
+      .sort((a, b) => a - b)
+    if (!hrvValues.length) return 0
+    const mid = Math.floor(hrvValues.length / 2)
+    return hrvValues.length % 2 !== 0 ? hrvValues[mid] : (hrvValues[mid - 1] + hrvValues[mid]) / 2
+  })()
+  
+  const balancedDays = s.filter(row =>
+    (row.steps ?? 0) >= 8000 &&
+    (row.sleep_duration_minutes ?? 0) >= 420 &&
+    (row.avg_hrv ?? 0) >= medianHrv
+  ).length
+  
+  if (balancedDays >= 10) await grant("balanced_gold")
+  if (balancedDays >= 30) await grant("balanced_legendary")
+
   // ── Workouts ────────────────────────────────────────────────────────────────
+  const { data: allWorkouts } = await supabase
+    .from("workout_records")
+    .select("start_time, workout_type, active_calories, distance_meters")
+    .eq("user_id", userId)
+
+  const allWo = allWorkouts ?? []
   const { count: workoutCount } = await supabase
     .from("workout_records")
     .select("*", { count: "exact", head: true })
@@ -257,6 +460,25 @@ async function checkAndGrant(
   if (wc >= 10) await grant("workout_10")
   if (wc >= 50) await grant("workout_50")
   if (wc >= 100) await grant("workout_100")
+
+  // Additional workout metrics
+  const oneYearAgo = new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString()
+  const yearWorkouts = allWo.filter((w) => w.start_time >= oneYearAgo)
+  const totalWorkoutDays = new Set(yearWorkouts.map((w) => w.start_time.slice(0, 10))).size
+  const runs = yearWorkouts.filter((w) => w.workout_type?.toLowerCase().includes('run'))
+  const strengthSessions = yearWorkouts.filter((w) =>
+    ['strength', 'functional', 'traditional'].some((t) => w.workout_type?.toLowerCase().includes(t))
+  )
+  const maxCalWorkout = allWo.reduce((m, w) => Math.max(m, w.active_calories ?? 0), 0)
+  const totalDistanceKm = allWo.reduce((s, w) => s + (w.distance_meters ?? 0), 0) / 1000
+
+  if (totalWorkoutDays >= 20) await grant("regular")
+  if (totalWorkoutDays >= 50) await grant("dedicated")
+  if (runs.length >= 10) await grant("runner")
+  if (maxCalWorkout >= 500) await grant("calorie_crusher")
+  if (strengthSessions.length >= 20) await grant("iron_person")
+  if (totalDistanceKm >= 500) await grant("distance_runner")
+  if (totalWorkoutDays >= 100) await grant("century_workouts")
 
   // Workout streak (7 consecutive days with any workout)
   const weekAgo = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()
