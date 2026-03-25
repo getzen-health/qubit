@@ -9,6 +9,16 @@ interface DaySummary {
   steps: number
   active_calories: number
   sleep_duration_minutes?: number | null
+  avg_hrv?: number | null
+}
+
+interface WeekSummary {
+  week: string
+  start: string
+  avgSteps: number
+  avgSleep: number
+  avgHrv: number
+  daysWithData: number
 }
 
 type Tab = 'steps' | 'sleep' | 'calories' | 'workouts'
@@ -21,6 +31,9 @@ interface Props {
   stepGoal?: number
   calorieGoal?: number
   sleepGoalMinutes?: number
+  allWeeks?: WeekSummary[]
+  currentStreak?: number
+  bestStreak?: number
 }
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -263,6 +276,9 @@ export function YearClient({
   stepGoal = 10000,
   calorieGoal = 500,
   sleepGoalMinutes = 480,
+  allWeeks = [],
+  currentStreak = 0,
+  bestStreak = 0,
 }: Props) {
   const [selectedYear, setSelectedYear] = useState(initialYear)
   const [activeTab, setActiveTab] = useState<Tab>('steps')
@@ -292,6 +308,12 @@ export function YearClient({
     : computeWorkoutStats(yearDays, workoutSet)
 
   const currentGoal = activeTab === 'steps' ? stepGoal : activeTab === 'calories' ? calorieGoal : sleepGoalMinutes
+
+  // Weekly rankings for the selected year
+  const yearWeeks = allWeeks.filter((w) => w.week.startsWith(`${selectedYear}-`))
+  const rankedBySteps = [...yearWeeks].filter((w) => w.avgSteps > 0).sort((a, b) => b.avgSteps - a.avgSteps)
+  const bestWeeks = rankedBySteps.slice(0, 3)
+  const worstWeeks = rankedBySteps.slice(-3).reverse()
 
   return (
     <div className="space-y-6">
@@ -343,6 +365,58 @@ export function YearClient({
           </div>
         ))}
       </div>
+
+      {/* Weekly Performance */}
+      {(bestWeeks.length > 0 || currentStreak > 0 || bestStreak > 0) && (
+        <div className="space-y-3">
+          {/* Streak badges */}
+          <div className="flex gap-3 flex-wrap">
+            <div className="bg-orange-500/20 border border-orange-500/40 rounded-lg px-3 py-2 text-sm font-medium text-text-primary">
+              🔥 Current streak: {currentStreak} {currentStreak === 1 ? 'day' : 'days'}
+            </div>
+            <div className="bg-surface border border-border rounded-lg px-3 py-2 text-sm font-medium text-text-primary">
+              ⭐ Best streak: {bestStreak} {bestStreak === 1 ? 'day' : 'days'}
+            </div>
+          </div>
+
+          {/* Best / Worst weeks */}
+          {bestWeeks.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Best weeks */}
+              <div className="bg-surface rounded-xl border border-border p-4 space-y-2">
+                <p className="text-sm font-semibold text-text-primary">🏆 Best Weeks</p>
+                {bestWeeks.map((w) => (
+                  <div key={w.week} className="text-xs text-text-secondary leading-relaxed">
+                    <span className="text-text-primary font-medium">
+                      Week of {new Date(w.start + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </span>
+                    {' • '}
+                    {w.avgSteps.toLocaleString()} avg steps
+                    {w.avgSleep > 0 && ` • ${w.avgSleep}h sleep`}
+                  </div>
+                ))}
+              </div>
+
+              {/* Worst weeks */}
+              {worstWeeks.length > 0 && worstWeeks[0].week !== bestWeeks[0].week && (
+                <div className="bg-surface rounded-xl border border-border p-4 space-y-2">
+                  <p className="text-sm font-semibold text-text-primary">📉 Worst Weeks</p>
+                  {worstWeeks.map((w) => (
+                    <div key={w.week} className="text-xs text-text-secondary leading-relaxed">
+                      <span className="text-text-primary font-medium">
+                        Week of {new Date(w.start + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                      {' • '}
+                      {w.avgSteps.toLocaleString()} avg steps
+                      {w.avgSleep > 0 && ` • ${w.avgSleep}h sleep`}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Heatmap */}
       <div className="bg-surface rounded-xl border border-border p-4 overflow-x-auto">
