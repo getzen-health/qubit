@@ -86,7 +86,7 @@ function buildMockData(): StandingData {
   const sortedAsc = [...rawValues].sort((a, b) => a.offset - b.offset)
   let currentStreak = 0
   for (const { offset, hours } of sortedAsc) {
-    if (offset > sortedAsc[currentStreak]?.offset ?? 0) break
+    if (offset > (sortedAsc[currentStreak]?.offset ?? 0)) break
     if (hours >= 12) currentStreak++
     else break
   }

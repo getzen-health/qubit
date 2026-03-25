@@ -226,7 +226,7 @@ function CircularGauge({ value, max }: { value: number; max: number }) {
         fill="currentColor"
         className="text-text-secondary fill-current opacity-70"
         letterSpacing="2"
-        textTransform="uppercase"
+        style={{ textTransform: 'uppercase' }}
       >
         PAI / WEEK
       </text>

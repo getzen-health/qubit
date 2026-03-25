@@ -104,7 +104,7 @@ export default async function HRVZonesPage() {
   })
 
   const data: HRVZoneData = {
-    days: days.map((d, i) => ({ ...d, rolling7: rolling7[i] })),
+    days: days.map((d, i) => ({ ...d, rolling7: rolling7[i] ?? 0 })),
     totalDays: days.length,
     greenDays,
     yellowDays,

@@ -33,6 +33,7 @@ export type AuditResource =
   | 'ai_settings'
   | 'ai_chat'
   | 'predictions'
+  | 'food_product'
 
 interface AuditLogEntry {
   user_id: string

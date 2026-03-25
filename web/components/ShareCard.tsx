@@ -107,9 +107,8 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
       const { default: html2canvas } = await import('html2canvas').catch(() => ({ default: null }))
       if (html2canvas) {
         const canvas = await html2canvas(card, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ...(({ scale: 2, useCORS: true, backgroundColor: null }) as any),
         })
         const link = document.createElement('a')
         link.download = `kquarks-health-${date ?? new Date().toISOString().slice(0, 10)}.png`

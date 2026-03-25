@@ -61,10 +61,11 @@ export default async function WeekPage() {
     (w) => w.start_time >= lastMonday.toISOString() && w.start_time < thisMonday.toISOString()
   )
 
-  function sum(arr: typeof summaries, key: keyof (typeof arr)[0]) {
+  type SummaryRow = NonNullable<typeof summaries>[number]
+  function sum(arr: typeof summaries, key: keyof SummaryRow) {
     return (arr ?? []).reduce((s, d) => s + ((d[key] as number | null) ?? 0), 0)
   }
-  function avg(arr: typeof summaries, key: keyof (typeof arr)[0]) {
+  function avg(arr: typeof summaries, key: keyof SummaryRow) {
     const vals = (arr ?? []).map((d) => d[key] as number | null).filter((v): v is number => v !== null && v > 0)
     return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : null
   }

@@ -13,7 +13,7 @@ import {
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type Phase = 'menstrual' | 'follicular' | 'ovulation' | 'luteal'
+export type Phase = 'menstrual' | 'follicular' | 'ovulation' | 'luteal'
 
 interface PhaseHREntry {
   phase: string
@@ -29,7 +29,7 @@ interface RecentWorkout {
   duration: number
 }
 
-interface CycleTrainingData {
+export interface CycleTrainingData {
   currentDay: number
   cycleLength: number
   currentPhase: Phase
@@ -320,7 +320,7 @@ export function CycleTrainingClient({ data }: CycleTrainingClientProps) {
                 style={{
                   background: c.color + '0d',
                   borderColor: c.color + (isActive ? '60' : '30'),
-                  ringColor: isActive ? c.color : undefined,
+
                   ...(isActive ? { boxShadow: `0 0 0 2px ${c.color}60` } : {}),
                 }}
               >

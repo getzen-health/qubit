@@ -108,7 +108,7 @@ Return ONLY the JSON, no other text.`,
       return secureErrorResponse('AI response missing foods array', 500)
     }
 
-    const foods = result.foods.map((food: Record<string, unknown>) => {
+    const foods = (result.foods as Record<string, unknown>[]).map((food) => {
       // Apply Yuka-style health score (no additive/nutriscore data from image, so baseline)
       const healthScore = calculateProductScore({
         nutriscoreGrade: undefined,

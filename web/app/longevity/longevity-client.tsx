@@ -271,7 +271,7 @@ export function LongevityClient({ metrics, summaries, vo2Records, walkingRecords
       const weekMetrics: Metrics = {
         hrv: meanArr(b.hrv),
         rhr: meanArr(b.rhr),
-        steps: meanArr(b.steps),
+        dailySteps: meanArr(b.steps),
         sleepMinutes: meanArr(b.sleep),
         vo2Max: meanArr(vo2ByWeek.get(wk) ?? []),
         walkingSpeed: meanArr(walkByWeek.get(wk) ?? []),

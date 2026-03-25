@@ -616,7 +616,7 @@ function PhysiologyCard({
   body,
   stat,
   paceRows,
-}: (typeof PHYSIOLOGY_CARDS)[number]) {
+}: (typeof PHYSIOLOGY_CARDS)[number] & { paceRows?: readonly { dist: string; ratio: string; label: string; accent: string }[] }) {
   return (
     <div
       style={{

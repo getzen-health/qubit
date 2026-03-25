@@ -205,7 +205,7 @@ export default function StairSpeedPage() {
               </div>
               <span
                 className={`inline-block mt-2 px-3 py-0.5 rounded-full text-xs font-semibold ${cfg.colorClass}/20 ${cfg.textClass} ring-1 ring-inset`}
-                style={{ ringColor: cfg.color }}
+                style={{ color: cfg.color }}
               >
                 {cfg.label}
               </span>

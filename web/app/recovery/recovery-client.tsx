@@ -89,7 +89,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
 
   const router = useRouter()
 
-  function handleChartClick(data: { activePayload?: Array<{ payload: { date: string; score: number } }> }) {
+  function handleChartClick(data: { activePayload?: Array<{ payload: { date: string; rawDate: string; score: number } }> }) {
     const date = data?.activePayload?.[0]?.payload?.rawDate
     if (date) router.push(`/day/${date}`)
   }

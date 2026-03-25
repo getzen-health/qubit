@@ -356,10 +356,10 @@ export default function RowingStrokeRatePage() {
                   if (name === 'y') return [`${value} SPM`, 'Avg Rate']
                   return [value, name]
                 }}
-                labelFormatter={(_: unknown, payload: Array<{ payload: typeof scatterData[0] }>) => {
-                  if (!payload?.length) return ''
-                  const p = payload[0].payload
-                  return `${fmtDate(p.date)} · ${fmtDuration(p.dur)}`
+                labelFormatter={(_: unknown, payload?: unknown[]) => { const p = (payload as Array<{ payload: typeof scatterData[0] }> | undefined);
+                  if (!p?.length) return ''
+                  const d = p[0].payload
+                  return `${fmtDate(d.date)} · ${fmtDuration(d.dur)}`
                 }}
               />
               {/* Reference lines */}

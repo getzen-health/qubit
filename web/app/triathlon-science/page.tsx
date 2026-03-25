@@ -419,7 +419,7 @@ function DisciplineCard({ d, index }: { d: (typeof DISCIPLINES)[number]; index: 
           <p
             style={{
               fontSize: 10,
-              color: d.colorText ?? d.color,
+              color: d.color,
               margin: '4px 0 0',
               fontFamily: '"Exo 2", sans-serif',
               opacity: 0.75,
@@ -505,7 +505,7 @@ function DisciplineCard({ d, index }: { d: (typeof DISCIPLINES)[number]; index: 
         <p
           style={{
             fontSize: 11,
-            color: d.colorText ?? d.color,
+            color: d.color,
             margin: 0,
             fontFamily: '"Exo 2", sans-serif',
             lineHeight: 1.5,

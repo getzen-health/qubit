@@ -243,7 +243,7 @@ export function SleepScoreClient({ nights }: Props) {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} />
             <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number | null) => v ? [`${v}`, 'Avg Score'] : ['—', 'Avg Score']} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: unknown) => { const n = typeof v === 'number' ? v : null; return n ? [`${Math.round(n)}`, 'Avg Score'] : ['—', 'Avg Score']; }} />
             <Bar dataKey="avg" radius={[3, 3, 0, 0]}>
               {dowScores.map((d, i) => (
                 <Cell

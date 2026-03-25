@@ -120,7 +120,7 @@ export default async function ECGPage() {
   if (!error && rawRows && rawRows.length > 0) {
     const records: ECGRecord[] = rawRows.map((row) => ({
       id: String(row.id),
-      date: String(row.recorded_at ?? row.date ?? ''),
+      date: String(row.recorded_at ?? ''),
       classification: normaliseClassification(String(row.classification ?? '')),
       heartRate: row.heart_rate != null ? Number(row.heart_rate) : null,
     }))

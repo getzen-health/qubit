@@ -45,7 +45,7 @@ export default async function DashboardPage() {
       .single(),
     supabase
       .from('daily_summaries')
-      .select('date, steps, active_calories, distance_meters, exercise_minutes, stand_hours, resting_heart_rate, hrv, sleep_score, recovery_score, strain_score, sleep_duration_minutes')
+      .select('date, steps, active_calories, distance_meters, floors_climbed, exercise_minutes, stand_hours, resting_heart_rate, hrv, sleep_score, recovery_score, strain_score, sleep_duration_minutes')
       .eq('user_id', user.id)
       .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
       .order('date', { ascending: false }),
@@ -97,7 +97,7 @@ export default async function DashboardPage() {
       .limit(7),
     supabase
       .from('health_insights')
-      .select('id, type, title, summary, score, created_at')
+      .select('id, title, content, category, priority, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(5),

@@ -275,8 +275,8 @@ export default function DivingPage() {
               />
               <Tooltip
                 contentStyle={tooltipStyle}
-                formatter={(v: number, _name: string, props: { payload: { category: DepthCategory } }) => [
-                  `${v} m — ${props.payload.category}`,
+                formatter={(v: number, _name: string, props: { payload?: { category: DepthCategory } }) => [
+                  `${v} m — ${props.payload?.category ?? ''}`,
                   'Max depth',
                 ]}
               />

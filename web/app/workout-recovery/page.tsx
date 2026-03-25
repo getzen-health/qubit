@@ -311,8 +311,8 @@ export default function WorkoutRecoveryPage() {
               <Tooltip
                 contentStyle={tooltipStyle}
                 cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-                formatter={(value: number, _name: string, entry: { payload: SportAvg }) => [
-                  `${value} — ${entry.payload.grade} (${entry.payload.sessions} sessions)`,
+                formatter={(value: number, _name: string, entry: { payload?: SportAvg }) => [
+                  `${value} — ${entry.payload?.grade} (${entry.payload?.sessions} sessions)`,
                   'Avg Recovery Score',
                 ]}
               />
@@ -354,9 +354,9 @@ export default function WorkoutRecoveryPage() {
               <ReferenceLine y={50} stroke="#f97316" strokeDasharray="4 4" strokeOpacity={0.4} />
               <Tooltip
                 contentStyle={tooltipStyle}
-                formatter={(value: number, _name: string, entry: { payload: TrendPoint }) => [
-                  `${value} — ${entry.payload.grade}`,
-                  entry.payload.sport,
+                formatter={(value: number, _name: string, entry: { payload?: TrendPoint }) => [
+                  `${value} — ${entry.payload?.grade}`,
+                  entry.payload?.sport,
                 ]}
                 labelFormatter={(label: string) => label}
               />

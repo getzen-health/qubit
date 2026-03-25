@@ -405,7 +405,7 @@ export default function StateOfMindPage() {
                 data={scatterData}
                 shape={(props: { cx?: number; cy?: number; payload?: Record<string, number> }) => {
                   const { cx, cy, payload } = props
-                  const color = valenceColor(payload.valence)
+                  const color = valenceColor(payload?.valence ?? 0)
                   return (
                     <circle
                       cx={cx}
@@ -482,9 +482,9 @@ export default function StateOfMindPage() {
               />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
-                formatter={(v: number, _: string, props: { payload?: { note?: string } }) => [
+                formatter={(v: number, _: string, props: { payload?: { note?: string; positive?: boolean } }) => [
                   `${v} entries`,
-                  props.payload.positive ? 'Positive' : 'Negative',
+                  props.payload?.positive ? 'Positive' : 'Negative',
                 ]}
               />
               <Bar dataKey="count" radius={[0, 4, 4, 0]} maxBarSize={16}>

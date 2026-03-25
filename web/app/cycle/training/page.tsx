@@ -2,16 +2,16 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { CycleTrainingClient } from './cycle-training-client'
+import { CycleTrainingClient, type CycleTrainingData, type Phase } from './cycle-training-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cycle-Synced Training' }
 
 // ── Mock data ──────────────────────────────────────────────────────────────
-const mockData = {
+const mockData: CycleTrainingData = {
   currentDay: 8,
   cycleLength: 28,
-  currentPhase: 'follicular' as const,
+  currentPhase: 'follicular' as Phase,
   phaseHRData: [
     { phase: 'Menstrual', avgHR: 131, days: '1–5' },
     { phase: 'Follicular', avgHR: 142, days: '6–13' },
@@ -19,14 +19,14 @@ const mockData = {
     { phase: 'Luteal', avgHR: 139, days: '17–28' },
   ],
   recentWorkouts: [
-    { date: '2026-03-18', type: 'Run', phase: 'follicular', hr: 144, duration: 42 },
-    { date: '2026-03-16', type: 'Strength', phase: 'follicular', hr: 138, duration: 55 },
-    { date: '2026-03-14', type: 'Cycling', phase: 'follicular', hr: 146, duration: 60 },
-    { date: '2026-03-11', type: 'HIIT', phase: 'menstrual', hr: 133, duration: 30 },
-    { date: '2026-03-09', type: 'Yoga', phase: 'menstrual', hr: 98, duration: 45 },
-    { date: '2026-03-07', type: 'Walk', phase: 'menstrual', hr: 112, duration: 35 },
-    { date: '2026-03-04', type: 'Strength', phase: 'luteal', hr: 141, duration: 50 },
-    { date: '2026-03-02', type: 'Run', phase: 'luteal', hr: 137, duration: 38 },
+    { date: '2026-03-18', type: 'Run', phase: 'follicular' as Phase, hr: 144, duration: 42 },
+    { date: '2026-03-16', type: 'Strength', phase: 'follicular' as Phase, hr: 138, duration: 55 },
+    { date: '2026-03-14', type: 'Cycling', phase: 'follicular' as Phase, hr: 146, duration: 60 },
+    { date: '2026-03-11', type: 'HIIT', phase: 'menstrual' as Phase, hr: 133, duration: 30 },
+    { date: '2026-03-09', type: 'Yoga', phase: 'menstrual' as Phase, hr: 98, duration: 45 },
+    { date: '2026-03-07', type: 'Walk', phase: 'menstrual' as Phase, hr: 112, duration: 35 },
+    { date: '2026-03-04', type: 'Strength', phase: 'luteal' as Phase, hr: 141, duration: 50 },
+    { date: '2026-03-02', type: 'Run', phase: 'luteal' as Phase, hr: 137, duration: 38 },
   ],
 }
 
