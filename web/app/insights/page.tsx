@@ -39,6 +39,7 @@ export default function InsightsPage() {
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [cooldownSecs, setCooldownSecs] = useState(0)
   const supabase = createClient()
 
   const fetchInsights = useCallback(async (userId: string) => {
@@ -60,8 +61,17 @@ export default function InsightsPage() {
   }, [fetchInsights, supabase.auth])
 
   const handleGenerate = async () => {
+    if (cooldownSecs > 0 || generating) return
     setGenerating(true)
     setGenerateError(null)
+    // Start 60-second cooldown to prevent quota exhaustion
+    setCooldownSecs(60)
+    const tick = setInterval(() => {
+      setCooldownSecs((s) => {
+        if (s <= 1) { clearInterval(tick); return 0 }
+        return s - 1
+      })
+    }, 1000)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not signed in')
@@ -176,13 +186,13 @@ export default function InsightsPage() {
           </div>
           <button
             onClick={handleGenerate}
-            disabled={generating || loading}
+            disabled={generating || loading || cooldownSecs > 0}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50"
           >
             {generating
               ? <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               : <Sparkles className="w-3.5 h-3.5" />}
-            {generating ? 'Generating…' : 'Generate'}
+            {generating ? 'Generating…' : cooldownSecs > 0 ? `Wait ${cooldownSecs}s` : 'Generate'}
           </button>
         </div>
       </header>
