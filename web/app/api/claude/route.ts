@@ -7,6 +7,7 @@ import {
   secureErrorResponse,
 } from '@/lib/security'
 import { getUserApiKey } from '@/app/api/user/ai-key/route'
+import { API_VERSION } from '@/lib/api-version'
 
 const bodySchema = z.object({
   messages: z
@@ -55,7 +56,9 @@ export const POST = createSecureApiHandler(
         return secureErrorResponse('No text response from Claude', 500)
       }
 
-      return secureJsonResponse({ content: textBlock.text })
+      const res = secureJsonResponse({ content: textBlock.text })
+      res.headers.set('X-API-Version', API_VERSION)
+      return res
     } catch (error) {
       if (error instanceof Anthropic.APIError) {
         if (error.status === 429) {

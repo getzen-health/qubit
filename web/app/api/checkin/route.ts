@@ -1,5 +1,6 @@
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { z } from 'zod'
+import { API_VERSION } from '@/lib/api-version'
 
 // GET /api/checkin?days=30  — returns today's check-in + history
 export const GET = createSecureApiHandler(
@@ -26,7 +27,9 @@ export const GET = createSecureApiHandler(
     const today = new Date().toISOString().slice(0, 10)
     const todayCheckin = data?.find((c) => c.date === today) ?? null
 
-    return secureJsonResponse({ today: todayCheckin, history: data ?? [] })
+    const res = secureJsonResponse({ today: todayCheckin, history: data ?? [] })
+    res.headers.set('X-API-Version', API_VERSION)
+    return res
   }
 )
 
@@ -66,6 +69,8 @@ export const POST = createSecureApiHandler(
       .single()
 
     if (error) return secureErrorResponse('Failed to save check-in', 500)
-    return secureJsonResponse({ checkin: data }, 201)
+    const res = secureJsonResponse({ checkin: data }, 201)
+    res.headers.set('X-API-Version', API_VERSION)
+    return res
   }
 )

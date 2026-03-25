@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { checkRateLimit } from '@/lib/security/rate-limit'
+import { API_VERSION } from '@/lib/api-version'
 
 // Escape a CSV cell to prevent formula injection (OWASP CSV injection prevention)
 // Prepend tab to values starting with formula trigger chars: =, +, -, @
@@ -309,6 +310,7 @@ export async function GET(request: Request) {
     headers: {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${result.filename}"`,
+      'X-API-Version': API_VERSION,
     },
   })
 }
