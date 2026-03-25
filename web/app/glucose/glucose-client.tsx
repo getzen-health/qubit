@@ -26,6 +26,7 @@ interface GlucoseClientProps {
 }
 
 type GlucoseUnit = 'mgdl' | 'mmol'
+type TimeRange = '24h' | '7d' | '30d'
 
 const MGDL_TO_MMOL = 18.0182
 
@@ -71,13 +72,40 @@ function fmtHour(h: number): string {
   return `${h - 12}pm`
 }
 
-export function GlucoseClient({ readings }: GlucoseClientProps) {
+export function GlucoseClient({ readings: initialReadings }: GlucoseClientProps) {
   const [unit, setUnit] = useState<GlucoseUnit>('mgdl')
+  const [timeRange, setTimeRange] = useState<TimeRange>('24h')
+  const [readings, setReadings] = useState<GlucoseReading[]>(initialReadings)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem('glucose_unit')
     if (stored === 'mgdl' || stored === 'mmol') setUnit(stored)
   }, [])
+
+  useEffect(() => {
+    if (timeRange === '24h') {
+      setReadings(initialReadings)
+      return
+    }
+
+    async function fetchReadings() {
+      setIsLoading(true)
+      try {
+        const res = await fetch(`/api/glucose?range=${timeRange}`)
+        if (res.ok) {
+          const data = await res.json()
+          setReadings(data.readings)
+        }
+      } catch (err) {
+        console.error('Failed to fetch glucose data:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchReadings()
+  }, [timeRange, initialReadings])
 
   function toggleUnit() {
     const next: GlucoseUnit = unit === 'mgdl' ? 'mmol' : 'mgdl'
@@ -152,8 +180,26 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
 
   return (
     <div className="space-y-6">
-      {/* Unit toggle */}
-      <div className="flex justify-end">
+      {/* Time range and unit controls */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+        <div className="flex gap-2">
+          {(['24h', '7d', '30d'] as const).map((range) => (
+            <button
+              key={range}
+              onClick={() => setTimeRange(range)}
+              disabled={isLoading}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                timeRange === range
+                  ? 'bg-accent text-accent-foreground'
+                  : 'border border-border bg-surface hover:bg-surface-secondary'
+              } disabled:opacity-50`}
+            >
+              {range}
+            </button>
+          ))}
+        </div>
+
+        {/* Unit toggle */}
         <button
           onClick={toggleUnit}
           className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-surface hover:bg-surface-secondary transition-colors"

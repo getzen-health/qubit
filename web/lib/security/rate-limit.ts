@@ -27,6 +27,9 @@ export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   // AI chat/insights - limit to reduce API costs
   aiChat: { maxRequests: 10, windowMs: 3_600_000 }, // 10 requests per hour per user
 
+  // Data export - prevent bulk scraping
+  export: { maxRequests: 3, windowMs: 3_600_000 }, // 3 exports per hour per user
+
   // General API - default
   default: { maxRequests: 100, windowMs: 60_000 }, // 100 requests per minute
 }

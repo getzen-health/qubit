@@ -14,21 +14,20 @@ export default async function GlucosePage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-  const startIso = thirtyDaysAgo.toISOString()
+  const oneDayAgo = new Date(Date.now() - 86400000).toISOString()
 
   const { data: records } = await supabase
     .from('health_records')
     .select('value, start_time')
     .eq('user_id', user.id)
     .eq('type', 'blood_glucose')
-    .gte('start_time', startIso)
+    .gte('start_time', oneDayAgo)
     .gt('value', 0)
     .order('start_time', { ascending: true })
+    .limit(288)
 
   const readings = (records ?? [])
-    .filter((r) => r.value > 30 && r.value < 600) // sanity filter (mg/dL)
+    .filter((r) => r.value > 30 && r.value < 600)
     .map((r) => ({
       timestamp: r.start_time,
       mgdl: Math.round(r.value),
@@ -49,7 +48,7 @@ export default async function GlucosePage() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-text-primary">Blood Glucose</h1>
-            <p className="text-sm text-text-secondary">Last 30 days · {readings.length} readings</p>
+            <p className="text-sm text-text-secondary">CGM &amp; glucose meter data</p>
           </div>
         </div>
       </header>
