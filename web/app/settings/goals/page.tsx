@@ -211,6 +211,7 @@ export default function GoalsSettingsPage() {
               step={500}
               value={stepInput}
               onChange={(e) => setStepInput(e.target.value)}
+              aria-label="Daily step goal (1000-100000)"
               className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">steps / day</span>
@@ -222,6 +223,7 @@ export default function GoalsSettingsPage() {
                 key={preset}
                 type="button"
                 onClick={() => setStepInput(preset.toString())}
+                aria-pressed={stepGoal === preset}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   stepGoal === preset
                     ? 'bg-accent text-white border-accent'
@@ -251,6 +253,7 @@ export default function GoalsSettingsPage() {
               step={50}
               value={calInput}
               onChange={(e) => setCalInput(e.target.value)}
+              aria-label="Daily active calorie goal (100-5000)"
               className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">cal / day</span>
@@ -262,6 +265,7 @@ export default function GoalsSettingsPage() {
                 key={preset}
                 type="button"
                 onClick={() => setCalInput(preset.toString())}
+                aria-pressed={calGoal === preset}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   calGoal === preset
                     ? 'bg-accent text-white border-accent'
@@ -291,6 +295,7 @@ export default function GoalsSettingsPage() {
               step={0.5}
               value={sleepInput}
               onChange={(e) => setSleepInput(e.target.value)}
+              aria-label="Sleep duration goal (4-12 hours)"
               className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">hours / night</span>
@@ -302,6 +307,7 @@ export default function GoalsSettingsPage() {
                 key={preset}
                 type="button"
                 onClick={() => setSleepInput(preset.toString())}
+                aria-pressed={sleepGoal === preset * 60}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   sleepGoal === preset * 60
                     ? 'bg-accent text-white border-accent'
