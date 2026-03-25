@@ -44,7 +44,7 @@ struct BriefingHistoryView: View {
                 }
             }
             .navigationTitle("Morning Briefings")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .task {
                 await loadBriefings()
             }

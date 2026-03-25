@@ -1,5 +1,7 @@
 import Foundation
+#if !targetEnvironment(macCatalyst)
 import BackgroundTasks
+#endif
 import UserNotifications
 
 /// Manages AI-generated morning briefings.
@@ -32,6 +34,7 @@ class AIBriefingService {
     /// Register the BGProcessingTask with the system.
     /// Must be called early in the app lifecycle (e.g. `application(_:didFinishLaunchingWithOptions:)`).
     func registerBackgroundTask() {
+        #if !targetEnvironment(macCatalyst)
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: AIBriefingService.backgroundTaskIdentifier,
             using: nil
@@ -39,10 +42,12 @@ class AIBriefingService {
             guard let processingTask = task as? BGProcessingTask else { return }
             self?.handleBackgroundTask(processingTask)
         }
+        #endif
     }
 
     /// Schedule the next briefing processing task for ~7am the following day.
     func scheduleBriefingTask() {
+        #if !targetEnvironment(macCatalyst)
         let request = BGProcessingTaskRequest(
             identifier: AIBriefingService.backgroundTaskIdentifier
         )
@@ -64,12 +69,14 @@ class AIBriefingService {
         } catch {
             print("[AIBriefingService] Failed to schedule background task: \(error)")
         }
+        #endif
     }
 
     // MARK: - Background Task Handler
 
     /// Called by the system when the scheduled BGProcessingTask fires.
     /// Reschedules the next task before doing work to ensure continuity.
+    #if !targetEnvironment(macCatalyst)
     func handleBackgroundTask(_ task: BGProcessingTask) {
         // Reschedule for the next day immediately
         scheduleBriefingTask()
@@ -84,6 +91,7 @@ class AIBriefingService {
             task.setTaskCompleted(success: false)
         }
     }
+    #endif
 
     // MARK: - Briefing Fetch
 
