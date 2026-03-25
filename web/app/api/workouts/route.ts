@@ -49,7 +49,7 @@ export const POST = createSecureApiHandler(
 
     const { data: workout, error } = await supabase
       .from('workout_records')
-      .insert({
+      .upsert({
         user_id: user!.id,
         workout_type,
         start_time: startTime.toISOString(),
@@ -61,7 +61,7 @@ export const POST = createSecureApiHandler(
         avg_pace_per_km,
         source: 'manual',
         metadata: notes ? { notes } : {},
-      })
+      }, { onConflict: 'user_id,start_time' })
       .select()
       .single()
 
