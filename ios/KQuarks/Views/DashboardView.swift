@@ -189,7 +189,7 @@ struct DashboardView: View {
                 await viewModel.loadData()
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: HealthScoreView()) {
                             Image(systemName: "chart.bar.doc.horizontal")
@@ -359,7 +359,7 @@ struct StatCard: View {
 @Observable
 class DashboardViewModel {
     var todaySummary: TodayHealthSummary?
-    var isLoading = false
+    var isLoading = true
     var isSyncing = false
     var error: String?
     var lastSyncDate: Date?

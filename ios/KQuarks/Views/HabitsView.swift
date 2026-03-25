@@ -22,7 +22,7 @@ struct HabitCompletion: Decodable {
 final class HabitsViewModel {
     var habits: [Habit] = []
     var completions: [HabitCompletion] = []
-    var isLoading = false
+    var isLoading = true
     var isAdding = false
 
     private let dowLabels = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
@@ -150,14 +150,14 @@ struct HabitsView: View {
             .toolbarTitleDisplayMode(.inline)
             .environment(\.editMode, $editMode)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     if !vm.habits.isEmpty {
                         Button(editMode == .active ? "Done" : "Edit") {
                             editMode = editMode == .active ? .inactive : .active
                         }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button {
                         showAdd = true
                     } label: {

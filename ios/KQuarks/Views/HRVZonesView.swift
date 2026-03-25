@@ -38,7 +38,7 @@ private struct ZoneDay: Identifiable {
 /// median (yellow threshold) and 75th percentile (green threshold).
 struct HRVZonesView: View {
     @State private var days:      [ZoneDay] = []
-    @State private var isLoading  = false
+    @State private var isLoading  = true
 
     // Computed from days
     private var baseline:          Double { percentile(days.map(\.hrv), p: 0.50) }

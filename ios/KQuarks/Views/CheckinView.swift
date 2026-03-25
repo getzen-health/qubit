@@ -16,7 +16,7 @@ struct DailyCheckin: Decodable, Equatable, Identifiable {
 @Observable
 final class CheckinViewModel {
     var checkin: DailyCheckin?
-    var isLoading = false
+    var isLoading = true
     var isSaving = false
     var savedAt: Date?
 
@@ -112,7 +112,7 @@ struct CheckinView: View {
             .navigationTitle("Daily Check-in")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: MoodHistoryView()) {
                             Image(systemName: "chart.line.uptrend.xyaxis")
@@ -126,7 +126,7 @@ struct CheckinView: View {
                     }
                 }
                 if let c = vm.checkin, !vm.isEditing {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button {
                             vm.startEdit()
                         } label: {
