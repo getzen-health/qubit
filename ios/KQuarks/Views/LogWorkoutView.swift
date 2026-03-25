@@ -72,7 +72,9 @@ struct LogWorkoutView: View {
                             .foregroundStyle(.orange)
                             .frame(width: 24)
                         TextField("Active Calories", text: $caloriesText)
+                            #if os(iOS)
                             .keyboardType(.numberPad)
+                            #endif
                         Text("kcal")
                             .foregroundStyle(.secondary)
                     }
@@ -83,7 +85,9 @@ struct LogWorkoutView: View {
                                 .foregroundStyle(.blue)
                                 .frame(width: 24)
                             TextField("Distance", text: $distanceText)
+                                #if os(iOS)
                                 .keyboardType(.decimalPad)
+                                #endif
                             Text("km")
                                 .foregroundStyle(.secondary)
                         }

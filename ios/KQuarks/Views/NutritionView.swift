@@ -186,7 +186,7 @@ struct NutritionView: View {
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
-                ForEach(Array(meals.enumerated()), id: \.offset) { idx, meal in
+                ForEach(Array(meals.enumerated()), id: \.offset) { (idx, meal) in
                     HStack(spacing: 12) {
                         Text(MealTypeOption.from(meal.meal_type).emoji)
                             .font(.title3)

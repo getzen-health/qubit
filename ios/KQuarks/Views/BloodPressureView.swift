@@ -161,7 +161,7 @@ struct BloodPressureView: View {
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
-                ForEach(Array(readings.prefix(20).enumerated()), id: \.offset) { idx, reading in
+                ForEach(Array(readings.prefix(20).enumerated()), id: \.offset) { (idx, reading) in
                     let category = BPCategory.from(systolic: reading.systolic, diastolic: reading.diastolic)
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
