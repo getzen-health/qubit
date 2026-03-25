@@ -21,7 +21,9 @@ function LoginContent() {
     })
 
     if (error) {
-      console.error('Error signing in:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error signing in:', error)
+      }
       setIsLoading(false)
     }
   }

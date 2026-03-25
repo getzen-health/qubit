@@ -15,6 +15,7 @@ import {
   ComposedChart,
   Area,
 } from 'recharts'
+import { AlertTriangle } from 'lucide-react'
 
 interface DailySummary {
   date: string
@@ -214,8 +215,44 @@ export function HrvClient({ summaries, sleepRecords, workoutDays }: HrvClientPro
 
   const currentStatus = classifyHrv(latestHrv)
 
+  // 7-day drop-off warning: alert when latest is >15% below 7-day average
+  const sevenDayAvg = hrvValues.slice(-7).length > 0
+    ? hrvValues.slice(-7).reduce((a, b) => a + b, 0) / hrvValues.slice(-7).length
+    : null
+  const dropPct = sevenDayAvg ? Math.round(((latestHrv - sevenDayAvg) / sevenDayAvg) * 100) : null
+  const showDropWarning = dropPct !== null && dropPct <= -15
+
+  // Parasympathetic/sympathetic state based on HRV vs personal baseline
+  const pnsState = latestHrv >= baseline + std
+    ? { label: 'Parasympathetic dominant', desc: 'Well-recovered — good day for hard training', color: 'text-green-400' }
+    : latestHrv <= baseline - std
+    ? { label: 'Sympathetic dominant', desc: 'Stressed or fatigued — prioritise recovery', color: 'text-red-400' }
+    : { label: 'Balanced', desc: 'Normal autonomic tone — moderate training OK', color: 'text-yellow-400' }
+
   return (
     <div className="space-y-6">
+      {/* 7-day drop-off warning banner */}
+      {showDropWarning && (
+        <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/25 rounded-2xl p-4">
+          <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-red-400">HRV {Math.abs(dropPct!)}% below 7-day average</p>
+            <p className="text-xs text-text-secondary mt-0.5">
+              Your HRV has dropped significantly. Consider rest, sleep quality, or stress as contributing factors.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Parasympathetic / sympathetic state */}
+      <div className="bg-surface rounded-xl border border-border p-4 flex items-center justify-between">
+        <div>
+          <p className={`text-sm font-semibold ${pnsState.color}`}>{pnsState.label}</p>
+          <p className="text-xs text-text-secondary mt-0.5">{pnsState.desc}</p>
+        </div>
+        <p className={`text-3xl font-black ${pnsState.color}`}>{Math.round(latestHrv)}</p>
+      </div>
+
       {/* Current status */}
       <div className="bg-surface rounded-xl border border-border p-5">
         <div className="flex items-center justify-between">

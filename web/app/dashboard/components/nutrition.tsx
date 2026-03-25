@@ -106,7 +106,9 @@ async function saveMealToDatabase(foods: FoodItem[]): Promise<{ success: boolean
 
     return { success: true }
   } catch (error) {
-    console.error('Error saving meal:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error saving meal:', error)
+    }
     return { success: false, error: 'Failed to save meal' }
   }
 }

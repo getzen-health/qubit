@@ -22,9 +22,11 @@ export interface ProductScore {
   nutriScore: NutriScoreGrade | null
   additivesPenalty: number // 0–30
   organicBonus: number // 0 or 10
+  fiberBonus: number // 0 or 5
   flaggedAdditives: FlaggedAdditive[]
   allergens: string[]
   novaGroup: NovaGroup | null // 1–4 ultra-processing scale
+  hasCompleteData: boolean // false when key nutritional fields are missing
 }
 
 export type NutriScoreGrade = 'a' | 'b' | 'c' | 'd' | 'e'
@@ -200,8 +202,22 @@ export function calculateProductScore(params: {
   additivesTags?: string[]
   isOrganic?: boolean
   allergensTags?: string[]
+  fiberPer100g?: number | null
+  calories?: number | null
+  protein?: number | null
+  carbs?: number | null
+  fat?: number | null
 }): ProductScore {
-  const { nutriscoreGrade, additivesTags = [], isOrganic = false, allergensTags = [] } = params
+  const {
+    nutriscoreGrade, additivesTags = [], isOrganic = false, allergensTags = [],
+    fiberPer100g = null, calories = null, protein = null, carbs = null, fat = null,
+  } = params
+
+  // Detect whether we have enough data for a reliable score
+  const hasCompleteData = (
+    nutriscoreGrade != null ||
+    (calories != null && protein != null && carbs != null && fat != null)
+  )
 
   // --- Nutritional quality (60%) ---
   const grade = (nutriscoreGrade?.toLowerCase() ?? null) as NutriScoreGrade | null
@@ -226,8 +242,14 @@ export function calculateProductScore(params: {
   // --- Organic bonus (10%) ---
   const organicBonus = isOrganic ? 10 : 0
 
+  // --- Fiber bonus (up to 5 pts) — dietary fiber supports gut health ---
+  // ≥6g/100g = full 5pt bonus; 3-6g = partial; <3g = no bonus
+  const fiberBonus = fiberPer100g != null
+    ? fiberPer100g >= 6 ? 5 : fiberPer100g >= 3 ? Math.round((fiberPer100g - 3) / 3 * 5) : 0
+    : 0
+
   // --- Total score ---
-  const rawScore = nutriContrib + additiveContrib + organicBonus
+  const rawScore = nutriContrib + additiveContrib + organicBonus + fiberBonus
   const score = Math.round(Math.max(0, Math.min(100, rawScore)))
 
   // Yuka behaviour: any 'avoid' additive forces score ≤ 24 (poor)
@@ -257,9 +279,11 @@ export function calculateProductScore(params: {
     nutriScore: grade,
     additivesPenalty: cappedPenalty,
     organicBonus,
+    fiberBonus,
     flaggedAdditives,
     allergens,
     novaGroup,
+    hasCompleteData,
   }
 }
 
