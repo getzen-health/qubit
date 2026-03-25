@@ -130,7 +130,9 @@ struct HabitsView: View {
     @State private var showAdd = false
     @State private var newName = ""
     @State private var newEmoji = "✅"
+    #if os(iOS)
     @State private var editMode: EditMode = .inactive
+    #endif
 
     private let emojiPresets = ["✅", "💧", "🏃", "📚", "🧘", "🥗", "😴", "💊", "🚶", "✍️", "💪", "☀️", "🍎", "🎯", "🌿"]
 
@@ -148,14 +150,18 @@ struct HabitsView: View {
             }
             .navigationTitle("Habits")
             .toolbarTitleDisplayMode(.inline)
+            #if os(iOS)
             .environment(\.editMode, $editMode)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
+                    #if os(iOS)
                     if !vm.habits.isEmpty {
                         Button(editMode == .active ? "Done" : "Edit") {
                             editMode = editMode == .active ? .inactive : .active
                         }
                     }
+                    #endif
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -249,7 +255,11 @@ struct HabitsView: View {
                 }
             }
         }
+        #if os(iOS)
         .listStyle(.insetGrouped)
+        #else
+        .listStyle(.plain)
+        #endif
     }
 
     // MARK: Empty State
