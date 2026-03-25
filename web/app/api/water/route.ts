@@ -42,8 +42,14 @@ export const GET = createSecureApiHandler(
       .order('logged_at', { ascending: false })
 
     if (logsError) {
-      console.error('Error fetching water logs:', logsError)
-      return secureErrorResponse('Failed to fetch water logs', 500)
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        error: 'Failed to fetch water logs',
+        userId: user!.id,
+        date: today,
+        message: logsError.message,
+      }))
+      // Return empty array to prevent stream crash, continue with other data
     }
 
     const { data: settings } = await supabase

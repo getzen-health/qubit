@@ -85,7 +85,9 @@ function HeartRateZonesComponent({ zones = DEFAULT_ZONES }: { zones?: HeartRateZ
   )
 }
 
-export function HeartRateChart({ data }: { data: { time: string; bpm: number }[] }) {
+export const HeartRateZones = React.memo(HeartRateZonesComponent)
+
+function HeartRateChartComponent({ data }: { data: { time: string; bpm: number }[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
@@ -134,7 +136,9 @@ export function HeartRateChart({ data }: { data: { time: string; bpm: number }[]
   )
 }
 
-export function HRVCard({ current, average, trend }: { current: number; average: number; trend: 'up' | 'down' | 'stable' }) {
+export const HeartRateChart = React.memo(HeartRateChartComponent)
+
+function HRVCardComponent({ current, average, trend }: { current: number; average: number; trend: 'up' | 'down' | 'stable' }) {
   const status = current >= average ? 'good' : 'low'
 
   return (
@@ -164,3 +168,5 @@ export function HRVCard({ current, average, trend }: { current: number; average:
     </div>
   )
 }
+
+export const HRVCard = React.memo(HRVCardComponent)
