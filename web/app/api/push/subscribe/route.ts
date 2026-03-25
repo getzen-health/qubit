@@ -11,16 +11,33 @@ export async function POST(req: NextRequest) {
     }
 
     const subscription = await req.json()
+    
+    // Validate required fields
     if (!subscription?.endpoint) {
-      return NextResponse.json({ error: "Invalid subscription" }, { status: 400 })
+      return NextResponse.json({ error: "Invalid subscription: missing endpoint" }, { status: 400 })
+    }
+
+    if (!subscription?.keys?.p256dh) {
+      return NextResponse.json({ error: "Invalid subscription: missing keys.p256dh" }, { status: 400 })
+    }
+
+    if (!subscription?.keys?.auth) {
+      return NextResponse.json({ error: "Invalid subscription: missing keys.auth" }, { status: 400 })
+    }
+
+    // Validate endpoint is a valid URL
+    try {
+      new URL(subscription.endpoint)
+    } catch {
+      return NextResponse.json({ error: "Invalid subscription: endpoint must be a valid URL" }, { status: 400 })
     }
 
     await supabase.from("web_push_subscriptions").upsert(
       {
         user_id: user.id,
         endpoint: subscription.endpoint,
-        p256dh: subscription.keys?.p256dh,
-        auth: subscription.keys?.auth,
+        p256dh: subscription.keys.p256dh,
+        auth: subscription.keys.auth,
       },
       { onConflict: "user_id,endpoint" }
     )

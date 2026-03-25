@@ -40,6 +40,20 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const { privacy_mode, share_steps, share_workouts, share_sleep, share_hrv, share_readiness } = body
 
+    // Validate privacy_mode
+    const validPrivacyModes = ['public', 'friends', 'private']
+    if (privacy_mode && !validPrivacyModes.includes(privacy_mode)) {
+      return NextResponse.json({ error: 'Invalid privacy_mode value' }, { status: 400 })
+    }
+
+    // Validate boolean fields
+    const booleanFields = { share_steps, share_workouts, share_sleep, share_hrv, share_readiness }
+    for (const [key, value] of Object.entries(booleanFields)) {
+      if (value !== undefined && typeof value !== 'boolean') {
+        return NextResponse.json({ error: `${key} must be a boolean` }, { status: 400 })
+      }
+    }
+
     const { data, error } = await supabase
       .from('profiles')
       .update({
