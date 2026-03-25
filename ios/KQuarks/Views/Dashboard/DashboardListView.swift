@@ -276,6 +276,27 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: WeeklyBalanceView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "chart.bar.xaxis")
+                                .font(.title3)
+                                .foregroundStyle(.purple)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Weekly Balance")
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.primary)
+                                Text("Cardio · Strength · Flexibility · Recovery")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: NutritionView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "fork.knife")

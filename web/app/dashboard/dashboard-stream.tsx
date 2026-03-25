@@ -1129,6 +1129,24 @@ export function DashboardStream({
           </DataStream>
         </DataStreamSection>
 
+        {/* Weekly Balance Card */}
+        <div className="mt-6">
+          <Link
+            href="/weekly-balance"
+            className="block rounded-xl bg-card border border-border p-4 hover:bg-surface-secondary transition-colors"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide flex items-center gap-1.5">
+                <span>⚖️</span> Weekly Balance
+              </h2>
+              <span className="text-xs text-accent font-medium">View →</span>
+            </div>
+            <p className="text-xs text-text-secondary">
+              Cardio · Strength · Flexibility · Recovery — see how balanced your training is this week.
+            </p>
+          </Link>
+        </div>
+
         {/* 7-Day Trends */}
         <DataStreamSection title="7-Day Trends">
           <WeeklyCharts
@@ -1293,6 +1311,7 @@ export function DashboardStream({
                 { href: '/records', label: 'All-Time Records' },
                 { href: '/calories', label: 'Calorie Balance' },
                 { href: '/training-load', label: 'Training Load' },
+                { href: '/weekly-balance', label: 'Weekly Balance' },
                 { href: '/calendar', label: 'Activity Calendar' },
               ],
             },
