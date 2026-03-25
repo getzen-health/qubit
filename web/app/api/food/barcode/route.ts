@@ -77,7 +77,7 @@ export const GET = createSecureApiHandler(
     auditAction: 'READ',
     auditResource: 'food_product',
   },
-  async (request: NextRequest, { query }) => {
+  async (request: NextRequest, { query, supabase, user }) => {
     const { code: barcode } = query as z.infer<typeof querySchema>
 
     const response = await fetch(
@@ -97,7 +97,14 @@ export const GET = createSecureApiHandler(
 
     if (data.status !== 1 || !data.product) {
       // Fallback to USDA FoodData Central
-      const usdaKey = process.env.USDA_API_KEY ?? 'DEMO_KEY'
+      // Get USDA API key from environment.
+      // To enable USDA lookups, set USDA_API_KEY in your environment.
+      // Free keys available at https://fdc.nal.usda.gov/api-guide.html
+      const usdaKey = process.env.USDA_API_KEY
+      if (!usdaKey) {
+        console.warn('[food/barcode] USDA_API_KEY not set — skipping USDA fallback. Set USDA_API_KEY to enable it.')
+        return secureErrorResponse('Product not found in any database', 404)
+      }
       const usdaUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(barcode)}&dataType=Branded&pageSize=1&api_key=${usdaKey}`
 
       let usdaRes: Response
@@ -163,6 +170,19 @@ export const GET = createSecureApiHandler(
         allergens: [],
       }
 
+      if (user) {
+        supabase.from('product_scans').insert({
+          user_id: user.id,
+          barcode,
+          product_name: usdaMapped.name,
+          brand: usdaMapped.brand ?? null,
+          health_score: healthScore.score,
+          nova_group: 1,
+          nutriscore: null,
+          thumbnail_url: null,
+        }).then(() => {})
+      }
+
       return secureJsonResponse({ food: usdaMapped, dataSource: 'usda' })
     }
 
@@ -219,6 +239,19 @@ export const GET = createSecureApiHandler(
       ingredients: product.ingredients_text || null,
       categories: product.categories_tags?.slice(0, 5) ?? [],
       novaGroup: product.nova_group ?? null,
+    }
+
+    if (user) {
+      supabase.from('product_scans').insert({
+        user_id: user.id,
+        barcode: food.barcode ?? barcode,
+        product_name: food.name,
+        brand: food.brand ?? null,
+        health_score: healthScore.score,
+        nova_group: food.novaGroup ?? null,
+        nutriscore: product.nutriscore_grade ?? null,
+        thumbnail_url: food.imageUrl ?? null,
+      }).then(() => {})
     }
 
     return secureJsonResponse({ food, dataSource: 'off' })

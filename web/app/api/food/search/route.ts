@@ -84,17 +84,27 @@ export const GET = createSecureApiHandler(
       'id,product_name,brands,image_url,nutriscore_grade,additives_tags,allergens_tags,labels_tags,nutriments,categories_tags,ingredients_text,quantity,serving_size,nova_group'
     )
 
-    const usdaKey = process.env.USDA_API_KEY ?? 'DEMO_KEY'
-    const usdaUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(q)}&dataType=Branded&pageSize=5&api_key=${usdaKey}`
+    // Get USDA API key from environment.
+    // To enable USDA lookups, set USDA_API_KEY in your environment.
+    // Free keys available at https://fdc.nal.usda.gov/api-guide.html
+    const usdaKey = process.env.USDA_API_KEY
+    if (!usdaKey) {
+      console.warn('[food/search] USDA_API_KEY not set — skipping USDA lookup. Set USDA_API_KEY to enable it.')
+    }
+    const usdaUrl = usdaKey
+      ? `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(q)}&dataType=Branded&pageSize=5&api_key=${usdaKey}`
+      : null
 
     const [offResponse, usdaResponse] = await Promise.allSettled([
       fetch(offUrl.toString(), {
         headers: { 'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks' },
       }),
-      fetch(usdaUrl, {
-        headers: { 'User-Agent': 'KQuarks/1.0' },
-        signal: AbortSignal.timeout(8000),
-      }),
+      usdaUrl
+        ? fetch(usdaUrl, {
+            headers: { 'User-Agent': 'KQuarks/1.0' },
+            signal: AbortSignal.timeout(8000),
+          })
+        : Promise.reject(new Error('USDA_API_KEY not configured')),
     ])
 
     if (offResponse.status === 'rejected' || !offResponse.value.ok) {
