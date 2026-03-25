@@ -248,8 +248,15 @@ export function calculateProductScore(params: {
     ? fiberPer100g >= 6 ? 5 : fiberPer100g >= 3 ? Math.round((fiberPer100g - 3) / 3 * 5) : 0
     : 0
 
+  // --- NOVA group ---
+  const novaGroup = detectNovaGroup(additivesTags)
+
+  // --- NOVA ultra-processing penalty (Monteiro et al., BMJ 2024) ---
+  // Ultra-processed foods carry independent health risk beyond nutrient profile
+  const novaPenalty = novaGroup === 4 ? 10 : novaGroup === 3 ? 5 : 0
+
   // --- Total score ---
-  const rawScore = nutriContrib + additiveContrib + organicBonus + fiberBonus
+  const rawScore = nutriContrib + additiveContrib + organicBonus + fiberBonus - novaPenalty
   const score = Math.round(Math.max(0, Math.min(100, rawScore)))
 
   // Yuka behaviour: any 'avoid' additive forces score ≤ 24 (poor)
@@ -268,9 +275,6 @@ export function calculateProductScore(params: {
   const allergens = allergensTags.map((a) =>
     a.replace(/^en:/, '').replace(/-/g, ' ')
   )
-
-  // --- NOVA group ---
-  const novaGroup = detectNovaGroup(additivesTags)
 
   return {
     score: finalScore,
