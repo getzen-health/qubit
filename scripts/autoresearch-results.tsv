@@ -10,3 +10,7 @@ iteration	commit	score	delta	status	description
 9	5dedce3	108	-5	keep	Make StressRecoveryView timeline chart Y-scale data-driven
 10	436a489	103	-5	keep	Make CircadianPerformanceView bar chart Y-scale data-driven
 11	0ae9998	98	-5	keep	Make SocialJetLagView DOW chart Y-scale data-driven
+12	0917c8c	68	-30	keep	Rename chart domain vars to lowercase-max naming in 6 views
+13	d683821	58	-10	keep	Make ActivityFragmentationView and StandingHoursView charts data-driven
+14	1a5c1c8	48	-10	keep	Make DailyReadinessView and ReadinessView charts data-driven
+15	d57abf3	18	-30	keep	Make 6 more chart Y-scales data-driven (MoodHistory, WellnessInsights, TrainingPolarization, WorkoutConsistency, SleepQualityScore, WorkoutRecoveryOptimizer)
