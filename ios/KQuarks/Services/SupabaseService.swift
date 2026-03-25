@@ -22,13 +22,24 @@ class SupabaseService {
             ?? ProcessInfo.processInfo.environment["SUPABASE_ANON_KEY"]
             ?? ""
 
-        guard let url = URL(string: supabaseUrl), !supabaseAnonKey.isEmpty else {
+        let resolvedURL: URL
+        let resolvedKey: String
+        if let parsedURL = URL(string: supabaseUrl), !supabaseAnonKey.isEmpty {
+            resolvedURL = parsedURL
+            resolvedKey = supabaseAnonKey
+        } else {
+            #if DEBUG
             fatalError("Missing Supabase configuration. Set SUPABASE_URL and SUPABASE_ANON_KEY in Info.plist or environment.")
+            #else
+            print("[SupabaseService] Warning: Missing Supabase configuration. Backend features will be unavailable.")
+            resolvedURL = URL(string: "https://placeholder.supabase.co")!
+            resolvedKey = "placeholder"
+            #endif
         }
 
         client = SupabaseClient(
-            supabaseURL: url,
-            supabaseKey: supabaseAnonKey
+            supabaseURL: resolvedURL,
+            supabaseKey: resolvedKey
         )
 
         // Check for existing session on init
