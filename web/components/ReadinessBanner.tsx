@@ -122,10 +122,19 @@ export async function ReadinessBanner({ userId }: { userId: string }) {
     (data as DailySummaryRow[] | null)?.find((r) => r.date === yesterdayStr) ??
     null
 
-  if (!today) return null
+  if (!today || computeFactors(today) == null) {
+    return (
+      <div className="mx-4 mt-4 bg-surface rounded-2xl border border-border p-4 flex items-center gap-3">
+        <span className="text-2xl">📡</span>
+        <div>
+          <p className="text-sm font-semibold text-text-primary">Readiness unavailable</p>
+          <p className="text-xs text-text-secondary">Sync your iPhone to see today&apos;s readiness score.</p>
+        </div>
+      </div>
+    )
+  }
 
-  const todayFactors = computeFactors(today)
-  if (todayFactors == null) return null
+  const todayFactors = computeFactors(today)!
 
   const { score, hrvScore, sleepScore, rhrScore } = todayFactors
   const yesterdayResult = yesterday ? computeFactors(yesterday) : null
