@@ -416,11 +416,11 @@ export default function GoalsSettingsPage() {
 
           <div className="space-y-3">
             {[
-              { label: 'Calorie Intake', unit: 'kcal / day', value: calorieIntakeInput, set: setCalorieIntakeInput, min: 500, max: 8000, step: 100 },
-              { label: 'Protein', unit: 'g / day', value: proteinInput, set: setProteinInput, min: 0, max: 500, step: 5 },
-              { label: 'Carbohydrates', unit: 'g / day', value: carbsInput, set: setCarbsInput, min: 0, max: 1000, step: 10 },
-              { label: 'Fat', unit: 'g / day', value: fatInput, set: setFatInput, min: 0, max: 500, step: 5 },
-            ].map(({ label, unit, value, set, min, max, step }) => (
+              { label: 'Calorie Intake', unit: 'kcal / day', value: calorieIntakeInput, set: setCalorieIntakeInput, min: 500, max: 8000, step: 100, ariaLabel: 'Daily calorie intake goal (500-8000 kcal)' },
+              { label: 'Protein', unit: 'g / day', value: proteinInput, set: setProteinInput, min: 0, max: 500, step: 5, ariaLabel: 'Daily protein goal (0-500g)' },
+              { label: 'Carbohydrates', unit: 'g / day', value: carbsInput, set: setCarbsInput, min: 0, max: 1000, step: 10, ariaLabel: 'Daily carbohydrate goal (0-1000g)' },
+              { label: 'Fat', unit: 'g / day', value: fatInput, set: setFatInput, min: 0, max: 500, step: 5, ariaLabel: 'Daily fat goal (0-500g)' },
+            ].map(({ label, unit, value, set, min, max, step, ariaLabel }) => (
               <div key={label} className="flex gap-3 items-center">
                 <div className="flex-1">
                   <p className="text-sm text-text-primary">{label}</p>
@@ -432,6 +432,7 @@ export default function GoalsSettingsPage() {
                   step={step}
                   value={value}
                   onChange={(e) => set(e.target.value)}
+                  aria-label={ariaLabel}
                   className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-sm font-mono focus:outline-none focus:border-accent"
                 />
                 <span className="text-text-secondary text-xs w-16 shrink-0">{unit}</span>
