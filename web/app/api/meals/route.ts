@@ -111,7 +111,8 @@ export const POST = createSecureApiHandler(
     if (itemsError) {
       console.error('Error creating meal items:', itemsError)
       // Rollback meal creation
-      await supabase.from('meals').delete().eq('id', meal.id)
+      const { error: rollbackError } = await supabase.from('meals').delete().eq('id', meal.id)
+      if (rollbackError) console.error('Failed to rollback meal creation:', rollbackError)
       return secureErrorResponse('Failed to create meal items', 500)
     }
 
