@@ -172,6 +172,12 @@ struct SettingsView: View {
                         Label("Goals", systemImage: "target")
                     }
 
+                    NavigationLink {
+                        ExportDataView()
+                    } label: {
+                        Label("Export Data", systemImage: "square.and.arrow.up")
+                    }
+
                     Button(role: .destructive) {
                         showingDeleteDataAlert = true
                     } label: {

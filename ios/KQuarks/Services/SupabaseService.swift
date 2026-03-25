@@ -220,6 +220,30 @@ class SupabaseService {
         return rows.first?.recovery_score
     }
 
+    func syncReadinessScore(_ score: Int, date: Date) async {
+        guard let userId = currentSession?.user.id else { return }
+
+        struct ReadinessUpsert: Encodable {
+            let user_id: String
+            let date: String
+            let recovery_score: Int
+        }
+
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        do {
+            try await client
+                .from("daily_summaries")
+                .upsert(
+                    ReadinessUpsert(user_id: userId.uuidString, date: df.string(from: date), recovery_score: score),
+                    onConflict: "user_id,date"
+                )
+                .execute()
+        } catch {
+            print("[SupabaseService] syncReadinessScore failed: \(error)")
+        }
+    }
+
     func saveUserGoals(stepGoal: Int, calorieGoal: Int, sleepGoalMinutes: Int) async throws {
         guard let userId = currentSession?.user.id else { return }
 
@@ -1149,6 +1173,79 @@ class SupabaseService {
         try await client.from("daily_summaries").delete().eq("user_id", value: userId).execute()
     }
 
+    func exportAllUserData(selection: ExportSelection) async throws -> Data {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        async let summariesTask = fetchDailySummaries(days: 365)
+        async let workoutsTask = fetchWorkoutRecords(days: 365)
+        async let sleepTask = fetchSleepRecords(days: 365)
+        async let mealsTask = fetchMealsForExport()
+
+        let summaries: [DailySummary]? = selection.healthRecords || selection.bodyMeasurements
+            ? (try? await summariesTask) : nil
+        let workoutList: [WorkoutRecord]? = selection.workouts
+            ? (try? await workoutsTask) : nil
+        let sleepList: [SleepRecord]? = selection.sleep
+            ? (try? await sleepTask) : nil
+        let mealList: [ExportMealEntry]? = selection.foodDiary
+            ? (try? await mealsTask) : nil
+
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        let export = UserDataExport(
+            exportDate: df.string(from: Date()),
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0",
+            dailySummaries: summaries,
+            workouts: workoutList,
+            sleepRecords: sleepList,
+            meals: mealList
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try encoder.encode(export)
+    }
+
+    private func fetchMealsForExport() async throws -> [ExportMealEntry] {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        let calendar = Calendar.current
+        let startDate = calendar.date(byAdding: .day, value: -365, to: Date()) ?? Date()
+
+        struct MealRow: Decodable {
+            let id: String
+            let name: String
+            let meal_type: String
+            let logged_at: String
+            let meal_items: [ItemRow]
+            struct ItemRow: Decodable {
+                let calories: Int
+                let protein: Double
+                let carbs: Double
+                let fat: Double
+            }
+        }
+
+        let rows: [MealRow] = try await client
+            .from("meals")
+            .select("id, name, meal_type, logged_at, meal_items(calories, protein, carbs, fat)")
+            .eq("user_id", value: session.user.id.uuidString)
+            .gte("logged_at", value: ISO8601DateFormatter().string(from: startDate))
+            .order("logged_at", ascending: false)
+            .execute()
+            .value
+
+        return rows.map { row in
+            let cal = row.meal_items.reduce(0) { $0 + $1.calories }
+            let pro = row.meal_items.reduce(0.0) { $0 + $1.protein }
+            let carb = row.meal_items.reduce(0.0) { $0 + $1.carbs }
+            let fat = row.meal_items.reduce(0.0) { $0 + $1.fat }
+            return ExportMealEntry(id: row.id, name: row.name, mealType: row.meal_type,
+                                   calories: cal, protein: pro, carbs: carb, fat: fat,
+                                   loggedAt: row.logged_at)
+        }
+    }
+
     func fetchInsights() async throws -> [HealthInsight] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
@@ -1278,6 +1375,51 @@ class SupabaseService {
 
         let result = try JSONDecoder().decode(AIInsightsService.AIAnalysisResult.self, from: data)
         return result
+    }
+}
+
+// MARK: - Data Export
+
+struct ExportSelection {
+    let healthRecords: Bool
+    let workouts: Bool
+    let sleep: Bool
+    let foodDiary: Bool
+    let bodyMeasurements: Bool
+}
+
+struct UserDataExport: Codable {
+    let exportDate: String
+    let appVersion: String
+    let dailySummaries: [DailySummary]?
+    let workouts: [WorkoutRecord]?
+    let sleepRecords: [SleepRecord]?
+    let meals: [ExportMealEntry]?
+
+    enum CodingKeys: String, CodingKey {
+        case exportDate = "export_date"
+        case appVersion = "app_version"
+        case dailySummaries = "daily_summaries"
+        case workouts
+        case sleepRecords = "sleep_records"
+        case meals
+    }
+}
+
+struct ExportMealEntry: Codable {
+    let id: String
+    let name: String
+    let mealType: String
+    let calories: Int
+    let protein: Double
+    let carbs: Double
+    let fat: Double
+    let loggedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, calories, protein, carbs, fat
+        case mealType = "meal_type"
+        case loggedAt = "logged_at"
     }
 }
 
