@@ -319,7 +319,15 @@ Deno.serve(async (req: Request) => {
         usersProcessed++
       }
     } catch (err) {
-      console.error(`Error for user ${userId}:`, err)
+      const errorMessage = err instanceof Error ? err.message : String(err)
+      const errorStack = err instanceof Error ? err.stack : undefined
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        error: 'Failed to generate insights',
+        userId,
+        message: errorMessage,
+        stack: errorStack,
+      }))
       errors++
     }
 

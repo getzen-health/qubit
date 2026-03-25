@@ -17,6 +17,7 @@ interface FoodItem {
   servingSize: string
   barcode?: string
   imageUrl?: string
+  confidence?: number
 }
 
 interface BarcodeScannerProps {
