@@ -2,12 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { ReadyClient, type ReadinessData, type DailyScore } from './ready-client'
+import { ReadyClient, type ReadinessData, type DailyScore, type ReadinessZone } from './ready-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Daily Readiness Score' }
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
+// ─── Legacy mock (kept for reference only, no longer called) ─────────────────
 
 function buildMockData(): ReadinessData {
   // 30-day daily readiness scores ending 2026-03-19
@@ -98,7 +98,69 @@ export default async function ReadyPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const data = buildMockData()
+  // ── Fetch 30 days of daily_summaries ───────────────────────────────────────
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const { data: rows } = await supabase
+    .from('daily_summaries')
+    .select('date, avg_hrv, resting_heart_rate, sleep_efficiency, sleep_duration_minutes, recovery_score')
+    .eq('user_id', user.id)
+    .gte('date', since)
+    .order('date', { ascending: true })
+    .limit(30)
+
+  // ── Derive readiness scores ────────────────────────────────────────────────
+  function scoreZone(s: number): ReadinessZone {
+    if (s >= 80) return 'optimal'
+    if (s >= 65) return 'good'
+    if (s >= 45) return 'moderate'
+    return 'low'
+  }
+
+  function computeScore(hrv: number | null, rhr: number | null, sleepEff: number | null): number {
+    const hrvScore  = hrv       ? Math.min((hrv / 65) * 100, 100)               : 50
+    const rhrScore  = rhr       ? Math.max(0, ((80 - rhr) / 40) * 100)          : 50
+    const sleepScore = sleepEff ? sleepEff * 100                                 : 50
+    return Math.round(0.4 * hrvScore + 0.3 * sleepScore + 0.3 * rhrScore)
+  }
+
+  const summaries = rows ?? []
+
+  const daily: DailyScore[] = summaries.map((r) => {
+    const score = r.recovery_score ?? computeScore(r.avg_hrv, r.resting_heart_rate, r.sleep_efficiency)
+    return {
+      date:  r.date,
+      score,
+      zone:  scoreZone(score),
+      hrv:   r.avg_hrv ?? 0,
+      rhr:   r.resting_heart_rate ?? 0,
+      sleep: r.sleep_duration_minutes ? r.sleep_duration_minutes / 60 : 0,
+    }
+  })
+
+  const recent7 = summaries.slice(-7)
+  const hrvBaseline  = recent7.length ? recent7.reduce((s, r) => s + (r.avg_hrv ?? 0), 0) / recent7.length : 50
+  const rhrBaseline  = recent7.length ? recent7.reduce((s, r) => s + (r.resting_heart_rate ?? 0), 0) / recent7.length : 60
+
+  const latest = summaries[summaries.length - 1]
+  const todayHrv   = latest?.avg_hrv ?? 0
+  const todayRhr   = latest?.resting_heart_rate ?? 0
+  const todaySleep = latest?.sleep_duration_minutes ? latest.sleep_duration_minutes / 60 : 0
+  const todayScore = latest
+    ? (latest.recovery_score ?? computeScore(latest.avg_hrv, latest.resting_heart_rate, latest.sleep_efficiency))
+    : 0
+
+  const todayHrvScore   = todayHrv  ? Math.round(Math.min((todayHrv / 65) * 100, 100))           : 0
+  const todayRhrScore   = todayRhr  ? Math.round(Math.max(0, ((80 - todayRhr) / 40) * 100))      : 0
+  const todaySleepScore = latest?.sleep_efficiency ? Math.round(latest.sleep_efficiency * 100)   : 0
+
+  const data: ReadinessData = {
+    todayScore, todayHrv, todayRhr, todaySleep,
+    todayHrvScore, todayRhrScore, todaySleepScore,
+    hrvBaseline: Math.round(hrvBaseline),
+    rhrBaseline: Math.round(rhrBaseline),
+    daily,
+  }
+
 
   return (
     <div className="min-h-screen bg-background">
