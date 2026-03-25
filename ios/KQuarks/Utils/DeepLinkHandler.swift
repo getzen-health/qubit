@@ -1,43 +1,55 @@
 import SwiftUI
 
-struct DeepLink {
-    let action: DeepLinkAction
-    let tab: TabSelection?
-
-    enum DeepLinkAction {
-        case dashboard
-        case foodScan
-        case readiness
-        case social
-    }
-}
-
-enum TabSelection: Hashable {
-    case dashboard
-    case foodScan
+enum DeepLinkDestination: Hashable {
+    case foodScanner
+    case foodDiary
+    case foodHistory
     case readiness
+    case sleep
+    case workouts
+    case water
+    case habits
+    case hrv
+    case body
+    case glucose
+    case vitals
     case social
+    case achievements
+    case settings
+    case profile
 }
 
+@Observable
 final class DeepLinkHandler {
-    static func handleDeepLink(_ url: URL) -> DeepLink? {
-        guard url.scheme == "kquarks" else { return nil }
-
-        switch url.host {
-        case "dashboard":
-            return DeepLink(action: .dashboard, tab: .dashboard)
+    static let shared = DeepLinkHandler()
+    @Published var pendingDestination: DeepLinkDestination?
+    
+    func handleDeepLink(_ url: URL) {
+        guard url.scheme == "kquarks" else { return }
+        let host = url.host ?? ""
+        let path = url.pathComponents.dropFirst().first ?? ""
+        
+        switch host {
         case "food":
-            if url.path == "/scan" {
-                return DeepLink(action: .foodScan, tab: .foodScan)
+            switch path {
+            case "scan":   pendingDestination = .foodScanner
+            case "diary":  pendingDestination = .foodDiary
+            default:       pendingDestination = .foodScanner
             }
-        case "ready":
-            return DeepLink(action: .readiness, tab: .readiness)
-        case "social":
-            return DeepLink(action: .social, tab: .social)
+        case "ready", "readiness":
+            pendingDestination = .readiness
+        case "sleep":
+            pendingDestination = .sleep
+        case "workouts", "workout":
+            pendingDestination = .workouts
+        case "hrv":
+            pendingDestination = .hrv
+        case "water":
+            pendingDestination = .water
+        case "profile":
+            pendingDestination = .profile
         default:
-            return nil
+            break
         }
-
-        return nil
     }
 }
