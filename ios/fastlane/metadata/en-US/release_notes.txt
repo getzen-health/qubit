@@ -1,0 +1,1 @@
+Initial release — health tracking, food scanner with Yuka-style scoring, AI insights, and social challenges.

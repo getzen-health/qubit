@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { Html5Qrcode } from 'html5-qrcode'
 
 interface FoodItem {
@@ -374,7 +375,13 @@ export function FoodImageRecognition({ onFoodRecognized, onClose }: FoodImageRec
           {image && !recognizedFoods.length && (
             <>
               <div className="relative rounded-xl overflow-hidden mb-4">
-                <img src={image} alt="Food" className="w-full h-48 object-cover" />
+                <Image 
+                  src={image} 
+                  alt="Food" 
+                  width={400}
+                  height={300}
+                  className="w-full h-48 object-cover" 
+                />
                 {isAnalyzing && (
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
                     <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mb-4" />

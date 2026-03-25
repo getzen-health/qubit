@@ -1,4 +1,5 @@
 import ActivityKit
+import BackgroundTasks
 import Foundation
 
 @MainActor
@@ -17,10 +18,14 @@ class LiveActivityManager: ObservableObject {
             phase: "starting"
         )
         do {
+            let staleDate = Calendar.current.date(byAdding: .minute, value: 1, to: Date())
             fastingActivity = try Activity.request(
                 attributes: attributes,
-                content: .init(state: state, staleDate: nil)
+                content: .init(state: state, staleDate: staleDate)
             )
+            Task {
+                LiveActivityManager.shared.scheduleFastingUpdate()
+            }
         } catch {
             print("Failed to start fasting Live Activity: \(error)")
         }
@@ -33,7 +38,8 @@ class LiveActivityManager: ObservableObject {
                 targetSeconds: targetSeconds,
                 phase: phase
             )
-            await fastingActivity?.update(.init(state: state, staleDate: nil))
+            let staleDate = Calendar.current.date(byAdding: .minute, value: 1, to: Date())
+            await fastingActivity?.update(.init(state: state, staleDate: staleDate))
         }
     }
     

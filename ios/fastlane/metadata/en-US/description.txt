@@ -1,0 +1,23 @@
+KQuarks is your personal health intelligence hub — combining the power of Bevel's recovery analytics with Yuka's food scanning to give you a complete picture of your health.
+
+HEALTH TRACKING
+• Sync steps, heart rate, HRV, sleep, and workouts from Apple Health
+• Daily readiness score using HRV, sleep quality, resting HR, and training load
+• Real-time fasting timer with metabolic phase tracking
+
+FOOD INTELLIGENCE
+• Scan any barcode to instantly see a health score, NOVA group, and allergen warnings  
+• Search millions of products from OpenFoodFacts and USDA databases
+• Log meals with serving size control and macro tracking
+
+AI INSIGHTS
+• Daily AI-powered health briefings personalized to your data
+• Anomaly detection for unusual HRV, heart rate, and sleep patterns
+• Weekly predictions for training load and recovery
+
+SOCIAL & CHALLENGES
+• Create health challenges with friends
+• Leaderboards for steps, workouts, and streaks
+• Share health achievements as cards
+
+Privacy-first: your data is yours. End-to-end encrypted sync.

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp, RefreshCw, Activity, Bookmark, BookmarkCheck, Clock } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
@@ -494,8 +495,13 @@ export default function FoodScannerPage() {
             <div className="bg-surface rounded-2xl border border-border overflow-hidden">
               <div className="p-4 flex gap-4 items-start">
                 {product.imageUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={product.imageUrl} alt={product.name} className="w-20 h-20 object-contain rounded-xl bg-surface-secondary shrink-0" />
+                  <Image 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    width={80}
+                    height={80}
+                    className="object-contain rounded-xl bg-surface-secondary shrink-0" 
+                  />
                 )}
                 <div className="flex-1 min-w-0">
                   <h2 className="font-bold text-text-primary text-lg leading-tight">{product.name}</h2>
@@ -757,8 +763,13 @@ export default function FoodScannerPage() {
                   {alternatives.map((alt, i) => (
                     <div key={i} className="flex items-center gap-3 p-2 rounded-xl hover:bg-surface-secondary transition-colors">
                       {alt.imageUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={alt.imageUrl} alt={alt.name ?? ''} className="w-12 h-12 object-contain rounded-lg bg-surface-secondary shrink-0" />
+                        <Image 
+                          src={alt.imageUrl} 
+                          alt={alt.name ?? ''} 
+                          width={48}
+                          height={48}
+                          className="object-contain rounded-lg bg-surface-secondary shrink-0" 
+                        />
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-text-primary truncate">{alt.name}</p>

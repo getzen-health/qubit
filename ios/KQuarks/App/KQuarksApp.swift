@@ -21,6 +21,7 @@ struct KQuarksApp: App {
             Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
         }
         AIBriefingService.shared.registerBackgroundTask()
+        CrashReportingService.shared.start()
         #endif
     }
 

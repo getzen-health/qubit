@@ -5,6 +5,13 @@ import SwiftUI
 struct OnboardingContainerView: View {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @State private var currentPage = 0
+    
+    /// When true, skip the welcome screen and start from goal-setting
+    let isReplay: Bool
+
+    init(isReplay: Bool = false) {
+        self.isReplay = isReplay
+    }
 
     var body: some View {
         if hasCompletedOnboarding {
@@ -20,29 +27,31 @@ struct OnboardingContainerView: View {
     private var onboardingFlow: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $currentPage) {
-                OnboardingWelcomeView(onNext: advance)
-                    .tag(0)
+                if !isReplay {
+                    OnboardingWelcomeView(onNext: advance)
+                        .tag(0)
+                }
 
                 OnboardingGoalSettingView(onNext: advance)
-                    .tag(1)
+                    .tag(isReplay ? 0 : 1)
 
                 OnboardingHealthKitView(onNext: advance)
-                    .tag(2)
+                    .tag(isReplay ? 1 : 2)
 
                 OnboardingNotificationsView(onNext: advance)
-                    .tag(3)
+                    .tag(isReplay ? 2 : 3)
 
                 OnboardingProfileView(onNext: advance)
-                    .tag(4)
+                    .tag(isReplay ? 3 : 4)
 
                 OnboardingFirstSyncView()
-                    .tag(5)
+                    .tag(isReplay ? 4 : 5)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: currentPage)
 
-            // Dot indicators (visible on pages 0–4; FirstSync manages its own footer)
-            if currentPage < 5 {
+            // Dot indicators (visible only on pages 0–4 when not replaying; FirstSync manages its own footer)
+            if currentPage < (isReplay ? 4 : 5) {
                 pageIndicator
                     .padding(.bottom, 20)
             }
@@ -51,8 +60,9 @@ struct OnboardingContainerView: View {
     }
 
     private var pageIndicator: some View {
-        HStack(spacing: 8) {
-            ForEach(0..<5) { index in
+        let dotCount = isReplay ? 4 : 5
+        return HStack(spacing: 8) {
+            ForEach(0..<dotCount) { index in
                 Circle()
                     .fill(index == currentPage
                           ? Color.accentColor
@@ -64,8 +74,9 @@ struct OnboardingContainerView: View {
     }
 
     private func advance() {
+        let maxPage = isReplay ? 4 : 5
         withAnimation {
-            currentPage = min(currentPage + 1, 5)
+            currentPage = min(currentPage + 1, maxPage)
         }
     }
 }

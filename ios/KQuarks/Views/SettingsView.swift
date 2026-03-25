@@ -5,6 +5,7 @@ struct SettingsView: View {
     @State private var showingSignOutAlert = false
     @State private var showingDeleteDataAlert = false
     @State private var showingHistoricalSyncConfirm = false
+    @State private var showOnboarding = false
     @State private var isDeletingData = false
     @State private var deleteError: String?
     @State private var biometricEnabled = false
@@ -60,6 +61,10 @@ struct SettingsView: View {
                         } label: {
                             Label("Sign In", systemImage: "person.badge.plus")
                         }
+                    }
+                    
+                    Button(action: { showOnboarding = true }) {
+                        Label("Setup Wizard", systemImage: "wand.and.stars")
                     }
                 }
 
@@ -261,6 +266,9 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .toolbarTitleDisplayMode(.inline)
             .onAppear { biometricEnabled = biometric.isEnabled }
+            .sheet(isPresented: $showOnboarding) {
+                OnboardingContainerView(isReplay: true)
+            }
             .alert("Sign Out", isPresented: $showingSignOutAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Sign Out", role: .destructive) {

@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - FoodDiaryEntry Model
 
-struct FoodDiaryEntry: Identifiable, Decodable {
+struct FoodDiaryEntry: Identifiable, Decodable, Hashable {
     let id: String
     let name: String
     let calories: Int
@@ -50,6 +50,9 @@ struct FoodDiaryView: View {
     @State private var entries: [FoodDiaryEntry] = []
     @State private var selectedDate = Date()
     @State private var isLoading = false
+    @State private var editingEntry: FoodDiaryEntry?
+    @State private var errorMessage: String?
+    @State private var isDeleting = false
     
     var calorieGoal: Int {
         UserDefaults.standard.integer(forKey: "calorieGoal") == 0 ? 2000 : UserDefaults.standard.integer(forKey: "calorieGoal")
@@ -152,6 +155,14 @@ struct FoodDiaryView: View {
                                     .background(Color.gray.opacity(0.1))
                                     .cornerRadius(8)
                                     .padding(.horizontal)
+                                    .onTapGesture { editingEntry = entry }
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive) {
+                                            Task { await deleteEntry(entry) }
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -162,6 +173,16 @@ struct FoodDiaryView: View {
             .background(Color(.systemBackground))
             .navigationTitle("Food Diary")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $editingEntry) { entry in
+                EditFoodEntryView(entry: entry) { updated in
+                    Task { await updateEntry(updated) }
+                }
+            }
+            .alert("Error", isPresented: .constant(errorMessage != nil), presenting: errorMessage) { _ in
+                Button("OK") { errorMessage = nil }
+            } message: { error in
+                Text(error)
+            }
             .task { await loadEntries() }
         }
     }
@@ -176,6 +197,34 @@ struct FoodDiaryView: View {
         } catch {
             print("[FoodDiaryView] Failed to load entries: \(error)")
             entries = []
+        }
+    }
+    
+    private func deleteEntry(_ entry: FoodDiaryEntry) async {
+        do {
+            try await SupabaseService.shared.deleteMeal(mealId: entry.id)
+            entries.removeAll { $0.id == entry.id }
+        } catch {
+            errorMessage = "Failed to delete entry: \(error.localizedDescription)"
+            print("[FoodDiaryView] Failed to delete entry: \(error)")
+        }
+    }
+    
+    private func updateEntry(_ entry: FoodDiaryEntry) async {
+        do {
+            try await SupabaseService.shared.updateMealItem(
+                itemId: entry.id,
+                calories: entry.calories,
+                protein: entry.protein,
+                carbs: entry.carbs,
+                fat: entry.fat
+            )
+            if let index = entries.firstIndex(where: { $0.id == entry.id }) {
+                entries[index] = entry
+            }
+        } catch {
+            errorMessage = "Failed to update entry: \(error.localizedDescription)"
+            print("[FoodDiaryView] Failed to update entry: \(error)")
         }
     }
 }

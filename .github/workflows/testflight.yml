@@ -1,0 +1,26 @@
+name: TestFlight
+on:
+  push:
+    branches: [main]
+    paths: ["ios/**"]
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: ios
+      - name: Deploy to TestFlight
+        working-directory: ios
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        run: bundle exec fastlane beta

@@ -1,0 +1,10 @@
+# The Deliverfile allows you to store various App Store Connect metadata
+# For more information, check out the docs at https://docs.fastlane.tools/actions/deliver/
+
+app_identifier "com.qxlsz.kquarks"
+username ENV["APPLE_ID"]
+
+# The maximum duration (in seconds) the deliver action waits
+# for App Store Connect to finish processing the new build.
+# If the build is not processed within the given duration, the action will fail.
+precheck_include_in_app_purchases false
