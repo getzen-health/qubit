@@ -75,7 +75,7 @@ final class NotificationService {
             updateStepBadge(steps: summary.steps, goal: Int(goal))
 
             // Update morning brief with fresh data
-            let recoveryScore = UserDefaults.standard.integer(forKey: "cached_recovery_score")
+            let recoveryScore = KeychainHelper.load(key: "cached_recovery_score").flatMap { Int($0) } ?? 0
             scheduleMorningBrief(
                 recoveryScore: recoveryScore > 0 ? recoveryScore : nil,
                 steps: summary.steps,

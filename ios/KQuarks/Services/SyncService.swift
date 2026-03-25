@@ -94,8 +94,9 @@ class SyncService {
         try await supabase.uploadDailySummary(upload)
 
         // Cache recovery score for morning brief notification
+        // Using Keychain (not UserDefaults) to prevent exposure via iCloud backup
         if let rec = AIInsightsService.shared.latestRecoveryScore {
-            UserDefaults.standard.set(rec, forKey: "cached_recovery_score")
+            try? KeychainHelper.save(key: "cached_recovery_score", value: String(rec))
         }
     }
 
