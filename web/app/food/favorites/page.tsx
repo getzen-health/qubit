@@ -15,6 +15,9 @@ export default async function FavoritesPage() {
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+    .range(0, 49)
+
+  const hasMore = (favorites?.length ?? 0) === 50
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -31,7 +34,7 @@ export default async function FavoritesPage() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <FavoritesClient favorites={favorites ?? []} />
+        <FavoritesClient favorites={favorites ?? []} hasMore={hasMore} />
       </div>
 
       <BottomNav />

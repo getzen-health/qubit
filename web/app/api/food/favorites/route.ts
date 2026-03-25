@@ -21,15 +21,19 @@ const deleteFavoriteSchema = z.object({
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'default', requireAuth: true, auditAction: 'READ', auditResource: 'food_product' },
-  async (_req: NextRequest, { supabase, user }) => {
+  async (req: NextRequest, { supabase, user }) => {
+    const { searchParams } = new URL(req.url)
+    const offset = Math.max(0, parseInt(searchParams.get('offset') ?? '0', 10))
+
     const { data, error } = await supabase
       .from('product_favorites')
       .select('*')
       .eq('user_id', user!.id)
       .order('created_at', { ascending: false })
+      .range(offset, offset + 49)
 
     if (error) return secureErrorResponse('Failed to load favorites', 500)
-    return secureJsonResponse({ favorites: data ?? [] })
+    return secureJsonResponse({ data: data ?? [], hasMore: (data ?? []).length === 50 })
   }
 )
 

@@ -22,9 +22,18 @@ function gradeFromScore(score: number | null): { grade: string; color: string } 
   return { grade: 'poor', color: 'bg-red-500' }
 }
 
-export function FavoritesClient({ favorites: initial }: { favorites: FavoriteRecord[] }) {
+export function FavoritesClient({
+  favorites: initial,
+  hasMore: initialHasMore = false,
+}: {
+  favorites: FavoriteRecord[]
+  hasMore?: boolean
+}) {
   const [favorites, setFavorites] = useState<FavoriteRecord[]>(initial)
   const [removing, setRemoving] = useState<string | null>(null)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [offset, setOffset] = useState(initial.length)
 
   async function handleUnfavorite(barcode: string | null) {
     if (!barcode) return
@@ -35,9 +44,25 @@ export function FavoritesClient({ favorites: initial }: { favorites: FavoriteRec
       })
       if (res.ok) {
         setFavorites((prev) => prev.filter((f) => f.barcode !== barcode))
+        setOffset((prev) => Math.max(0, prev - 1))
       }
     } finally {
       setRemoving(null)
+    }
+  }
+
+  async function handleLoadMore() {
+    setLoadingMore(true)
+    try {
+      const res = await fetch(`/api/food/favorites?offset=${offset}`)
+      if (!res.ok) return
+      const json = await res.json()
+      const next: FavoriteRecord[] = json.data ?? []
+      setFavorites((prev) => [...prev, ...next])
+      setOffset((prev) => prev + next.length)
+      setHasMore(json.hasMore ?? false)
+    } finally {
+      setLoadingMore(false)
     }
   }
 
@@ -105,6 +130,16 @@ export function FavoritesClient({ favorites: initial }: { favorites: FavoriteRec
           </div>
         )
       })}
+
+      {hasMore && (
+        <button
+          onClick={handleLoadMore}
+          disabled={loadingMore}
+          className="w-full py-3 rounded-2xl border border-border text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-colors disabled:opacity-50"
+        >
+          {loadingMore ? 'Loading…' : 'Load more'}
+        </button>
+      )}
     </div>
   )
 }
