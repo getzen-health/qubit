@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   BarChart,
   Bar,
@@ -23,17 +24,21 @@ import {
   FlaskConical,
   ShieldCheck,
   BookOpen,
+  Plus,
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Medication {
+  id?: string
   name: string
-  dose: string
-  status: 'Active' | 'Completed' | 'Stopped'
-  since: string
-  specialty: string
-  prescriber: string
+  dosage?: string
+  frequency?: string
+  times?: string[]
+  start_date?: string
+  end_date?: string
+  is_active?: boolean
 }
 
 interface BiomarkerImpact {
@@ -50,36 +55,18 @@ interface HrvDay {
   hrv: number
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+// Generate 30 days of HRV with mild upward trend (30–50ms)
+const HRV_TREND: HrvDay[] = Array.from({ length: 30 }, (_, i) => {
+  const base = 34 + i * 0.45
+  const noise = (Math.sin(i * 1.7) * 4 + Math.cos(i * 2.3) * 3)
+  return {
+    day: `Day ${i + 1}`,
+    hrv: Math.round(Math.min(50, Math.max(30, base + noise)) * 10) / 10,
+  }
+})
 
-const MEDICATIONS: Medication[] = [
-  {
-    name: 'Lisinopril',
-    dose: '10mg',
-    status: 'Active',
-    since: 'Jan 2025',
-    specialty: 'Cardiology',
-    prescriber: 'Dr. Smith',
-  },
-  {
-    name: 'Metformin',
-    dose: '500mg',
-    status: 'Active',
-    since: 'Mar 2024',
-    specialty: 'Endocrinology',
-    prescriber: 'Dr. Johnson',
-  },
-  {
-    name: 'Atorvastatin',
-    dose: '20mg',
-    status: 'Active',
-    since: 'Jun 2023',
-    specialty: 'General Practice',
-    prescriber: 'Dr. Chen',
-  },
-]
-
-const BIOMARKER_DATA: BiomarkerImpact[] = [
+// Demo biomarker data for visualization
+const DEMO_BIOMARKER_DATA: BiomarkerImpact[] = [
   {
     medication: 'Lisinopril',
     shortName: 'Lisinopril',
@@ -106,16 +93,6 @@ const BIOMARKER_DATA: BiomarkerImpact[] = [
   },
 ]
 
-// Generate 30 days of HRV with mild upward trend (30–50ms)
-const HRV_TREND: HrvDay[] = Array.from({ length: 30 }, (_, i) => {
-  const base = 34 + i * 0.45
-  const noise = (Math.sin(i * 1.7) * 4 + Math.cos(i * 2.3) * 3)
-  return {
-    day: `Day ${i + 1}`,
-    hrv: Math.round(Math.min(50, Math.max(30, base + noise)) * 10) / 10,
-  }
-})
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const tooltipStyle = {
@@ -125,15 +102,13 @@ const tooltipStyle = {
   fontSize: 12,
 }
 
-function statusBadge(status: Medication['status']) {
-  const styles: Record<Medication['status'], string> = {
-    Active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    Completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    Stopped: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-  }
+function statusBadge(isActive: boolean) {
+  const styles = isActive
+    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${styles[status]}`}>
-      {status}
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${styles}`}>
+      {isActive ? 'Active' : 'Inactive'}
     </span>
   )
 }
@@ -221,6 +196,65 @@ function ConnectionStatusCard() {
 }
 
 function ActiveMedications() {
+  const [medications, setMedications] = useState<Medication[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    dosage: '',
+    frequency: '',
+  })
+
+  useEffect(() => {
+    fetchMedications()
+  }, [])
+
+  const fetchMedications = async () => {
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('medications')
+        .select('*')
+        .eq('is_active', true)
+        .order('name')
+
+      if (error) throw error
+      setMedications(data || [])
+    } catch (error) {
+      console.error('Error fetching medications:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAddMedication = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!formData.name.trim()) return
+
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('medications')
+        .insert([
+          {
+            name: formData.name,
+            dosage: formData.dosage || null,
+            frequency: formData.frequency || 'daily',
+            is_active: true,
+            start_date: new Date().toISOString().split('T')[0],
+          },
+        ])
+        .select()
+
+      if (error) throw error
+      setMedications([...medications, data[0]])
+      setFormData({ name: '', dosage: '', frequency: '' })
+      setShowForm(false)
+    } catch (error) {
+      console.error('Error adding medication:', error)
+    }
+  }
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-4">
       <div className="flex items-center gap-2">
@@ -230,49 +264,106 @@ function ActiveMedications() {
         <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
           Active Medications
         </h2>
-        <span className="ml-auto text-xs text-gray-400 dark:text-gray-500 italic">
-          Demo data
-        </span>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+        >
+          <Plus className="w-4 h-4" />
+          Add
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {MEDICATIONS.map((med) => (
-          <div
-            key={med.name}
-            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700"
+      {showForm && (
+        <form onSubmit={handleAddMedication} className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-3 space-y-2 border border-gray-100 dark:border-gray-700">
+          <input
+            type="text"
+            placeholder="Medication name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Dosage (e.g., 10mg)"
+            value={formData.dosage}
+            onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
+            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          />
+          <select
+            value={formData.frequency}
+            onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
+            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <Pill className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                  {med.name}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">
-                  {med.dose}
-                </span>
-                {statusBadge(med.status)}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                {med.specialty} · {med.prescriber} · Since {med.since}
-              </p>
-            </div>
+            <option value="daily">Daily</option>
+            <option value="twice daily">Twice daily</option>
+            <option value="as needed">As needed</option>
+          </select>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-3 py-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Add Medication
+            </button>
           </div>
-        ))}
+        </form>
+      )}
+
+      <div className="space-y-3">
+        {loading ? (
+          <p className="text-xs text-gray-500 dark:text-gray-400">Loading medications...</p>
+        ) : medications.length === 0 ? (
+          <p className="text-xs text-gray-500 dark:text-gray-400">No active medications. Add one to get started.</p>
+        ) : (
+          medications.map((med) => (
+            <div
+              key={med.id}
+              className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700"
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <Pill className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {med.name}
+                  </span>
+                  {med.dosage && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">
+                      {med.dosage}
+                    </span>
+                  )}
+                  {statusBadge(med.is_active ?? true)}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {med.frequency ? `${med.frequency} · ` : ''}
+                  {med.start_date ? `Since ${new Date(med.start_date).toLocaleDateString()}` : 'No start date'}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
 }
 
 function BiomarkerImpactChart() {
-  const hrvData = BIOMARKER_DATA.map((d) => ({
+  const hrvData = DEMO_BIOMARKER_DATA.map((d) => ({
     name: d.shortName,
     Before: d.hrvBefore,
     After: d.hrvAfter,
   }))
 
-  const rhrData = BIOMARKER_DATA.map((d) => ({
+  const rhrData = DEMO_BIOMARKER_DATA.map((d) => ({
     name: d.shortName,
     Before: d.rhrBefore,
     After: d.rhrAfter,
@@ -301,7 +392,7 @@ function BiomarkerImpactChart() {
           HRV (ms)
         </p>
         <div className="flex flex-col gap-3 mb-3">
-          {BIOMARKER_DATA.map((d) => (
+          {DEMO_BIOMARKER_DATA.map((d) => (
             <div key={d.medication} className="flex items-center gap-2 text-xs">
               <span className="w-24 text-gray-700 dark:text-gray-300 font-medium">{d.medication}</span>
               <span className="text-gray-500 dark:text-gray-400">{d.hrvBefore}ms → {d.hrvAfter}ms</span>
@@ -328,7 +419,7 @@ function BiomarkerImpactChart() {
           Resting Heart Rate (bpm)
         </p>
         <div className="flex flex-col gap-3 mb-3">
-          {BIOMARKER_DATA.map((d) => (
+          {DEMO_BIOMARKER_DATA.map((d) => (
             <div key={d.medication} className="flex items-center gap-2 text-xs">
               <span className="w-24 text-gray-700 dark:text-gray-300 font-medium">{d.medication}</span>
               <span className="text-gray-500 dark:text-gray-400">{d.rhrBefore} → {d.rhrAfter} bpm</span>
