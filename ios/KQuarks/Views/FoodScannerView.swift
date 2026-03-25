@@ -106,6 +106,7 @@ struct FoodScannerView: View {
                     } label: {
                         Image(systemName: isScanning ? "list.bullet" : "barcode.viewfinder")
                     }
+                    .accessibilityLabel(isScanning ? "Switch to search" : "Scan barcode")
                     .disabled(cameraPermissionDenied)
                 }
             }
@@ -166,6 +167,8 @@ struct FoodScannerView: View {
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
+                .accessibilityLabel("Scan barcode")
+                .accessibilityHint("Opens camera to scan a food product barcode")
                 .padding(.horizontal, 32)
             }
 
@@ -410,6 +413,7 @@ struct ProductDetailView: View {
                     Text("/100").font(.caption2).foregroundStyle(.secondary)
                 }
             }
+            .accessibilityLabel("Health score: \(product.healthScore.score) out of 100")
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("\(product.healthScore.emoji) \(product.healthScore.label)")
@@ -550,6 +554,8 @@ struct ProductDetailView: View {
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
+            .accessibilityLabel("Add \(product.name) to \(selectedMealType.label)")
+            .accessibilityHint("Logs this product to your meal diary")
             .disabled(isSaving)
         }
         .padding()
