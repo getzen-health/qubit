@@ -38,6 +38,8 @@ export interface BodyTrendData {
   bfChange: number | null
   dowData: DowWeightStat[]
   monthData: MonthWeightStat[]
+  weightGoal: number | null
+  projectedGoalDate: string | null
 }
 
 function signStr(val: number, unit = 'kg') {
@@ -62,6 +64,7 @@ export function BodyTrendsClient({ data }: { data: BodyTrendData }) {
     totalMeasurements, latest, earliest, minWeight, maxWeight, avgWeight,
     totalChange, weeklyChange, change30, weeklySlope, trendDir,
     latestBf, earliestBf, bfChange, dowData, monthData,
+    weightGoal, projectedGoalDate,
   } = data
 
   const dowWithData = dowData.filter((d) => d.avgWeight !== null && d.count > 0)
@@ -198,15 +201,25 @@ export function BodyTrendsClient({ data }: { data: BodyTrendData }) {
                 formatter={(val: number, name: string) => [`${val.toFixed(2)} kg`, name]}
                 contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }}
               />
-              {monthData.some((m) => m.avgBf !== null) && (
+              {(monthData.some((m) => m.avgBf !== null) || weightGoal) && (
                 <Legend wrapperStyle={{ fontSize: 11 }} />
               )}
               <Line type="monotone" dataKey="avgWeight" name="Avg Weight (kg)" stroke="#60a5fa" strokeWidth={2} dot={{ r: 3 }} />
               {monthData.some((m) => m.avgBf !== null) && (
                 <Line type="monotone" dataKey="avgBf" name="Body Fat %" stroke="#a78bfa" strokeWidth={2} dot={{ r: 3 }} strokeDasharray="4 2" yAxisId={1} />
               )}
+              {weightGoal && (
+                <ReferenceLine y={weightGoal} stroke="#a3e635" strokeDasharray="5 5" label={{ value: `Goal: ${weightGoal.toFixed(1)} kg`, position: 'insideTopRight', offset: -5, fill: '#a3e635', fontSize: 11 }} />
+              )}
             </LineChart>
           </ResponsiveContainer>
+          {weightGoal && projectedGoalDate && (
+            <div className="mt-4 p-3 bg-lime-500/10 border border-lime-500/30 rounded-lg">
+              <p className="text-sm text-lime-400">
+                📅 At this rate, you'll reach your goal by <span className="font-semibold">{projectedGoalDate}</span>
+              </p>
+            </div>
+          )}
         </div>
       )}
 

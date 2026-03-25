@@ -41,6 +41,7 @@ struct BodyTrendsView: View {
     @State private var dowData: [BodyDowStat] = []
     @State private var monthData: [BodyMonthStat] = []
     @State private var isLoading = true
+    @State private var weightGoal: Double? = nil
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -236,7 +237,6 @@ struct BodyTrendsView: View {
                         let isPos = diff > 0
 
                         ZStack {
-                            // Center line
                             Rectangle()
                                 .fill(Color(.separator))
                                 .frame(width: CGFloat(1), height: CGFloat(12))
@@ -296,6 +296,12 @@ struct BodyTrendsView: View {
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 2]))
                     PointMark(x: .value("Month", m.label), y: .value("Body Fat", bf))
                         .foregroundStyle(.purple)
+                }
+                
+                if let goal = weightGoal {
+                    RuleMark(y: .value("Goal", goal))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(.green)
                 }
             }
             .frame(height: 160)
@@ -376,6 +382,10 @@ struct BodyTrendsView: View {
                 let weight_kg: Double?
                 let body_fat_percent: Double?
             }
+            
+            struct UserPrefsRow: Decodable {
+                let weight_goal_kg: Double?
+            }
 
             let rows: [SummaryRow] = try await SupabaseService.shared.client
                 .from("daily_summaries")
@@ -385,6 +395,15 @@ struct BodyTrendsView: View {
                 .order("date", ascending: true)
                 .execute()
                 .value
+            
+            let prefRows: [UserPrefsRow] = try await SupabaseService.shared.client
+                .from("user_preferences")
+                .select("weight_goal_kg")
+                .eq("user_id", value: userId.uuidString)
+                .execute()
+                .value
+            
+            weightGoal = prefRows.first?.weight_goal_kg
 
             let valid = rows.filter { ($0.weight_kg ?? 0) > 0 }
             totalMeasurements = valid.count

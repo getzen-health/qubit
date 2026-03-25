@@ -10,6 +10,31 @@ export const metadata = { title: 'Body Weight Trends' }
 const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+function projectGoalDate(weights: { date: string; value: number }[], goalKg: number): string | null {
+  if (weights.length < 7) return null
+  const recent = weights.slice(-14)
+  const n = recent.length
+  const sumX = recent.reduce((s, _, i) => s + i, 0)
+  const sumY = recent.reduce((s, w) => s + w.value, 0)
+  const sumXY = recent.reduce((s, w, i) => s + i * w.value, 0)
+  const sumX2 = recent.reduce((s, _, i) => s + i * i, 0)
+  const denom = n * sumX2 - sumX * sumX
+  const slope = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0
+  const currentAvg = sumY / n
+  
+  if (slope >= 0 && goalKg < currentAvg) return null
+  if (slope <= 0 && goalKg > currentAvg) return null
+  
+  const lastWeight = recent[recent.length - 1].value
+  const daysToGoal = Math.round((goalKg - lastWeight) / slope)
+  
+  if (daysToGoal < 0 || daysToGoal > 365) return null
+  
+  const goalDate = new Date()
+  goalDate.setDate(goalDate.getDate() + daysToGoal)
+  return goalDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export default async function BodyTrendsPage() {
   const supabase = await createClient()
   const {
@@ -30,7 +55,14 @@ export default async function BodyTrendsPage() {
     .not('weight_kg', 'is', null)
     .order('date', { ascending: true })
 
+  const { data: userData } = await supabase
+    .from('users')
+    .select('weight_goal_kg')
+    .eq('id', user.id)
+    .single()
+
   const summaries = (rawSummaries ?? []) as { date: string; weight_kg: number; body_fat_percent: number | null }[]
+  const weightGoal = userData?.weight_goal_kg ?? null
 
   if (summaries.length < 5) {
     return (
@@ -63,7 +95,6 @@ export default async function BodyTrendsPage() {
   const avgWeight = weights.reduce((a, b) => a + b, 0) / weights.length
   const totalChange = latest - earliest
 
-  // 7-day moving average (last point vs 7 days prior point)
   const last7 = summaries.slice(-7)
   const prev7Start = summaries.length >= 14 ? summaries.slice(-14, -7) : null
   const last7Avg = last7.reduce((s, r) => s + r.weight_kg, 0) / last7.length
@@ -72,26 +103,21 @@ export default async function BodyTrendsPage() {
     : null
   const weeklyChange = prev7Avg !== null ? +(last7Avg - prev7Avg).toFixed(2) : null
 
-  // 30-day change
   const last30 = summaries.slice(-30)
   const firstOf30 = last30[0]?.weight_kg ?? null
   const change30 = firstOf30 !== null ? +(latest - firstOf30).toFixed(2) : null
 
-  // Linear regression for trend slope (kg/week)
   const n = weights.length
   let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0
   for (let i = 0; i < n; i++) {
     sumX += i; sumY += weights[i]; sumXY += i * weights[i]; sumX2 += i * i
   }
   const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
-  // slope is kg/measurement-day — convert to kg/week
-  // average days between measurements
   const totalMeasurements = n
   const daysSpan = Math.max(1, (new Date(summaries[n-1].date).getTime() - new Date(summaries[0].date).getTime()) / 86400000)
-  const measureFreq = daysSpan / totalMeasurements // avg days between measurements
+  const measureFreq = daysSpan / totalMeasurements
   const weeklySlope = +(slope * 7 / measureFreq).toFixed(2)
 
-  // DOW patterns
   const dowBuckets: number[][] = Array.from({ length: 7 }, () => [])
   for (const s of summaries) {
     const dow = new Date(s.date + 'T12:00:00').getDay()
@@ -107,7 +133,6 @@ export default async function BodyTrendsPage() {
       : null,
   }))
 
-  // Monthly summaries
   const monthBuckets: Record<string, number[]> = {}
   const monthBfBuckets: Record<string, number[]> = {}
   for (const s of summaries) {
@@ -135,14 +160,15 @@ export default async function BodyTrendsPage() {
       }
     })
 
-  // Body fat summary
   const bfData = summaries.filter((s) => s.body_fat_percent && s.body_fat_percent > 0)
   const latestBf = bfData.length > 0 ? bfData[bfData.length - 1].body_fat_percent : null
   const earliestBf = bfData.length > 0 ? bfData[0].body_fat_percent : null
   const bfChange = latestBf !== null && earliestBf !== null ? +(latestBf - earliestBf).toFixed(1) : null
 
-  // Trend direction
   const trendDir = weeklySlope > 0.05 ? 'gaining' : weeklySlope < -0.05 ? 'losing' : 'maintaining'
+
+  const weightsWithDates = summaries.map((s) => ({ date: s.date, value: s.weight_kg }))
+  const projectedGoalDate = weightGoal ? projectGoalDate(weightsWithDates, weightGoal) : null
 
   const profileData: BodyTrendData = {
     totalMeasurements,
@@ -161,6 +187,8 @@ export default async function BodyTrendsPage() {
     bfChange,
     dowData,
     monthData,
+    weightGoal,
+    projectedGoalDate,
   }
 
   return (

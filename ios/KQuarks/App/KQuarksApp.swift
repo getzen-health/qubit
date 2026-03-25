@@ -1,5 +1,6 @@
 import SwiftUI
 import Supabase
+import SwiftData
 #if os(iOS)
 import BackgroundTasks
 #endif
@@ -9,11 +10,22 @@ struct KQuarksApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var appState = AppState()
     @State private var themeManager = ThemeManager.shared
+    
+    let modelContainer: ModelContainer
 
     init() {
+        let config = ModelConfiguration(
+            schema: Schema([PendingSyncItem.self]),
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .automatic
+        )
+        do {
+            modelContainer = try ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [config])
+        } catch {
+            fatalError("Could not initialize ModelContainer: \(error)")
+        }
+
         #if os(iOS)
-        // MUST register handlers before app finishes launching.
-        // Do NOT move this to .task or .onAppear.
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.refresh", using: nil) { task in
             Task { await SyncService.shared.handleRefreshTask(task as! BGAppRefreshTask) }
         }
@@ -30,8 +42,13 @@ struct KQuarksApp: App {
             ContentView()
                 .environment(appState)
                 .environment(themeManager)
+                .modelContainer(modelContainer)
                 .preferredColorScheme(themeManager.appearanceMode.colorScheme)
                 .tint(themeManager.accentColor)
+                .task {
+                    let modelContext = ModelContext(modelContainer)
+                    OfflineSyncQueue.shared.setModelContext(modelContext)
+                }
                 .task {
                     await appState.initializeAuth()
                 }
@@ -42,8 +59,6 @@ struct KQuarksApp: App {
                     await NotificationService.shared.refreshAuthorizationStatus()
                 }
                 .task {
-                    // Set up HealthKit observer queries for background delivery
-                    // Only after HealthKit is authorized (no-op if not yet authorized)
                     HealthKitService.shared.setupBackgroundDelivery()
                 }
                 .onOpenURL { url in
@@ -63,26 +78,22 @@ class AppState {
     private let supabaseService = SupabaseService.shared
 
     init() {
-        // Check stored auth state
         hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
     }
 
     func initializeAuth() async {
         isCheckingAuth = true
 
-        // Check if there's an existing session
         do {
             let user = try await supabaseService.fetchCurrentUser()
             self.user = user
             self.isAuthenticated = true
             GoalService.shared.apply(from: user)
         } catch {
-            // No existing session — user needs to sign in
         }
 
         isCheckingAuth = false
 
-        // Listen for auth state changes
         for await event in supabaseService.observeAuthStateChanges() {
             await handleAuthEvent(event)
         }
@@ -98,13 +109,11 @@ class AppState {
                 self.isAuthenticated = true
                 GoalService.shared.apply(from: user)
             } catch {
-                // fetchCurrentUser failed after signIn — session may not have propagated yet
             }
         case .signedOut:
             self.user = nil
             self.isAuthenticated = false
         case .tokenRefreshed:
-            // Token was refreshed, optionally refresh user data
             break
         default:
             break
