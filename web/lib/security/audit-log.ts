@@ -25,6 +25,11 @@ export type AuditResource =
   | 'nutrition_settings'
   | 'daily_summary'
   | 'auth'
+  | 'daily_checkin'
+  | 'habit'
+  | 'user_preferences'
+  | 'user_widgets'
+  | 'workout'
 
 interface AuditLogEntry {
   user_id: string

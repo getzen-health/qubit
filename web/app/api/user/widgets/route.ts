@@ -1,67 +1,57 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+import { z } from 'zod'
 
-export async function GET() {
-  const supabase = await createClient()
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'default',
+    requireAuth: true,
+    auditAction: 'READ',
+    auditResource: 'user_widgets',
+  },
+  async (_request, { user, supabase }) => {
+    const { data, error } = await supabase
+      .from('user_widget_config')
+      .select('widget_configs')
+      .eq('user_id', user!.id)
+      .single()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const { data, error } = await supabase
-    .from('user_widget_config')
-    .select('widget_configs')
-    .eq('user_id', user.id)
-    .single()
-
-  if (error && error.code !== 'PGRST116') {
-    // PGRST116 = not found, which is fine for new users
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json({ configs: data?.widget_configs ?? null })
-}
-
-export async function POST(request: Request) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  let configs
-  try {
-    const body = await request.json()
-    configs = body.configs
-    if (!Array.isArray(configs)) {
-      throw new Error('Invalid configs format')
+    if (error && error.code !== 'PGRST116') {
+      // PGRST116 = not found, which is fine for new users
+      return secureErrorResponse(error.message, 500)
     }
-  } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
-  }
 
-  const { error } = await supabase.from('user_widget_config').upsert(
-    {
-      user_id: user.id,
-      widget_configs: configs,
-      updated_at: new Date().toISOString(),
-    },
-    {
-      onConflict: 'user_id',
+    return secureJsonResponse({ configs: data?.widget_configs ?? null })
+  }
+)
+
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'default',
+    requireAuth: true,
+    bodySchema: z.object({
+      configs: z.array(z.unknown()),
+    }),
+    auditAction: 'UPDATE',
+    auditResource: 'user_widgets',
+  },
+  async (_request, { user, body, supabase }) => {
+    const { configs } = body as { configs: unknown[] }
+
+    const { error } = await supabase.from('user_widget_config').upsert(
+      {
+        user_id: user!.id,
+        widget_configs: configs,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'user_id',
+      }
+    )
+
+    if (error) {
+      return secureErrorResponse(error.message, 500)
     }
-  )
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return secureJsonResponse({ success: true })
   }
-
-  return NextResponse.json({ success: true })
-}
+)
