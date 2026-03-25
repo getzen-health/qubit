@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -15,6 +16,20 @@ import {
   Lock,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+
+export const metadata: Metadata = {
+  title: 'Settings',
+  description: 'Manage your KQuarks account, preferences, and data settings.',
+  openGraph: {
+    title: 'KQuarks Settings',
+    description: 'Manage your account, preferences, and data settings.',
+    type: 'website',
+  },
+  twitter: {
+    title: 'KQuarks Settings',
+    description: 'Manage your account, preferences, and data settings.',
+  },
+}
 
 export default async function SettingsPage() {
   const supabase = await createClient()
