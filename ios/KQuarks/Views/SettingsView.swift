@@ -161,6 +161,12 @@ struct SettingsView: View {
                     }
 
                     NavigationLink {
+                        ProfileSettingsView()
+                    } label: {
+                        Label("Physical Profile", systemImage: "person.text.rectangle")
+                    }
+
+                    NavigationLink {
                         GoalsSettingsView()
                     } label: {
                         Label("Goals", systemImage: "target")

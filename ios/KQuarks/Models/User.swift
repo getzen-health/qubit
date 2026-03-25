@@ -11,6 +11,11 @@ struct User: Codable, Identifiable {
     var stepGoal: Int?
     var calorieGoal: Int?
     var sleepGoalMinutes: Int?
+    var heightCm: Double?
+    var weightKg: Double?
+    var maxHeartRate: Int?
+    var restingHr: Int?
+    var fitnessLevel: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -23,5 +28,10 @@ struct User: Codable, Identifiable {
         case stepGoal = "step_goal"
         case calorieGoal = "calorie_goal"
         case sleepGoalMinutes = "sleep_goal_minutes"
+        case heightCm = "height_cm"
+        case weightKg = "weight_kg"
+        case maxHeartRate = "max_heart_rate"
+        case restingHr = "resting_hr"
+        case fitnessLevel = "fitness_level"
     }
 }

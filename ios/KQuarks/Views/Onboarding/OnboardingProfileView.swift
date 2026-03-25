@@ -7,11 +7,19 @@ struct OnboardingProfileView: View {
     @AppStorage("userDisplayName") private var displayName = ""
     @AppStorage("userBirthYear") private var birthYear = 0
     @AppStorage("userBiologicalSex") private var biologicalSexRaw = ""
+    @AppStorage("userHeightCm") private var storedHeightCm = 0.0
+    @AppStorage("userWeightKg") private var storedWeightKg = 0.0
+    @AppStorage("userMaxHeartRate") private var storedMaxHR = 0
 
     @State private var nameInput = ""
     @State private var selectedBirthYear: Int = Calendar.current.component(.year, from: Date()) - 30
     @State private var selectedSex: BiologicalSex = .notSet
-    @FocusState private var nameFieldFocused: Bool
+    @State private var heightText = ""
+    @State private var weightText = ""
+    @State private var maxHRText = ""
+    @FocusState private var focusedField: Field?
+
+    private enum Field { case name, height, weight, maxHR }
 
     private let currentYear = Calendar.current.component(.year, from: Date())
     private var birthYears: [Int] { Array(stride(from: currentYear - 100, through: currentYear - 13, by: 1)).reversed() }
@@ -51,9 +59,9 @@ struct OnboardingProfileView: View {
 
                         TextField("What should we call you?", text: $nameInput)
                             .font(.subheadline)
-                            .focused($nameFieldFocused)
-                            .submitLabel(.done)
-                            .onSubmit { nameFieldFocused = false }
+                            .focused($focusedField, equals: .name)
+                            .submitLabel(.next)
+                            .onSubmit { focusedField = .height }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -104,6 +112,73 @@ struct OnboardingProfileView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 4)
+
+                    Divider()
+                        .padding(.leading, 116)
+
+                    // Height (cm)
+                    HStack {
+                        Text("Height (cm)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 100, alignment: .leading)
+
+                        TextField("e.g. 170", text: $heightText)
+                            .font(.subheadline)
+                            .keyboardType(.numberPad)
+                            .focused($focusedField, equals: .height)
+                            .submitLabel(.next)
+                            .onSubmit { focusedField = .weight }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+
+                    Divider()
+                        .padding(.leading, 116)
+
+                    // Weight (kg)
+                    HStack {
+                        Text("Weight (kg)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 100, alignment: .leading)
+
+                        TextField("e.g. 70.5", text: $weightText)
+                            .font(.subheadline)
+                            .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .weight)
+                            .submitLabel(.next)
+                            .onSubmit { focusedField = .maxHR }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+
+                    Divider()
+                        .padding(.leading, 116)
+
+                    // Max Heart Rate (optional)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("Max HR (bpm)")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 100, alignment: .leading)
+
+                            TextField("Optional", text: $maxHRText)
+                                .font(.subheadline)
+                                .keyboardType(.numberPad)
+                                .focused($focusedField, equals: .maxHR)
+                                .submitLabel(.done)
+                                .onSubmit { focusedField = nil }
+                        }
+
+                        Text("Leave blank to use 220 − age estimate")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .padding(.leading, 116)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
                 }
                 .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -131,16 +206,36 @@ struct OnboardingProfileView: View {
                 .padding(.bottom, 48)
             }
         }
-        .onTapGesture { nameFieldFocused = false }
+        .onTapGesture { focusedField = nil }
     }
 
     // MARK: - Private
 
     private func saveAndContinue() {
+        focusedField = nil
+
         let trimmed = nameInput.trimmingCharacters(in: .whitespaces)
         if !trimmed.isEmpty { displayName = trimmed }
         if selectedBirthYear != 0 { birthYear = selectedBirthYear }
         biologicalSexRaw = selectedSex.rawValue
+
+        let height: Double? = heightText.isEmpty ? nil : Double(heightText).flatMap { (100...250).contains(Int($0)) ? $0 : nil }
+        let weight: Double? = weightText.isEmpty ? nil : Double(weightText).flatMap { $0 >= 30 && $0 <= 300 ? $0 : nil }
+        let maxHR: Int? = maxHRText.isEmpty ? nil : Int(maxHRText).flatMap { (120...220).contains($0) ? $0 : nil }
+
+        if let h = height { storedHeightCm = h }
+        if let w = weight { storedWeightKg = w }
+        if let m = maxHR { storedMaxHR = m }
+
+        Task {
+            try? await SupabaseService.shared.updatePhysicalProfile(
+                heightCm: height,
+                weightKg: weight,
+                maxHeartRate: maxHR,
+                restingHr: nil
+            )
+        }
+
         onNext()
     }
 }

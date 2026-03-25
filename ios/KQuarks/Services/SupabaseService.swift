@@ -181,6 +181,37 @@ class SupabaseService {
             .execute()
     }
 
+    func updatePhysicalProfile(heightCm: Double?, weightKg: Double?, maxHeartRate: Int?, restingHr: Int?) async throws {
+        guard let userId = currentSession?.user.id else { return }
+
+        // Only non-nil values are serialised (Swift omits nil optionals from JSON),
+        // so existing columns are untouched when a field is left blank.
+        struct PhysicalProfileUpdate: Encodable {
+            let heightCm: Double?
+            let weightKg: Double?
+            let maxHeartRate: Int?
+            let restingHr: Int?
+            enum CodingKeys: String, CodingKey {
+                case heightCm = "height_cm"
+                case weightKg = "weight_kg"
+                case maxHeartRate = "max_heart_rate"
+                case restingHr = "resting_hr"
+            }
+        }
+
+        let payload = PhysicalProfileUpdate(
+            heightCm: heightCm,
+            weightKg: weightKg,
+            maxHeartRate: maxHeartRate,
+            restingHr: restingHr
+        )
+        try await client
+            .from("users")
+            .update(payload)
+            .eq("id", value: userId.uuidString)
+            .execute()
+    }
+
     // MARK: - Auth State Listener
 
     func observeAuthStateChanges() -> AsyncStream<AuthChangeEvent> {
