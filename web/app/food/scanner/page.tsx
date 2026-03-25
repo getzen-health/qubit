@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp, RefreshCw, Activity } from 'lucide-react'
+import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp, RefreshCw, Activity, Bookmark, BookmarkCheck, Clock } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
 import { getReadinessContext, getFoodReadinessWarning } from '@/lib/readiness'
@@ -140,6 +140,8 @@ export default function FoodScannerPage() {
   const [showIngredients, setShowIngredients] = useState(false)
   const [addingToMeal, setAddingToMeal] = useState(false)
   const [mealAdded, setMealAdded] = useState(false)
+  const [isFavorited, setIsFavorited] = useState(false)
+  const [favoriteLoading, setFavoriteLoading] = useState(false)
 
   function getDefaultMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
     const hour = new Date().getHours()
@@ -184,6 +186,48 @@ export default function FoodScannerPage() {
       setAddingToMeal(false)
     }
   }
+
+  async function toggleFavorite() {
+    if (!product) return
+    const bc = product.barcode
+    if (!bc) return
+    setFavoriteLoading(true)
+    try {
+      if (isFavorited) {
+        await fetch(`/api/food/favorites?barcode=${encodeURIComponent(bc)}`, { method: 'DELETE' })
+        setIsFavorited(false)
+      } else {
+        await fetch('/api/food/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            barcode: bc,
+            product_name: product.name,
+            brand: product.brand ?? null,
+            health_score: product.healthScore?.score ?? null,
+            nova_group: product.healthScore?.novaGroup ?? null,
+            thumbnail_url: product.imageUrl ?? null,
+          }),
+        })
+        setIsFavorited(true)
+      }
+    } finally {
+      setFavoriteLoading(false)
+    }
+  }
+
+  // Check if current product is already favorited
+  useEffect(() => {
+    if (!product?.barcode) { setIsFavorited(false); return }
+    const bc = product.barcode
+    fetch('/api/food/favorites')
+      .then((r) => r.json())
+      .then((data) => {
+        const favs: Array<{ barcode: string | null }> = data.favorites ?? []
+        setIsFavorited(favs.some((f) => f.barcode === bc))
+      })
+      .catch(() => {})
+  }, [product?.barcode])
 
   // Fetch latest readiness/body-battery score for contextual food guidance
   useEffect(() => {
@@ -279,7 +323,7 @@ export default function FoodScannerPage() {
           <Link href="/nutrition" className="p-2 rounded-lg hover:bg-surface-secondary transition-colors">
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Food Scanner</h1>
             <p className="text-xs text-text-secondary">Scan barcode · search · see health score</p>
             {readinessScore != null && (
@@ -288,6 +332,14 @@ export default function FoodScannerPage() {
                 <span>Readiness: {readinessCtx.label}</span>
               </div>
             )}
+          </div>
+          <div className="flex items-center gap-1">
+            <Link href="/food/favorites" className="p-2 rounded-lg hover:bg-surface-secondary transition-colors" aria-label="Favourites">
+              <Bookmark className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <Link href="/food/history" className="p-2 rounded-lg hover:bg-surface-secondary transition-colors" aria-label="History">
+              <Clock className="w-5 h-5 text-text-secondary" />
+            </Link>
           </div>
         </div>
       </header>
@@ -351,7 +403,22 @@ export default function FoodScannerPage() {
                     </p>
                   )}
                 </div>
-                <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
+                <div className="flex flex-col items-end gap-2">
+                  <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
+                  {product.barcode && (
+                    <button
+                      onClick={toggleFavorite}
+                      disabled={favoriteLoading}
+                      className="p-1.5 rounded-lg hover:bg-surface-secondary transition-colors disabled:opacity-50"
+                      aria-label={isFavorited ? 'Remove from favourites' : 'Add to favourites'}
+                    >
+                      {isFavorited
+                        ? <BookmarkCheck className="w-5 h-5 text-accent" />
+                        : <Bookmark className="w-5 h-5 text-text-secondary" />
+                      }
+                    </button>
+                  )}
+                </div>
               </div>
 
               {product.healthScore.hasCompleteData === false && (
