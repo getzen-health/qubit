@@ -1,9 +1,8 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import {
-  LineChart,
   Line,
-  AreaChart,
   Area,
   XAxis,
   YAxis,
@@ -13,6 +12,9 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { Scale } from 'lucide-react'
+
+const LineChart = dynamic(() => import('recharts').then((m) => ({ default: m.LineChart })), { ssr: false })
+const AreaChart = dynamic(() => import('recharts').then((m) => ({ default: m.AreaChart })), { ssr: false })
 
 interface DaySummary {
   date: string

@@ -1,9 +1,8 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import {
-  LineChart,
   Line,
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -12,9 +11,12 @@ import {
   CartesianGrid,
   ReferenceLine,
   Cell,
-  ComposedChart,
   Area,
 } from 'recharts'
+
+const LineChart = dynamic(() => import('recharts').then((m) => ({ default: m.LineChart })), { ssr: false })
+const BarChart = dynamic(() => import('recharts').then((m) => ({ default: m.BarChart })), { ssr: false })
+const ComposedChart = dynamic(() => import('recharts').then((m) => ({ default: m.ComposedChart })), { ssr: false })
 import { AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 

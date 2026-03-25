@@ -1,10 +1,10 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { Share2 } from 'lucide-react'
 import Link from 'next/link'
 import {
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -14,6 +14,8 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { ShareCard } from '@/components/ShareCard'
+
+const BarChart = dynamic(() => import('recharts').then((m) => ({ default: m.BarChart })), { ssr: false })
 
 interface SleepRecord {
   id: string

@@ -1,7 +1,7 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import {
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -9,10 +9,12 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Cell,
-  PieChart,
   Pie,
   Legend,
 } from 'recharts'
+
+const BarChart = dynamic(() => import('recharts').then((m) => ({ default: m.BarChart })), { ssr: false })
+const PieChart = dynamic(() => import('recharts').then((m) => ({ default: m.PieChart })), { ssr: false })
 
 interface RunPoint {
   date: string

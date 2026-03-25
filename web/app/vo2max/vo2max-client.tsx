@@ -1,9 +1,8 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import {
-  LineChart,
   Line,
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -14,6 +13,9 @@ import {
   Cell,
   Dot,
 } from 'recharts'
+
+const LineChart = dynamic(() => import('recharts').then((m) => ({ default: m.LineChart })), { ssr: false })
+const BarChart = dynamic(() => import('recharts').then((m) => ({ default: m.BarChart })), { ssr: false })
 
 interface VO2Reading {
   time: string
