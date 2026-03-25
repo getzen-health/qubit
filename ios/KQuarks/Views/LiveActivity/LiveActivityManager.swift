@@ -1,0 +1,80 @@
+import ActivityKit
+import Foundation
+
+@MainActor
+class LiveActivityManager: ObservableObject {
+    static let shared = LiveActivityManager()
+    
+    private var fastingActivity: Activity<FastingLiveActivityAttributes>?
+    private var workoutActivity: Activity<WorkoutLiveActivityAttributes>?
+    
+    func startFastingActivity(startTime: Date, goal: String, targetSeconds: Int) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        let attributes = FastingLiveActivityAttributes(startTime: startTime, goal: goal)
+        let state = FastingLiveActivityAttributes.ContentState(
+            elapsedSeconds: 0,
+            targetSeconds: targetSeconds,
+            phase: "starting"
+        )
+        do {
+            fastingActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: state, staleDate: nil)
+            )
+        } catch {
+            print("Failed to start fasting Live Activity: \(error)")
+        }
+    }
+    
+    func updateFastingActivity(elapsedSeconds: Int, targetSeconds: Int, phase: String) {
+        Task {
+            let state = FastingLiveActivityAttributes.ContentState(
+                elapsedSeconds: elapsedSeconds,
+                targetSeconds: targetSeconds,
+                phase: phase
+            )
+            await fastingActivity?.update(.init(state: state, staleDate: nil))
+        }
+    }
+    
+    func stopFastingActivity() {
+        Task {
+            await fastingActivity?.end(nil, dismissalPolicy: .immediate)
+            fastingActivity = nil
+        }
+    }
+    
+    func startWorkoutActivity(workoutType: String, startTime: Date) {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        let attributes = WorkoutLiveActivityAttributes(workoutType: workoutType, startTime: startTime)
+        let state = WorkoutLiveActivityAttributes.ContentState(
+            heartRate: 0, calories: 0, durationSeconds: 0,
+            zone: "Zone 1", zoneColor: "#4CAF50"
+        )
+        do {
+            workoutActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: state, staleDate: nil)
+            )
+        } catch {
+            print("Failed to start workout Live Activity: \(error)")
+        }
+    }
+    
+    func updateWorkoutActivity(heartRate: Int, calories: Int, durationSeconds: Int, zone: String, zoneColor: String) {
+        Task {
+            let state = WorkoutLiveActivityAttributes.ContentState(
+                heartRate: heartRate, calories: calories, durationSeconds: durationSeconds,
+                zone: zone, zoneColor: zoneColor
+            )
+            await workoutActivity?.update(.init(state: state, staleDate: nil))
+        }
+    }
+    
+    func stopWorkoutActivity() {
+        Task {
+            await workoutActivity?.end(nil, dismissalPolicy: .immediate)
+            workoutActivity = nil
+        }
+    }
+}
