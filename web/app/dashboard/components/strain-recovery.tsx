@@ -1,6 +1,7 @@
 'use client'
 
-import React, { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import React from 'react'
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface StrainData {
   score: number // 0-21 scale like Whoop

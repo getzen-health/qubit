@@ -1,6 +1,7 @@
 'use client'
 
-import React, { Check, Trophy } from 'lucide-react'
+import React from 'react'
+import { Check, Trophy } from 'lucide-react'
 
 interface Streak {
   name: string

@@ -1,5 +1,7 @@
 'use client'
 
+import React from 'react'
+
 interface HealthScoreProps {
   score: number
   label: string

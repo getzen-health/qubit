@@ -173,7 +173,7 @@ export const GET = createSecureApiHandler(
       }
 
       if (user) {
-        supabase.from('product_scans').insert({
+        void Promise.resolve(supabase.from('product_scans').insert({
           user_id: user.id,
           barcode,
           product_name: usdaMapped.name,
@@ -182,7 +182,7 @@ export const GET = createSecureApiHandler(
           nova_group: 1,
           nutriscore: null,
           thumbnail_url: null,
-        }).then(({ error }) => {
+        })).then(({ error }) => {
           if (error) {
             console.error(JSON.stringify({
               timestamp: new Date().toISOString(),
@@ -264,7 +264,7 @@ export const GET = createSecureApiHandler(
     }
 
     if (user) {
-      supabase.from('product_scans').insert({
+      void Promise.resolve(supabase.from('product_scans').insert({
         user_id: user.id,
         barcode: food.barcode ?? barcode,
         product_name: food.name,
@@ -273,7 +273,7 @@ export const GET = createSecureApiHandler(
         nova_group: food.novaGroup ?? null,
         nutriscore: product.nutriscore_grade ?? null,
         thumbnail_url: food.imageUrl ?? null,
-      }).then(({ error }) => {
+      })).then(({ error }) => {
         if (error) {
           console.error(JSON.stringify({
             timestamp: new Date().toISOString(),

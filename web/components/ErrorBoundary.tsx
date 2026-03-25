@@ -3,6 +3,7 @@
  */
 'use client'
 
+import React from 'react'
 import { AlertCircle, AlertTriangle, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
@@ -12,7 +13,7 @@ export interface ErrorBoundaryProps {
   title?: string
   description?: string
   showDashboardLink?: boolean
-  icon?: React.ReactNode
+  icon?: React.ComponentType<{ className?: string }> | React.ReactNode
   isDevelopment?: boolean
 }
 
@@ -32,10 +33,12 @@ export function ErrorBoundary({
           {/* Icon */}
           <div className="flex justify-center">
             <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center">
-              {typeof IconComponent === 'string' ? (
-                <AlertTriangle className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+              {React.isValidElement(IconComponent) ? (
+                IconComponent
+              ) : typeof IconComponent === 'function' ? (
+                <IconComponent className="w-8 h-8 text-orange-600 dark:text-orange-400" />
               ) : (
-                <div className="w-8 h-8 text-orange-600 dark:text-orange-400">{IconComponent}</div>
+                <AlertTriangle className="w-8 h-8 text-orange-600 dark:text-orange-400" />
               )}
             </div>
           </div>

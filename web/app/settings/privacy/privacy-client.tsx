@@ -150,7 +150,7 @@ export function PrivacyClient() {
               >
                 <input
                   type="checkbox"
-                  checked={privacy[key as keyof typeof METRIC_LABELS] as boolean}
+                  checked={privacy[key as unknown as keyof ProfilePrivacy] as boolean}
                   onChange={(e) =>
                     setPrivacy((p) => ({
                       ...p,
