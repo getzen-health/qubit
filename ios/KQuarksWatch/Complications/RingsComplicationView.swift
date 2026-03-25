@@ -1,26 +1,22 @@
 import SwiftUI
 
 struct RingsComplicationView: View {
-    let moveRingPercent: Double
-
-    private var clamped: Double { min(max(moveRingPercent, 0), 1) }
+    var movePercent: Double  // 0.0 to 1.0+
+    var exercisePercent: Double
+    var standPercent: Double
 
     var body: some View {
-        Gauge(value: clamped) {
-            Image(systemName: "figure.run")
-                .foregroundStyle(.red)
-        } currentValueLabel: {
-            Text(String(format: "%.0f%%", clamped * 100))
-                .font(.system(size: 10, weight: .semibold))
-                .minimumScaleFactor(0.5)
+        ZStack {
+            Gauge(value: min(movePercent, 1.0)) {
+                Image(systemName: "figure.walk")
+                    .foregroundStyle(.red)
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+            .tint(.red)
         }
-        .gaugeStyle(.circularCapacity)
-        .tint(.red)
     }
 }
 
 #Preview {
-    RingsComplicationView(moveRingPercent: 0.72)
-        .frame(width: 40, height: 40)
-        .containerBackground(.black.gradient, for: .watch)
+    RingsComplicationView(movePercent: 0.75, exercisePercent: 0.5, standPercent: 1.0)
 }

@@ -28,5 +28,5 @@ struct MetricTileView: View {
         MetricTileView(icon: "figure.walk", value: "8,423", label: "Steps")
         MetricTileView(icon: "bed.double", value: "7.2h", label: "Sleep")
     }
-    .containerBackground(.black.gradient, for: .watch)
+    .containerBackground(.black.gradient, for: .widget)
 }
