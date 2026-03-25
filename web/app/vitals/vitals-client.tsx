@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import Link from 'next/link'
 import {
   LineChart,
   Line,
@@ -26,6 +28,9 @@ interface VitalsClientProps {
   spO2: VitalReading[]
   respRate: VitalReading[]
   bloodPressure: BPReading[]
+  restingHR: VitalReading[]
+  hrv: VitalReading[]
+  bodyTemp: VitalReading[]
 }
 
 const tooltipStyle = {
@@ -60,7 +65,8 @@ function EmptyVital({ name }: { name: string }) {
   )
 }
 
-export function VitalsClient({ spO2, respRate, bloodPressure }: VitalsClientProps) {
+export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bodyTemp }: VitalsClientProps) {
+  const [tempUnit, setTempUnit] = useState<'C' | 'F'>('C')
   // Downsample to daily averages for clarity (too many points otherwise)
   function dailyAvg(readings: VitalReading[]): { date: string; value: number }[] {
     const byDay: Record<string, number[]> = {}
@@ -87,6 +93,38 @@ export function VitalsClient({ spO2, respRate, bloodPressure }: VitalsClientProp
   const avgSpO2 = avg(spO2Values)
   const minSpO2 = spO2Values.length > 0 ? Math.min(...spO2Values) : null
   const avgRR = avg(rrValues)
+
+  // Resting Heart Rate
+  const rhrValues = restingHR.map((r) => r.value)
+  const latestRHR = restingHR.length > 0 ? restingHR[restingHR.length - 1].value : null
+  const avgRHR = avg(rhrValues)
+  const minRHR = rhrValues.length > 0 ? Math.min(...rhrValues) : null
+  const rhrDaily = dailyAvg(restingHR)
+
+  // HRV
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const latestHRV = hrv.length > 0 ? hrv[hrv.length - 1].value : null
+  const avg7HRV = avg(hrv.filter((r) => new Date(r.time) >= sevenDaysAgo).map((r) => r.value))
+  const hrvDaily = dailyAvg(hrv)
+
+  // Body Temperature
+  function toF(c: number) { return +(c * 9 / 5 + 32).toFixed(2) }
+  const latestTempC = bodyTemp.length > 0 ? bodyTemp[bodyTemp.length - 1].value : null
+  const latestTemp = latestTempC != null ? (tempUnit === 'C' ? latestTempC : toF(latestTempC)) : null
+  const avgTempC = avg(bodyTemp.map((r) => r.value))
+  const avgTemp = avgTempC != null ? (tempUnit === 'C' ? +avgTempC.toFixed(2) : toF(avgTempC)) : null
+  const tempNormalLow = tempUnit === 'C' ? 36.1 : toF(36.1)
+  const tempNormalHigh = tempUnit === 'C' ? 37.2 : toF(37.2)
+  function tempStatus(t: number) {
+    if (t < tempNormalLow) return { label: 'Below normal', color: 'text-blue-400' }
+    if (t > tempNormalHigh) return { label: 'Above normal', color: 'text-orange-400' }
+    return { label: 'Normal', color: 'text-green-400' }
+  }
+  const tempDaily = dailyAvg(bodyTemp).map((d) => ({
+    ...d,
+    value: tempUnit === 'C' ? d.value : toF(d.value),
+  }))
 
   return (
     <div className="space-y-6">
@@ -299,10 +337,217 @@ export function VitalsClient({ spO2, respRate, bloodPressure }: VitalsClientProp
         </section>
       )}
 
+      {/* Resting Heart Rate */}
+      <section>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Resting Heart Rate</h2>
+        {restingHR.length === 0 ? <EmptyVital name="resting heart rate" /> : (
+          <>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <StatPill
+                label="Latest"
+                value={latestRHR != null ? `${latestRHR}` : '—'}
+                unit="bpm"
+                color={latestRHR != null && latestRHR < 60 ? 'text-blue-400' : latestRHR != null && latestRHR > 100 ? 'text-red-400' : 'text-green-400'}
+              />
+              <StatPill
+                label="30-Day Avg"
+                value={avgRHR != null ? Math.round(avgRHR).toString() : '—'}
+                unit="bpm"
+                color="text-blue-400"
+              />
+              <StatPill
+                label="Lowest"
+                value={minRHR != null ? `${minRHR}` : '—'}
+                unit="bpm"
+                color="text-text-primary"
+              />
+            </div>
+
+            {rhrDaily.length >= 2 && (
+              <div className="bg-surface rounded-xl border border-border p-4">
+                <h3 className="text-sm font-medium text-text-secondary mb-3">Daily Average (30 days)</h3>
+                <ResponsiveContainer width="100%" height={160}>
+                  <LineChart data={rhrDaily} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis hide domain={['dataMin - 5', 'dataMax + 5']} />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      formatter={(v: number) => [`${v} bpm`, 'Resting HR']}
+                    />
+                    <ReferenceLine y={60} stroke="rgba(96,165,250,0.4)" strokeDasharray="4 3" label={{ value: '60 athletic', position: 'insideTopRight', fontSize: 10, fill: 'rgba(96,165,250,0.6)' }} />
+                    <ReferenceLine y={100} stroke="rgba(239,68,68,0.4)" strokeDasharray="4 3" label={{ value: '100', position: 'insideTopRight', fontSize: 10, fill: 'rgba(239,68,68,0.6)' }} />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#f97316"
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: '#f97316' }}
+                      activeDot={{ r: 5 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="text-xs text-text-secondary mt-2">
+                  Normal range: 50–100 bpm. Athletic individuals often below 60 bpm.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* HRV */}
+      <section>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Heart Rate Variability (HRV)</h2>
+        {hrv.length === 0 ? <EmptyVital name="HRV" /> : (
+          <>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <StatPill
+                label="Latest RMSSD"
+                value={latestHRV != null ? latestHRV.toFixed(1) : '—'}
+                unit="ms"
+                color="text-violet-400"
+              />
+              <StatPill
+                label="7-Day Avg"
+                value={avg7HRV != null ? avg7HRV.toFixed(1) : '—'}
+                unit="ms"
+                color="text-blue-400"
+              />
+            </div>
+
+            {hrvDaily.length >= 2 && (
+              <div className="bg-surface rounded-xl border border-border p-4">
+                <h3 className="text-sm font-medium text-text-secondary mb-3">Daily Average (30 days)</h3>
+                <ResponsiveContainer width="100%" height={160}>
+                  <LineChart data={hrvDaily} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis hide domain={['dataMin - 5', 'dataMax + 5']} />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      formatter={(v: number) => [`${v} ms`, 'HRV']}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#8b5cf6"
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: '#8b5cf6' }}
+                      activeDot={{ r: 5 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="text-xs text-text-secondary mt-2">
+                  Higher HRV generally indicates better recovery and cardiovascular fitness.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* Body Temperature */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Body Temperature</h2>
+          <button
+            onClick={() => setTempUnit((u) => u === 'C' ? 'F' : 'C')}
+            className="text-xs px-2.5 py-1 rounded-lg bg-surface border border-border text-text-secondary hover:text-text-primary transition-colors"
+          >
+            °C / °F
+          </button>
+        </div>
+        {bodyTemp.length === 0 ? <EmptyVital name="body temperature" /> : (
+          <>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-surface rounded-xl border border-border p-4">
+                <p className={`text-2xl font-bold ${latestTemp != null ? tempStatus(latestTemp).color : 'text-text-primary'}`}>
+                  {latestTemp != null ? latestTemp.toFixed(1) : '—'}
+                  <span className="text-sm font-normal text-text-secondary ml-1">°{tempUnit}</span>
+                </p>
+                <p className="text-xs text-text-secondary mt-0.5">Latest</p>
+                {latestTemp != null && (
+                  <span className={`text-xs font-medium mt-1 block ${tempStatus(latestTemp).color}`}>
+                    {tempStatus(latestTemp).label}
+                  </span>
+                )}
+              </div>
+              <StatPill
+                label="30-Day Avg"
+                value={avgTemp != null ? avgTemp.toFixed(1) : '—'}
+                unit={`°${tempUnit}`}
+                color="text-blue-400"
+              />
+            </div>
+
+            {tempDaily.length >= 2 && (
+              <div className="bg-surface rounded-xl border border-border p-4">
+                <h3 className="text-sm font-medium text-text-secondary mb-3">Daily Average (30 days)</h3>
+                <ResponsiveContainer width="100%" height={160}>
+                  <LineChart data={tempDaily} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis hide domain={['dataMin - 0.3', 'dataMax + 0.3']} />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      formatter={(v: number) => [`${v.toFixed(1)}°${tempUnit}`, 'Temp']}
+                    />
+                    <ReferenceLine y={tempNormalLow} stroke="rgba(96,165,250,0.4)" strokeDasharray="4 3" label={{ value: `${tempNormalLow.toFixed(1)}°`, position: 'insideTopLeft', fontSize: 9, fill: 'rgba(96,165,250,0.6)' }} />
+                    <ReferenceLine y={tempNormalHigh} stroke="rgba(251,146,60,0.4)" strokeDasharray="4 3" label={{ value: `${tempNormalHigh.toFixed(1)}°`, position: 'insideTopRight', fontSize: 9, fill: 'rgba(251,146,60,0.6)' }} />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#fb923c"
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: '#fb923c' }}
+                      activeDot={{ r: 5 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="text-xs text-text-secondary mt-2">
+                  Normal range: 36.1–37.2°C (97.0–99.0°F). Measured at wrist during sleep.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* ECG History link */}
+      <Link
+        href="/hrv/ecg"
+        className="flex items-center justify-between bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors group"
+      >
+        <div>
+          <p className="text-sm font-semibold text-text-primary">ECG History</p>
+          <p className="text-xs text-text-secondary mt-0.5">View electrocardiogram recordings from Apple Watch</p>
+        </div>
+        <span className="text-text-secondary group-hover:text-text-primary transition-colors text-lg">→</span>
+      </Link>
+
       {/* Info card */}
       <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-1">
         <p className="font-medium text-text-primary text-sm">How this data is collected</p>
-        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Blood pressure requires a compatible third-party device connected to Apple Health. Data syncs automatically through the KQuarks iOS app.</p>
+        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Resting heart rate and HRV (RMSSD) are computed nightly by Apple Watch. Body temperature uses wrist skin temperature measured during sleep. Blood pressure requires a compatible third-party device connected to Apple Health. Data syncs automatically through the KQuarks iOS app.</p>
       </div>
     </div>
   )

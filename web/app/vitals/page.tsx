@@ -22,7 +22,15 @@ export default async function VitalsPage() {
     .from('health_records')
     .select('type, value, unit, start_time')
     .eq('user_id', user.id)
-    .in('type', ['oxygen_saturation', 'respiratory_rate', 'blood_pressure_systolic', 'blood_pressure_diastolic'])
+    .in('type', [
+      'oxygen_saturation',
+      'respiratory_rate',
+      'blood_pressure_systolic',
+      'blood_pressure_diastolic',
+      'resting_heart_rate',
+      'hrv',
+      'wrist_temperature',
+    ])
     .gte('start_time', startIso)
     .order('start_time', { ascending: true })
 
@@ -45,6 +53,18 @@ export default async function VitalsPage() {
     return [{ time: s.start_time, systolic: Math.round(s.value), diastolic: Math.round(match.value) }]
   })
 
+  const restingHR = (records ?? [])
+    .filter((r) => r.type === 'resting_heart_rate' && r.value > 20 && r.value < 220)
+    .map((r) => ({ time: r.start_time, value: Math.round(r.value) }))
+
+  const hrv = (records ?? [])
+    .filter((r) => r.type === 'hrv' && r.value > 0 && r.value < 300)
+    .map((r) => ({ time: r.start_time, value: +r.value.toFixed(1) }))
+
+  const bodyTemp = (records ?? [])
+    .filter((r) => r.type === 'wrist_temperature' && r.value > 30 && r.value < 42)
+    .map((r) => ({ time: r.start_time, value: +r.value.toFixed(2) }))
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -58,7 +78,7 @@ export default async function VitalsPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Vitals</h1>
-            <p className="text-sm text-text-secondary">Blood oxygen, breathing & pressure</p>
+            <p className="text-sm text-text-secondary">Blood oxygen, breathing, pressure & more</p>
           </div>
           <Link
             href="/oxygen"
@@ -80,7 +100,14 @@ export default async function VitalsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <VitalsClient spO2={spO2} respRate={respRate} bloodPressure={bloodPressure} />
+        <VitalsClient
+          spO2={spO2}
+          respRate={respRate}
+          bloodPressure={bloodPressure}
+          restingHR={restingHR}
+          hrv={hrv}
+          bodyTemp={bodyTemp}
+        />
       </main>
       <BottomNav />
     </div>
