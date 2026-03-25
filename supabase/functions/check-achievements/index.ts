@@ -343,44 +343,52 @@ async function checkAndGrant(
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: CORS_HEADERS })
-  }
+  try {
+    if (req.method === "OPTIONS") {
+      return new Response("ok", { headers: CORS_HEADERS })
+    }
 
-  const authHeader = req.headers.get("Authorization")
-  if (!authHeader) {
-    return new Response(JSON.stringify({ error: "Missing authorization" }), {
-      status: 401,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    const authHeader = req.headers.get("Authorization")
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Missing authorization" }), {
+        status: 401,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      })
+    }
+
+    const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!)
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.replace("Bearer ", ""))
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      })
+    }
+    const userId = user.id
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    )
+
+    // Load existing achievements
+    const { data: existing } = await supabase
+      .from("user_achievements")
+      .select("achievement_type")
+      .eq("user_id", userId)
+
+    const existingSet = new Set((existing ?? []).map((a: { achievement_type: string }) => a.achievement_type))
+    const newlyGranted = await checkAndGrant(supabase, userId, existingSet)
+
+    return new Response(
+      JSON.stringify({ newly_granted: newlyGranted, total_checked: Object.keys(ALL_ACHIEVEMENTS).length }),
+      { headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
+    )
+  } catch (err) {
+    console.error('check-achievements error:', err instanceof Error ? err.message : 'Unknown')
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
-
-  const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!)
-  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.replace("Bearer ", ""))
-  if (authError || !user) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    })
-  }
-  const userId = user.id
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-  )
-
-  // Load existing achievements
-  const { data: existing } = await supabase
-    .from("user_achievements")
-    .select("achievement_type")
-    .eq("user_id", userId)
-
-  const existingSet = new Set((existing ?? []).map((a: { achievement_type: string }) => a.achievement_type))
-  const newlyGranted = await checkAndGrant(supabase, userId, existingSet)
-
-  return new Response(
-    JSON.stringify({ newly_granted: newlyGranted, total_checked: Object.keys(ALL_ACHIEVEMENTS).length }),
-    { headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
-  )
 })
