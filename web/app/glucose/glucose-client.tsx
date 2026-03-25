@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   ScatterChart,
   Scatter,
@@ -24,13 +25,20 @@ interface GlucoseClientProps {
   readings: GlucoseReading[]
 }
 
-// ADA / WHO glucose ranges (fasting or general)
-// Using mg/dL throughout; show mmol/L as secondary
-const RANGES = {
-  hypo: 70,      // < 70: hypoglycemia
-  normal: 100,   // 70–99: normal fasting
-  preDiabetes: 126, // 100–125: pre-diabetes range
-  // > 126 fasting: diabetes territory
+type GlucoseUnit = 'mgdl' | 'mmol'
+
+const MGDL_TO_MMOL = 18.0182
+
+function toUnit(mgdl: number, unit: GlucoseUnit): number {
+  return unit === 'mmol' ? Math.round((mgdl / MGDL_TO_MMOL) * 10) / 10 : Math.round(mgdl)
+}
+
+function fmtVal(mgdl: number, unit: GlucoseUnit): string {
+  return unit === 'mmol' ? (mgdl / MGDL_TO_MMOL).toFixed(1) : Math.round(mgdl).toString()
+}
+
+function unitLabel(unit: GlucoseUnit): string {
+  return unit === 'mmol' ? 'mmol/L' : 'mg/dL'
 }
 
 function classify(mgdl: number): { label: string; color: string } {
@@ -64,6 +72,19 @@ function fmtHour(h: number): string {
 }
 
 export function GlucoseClient({ readings }: GlucoseClientProps) {
+  const [unit, setUnit] = useState<GlucoseUnit>('mgdl')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('glucose_unit')
+    if (stored === 'mgdl' || stored === 'mmol') setUnit(stored)
+  }, [])
+
+  function toggleUnit() {
+    const next: GlucoseUnit = unit === 'mgdl' ? 'mmol' : 'mgdl'
+    setUnit(next)
+    localStorage.setItem('glucose_unit', next)
+  }
+
   if (readings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -96,6 +117,7 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
   const trendData = readings.slice(-200).map((r) => ({
     date: fmtDate(r.timestamp),
     mgdl: r.mgdl,
+    mmol: r.mmol,
   }))
 
   // Hourly average for pattern analysis
@@ -107,19 +129,49 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
   const hourlyData = Array.from({ length: 24 }, (_, h) => {
     const vals = hourlyMap[h]
     if (!vals || !vals.length) return null
-    return { hour: fmtHour(h), avgMgdl: Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) }
-  }).filter(Boolean) as { hour: string; avgMgdl: number }[]
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length
+    return {
+      hour: fmtHour(h),
+      avgMgdl: Math.round(avg),
+      avgMmol: Math.round((avg / MGDL_TO_MMOL) * 10) / 10,
+    }
+  }).filter(Boolean) as { hour: string; avgMgdl: number; avgMmol: number }[]
+
+  const trendKey = unit === 'mmol' ? 'mmol' : 'mgdl'
+  const hourlyKey = unit === 'mmol' ? 'avgMmol' : 'avgMgdl'
+  const yDomain = unit === 'mmol' ? [2.2, 16.7] : [40, 300]
+  const yDomainHourly = unit === 'mmol' ? [3.3, 11.1] : [60, 200]
+  const refLow = toUnit(70, unit)
+  const refNormal = toUnit(100, unit)
+  const refHigh = toUnit(180, unit)
+
+  // Time-in-range range labels
+  const tirLowLabel = unit === 'mmol' ? '< 3.9 mmol/L' : '< 70 mg/dL'
+  const tirInLabel = unit === 'mmol' ? '3.9–10.0 mmol/L' : '70–180 mg/dL'
+  const tirHighLabel = unit === 'mmol' ? '> 10.0 mmol/L' : '> 180 mg/dL'
 
   return (
     <div className="space-y-6">
+      {/* Unit toggle */}
+      <div className="flex justify-end">
+        <button
+          onClick={toggleUnit}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-surface hover:bg-surface-secondary transition-colors"
+        >
+          Show in <span className="text-accent">{unit === 'mgdl' ? 'mmol/L' : 'mg/dL'}</span>
+        </button>
+      </div>
+
       {/* Latest reading */}
       <div className="bg-surface rounded-xl border border-border p-5 flex items-center justify-between">
         <div>
           <p className="text-xs text-text-secondary mb-1">Latest Reading</p>
           <p className="text-4xl font-bold" style={{ color: latestCat.color }}>
-            {latest.mgdl} <span className="text-lg text-text-secondary">mg/dL</span>
+            {fmtVal(latest.mgdl, unit)} <span className="text-lg text-text-secondary">{unitLabel(unit)}</span>
           </p>
-          <p className="text-sm text-text-secondary">{latest.mmol} mmol/L</p>
+          <p className="text-sm text-text-secondary">
+            {unit === 'mgdl' ? `${latest.mmol} mmol/L` : `${Math.round(latest.mgdl)} mg/dL`}
+          </p>
           <p className="text-xs text-text-secondary mt-1">{fmtDateTime(latest.timestamp)}</p>
         </div>
         <div className="text-right">
@@ -134,23 +186,23 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
       {/* Summary stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="bg-surface rounded-xl border border-border p-4 text-center">
-          <p className="text-xl font-bold text-text-primary">{avgMgdl}</p>
-          <p className="text-xs text-text-secondary mt-0.5">Avg (mg/dL)</p>
+          <p className="text-xl font-bold text-text-primary">{fmtVal(avgMgdl, unit)}</p>
+          <p className="text-xs text-text-secondary mt-0.5">Avg ({unitLabel(unit)})</p>
         </div>
         <div className="bg-surface rounded-xl border border-border p-4 text-center">
           <p className={`text-xl font-bold ${timeInRange >= 70 ? 'text-green-400' : timeInRange >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
             {timeInRange}%
           </p>
           <p className="text-xs text-text-secondary mt-0.5">Time in Range</p>
-          <p className="text-xs text-text-secondary opacity-60">70–180 mg/dL</p>
+          <p className="text-xs text-text-secondary opacity-60">{tirInLabel}</p>
         </div>
         <div className="bg-surface rounded-xl border border-border p-4 text-center">
-          <p className="text-xl font-bold text-blue-400">{minMgdl}</p>
-          <p className="text-xs text-text-secondary mt-0.5">Lowest (mg/dL)</p>
+          <p className="text-xl font-bold text-blue-400">{fmtVal(minMgdl, unit)}</p>
+          <p className="text-xs text-text-secondary mt-0.5">Lowest ({unitLabel(unit)})</p>
         </div>
         <div className="bg-surface rounded-xl border border-border p-4 text-center">
-          <p className="text-xl font-bold text-orange-400">{maxMgdl}</p>
-          <p className="text-xs text-text-secondary mt-0.5">Highest (mg/dL)</p>
+          <p className="text-xl font-bold text-orange-400">{fmtVal(maxMgdl, unit)}</p>
+          <p className="text-xs text-text-secondary mt-0.5">Highest ({unitLabel(unit)})</p>
         </div>
       </div>
 
@@ -159,12 +211,12 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
         <h3 className="text-sm font-medium text-text-secondary mb-3">Time in Range Breakdown</h3>
         <div className="space-y-2">
           {[
-            { label: 'Low (< 70)', count: lowCount, color: '#60a5fa' },
-            { label: 'In Range (70–180)', count: inRangeCount, color: '#4ade80' },
-            { label: 'High (> 180)', count: highCount, color: '#fb923c' },
+            { label: `Low (${tirLowLabel})`, count: lowCount, color: '#60a5fa' },
+            { label: `In Range (${tirInLabel})`, count: inRangeCount, color: '#4ade80' },
+            { label: `High (${tirHighLabel})`, count: highCount, color: '#fb923c' },
           ].map(({ label, count, color }) => (
             <div key={label} className="flex items-center gap-3">
-              <div className="w-32 shrink-0 text-xs font-medium" style={{ color }}>{label}</div>
+              <div className="w-40 shrink-0 text-xs font-medium" style={{ color }}>{label}</div>
               <div className="flex-1 h-4 bg-surface-secondary rounded-full overflow-hidden">
                 <div className="h-full rounded-full" style={{ width: `${(count / readings.length) * 100}%`, backgroundColor: color + '99' }} />
               </div>
@@ -179,20 +231,20 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
       {/* Trend chart */}
       {trendData.length >= 2 && (
         <div className="bg-surface rounded-xl border border-border p-4">
-          <h3 className="text-sm font-medium text-text-secondary mb-3">Glucose Trend (mg/dL)</h3>
+          <h3 className="text-sm font-medium text-text-secondary mb-3">Glucose Trend ({unitLabel(unit)})</h3>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={trendData} margin={{ top: 8, right: 4, left: -4, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-              <YAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} domain={[40, 300]} width={32} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${Math.round(v)} mg/dL`, 'Glucose']} />
-              <ReferenceLine y={70} stroke="rgba(96,165,250,0.4)" strokeDasharray="4 3"
-                label={{ value: '70', position: 'insideTopRight', fontSize: 9, fill: 'rgba(96,165,250,0.5)' }} />
-              <ReferenceLine y={100} stroke="rgba(74,222,128,0.3)" strokeDasharray="4 3"
-                label={{ value: '100', position: 'insideTopRight', fontSize: 9, fill: 'rgba(74,222,128,0.4)' }} />
-              <ReferenceLine y={180} stroke="rgba(251,146,60,0.3)" strokeDasharray="4 3"
-                label={{ value: '180', position: 'insideTopRight', fontSize: 9, fill: 'rgba(251,146,60,0.4)' }} />
-              <Area type="monotone" dataKey="mgdl" stroke="#a78bfa" fill="rgba(167,139,250,0.1)" strokeWidth={2} dot={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} domain={yDomain} width={36} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} ${unitLabel(unit)}`, 'Glucose']} />
+              <ReferenceLine y={refLow} stroke="rgba(96,165,250,0.4)" strokeDasharray="4 3"
+                label={{ value: String(refLow), position: 'insideTopRight', fontSize: 9, fill: 'rgba(96,165,250,0.5)' }} />
+              <ReferenceLine y={refNormal} stroke="rgba(74,222,128,0.3)" strokeDasharray="4 3"
+                label={{ value: String(refNormal), position: 'insideTopRight', fontSize: 9, fill: 'rgba(74,222,128,0.4)' }} />
+              <ReferenceLine y={refHigh} stroke="rgba(251,146,60,0.3)" strokeDasharray="4 3"
+                label={{ value: String(refHigh), position: 'insideTopRight', fontSize: 9, fill: 'rgba(251,146,60,0.4)' }} />
+              <Area type="monotone" dataKey={trendKey} stroke="#a78bfa" fill="rgba(167,139,250,0.1)" strokeWidth={2} dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -201,16 +253,16 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
       {/* Hourly pattern */}
       {hourlyData.length >= 3 && (
         <div className="bg-surface rounded-xl border border-border p-4">
-          <h3 className="text-sm font-medium text-text-secondary mb-3">Average by Time of Day (mg/dL)</h3>
+          <h3 className="text-sm font-medium text-text-secondary mb-3">Average by Time of Day ({unitLabel(unit)})</h3>
           <ResponsiveContainer width="100%" height={140}>
             <AreaChart data={hourlyData} margin={{ top: 4, right: 4, left: -4, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="hour" tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} axisLine={false} tickLine={false} interval={2} />
-              <YAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} domain={[60, 200]} width={32} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} mg/dL`, 'Avg glucose']} />
-              <ReferenceLine y={70} stroke="rgba(96,165,250,0.3)" strokeDasharray="3 2" />
-              <ReferenceLine y={180} stroke="rgba(251,146,60,0.3)" strokeDasharray="3 2" />
-              <Area type="monotone" dataKey="avgMgdl" stroke="#c084fc" fill="rgba(192,132,252,0.1)" strokeWidth={2} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} domain={yDomainHourly} width={36} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} ${unitLabel(unit)}`, 'Avg glucose']} />
+              <ReferenceLine y={refLow} stroke="rgba(96,165,250,0.3)" strokeDasharray="3 2" />
+              <ReferenceLine y={refHigh} stroke="rgba(251,146,60,0.3)" strokeDasharray="3 2" />
+              <Area type="monotone" dataKey={hourlyKey} stroke="#c084fc" fill="rgba(192,132,252,0.1)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -221,11 +273,11 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
         <p className="font-medium text-text-primary text-sm">Glucose reference ranges</p>
         <div className="space-y-2">
           {[
-            { label: 'Hypoglycemia', range: '< 70 mg/dL (< 3.9 mmol/L)', color: 'text-blue-400', detail: 'Low blood sugar. May cause dizziness, confusion. Treat immediately with fast-acting carbs.' },
-            { label: 'Normal fasting', range: '70–99 mg/dL (3.9–5.5 mmol/L)', color: 'text-green-400', detail: 'Healthy fasting range. Post-meal: up to ~140 mg/dL is typical.' },
-            { label: 'Pre-diabetes', range: '100–125 mg/dL (5.6–6.9 mmol/L)', color: 'text-yellow-400', detail: 'Impaired fasting glucose. Lifestyle changes can prevent progression to diabetes.' },
-            { label: 'Diabetes', range: '≥ 126 mg/dL (≥ 7.0 mmol/L)', color: 'text-red-400', detail: 'Consistently high glucose. Requires medical evaluation and management.' },
-            { label: 'Time in Range goal (CGM)', range: '70–180 mg/dL ≥ 70% of time', color: 'text-purple-400', detail: 'ADA target for people with diabetes. Higher TIR is associated with fewer complications.' },
+            { label: 'Hypoglycemia', range: unit === 'mmol' ? '< 3.9 mmol/L (< 70 mg/dL)' : '< 70 mg/dL (< 3.9 mmol/L)', color: 'text-blue-400', detail: 'Low blood sugar. May cause dizziness, confusion. Treat immediately with fast-acting carbs.' },
+            { label: 'Normal fasting', range: unit === 'mmol' ? '3.9–5.5 mmol/L (70–99 mg/dL)' : '70–99 mg/dL (3.9–5.5 mmol/L)', color: 'text-green-400', detail: 'Healthy fasting range. Post-meal: up to ~140 mg/dL (7.8 mmol/L) is typical.' },
+            { label: 'Pre-diabetes', range: unit === 'mmol' ? '5.6–6.9 mmol/L (100–125 mg/dL)' : '100–125 mg/dL (5.6–6.9 mmol/L)', color: 'text-yellow-400', detail: 'Impaired fasting glucose. Lifestyle changes can prevent progression to diabetes.' },
+            { label: 'Diabetes', range: unit === 'mmol' ? '≥ 7.0 mmol/L (≥ 126 mg/dL)' : '≥ 126 mg/dL (≥ 7.0 mmol/L)', color: 'text-red-400', detail: 'Consistently high glucose. Requires medical evaluation and management.' },
+            { label: 'Time in Range goal (CGM)', range: unit === 'mmol' ? '3.9–10.0 mmol/L ≥ 70% of time' : '70–180 mg/dL ≥ 70% of time', color: 'text-purple-400', detail: 'ADA target for people with diabetes. Higher TIR is associated with fewer complications.' },
           ].map(({ label, range, color, detail }) => (
             <div key={label}>
               <p className="font-medium text-text-primary"><span className={color}>{label}</span> — <span className="font-mono">{range}</span></p>
@@ -247,8 +299,10 @@ export function GlucoseClient({ readings }: GlucoseClientProps) {
             <div key={i} className="bg-surface rounded-xl border border-border px-4 py-3 flex items-center justify-between">
               <p className="text-sm text-text-secondary">{fmtDateTime(r.timestamp)}</p>
               <div className="text-right">
-                <p className="text-lg font-bold" style={{ color: cat.color }}>{r.mgdl} mg/dL</p>
-                <p className="text-xs text-text-secondary">{r.mmol} mmol/L · {cat.label}</p>
+                <p className="text-lg font-bold" style={{ color: cat.color }}>{fmtVal(r.mgdl, unit)} {unitLabel(unit)}</p>
+                <p className="text-xs text-text-secondary">
+                  {unit === 'mgdl' ? `${r.mmol} mmol/L` : `${Math.round(r.mgdl)} mg/dL`} · {cat.label}
+                </p>
               </div>
             </div>
           )
