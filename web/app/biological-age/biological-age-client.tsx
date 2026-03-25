@@ -3,11 +3,14 @@
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
   ReferenceLine,
   ResponsiveContainer,
+  CartesianGrid,
   Cell,
 } from 'recharts'
 import { Activity, Heart, Moon, FlaskConical, Zap, Info, AlertCircle } from 'lucide-react'
@@ -186,6 +189,7 @@ export function BiologicalAgeClient({
   latestHrv,
   latestRhr,
   latestSleep,
+  recentSummaries,
   hasData,
 }: BiologicalAgeClientProps) {
 
@@ -726,7 +730,59 @@ export function BiologicalAgeClient({
         </div>
       </div>
 
-      {/* ── 7. Disclaimer card ────────────────────────────────────────────────── */}
+      {/* ── 7. Wellness Age Trend ─────────────────────────────────────────────── */}
+      {(() => {
+        // Compute per-day wellness age from recentSummaries
+        const trendData = recentSummaries
+          .filter((s) => s.avg_hrv !== null || s.resting_heart_rate !== null || s.sleep_duration_minutes !== null)
+          .map((s) => {
+            let tw = 0, ws = 0
+            if (s.avg_hrv !== null && hrvBaseline > 0) {
+              ws += Math.min(100, Math.max(0, 50 + (s.avg_hrv - hrvBaseline) / hrvBaseline * 100)) * 0.4
+              tw += 0.4
+            }
+            if (s.resting_heart_rate !== null && rhrBaseline > 0) {
+              ws += Math.min(100, Math.max(0, 50 - (s.resting_heart_rate - rhrBaseline) / rhrBaseline * 100)) * 0.3
+              tw += 0.3
+            }
+            if (s.sleep_duration_minutes !== null) {
+              ws += Math.min(100, Math.max(0, 100 - Math.abs(s.sleep_duration_minutes / 60 - 7) * 20)) * 0.3
+              tw += 0.3
+            }
+            const cs = tw > 0 ? ws / tw : 50
+            const wAge = Math.round(chronologicalAge + (-5 + (1 - cs / 100) * 13))
+            return {
+              date: new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+              age: wAge,
+            }
+          })
+          .slice(-60) // last 60 days
+        if (trendData.length < 3) return null
+        const minAge = Math.min(...trendData.map((d) => d.age)) - 2
+        const maxAge = Math.max(...trendData.map((d) => d.age)) + 2
+        return (
+          <div className="bg-surface rounded-2xl border border-border p-5">
+            <h2 className="text-sm font-semibold text-text-primary mb-1">Wellness Age Trend</h2>
+            <p className="text-xs text-text-secondary mb-4">How your estimated wellness age has changed over the past 60 days</p>
+            <ResponsiveContainer width="100%" height={160}>
+              <LineChart data={trendData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary,#888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis domain={[minAge, maxAge]} tick={{ fontSize: 10, fill: 'var(--color-text-secondary,#888)' }} width={30} />
+                <ReferenceLine y={chronologicalAge} stroke="rgba(148,163,184,0.3)" strokeDasharray="4 3"
+                  label={{ value: 'Chrono age', position: 'insideTopRight', fontSize: 9, fill: 'rgba(148,163,184,0.6)' }} />
+                <Tooltip
+                  contentStyle={{ background: 'var(--color-surface,#1a1a1a)', border: '1px solid var(--color-border,#333)', borderRadius: 8, fontSize: 12 }}
+                  formatter={(v: number) => [`${v} yrs`, 'Wellness Age']}
+                />
+                <Line type="monotone" dataKey="age" stroke="#a78bfa" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#a78bfa' }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )
+      })()}
+
+      {/* ── 8. Disclaimer card ────────────────────────────────────────────────── */}
       <div className="bg-surface rounded-2xl border border-border p-4 flex gap-3">
         <Info className="w-4 h-4 text-text-secondary flex-shrink-0 mt-0.5" />
         <p className="text-xs text-text-secondary leading-relaxed">
