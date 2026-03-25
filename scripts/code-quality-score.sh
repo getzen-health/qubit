@@ -39,7 +39,7 @@ silent_errors=$(grep -rn --include="*.swift" \
   "$SERVICES" 2>/dev/null | grep -vc '^\s*//' || true)
 
 # ── Metric 5: Missing error handling in web API routes ───────────────────────────
-web_missing_errors=$(grep -rn --include="*.ts" \
+web_missing_errors=$(grep -rn --include="*.ts" --exclude-dir=node_modules \
   -E 'await supabase\.(from|rpc)\(' \
   "$WEB" 2>/dev/null | grep -vc 'error\|Error\|catch\|\.error' || true)
 
