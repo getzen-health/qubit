@@ -46,7 +46,7 @@ struct SleepView: View {
             .navigationTitle("Sleep")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: SleepPatternView()) {
                             Image(systemName: "chart.bar.doc.horizontal")

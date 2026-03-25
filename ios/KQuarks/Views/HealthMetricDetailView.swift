@@ -35,20 +35,20 @@ struct HealthMetricDetailView: View {
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if dataType == .floorsClimbed {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     NavigationLink(destination: FloorsPatternView()) {
                         Image(systemName: "chart.bar.xaxis")
                     }
                 }
             }
             if dataType == .hrv {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     NavigationLink(destination: HRVDetailView()) {
                         Image(systemName: "waveform.path.ecg")
                     }
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Picker("Period", selection: $selectedDays) {
                     Text("7D").tag(7)
                     Text("30D").tag(30)

@@ -282,7 +282,7 @@ struct BloodPressurePatternView: View {
                 .padding(.bottom, 12)
 
             VStack(spacing: 0) {
-                ForEach(Array(monthData.reversed().enumerated()), id: \.offset) { i, m in
+                ForEach(Array(monthData.reversed().enumerated()), id: \.offset) { (i, m) in
                     HStack {
                         Text(m.label)
                             .font(.subheadline)

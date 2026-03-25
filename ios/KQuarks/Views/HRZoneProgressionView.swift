@@ -265,7 +265,7 @@ struct HRZoneProgressionView: View {
 
             let all = overallZones
             if all.total > 0 {
-                ForEach(Array(zip(zoneLabels, zoneColors).enumerated()), id: \.offset) { idx, pair in
+                ForEach(Array(zip(zoneLabels, zoneColors).enumerated()), id: \.offset) { (idx, pair) in
                     let (label, color) = pair
                     let mins: Double = idx == 0 ? all.z1 : idx == 1 ? all.z2 : idx == 2 ? all.z3 : idx == 3 ? all.z4 : all.z5
                     let pct = mins / all.total * 100

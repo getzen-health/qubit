@@ -65,7 +65,7 @@ struct ActivityHeatmapView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     // Month labels
                     HStack(alignment: .top, spacing: 0) {
-                        ForEach(Array(weeks.enumerated()), id: \.offset) { idx, week in
+                        ForEach(Array(weeks.enumerated()), id: \.offset) { (idx, week) in
                             if let first = week.first, shouldShowMonth(idx, weeks: weeks) {
                                 Text(monthLabel(for: first.date))
                                     .font(.system(size: 9))

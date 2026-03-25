@@ -158,7 +158,7 @@ struct GLP1View: View {
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if glp1Enabled {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button {
                         showingSetup = true
                     } label: {
@@ -1025,7 +1025,7 @@ struct GLP1SetupSheet: View {
             .navigationTitle("GLP-1 Setup")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
             }

@@ -36,7 +36,7 @@ struct BodyCompositionView: View {
             .navigationTitle("Body Weight")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack {
                         NavigationLink(destination: BodyTrendsView()) {
                             Image(systemName: "chart.bar.xaxis")

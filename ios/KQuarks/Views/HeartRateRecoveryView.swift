@@ -204,7 +204,7 @@ struct HeartRateRecoveryView: View {
                 }
 
                 // Rolling avg line
-                ForEach(Array(rolling.enumerated()), id: \.offset) { i, avg in
+                ForEach(Array(rolling.enumerated()), id: \.offset) { (i, avg) in
                     if i < validPoints.count {
                         LineMark(
                             x: .value("Date", validPoints[i].date),

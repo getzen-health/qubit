@@ -76,7 +76,7 @@ struct HearingHealthView: View {
         .navigationTitle("Hearing Health")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: HearingPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

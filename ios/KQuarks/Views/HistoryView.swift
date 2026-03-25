@@ -150,7 +150,7 @@ struct HistoryView: View {
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
-                ForEach(Array(workouts.enumerated()), id: \.offset) { idx, workout in
+                ForEach(Array(workouts.enumerated()), id: \.offset) { (idx, workout) in
                     HStack(spacing: 12) {
                         Image(systemName: workoutIcon(workout.workoutType))
                             .font(.title3)

@@ -2424,7 +2424,7 @@ struct HealthDataView: View {
             .navigationTitle("Health Data")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: BreathingView()) {
                             Image(systemName: "wind")

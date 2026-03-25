@@ -42,7 +42,7 @@ struct SmartNudgesView: View {
         .navigationTitle("Smart Nudges")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     Task { await load() }
                 } label: {

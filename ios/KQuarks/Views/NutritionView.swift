@@ -31,7 +31,7 @@ struct NutritionView: View {
             .navigationTitle("Nutrition")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack {
                         NavigationLink(destination: NutritionPatternView()) {
                             Image(systemName: "chart.bar.xaxis")
@@ -328,10 +328,10 @@ struct LogMealView: View {
             .navigationTitle("Log Food")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task { await save() }
                     } label: {

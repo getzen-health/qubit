@@ -80,7 +80,7 @@ struct WorkoutsView: View {
             .toolbarTitleDisplayMode(.inline)
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: WorkoutCalendarView()) {
                             Image(systemName: "calendar.badge.clock")
@@ -90,7 +90,7 @@ struct WorkoutsView: View {
                         }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
                         Button {
                             showLogWorkout = true

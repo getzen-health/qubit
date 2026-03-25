@@ -26,7 +26,7 @@ struct HealthChatView: View {
         .navigationTitle("Health Coach")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 if !service.messages.isEmpty {
                     Button("Clear") {
                         Task { await service.clearHistory() }

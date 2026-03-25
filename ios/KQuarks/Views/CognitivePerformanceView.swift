@@ -257,7 +257,7 @@ struct CognitivePerformanceView: View {
             Label("Best Days (Last 30)", systemImage: "star.fill")
                 .font(.subheadline).bold()
 
-            ForEach(Array(topDays.enumerated()), id: \.offset) { i, day in
+            ForEach(Array(topDays.enumerated()), id: \.offset) { (i, day) in
                 HStack {
                     Text("\(i + 1)").font(.caption.bold()).foregroundStyle(.secondary).frame(width: 16)
                     Text(day.date, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())

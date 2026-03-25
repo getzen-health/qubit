@@ -41,7 +41,7 @@ struct RHRTrendView: View {
         .navigationTitle("Resting Heart Rate")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: RHRPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

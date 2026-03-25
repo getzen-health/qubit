@@ -75,7 +75,7 @@ struct HealthTimelineView: View {
         .navigationTitle("Timeline")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Menu {
                     ForEach(EventFilter.allCases, id: \.self) { f in
                         Button(f.rawValue) { filter = f }

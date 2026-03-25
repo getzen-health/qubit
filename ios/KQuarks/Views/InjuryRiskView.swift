@@ -181,7 +181,7 @@ struct InjuryRiskView: View {
                 .padding(.vertical, 4)
             } else {
                 VStack(spacing: 0) {
-                    ForEach(Array(factors.enumerated()), id: \.offset) { idx, factor in
+                    ForEach(Array(factors.enumerated()), id: \.offset) { (idx, factor) in
                         HStack(spacing: 12) {
                             Image(systemName: factor.icon)
                                 .font(.body)

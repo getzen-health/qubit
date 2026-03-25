@@ -164,7 +164,7 @@ struct MoodHistoryView: View {
                 .padding(.bottom, 8)
 
             VStack(spacing: 0) {
-                ForEach(Array(checkins.enumerated()), id: \.offset) { idx, c in
+                ForEach(Array(checkins.enumerated()), id: \.offset) { (idx, c) in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Text(formattedDate(c.date))

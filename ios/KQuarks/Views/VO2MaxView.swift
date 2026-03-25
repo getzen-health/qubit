@@ -33,7 +33,7 @@ struct VO2MaxView: View {
         .navigationTitle("Cardio Fitness")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: VO2PatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

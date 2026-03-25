@@ -292,7 +292,8 @@ struct WorkoutConsistencyView: View {
                             .frame(width: max(4, geo.size.width * pct))
                     }
                     .frame(height: 16)
-                    Text("\(s.count) (\(totalSessions > 0 ? Int(Double(s.count) / Double(totalSessions) * 100) : 0)%)")
+                    let pct = totalSessions > 0 ? Int(Double(s.count) / Double(totalSessions) * 100) : 0
+                    Text("\(s.count) (\(pct)%)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }

@@ -60,7 +60,7 @@ struct MindfulnessImpactView: View {
         .navigationTitle("Mindfulness Impact")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: MindfulnessPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

@@ -53,7 +53,7 @@ struct DaylightExposureView: View {
         .navigationTitle("Daylight Exposure")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: DaylightPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

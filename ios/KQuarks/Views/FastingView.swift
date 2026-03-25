@@ -245,7 +245,7 @@ struct FastingView: View {
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                ForEach(Array(history.prefix(10).enumerated()), id: \.offset) { i, session in
+                ForEach(Array(history.prefix(10).enumerated()), id: \.offset) { (i, session) in
                     HStack(spacing: 12) {
                         Image(systemName: session.completed ?? false ? "checkmark.circle.fill" : "xmark.circle")
                             .foregroundStyle(session.completed ?? false ? .green : .secondary)

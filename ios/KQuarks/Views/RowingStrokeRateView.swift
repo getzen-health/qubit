@@ -99,7 +99,7 @@ struct RowingStrokeRateView: View {
         .navigationTitle("Rowing Stroke Rate")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: RowingPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
                 }

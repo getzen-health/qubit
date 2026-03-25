@@ -98,7 +98,7 @@ struct HealthHeatmapView: View {
             .padding(.bottom, 4)
 
             // Metric rows
-            ForEach(Array(rows.enumerated()), id: \.offset) { rowIdx, row in
+            ForEach(Array(rows.enumerated()), id: \.offset) { (rowIdx, row) in
                 heatmapRow(row: row, rowIdx: rowIdx)
             }
         }
@@ -125,7 +125,7 @@ struct HealthHeatmapView: View {
             // Cells
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 2) {
-                    ForEach(Array(row.values.enumerated()), id: \.offset) { dayIdx, value in
+                    ForEach(Array(row.values.enumerated()), id: \.offset) { (dayIdx, value) in
                         cellView(color: row.color, intensity: value, rowIdx: rowIdx, dayIdx: dayIdx)
                     }
                 }

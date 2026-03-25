@@ -46,7 +46,7 @@ struct WristTemperatureView: View {
         .navigationTitle("Wrist Temperature")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: TemperatureInsightsView()) {
                     Image(systemName: "waveform.path.ecg")
                 }

@@ -47,7 +47,7 @@ struct MindfulnessView: View {
             .navigationTitle("Mindfulness")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     NavigationLink(destination: MindfulnessPatternView()) {
                         Image(systemName: "chart.bar.xaxis")
                     }
@@ -215,7 +215,7 @@ struct MindfulnessView: View {
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
-                ForEach(Array(sessions.prefix(10).enumerated()), id: \.offset) { idx, session in
+                ForEach(Array(sessions.prefix(10).enumerated()), id: \.offset) { (idx, session) in
                     let duration = session.endDate.timeIntervalSince(session.startDate)
                     HStack(spacing: 12) {
                         Image(systemName: "brain.head.profile")

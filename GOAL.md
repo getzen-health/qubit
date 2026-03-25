@@ -50,6 +50,9 @@ grep -rn --include="*.swift" "var body" ios/KQuarks/Views/ | wc -l
 # (count must remain stable — views must not be deleted)
 ```
 
+Guard: ForEach must never use $binding syntax on non-ObservableObject arrays
+Guard: .enumerated() ForEach closures must use explicit tuple parens (offset, item)
+
 ## Convergence Criteria
 
 - Score reaches 0 → complete

@@ -60,7 +60,7 @@ struct DashboardListView: View {
             .navigationTitle(greeting)
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 12) {
                         Button {
                             Task {

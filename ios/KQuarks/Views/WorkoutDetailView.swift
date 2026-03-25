@@ -165,7 +165,7 @@ struct WorkoutDetailView: View {
         .navigationTitle(workout.workoutActivityType.name)
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 ShareLink(item: shareText) {
                     Image(systemName: "square.and.arrow.up")
                 }

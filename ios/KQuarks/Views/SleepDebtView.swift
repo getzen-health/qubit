@@ -206,7 +206,7 @@ struct SleepDebtView: View {
                 .padding(.horizontal, 4)
 
             VStack(spacing: 0) {
-                ForEach(Array(nights.enumerated()), id: \.offset) { idx, night in
+                ForEach(Array(nights.enumerated()), id: \.offset) { (idx, night) in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(night.date, style: .date)

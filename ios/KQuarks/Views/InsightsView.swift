@@ -24,7 +24,7 @@ struct InsightsView: View {
             .navigationTitle("Insights")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     HStack(spacing: 4) {
                         NavigationLink(destination: HealthTimelineView()) {
                             Image(systemName: "list.bullet.rectangle")
@@ -52,7 +52,7 @@ struct InsightsView: View {
                         }
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task {
                             await generateInsights()

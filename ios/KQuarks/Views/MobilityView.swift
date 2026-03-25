@@ -52,7 +52,7 @@ struct MobilityView: View {
         .navigationTitle("Mobility")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: WalkingSteadinessView()) {
                     Image(systemName: "figure.walk.motion")
                 }

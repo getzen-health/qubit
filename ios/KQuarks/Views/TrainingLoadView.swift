@@ -141,7 +141,7 @@ struct TrainingLoadView: View {
                 .padding(.horizontal, 4)
 
             VStack(spacing: 0) {
-                ForEach(Array(weeks.reversed().enumerated()), id: \.offset) { idx, week in
+                ForEach(Array(weeks.reversed().enumerated()), id: \.offset) { (idx, week) in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(week.weekLabel)

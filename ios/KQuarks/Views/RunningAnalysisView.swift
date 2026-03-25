@@ -88,7 +88,7 @@ struct RunningAnalysisView: View {
         .task { await load() }
         .refreshable { await load() }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 NavigationLink(destination: RunningFormView()) {
                     Image(systemName: "figure.run.motion")
                 }

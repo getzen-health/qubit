@@ -33,7 +33,7 @@ struct PredictiveInsightsView: View {
         .navigationTitle("Week Ahead")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button {
                     Task { await service.generatePrediction() }
                 } label: {
