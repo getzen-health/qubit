@@ -114,7 +114,11 @@ final class NotificationService {
         // Show remaining in hundreds (e.g. 2500 remaining → badge 25), cap at 99
         let badgeValue = min(remaining / 100, 99)
         Task { @MainActor in
-            try? await UNUserNotificationCenter.current().setBadgeCount(badgeValue)
+            do {
+                try await UNUserNotificationCenter.current().setBadgeCount(badgeValue)
+            } catch {
+                print("[NotificationService] Failed to set badge count: \(error)")
+            }
         }
     }
 
@@ -171,8 +175,14 @@ final class NotificationService {
 
     private func scheduleWeeklyReview() async {
         let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
-        let summaries = (try? await HealthKitService.shared.fetchWeekSummaries(days: 7)) ?? []
-        let workouts = (try? await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date())) ?? []
+        var summaries: [DailySummary] = []
+        do { summaries = try await HealthKitService.shared.fetchWeekSummaries(days: 7) } catch {
+            print("[NotificationService] Failed to fetch week summaries: \(error)")
+        }
+        var workouts: [HKWorkout] = []
+        do { workouts = try await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date()) } catch {
+            print("[NotificationService] Failed to fetch workouts for weekly review: \(error)")
+        }
 
         let weeklySteps = summaries.reduce(0) { $0 + $1.steps }
         let goalDays = summaries.filter { Double($0.steps) >= GoalService.shared.stepsGoal }.count
@@ -193,7 +203,11 @@ final class NotificationService {
             content: content,
             trigger: trigger
         )
-        try? await UNUserNotificationCenter.current().add(request)
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            print("[NotificationService] Failed to schedule weekly review notification: \(error)")
+        }
         markWeeklyReviewNotified()
     }
 
@@ -263,8 +277,11 @@ final class NotificationService {
         let cutoff = Calendar.current.date(byAdding: .day, value: -35, to: Date()) ?? Date()
         history = history.filter { $0.0 > cutoff }
         let json = history.map { ["ts": $0.0.timeIntervalSince1970, "hrv": $0.1] }
-        if let data = try? JSONSerialization.data(withJSONObject: json) {
+        do {
+            let data = try JSONSerialization.data(withJSONObject: json)
             UserDefaults.standard.set(data, forKey: hrvHistoryKey)
+        } catch {
+            print("[NotificationService] Failed to serialize HRV history: \(error)")
         }
     }
 
@@ -417,12 +434,16 @@ final class NotificationService {
     }
 
     private func loadHRVHistory() -> [(Date, Double)] {
-        guard let data = UserDefaults.standard.data(forKey: hrvHistoryKey),
-              let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Double]]
-        else { return [] }
-        return arr.compactMap { entry -> (Date, Double)? in
-            guard let ts = entry["ts"], let hrv = entry["hrv"] else { return nil }
-            return (Date(timeIntervalSince1970: ts), hrv)
+        guard let data = UserDefaults.standard.data(forKey: hrvHistoryKey) else { return [] }
+        do {
+            guard let arr = try JSONSerialization.jsonObject(with: data) as? [[String: Double]] else { return [] }
+            return arr.compactMap { entry -> (Date, Double)? in
+                guard let ts = entry["ts"], let hrv = entry["hrv"] else { return nil }
+                return (Date(timeIntervalSince1970: ts), hrv)
+            }
+        } catch {
+            print("[NotificationService] Failed to decode HRV history: \(error)")
+            return []
         }
     }
 

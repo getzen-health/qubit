@@ -49,11 +49,15 @@ final class GoalService {
     /// Persist current goals to Supabase.
     func saveToSupabase() {
         Task {
-            try? await SupabaseService.shared.saveUserGoals(
-                stepGoal: Int(stepsGoal),
-                calorieGoal: Int(activeCaloriesGoal),
-                sleepGoalMinutes: Int(sleepGoalMinutes)
-            )
+            do {
+                try await SupabaseService.shared.saveUserGoals(
+                    stepGoal: Int(stepsGoal),
+                    calorieGoal: Int(activeCaloriesGoal),
+                    sleepGoalMinutes: Int(sleepGoalMinutes)
+                )
+            } catch {
+                print("[GoalService] Failed to save goals to Supabase: \(error)")
+            }
         }
     }
 
