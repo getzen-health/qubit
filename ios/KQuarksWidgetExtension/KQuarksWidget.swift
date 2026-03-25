@@ -40,9 +40,10 @@ struct KQuarksProvider: TimelineProvider {
     }
 
     private func fetchEntry() async -> KQuarksEntry {
-        let storedGoal = UserDefaults.standard.double(forKey: "goal_steps")
+        let sharedDefaults = UserDefaults(suiteName: "group.com.qxlsz.kquarks") ?? .standard
+        let storedGoal = sharedDefaults.double(forKey: "goal_steps")
         let stepGoal = storedGoal > 0 ? Int(storedGoal) : 10000
-        let cachedRecovery = UserDefaults.standard.integer(forKey: "cached_recovery_score")
+        let cachedRecovery = sharedDefaults.integer(forKey: "cached_recovery_score")
         let recoveryScore = cachedRecovery > 0 ? cachedRecovery : 50
 
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -56,8 +57,8 @@ struct KQuarksProvider: TimelineProvider {
         let calories = await fetchActiveCalories()
         let rhr = await fetchRestingHR()
         let weekSteps = await fetchWeekSteps()
-        let calorieGoal = Int(UserDefaults.standard.double(forKey: "goal_calories") > 0
-            ? UserDefaults.standard.double(forKey: "goal_calories") : 500)
+        let calorieGoal = Int(sharedDefaults.double(forKey: "goal_calories") > 0
+            ? sharedDefaults.double(forKey: "goal_calories") : 500)
 
         return KQuarksEntry(date: .now, steps: steps, stepGoal: stepGoal, sleepHours: sleep,
                             recoveryScore: recoveryScore, activeCalories: Int(calories),

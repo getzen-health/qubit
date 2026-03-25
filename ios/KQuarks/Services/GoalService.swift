@@ -8,13 +8,13 @@ final class GoalService {
     // @AppStorage inside @Observable must use @ObservationIgnored + computed property pair
     // Without @ObservationIgnored the @Observable macro conflicts with @AppStorage's machinery.
     @ObservationIgnored
-    @AppStorage("goal_steps") private var storedStepsGoal: Double = 10_000
+    @AppStorage("goal_steps", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) private var storedStepsGoal: Double = 10_000
 
     @ObservationIgnored
-    @AppStorage("goal_activeCalories") private var storedActiveCaloriesGoal: Double = 500
+    @AppStorage("goal_calories", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) private var storedActiveCaloriesGoal: Double = 500
 
     @ObservationIgnored
-    @AppStorage("goal_sleepMinutes") private var storedSleepGoalMinutes: Double = 480
+    @AppStorage("goal_sleepMinutes", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) private var storedSleepGoalMinutes: Double = 480
 
     var stepsGoal: Double {
         get { storedStepsGoal }

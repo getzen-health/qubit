@@ -129,6 +129,8 @@ class SyncService {
         // Using Keychain (not UserDefaults) to prevent exposure via iCloud backup
         if let rec = AIInsightsService.shared.latestRecoveryScore {
             try? KeychainHelper.save(key: "cached_recovery_score", value: String(rec))
+            // Also write to shared App Group suite so the widget extension can read it
+            UserDefaults(suiteName: "group.com.qxlsz.kquarks")?.set(rec, forKey: "cached_recovery_score")
         }
     }
 
