@@ -328,6 +328,78 @@ final class NotificationService {
         UNUserNotificationCenter.current().add(request)
     }
 
+    // MARK: - Sleep, Recovery & Training Load Alerts
+
+    /// Returns a human-readable duration string in "Xh Ym" format.
+    private func formatNotifDuration(_ minutes: Int) -> String {
+        let h = minutes / 60
+        let m = minutes % 60
+        return "\(h)h \(m)m"
+    }
+
+    /// Schedules a next-morning (8am) notification if last night's sleep was ≥10% below goal.
+    func scheduleSleepGoalMissedAlert(lastNightMinutes: Int, goalMinutes: Int) {
+        guard isAuthorized else { return }
+        guard lastNightMinutes < Int(Double(goalMinutes) * 0.9) else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Sleep goal missed 😴"
+        content.body = "You got \(formatNotifDuration(lastNightMinutes)), goal is \(formatNotifDuration(goalMinutes)). Try an earlier bedtime tonight."
+        content.sound = .default
+        content.categoryIdentifier = "HEALTH_ALERT"
+
+        var components = DateComponents()
+        components.hour = 8
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "sleep_goal_missed",
+            content: content,
+            trigger: trigger
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    /// Fires immediately if recovery score is below 40.
+    func scheduleRecoveryDipAlert(recoveryScore: Int) async {
+        guard isAuthorized else { return }
+        guard recoveryScore < 40 else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Low recovery today ⚠️"
+        content.body = "Recovery score is \(recoveryScore)%. Consider a rest day or light movement only."
+        content.sound = .default
+        content.categoryIdentifier = "HEALTH_ALERT"
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "recovery_dip_\(Int(Date().timeIntervalSince1970))",
+            content: content,
+            trigger: trigger
+        )
+        try? await UNUserNotificationCenter.current().add(request)
+    }
+
+    /// Fires immediately if this week's active calories are ≥50% above last week (Foster 2001 ACWR threshold).
+    func scheduleTrainingLoadWarning(currentWeekCalories: Int, priorWeekCalories: Int) async {
+        guard isAuthorized else { return }
+        guard currentWeekCalories > Int(Double(priorWeekCalories) * 1.5) else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "High training load 🏋️"
+        content.body = "This week's training is 50%+ higher than last week. Risk of overuse injury increases. Add a recovery day."
+        content.sound = .default
+        content.categoryIdentifier = "HEALTH_ALERT"
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "training_load_warning",
+            content: content,
+            trigger: trigger
+        )
+        try? await UNUserNotificationCenter.current().add(request)
+    }
+
     // MARK: - Achievement Unlocked
 
     func scheduleAchievementUnlocked(icon: String, title: String, description: String) {
