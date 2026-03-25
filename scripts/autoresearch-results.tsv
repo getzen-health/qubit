@@ -1,3 +1,4 @@
 iteration	commit	score	delta	status	description
 1	b391134	286	-48	keep	Replace silent try? with do-catch in SupabaseService (6 occurrences)
 2	ffdfd6d	206	-80	keep	Replace silent try? with do-catch in SyncService (10 occurrences)
+3	04ae3f1	150	-56	keep	Replace silent try? with do-catch in NotificationService and GoalService (6 occurrences)
