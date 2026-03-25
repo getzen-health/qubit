@@ -23,6 +23,7 @@ import {
   Scale,
   Droplets,
   Compass,
+  Share2,
 } from 'lucide-react'
 import Link from 'next/link'
 import {
@@ -42,6 +43,7 @@ import { WeeklyCharts } from './components/weekly-charts'
 import { GoalRings } from './components/goal-rings'
 import { BottomNav } from '@/components/bottom-nav'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
+import { ShareCard } from '@/components/ShareCard'
 
 // Tiny sparkline for 7-day recovery trend
 function RecoverySparkline({ history, current }: { history: number[], current: number }) {
@@ -175,6 +177,7 @@ export function DashboardStream({
 
   const [stepGoal, setStepGoal] = useState(dbStepGoal ?? DEFAULT_STEP_GOAL)
   const [calGoal, setCalGoal] = useState(dbCalGoal ?? DEFAULT_CAL_GOAL)
+  const [showShareCard, setShowShareCard] = useState(false)
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false)
   const [insightError, setInsightError] = useState<string | null>(null)
   const [localActiveFast, setLocalActiveFast] = useState(activeFast)
@@ -633,6 +636,14 @@ export function DashboardStream({
             >
               <Compass className="w-5 h-5 text-text-secondary" />
             </Link>
+            <button
+              type="button"
+              onClick={() => setShowShareCard(true)}
+              className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              title="Share today's stats"
+            >
+              <Share2 className="w-5 h-5 text-text-secondary" />
+            </button>
             <Link
               href="/settings"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
@@ -651,6 +662,26 @@ export function DashboardStream({
           </div>
         </div>
       </header>
+
+      {showShareCard && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShowShareCard(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <ShareCard
+              metrics={{
+                steps: today?.steps ?? 0,
+                hrv: todayHrv ?? undefined,
+                sleepHours: (metrics.sleep.duration ?? 0) > 0 ? metrics.sleep.duration / 60 : undefined,
+                calories: (metrics.calories ?? 0) > 0 ? metrics.calories : undefined,
+                restingHR: today?.resting_heart_rate ?? undefined,
+                date: today?.date,
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">

@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import { Share2 } from 'lucide-react'
 import Link from 'next/link'
 import {
   BarChart,
@@ -11,6 +13,7 @@ import {
   CartesianGrid,
   ReferenceLine,
 } from 'recharts'
+import { ShareCard } from '@/components/ShareCard'
 
 interface SleepRecord {
   id: string
@@ -81,6 +84,8 @@ interface SleepPageClientProps {
 }
 
 export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathingNights = 0, breathingByDate = {} }: SleepPageClientProps) {
+  const [shareRecord, setShareRecord] = useState<SleepRecord | null>(null)
+
   if (records.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -337,6 +342,14 @@ export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathing
                   <p className="text-xl font-bold text-blue-400">
                     {formatDuration(record.duration_minutes)}
                   </p>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShareRecord(record) }}
+                    className="p-1.5 rounded-lg hover:bg-white/5 text-text-secondary hover:text-text-primary transition-colors"
+                    title="Share this night"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -391,6 +404,23 @@ export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathing
           )
         })}
       </div>
+
+      {shareRecord && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShareRecord(null)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <ShareCard
+              metrics={{
+                steps: 0,
+                sleepHours: shareRecord.duration_minutes / 60,
+                date: shareRecord.start_time.slice(0, 10),
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
