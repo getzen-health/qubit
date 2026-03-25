@@ -309,7 +309,7 @@ struct ExerciseSnacksView: View {
         var byWeek: [Date: [Snack]] = [:]
         for s in snacks {
             let weekComp = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date)
-            let weekStart = calendar.date(from: weekComp)!
+            guard let weekStart = calendar.date(from: weekComp) else { continue }
             byWeek[weekStart, default: []].append(s)
         }
         let weeklyBuckets = byWeek.sorted { $0.key < $1.key }.map { date, weekSnacks in

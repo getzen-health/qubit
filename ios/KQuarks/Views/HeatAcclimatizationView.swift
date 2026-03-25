@@ -414,7 +414,7 @@ struct HeatAcclimatizationView: View {
         // Monthly aggregation
         let monthlyGroups = Dictionary(grouping: built) { s -> Date in
             let comps = calendar.dateComponents([.year, .month], from: s.date)
-            return calendar.date(from: comps)!
+            return calendar.date(from: comps) ?? s.date
         }
         let monthFmt = DateFormatter(); monthFmt.dateFormat = "MMM"
         let monthly = monthlyGroups.sorted { $0.key < $1.key }.map { date, sessions -> MonthEfficiency in

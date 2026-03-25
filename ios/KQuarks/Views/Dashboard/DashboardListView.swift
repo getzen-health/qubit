@@ -653,7 +653,7 @@ struct DashboardListView: View {
 class DashboardListViewModel {
     var todaySummary: TodayHealthSummary?
     var insights: [HealthInsight] = []
-    var isLoading = false
+    var isLoading = true
     var isSyncing = false
     var error: String?
 

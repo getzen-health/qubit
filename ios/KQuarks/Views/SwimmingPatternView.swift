@@ -385,16 +385,15 @@ struct SwimmingPatternView: View {
             let monthComps = cal.dateComponents([.year, .month], from: w.startDate)
             let monthKey = String(format: "%04d-%02d", monthComps.year ?? 0, monthComps.month ?? 0)
             let label = monthFmt.string(from: w.startDate)
-            if monthMap[monthKey] == nil { monthMap[monthKey] = (label, 0, 0, []) }
-            monthMap[monthKey]!.count += 1
-            monthMap[monthKey]!.meters += distM
+            monthMap[monthKey, default: (label, 0, 0, [])].count += 1
+            monthMap[monthKey, default: (label, 0, 0, [])].meters += distM
 
             // Pace per 100m in seconds: (mins / distKm) / 10 * 60 = mins_per_km * 6
             if distM > 200 && mins > 0 {
                 let minsPerKm = mins / (distM / 1000.0)
                 let secs100 = minsPerKm * 60.0 / 10.0  // secs per 100m
                 if secs100 > 50 && secs100 < 300 {
-                    monthMap[monthKey]!.paces.append(secs100)
+                    monthMap[monthKey, default: (label, 0, 0, [])].paces.append(secs100)
                     pacePoints.append(PacePoint(id: w.startDate, pace100Secs: secs100))
                 }
             }
@@ -402,9 +401,8 @@ struct SwimmingPatternView: View {
             let weekComps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: w.startDate)
             let weekKey = String(format: "W%02d", weekComps.weekOfYear ?? 0)
             let weekStart = cal.date(from: weekComps) ?? w.startDate
-            if weekMap[weekKey] == nil { weekMap[weekKey] = (0, 0, weekStart) }
-            weekMap[weekKey]!.meters += distM
-            weekMap[weekKey]!.count += 1
+            weekMap[weekKey, default: (0, 0, weekStart)].meters += distM
+            weekMap[weekKey, default: (0, 0, weekStart)].count += 1
         }
 
         let days: [DayBucket] = (1...7).map { i in

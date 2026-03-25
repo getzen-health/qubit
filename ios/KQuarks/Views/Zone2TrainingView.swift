@@ -409,12 +409,12 @@ struct Zone2TrainingView: View {
             "Hiking":   (0, .green),  "Swimming": (0, .cyan), "Other":  (0, .gray)
         ]
         for w in weeks {
-            sportMap["Running"]!.0  += w.z2Running
-            sportMap["Cycling"]!.0  += w.z2Cycling
-            sportMap["Walking"]!.0  += w.z2Walking
-            sportMap["Hiking"]!.0   += w.z2Hiking
-            sportMap["Swimming"]!.0 += w.z2Swimming
-            sportMap["Other"]!.0    += w.z2Other
+            sportMap["Running",  default: (0, .orange)].0 += w.z2Running
+            sportMap["Cycling",  default: (0, .blue)].0   += w.z2Cycling
+            sportMap["Walking",  default: (0, .yellow)].0 += w.z2Walking
+            sportMap["Hiking",   default: (0, .green)].0  += w.z2Hiking
+            sportMap["Swimming", default: (0, .cyan)].0   += w.z2Swimming
+            sportMap["Other",    default: (0, .gray)].0   += w.z2Other
         }
         sportTotals = sportMap.compactMap { name, tuple in
             guard tuple.0 >= 10 else { return nil }
