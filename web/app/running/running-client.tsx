@@ -128,6 +128,41 @@ export function RunningClient({ runs }: RunningClientProps) {
   const totalKm = runs.reduce((s, r) => s + r.distanceKm, 0)
   const totalRuns = runs.length
 
+  // VO2max estimation per run (Jack Daniels vDot formula, simplified)
+  // v = speed in m/min, VO2 = -4.6 + 0.182258*v + 0.000104*v^2
+  // %VO2max = 0.8 + 0.1894393*e^(-0.012778*t) + 0.2989558*e^(-0.1932605*t)  where t = duration in minutes
+  // VO2max = VO2 / %VO2max
+  function estimateVO2max(paceSecsPerKm: number, durationMinutes: number): number | null {
+    if (!paceSecsPerKm || paceSecsPerKm <= 0 || !durationMinutes || durationMinutes < 5) return null
+    const v = 1000 / (paceSecsPerKm / 60) // m/min
+    const vo2 = -4.6 + 0.182258 * v + 0.000104 * v * v
+    const t = durationMinutes
+    const pctVO2max = 0.8 + 0.1894393 * Math.exp(-0.012778 * t) + 0.2989558 * Math.exp(-0.1932605 * t)
+    if (pctVO2max <= 0) return null
+    return Math.round(vo2 / pctVO2max)
+  }
+
+  const vo2maxData = runs
+    .filter((r) => r.paceSecsPerKm && r.paceSecsPerKm > 0 && r.durationMinutes >= 5)
+    .map((r) => ({ date: fmtDate(r.date), vo2max: estimateVO2max(r.paceSecsPerKm!, r.durationMinutes) }))
+    .filter((d): d is { date: string; vo2max: number } => d.vo2max !== null && d.vo2max > 20 && d.vo2max < 90)
+
+  // Rolling 7-day average VO2max to smooth noise
+  const smoothedVO2max = vo2maxData.map((d, i) => {
+    const window = vo2maxData.slice(Math.max(0, i - 3), i + 4)
+    const avg = window.reduce((s, x) => s + x.vo2max, 0) / window.length
+    return { ...d, vo2max: Math.round(avg) }
+  })
+
+  const latestVO2max = smoothedVO2max.length > 0 ? smoothedVO2max[smoothedVO2max.length - 1].vo2max : null
+  function vo2maxCategory(v: number): { label: string; color: string } {
+    if (v >= 60) return { label: 'Superior', color: 'text-purple-400' }
+    if (v >= 52) return { label: 'Excellent', color: 'text-green-400' }
+    if (v >= 44) return { label: 'Good', color: 'text-lime-400' }
+    if (v >= 37) return { label: 'Fair', color: 'text-yellow-400' }
+    return { label: 'Needs work', color: 'text-orange-400' }
+  }
+
   // Chart data
   const paceChartData = runs
     .filter((r) => r.paceSecsPerKm && r.paceSecsPerKm > 0)
@@ -171,6 +206,13 @@ export function RunningClient({ runs }: RunningClientProps) {
             <p className="text-xs text-text-secondary mt-0.5">Avg Cadence (spm)</p>
           </div>
         )}
+        {latestVO2max && (
+          <div className="bg-surface rounded-xl border border-border p-4 text-center">
+            <p className={`text-2xl font-bold ${vo2maxCategory(latestVO2max).color}`}>{latestVO2max}</p>
+            <p className="text-xs text-text-secondary mt-0.5">VO₂max est.</p>
+            <p className={`text-xs font-medium ${vo2maxCategory(latestVO2max).color}`}>{vo2maxCategory(latestVO2max).label}</p>
+          </div>
+        )}
       </div>
 
       {/* Form metric stats */}
@@ -199,6 +241,22 @@ export function RunningClient({ runs }: RunningClientProps) {
             </div>
           )}
         </div>
+      )}
+
+      {/* VO2max trend chart */}
+      {smoothedVO2max.length >= 2 && (
+        <TrendChart
+          data={smoothedVO2max}
+          dataKey="vo2max"
+          label="VO₂max Estimate (ml/kg/min) — Daniels vDot formula"
+          color="#c084fc"
+          formatter={(v) => `${Math.round(v)}`}
+          domain={[30, 70]}
+          refLines={[
+            { y: 44, color: 'rgba(163,230,53,0.4)', label: 'Good' },
+            { y: 52, color: 'rgba(74,222,128,0.4)', label: 'Excellent' },
+          ]}
+        />
       )}
 
       {/* Trend charts */}
