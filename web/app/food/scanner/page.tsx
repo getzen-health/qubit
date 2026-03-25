@@ -149,6 +149,7 @@ export default function FoodScannerPage() {
   const [reportNotes, setReportNotes] = useState('')
   const [reportingMissing, setReportingMissing] = useState(false)
   const [servings, setServings] = useState(1)
+  const [manualBarcode, setManualBarcode] = useState('')
 
   function getDefaultMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
     const hour = new Date().getHours()
