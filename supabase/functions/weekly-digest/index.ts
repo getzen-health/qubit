@@ -27,6 +27,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
  * Uses Resend by default — swap to any transactional email provider.
  */
 
+const resendKey = Deno.env.get('RESEND_API_KEY')
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
