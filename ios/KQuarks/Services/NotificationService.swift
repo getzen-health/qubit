@@ -176,11 +176,23 @@ final class NotificationService {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["morning-brief"])
     }
 
-    func scheduleInsightsNotification() {
+    func scheduleInsightsNotification(insightContent: String? = nil) {
         guard isAuthorized else { return }
         let content = UNMutableNotificationContent()
         content.title = "New Health Insights"
-        content.body = "Your AI-powered health insights are ready to view."
+
+        if let insight = insightContent, !insight.isEmpty {
+            let preview = insight
+                .components(separatedBy: CharacterSet(charactersIn: ".!?"))
+                .first?
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                ?? insight
+            let body = preview.isEmpty ? "Your health insights are ready" : preview
+            content.body = String(body.prefix(100))
+        } else {
+            content.body = "Your AI-powered health insights are ready to view."
+        }
+
         content.sound = .default
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(
