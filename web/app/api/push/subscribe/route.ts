@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from "next/server"
+import { createServerClient } from "@/lib/supabase/server"
+
+export async function POST(req: NextRequest) {
+  try {
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const subscription = await req.json()
+    if (!subscription?.endpoint) {
+      return NextResponse.json({ error: "Invalid subscription" }, { status: 400 })
+    }
+
+    await supabase.from("web_push_subscriptions").upsert(
+      {
+        user_id: user.id,
+        endpoint: subscription.endpoint,
+        p256dh: subscription.keys?.p256dh,
+        auth: subscription.keys?.auth,
+      },
+      { onConflict: "user_id,endpoint" }
+    )
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Push subscription error:", error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to subscribe" },
+      { status: 500 }
+    )
+  }
+}

@@ -231,6 +231,10 @@ Deno.serve(async (req: Request) => {
 
     responseText = text
   } catch (err) {
+    if (err instanceof DOMException && err.name === "TimeoutError") {
+      console.error("[health-chat] Claude API timeout")
+      return jsonResponse({ error: "AI service request timed out. Please try again." }, 504)
+    }
     console.error("[health-chat] Failed to call Claude API:", err instanceof Error ? err.message : "Unknown error")
     return jsonResponse({ error: "Failed to generate response" }, 502)
   }

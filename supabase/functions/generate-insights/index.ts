@@ -250,6 +250,13 @@ Generate 3-5 insights covering different categories. At least one should be acti
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     )
   } catch (error) {
+    if (error instanceof DOMException && error.name === "TimeoutError") {
+      console.error("Claude API timeout")
+      return new Response(
+        JSON.stringify({ error: "AI service request timed out. Please try again." }),
+        { status: 504, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      )
+    }
     console.error("Edge function error:", error)
     return new Response(
       JSON.stringify({ error: "Internal server error" }),

@@ -125,7 +125,11 @@ async function generateExplanation(
 
     const data = await res.json()
     return (data.content?.[0]?.text as string | undefined)?.trim() ?? null
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "TimeoutError") {
+      console.error("Claude API timeout for metric explanation")
+      return "Request to AI service timed out. This anomaly may need further investigation."
+    }
     return null
   }
 }
