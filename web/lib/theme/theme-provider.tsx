@@ -2,7 +2,8 @@
 
 /**
  * Theme Provider
- * Manages theme state and applies CSS variables
+ * Manages theme state and applies CSS variables.
+ * Persists to both localStorage (fast, no-flash) and Supabase (cross-device sync).
  */
 
 import {
@@ -19,6 +20,8 @@ import {
   defaultThemeConfig,
   STORAGE_KEYS,
 } from './theme-config'
+import { createClient } from '@/lib/supabase/client'
+import { syncThemeFromServer, saveThemeToServer } from '@/lib/theme'
 
 interface ThemeContextValue {
   theme: ThemeConfig
@@ -49,7 +52,7 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
   )
   const [resolvedMode, setResolvedMode] = useState<'light' | 'dark'>('light')
 
-  // Load theme from storage on mount
+  // Load theme from localStorage on mount (fast — avoids flash)
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEYS.theme)
     if (stored) {
@@ -62,10 +65,35 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
     }
   }, [])
 
-  // Save theme to storage on change
+  // Save theme to localStorage on every change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.theme, JSON.stringify(theme))
   }, [theme])
+
+  // Sync theme from Supabase when the user's auth session is available.
+  // If the server value differs from localStorage, apply and persist it locally.
+  useEffect(() => {
+    const supabase = createClient()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!session?.user) return
+      try {
+        const serverMode = await syncThemeFromServer(supabase, session.user.id)
+        setTheme((prev) => {
+          if (prev.appearanceMode === serverMode) return prev
+          const updated = { ...prev, appearanceMode: serverMode }
+          localStorage.setItem(STORAGE_KEYS.theme, JSON.stringify(updated))
+          return updated
+        })
+      } catch {
+        // Non-critical — fall back to locally stored theme
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   // Resolve system preference
   useEffect(() => {
@@ -106,6 +134,13 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
 
   const setAppearanceMode = useCallback((mode: AppearanceMode) => {
     setTheme((prev) => ({ ...prev, appearanceMode: mode }))
+    // Fire-and-forget save to Supabase
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        saveThemeToServer(supabase, data.user.id, mode).catch(() => {})
+      }
+    })
   }, [])
 
   const setAccentColor = useCallback((h: number, s: number, l: number) => {
