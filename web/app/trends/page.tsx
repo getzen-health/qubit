@@ -1,9 +1,11 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, GitCompareArrows, TrendingUp } from 'lucide-react'
 import { TrendsClient } from './trends-client'
 import { BottomNav } from '@/components/bottom-nav'
+import { TrendsPageSkeleton } from '@/components/skeletons'
 
 export default async function TrendsPage() {
   const supabase = await createClient()
@@ -57,7 +59,9 @@ export default async function TrendsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <TrendsClient summaries={summaries ?? []} />
+        <Suspense fallback={<TrendsPageSkeleton />}>
+          <TrendsClient summaries={summaries ?? []} />
+        </Suspense>
       </main>
       <BottomNav />
     </div>

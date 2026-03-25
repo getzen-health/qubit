@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -6,6 +7,7 @@ import { ReadyClient, type ReadinessData, type DailyScore, type ReadinessZone } 
 import { BottomNav } from '@/components/bottom-nav'
 import { calculateReadinessScore, toHrvScore, toRhrScore, toSleepScore } from '@/lib/readiness'
 import { calculateACWR, acwrToStrainScore } from '@/lib/acwr'
+import { ReadyPageSkeleton } from '@/components/skeletons'
 
 export const metadata = { title: 'Daily Readiness Score' }
 
@@ -100,24 +102,25 @@ export default async function ReadyPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // ── Fetch 30 days of daily_summaries ───────────────────────────────────────
+  // ── Fetch 30 days of daily_summaries and 28 days of workouts in parallel ──
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  const { data: rows } = await supabase
-    .from('daily_summaries')
-    .select('date, avg_hrv, resting_heart_rate, sleep_efficiency, sleep_duration_minutes, recovery_score')
-    .eq('user_id', user.id)
-    .gte('date', since)
-    .order('date', { ascending: true })
-    .limit(30)
-
-  // ── Fetch 28 days of workout_records for ACWR ─────────────────────────────
   const since28 = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  const { data: workoutRows } = await supabase
-    .from('workout_records')
-    .select('start_time, active_calories, total_calories, duration_minutes')
-    .eq('user_id', user.id)
-    .gte('start_time', since28 + 'T00:00:00Z')
-    .order('start_time', { ascending: true })
+
+  const [{ data: rows }, { data: workoutRows }] = await Promise.all([
+    supabase
+      .from('daily_summaries')
+      .select('date, avg_hrv, resting_heart_rate, sleep_efficiency, sleep_duration_minutes, recovery_score')
+      .eq('user_id', user.id)
+      .gte('date', since)
+      .order('date', { ascending: true })
+      .limit(30),
+    supabase
+      .from('workout_records')
+      .select('start_time, active_calories, total_calories, duration_minutes')
+      .eq('user_id', user.id)
+      .gte('start_time', since28 + 'T00:00:00Z')
+      .order('start_time', { ascending: true }),
+  ])
 
   // Aggregate workouts into daily loads (active_calories as proxy for training load)
   const loadByDate = new Map<string, number>()
@@ -202,7 +205,9 @@ export default async function ReadyPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <ReadyClient data={data} />
+        <Suspense fallback={<ReadyPageSkeleton />}>
+          <ReadyClient data={data} />
+        </Suspense>
       </main>
       <BottomNav />
     </div>
