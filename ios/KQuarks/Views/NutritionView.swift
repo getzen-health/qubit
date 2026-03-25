@@ -12,7 +12,11 @@ struct NutritionView: View {
     @State private var showPhotoRecognition = false
     @State private var selectedMealType: MealTypeOption = .breakfast
 
-    private let calorieTarget = 2000
+    @State private var calorieTarget = 2000
+    @State private var proteinTarget = 150
+    @State private var carbsTarget = 250
+    @State private var fatTarget = 65
+    @State private var goalsFromServer = false
 
     var body: some View {
         NavigationStack {
@@ -143,24 +147,35 @@ struct NutritionView: View {
             MacroRow(
                 label: "Protein",
                 value: nutrition?.protein_consumed ?? 0,
-                target: 150,
+                target: Double(proteinTarget),
                 unit: "g",
                 color: .blue
             )
             MacroRow(
                 label: "Carbs",
                 value: nutrition?.carbs_consumed ?? 0,
-                target: 250,
+                target: Double(carbsTarget),
                 unit: "g",
                 color: .orange
             )
             MacroRow(
                 label: "Fat",
                 value: nutrition?.fat_consumed ?? 0,
-                target: 65,
+                target: Double(fatTarget),
                 unit: "g",
                 color: .purple
             )
+            if goalsFromServer {
+                HStack {
+                    Image(systemName: "checkmark.icloud.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text("Goals set in web app")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+            }
         }
         .padding()
         .background(Color(.systemBackground))
@@ -255,8 +270,16 @@ struct NutritionView: View {
         isLoading = true
         async let n = SupabaseService.shared.fetchTodayNutrition()
         async let m = SupabaseService.shared.fetchTodayMeals()
+        async let g = SupabaseService.shared.fetchNutritionGoals()
         nutrition = try? await n
         meals = (try? await m) ?? []
+        if let goals = try? await g {
+            calorieTarget = goals.calories
+            proteinTarget = goals.protein
+            carbsTarget = goals.carbs
+            fatTarget = goals.fat
+            goalsFromServer = true
+        }
         isLoading = false
     }
 }
