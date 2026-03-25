@@ -14,53 +14,59 @@ export default async function StreaksPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('step_goal, sleep_goal_minutes, calorie_goal')
-    .eq('id', user.id)
-    .single()
-
-  // 90 days of daily summaries for streak computation
+  // Date boundaries computed once before parallel queries
   const ninetyDaysAgo = new Date()
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
-
-  const { data: summaries } = await supabase
-    .from('daily_summaries')
-    .select('date, steps, sleep_duration_minutes, active_calories, avg_hrv, recovery_score')
-    .eq('user_id', user.id)
-    .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
-    .order('date', { ascending: false })
-
-  // 90 days of workout records for workout streak
-  const { data: workouts } = await supabase
-    .from('workout_records')
-    .select('start_time')
-    .eq('user_id', user.id)
-    .gte('start_time', ninetyDaysAgo.toISOString())
-
-  // 30 days of mindfulness sessions
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-  const { data: mindfulness } = await supabase
-    .from('health_records')
-    .select('start_time, value')
-    .eq('user_id', user.id)
-    .eq('type', 'mindfulness')
-    .gte('start_time', thirtyDaysAgo.toISOString())
 
-  // 90 days of water logs
-  const { data: waterLogs } = await supabase
-    .from('daily_water')
-    .select('date, total_ml')
-    .eq('user_id', user.id)
-    .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
-
-  // Nutrition settings for water goal
-  const { data: nutritionSettings } = await supabase
-    .from('user_nutrition_settings')
-    .select('water_target_ml')
-    .eq('user_id', user.id)
-    .single()
+  const [
+    { data: profile },
+    { data: summaries },
+    { data: workouts },
+    { data: mindfulness },
+    { data: waterLogs },
+    { data: nutritionSettings },
+  ] = await Promise.all([
+    // User goals
+    supabase
+      .from('users')
+      .select('step_goal, sleep_goal_minutes, calorie_goal')
+      .eq('id', user.id)
+      .single(),
+    // 90 days of daily summaries for streak computation
+    supabase
+      .from('daily_summaries')
+      .select('date, steps, sleep_duration_minutes, active_calories, avg_hrv, recovery_score')
+      .eq('user_id', user.id)
+      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
+      .order('date', { ascending: false }),
+    // 90 days of workout records for workout streak
+    supabase
+      .from('workout_records')
+      .select('start_time')
+      .eq('user_id', user.id)
+      .gte('start_time', ninetyDaysAgo.toISOString()),
+    // 30 days of mindfulness sessions
+    supabase
+      .from('health_records')
+      .select('start_time, value')
+      .eq('user_id', user.id)
+      .eq('type', 'mindfulness')
+      .gte('start_time', thirtyDaysAgo.toISOString()),
+    // 90 days of water logs
+    supabase
+      .from('daily_water')
+      .select('date, total_ml')
+      .eq('user_id', user.id)
+      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10)),
+    // Nutrition settings for water goal
+    supabase
+      .from('user_nutrition_settings')
+      .select('water_target_ml')
+      .eq('user_id', user.id)
+      .single(),
+  ])
 
   const workoutDays = new Set((workouts ?? []).map((w) => w.start_time.slice(0, 10)))
   const mindfulnessDays = new Set((mindfulness ?? []).map((m) => m.start_time.slice(0, 10)))
