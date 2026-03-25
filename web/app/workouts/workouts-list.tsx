@@ -282,6 +282,9 @@ function LogWorkoutModal({ onClose, onLogged }: { onClose: () => void; onLogged:
 
 interface WorkoutsListProps {
   workouts: Workout[]
+  weeklyKm: number
+  weeklyMinutes: number
+  weeklyCount: number
 }
 
 // Compute ISO week label "MMM d" for the Monday of each week
@@ -293,7 +296,7 @@ function weekLabel(date: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function WorkoutsList({ workouts }: WorkoutsListProps) {
+export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }: WorkoutsListProps) {
   const [activeType, setActiveType] = useState<string | null>(null)
   const [showLogModal, setShowLogModal] = useState(false)
   const router = useRouter()
@@ -446,6 +449,13 @@ export function WorkoutsList({ workouts }: WorkoutsListProps) {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        )}
+
+        {/* This Week summary bar */}
+        {weeklyCount > 0 && (
+          <p className="text-sm text-text-secondary mb-4">
+            This week: {weeklyCount} session{weeklyCount !== 1 ? 's' : ''} · {weeklyKm.toFixed(1)} km · {weeklyMinutes} min
+          </p>
         )}
 
         {/* Type filter chips */}
