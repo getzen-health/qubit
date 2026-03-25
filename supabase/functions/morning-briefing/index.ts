@@ -84,6 +84,15 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "Supabase environment not configured" }, 500)
   }
 
+  // Verify JWT — reject forged/expired tokens
+  const supabaseAuth = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!)
+  const { data: { user: jwtUser }, error: jwtError } = await supabaseAuth.auth.getUser(
+    authHeader.replace("Bearer ", "")
+  )
+  if (jwtError || !jwtUser) {
+    return jsonResponse({ error: "Unauthorized" }, 401)
+  }
+
   // Parse request body
   let userId: string
   try {

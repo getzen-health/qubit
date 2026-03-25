@@ -260,6 +260,18 @@ Deno.serve(async (req: Request) => {
     })
   }
 
+  // Verify JWT — reject forged/expired tokens
+  const _supabaseAuth = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!)
+  const { data: { user: _jwtUser }, error: _jwtError } = await _supabaseAuth.auth.getUser(
+    authHeader.replace("Bearer ", "")
+  )
+  if (_jwtError || !_jwtUser) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    })
+  }
+
   const anthropicKey = Deno.env.get("ANTHROPIC_API_KEY")
   if (!anthropicKey) {
     return new Response(JSON.stringify({ error: "ANTHROPIC_API_KEY not configured" }), {
