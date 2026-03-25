@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const days = Math.min(parseInt(request.nextUrl.searchParams.get('days') ?? '30', 10), 90)
   const since = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
 
-  const [{ data: habits }, { data: completions }] = await Promise.all([
+  const [{ data: habits, error: habitsError }, { data: completions, error: completionsError }] = await Promise.all([
     supabase
       .from('habits')
       .select('id, name, emoji, target_days, sort_order, created_at')
@@ -24,6 +24,9 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
       .gte('date', since),
   ])
+
+  if (habitsError) return NextResponse.json({ error: 'Failed to fetch habits' }, { status: 500 })
+  if (completionsError) return NextResponse.json({ error: 'Failed to fetch completions' }, { status: 500 })
 
   return NextResponse.json({ habits: habits ?? [], completions: completions ?? [] })
 }
