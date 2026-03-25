@@ -51,6 +51,7 @@ interface FoodProduct {
   healthScore: HealthScore
   ingredients?: string | null
   categories?: string[]
+  dataSource?: 'off' | 'usda'
 }
 
 interface Alternative {
@@ -297,6 +298,11 @@ export default function FoodScannerPage() {
                   <h2 className="font-bold text-text-primary text-lg leading-tight">{product.name}</h2>
                   {product.brand && <p className="text-sm text-text-secondary mt-0.5">{product.brand}</p>}
                   {product.quantity && <p className="text-xs text-text-secondary">{product.quantity}</p>}
+                  {product.dataSource && (
+                    <p className="text-xs text-text-secondary mt-1">
+                      {product.dataSource === 'usda' ? '🇺🇸 USDA FoodData Central' : '🌍 Open Food Facts'}
+                    </p>
+                  )}
                 </div>
                 <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
               </div>
