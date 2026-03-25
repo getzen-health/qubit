@@ -147,6 +147,7 @@ export default function FoodScannerPage() {
   const [reportBrand, setReportBrand] = useState('')
   const [reportNotes, setReportNotes] = useState('')
   const [reportingMissing, setReportingMissing] = useState(false)
+  const [servings, setServings] = useState(1)
 
   function getDefaultMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
     const hour = new Date().getHours()
@@ -174,14 +175,22 @@ export default function FoodScannerPage() {
         .select('id')
         .single()
       if (mealErr || !meal) throw mealErr ?? new Error('Could not create meal')
+      
+      // Scale nutrition by servings multiplier
+      const scaledCalories = Math.round((product.calories ?? 0) * servings)
+      const scaledProtein = +(((product.protein ?? 0) * servings).toFixed(1))
+      const scaledCarbs = +(((product.carbs ?? 0) * servings).toFixed(1))
+      const scaledFat = +(((product.fat ?? 0) * servings).toFixed(1))
+      
       await supabase.from('meal_items').insert({
         meal_id: meal.id,
         food_name: product.name,
-        quantity_g: 100,
-        calories: product.calories ?? 0,
-        protein_g: product.protein ?? 0,
-        carbs_g: product.carbs ?? 0,
-        fat_g: product.fat ?? 0,
+        quantity_g: 100 * servings,
+        calories: scaledCalories,
+        protein_g: scaledProtein,
+        carbs_g: scaledCarbs,
+        fat_g: scaledFat,
+        servings_count: servings,
       })
       setMealAdded(true)
       setTimeout(() => setMealAdded(false), 3000)
@@ -561,12 +570,54 @@ export default function FoodScannerPage() {
                 ) : null
               })()}
 
+              {/* Serving size multiplier */}
+              <div className="px-4 py-3 border-t border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-text-secondary">Servings:</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setServings(s => Math.max(0.5, s - 0.5))}
+                      className="w-8 h-8 rounded-full bg-zinc-700 text-white flex items-center justify-center text-sm hover:bg-zinc-600 transition-colors"
+                    >
+                      −
+                    </button>
+                    <span className="text-white font-semibold w-6 text-center">{servings}</span>
+                    <button
+                      onClick={() => setServings(s => Math.min(10, s + 0.5))}
+                      className="w-8 h-8 rounded-full bg-zinc-700 text-white flex items-center justify-center text-sm hover:bg-zinc-600 transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="text-xs text-zinc-500">
+                  {product.servingSize ? `${(100 * servings).toFixed(0)}g` : `${servings}x`}
+                </span>
+              </div>
+
+              {/* Nutrition grid with scaled values */}
               <div className="grid grid-cols-4 divide-x divide-border border-t border-border">
                 {[
-                  { label: 'Calories', value: product.calories, unit: 'kcal' },
-                  { label: 'Protein', value: product.protein, unit: 'g' },
-                  { label: 'Carbs', value: product.carbs, unit: 'g' },
-                  { label: 'Fat', value: product.fat, unit: 'g' },
+                  {
+                    label: 'Calories',
+                    value: Math.round((product.calories ?? 0) * servings),
+                    unit: 'kcal',
+                  },
+                  {
+                    label: 'Protein',
+                    value: (((product.protein ?? 0) * servings).toFixed(1)),
+                    unit: 'g',
+                  },
+                  {
+                    label: 'Carbs',
+                    value: (((product.carbs ?? 0) * servings).toFixed(1)),
+                    unit: 'g',
+                  },
+                  {
+                    label: 'Fat',
+                    value: (((product.fat ?? 0) * servings).toFixed(1)),
+                    unit: 'g',
+                  },
                 ].map((m) => (
                   <div key={m.label} className="py-3 px-2 text-center">
                     <p className="text-xs text-text-secondary">{m.label}</p>
@@ -575,7 +626,9 @@ export default function FoodScannerPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-text-secondary text-center pb-2">Per {product.servingSize}</p>
+              <p className="text-xs text-text-secondary text-center pb-2">
+                Per {product.servingSize}{servings !== 1 ? ` × ${servings}` : ''}
+              </p>
 
               {/* Add to Meal diary */}
               <div className="px-4 pb-4 pt-1">
