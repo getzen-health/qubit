@@ -114,7 +114,7 @@ export async function GET(request: Request) {
 
     for (const meal of data ?? []) {
       const date = meal.logged_at?.slice(0, 10) ?? ''
-      for (const item of (meal.meal_items as Array<{ name: string; servings: number; calories: number; protein?: number | null; carbs?: number | null; fat?: number | null }> ?? [])) {
+      for (const item of (Array.isArray(meal.meal_items) ? meal.meal_items as Array<{ name: string; servings: number; calories: number; protein?: number | null; carbs?: number | null; fat?: number | null }> : [])) {
         rows.push([
           date,
           meal.meal_type ?? '',
@@ -181,8 +181,6 @@ export async function GET(request: Request) {
       .eq('user_id', user.id)
       .order('date', { ascending: false })
 
-    const habitMap = new Map((habits ?? []).map((h: { name: string; emoji: string; target_days: string[]; created_at: string } & { id?: string }) => [h as unknown as { id: string; name: string }, h.name]))
-    void habitMap
 
     // Simple flat export: date + habit_id (use name if possible)
     const rows = completions ?? []

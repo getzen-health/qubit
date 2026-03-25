@@ -6,6 +6,7 @@ class HealthKitService {
     static let shared = HealthKitService()
 
     private let healthStore = HKHealthStore()
+    private var activeSyncTask: Task<Void, Never>?
 
     var isAuthorized = false
     var authorizationStatus: HKAuthorizationStatus = .notDetermined
@@ -161,7 +162,8 @@ class HealthKitService {
                     completionHandler()
                     return
                 }
-                Task {
+                self?.activeSyncTask?.cancel()
+                self?.activeSyncTask = Task {
                     await SyncService.shared.performFullSync()
                     completionHandler()
                 }
@@ -177,7 +179,8 @@ class HealthKitService {
                 completionHandler()
                 return
             }
-            Task {
+            self?.activeSyncTask?.cancel()
+            self?.activeSyncTask = Task {
                 await SyncService.shared.performFullSync()
                 completionHandler()
             }
