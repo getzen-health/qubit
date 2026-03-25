@@ -40,7 +40,7 @@ export const POST = createSecureApiHandler(
       mood: z.number().int().min(1).max(5).optional(),
       stress: z.number().int().min(1).max(5).optional(),
       notes: z.string().optional().nullable(),
-      date: z.string().optional(),
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD').optional(),
     }),
     auditAction: 'CREATE',
     auditResource: 'daily_checkin',
