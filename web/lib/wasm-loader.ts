@@ -37,9 +37,7 @@ export async function initWasm(): Promise<typeof QuarksCore | null> {
       }
       return wasm
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[kquarks] WASM initialization failed, using JS fallbacks:', error)
-      }
+      console.error('[kquarks] WASM initialization failed, using JS fallbacks:', error)
       wasmInitialized = true // Mark as initialized even on failure to prevent retries
       return null
     }
