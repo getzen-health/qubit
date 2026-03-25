@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Moon } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { WorkoutShareButton } from './workout-share-button'
 
@@ -112,6 +112,16 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
     }
   }
   const hasZoneData = totalZoneSeconds > 60 // at least 1 minute of data
+
+  // Recovery estimate (research-backed, similar to Garmin recovery advisor)
+  const z45pct = (zoneSeconds[3] + zoneSeconds[4]) / Math.max(totalZoneSeconds, 1)
+  const intensityMult = 1.0 + z45pct * 2.5
+  const baseHours = (workout.duration_minutes / 60) * 8
+  const rawHours = baseHours * intensityMult
+  const recoveryMin = Math.min(72, Math.max(4, Math.round(rawHours * 0.8)))
+  const recoveryMax = Math.min(96, Math.max(6, Math.round(rawHours * 1.2)))
+  const intensityLabel: 'Easy' | 'Moderate' | 'Hard' | 'Very Hard' =
+    z45pct < 0.15 ? 'Easy' : z45pct < 0.30 ? 'Moderate' : z45pct < 0.50 ? 'Hard' : 'Very Hard'
 
   function fmtZoneTime(secs: number) {
     const m = Math.floor(secs / 60)
@@ -268,6 +278,30 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
             </div>
           </div>
         )}
+
+        {/* Recovery Estimate */}
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
+            <Moon className="w-4 h-4 text-blue-400" />
+            Recovery Estimate
+          </h3>
+          <div className="flex items-baseline gap-2 mb-3">
+            <span className="text-3xl font-bold text-text-primary">{recoveryMin}–{recoveryMax}</span>
+            <span className="text-text-secondary text-sm">hours</span>
+            <span className={`ml-auto px-2 py-0.5 rounded-full text-xs font-semibold ${
+              intensityLabel === 'Easy'
+                ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                : intensityLabel === 'Moderate'
+                ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                : intensityLabel === 'Hard'
+                ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
+                : 'bg-red-500/10 text-red-400 border border-red-500/20'
+            }`}>{intensityLabel}</span>
+          </div>
+          <p className="text-xs text-text-secondary">
+            Based on {hasZoneData ? 'time in Z4/Z5 and total duration' : 'total duration'}
+          </p>
+        </div>
 
         {/* Source */}
         {workout.source && (
