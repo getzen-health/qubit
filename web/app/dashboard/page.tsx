@@ -36,6 +36,7 @@ export default async function DashboardPage() {
     { data: recentSleepRecords },
     { data: insights },
     { data: devices },
+    { data: latestPredictionRow },
   ] = await Promise.all([
     supabase
       .from('users')
@@ -106,6 +107,13 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .order('last_sync_at', { ascending: false })
       .limit(1),
+    supabase
+      .from('predictions')
+      .select('recovery_forecast, performance_window, caution_flags, generated_at')
+      .eq('user_id', user.id)
+      .order('generated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ])
 
   if (profileError) {
@@ -224,6 +232,7 @@ export default async function DashboardPage() {
       calorieIntakeTarget={nutritionSettings?.calorie_target ?? 2000}
       bodyBatteryScore={bodyBatteryScore}
       stressScore={stressScore}
+      latestPrediction={latestPredictionRow ?? null}
     />
   )
 }

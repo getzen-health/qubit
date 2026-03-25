@@ -133,6 +133,19 @@ interface DashboardStreamProps {
   } | null
   bodyBatteryScore?: number | null
   stressScore?: number | null
+  latestPrediction?: {
+    recovery_forecast: {
+      days: Array<{
+        date: string
+        predicted_score: number
+        confidence: 'high' | 'medium' | 'low'
+        recommendation: string
+      }>
+    } | null
+    performance_window: string | null
+    caution_flags: string[] | null
+    generated_at: string
+  } | null
 }
 
 export function DashboardStream({
@@ -155,6 +168,7 @@ export function DashboardStream({
   activeFast = null,
   bodyBatteryScore = null,
   stressScore = null,
+  latestPrediction = null,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -217,6 +231,32 @@ export function DashboardStream({
   }
 
   const [localInsights, setLocalInsights] = useState(insights)
+  const [localPrediction, setLocalPrediction] = useState(latestPrediction)
+  const [isRefreshingForecast, setIsRefreshingForecast] = useState(false)
+  const [forecastError, setForecastError] = useState<string | null>(null)
+
+  const forecastAgeHours = localPrediction?.generated_at
+    ? (Date.now() - new Date(localPrediction.generated_at).getTime()) / 3600000
+    : null
+  const forecastFresh = forecastAgeHours !== null && forecastAgeHours < 24
+
+  const handleRefreshForecast = async () => {
+    setIsRefreshingForecast(true)
+    setForecastError(null)
+    try {
+      const res = await fetch('/api/predictions', { method: 'POST' })
+      const json = await res.json()
+      if (!res.ok) {
+        setForecastError(json.error ?? 'Failed to refresh forecast')
+      } else if (json.prediction) {
+        setLocalPrediction(json.prediction)
+      }
+    } catch {
+      setForecastError('Network error. Please try again.')
+    } finally {
+      setIsRefreshingForecast(false)
+    }
+  }
   useEffect(() => {
     // Only use localStorage if DB didn't provide goals
     if (!dbStepGoal) {
@@ -1061,6 +1101,92 @@ export function DashboardStream({
               .map((s) => ({ date: s.date, weight_kg: s.weight_kg! }))}
           />
         </DataStreamSection>
+
+        {/* 7-Day Recovery Forecast */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide flex items-center gap-1.5">
+              <span>🔮</span> 7-Day Recovery Forecast
+            </h2>
+            <button
+              onClick={handleRefreshForecast}
+              disabled={isRefreshingForecast || forecastFresh}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              {isRefreshingForecast
+                ? 'Refreshing…'
+                : forecastFresh && forecastAgeHours !== null
+                ? `Updated ${Math.round(forecastAgeHours)}h ago`
+                : 'Refresh forecast'}
+            </button>
+          </div>
+
+          {forecastError && (
+            <p className="text-xs text-red-400 mb-3">{forecastError}</p>
+          )}
+
+          {localPrediction ? (
+            <div className="rounded-xl bg-card border border-border p-4 space-y-4">
+              {localPrediction.performance_window && (
+                <p className="text-sm text-text-primary font-medium">
+                  🏆 {localPrediction.performance_window}
+                </p>
+              )}
+
+              {localPrediction.caution_flags && localPrediction.caution_flags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {localPrediction.caution_flags.map((flag, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium"
+                    >
+                      ⚠️ {flag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {localPrediction.recovery_forecast?.days && localPrediction.recovery_forecast.days.length > 0 && (
+                <div>
+                  <p className="text-xs text-text-secondary uppercase tracking-wide mb-2">3-Day Outlook</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {localPrediction.recovery_forecast.days
+                      .filter((_, i) => i === 0 || i === 2 || i === 4)
+                      .slice(0, 3)
+                      .map((day) => {
+                        const score = day.predicted_score
+                        const colorClass =
+                          score >= 70
+                            ? 'text-green-400 bg-green-500/10'
+                            : score >= 40
+                            ? 'text-yellow-400 bg-yellow-500/10'
+                            : 'text-red-400 bg-red-500/10'
+                        const label = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })
+                        return (
+                          <div
+                            key={day.date}
+                            className={`rounded-lg p-3 text-center ${colorClass}`}
+                          >
+                            <p className="text-xs font-medium opacity-70 mb-1">{label}</p>
+                            <p className="text-xl font-bold">{score}</p>
+                            <p className="text-[10px] mt-1 opacity-70 capitalize">{day.confidence}</p>
+                            <p className="text-[10px] mt-1 opacity-60 line-clamp-2">{day.recommendation}</p>
+                          </div>
+                        )
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <EmptyState
+              icon={<span className="text-2xl">🔮</span>}
+              title="No forecast yet"
+              description="Click 'Refresh forecast' to generate your 7-day recovery prediction using your health trends."
+            />
+          )}
+        </div>
 
         {/* AI Insights */}
         <div className="mt-6">
