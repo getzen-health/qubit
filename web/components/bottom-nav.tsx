@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -20,6 +20,7 @@ const moreItems = [
   { href: '/water', icon: Droplets, label: 'Water' },
   { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scan' },
   { href: '/food/diary', icon: BookOpen, label: 'Food Diary' },
+  { href: '/food/planner', icon: CalendarRange, label: 'Meal Planner' },
   { href: '/injury-risk', icon: ShieldAlert, label: 'Injury Risk' },
   { href: '/compare', icon: BarChart2, label: 'Compare' },
 ]
