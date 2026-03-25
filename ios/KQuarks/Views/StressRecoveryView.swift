@@ -270,7 +270,8 @@ struct StressRecoveryView: View {
     // MARK: - Weekly Timeline
 
     private var weeklyTimelineCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let datamax = weekPoints.flatMap { [$0.stressScore, $0.recoveryScore] }.max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 8) {
             Text("12-Week Timeline")
                 .font(.headline)
 
@@ -301,7 +302,7 @@ struct StressRecoveryView: View {
                     AxisValueLabel(format: .dateTime.month(.abbreviated))
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...datamax)
             .chartYAxisLabel("Score (0–100)")
             .frame(height: 140)
 
