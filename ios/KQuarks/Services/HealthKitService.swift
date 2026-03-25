@@ -136,6 +136,7 @@ class HealthKitService {
             HKQuantityType(.bloodPressureSystolic),
             HKQuantityType(.bloodPressureDiastolic),
             HKCorrelationType(.bloodPressure),
+            HKQuantityType(.dietaryWater),
         ]
         try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
 
@@ -917,6 +918,48 @@ class HealthKitService {
             }
             self.healthStore.execute(query)
         }
+    }
+
+    // MARK: - Water Logging
+
+    func saveWater(milliliters: Double) async throws {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+        guard milliliters > 0 && milliliters < 10000 else { return }
+        let type = HKQuantityType(.dietaryWater)
+        let quantity = HKQuantity(unit: .literUnit(with: .milli), doubleValue: milliliters)
+        let sample = HKQuantitySample(type: type, quantity: quantity, start: Date(), end: Date())
+        try await healthStore.save(sample)
+    }
+
+    // MARK: - Workout Route
+
+    func fetchWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocationCoordinate2D] {
+        guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
+        
+        let query = HKQuery.predicateForWorkout(with: workout.workoutActivityType)
+        let predicate = HKQuery.predicateForSamples(
+            withStart: workout.startDate,
+            end: workout.endDate,
+            options: .strictStartDate
+        )
+        let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [query, predicate])
+        
+        let samples = try await healthStore.samples(
+            matching: compound,
+            with: HKWorkoutRoute.self
+        )
+        
+        var allCoordinates: [CLLocationCoordinate2D] = []
+        
+        if let workoutRoute = samples.first as? HKWorkoutRoute {
+            try await workoutRoute.locations(between: workout.startDate, and: workout.endDate) { locations in
+                if let locations = locations {
+                    allCoordinates.append(contentsOf: locations.map { $0.coordinate })
+                }
+            }
+        }
+        
+        return allCoordinates
     }
 
     // MARK: - Workout Logging

@@ -39,5 +39,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>KQuarks writes your logged water intake back to Apple Health to keep your health data in sync.</string>
 </dict>
 </plist>

@@ -87,6 +87,15 @@ final class WaterTrackingViewModel {
                     amount_ml: ml
                 ), onConflict: "user_id,logged_at")
                 .execute()
+            
+            // Write water intake to Apple Health
+            do {
+                try await HealthKitService.shared.saveWater(milliliters: Double(ml))
+            } catch {
+                // Non-fatal — water log is already saved to Supabase
+                print("Warning: Failed to write water to HealthKit: \(error)")
+            }
+            
             await loadData()
         } catch {
             errorMessage = error.localizedDescription
