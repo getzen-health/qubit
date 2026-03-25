@@ -1,6 +1,7 @@
 import SwiftUI
 import Charts
 import HealthKit
+import UIKit
 
 // MARK: - DailyReadinessView
 
@@ -459,6 +460,9 @@ struct DailyReadinessView: View {
         todayRHRDelta = latest.rhrDelta
         todaySleepHours = latest.sleepHours
         daysOptimal = scores.filter { $0.zone == .optimal }.count
+        #if os(iOS)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        #endif
     }
 
     private func fetchSamples(type: HKQuantityType, start: Date) async -> [HKQuantitySample] {

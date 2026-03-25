@@ -276,10 +276,19 @@ struct FoodScannerView: View {
         do {
             let product = try await OpenFoodFactsService.lookupBarcode(barcode)
             scannedProduct = product
+            #if os(iOS)
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            #endif
         } catch OpenFoodFactsError.notFound {
             errorMessage = "Product not found. Try searching by name."
+            #if os(iOS)
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            #endif
         } catch {
             errorMessage = "Failed to look up product. Check your connection."
+            #if os(iOS)
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            #endif
         }
     }
 

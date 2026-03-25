@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @Observable
 final class GoalService {
@@ -55,6 +56,11 @@ final class GoalService {
                     calorieGoal: Int(activeCaloriesGoal),
                     sleepGoalMinutes: Int(sleepGoalMinutes)
                 )
+                #if os(iOS)
+                await MainActor.run {
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
+                #endif
             } catch {
                 print("[GoalService] Failed to save goals to Supabase: \(error)")
             }

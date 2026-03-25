@@ -249,6 +249,9 @@ struct NutritionView: View {
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             Task {
+                                #if os(iOS)
+                                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                #endif
                                 try? await SupabaseService.shared.deleteMeal(mealId: meal.id)
                                 await load()
                             }

@@ -1,6 +1,7 @@
 import SwiftUI
 import Charts
 import HealthKit
+import UIKit
 
 // MARK: - Models
 
@@ -401,6 +402,14 @@ struct ActivitySummaryView: View {
         thisWeek = buildDays(from: sT, cals: cT, dist: dT, ex: eT, floors: fT, start: thisMonday, end: today)
         lastWeek = buildDays(from: sL, cals: cL, dist: dL, ex: eL, floors: fL, start: lastMonday, end: thisMonday)
         last28   = buildDays(from: s28, cals: c28, dist: d28, ex: e28, floors: f28, start: fourWeeksAgo, end: today)
+
+        #if os(iOS)
+        let streakNow = computeStreak()
+        let milestones: Set<Int> = [3, 7, 14, 21, 30, 60, 90, 100, 365]
+        if milestones.contains(streakNow) {
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        }
+        #endif
     }
 
     // MARK: - Helpers
