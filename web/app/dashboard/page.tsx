@@ -38,6 +38,7 @@ export default async function DashboardPage() {
     { data: insights },
     { data: devices },
     { data: latestPredictionRow },
+    { data: latestVo2maxRow },
   ] = await Promise.all([
     supabase
       .from('users')
@@ -113,6 +114,13 @@ export default async function DashboardPage() {
       .select('recovery_forecast, performance_window, caution_flags, generated_at')
       .eq('user_id', user.id)
       .order('generated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from('vo2max_estimates')
+      .select('vo2max')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
       .limit(1)
       .maybeSingle(),
   ])
@@ -234,6 +242,7 @@ export default async function DashboardPage() {
       bodyBatteryScore={bodyBatteryScore}
       stressScore={stressScore}
       latestPrediction={latestPredictionRow ?? null}
+      latestVo2max={latestVo2maxRow?.vo2max ?? null}
       readinessBanner={<ReadinessBanner userId={user.id} />}
     />
   )

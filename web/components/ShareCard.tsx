@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Copy, Download, Check, Activity, Moon, Heart, Flame } from 'lucide-react'
+import { Copy, Download, Check, Activity, Moon, Heart, Flame, Wind } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface ShareCardMetrics {
@@ -13,6 +13,7 @@ export interface ShareCardMetrics {
   calories?: number
   calorieGoal?: number
   restingHR?: number
+  vo2max?: number
   date?: string
   userName?: string
   avatarUrl?: string
@@ -82,6 +83,7 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
     sleepGoalHours,
     calories,
     restingHR,
+    vo2max,
     date,
     userName,
   } = metrics
@@ -206,13 +208,22 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
               color="bg-red-500/20"
             />
           )}
+          {vo2max !== undefined && (
+            <MetricTile
+              icon={<Wind className="w-3.5 h-3.5 text-cyan-300" />}
+              label="VO₂max"
+              value={Math.round(vo2max)}
+              unit="ml/kg/min"
+              color="bg-cyan-500/20"
+            />
+          )}
         </div>
 
         {/* Footer */}
         <div className="relative flex items-center justify-between">
           <p className="text-[10px] text-white/20 tracking-wide">kquarks.com</p>
           <div className="flex gap-1">
-            {[steps, hrv, sleepHours, calories].filter(Boolean).map((_, i) => (
+            {[steps, hrv, sleepHours, calories, vo2max].filter(Boolean).map((_, i) => (
               <span key={i} className="w-1 h-1 rounded-full bg-purple-500/40" />
             ))}
           </div>

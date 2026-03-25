@@ -135,6 +135,7 @@ interface DashboardStreamProps {
   } | null
   bodyBatteryScore?: number | null
   stressScore?: number | null
+  latestVo2max?: number | null
   latestPrediction?: {
     recovery_forecast: {
       days: Array<{
@@ -171,6 +172,7 @@ export function DashboardStream({
   activeFast = null,
   bodyBatteryScore = null,
   stressScore = null,
+  latestVo2max = null,
   latestPrediction = null,
   readinessBanner,
 }: DashboardStreamProps) {
@@ -678,6 +680,7 @@ export function DashboardStream({
                 sleepHours: (metrics.sleep.duration ?? 0) > 0 ? metrics.sleep.duration / 60 : undefined,
                 calories: (metrics.calories ?? 0) > 0 ? metrics.calories : undefined,
                 restingHR: today?.resting_heart_rate ?? undefined,
+                vo2max: latestVo2max ?? undefined,
                 date: today?.date,
               }}
             />
