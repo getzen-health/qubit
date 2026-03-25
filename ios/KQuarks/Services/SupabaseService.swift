@@ -1426,6 +1426,40 @@ class SupabaseService {
         return response
     }
 
+    // MARK: - Predictions
+
+    struct PredictionRow: Decodable, Identifiable {
+        let id: UUID
+        let userId: UUID
+        let weekOf: String
+        let recoveryForecast: String
+        let performanceWindow: String
+        let cautionFlags: String
+        let createdAt: Date
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case userId = "user_id"
+            case weekOf = "week_of"
+            case recoveryForecast = "recovery_forecast"
+            case performanceWindow = "performance_window"
+            case cautionFlags = "caution_flags"
+            case createdAt = "created_at"
+        }
+    }
+
+    /// Fetches stored prediction rows ordered by week, most recent first.
+    func fetchPredictions(limit: Int = 4) async throws -> [PredictionRow] {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        return try await client
+            .from("predictions")
+            .select()
+            .order("week_of", ascending: false)
+            .limit(limit)
+            .execute()
+            .value
+    }
+
     // MARK: - Achievements
 
     struct Achievement: Decodable, Identifiable {
