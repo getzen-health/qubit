@@ -165,7 +165,7 @@ Deno.serve(async (req: Request) => {
     .limit(30)
 
   if (summariesError) {
-    console.error("[health-chat] Failed to fetch daily summaries:", summariesError)
+    console.error("[health-chat] Failed to fetch daily summaries:", summariesError instanceof Error ? summariesError.message : "Unknown error")
     return jsonResponse({ error: "Failed to fetch health data" }, 500)
   }
 
@@ -181,7 +181,7 @@ Deno.serve(async (req: Request) => {
 
   if (workoutsError) {
     // Non-fatal: proceed without workout data
-    console.warn("[health-chat] Failed to fetch workouts:", workoutsError)
+    console.warn("[health-chat] Failed to fetch workouts:", workoutsError instanceof Error ? workoutsError.message : "Unknown error")
   }
 
   const workouts: WorkoutRow[] = (workoutsData ?? []) as WorkoutRow[]

@@ -363,7 +363,7 @@ Deno.serve(async (req: Request) => {
     .limit(90)
 
   if (summariesError) {
-    console.error("[predictions] Failed to fetch daily_summaries:", summariesError)
+    console.error("[predictions] Failed to fetch daily_summaries:", summariesError instanceof Error ? summariesError.message : "Unknown error")
     return jsonResponse({ error: "Failed to fetch health data" }, 500)
   }
 
@@ -385,7 +385,7 @@ Deno.serve(async (req: Request) => {
     .limit(30)
 
   if (workoutsError) {
-    console.error("[predictions] Failed to fetch workout_records:", workoutsError)
+    console.error("[predictions] Failed to fetch workout_records:", workoutsError instanceof Error ? workoutsError.message : "Unknown error")
     return jsonResponse({ error: "Failed to fetch workout data" }, 500)
   }
 
