@@ -5,6 +5,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Activity, Flame, Moon, Heart, Rou
 import { BottomNav } from '@/components/bottom-nav'
 import { CopySummaryButton } from './copy-summary-button'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }) {
   const { date } = await params
   return { title: `Day — ${date}` }

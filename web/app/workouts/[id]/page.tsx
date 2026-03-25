@@ -5,6 +5,8 @@ import { ArrowLeft, Moon } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { WorkoutShareButton } from './workout-share-button'
 
+export const dynamic = 'force-dynamic'
+
 const WORKOUT_ICONS: Record<string, string> = {
   Running: '🏃',
   Walking: '🚶',
