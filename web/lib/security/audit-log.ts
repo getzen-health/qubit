@@ -46,7 +46,7 @@ export async function logAuditEvent(entry: AuditLogEntry): Promise<void> {
     const supabase = await createClient()
 
     // Use service role for audit logs to ensure they're always written
-    await supabase.from('audit_logs').insert({
+    const { error: insertError } = await supabase.from('audit_logs').insert({
       user_id: entry.user_id,
       action: entry.action,
       resource_type: entry.resource,
@@ -58,6 +58,7 @@ export async function logAuditEvent(entry: AuditLogEntry): Promise<void> {
       error_message: entry.error_message,
       created_at: new Date().toISOString(),
     })
+    if (insertError) throw insertError
   } catch (error) {
     // Don't throw - audit logging should never break the main flow
     console.error('Failed to write audit log:', error)
