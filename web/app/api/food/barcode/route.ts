@@ -38,6 +38,7 @@ interface OpenFoodFactsProduct {
   categories_tags?: string[]
   quantity?: string
   packaging?: string
+  nova_group?: number
 }
 
 const querySchema = barcodeSchema.extend({
@@ -56,7 +57,7 @@ export const GET = createSecureApiHandler(
     const { code: barcode } = query as z.infer<typeof querySchema>
 
     const response = await fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity`,
+      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity,nova_group`,
       {
         headers: {
           'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
@@ -121,6 +122,7 @@ export const GET = createSecureApiHandler(
       healthScore,
       ingredients: product.ingredients_text || null,
       categories: product.categories_tags?.slice(0, 5) ?? [],
+      novaGroup: product.nova_group ?? null,
     }
 
     return secureJsonResponse({ food })

@@ -310,10 +310,20 @@ struct LogWorkoutView: View {
             }
         }
 
-        _ = try? await service.client
-            .from("strength_sets")
-            .insert(rows)
-            .execute()
+        guard !rows.isEmpty else { return }
+
+        do {
+            try await service.client
+                .from("strength_sets")
+                .insert(rows)
+                .execute()
+        } catch {
+            NSLog("[KQuarks] saveStrengthSets failed: %@", error.localizedDescription)
+            await MainActor.run {
+                errorMessage = "Workout saved, but strength sets failed to sync: \(error.localizedDescription)"
+                showError = true
+            }
+        }
     }
 }
 

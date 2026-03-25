@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Utensils, X, Search, ChevronLeft, ChevronRight, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { createClient } from '@/lib/supabase/client'
+import { getReadinessContext } from '@/lib/readiness'
 import {
   BarChart,
   Bar,
@@ -482,6 +483,7 @@ export default function NutritionPage() {
   const [proteinGoal, setProteinGoal] = useState(150)
   const [carbsGoal, setCarbsGoal] = useState(250)
   const [fatGoal, setFatGoal] = useState(65)
+  const [readinessScore, setReadinessScore] = useState<number | null>(null)
 
   const today = new Date().toISOString().slice(0, 10)
   const [currentDate, setCurrentDate] = useState(today)
@@ -545,6 +547,35 @@ export default function NutritionPage() {
     loadSettings()
   }, [load, loadSettings])
 
+  // Fetch readiness score for adaptive macro goals
+  useEffect(() => {
+    const fetchReadiness = async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        const { data } = await supabase
+          .from('daily_summaries')
+          .select('hrv, resting_heart_rate, sleep_duration_minutes, recovery_score')
+          .eq('user_id', user.id)
+          .order('date', { ascending: false })
+          .limit(14)
+        if (!data?.length) return
+        const latest = data[0]
+        const history = data.slice(1)
+        const hrvHistory = history.map((s) => s.hrv).filter((v): v is number => v != null && v > 0)
+        const baselineHrv = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : null
+        if (latest.hrv && baselineHrv) {
+          const dev = (latest.hrv - baselineHrv) / baselineHrv
+          setReadinessScore(Math.max(0, Math.min(100, Math.round(50 + dev * 125))))
+        } else if (latest.recovery_score) {
+          setReadinessScore(latest.recovery_score)
+        }
+      } catch { /* non-critical */ }
+    }
+    fetchReadiness()
+  }, [])
+
   useEffect(() => {
     loadWeekly()
   }, [loadWeekly])
@@ -554,6 +585,12 @@ export default function NutritionPage() {
     await load()
     loadWeekly()
   }
+
+  // Readiness-adaptive macro context (WHOOP/Oura periodization principle)
+  const readinessCtx = getReadinessContext(readinessScore)
+  const adaptedCarbsGoal = Math.round(carbsGoal * readinessCtx.macroShift.carbMultiplier)
+  const adaptedProteinGoal = Math.round(proteinGoal * readinessCtx.macroShift.proteinMultiplier)
+  const adaptedFatGoal = Math.round(fatGoal * readinessCtx.macroShift.fatMultiplier)
 
   // Aggregate totals
   const totalCal = meals.reduce((s, m) =>
@@ -657,15 +694,27 @@ export default function NutritionPage() {
               />
             </div>
 
-            {/* Macros */}
+                        {/* Readiness-adaptive macro guidance */}
+            {readinessScore != null && readinessCtx.zone !== 'optimal' && (
+              <div className={`flex items-start gap-2 p-3 rounded-xl border text-xs mt-1 ${
+                readinessCtx.zone === 'peak' ? 'bg-green-500/10 border-green-500/20 text-green-300' :
+                readinessCtx.zone === 'moderate' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-300' :
+                'bg-orange-500/10 border-orange-500/20 text-orange-300'
+              }`}>
+                <Activity className="w-4 h-4 mt-0.5 shrink-0" />
+                <span><span className="font-semibold">{readinessCtx.label}:</span> {readinessCtx.nutritionAdvice}</span>
+              </div>
+            )}
+
+{/* Macros */}
             {(totalProtein > 0 || totalCarbs > 0 || totalFat > 0) && (
               <MacroBar
                 protein={Math.round(totalProtein)}
                 carbs={Math.round(totalCarbs)}
                 fat={Math.round(totalFat)}
-                proteinGoal={proteinGoal}
-                carbsGoal={carbsGoal}
-                fatGoal={fatGoal}
+                proteinGoal={adaptedProteinGoal}
+                carbsGoal={adaptedCarbsGoal}
+                fatGoal={adaptedFatGoal}
               />
             )}
           </div>
