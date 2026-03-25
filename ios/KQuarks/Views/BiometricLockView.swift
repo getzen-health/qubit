@@ -23,6 +23,24 @@ struct BiometricLockView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                // Lockout countdown banner
+                if biometric.isInLockout {
+                    VStack(spacing: 6) {
+                        Text("Too many failed attempts")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.red)
+                        Text("Try again in \(biometric.lockoutCountdownText)")
+                            .font(.title2.monospacedDigit().bold())
+                            .foregroundStyle(.red)
+                        Text("Use passcode to unlock now")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+                    .padding(.horizontal, 32)
+                }
+
                 Spacer()
 
                 VStack(spacing: 16) {
@@ -33,10 +51,11 @@ struct BiometricLockView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.accentColor)
+                            .background(biometric.isInLockout ? Color.secondary.opacity(0.3) : Color.accentColor)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
+                    .disabled(biometric.isInLockout)
                     .padding(.horizontal, 32)
 
                     Button("Use Passcode") {
@@ -49,7 +68,7 @@ struct BiometricLockView: View {
             }
         }
         .task {
-            // Automatically trigger unlock on appear
+            // Automatically trigger biometric prompt on appear (skipped during lockout)
             await biometric.unlock()
         }
     }

@@ -311,6 +311,7 @@ class SupabaseService {
     // MARK: - Health Data Sync
 
     func uploadHealthRecords(_ records: [HealthRecordUpload]) async throws {
+        guard !BiometricService.shared.isLocked else { throw BiometricError.appLocked }
         guard !records.isEmpty else { return }
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
@@ -326,6 +327,7 @@ class SupabaseService {
     }
 
     func uploadDailySummary(_ summary: DailySummaryUpload) async throws {
+        guard !BiometricService.shared.isLocked else { throw BiometricError.appLocked }
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         try await client
@@ -335,6 +337,7 @@ class SupabaseService {
     }
 
     func uploadSleepRecord(_ record: SleepRecordUpload) async throws {
+        guard !BiometricService.shared.isLocked else { throw BiometricError.appLocked }
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         try await client
@@ -344,6 +347,7 @@ class SupabaseService {
     }
 
     func uploadWorkoutRecord(_ record: WorkoutRecordUpload) async throws {
+        guard !BiometricService.shared.isLocked else { throw BiometricError.appLocked }
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
         try await client
@@ -354,6 +358,7 @@ class SupabaseService {
 
     @available(iOS 14.0, *)
     func uploadECGRecords(_ records: [ECGRecordUpload]) async throws {
+        guard !BiometricService.shared.isLocked else { throw BiometricError.appLocked }
         guard !records.isEmpty else { return }
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
 
@@ -1624,3 +1629,6 @@ enum SupabaseError: Error, LocalizedError {
         }
     }
 }
+
+// Re-exported so callers importing only SupabaseService can catch appLocked
+typealias BiometricLockError = BiometricError

@@ -60,6 +60,10 @@ class SyncService {
     func performFullSync() async {
         guard !isSyncing else { return }
         guard supabase.isAuthenticated else { return }
+        guard !BiometricService.shared.isLocked else {
+            Logger.sync.info("Sync skipped: app locked")
+            return
+        }
 
         isSyncing = true
             syncError = nil
@@ -1006,6 +1010,12 @@ class SyncService {
             return
         }
 
+        guard !BiometricService.shared.isLocked else {
+            Logger.sync.info("Refresh sync skipped: app locked")
+            task.setTaskCompleted(success: true)
+            return
+        }
+
         do {
             try await syncTodaySummary()
             Task { await NotificationService.shared.notifyAfterSync() }
@@ -1021,6 +1031,12 @@ class SyncService {
         scheduleBackgroundSync()
 
         guard supabase.isAuthenticated else {
+            task.setTaskCompleted(success: true)
+            return
+        }
+
+        guard !BiometricService.shared.isLocked else {
+            Logger.sync.info("Full sync skipped: app locked")
             task.setTaskCompleted(success: true)
             return
         }
