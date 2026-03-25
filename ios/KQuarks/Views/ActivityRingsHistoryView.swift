@@ -187,6 +187,11 @@ struct ActivityRingsHistoryView: View {
 
     // MARK: - Trend Chart
 
+    private var trendChartDomainMax: Double {
+        let maxValue = days.flatMap { [$0.moveFraction, $0.exerciseFraction, $0.standFraction] }.max().map { $0 * 100 } ?? 0
+        return max(110.0, maxValue + 10)
+    }
+
     private var trendChart: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Ring Completion Trends")
@@ -225,7 +230,7 @@ struct ActivityRingsHistoryView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                     .foregroundStyle(.secondary.opacity(0.5))
             }
-            .chartYScale(domain: 0...110)
+            .chartYScale(domain: 0...trendChartDomainMax)
             .chartYAxisLabel("%")
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in

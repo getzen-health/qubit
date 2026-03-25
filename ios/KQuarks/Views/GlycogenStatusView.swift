@@ -211,6 +211,11 @@ struct GlycogenStatusView: View {
 
     // MARK: - Glycogen Chart (14-day history)
 
+    private var glycogenChartDomainMax: Double {
+        let maxVal = dayGlycogen.suffix(14).map(\.pctFull).max() ?? 0
+        return max(105.0, maxVal * 1.1)
+    }
+
     private var glycogenChart: some View {
         VStack(alignment: .leading, spacing: 10) {
             Label("Glycogen Level — 14 Days", systemImage: "waveform.path.ecg")
@@ -231,7 +236,7 @@ struct GlycogenStatusView: View {
                 .foregroundStyle(Color.green)
                 .lineStyle(StrokeStyle(lineWidth: 2))
             }
-            .chartYScale(domain: 0...105)
+            .chartYScale(domain: 0...glycogenChartDomainMax)
             .chartYAxis {
                 AxisMarks(values: [0, 25, 50, 75, 100]) { val in
                     AxisValueLabel { if let v = val.as(Double.self) { Text("\(Int(v))%") } }
