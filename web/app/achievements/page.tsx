@@ -8,7 +8,7 @@ import { BottomNav } from '@/components/bottom-nav'
 export const metadata = { title: 'Achievements' }
 
 export type Rarity = 'bronze' | 'silver' | 'gold' | 'legendary'
-export type Category = 'steps' | 'workouts' | 'sleep' | 'hrv' | 'activity' | 'streaks'
+export type Category = 'steps' | 'workouts' | 'sleep' | 'hrv' | 'activity' | 'streaks' | 'data'
 
 export interface Achievement {
   id: string
@@ -120,6 +120,23 @@ export default async function AchievementsPage() {
   // ── Activity stats ────────────────────────────────────────────────────────
   const maxDayCals = days.reduce((m, d) => Math.max(m, d.active_calories ?? 0), 0)
   const highCalDays = days.filter((d) => (d.active_calories ?? 0) >= 600).length
+
+  // ── Cross-metric "Balanced Life" stats ───────────────────────────────────
+  const medianHrv = (() => {
+    const hrvValues = days
+      .map(s => s.avg_hrv)
+      .filter((v): v is number => v !== null && v > 0)
+      .sort((a, b) => a - b)
+    if (!hrvValues.length) return 0
+    const mid = Math.floor(hrvValues.length / 2)
+    return hrvValues.length % 2 !== 0 ? hrvValues[mid] : (hrvValues[mid - 1] + hrvValues[mid]) / 2
+  })()
+
+  const balancedDays = days.filter(s =>
+    (s.steps ?? 0) >= 8000 &&
+    (s.sleep_duration_minutes ?? 0) >= 420 &&
+    (s.avg_hrv ?? 0) >= medianHrv
+  ).length
 
   // ── Build achievements ────────────────────────────────────────────────────
   const achievements: Achievement[] = [
@@ -361,6 +378,53 @@ export default async function AchievementsPage() {
       earned: days.length >= 200,
       progress: Math.min(days.length / 200, 1),
       progressLabel: `${days.length} / 200 days tracked`,
+    },
+    // DATA INTEGRITY
+    {
+      id: 'first_sync',
+      category: 'data', rarity: 'bronze', icon: '🔗',
+      title: 'First Sync',
+      description: 'Connected Apple Watch and synced your first day of health data.',
+      earned: days.length >= 1,
+      progress: Math.min(days.length / 1, 1),
+      progressLabel: `${days.length} day${days.length !== 1 ? 's' : ''} synced`,
+    },
+    {
+      id: 'serial_syncer',
+      category: 'data', rarity: 'silver', icon: '📡',
+      title: 'Serial Syncer',
+      description: 'Synced 100 days of health data.',
+      earned: days.length >= 100,
+      progress: Math.min(days.length / 100, 1),
+      progressLabel: `${days.length} / 100 days synced`,
+    },
+    {
+      id: 'year_in_data',
+      category: 'data', rarity: 'gold', icon: '📊',
+      title: 'Year in Data',
+      description: 'Synced 365 days of health data — a full picture of your health.',
+      earned: days.length >= 365,
+      progress: Math.min(days.length / 365, 1),
+      progressLabel: `${days.length} / 365 days synced`,
+    },
+    // CROSS-METRIC
+    {
+      id: 'balanced_gold',
+      category: 'data', rarity: 'gold', icon: '⚖️',
+      title: 'Balanced Life — Gold',
+      description: '10+ days hitting steps, sleep, and HRV goals simultaneously.',
+      earned: balancedDays >= 10,
+      progress: Math.min(balancedDays / 10, 1),
+      progressLabel: `${balancedDays} / 10 balanced days`,
+    },
+    {
+      id: 'balanced_legendary',
+      category: 'data', rarity: 'legendary', icon: '🌟',
+      title: 'Balanced Life — Legendary',
+      description: '30+ days of perfect balance: steps, sleep, and HRV all above target.',
+      earned: balancedDays >= 30,
+      progress: Math.min(balancedDays / 30, 1),
+      progressLabel: `${balancedDays} / 30 balanced days`,
     },
   ]
 

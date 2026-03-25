@@ -37,6 +37,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
   hrv: 'HRV',
   activity: 'Activity',
   streaks: 'Streaks',
+  data: 'Data & Sync',
 }
 
 const CATEGORY_EMOJI: Record<Category, string> = {
@@ -46,9 +47,10 @@ const CATEGORY_EMOJI: Record<Category, string> = {
   hrv: '💗',
   activity: '🔥',
   streaks: '⚡',
+  data: '🔗',
 }
 
-const ALL_CATEGORIES: Category[] = ['steps', 'workouts', 'sleep', 'hrv', 'activity', 'streaks']
+const ALL_CATEGORIES: Category[] = ['steps', 'workouts', 'sleep', 'hrv', 'activity', 'streaks', 'data']
 
 interface Props {
   achievements: Achievement[]
