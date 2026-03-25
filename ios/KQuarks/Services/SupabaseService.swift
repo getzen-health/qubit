@@ -457,12 +457,12 @@ class SupabaseService {
 
         try await client
             .from("water_logs")
-            .insert(WaterLogInsert(
+            .upsert(WaterLogInsert(
                 userId: userId,
                 amountMl: amountMl,
                 loggedAt: ISO8601DateFormatter().string(from: Date()),
                 source: "siri"
-            ))
+            ), onConflict: "user_id,logged_at")
             .execute()
     }
 
@@ -540,12 +540,12 @@ class SupabaseService {
 
         try await client
             .from("fasting_sessions")
-            .insert(FastingInsert(
+            .upsert(FastingInsert(
                 userId: userId,
                 protocolName: protocolName,
                 targetHours: targetHours,
                 startedAt: ISO8601DateFormatter().string(from: Date())
-            ))
+            ), onConflict: "user_id,started_at")
             .execute()
     }
 

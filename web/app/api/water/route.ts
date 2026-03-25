@@ -78,12 +78,12 @@ export const POST = createSecureApiHandler(
 
     const { data: log, error } = await supabase
       .from('water_logs')
-      .insert({
+      .upsert({
         user_id: user!.id,
         amount_ml: amount_ml,
         logged_at: logged_at || new Date().toISOString(),
         source: source,
-      })
+      }, { onConflict: 'user_id,logged_at' })
       .select()
       .single()
 

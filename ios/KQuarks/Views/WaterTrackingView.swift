@@ -81,11 +81,11 @@ final class WaterTrackingViewModel {
         do {
             try await SupabaseService.shared.client
                 .from("water_logs")
-                .insert(Payload(
+                .upsert(Payload(
                     user_id: userId.uuidString,
                     logged_at: ISO8601DateFormatter().string(from: Date()),
                     amount_ml: ml
-                ))
+                ), onConflict: "user_id,logged_at")
                 .execute()
             await loadData()
         } catch {

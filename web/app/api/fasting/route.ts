@@ -105,13 +105,13 @@ export const POST = createSecureApiHandler(
 
     const { data: session, error } = await supabase
       .from('fasting_sessions')
-      .insert({
+      .upsert({
         user_id: user!.id,
         protocol: fastingData.protocol,
         target_hours: fastingData.target_hours,
         started_at: fastingData.started_at || new Date().toISOString(),
         notes: fastingData.notes,
-      })
+      }, { onConflict: 'user_id,started_at' })
       .select()
       .single()
 
