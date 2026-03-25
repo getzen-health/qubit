@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 interface DailySummaryRow {
@@ -171,7 +172,8 @@ export async function ReadinessBanner({ userId }: { userId: string }) {
         : 'text-text-secondary'
 
   return (
-    <div className="mb-6 bg-surface rounded-2xl border border-border p-4">
+    <Link href="/ready" className="block mb-6">
+    <div className="bg-surface rounded-2xl border border-border p-4 hover:border-border/60 transition-colors cursor-pointer">
       <div className="flex items-center gap-4">
         {/* Score ring */}
         <div className="relative flex-shrink-0">
@@ -214,5 +216,6 @@ export async function ReadinessBanner({ userId }: { userId: string }) {
         </div>
       </div>
     </div>
+    </Link>
   )
 }
