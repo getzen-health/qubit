@@ -226,7 +226,7 @@ export default function MetabolicRatePage() {
         </div>
 
         {/* ── 4-stat row ────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <StatCard
             icon={Flame}
             label="Apple Watch BMR"
@@ -339,7 +339,7 @@ export default function MetabolicRatePage() {
           <div className="px-4 pt-4 pb-3 border-b border-gray-800">
             <h2 className="text-base font-semibold text-white">Formula Comparison</h2>
           </div>
-          <div className="grid grid-cols-3 divide-x divide-gray-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-x divide-gray-800">
             {/* Apple Watch */}
             <div className="px-3 py-4 text-center">
               <p className="text-xs text-gray-500 mb-1">Apple Watch</p>
@@ -431,7 +431,7 @@ export default function MetabolicRatePage() {
           {/* Macro chips */}
           <div className="px-4 pt-3 pb-4">
             <p className="text-xs text-gray-500 mb-3 uppercase tracking-wide">Macronutrient Targets</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 p-3 text-center">
                 <p className="text-xs text-rose-400 font-semibold mb-1">Protein</p>
                 <p className="text-xl font-bold text-rose-300 tabular-nums">{proteinG}g</p>
@@ -491,7 +491,7 @@ export default function MetabolicRatePage() {
 
             <div>
               <h3 className="text-gray-300 font-semibold text-xs uppercase tracking-wider mb-1">Muscle vs. Fat Tissue</h3>
-              <div className="grid grid-cols-2 gap-3 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                 <div className="rounded-xl bg-gray-900 border border-gray-800 p-3 text-center">
                   <p className="text-emerald-400 font-bold text-lg">13 kcal</p>
                   <p className="text-xs text-gray-500 mt-0.5">per kg of <span className="text-emerald-300">muscle</span> per day</p>

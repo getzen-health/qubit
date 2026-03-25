@@ -305,7 +305,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
         </div>
 
         {/* Stat chips */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="bg-background/40 rounded-xl p-3 text-center">
             <p className="text-lg font-bold text-violet-400">{todayHrv} ms</p>
             <p className="text-xs text-text-secondary mt-0.5">HRV</p>
@@ -339,7 +339,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
       {/* ── Training guidance grid ────────────────────────────────────────── */}
       <div className="bg-surface rounded-2xl border border-border p-4">
         <h3 className="text-sm font-semibold text-text-primary mb-3">Training Guidance</h3>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {guidanceItems.map((item) => (
             <div
               key={item.label}

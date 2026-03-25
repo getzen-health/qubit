@@ -134,7 +134,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Blood Oxygen (SpO₂)</h2>
         {spO2.length === 0 ? <EmptyVital name="blood oxygen" /> : (
           <>
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
               <StatPill
                 label="Latest"
                 value={latestSpO2 != null ? latestSpO2.toFixed(1) : '—'}
@@ -198,7 +198,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Respiratory Rate</h2>
         {respRate.length === 0 ? <EmptyVital name="respiratory rate" /> : (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <StatPill
                 label="Latest"
                 value={latestRR != null ? latestRR.toFixed(1) : '—'}
@@ -276,7 +276,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
 
             return (
               <>
-                <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                   <StatPill
                     label="Latest"
                     value={`${latest.systolic}/${latest.diastolic}`}
@@ -342,7 +342,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Resting Heart Rate</h2>
         {restingHR.length === 0 ? <EmptyVital name="resting heart rate" /> : (
           <>
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
               <StatPill
                 label="Latest"
                 value={latestRHR != null ? `${latestRHR}` : '—'}
@@ -407,7 +407,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">Heart Rate Variability (HRV)</h2>
         {hrv.length === 0 ? <EmptyVital name="HRV" /> : (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <StatPill
                 label="Latest RMSSD"
                 value={latestHRV != null ? latestHRV.toFixed(1) : '—'}
@@ -472,7 +472,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
         </div>
         {bodyTemp.length === 0 ? <EmptyVital name="body temperature" /> : (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <div className="bg-surface rounded-xl border border-border p-4">
                 <p className={`text-2xl font-bold ${latestTemp != null ? tempStatus(latestTemp).color : 'text-text-primary'}`}>
                   {latestTemp != null ? latestTemp.toFixed(1) : '—'}

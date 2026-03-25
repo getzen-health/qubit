@@ -1,6 +1,7 @@
 import Foundation
 import HealthKit
 import OSLog
+import WidgetKit
 #if os(iOS)
 import BackgroundTasks
 #endif
@@ -92,6 +93,7 @@ class SyncService {
             let sharedDefaults = UserDefaults(suiteName: "group.com.qxlsz.kquarks") ?? UserDefaults.standard
             sharedDefaults.set("success", forKey: "last_sync_status")
             sharedDefaults.set(ISO8601DateFormatter().string(from: Date()), forKey: "last_sync_time")
+            WidgetCenter.shared.reloadAllTimelines()
             NotificationCenter.default.post(name: .syncDidSucceed, object: nil)
             Task { await NotificationService.shared.notifyAfterSync() }
             Task { await SupabaseService.shared.checkAchievements() }

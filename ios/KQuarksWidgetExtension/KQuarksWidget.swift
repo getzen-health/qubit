@@ -34,8 +34,8 @@ struct KQuarksProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<KQuarksEntry>) -> Void) {
         Task {
             let entry = await fetchEntry()
-            let next = Calendar.current.date(byAdding: .minute, value: 30, to: .now)!
-            completion(Timeline(entries: [entry], policy: .after(next)))
+            let nextRefresh = Calendar.current.date(byAdding: .minute, value: 15, to: .now)!
+            completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }
 

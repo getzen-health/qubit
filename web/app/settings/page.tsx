@@ -11,6 +11,7 @@ import {
   Sparkles,
   RefreshCw,
   Bell,
+  Upload,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -61,6 +62,12 @@ export default async function SettingsPage() {
       description: 'Data coverage, devices, and sync health',
       href: '/sync',
       icon: RefreshCw,
+    },
+    {
+      title: 'Import Data',
+      description: 'Bulk import historical Apple Health data',
+      href: '/settings/import',
+      icon: Upload,
     },
   ]
 

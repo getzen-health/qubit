@@ -1207,7 +1207,7 @@ export function DashboardStream({
               {localPrediction.recovery_forecast?.days && localPrediction.recovery_forecast.days.length > 0 && (
                 <div>
                   <p className="text-xs text-text-secondary uppercase tracking-wide mb-2">3-Day Outlook</p>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {localPrediction.recovery_forecast.days
                       .filter((_, i) => i === 0 || i === 2 || i === 4)
                       .slice(0, 3)
