@@ -357,6 +357,88 @@ struct LogCheckinIntent: AppIntent {
     }
 }
 
+struct GetReadinessIntent: AppIntent {
+    static var title: LocalizedStringResource = "Get Readiness Score"
+    static var description = IntentDescription("Shows your readiness score for today from KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: 0,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        let readiness = UserDefaults.standard.integer(forKey: "cached_readiness_score")
+        let displayScore = readiness > 0 ? readiness : 50
+        let level: String
+        switch displayScore {
+        case 67...: level = "excellent"
+        case 34..<67: level = "moderate"
+        default: level = "low"
+        }
+        return .result(
+            value: displayScore,
+            dialog: IntentDialog(stringLiteral: "Your readiness score is \(displayScore) percent — \(level) readiness today.")
+        )
+    }
+}
+
+struct LogWorkoutIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log Workout"
+    static var description = IntentDescription("Quick log a workout in KQuarks.")
+
+    @Parameter(title: "Activity Type", description: "The type of workout (e.g., running, cycling).")
+    var activityType: String
+
+    @Parameter(title: "Duration (minutes)", description: "How long you worked out.", default: 30)
+    var durationMinutes: Int
+
+    @Parameter(title: "Distance (km)", description: "Distance covered (optional).", default: 0)
+    var distanceKm: Double
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$durationMinutes)-minute \(\.$activityType) workout")
+    }
+
+    func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: false,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        try await SupabaseService.shared.logWorkout(
+            activityType: activityType,
+            durationMinutes: durationMinutes,
+            distanceKm: distanceKm > 0 ? distanceKm : nil
+        )
+        let distStr = distanceKm > 0 ? " (\(String(format: "%.1f", distanceKm))km)" : ""
+        return .result(
+            value: true,
+            dialog: IntentDialog(stringLiteral: "Logged \(durationMinutes)-minute \(activityType)\(distStr).")
+        )
+    }
+}
+
+struct RequestHealthExportIntent: AppIntent {
+    static var title: LocalizedStringResource = "Request Health Data Export"
+    static var description = IntentDescription("Request an export of your health data from KQuarks.")
+
+    func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
+        guard SupabaseService.shared.isAuthenticated else {
+            return .result(
+                value: false,
+                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+            )
+        }
+        try await SupabaseService.shared.requestHealthExport()
+        return .result(
+            value: true,
+            dialog: IntentDialog(stringLiteral: "Health data export requested. You'll receive it via email shortly.")
+        )
+    }
+}
+
 struct KQuarksShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -370,6 +452,15 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             systemImageName: "figure.walk"
         )
         AppShortcut(
+            intent: GetReadinessIntent(),
+            phrases: [
+                "What's my readiness in \(.applicationName)",
+                "Show readiness score in \(.applicationName)"
+            ],
+            shortTitle: "Readiness Score",
+            systemImageName: "star.fill"
+        )
+        AppShortcut(
             intent: GetRecoveryScoreIntent(),
             phrases: [
                 "What's my recovery in \(.applicationName)",
@@ -377,6 +468,24 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Recovery Score",
             systemImageName: "bolt.fill"
+        )
+        AppShortcut(
+            intent: LogWorkoutIntent(),
+            phrases: [
+                "Log a workout in \(.applicationName)",
+                "Record my workout in \(.applicationName)"
+            ],
+            shortTitle: "Log Workout",
+            systemImageName: "figure.run"
+        )
+        AppShortcut(
+            intent: RequestHealthExportIntent(),
+            phrases: [
+                "Export my health data in \(.applicationName)",
+                "Request health data export"
+            ],
+            shortTitle: "Export Health Data",
+            systemImageName: "square.and.arrow.up"
         )
         AppShortcut(
             intent: GetSleepDurationIntent(),
