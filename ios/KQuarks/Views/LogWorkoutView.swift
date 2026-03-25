@@ -187,19 +187,25 @@ struct LogWorkoutView: View {
 
     private var addExerciseSheet: some View {
         NavigationStack {
-            Form {
+            List {
                 Section {
                     TextField("Exercise name", text: $newExerciseName)
+                        .autocorrectionDisabled()
                 }
 
-                Section("Quick add") {
-                    let common = ["Squat", "Deadlift", "Bench Press", "Overhead Press",
-                                  "Pull-up", "Row", "Lunge", "Hip Thrust", "Plank"]
-                    ForEach(common, id: \.self) { name in
-                        Button(name) {
-                            newExerciseName = name
+                ForEach(ExerciseLibrary.categories, id: \.name) { category in
+                    Section(category.name) {
+                        let filtered = newExerciseName.isEmpty
+                            ? category.exercises
+                            : category.exercises.filter { $0.localizedCaseInsensitiveContains(newExerciseName) }
+                        ForEach(filtered, id: \.self) { name in
+                            Button {
+                                exercises.append(StrengthExercise(name: name))
+                                showAddExercise = false
+                            } label: {
+                                Text(name).foregroundStyle(.primary)
+                            }
                         }
-                        .foregroundStyle(.primary)
                     }
                 }
             }
@@ -221,7 +227,7 @@ struct LogWorkoutView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.large])
     }
 
     private func save() async {
@@ -424,6 +430,75 @@ enum WorkoutType: CaseIterable {
         default: return false
         }
     }
+}
+
+// MARK: - Exercise Library (100+ movements across 8 categories)
+
+enum ExerciseLibrary {
+    struct Category {
+        let name: String
+        let exercises: [String]
+    }
+
+    static let categories: [Category] = [
+        Category(name: "Compound Lifts", exercises: [
+            "Squat", "Back Squat", "Front Squat", "Goblet Squat",
+            "Deadlift", "Romanian Deadlift", "Sumo Deadlift", "Trap Bar Deadlift",
+            "Bench Press", "Incline Bench Press", "Decline Bench Press",
+            "Overhead Press", "Push Press", "Barbell Row", "T-Bar Row",
+            "Pull-up", "Chin-up", "Weighted Pull-up",
+        ]),
+        Category(name: "Upper — Push", exercises: [
+            "Dumbbell Press", "Dumbbell Incline Press", "Dumbbell Fly",
+            "Cable Fly", "Cable Crossover", "Pec Deck",
+            "Lateral Raise", "Front Raise", "Arnold Press",
+            "Tricep Dip", "Close-Grip Bench", "Skull Crushers",
+            "Tricep Pushdown", "Overhead Tricep Extension",
+            "Pike Push-up", "Push-up", "Diamond Push-up",
+        ]),
+        Category(name: "Upper — Pull", exercises: [
+            "Lat Pulldown", "Seated Cable Row", "Single-Arm Dumbbell Row",
+            "Face Pull", "Rear Delt Fly", "Band Pull-Apart",
+            "Shrug", "Upright Row", "EZ Bar Curl", "Barbell Curl",
+            "Dumbbell Curl", "Hammer Curl", "Preacher Curl",
+            "Cable Curl", "Incline Dumbbell Curl", "Concentration Curl",
+        ]),
+        Category(name: "Lower Body", exercises: [
+            "Leg Press", "Hack Squat", "Lunge", "Walking Lunge",
+            "Bulgarian Split Squat", "Step-Up", "Box Jump",
+            "Hip Thrust", "Glute Bridge", "Cable Kickback",
+            "Leg Extension", "Leg Curl", "Nordic Curl",
+            "Calf Raise", "Seated Calf Raise", "Donkey Calf Raise",
+            "Good Morning", "Hyperextension",
+        ]),
+        Category(name: "Core & Abs", exercises: [
+            "Plank", "Side Plank", "Hollow Hold", "Ab Wheel",
+            "Cable Crunch", "Crunch", "Reverse Crunch",
+            "Leg Raise", "Hanging Leg Raise", "Dragon Flag",
+            "Russian Twist", "Woodchop", "Pallof Press",
+            "Dead Bug", "Bird Dog", "McGill Big 3",
+        ]),
+        Category(name: "Olympic & Power", exercises: [
+            "Power Clean", "Hang Power Clean", "Clean & Jerk",
+            "Snatch", "Hang Snatch", "Power Snatch",
+            "Kettlebell Swing", "Kettlebell Clean", "Kettlebell Snatch",
+            "Box Jump", "Broad Jump", "Medicine Ball Slam",
+        ]),
+        Category(name: "Machines & Cables", exercises: [
+            "Chest Press Machine", "Shoulder Press Machine", "Row Machine",
+            "Lat Pulldown Machine", "Leg Press Machine",
+            "Leg Extension Machine", "Leg Curl Machine", "Calf Raise Machine",
+            "Cable Lateral Raise", "Cable Row", "Cable Fly",
+            "Assisted Pull-up", "Smith Machine Squat", "Smith Machine Bench",
+        ]),
+        Category(name: "Functional & Mobility", exercises: [
+            "Turkish Get-Up", "Farmer Carry", "Suitcase Carry", "Overhead Carry",
+            "Sled Push", "Sled Pull", "Battle Ropes",
+            "Jump Squat", "Plyometric Push-up", "Burpee",
+            "Thruster", "Wall Ball", "Box Step-up",
+            "Hip 90/90", "World's Greatest Stretch", "Couch Stretch",
+        ]),
+    ]
 }
 
 #Preview {

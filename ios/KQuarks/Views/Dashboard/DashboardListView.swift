@@ -551,6 +551,32 @@ struct DashboardListView: View {
                     )
                 }
 
+                // Sleep debt (Walker methodology)
+                let debtH = viewModel.sleepDebtMinutes / 60
+                let debtM = viewModel.sleepDebtMinutes % 60
+                if viewModel.sleepDebtMinutes > 0 {
+                    MetricRowView(
+                        icon: "bed.double.fill",
+                        label: "Sleep Debt",
+                        value: debtH > 0 ? "\(debtH)h \(debtM)m" : "\(debtM)m",
+                        unit: "this week",
+                        sublabel: debtH >= 5 ? "High — prioritize rest" : debtH >= 2 ? "Moderate debt" : "Minor deficit",
+                        color: debtH >= 5 ? .strain : .sleep
+                    )
+                }
+
+                // Sleep regularity
+                if let consistency = viewModel.sleepConsistencyScore {
+                    MetricRowView(
+                        icon: "clock.badge.checkmark.fill",
+                        label: "Sleep Regularity",
+                        value: "\(consistency)",
+                        unit: "%",
+                        sublabel: consistency >= 80 ? "Consistent schedule" : consistency >= 60 ? "Moderate variation" : "High variation",
+                        color: consistency >= 80 ? .recovery : .sleep
+                    )
+                }
+
                 // Heart Rate
                 if let rhr = summary.restingHeartRate {
                     MetricRowView(
@@ -786,6 +812,24 @@ class DashboardListViewModel {
     var baselineRhr: Double? = nil
     var baselineSleepMinutes: Double? = nil
     var todayRhr: Double? = nil
+
+    /// 7-day sleep debt in minutes (Walker 2017 methodology: sum of daily deficits vs personal goal)
+    var sleepDebtMinutes: Int {
+        let goal = Int(GoalService.shared.sleepGoalMinutes)
+        return weeklyData.prefix(7).reduce(0) { debt, day in
+            debt + max(0, goal - (day.sleepDurationMinutes ?? goal))
+        }
+    }
+
+    /// Sleep regularity score 0–100 (Oura methodology: stddev of 7-day durations)
+    var sleepConsistencyScore: Int? {
+        let durations = weeklyData.prefix(7).compactMap { $0.sleepDurationMinutes }.map { Double($0) }
+        guard durations.count >= 3 else { return nil }
+        let avg = durations.reduce(0, +) / Double(durations.count)
+        let variance = durations.reduce(0) { $0 + pow($1 - avg, 2) } / Double(durations.count)
+        let stddev = sqrt(variance)
+        return max(0, Int(100 - (stddev / 90) * 100))
+    }
 
     /// Body Battery: personalized energy estimate (0–100).
     /// Algorithm based on WHOOP/Oura research:
