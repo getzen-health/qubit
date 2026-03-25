@@ -1,6 +1,45 @@
 import Foundation
 import HealthKit
 
+/**
+ HealthKit Integration Service
+ 
+ This service provides comprehensive access to Apple HealthKit data and syncs it to Supabase.
+ 
+ ## Fully Integrated Vital Signs
+ 
+ ### Respiratory Rate
+ - **Status**: ✅ Fully integrated
+ - **Source**: HKQuantityType(.respiratoryRate) - breaths per minute
+ - **Permissions**: Requested in authorization flow
+ - **Sync**: Fetched in `syncRecentHealthData()` and uploaded to Supabase as "respiratory_rate"
+ - **Unit**: breaths per minute (brpm)
+ - **Availability**: iOS 15+; measured via Apple Watch Series 3+
+ 
+ ### Oxygen Saturation (SpO₂)
+ - **Status**: ✅ Fully integrated
+ - **Source**: HKQuantityType(.oxygenSaturation) - blood oxygen saturation percentage
+ - **Permissions**: Requested in authorization flow
+ - **Sync**: Fetched in `syncRecentHealthData()` and uploaded to Supabase as "oxygen_saturation"
+ - **Unit**: percentage (%), internally converted from HealthKit's 0.0–1.0 fraction
+ - **Availability**: iOS 16+ (Apple Watch Series 6+); measured during sleep and on-demand
+ - **Display**: BloodOxygenView.swift shows historical data with physiological context
+ 
+ ### Data Flow
+ 1. **HealthKit Permissions** → User grants access via `requestAuthorization()`
+ 2. **Background Collection** → Apple Watch collects data; background delivery configured via `setupBackgroundDelivery()`
+ 3. **Manual Fetch** → App fetches samples via `fetchSamples(for:...)` in sync operations
+ 4. **Supabase Upload** → `SyncService.syncRecentHealthData()` creates HealthRecordUpload entries
+ 5. **Web Display** → Data available in health records API for dashboard visualization
+ 
+ ### Verified & Complete
+ - All respiratory rate and oxygen saturation data is being read from HealthKit
+ - Both data types are included in authorization permission request
+ - Both are synced to Supabase in the background sync flow
+ - Display models (HealthDataType enum) have proper icons and labels
+ - Error handling is implemented for both data types
+ */
+
 @Observable
 class HealthKitService {
     static let shared = HealthKitService()
