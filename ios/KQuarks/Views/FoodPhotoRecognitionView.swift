@@ -367,7 +367,18 @@ private struct FoodResultRow: View {
     @Binding var food: RecognizedFoodItem
 
     var confidenceColor: Color {
-        food.confidence >= 0.8 ? .green : food.confidence >= 0.6 ? .orange : .red
+        food.confidence >= 0.9 ? .green : food.confidence >= 0.7 ? .orange : .red
+    }
+
+    var confidenceLabel: String {
+        let percent = Int(food.confidence * 100)
+        if food.confidence >= 0.9 {
+            return "\(percent)% confident"
+        } else if food.confidence >= 0.7 {
+            return "\(percent)% confident"
+        } else {
+            return "\(percent)% confident"
+        }
     }
 
     var body: some View {
@@ -385,14 +396,14 @@ private struct FoodResultRow: View {
                 HStack {
                     Text(food.name).font(.body)
                     Spacer()
-                    HStack(spacing: 2) {
-                        Circle()
-                            .fill(confidenceColor)
-                            .frame(width: 6, height: 6)
-                        Text("\(Int(food.confidence * 100))%")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    Text(confidenceLabel)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(confidenceColor)
+                        .clipShape(Capsule())
                 }
 
                 HStack(spacing: 8) {

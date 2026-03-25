@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import React, { useRouter } from 'next/navigation'
+import { useCallback, useMemo } from 'react'
 import {
   BarChart,
   Bar,
@@ -33,35 +34,37 @@ interface WeeklyChartsProps {
 export function WeeklyCharts({ summaries, stepGoal = 10000, calGoal = 500, weightData }: WeeklyChartsProps) {
   const router = useRouter()
 
-  // Reverse to ascending order (oldest → newest left → right)
-  // Append T00:00:00 to force local-time parsing and avoid UTC day-shift
-  const chartData = [...summaries].reverse().map((s) => ({
-    day: new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', {
-      weekday: 'short',
-    }),
-    date: s.date,
-    steps: s.steps,
-    activeCalories: s.active_calories,
-    sleepHours: s.sleep_duration_minutes
-      ? +(s.sleep_duration_minutes / 60).toFixed(1)
-      : null,
-    restingHR: s.resting_heart_rate ?? null,
-    avgHrv: s.avg_hrv ?? null,
-    recoveryScore: s.recovery_score ?? null,
-    strainScore: s.strain_score ?? null,
-  }))
+  // Memoize chartData transformation
+  const chartData = useMemo(() => {
+    return [...summaries].reverse().map((s) => ({
+      day: new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', {
+        weekday: 'short',
+      }),
+      date: s.date,
+      steps: s.steps,
+      activeCalories: s.active_calories,
+      sleepHours: s.sleep_duration_minutes
+        ? +(s.sleep_duration_minutes / 60).toFixed(1)
+        : null,
+      restingHR: s.resting_heart_rate ?? null,
+      avgHrv: s.avg_hrv ?? null,
+      recoveryScore: s.recovery_score ?? null,
+      strainScore: s.strain_score ?? null,
+    }))
+  }, [summaries])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleChartClick(data: any) {
+  // Memoize chart click handler
+  const handleChartClick = useCallback((data: any) => {
     const date = data?.activePayload?.[0]?.payload?.date
     if (date) router.push(`/day/${date}`)
-  }
+  }, [router])
 
-  const hasSleepData = chartData.some((d) => d.sleepHours !== null)
-  const hasHRData = chartData.some((d) => d.restingHR !== null)
-  const hasHRVData = chartData.some((d) => d.avgHrv !== null)
-  const hasRecoveryData = chartData.some((d) => d.recoveryScore !== null && d.recoveryScore > 0)
-  const hasStrainData = chartData.some((d) => d.strainScore !== null && d.strainScore > 0)
+  // Memoize data visibility checks
+  const hasSleepData = useMemo(() => chartData.some((d) => d.sleepHours !== null), [chartData])
+  const hasHRData = useMemo(() => chartData.some((d) => d.restingHR !== null), [chartData])
+  const hasHRVData = useMemo(() => chartData.some((d) => d.avgHrv !== null), [chartData])
+  const hasRecoveryData = useMemo(() => chartData.some((d) => d.recoveryScore !== null && d.recoveryScore > 0), [chartData])
+  const hasStrainData = useMemo(() => chartData.some((d) => d.strainScore !== null && d.strainScore > 0), [chartData])
 
   return (
     <div className="space-y-6">
