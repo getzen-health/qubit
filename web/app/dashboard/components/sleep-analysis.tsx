@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useMemo } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 
 interface SleepData {
@@ -13,15 +14,15 @@ interface SleepData {
 
 const COLORS = ['#EF4444', '#8B5CF6', '#3B82F6', '#1E3A8A']
 
-export function SleepAnalysis({ data }: { data: SleepData }) {
-  const chartData = [
+function SleepAnalysisComponent({ data }: { data: SleepData }) {
+  const chartData = useMemo(() => [
     { name: 'Awake', value: data.awake, color: COLORS[0] },
     { name: 'REM', value: data.rem, color: COLORS[1] },
     { name: 'Light', value: data.light, color: COLORS[2] },
     { name: 'Deep', value: data.deep, color: COLORS[3] },
-  ].filter(d => d.value > 0)
+  ].filter(d => d.value > 0), [data.awake, data.rem, data.light, data.deep])
 
-  const totalMinutes = data.awake + data.rem + data.light + data.deep
+  const totalMinutes = useMemo(() => data.awake + data.rem + data.light + data.deep, [data.awake, data.rem, data.light, data.deep])
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
@@ -112,7 +113,9 @@ export function SleepAnalysis({ data }: { data: SleepData }) {
   )
 }
 
-export function SleepTrend({ data }: { data: { date: string; hours: number; quality: number }[] }) {
+export const SleepAnalysis = React.memo(SleepAnalysisComponent)
+
+function SleepTrendComponent({ data }: { data: { date: string; hours: number; quality: number }[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">7-Day Sleep Trend</h3>

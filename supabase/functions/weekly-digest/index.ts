@@ -30,7 +30,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
 const resendKey = Deno.env.get('RESEND_API_KEY')
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://kquarks.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 

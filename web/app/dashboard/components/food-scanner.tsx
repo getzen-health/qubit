@@ -195,6 +195,20 @@ interface FoodImageRecognitionProps {
   onClose: () => void
 }
 
+function getConfidenceBadge(confidence?: number) {
+  if (!confidence) {
+    return { bg: 'bg-gray-100 dark:bg-gray-600', text: 'text-gray-700 dark:text-gray-200', label: 'Unknown' }
+  }
+  const percent = Math.round(confidence * 100)
+  if (percent >= 90) {
+    return { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', label: `${percent}% confident` }
+  } else if (percent >= 70) {
+    return { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-700 dark:text-yellow-400', label: `${percent}% confident` }
+  } else {
+    return { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', label: `${percent}% confident` }
+  }
+}
+
 export function FoodImageRecognition({ onFoodRecognized, onClose }: FoodImageRecognitionProps) {
   const [image, setImage] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -414,20 +428,28 @@ export function FoodImageRecognition({ onFoodRecognized, onClose }: FoodImageRec
               <div className="mb-4">
                 <p className="text-sm text-gray-500 mb-3">Recognized foods:</p>
                 <div className="space-y-3">
-                  {recognizedFoods.map((food, i) => (
-                    <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-900 dark:text-white">{food.name}</span>
-                        <span className="text-purple-500 font-bold">{food.calories} kcal</span>
+                  {recognizedFoods.map((food, i) => {
+                    const badge = getConfidenceBadge(food.confidence)
+                    return (
+                      <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-gray-900 dark:text-white">{food.name}</span>
+                          <span className="text-purple-500 font-bold">{food.calories} kcal</span>
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${badge.bg} ${badge.text}`}>
+                            {badge.label}
+                          </span>
+                        </div>
+                        <div className="flex gap-4 text-sm text-gray-500">
+                          <span>P: {food.protein}g</span>
+                          <span>C: {food.carbs}g</span>
+                          <span>F: {food.fat}g</span>
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">{food.servingSize}</div>
                       </div>
-                      <div className="flex gap-4 text-sm text-gray-500">
-                        <span>P: {food.protein}g</span>
-                        <span>C: {food.carbs}g</span>
-                        <span>F: {food.fat}g</span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-1">{food.servingSize}</div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
 

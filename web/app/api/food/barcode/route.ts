@@ -181,7 +181,25 @@ export const GET = createSecureApiHandler(
           nutriscore: null,
           thumbnail_url: null,
         }).then(({ error }) => {
-          if (error) console.error('[barcode] Failed to save scan history:', error.message)
+          if (error) {
+            console.error(JSON.stringify({
+              timestamp: new Date().toISOString(),
+              error: 'Failed to save product scan',
+              barcode,
+              userId: user.id,
+              source: 'usda',
+              message: error.message,
+            }))
+          }
+        }).catch((err) => {
+          console.error(JSON.stringify({
+            timestamp: new Date().toISOString(),
+            error: 'Product scan insert failed',
+            barcode,
+            userId: user.id,
+            source: 'usda',
+            message: err instanceof Error ? err.message : String(err),
+          }))
         })
       }
 
@@ -254,7 +272,25 @@ export const GET = createSecureApiHandler(
         nutriscore: product.nutriscore_grade ?? null,
         thumbnail_url: food.imageUrl ?? null,
       }).then(({ error }) => {
-        if (error) console.error('[barcode] Failed to save scan history:', error.message)
+        if (error) {
+          console.error(JSON.stringify({
+            timestamp: new Date().toISOString(),
+            error: 'Failed to save product scan',
+            barcode: food.barcode ?? barcode,
+            userId: user.id,
+            source: 'off',
+            message: error.message,
+          }))
+        }
+      }).catch((err) => {
+        console.error(JSON.stringify({
+          timestamp: new Date().toISOString(),
+          error: 'Product scan insert failed',
+          barcode: food.barcode ?? barcode,
+          userId: user.id,
+          source: 'off',
+          message: err instanceof Error ? err.message : String(err),
+        }))
       })
     }
 
