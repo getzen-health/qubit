@@ -15,6 +15,7 @@ import {
   ReferenceLine,
   Dot,
 } from 'recharts'
+import { acwrLabel, acwrZone } from '@/lib/acwr'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,6 +38,8 @@ export interface ReadinessData {
   todayHrvScore: number
   todayRhrScore: number
   todaySleepScore: number
+  todayStrainScore?: number
+  acwr?: number | null
   hrvBaseline: number
   rhrBaseline: number
   daily: DailyScore[]
@@ -208,6 +211,8 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
     todayHrvScore,
     todayRhrScore,
     todaySleepScore,
+    todayStrainScore,
+    acwr,
     hrvBaseline,
     rhrBaseline,
     daily,
@@ -428,7 +433,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-sm font-medium text-text-primary">HRV</span>
-              <span className="text-xs text-text-secondary ml-2 opacity-70">40% weight</span>
+              <span className="text-xs text-text-secondary ml-2 opacity-70">35% weight</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-text-secondary tabular-nums">{todayHrv} ms</span>
@@ -464,7 +469,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-sm font-medium text-text-primary">Sleep</span>
-              <span className="text-xs text-text-secondary ml-2 opacity-70">35% weight</span>
+              <span className="text-xs text-text-secondary ml-2 opacity-70">30% weight</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-text-secondary tabular-nums">{todaySleep}h</span>
@@ -476,6 +481,36 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
             Target: 8h · today: {todaySleep}h · sub-score scales to 9h ceiling
           </p>
         </div>
+
+        {/* Training Strain (ACWR) component */}
+        {todayStrainScore != null && (
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <div>
+                <span className="text-sm font-medium text-text-primary">Training Strain</span>
+                <span className="text-xs text-text-secondary ml-2 opacity-70">10% weight</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {acwr != null && (
+                  <span className="text-xs text-text-secondary tabular-nums">ACWR {acwr.toFixed(2)}</span>
+                )}
+                <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${
+                  acwrZone(acwr ?? null) === 'optimal'        ? 'text-green-400 bg-green-500/10' :
+                  acwrZone(acwr ?? null) === 'under-training' ? 'text-yellow-400 bg-yellow-500/10' :
+                  acwrZone(acwr ?? null) === 'over-training'  ? 'text-red-400 bg-red-500/10' :
+                  'text-text-secondary bg-surface-secondary'
+                }`}>
+                  {acwrLabel(acwr ?? null)}
+                </span>
+                <span className="text-sm font-bold tabular-nums text-emerald-400">{todayStrainScore}</span>
+              </div>
+            </div>
+            <MiniBar value={todayStrainScore} color="#34d399" />
+            <p className="text-[11px] text-text-secondary mt-1 opacity-60">
+              Acute:Chronic Workload Ratio — sweet spot 0.8–1.3 (Blanch &amp; Gabbett, 2016)
+            </p>
+          </div>
+        )}
       </div>
 
       {/* ── Zone reference ────────────────────────────────────────────────── */}
@@ -532,9 +567,10 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
             </div>
             <div className="space-y-2">
               {[
-                { label: 'HRV (40%)',        detail: 'Heart rate variability vs your 30-day average. Higher HRV = better autonomic recovery.',  color: '#a78bfa' },
-                { label: 'Sleep (35%)',       detail: 'Last night\'s total sleep hours scaled against a 9-hour ceiling target.',                   color: '#818cf8' },
-                { label: 'Resting HR (25%)',  detail: 'Lower resting HR relative to your baseline signals less cardiovascular stress.',           color: '#38bdf8' },
+                { label: 'HRV (35%)',             detail: 'Heart rate variability vs your 30-day average. Higher HRV = better autonomic recovery.',  color: '#a78bfa' },
+                { label: 'Sleep (30%)',            detail: 'Last night\'s total sleep hours scaled against a 9-hour ceiling target.',                   color: '#818cf8' },
+                { label: 'Resting HR (25%)',       detail: 'Lower resting HR relative to your baseline signals less cardiovascular stress.',           color: '#38bdf8' },
+                { label: 'Training Strain (10%)', detail: 'Acute:Chronic Workload Ratio from last 7 vs 28 days of training. Sweet spot: 0.8–1.3.', color: '#34d399' },
               ].map(({ label, detail, color }) => (
                 <div key={label} className="flex gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-none" style={{ background: color }} />

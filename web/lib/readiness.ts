@@ -1,6 +1,6 @@
 /**
  * Readiness / Body Battery utilities
- * Canonical weighting (Bevel-style): HRV 40 % · Sleep 35 % · Resting HR 25 %
+ * Canonical weighting (Bevel-style): HRV 35 % · Sleep 30 % · Resting HR 25 % · Strain 10 %
  * Research: Flatt et al. (Int J Sports Physiol Perform 2022), Merrigan et al. (NSCA 2023)
  */
 
@@ -24,12 +24,13 @@ export function toSleepScore(sleepHours: number): number {
 // ─── Canonical readiness score ────────────────────────────────────────────────
 
 /**
- * Canonical readiness score: HRV 40 % · Sleep 35 % · Resting HR 25 %.
+ * Canonical readiness score: HRV 35 % · Sleep 30 % · Resting HR 25 % · Strain 10 %.
  *
  * Inputs:
- *   hrv        – HRV in milliseconds          (null = missing)
- *   rhr        – Resting heart rate in bpm    (null = missing)
- *   sleepHours – Total sleep in hours         (null = missing)
+ *   hrv         – HRV in milliseconds          (null = missing)
+ *   rhr         – Resting heart rate in bpm    (null = missing)
+ *   sleepHours  – Total sleep in hours         (null = missing)
+ *   strainScore – ACWR-derived 0-100 score     (null = missing, weight omitted)
  *
  * Returns a 0-100 integer, or null when all inputs are absent.
  * Missing inputs are excluded and the remaining weights are re-normalised.
@@ -38,11 +39,13 @@ export function calculateReadinessScore(
   hrv: number | null,
   rhr: number | null,
   sleepHours: number | null,
+  strainScore?: number | null,
 ): number | null {
   const components: Array<{ score: number; weight: number }> = []
-  if (hrv != null)        components.push({ score: toHrvScore(hrv),         weight: 0.40 })
-  if (sleepHours != null) components.push({ score: toSleepScore(sleepHours), weight: 0.35 })
-  if (rhr != null)        components.push({ score: toRhrScore(rhr),          weight: 0.25 })
+  if (hrv != null)         components.push({ score: toHrvScore(hrv),          weight: 0.35 })
+  if (sleepHours != null)  components.push({ score: toSleepScore(sleepHours),  weight: 0.30 })
+  if (rhr != null)         components.push({ score: toRhrScore(rhr),           weight: 0.25 })
+  if (strainScore != null) components.push({ score: strainScore,               weight: 0.10 })
   if (components.length === 0) return null
 
   const totalWeight = components.reduce((s, c) => s + c.weight, 0)

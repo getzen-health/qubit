@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { ReadyClient, type ReadinessData, type DailyScore, type ReadinessZone } from './ready-client'
 import { BottomNav } from '@/components/bottom-nav'
 import { calculateReadinessScore, toHrvScore, toRhrScore, toSleepScore } from '@/lib/readiness'
+import { calculateACWR, acwrToStrainScore } from '@/lib/acwr'
 
 export const metadata = { title: 'Daily Readiness Score' }
 
@@ -109,6 +110,27 @@ export default async function ReadyPage() {
     .order('date', { ascending: true })
     .limit(30)
 
+  // ── Fetch 28 days of workout_records for ACWR ─────────────────────────────
+  const since28 = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const { data: workoutRows } = await supabase
+    .from('workout_records')
+    .select('start_time, active_calories, total_calories, duration_minutes')
+    .eq('user_id', user.id)
+    .gte('start_time', since28 + 'T00:00:00Z')
+    .order('start_time', { ascending: true })
+
+  // Aggregate workouts into daily loads (active_calories as proxy for training load)
+  const loadByDate = new Map<string, number>()
+  for (const w of workoutRows ?? []) {
+    const date = w.start_time.slice(0, 10)
+    const load = w.active_calories ?? w.total_calories ?? w.duration_minutes ?? 0
+    loadByDate.set(date, (loadByDate.get(date) ?? 0) + load)
+  }
+  const dailyLoads = Array.from(loadByDate.entries()).map(([date, load]) => ({ date, load }))
+
+  const acwr = calculateACWR(dailyLoads)
+  const todayStrainScore = acwrToStrainScore(acwr)
+
   // ── Derive readiness scores ────────────────────────────────────────────────
   function scoreZone(s: number): ReadinessZone {
     if (s >= 80) return 'optimal'
@@ -121,7 +143,7 @@ export default async function ReadyPage() {
 
   const daily: DailyScore[] = summaries.map((r) => {
     const sleepHours = r.sleep_duration_minutes ? r.sleep_duration_minutes / 60 : null
-    const score = r.recovery_score ?? (calculateReadinessScore(r.avg_hrv, r.resting_heart_rate, sleepHours) ?? 0)
+    const score = r.recovery_score ?? (calculateReadinessScore(r.avg_hrv, r.resting_heart_rate, sleepHours, todayStrainScore) ?? 0)
     return {
       date:  r.date,
       score,
@@ -141,7 +163,7 @@ export default async function ReadyPage() {
   const todayRhr   = latest?.resting_heart_rate ?? 0
   const todaySleep = latest?.sleep_duration_minutes ? latest.sleep_duration_minutes / 60 : 0
   const todayScore = latest
-    ? (latest.recovery_score ?? (calculateReadinessScore(latest.avg_hrv, latest.resting_heart_rate, todaySleep || null) ?? 0))
+    ? (latest.recovery_score ?? (calculateReadinessScore(latest.avg_hrv, latest.resting_heart_rate, todaySleep || null, todayStrainScore) ?? 0))
     : 0
 
   const todayHrvScore   = todayHrv   ? Math.round(toHrvScore(todayHrv))          : 0
@@ -151,6 +173,8 @@ export default async function ReadyPage() {
   const data: ReadinessData = {
     todayScore, todayHrv, todayRhr, todaySleep,
     todayHrvScore, todayRhrScore, todaySleepScore,
+    todayStrainScore,
+    acwr,
     hrvBaseline: Math.round(hrvBaseline),
     rhrBaseline: Math.round(rhrBaseline),
     daily,
