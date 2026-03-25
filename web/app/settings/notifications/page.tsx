@@ -14,9 +14,16 @@ interface NotificationPrefs {
   hrv_alerts: boolean
   sleep_alerts: boolean
   activity_reminders: boolean
+  achievement_notifications: boolean
   briefing_hour: number
   hrv_threshold_percent: number
   rhr_threshold_bpm: number
+  quiet_hours_enabled: boolean
+  quiet_hours_start: number
+  quiet_hours_end: number
+  weekly_digest_day: number
+  weekly_digest_hour: number
+  anomaly_severity_threshold: string
 }
 
 const DEFAULTS: NotificationPrefs = {
@@ -28,10 +35,24 @@ const DEFAULTS: NotificationPrefs = {
   hrv_alerts: true,
   sleep_alerts: true,
   activity_reminders: true,
+  achievement_notifications: true,
   briefing_hour: 7,
   hrv_threshold_percent: 20,
   rhr_threshold_bpm: 10,
+  quiet_hours_enabled: false,
+  quiet_hours_start: 21,
+  quiet_hours_end: 8,
+  weekly_digest_day: 0,
+  weekly_digest_hour: 7,
+  anomaly_severity_threshold: 'medium',
 }
+
+const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const SEVERITY_LEVELS = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+]
 
 export default function NotificationsSettingsPage() {
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULTS)
@@ -61,9 +82,16 @@ export default function NotificationsSettingsPage() {
         hrv_alerts: data.hrv_alerts ?? DEFAULTS.hrv_alerts,
         sleep_alerts: data.sleep_alerts ?? DEFAULTS.sleep_alerts,
         activity_reminders: data.activity_reminders ?? DEFAULTS.activity_reminders,
+        achievement_notifications: data.achievement_notifications ?? DEFAULTS.achievement_notifications,
         briefing_hour: data.briefing_hour ?? DEFAULTS.briefing_hour,
         hrv_threshold_percent: data.hrv_threshold_percent ?? DEFAULTS.hrv_threshold_percent,
         rhr_threshold_bpm: data.rhr_threshold_bpm ?? DEFAULTS.rhr_threshold_bpm,
+        quiet_hours_enabled: data.quiet_hours_enabled ?? DEFAULTS.quiet_hours_enabled,
+        quiet_hours_start: data.quiet_hours_start ?? DEFAULTS.quiet_hours_start,
+        quiet_hours_end: data.quiet_hours_end ?? DEFAULTS.quiet_hours_end,
+        weekly_digest_day: data.weekly_digest_day ?? DEFAULTS.weekly_digest_day,
+        weekly_digest_hour: data.weekly_digest_hour ?? DEFAULTS.weekly_digest_hour,
+        anomaly_severity_threshold: data.anomaly_severity_threshold ?? DEFAULTS.anomaly_severity_threshold,
       })
     }
     setLoading(false)
@@ -99,6 +127,9 @@ export default function NotificationsSettingsPage() {
     if (!isNaN(n)) setPrefs((p) => ({ ...p, [key]: n }))
   }
 
+  const setStr = (key: keyof NotificationPrefs, val: string) =>
+    setPrefs((p) => ({ ...p, [key]: val }))
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -115,28 +146,31 @@ export default function NotificationsSettingsPage() {
     label: string
     description?: string
     field: keyof NotificationPrefs
-  }) => (
-    <div className="flex items-start justify-between gap-3 py-3 border-b border-border last:border-0">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-text-primary">{label}</p>
-        {description && <p className="text-xs text-text-secondary mt-0.5">{description}</p>}
-      </div>
-      <button
-        role="switch"
-        aria-checked={!!prefs[field]}
-        onClick={() => toggle(field)}
-        className={`relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors ${
-          prefs[field] ? 'bg-accent' : 'bg-surface-secondary'
-        }`}
-      >
-        <span
-          className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
-            prefs[field] ? 'translate-x-5' : 'translate-x-0'
+  }) => {
+    if (typeof prefs[field] !== 'boolean') return null
+    return (
+      <div className="flex items-start justify-between gap-3 py-3 border-b border-border last:border-0">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-text-primary">{label}</p>
+          {description && <p className="text-xs text-text-secondary mt-0.5">{description}</p>}
+        </div>
+        <button
+          role="switch"
+          aria-checked={!!(prefs[field])}
+          onClick={() => toggle(field)}
+          className={`relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors ${
+            prefs[field] ? 'bg-accent' : 'bg-surface-secondary'
           }`}
-        />
-      </button>
-    </div>
-  )
+        >
+          <span
+            className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
+              prefs[field] ? 'translate-x-5' : 'translate-x-0'
+            }`}
+          />
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -157,9 +191,9 @@ export default function NotificationsSettingsPage() {
           </div>
         )}
 
-        {/* Alerts section */}
+        {/* Alert Categories */}
         <div className="bg-surface rounded-xl border border-border p-4">
-          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1">Alerts</h2>
+          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1">Alert Types</h2>
           <ToggleRow
             label="Morning Briefing"
             description="Daily summary delivered each morning"
@@ -174,6 +208,11 @@ export default function NotificationsSettingsPage() {
             label="Anomaly Alerts"
             description="Unusual patterns in your health metrics"
             field="anomaly_alerts"
+          />
+          <ToggleRow
+            label="Achievement Notifications"
+            description="Celebrate when you reach milestones"
+            field="achievement_notifications"
           />
           <ToggleRow
             label="Streak Milestones"
@@ -202,28 +241,92 @@ export default function NotificationsSettingsPage() {
           />
         </div>
 
-        {/* Timing section */}
-        <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
-          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Timing</h2>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-text-primary">Morning Briefing Hour</p>
-              <p className="text-xs text-text-secondary">0–23 (24-hour format)</p>
+        {/* Daily Briefing Settings */}
+        {prefs.morning_briefing && (
+          <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Morning Briefing Time</h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Delivery Hour</p>
+                <p className="text-xs text-text-secondary">0–23 (24-hour format)</p>
+              </div>
+              <input
+                type="number"
+                min={0}
+                max={23}
+                value={prefs.briefing_hour}
+                onChange={(e) => setNum('briefing_hour', e.target.value)}
+                className="w-20 text-center bg-surface-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+              />
             </div>
-            <input
-              type="number"
-              min={0}
-              max={23}
-              value={prefs.briefing_hour}
-              onChange={(e) => setNum('briefing_hour', e.target.value)}
-              className="w-20 text-center bg-surface-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
-            />
           </div>
-        </div>
+        )}
 
-        {/* Thresholds section */}
+        {/* Weekly Digest Settings */}
+        {prefs.weekly_digest && (
+          <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Weekly Digest</h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Delivery Day</p>
+                <p className="text-xs text-text-secondary">When to send your weekly summary</p>
+              </div>
+              <select
+                value={prefs.weekly_digest_day}
+                onChange={(e) => setNum('weekly_digest_day', e.target.value)}
+                className="bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+              >
+                {DAYS_OF_WEEK.map((day, idx) => (
+                  <option key={idx} value={idx}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center justify-between border-t border-border pt-4">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Delivery Hour</p>
+                <p className="text-xs text-text-secondary">0–23 (24-hour format)</p>
+              </div>
+              <input
+                type="number"
+                min={0}
+                max={23}
+                value={prefs.weekly_digest_hour}
+                onChange={(e) => setNum('weekly_digest_hour', e.target.value)}
+                className="w-20 text-center bg-surface-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Anomaly Alert Settings */}
+        {prefs.anomaly_alerts && (
+          <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Anomaly Alerts</h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Severity Threshold</p>
+                <p className="text-xs text-text-secondary">Only alert on high-severity anomalies</p>
+              </div>
+              <select
+                value={prefs.anomaly_severity_threshold}
+                onChange={(e) => setStr('anomaly_severity_threshold', e.target.value)}
+                className="bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+              >
+                {SEVERITY_LEVELS.map((level) => (
+                  <option key={level.value} value={level.value}>
+                    {level.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Metric Thresholds */}
         <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
-          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Thresholds</h2>
+          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Alert Thresholds</h2>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-text-primary">HRV Alert Threshold</p>
@@ -258,6 +361,54 @@ export default function NotificationsSettingsPage() {
               <span className="text-sm text-text-secondary">bpm</span>
             </div>
           </div>
+        </div>
+
+        {/* Quiet Hours */}
+        <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Quiet Hours</h2>
+          <ToggleRow
+            label="Enable Quiet Hours"
+            description="Suppress notifications during specified times"
+            field="quiet_hours_enabled"
+          />
+          {prefs.quiet_hours_enabled && (
+            <div className="space-y-3 border-t border-border pt-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Start Time</p>
+                  <p className="text-xs text-text-secondary">When to stop notifications</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={23}
+                    value={prefs.quiet_hours_start}
+                    onChange={(e) => setNum('quiet_hours_start', e.target.value)}
+                    className="w-20 text-center bg-surface-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+                  />
+                  <span className="text-sm text-text-secondary">:00</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-t border-border pt-3">
+                <div>
+                  <p className="text-sm font-medium text-text-primary">End Time</p>
+                  <p className="text-xs text-text-secondary">When to resume notifications</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={23}
+                    value={prefs.quiet_hours_end}
+                    onChange={(e) => setNum('quiet_hours_end', e.target.value)}
+                    className="w-20 text-center bg-surface-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent/50"
+                  />
+                  <span className="text-sm text-text-secondary">:00</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <button

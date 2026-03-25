@@ -173,7 +173,7 @@ export default function GoalsSettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" role="status" aria-label="Loading goals" aria-busy="true" />
       </div>
     )
   }
@@ -185,11 +185,12 @@ export default function GoalsSettingsPage() {
           <Link
             href="/settings"
             className="p-2 -ml-2 rounded-lg hover:bg-surface-secondary transition-colors"
+            aria-label="Back to settings"
           >
-            <ArrowLeft className="w-5 h-5 text-text-secondary" />
+            <ArrowLeft className="w-5 h-5 text-text-secondary" aria-hidden="true" />
           </Link>
           <h1 className="text-xl font-bold text-text-primary">Goals</h1>
-          {saved && <span className="ml-auto text-sm text-accent">Saved</span>}
+          {saved && <span className="ml-auto text-sm text-accent" role="status" aria-live="polite">Saved</span>}
         </div>
       </header>
 
@@ -337,6 +338,7 @@ export default function GoalsSettingsPage() {
               step={250}
               value={waterInput}
               onChange={(e) => setWaterInput(e.target.value)}
+              aria-label="Daily water goal (500-6000 ml)"
               className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">ml / day</span>
@@ -348,6 +350,7 @@ export default function GoalsSettingsPage() {
                 key={preset}
                 type="button"
                 onClick={() => setWaterInput(preset.toString())}
+                aria-pressed={waterGoal === preset}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   waterGoal === preset
                     ? 'bg-accent text-white border-accent'
@@ -377,6 +380,7 @@ export default function GoalsSettingsPage() {
               step={5}
               value={hrvInput}
               onChange={(e) => setHrvInput(e.target.value)}
+              aria-label="HRV target (20-100 ms)"
               className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">ms</span>
@@ -388,6 +392,7 @@ export default function GoalsSettingsPage() {
                 key={preset}
                 type="button"
                 onClick={() => setHrvInput(preset.toString())}
+                aria-pressed={hrvTarget === preset}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   hrvTarget === preset
                     ? 'bg-accent text-white border-accent'
