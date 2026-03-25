@@ -1,31 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { z } from 'zod'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+  foodImageSchema,
+} from '@/lib/security'
 
 const anthropic = new Anthropic()
 
-interface RecognizedFood {
-  name: string
-  calories: number
-  protein: number
-  carbs: number
-  fat: number
-  fiber?: number
-  servingSize: string
-  confidence: number
-}
+const bodySchema = z.object({
+  image: foodImageSchema.shape.image,
+})
 
-export async function POST(request: NextRequest) {
-  try {
-    const { image } = await request.json()
-
-    if (!image) {
-      return NextResponse.json({ error: 'Image is required' }, { status: 400 })
-    }
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'foodScan',
+    requireAuth: true,
+    bodySchema,
+    auditAction: 'CREATE',
+    auditResource: 'food_product',
+  },
+  async (request: NextRequest, { body }) => {
+    const { image } = body as z.infer<typeof bodySchema>
 
     // Extract base64 data from data URL
     const base64Match = image.match(/^data:image\/(.*?);base64,(.*)$/)
     if (!base64Match) {
-      return NextResponse.json({ error: 'Invalid image format' }, { status: 400 })
+      return secureErrorResponse('Invalid image format', 400)
     }
 
     const mediaType = `image/${base64Match[1]}` as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
@@ -81,55 +84,30 @@ Return ONLY the JSON, no other text.`,
       ],
     })
 
-    // Parse the response
     const textContent = response.content.find((block) => block.type === 'text')
     if (!textContent || textContent.type !== 'text') {
-      return NextResponse.json({ error: 'Failed to analyze image' }, { status: 500 })
+      return secureErrorResponse('Failed to analyze image', 500)
     }
 
-    try {
-      // Clean up the response - remove markdown code blocks if present
-      let jsonText = textContent.text.trim()
-      if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.slice(7)
-      } else if (jsonText.startsWith('```')) {
-        jsonText = jsonText.slice(3)
-      }
-      if (jsonText.endsWith('```')) {
-        jsonText = jsonText.slice(0, -3)
-      }
-      jsonText = jsonText.trim()
+    let jsonText = textContent.text.trim()
+    if (jsonText.startsWith('```json')) jsonText = jsonText.slice(7)
+    else if (jsonText.startsWith('```')) jsonText = jsonText.slice(3)
+    if (jsonText.endsWith('```')) jsonText = jsonText.slice(0, -3)
+    jsonText = jsonText.trim()
 
-      const result = JSON.parse(jsonText)
+    const result = JSON.parse(jsonText)
 
-      // Validate and clean up the response
-      const foods: RecognizedFood[] = (result.foods || []).map((food: Record<string, unknown>) => ({
-        name: String(food.name || 'Unknown Food'),
-        calories: Math.round(Number(food.calories) || 0),
-        protein: Math.round(Number(food.protein) || 0),
-        carbs: Math.round(Number(food.carbs) || 0),
-        fat: Math.round(Number(food.fat) || 0),
-        fiber: food.fiber ? Math.round(Number(food.fiber)) : undefined,
-        servingSize: String(food.servingSize || '1 serving'),
-        confidence: Number(food.confidence) || 0.5,
-      }))
+    const foods = (result.foods || []).map((food: Record<string, unknown>) => ({
+      name: String(food.name || 'Unknown Food'),
+      calories: Math.round(Number(food.calories) || 0),
+      protein: Math.round(Number(food.protein) || 0),
+      carbs: Math.round(Number(food.carbs) || 0),
+      fat: Math.round(Number(food.fat) || 0),
+      fiber: food.fiber ? Math.round(Number(food.fiber)) : undefined,
+      servingSize: String(food.servingSize || '1 serving'),
+      confidence: Number(food.confidence) || 0.5,
+    }))
 
-      return NextResponse.json({ foods })
-    } catch (parseError) {
-      console.error('Failed to parse AI response:', textContent.text)
-      return NextResponse.json({ error: 'Failed to parse food analysis' }, { status: 500 })
-    }
-  } catch (error) {
-    console.error('Food recognition error:', error)
-
-    // Check if it's an API key error
-    if (error instanceof Error && error.message.includes('API key')) {
-      return NextResponse.json(
-        { error: 'AI service not configured. Please add ANTHROPIC_API_KEY to environment.' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ error: 'Failed to recognize food' }, { status: 500 })
+    return secureJsonResponse({ foods })
   }
-}
+)

@@ -9,6 +9,7 @@ struct NutritionView: View {
     @State private var isLoading = true
     @State private var showLogMeal = false
     @State private var showScanner = false
+    @State private var showPhotoRecognition = false
     @State private var selectedMealType: MealTypeOption = .breakfast
 
     private let calorieTarget = 2000
@@ -43,6 +44,11 @@ struct NutritionView: View {
                             Image(systemName: "barcode.viewfinder")
                         }
                         Button {
+                            showPhotoRecognition = true
+                        } label: {
+                            Image(systemName: "camera.fill")
+                        }
+                        Button {
                             showLogMeal = true
                         } label: {
                             Image(systemName: "plus")
@@ -59,6 +65,11 @@ struct NutritionView: View {
                 Task { await load() }
             }) {
                 FoodScannerView()
+            }
+            .sheet(isPresented: $showPhotoRecognition, onDismiss: {
+                Task { await load() }
+            }) {
+                FoodPhotoRecognitionView()
             }
             .task { await load() }
             .refreshable { await load() }
