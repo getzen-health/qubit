@@ -428,6 +428,13 @@ struct DashboardListView: View {
             color: .strain
         ))
 
+        stats.append(QuickStat(
+            label: "Body Battery",
+            value: "\(viewModel.bodyBatteryScore)",
+            unit: "%",
+            color: .recovery
+        ))
+
         if let formattedSleep = summary.formattedSleep {
             stats.append(QuickStat(
                 label: "Sleep",
@@ -466,6 +473,16 @@ struct DashboardListView: View {
                     unit: "%",
                     sublabel: RecoveryLevel.from(score: viewModel.recoveryScore).label,
                     trend: viewModel.recoveryTrend,
+                    color: .recovery
+                )
+
+                // Body Battery
+                MetricRowView(
+                    icon: "battery.75percent",
+                    label: "Body Battery",
+                    value: "\(viewModel.bodyBatteryScore)",
+                    unit: "%",
+                    sublabel: viewModel.bodyBatteryLabel,
                     color: .recovery
                 )
 
@@ -728,6 +745,7 @@ struct DashboardListView: View {
 // MARK: - View Model
 
 @Observable
+@MainActor
 class DashboardListViewModel {
     var todaySummary: TodayHealthSummary?
     var insights: [HealthInsight] = []
@@ -751,6 +769,32 @@ class DashboardListViewModel {
     var weeklyData: [DaySummaryForAI] = []
     var lastSyncDate: Date?
     var syncError: String?
+    /// Body Battery: Bevel-style energy estimate (0–100).
+    /// Formula: recovery 50% + sleep quality 30% + inverse strain 20%
+    var bodyBatteryScore: Int {
+        let sleepScore: Double = {
+            guard let ctx = latestSleepContext, ctx.durationMinutes > 0 else { return Double(recoveryScore) }
+            let hours = Double(ctx.durationMinutes) / 60.0
+            let hoursScore = min(100, max(0, (hours / 8.0) * 100))
+            let deepPct = Double(ctx.deepMinutes) / Double(ctx.durationMinutes)
+            let remPct  = Double(ctx.remMinutes)  / Double(ctx.durationMinutes)
+            let qualityBonus = min(20, (deepPct * 100) + (remPct * 50))
+            return min(100, hoursScore + qualityBonus)
+        }()
+        let strainPenalty = min(100, (strainScore / 21.0) * 100)
+        let inverseStrain = max(0, 100 - strainPenalty)
+        let raw = Double(recoveryScore) * 0.5 + sleepScore * 0.3 + inverseStrain * 0.2
+        return max(0, min(100, Int(raw)))
+    }
+
+    var bodyBatteryLabel: String {
+        switch bodyBatteryScore {
+        case 75...100: return "Fully charged"
+        case 50..<75:  return "Good energy"
+        case 25..<50:  return "Draining"
+        default:       return "Depleted"
+        }
+    }
 
     private let healthKit = HealthKitService.shared
     private let syncService = SyncService.shared
@@ -761,17 +805,15 @@ class DashboardListViewModel {
     }
 
     func loadData() async {
-        await MainActor.run {
-            isLoading = true
-            error = nil
-        }
+                isLoading = true
+        error = nil
+    
 
         do {
             let summary = try await healthKit.fetchTodaySummary()
-            await MainActor.run {
-                todaySummary = summary
-                isLoading = false
-            }
+                        todaySummary = summary
+            isLoading = false
+        
 
             // Fetch last night's sleep breakdown
             let calendar = Calendar.current
@@ -794,57 +836,54 @@ class DashboardListViewModel {
                     deepMinutes: deep, remMinutes: rem,
                     coreMinutes: core, awakeMinutes: awake
                 )
-                await MainActor.run { latestSleepContext = sleepCtx }
+                 latestSleepContext = sleepCtx 
             }
 
             // Fetch latest body weight
             if let weight = try? await healthKit.fetchLatest(for: .bodyMass) {
-                await MainActor.run { bodyWeightKg = weight }
+                 bodyWeightKg = weight 
             }
 
             // Count workouts this week
             let weekStart = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
             let weekWorkouts = (try? await healthKit.fetchWorkouts(from: weekStart, to: Date())) ?? []
-            await MainActor.run { weeklyWorkoutCount = weekWorkouts.count }
+             weeklyWorkoutCount = weekWorkouts.count 
 
             // Load cached AI scores if available
             if let cachedRecovery = aiService.latestRecoveryScore {
-                await MainActor.run { recoveryScore = cachedRecovery }
+                 recoveryScore = cachedRecovery 
             }
             if let cachedStrain = aiService.latestStrainScore {
-                await MainActor.run { strainScore = cachedStrain }
+                 strainScore = cachedStrain 
             }
 
             // Load insights from Supabase
             if let fetchedInsights = try? await SupabaseService.shared.fetchInsights() {
-                await MainActor.run { insights = fetchedInsights }
+                 insights = fetchedInsights 
             }
 
             // Calculate trends from week data
             await calculateTrends()
 
         } catch {
-            await MainActor.run {
-                self.error = error.localizedDescription
-                isLoading = false
-            }
+                        self.error = error.localizedDescription
+            isLoading = false
+        
         }
     }
 
     func sync() async {
-        await MainActor.run {
-            isSyncing = true
-            syncError = nil
-        }
+                isSyncing = true
+        syncError = nil
+    
 
         await syncService.performFullSync()
 
-        await MainActor.run {
-            isSyncing = false
-            lastSyncDate = syncService.lastSyncDate
-            if let err = syncService.syncError {
-                syncError = err.localizedDescription
-            }
+                isSyncing = false
+        lastSyncDate = syncService.lastSyncDate
+        if let err = syncService.syncError {
+            syncError = err.localizedDescription
+        
         }
 
         await loadData()
@@ -853,13 +892,12 @@ class DashboardListViewModel {
     func refreshAIInsights() async {
         let result = await aiService.generateInsights()
         if let result = result {
-            await MainActor.run {
-                recoveryScore = result.recoveryScore
-                strainScore = result.strainScore
-            }
+                        recoveryScore = result.recoveryScore
+            strainScore = result.strainScore
+        
             // Reload insights from DB
             if let fetchedInsights = try? await SupabaseService.shared.fetchInsights() {
-                await MainActor.run { insights = fetchedInsights }
+                 insights = fetchedInsights 
             }
         }
     }
@@ -867,15 +905,14 @@ class DashboardListViewModel {
     private func calculateTrends() async {
         do {
             let weekData = try await healthKit.fetchWeekSummaries(days: 7)
-            await MainActor.run { self.weeklyData = weekData }
+             self.weeklyData = weekData 
             guard weekData.count >= 2 else { return }
 
             let todaySteps = weekData.first?.steps ?? 0
             let avgSteps = weekData.dropFirst().reduce(0) { $0 + $1.steps } / max(weekData.count - 1, 1)
             if avgSteps > 0 {
-                await MainActor.run {
-                    stepsTrend = Int(((Double(todaySteps) - Double(avgSteps)) / Double(avgSteps)) * 100)
-                }
+                                stepsTrend = Int(((Double(todaySteps) - Double(avgSteps)) / Double(avgSteps)) * 100)
+            
             }
 
             let todayHrv = weekData.first?.avgHrv
@@ -883,9 +920,8 @@ class DashboardListViewModel {
             if let todayHrv = todayHrv, !hrvValues.isEmpty {
                 let avgHrv = hrvValues.reduce(0, +) / Double(hrvValues.count)
                 if avgHrv > 0 {
-                    await MainActor.run {
-                        hrvTrend = Int(((todayHrv - avgHrv) / avgHrv) * 100)
-                    }
+                                        hrvTrend = Int(((todayHrv - avgHrv) / avgHrv) * 100)
+                
                 }
             }
 
@@ -901,7 +937,7 @@ class DashboardListViewModel {
                 }
             }
             let capturedStreak = streak
-            await MainActor.run { currentStreak = capturedStreak }
+             currentStreak = capturedStreak 
 
             // Compute sleep streak (newest first, skip today)
             let sleepGoalMinutes = Int(GoalService.shared.sleepGoalMinutes)
@@ -914,7 +950,7 @@ class DashboardListViewModel {
                 }
             }
             let capturedSleepStreak = sleepStreakCount
-            await MainActor.run { sleepStreak = capturedSleepStreak }
+             sleepStreak = capturedSleepStreak 
 
             // Compute workout streak (consecutive days with ≥1 workout, skip today)
             let wCal = Calendar.current
@@ -938,7 +974,7 @@ class DashboardListViewModel {
                 }
             }
             let capturedWorkoutStreak = workoutStreakCount
-            await MainActor.run { workoutStreak = capturedWorkoutStreak }
+             workoutStreak = capturedWorkoutStreak 
         } catch {
             // Trends are non-critical, silently fail
         }
