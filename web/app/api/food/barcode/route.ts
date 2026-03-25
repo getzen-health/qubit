@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
+import { USDA_NUTRIENTS } from '@/lib/usda-nutrients'
+import { FOOD_API_CONFIG } from '@/lib/config'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -66,7 +68,7 @@ function getNutrient(nutrients: USDAFood['foodNutrients'], id: number): number {
 }
 
 const querySchema = barcodeSchema.extend({
-  code: z.string().min(8).max(14).regex(/^[0-9]+$/, 'Barcode must be numeric'),
+  code: z.string().min(8).max(FOOD_API_CONFIG.MAX_BARCODE_LENGTH).regex(/^[0-9]+$/, 'Barcode must be numeric'),
 }).omit({ barcode: true })
 
 export const GET = createSecureApiHandler(
@@ -136,11 +138,11 @@ export const GET = createSecureApiHandler(
         additivesTags: [],
         isOrganic,
         allergensTags: [],
-        fiberPer100g: getNutrient(nutrients, 1079) || null,
-        calories: getNutrient(nutrients, 1008) || null,
-        protein: getNutrient(nutrients, 1003) || null,
-        carbs: getNutrient(nutrients, 1005) || null,
-        fat: getNutrient(nutrients, 1004) || null,
+        fiberPer100g: getNutrient(nutrients, USDA_NUTRIENTS.FIBER) || null,
+        calories: getNutrient(nutrients, USDA_NUTRIENTS.CALORIES) || null,
+        protein: getNutrient(nutrients, USDA_NUTRIENTS.PROTEIN) || null,
+        carbs: getNutrient(nutrients, USDA_NUTRIENTS.CARBOHYDRATES) || null,
+        fat: getNutrient(nutrients, USDA_NUTRIENTS.FAT) || null,
       })
 
       const usdaMapped = {
@@ -150,13 +152,13 @@ export const GET = createSecureApiHandler(
           usdaFood.servingSize != null && usdaFood.servingSizeUnit
             ? `${usdaFood.servingSize} ${usdaFood.servingSizeUnit}`
             : undefined,
-        calories: Math.round(getNutrient(nutrients, 1008)),
-        protein: Math.round(getNutrient(nutrients, 1003)),
-        carbs: Math.round(getNutrient(nutrients, 1005)),
-        fat: Math.round(getNutrient(nutrients, 1004)),
-        fiber: Math.round(getNutrient(nutrients, 1079)),
-        sugar: Math.round(getNutrient(nutrients, 2000)),
-        sodium: Math.round(getNutrient(nutrients, 1093)),
+        calories: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.CALORIES)),
+        protein: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.PROTEIN)),
+        carbs: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.CARBOHYDRATES)),
+        fat: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.FAT)),
+        fiber: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.FIBER)),
+        sugar: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.SUGARS)),
+        sodium: Math.round(getNutrient(nutrients, USDA_NUTRIENTS.SODIUM)),
         servingSize:
           usdaFood.servingSize != null && usdaFood.servingSizeUnit
             ? `${usdaFood.servingSize} ${usdaFood.servingSizeUnit}`

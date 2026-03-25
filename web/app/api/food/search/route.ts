@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
+import { USDA_NUTRIENTS } from '@/lib/usda-nutrients'
+import { FOOD_API_CONFIG } from '@/lib/config'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -57,8 +59,8 @@ function getUSDANutrient(nutrients: USDASearchFood['foodNutrients'], id: number)
 }
 
 const querySchema = z.object({
-  q: z.string().min(2, 'Query too short').max(200, 'Query too long'),
-  page: z.coerce.number().int().min(1).max(100).default(1),
+  q: z.string().min(2, 'Query too short').max(FOOD_API_CONFIG.MAX_FOOD_NAME_LENGTH, 'Query too long'),
+  page: z.coerce.number().int().min(1).max(FOOD_API_CONFIG.MAX_SEARCH_PAGE).default(1),
 })
 
 export const GET = createSecureApiHandler(
@@ -77,7 +79,7 @@ export const GET = createSecureApiHandler(
     offUrl.searchParams.set('search_simple', '1')
     offUrl.searchParams.set('action', 'process')
     offUrl.searchParams.set('json', '1')
-    offUrl.searchParams.set('page_size', '20')
+    offUrl.searchParams.set('page_size', String(FOOD_API_CONFIG.MAX_SEARCH_PAGE_SIZE))
     offUrl.searchParams.set('page', String(page))
     offUrl.searchParams.set(
       'fields',
@@ -181,11 +183,11 @@ export const GET = createSecureApiHandler(
               additivesTags: [],
               isOrganic,
               allergensTags: [],
-              fiberPer100g: getUSDANutrient(nutrients, 1079) || null,
-              calories: getUSDANutrient(nutrients, 1008) || null,
-              protein: getUSDANutrient(nutrients, 1003) || null,
-              carbs: getUSDANutrient(nutrients, 1005) || null,
-              fat: getUSDANutrient(nutrients, 1004) || null,
+              fiberPer100g: getUSDANutrient(nutrients, USDA_NUTRIENTS.FIBER) || null,
+              calories: getUSDANutrient(nutrients, USDA_NUTRIENTS.CALORIES) || null,
+              protein: getUSDANutrient(nutrients, USDA_NUTRIENTS.PROTEIN) || null,
+              carbs: getUSDANutrient(nutrients, USDA_NUTRIENTS.CARBOHYDRATES) || null,
+              fat: getUSDANutrient(nutrients, USDA_NUTRIENTS.FAT) || null,
             })
 
             return {
@@ -201,13 +203,13 @@ export const GET = createSecureApiHandler(
                 f.servingSize != null && f.servingSizeUnit
                   ? `${f.servingSize} ${f.servingSizeUnit}`
                   : '100g',
-              calories: Math.round(getUSDANutrient(nutrients, 1008)),
-              protein: Math.round(getUSDANutrient(nutrients, 1003)),
-              carbs: Math.round(getUSDANutrient(nutrients, 1005)),
-              fat: Math.round(getUSDANutrient(nutrients, 1004)),
-              fiber: Math.round(getUSDANutrient(nutrients, 1079)),
-              sugar: Math.round(getUSDANutrient(nutrients, 2000)),
-              sodium: Math.round(getUSDANutrient(nutrients, 1093)),
+              calories: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.CALORIES)),
+              protein: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.PROTEIN)),
+              carbs: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.CARBOHYDRATES)),
+              fat: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.FAT)),
+              fiber: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.FIBER)),
+              sugar: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.SUGARS)),
+              sodium: Math.round(getUSDANutrient(nutrients, USDA_NUTRIENTS.SODIUM)),
               categories: [] as string[],
               ingredients: f.ingredients ?? null,
               novaGroup: 1,

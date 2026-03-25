@@ -253,8 +253,7 @@ export function SocialClient({ friends, activeChallenges }: SocialClientProps) {
                 </div>
               )
             })
-          )
-        )}
+          )}
         </div>
       )}
 

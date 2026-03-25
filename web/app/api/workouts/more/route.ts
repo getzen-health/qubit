@@ -1,4 +1,5 @@
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+import { WORKOUT_API_CONFIG } from '@/lib/config'
 import { z } from 'zod'
 
 export const GET = createSecureApiHandler(
@@ -7,7 +8,7 @@ export const GET = createSecureApiHandler(
     requireAuth: true,
     querySchema: z.object({
       offset: z.coerce.number().int().min(0).default(0),
-      limit: z.coerce.number().int().min(1).max(100).default(30),
+      limit: z.coerce.number().int().min(1).max(WORKOUT_API_CONFIG.MAX_WORKOUTS_LIMIT).default(WORKOUT_API_CONFIG.DEFAULT_WORKOUTS_LIMIT),
     }),
     auditAction: 'READ',
     auditResource: 'workout',
