@@ -25,11 +25,13 @@ export async function GET(request: Request) {
   const type = searchParams.get('type') ?? 'daily'
 
   if (type === 'workouts') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('workout_records')
       .select('start_time, workout_type, duration_minutes, active_calories, distance_meters, avg_heart_rate, max_heart_rate')
       .eq('user_id', user.id)
       .order('start_time', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows = data ?? []
     const headers = ['date', 'type', 'duration_minutes', 'active_calories', 'distance_meters', 'avg_heart_rate', 'max_heart_rate']
@@ -57,11 +59,13 @@ export async function GET(request: Request) {
   }
 
   if (type === 'sleep') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('sleep_records')
       .select('start_time, end_time, duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
       .eq('user_id', user.id)
       .order('start_time', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows = data ?? []
     const headers = ['date', 'start_time', 'end_time', 'duration_minutes', 'deep_minutes', 'rem_minutes', 'core_minutes', 'awake_minutes']
@@ -90,11 +94,13 @@ export async function GET(request: Request) {
   }
 
   if (type === 'water') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('daily_water')
       .select('date, total_ml')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows = data ?? []
     const headers = ['date', 'total_ml']
@@ -112,11 +118,13 @@ export async function GET(request: Request) {
   }
 
   if (type === 'nutrition') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('meals')
       .select('logged_at, name, meal_type, meal_items(name, servings, calories, protein, carbs, fat)')
       .eq('user_id', user.id)
       .order('logged_at', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows: string[] = []
     const headers = ['date', 'meal_type', 'meal_name', 'food_name', 'servings', 'calories', 'protein_g', 'carbs_g', 'fat_g']
@@ -148,11 +156,13 @@ export async function GET(request: Request) {
   }
 
   if (type === 'checkins') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('daily_checkins')
       .select('date, energy, mood, stress, notes, created_at')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows = data ?? []
     const headers = ['date', 'energy', 'mood', 'stress', 'notes', 'created_at']
@@ -179,17 +189,21 @@ export async function GET(request: Request) {
   }
 
   if (type === 'habits') {
-    const { data: habits } = await supabase
+    const { data: habits, error: habitsError } = await supabase
       .from('habits')
       .select('name, emoji, target_days, created_at')
       .eq('user_id', user.id)
       .is('archived_at', null)
 
-    const { data: completions } = await supabase
+    if (habitsError) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
+
+    const { data: completions, error: completionsError } = await supabase
       .from('habit_completions')
       .select('habit_id, date, completed_at')
       .eq('user_id', user.id)
       .order('date', { ascending: false })
+
+    if (completionsError) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
 
     // Simple flat export: date + habit_id (use name if possible)
@@ -211,11 +225,13 @@ export async function GET(request: Request) {
   }
 
   if (type === 'fasting') {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('fasting_sessions')
       .select('protocol, target_hours, started_at, ended_at, actual_hours, completed')
       .eq('user_id', user.id)
       .order('started_at', { ascending: false })
+
+    if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
     const rows = data ?? []
     const headers = ['protocol', 'target_hours', 'started_at', 'ended_at', 'actual_hours', 'completed']
@@ -242,11 +258,13 @@ export async function GET(request: Request) {
   }
 
   // Default: daily summaries
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('daily_summaries')
     .select('date, steps, active_calories, distance_meters, floors_climbed, resting_heart_rate, avg_hrv, sleep_duration_minutes, weight_kg, recovery_score, strain_score')
     .eq('user_id', user.id)
     .order('date', { ascending: false })
+
+  if (error) return NextResponse.json({ error: 'Export failed' }, { status: 500 })
 
   const rows = data ?? []
   const headers = [
