@@ -171,6 +171,55 @@ class SupabaseService {
         }
     }
 
+    func saveDevicePushToken(_ token: String) async {
+        guard let userId = currentSession?.user.id else { return }
+
+        struct PushTokenUpsert: Encodable {
+            let userId: UUID
+            let token: String
+            let platform: String
+            let updatedAt: Date
+            enum CodingKeys: String, CodingKey {
+                case userId = "user_id"
+                case token
+                case platform
+                case updatedAt = "updated_at"
+            }
+        }
+
+        do {
+            try await client
+                .from("push_tokens")
+                .upsert(
+                    PushTokenUpsert(userId: userId, token: token, platform: "ios", updatedAt: Date()),
+                    onConflict: "user_id"
+                )
+                .execute()
+        } catch {
+            print("[SupabaseService] saveDevicePushToken failed: \(error)")
+        }
+    }
+
+    func fetchTodayReadinessScore() async throws -> Int? {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let todayStr = df.string(from: Date())
+
+        struct ReadinessRow: Decodable {
+            let recovery_score: Int?
+        }
+
+        let rows: [ReadinessRow] = try await client
+            .from("daily_summaries")
+            .select("recovery_score")
+            .eq("date", value: todayStr)
+            .limit(1)
+            .execute()
+            .value
+
+        return rows.first?.recovery_score
+    }
+
     func saveUserGoals(stepGoal: Int, calorieGoal: Int, sleepGoalMinutes: Int) async throws {
         guard let userId = currentSession?.user.id else { return }
 
