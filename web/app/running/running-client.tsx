@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import {
   LineChart,
   Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -27,8 +29,14 @@ interface RunData {
   power: number | null
 }
 
+interface Vo2maxEntry {
+  date: string
+  vo2max: number
+}
+
 interface RunningClientProps {
   runs: RunData[]
+  vo2maxHistory: Vo2maxEntry[]
 }
 
 const tooltipStyle = {
@@ -59,6 +67,15 @@ function avgOf(runs: RunData[], key: keyof RunData): number | null {
   if (!vals.length) return null
   return vals.reduce((a, b) => a + b, 0) / vals.length
 }
+
+function vo2maxCategoryACSM(v: number): { label: string; color: string } {
+  if (v > 62) return { label: 'Superior', color: 'text-purple-400' }
+  if (v >= 53) return { label: 'Excellent', color: 'text-green-400' }
+  if (v >= 44) return { label: 'Good', color: 'text-lime-400' }
+  if (v >= 33) return { label: 'Fair', color: 'text-yellow-400' }
+  return { label: 'Poor', color: 'text-orange-400' }
+}
+
 
 function TrendChart<T extends object>({
   data,
@@ -109,7 +126,7 @@ function TrendChart<T extends object>({
   )
 }
 
-export function RunningClient({ runs }: RunningClientProps) {
+export function RunningClient({ runs, vo2maxHistory }: RunningClientProps) {
   if (runs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -197,6 +214,24 @@ export function RunningClient({ runs }: RunningClientProps) {
     .filter((r) => r.groundContactTime && r.groundContactTime > 0)
     .map((r) => ({ date: fmtDate(r.date), gct: Math.round(r.groundContactTime!) }))
 
+  // VO2max history from database (persisted over time)
+  const vo2maxHistoryChartData = vo2maxHistory.map((e) => ({
+    date: fmtDate(e.date),
+    vo2max: e.vo2max,
+  }))
+  const currentHistoryVO2max =
+    vo2maxHistory.length > 0 ? vo2maxHistory[vo2maxHistory.length - 1].vo2max : null
+  const thirtyDaysAgoStr = (() => {
+    const d = new Date()
+    d.setDate(d.getDate() - 30)
+    return d.toISOString().split('T')[0]
+  })()
+  const entry30dAgo = [...vo2maxHistory].reverse().find((e) => e.date <= thirtyDaysAgoStr)
+  const vo2maxDelta =
+    currentHistoryVO2max !== null && entry30dAgo !== undefined
+      ? +(currentHistoryVO2max - entry30dAgo.vo2max).toFixed(1)
+      : null
+
   return (
     <div className="space-y-6">
       {/* Summary stats */}
@@ -260,7 +295,7 @@ export function RunningClient({ runs }: RunningClientProps) {
         </div>
       )}
 
-      {/* VO2max trend chart */}
+      {/* VO2max trend chart (locally estimated, last 90 days of runs) */}
       {smoothedVO2max.length >= 2 && (
         <TrendChart
           data={smoothedVO2max}
@@ -274,6 +309,90 @@ export function RunningClient({ runs }: RunningClientProps) {
             { y: 52, color: 'rgba(74,222,128,0.4)', label: 'Excellent' },
           ]}
         />
+      )}
+
+      {/* VO2max long-term trend from persisted estimates */}
+      {vo2maxHistoryChartData.length >= 2 && currentHistoryVO2max !== null && (
+        <div className="bg-surface rounded-xl border border-border p-4 space-y-3">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-text-primary">VO₂max Trend (90 days)</h3>
+              <p className="text-xs text-text-secondary opacity-60 mt-0.5">Based on general adult norms (ACSM)</p>
+            </div>
+            <div className="text-right">
+              <p className={`text-3xl font-bold ${vo2maxCategoryACSM(currentHistoryVO2max).color}`}>
+                {currentHistoryVO2max}
+              </p>
+              <p className={`text-xs font-medium ${vo2maxCategoryACSM(currentHistoryVO2max).color}`}>
+                {vo2maxCategoryACSM(currentHistoryVO2max).label}
+              </p>
+              <p className="text-xs text-text-secondary">ml/kg/min</p>
+            </div>
+          </div>
+
+          {vo2maxDelta !== null && (
+            <p className={`text-sm font-medium ${vo2maxDelta >= 0 ? 'text-green-400' : 'text-orange-400'}`}>
+              {vo2maxDelta >= 0 ? '↑' : '↓'} {vo2maxDelta >= 0 ? `+${vo2maxDelta}` : vo2maxDelta} ml/kg/min vs 30 days ago
+            </p>
+          )}
+
+          <ResponsiveContainer width="100%" height={140}>
+            <AreaChart data={vo2maxHistoryChartData} margin={{ top: 8, right: 4, left: -4, bottom: 0 }}>
+              <defs>
+                <linearGradient id="vo2maxHistGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#c084fc" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#c084fc" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                domain={[30, 70]}
+                width={32}
+              />
+              <Tooltip
+                contentStyle={tooltipStyle}
+                formatter={(v: number) => [`${Math.round(v)} ml/kg/min`, 'VO₂max']}
+              />
+              <ReferenceLine
+                y={currentHistoryVO2max}
+                stroke="rgba(192,132,252,0.5)"
+                strokeDasharray="4 3"
+                label={{ value: `${currentHistoryVO2max}`, position: 'insideTopRight', fontSize: 9, fill: 'rgba(192,132,252,0.8)' }}
+              />
+              <Area
+                type="monotone"
+                dataKey="vo2max"
+                stroke="#c084fc"
+                strokeWidth={2}
+                fill="url(#vo2maxHistGrad)"
+                dot={{ r: 3, fill: '#c084fc' }}
+                activeDot={{ r: 5 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+
+          <div className="flex flex-wrap gap-3 text-xs">
+            {[
+              { label: 'Poor', range: '<33', color: 'text-orange-400' },
+              { label: 'Fair', range: '33–43', color: 'text-yellow-400' },
+              { label: 'Good', range: '44–52', color: 'text-lime-400' },
+              { label: 'Excellent', range: '53–62', color: 'text-green-400' },
+              { label: 'Superior', range: '>62', color: 'text-purple-400' },
+            ].map(({ label, range, color }) => (
+              <span key={label} className={`${color} opacity-80`}>
+                {label} <span className="opacity-60">{range}</span>
+              </span>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Trend charts */}

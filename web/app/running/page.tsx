@@ -18,7 +18,7 @@ export default async function RunningPage() {
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
   const startIso = ninetyDaysAgo.toISOString()
 
-  const [{ data: runs }, { data: formRecords }] = await Promise.all([
+  const [{ data: runs }, { data: formRecords }, { data: vo2maxHistory }] = await Promise.all([
     supabase
       .from('workout_records')
       .select('id, start_time, end_time, duration_minutes, distance_meters, avg_pace_per_km, avg_heart_rate')
@@ -40,6 +40,12 @@ export default async function RunningPage() {
       ])
       .gte('start_time', startIso)
       .order('start_time', { ascending: true }),
+    supabase
+      .from('vo2max_estimates')
+      .select('date, vo2max')
+      .eq('user_id', user.id)
+      .order('date', { ascending: true })
+      .limit(90),
   ])
 
   // For each run, find matching form records (start_time overlaps workout window)
@@ -110,7 +116,7 @@ export default async function RunningPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <RunningClient runs={runMetrics} />
+        <RunningClient runs={runMetrics} vo2maxHistory={vo2maxHistory ?? []} />
       </main>
       <BottomNav />
     </div>
