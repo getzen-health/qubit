@@ -10,13 +10,28 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import { Activity, Heart, Wind, Footprints, FlaskConical, Zap } from 'lucide-react'
+import { Activity, Heart, Moon, FlaskConical, Zap, Info, AlertCircle } from 'lucide-react'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-const CHRONOLOGICAL_AGE = 35
+export interface DaySummary {
+  date: string
+  avg_hrv: number | null
+  resting_heart_rate: number | null
+  sleep_duration_minutes: number | null
+}
 
-// ─── Organ data ───────────────────────────────────────────────────────────────
+export interface BiologicalAgeClientProps {
+  chronologicalAge: number
+  hrvBaseline: number
+  rhrBaseline: number
+  sleepBaseline: number
+  latestHrv: number | null
+  latestRhr: number | null
+  latestSleep: number | null
+  recentSummaries: DaySummary[]
+  hasData: boolean
+}
 
 interface OrganSystem {
   key: string
@@ -25,84 +40,12 @@ interface OrganSystem {
   icon: React.ElementType
   color: string
   estimatedAge: number
-  delta: number // estimatedAge - chronologicalAge (negative = younger)
+  delta: number
   metricLabel: string
   metricValue: string
   interpretation: string
   reference: string
 }
-
-const ORGAN_SYSTEMS: OrganSystem[] = [
-  {
-    key: 'aerobic',
-    name: 'Aerobic Fitness',
-    category: 'VO₂ max',
-    icon: Wind,
-    color: '#a855f7',
-    estimatedAge: 33,
-    delta: -2,
-    metricLabel: 'VO₂ max',
-    metricValue: '48.2 ml/kg/min',
-    interpretation:
-      'Your aerobic capacity places you in the top quartile for your age group, equivalent to a typical healthy adult in their early 30s.',
-    reference: 'ACSM 11th ed. VO₂ max norms · male 35–39 avg ≈ 42.5 ml/kg/min',
-  },
-  {
-    key: 'autonomic',
-    name: 'Autonomic Health',
-    category: 'HRV (RMSSD)',
-    icon: Activity,
-    color: '#22c55e',
-    estimatedAge: 38,
-    delta: +3,
-    metricLabel: 'RMSSD',
-    metricValue: '42 ms',
-    interpretation:
-      'Your HRV is slightly below the age-20 reference of ~65 ms and closer to the age-40 norm of ~45 ms, suggesting mild autonomic aging — likely recoverable.',
-    reference: 'Shaffer & Ginsberg 2017 · age-30 norm ≈ 55 ms, age-40 ≈ 45 ms',
-  },
-  {
-    key: 'cardiovascular',
-    name: 'Cardiovascular',
-    category: 'Resting Heart Rate',
-    icon: Heart,
-    color: '#ef4444',
-    estimatedAge: 31,
-    delta: -4,
-    metricLabel: 'Resting HR',
-    metricValue: '58 bpm',
-    interpretation:
-      'A resting HR of 58 bpm is characteristic of a well-trained cardiovascular system, consistent with someone 4 years younger than your chronological age.',
-    reference: 'AHA norms · 60–100 bpm normal; athletes 40–60 bpm',
-  },
-  {
-    key: 'musculoskeletal',
-    name: 'Musculoskeletal',
-    category: 'Gait Speed',
-    icon: Footprints,
-    color: '#f97316',
-    estimatedAge: 34,
-    delta: -1,
-    metricLabel: 'Gait speed',
-    metricValue: '1.15 m/s',
-    interpretation:
-      'Your walking speed is within the normal range for your age group and marginally above the 35-year reference, suggesting healthy lower-body function.',
-    reference: 'Studenski 2011 · JAMA · gait speed as 6th vital sign',
-  },
-]
-
-// ─── Composite ────────────────────────────────────────────────────────────────
-
-const COMPOSITE_BIO_AGE = 34.0
-const COMPOSITE_DELTA = COMPOSITE_BIO_AGE - CHRONOLOGICAL_AGE // -1
-
-// ─── Chart data for horizontal bars ──────────────────────────────────────────
-
-const CHART_DATA = ORGAN_SYSTEMS.map((o) => ({
-  name: o.name,
-  age: o.estimatedAge,
-  color: o.color,
-}))
 
 // ─── Tooltip style ────────────────────────────────────────────────────────────
 
@@ -115,7 +58,7 @@ const tooltipStyle = {
 
 // ─── Circular arc component ───────────────────────────────────────────────────
 
-function BioAgeArc({
+function WellnessAgeArc({
   bioAge,
   chronoAge,
 }: {
@@ -125,7 +68,6 @@ function BioAgeArc({
   const delta = bioAge - chronoAge
   const isYounger = delta <= 0
 
-  // SVG arc: 0 = 25yr, 50 = 75yr (linear mapping over 50-year span)
   const minAge = 20
   const maxAge = 70
   const startAngle = -220
@@ -169,7 +111,7 @@ function BioAgeArc({
         strokeWidth={10}
         strokeLinecap="round"
       />
-      {/* Filled arc to bio age */}
+      {/* Filled arc to wellness age */}
       <path
         d={describeArc(trackStart, fillEnd, 60)}
         fill="none"
@@ -179,7 +121,7 @@ function BioAgeArc({
       />
       {/* Chronological age marker */}
       <circle cx={needlePos.x} cy={needlePos.y} r={5} fill="white" opacity={0.7} />
-      {/* Bio age number */}
+      {/* Wellness age number */}
       <text
         x="80"
         y="76"
@@ -199,7 +141,7 @@ function BioAgeArc({
         fontSize="9"
         fill="rgba(255,255,255,0.5)"
       >
-        bio age
+        wellness
       </text>
     </svg>
   )
@@ -213,14 +155,11 @@ interface CustomBarLabelProps {
   width?: number
   height?: number
   value?: number
-  index?: number
+  delta?: number
 }
 
 function CustomBarLabel(props: CustomBarLabelProps) {
-  const { x = 0, y = 0, width = 0, height = 0, value = 0, index = 0 } = props
-  const organ = ORGAN_SYSTEMS[index]
-  if (!organ) return null
-  const delta = organ.delta
+  const { x = 0, y = 0, width = 0, height = 0, delta = 0 } = props
   const label = delta === 0 ? 'On par' : delta < 0 ? `${delta}y` : `+${delta}y`
   const color = delta < 0 ? '#22c55e' : delta === 0 ? '#94a3b8' : '#ef4444'
   return (
@@ -239,14 +178,140 @@ function CustomBarLabel(props: CustomBarLabelProps) {
 
 // ─── Main client component ────────────────────────────────────────────────────
 
-export function BiologicalAgeClient() {
-  const delta = COMPOSITE_DELTA
-  const isYounger = delta < 0
-  const isOlder = delta > 0
+export function BiologicalAgeClient({
+  chronologicalAge,
+  hrvBaseline,
+  rhrBaseline,
+  sleepBaseline: _sleepBaseline,
+  latestHrv,
+  latestRhr,
+  latestSleep,
+  hasData,
+}: BiologicalAgeClientProps) {
 
-  const youngerCount = ORGAN_SYSTEMS.filter((o) => o.delta < 0).length
-  const onParCount = ORGAN_SYSTEMS.filter((o) => o.delta === 0).length
-  const olderCount = ORGAN_SYSTEMS.filter((o) => o.delta > 0).length
+  // ── Empty state ──────────────────────────────────────────────────────────────
+  if (!hasData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+        <AlertCircle className="w-10 h-10 text-text-secondary" />
+        <h2 className="text-lg font-semibold text-text-primary">No data yet</h2>
+        <p className="text-sm text-text-secondary max-w-sm">
+          Connect Apple Watch and sync at least 30 days of data to see your Wellness Age.
+        </p>
+      </div>
+    )
+  }
+
+  // ── Wellness Age formula (Klemera-Doubal inspired for wearables) ─────────────
+  let totalWeight = 0
+  let weightedSum = 0
+
+  if (latestHrv !== null && hrvBaseline > 0) {
+    const score = Math.min(100, Math.max(0, 50 + (latestHrv - hrvBaseline) / hrvBaseline * 100))
+    weightedSum += score * 0.4
+    totalWeight += 0.4
+  }
+  if (latestRhr !== null && rhrBaseline > 0) {
+    const score = Math.min(100, Math.max(0, 50 - (latestRhr - rhrBaseline) / rhrBaseline * 100))
+    weightedSum += score * 0.3
+    totalWeight += 0.3
+  }
+  if (latestSleep !== null) {
+    const score = Math.min(100, Math.max(0, 100 - Math.abs(latestSleep - 7) * 20))
+    weightedSum += score * 0.3
+    totalWeight += 0.3
+  }
+
+  const compositeScore = totalWeight > 0 ? weightedSum / totalWeight : 50
+  const ageOffset = -5 + (1 - compositeScore / 100) * 13
+  const wellnessAge = Math.round(chronologicalAge + ageOffset)
+  const compositeDelta = wellnessAge - chronologicalAge
+  const isYounger = compositeDelta < 0
+  const isOlder = compositeDelta > 0
+
+  // ── Build organ systems from real data ────────────────────────────────────────
+  const organSystems: OrganSystem[] = []
+
+  if (latestRhr !== null && rhrBaseline > 0) {
+    // Cardiovascular: lower RHR = younger. 55 bpm ≈ 30yr reference; each bpm ~0.7yr offset.
+    const cardioAge = Math.max(18, Math.min(80, Math.round(30 + (latestRhr - 55) * 0.7)))
+    organSystems.push({
+      key: 'cardiovascular',
+      name: 'Cardiovascular',
+      category: 'Resting Heart Rate',
+      icon: Heart,
+      color: '#ef4444',
+      estimatedAge: cardioAge,
+      delta: cardioAge - chronologicalAge,
+      metricLabel: 'Resting HR',
+      metricValue: `${Math.round(latestRhr)} bpm`,
+      interpretation:
+        latestRhr < 60
+          ? `A resting HR of ${Math.round(latestRhr)} bpm reflects strong cardiovascular fitness, consistent with a well-trained heart.`
+          : latestRhr < 70
+          ? `A resting HR of ${Math.round(latestRhr)} bpm is within a healthy range. Aerobic training can lower it further.`
+          : `A resting HR of ${Math.round(latestRhr)} bpm is on the higher side. Sustained aerobic exercise is the most effective intervention.`,
+      reference: 'AHA norms · 60–100 bpm normal; athletes 40–60 bpm',
+    })
+  }
+
+  if (latestHrv !== null && hrvBaseline > 0) {
+    // Autonomic: Shaffer & Ginsberg 2017 norms: 20→65ms, 30→55ms, 40→45ms, 50→35ms, 60→25ms
+    // Slope: 1ms ≈ 1 year (approximate)
+    const autonomicAge = Math.max(18, Math.min(80, Math.round(70 - latestHrv)))
+    organSystems.push({
+      key: 'autonomic',
+      name: 'Autonomic Nervous System',
+      category: 'HRV (RMSSD)',
+      icon: Activity,
+      color: '#22c55e',
+      estimatedAge: autonomicAge,
+      delta: autonomicAge - chronologicalAge,
+      metricLabel: 'HRV',
+      metricValue: `${Math.round(latestHrv)} ms`,
+      interpretation:
+        latestHrv >= 55
+          ? `Your HRV of ${Math.round(latestHrv)} ms reflects healthy autonomic nervous system function and good recovery capacity.`
+          : latestHrv >= 45
+          ? `Your HRV of ${Math.round(latestHrv)} ms is in the normal range for your age group. Consistent sleep and stress management can improve it.`
+          : `Your HRV of ${Math.round(latestHrv)} ms suggests elevated autonomic stress. Reducing training load, improving sleep, and limiting alcohol can help.`,
+      reference: 'Shaffer & Ginsberg 2017 · age-30 norm ≈ 55 ms, age-40 ≈ 45 ms',
+    })
+  }
+
+  if (latestSleep !== null) {
+    // Sleep: 7h optimal. Each hour below 7 ≈ +3yr; each hour above 9 ≈ +2yr.
+    const sleepDeltaYears =
+      latestSleep < 7
+        ? Math.round((7 - latestSleep) * 3)
+        : latestSleep > 9
+        ? Math.round((latestSleep - 9) * 2)
+        : 0
+    const sleepAge = Math.max(18, Math.min(80, chronologicalAge + sleepDeltaYears))
+    organSystems.push({
+      key: 'sleep',
+      name: 'Sleep Recovery',
+      category: 'Sleep Duration',
+      icon: Moon,
+      color: '#6366f1',
+      estimatedAge: sleepAge,
+      delta: sleepAge - chronologicalAge,
+      metricLabel: 'Sleep',
+      metricValue: `${latestSleep.toFixed(1)} hrs`,
+      interpretation:
+        latestSleep >= 7 && latestSleep <= 9
+          ? `You're getting ${latestSleep.toFixed(1)} hours — within the optimal 7–9 hour window for healthy aging and cellular repair.`
+          : latestSleep < 7
+          ? `${latestSleep.toFixed(1)} hours is below the recommended 7–9 hours. Chronic short sleep is linked to accelerated biological aging and increased all-cause mortality.`
+          : `${latestSleep.toFixed(1)} hours slightly exceeds the optimal range. Sleep quality and consistency matter as much as total duration.`,
+      reference: "Walker 2017 · Why We Sleep · 7–9 hrs optimal; <6 hrs increases all-cause mortality risk",
+    })
+  }
+
+  const youngerCount = organSystems.filter((o) => o.delta < 0).length
+  const onParCount = organSystems.filter((o) => o.delta === 0).length
+  const olderCount = organSystems.filter((o) => o.delta > 0).length
+  const highImpactOrgans = organSystems.filter((o) => o.delta > 0)
 
   const classificationLabel = isYounger
     ? 'Younger than your age'
@@ -255,7 +320,12 @@ export function BiologicalAgeClient() {
     : 'At your chronological age'
   const classificationColor = isYounger ? '#22c55e' : isOlder ? '#ef4444' : '#94a3b8'
 
-  const highImpactOrgans = ORGAN_SYSTEMS.filter((o) => o.delta > 0)
+  const chartData = organSystems.map((o) => ({
+    name: o.name,
+    age: o.estimatedAge,
+    color: o.color,
+    delta: o.delta,
+  }))
 
   return (
     <div className="space-y-5">
@@ -265,30 +335,42 @@ export function BiologicalAgeClient() {
         <div className="flex flex-col sm:flex-row items-center gap-6">
           {/* Arc */}
           <div className="flex-shrink-0">
-            <BioAgeArc bioAge={COMPOSITE_BIO_AGE} chronoAge={CHRONOLOGICAL_AGE} />
+            <WellnessAgeArc bioAge={wellnessAge} chronoAge={chronologicalAge} />
           </div>
 
           {/* Details */}
           <div className="flex-1 text-center sm:text-left">
+            {/* "Wellness Age" heading with tooltip */}
+            <div className="flex items-center gap-1.5 justify-center sm:justify-start mb-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                Wellness Age
+              </p>
+              <span
+                className="cursor-help"
+                title="Estimated from HRV, resting heart rate, and sleep using wearable data. For true biological age, blood biomarkers (CRP, glucose, HbA1c) are required."
+              >
+                <Info className="w-3.5 h-3.5 text-text-secondary opacity-60" />
+              </span>
+            </div>
             <p
               className="text-3xl font-bold tabular-nums"
               style={{ color: classificationColor }}
             >
-              {delta === 0 ? '±0' : delta < 0 ? `−${Math.abs(delta)}` : `+${delta}`}{' '}
-              <span className="text-lg font-semibold">year{Math.abs(delta) !== 1 ? 's' : ''}</span>
+              {compositeDelta === 0 ? '±0' : compositeDelta < 0 ? `−${Math.abs(compositeDelta)}` : `+${compositeDelta}`}{' '}
+              <span className="text-lg font-semibold">year{Math.abs(compositeDelta) !== 1 ? 's' : ''}</span>
             </p>
             <p className="text-sm font-semibold mt-1" style={{ color: classificationColor }}>
               {classificationLabel}
             </p>
             <p className="text-xs text-text-secondary mt-2 leading-relaxed max-w-sm">
-              Composite across 4 organ systems. Chronological age:{' '}
-              <span className="font-semibold text-text-primary">{CHRONOLOGICAL_AGE}</span>
+              Composite across {organSystems.length} systems. Chronological age:{' '}
+              <span className="font-semibold text-text-primary">{chronologicalAge}</span>
               {' · '}
-              Biological age:{' '}
-              <span className="font-semibold text-text-primary">{COMPOSITE_BIO_AGE}</span>
+              Wellness age:{' '}
+              <span className="font-semibold text-text-primary">{wellnessAge}</span>
             </p>
             <p className="text-xs text-text-secondary opacity-60 mt-1">
-              White dot on arc = chronological age (35)
+              White dot on arc = chronological age ({chronologicalAge})
             </p>
           </div>
         </div>
@@ -310,64 +392,65 @@ export function BiologicalAgeClient() {
         </div>
       </div>
 
-      {/* ── 3. Organ age bar chart ────────────────────────────────────────────── */}
-      <div className="bg-surface rounded-2xl border border-border p-4">
-        <h2 className="text-sm font-semibold text-text-primary mb-1">Organ Age Estimate</h2>
-        <p className="text-xs text-text-secondary opacity-70 mb-4">
-          Each bar = estimated biological age for that system · vertical line = chronological age (35)
-        </p>
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart
-            data={CHART_DATA}
-            layout="vertical"
-            margin={{ top: 4, right: 56, left: 8, bottom: 4 }}
-            barCategoryGap="28%"
-          >
-            <XAxis
-              type="number"
-              domain={[20, 50]}
-              tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }}
-              axisLine={false}
-              tickLine={false}
-              ticks={[20, 25, 30, 35, 40, 45, 50]}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={110}
-              tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              contentStyle={tooltipStyle}
-              formatter={(value: number) => [`${value} years`, 'Estimated age']}
-              cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-            />
-            <ReferenceLine
-              x={CHRONOLOGICAL_AGE}
-              stroke="rgba(255,255,255,0.35)"
-              strokeDasharray="4 3"
-              strokeWidth={1.5}
-              label={{
-                value: 'Age 35',
-                position: 'top',
-                fontSize: 10,
-                fill: 'rgba(255,255,255,0.45)',
-              }}
-            />
-            <Bar dataKey="age" radius={[0, 4, 4, 0]} label={<CustomBarLabel />}>
-              {CHART_DATA.map((entry, index) => (
-                <Cell key={index} fill={entry.color} fillOpacity={0.85} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      {/* ── 3. System age bar chart ───────────────────────────────────────────── */}
+      {chartData.length > 0 && (
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <h2 className="text-sm font-semibold text-text-primary mb-1">System Age Estimate</h2>
+          <p className="text-xs text-text-secondary opacity-70 mb-4">
+            Each bar = estimated wellness age for that system · vertical line = chronological age ({chronologicalAge})
+          </p>
+          <ResponsiveContainer width="100%" height={Math.max(120, chartData.length * 52)}>
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ top: 4, right: 56, left: 8, bottom: 4 }}
+              barCategoryGap="28%"
+            >
+              <XAxis
+                type="number"
+                domain={[Math.max(18, chronologicalAge - 15), chronologicalAge + 15]}
+                tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={150}
+                tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={tooltipStyle}
+                formatter={(value: number) => [`${value} years`, 'Estimated age']}
+                cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+              />
+              <ReferenceLine
+                x={chronologicalAge}
+                stroke="rgba(255,255,255,0.35)"
+                strokeDasharray="4 3"
+                strokeWidth={1.5}
+                label={{
+                  value: `Age ${chronologicalAge}`,
+                  position: 'top',
+                  fontSize: 10,
+                  fill: 'rgba(255,255,255,0.45)',
+                }}
+              />
+              <Bar dataKey="age" radius={[0, 4, 4, 0]} label={<CustomBarLabel />}>
+                {chartData.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} fillOpacity={0.85} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
-      {/* ── 4. Organ cards grid ──────────────────────────────────────────────── */}
+      {/* ── 4. System cards grid ─────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {ORGAN_SYSTEMS.map((organ) => {
+        {organSystems.map((organ) => {
           const Icon = organ.icon
           const deltaLabel =
             organ.delta === 0
@@ -453,7 +536,7 @@ export function BiologicalAgeClient() {
                 ? `${highImpactOrgans[0].name} is the only system aging faster than your chronological age.`
                 : `${highImpactOrgans.map((o) => o.name).join(' and ')} are aging faster than your chronological age.`}{' '}
               Improving {highImpactOrgans.length === 1 ? 'it' : 'these'} has the greatest
-              potential to lower your composite biological age.
+              potential to lower your composite wellness age.
             </p>
 
             {highImpactOrgans.map((organ) => {
@@ -478,38 +561,69 @@ export function BiologicalAgeClient() {
                     <div className="space-y-1.5">
                       <p className="text-xs text-text-secondary leading-relaxed">
                         <span className="font-semibold text-text-primary">Why it matters:</span>{' '}
-                        HRV (RMSSD) is the most sensitive early marker of autonomic aging and
-                        recovery state. Small lifestyle changes produce measurable improvements
-                        within days to weeks.
+                        HRV is the most sensitive early marker of autonomic aging and recovery state.
+                        Small lifestyle changes produce measurable improvements within days to weeks.
                       </p>
                       <div className="grid grid-cols-2 gap-2 mt-2">
                         {[
                           { action: 'Reduce training load', effect: '↑ HRV within 48–72h' },
                           { action: 'Consistent sleep timing', effect: 'circadian rhythm benefit' },
                           { action: 'Limit alcohol', effect: 'alcohol acutely suppresses HRV' },
-                          {
-                            action: 'Cold exposure (brief)',
-                            effect: 'boosts parasympathetic tone',
-                          },
+                          { action: 'Cold exposure (brief)', effect: 'boosts parasympathetic tone' },
                         ].map((item) => (
                           <div
                             key={item.action}
                             className="rounded-lg bg-surface p-2 border border-border/50"
                           >
-                            <p className="text-xs font-semibold text-text-primary">
-                              {item.action}
-                            </p>
+                            <p className="text-xs font-semibold text-text-primary">{item.action}</p>
                             <p className="text-xs text-text-secondary opacity-70 mt-0.5">
                               {item.effect}
                             </p>
                           </div>
                         ))}
                       </div>
-                      <p className="text-xs text-text-secondary opacity-70 mt-2 leading-relaxed">
-                        RMSSD improves within days with reduced training load, better sleep, less
-                        alcohol, and consistent sleep timing. A target of ≥50 ms would move your
-                        autonomic age to approximately 35.
-                      </p>
+                    </div>
+                  )}
+
+                  {organ.key === 'cardiovascular' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { action: 'Zone 2 cardio', effect: '30–45 min, 3×/week lowers RHR' },
+                        { action: 'Reduce caffeine', effect: 'late caffeine elevates RHR' },
+                        { action: 'Improve sleep', effect: 'deep sleep lowers resting HR' },
+                        { action: 'Manage stress', effect: 'chronic stress raises RHR' },
+                      ].map((item) => (
+                        <div
+                          key={item.action}
+                          className="rounded-lg bg-surface p-2 border border-border/50"
+                        >
+                          <p className="text-xs font-semibold text-text-primary">{item.action}</p>
+                          <p className="text-xs text-text-secondary opacity-70 mt-0.5">
+                            {item.effect}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {organ.key === 'sleep' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { action: 'Fixed wake time', effect: 'anchors circadian rhythm' },
+                        { action: 'Cool bedroom (18°C)', effect: 'optimal for deep sleep' },
+                        { action: 'No screens 1h before', effect: 'reduces sleep onset time' },
+                        { action: 'Limit alcohol', effect: 'fragments REM sleep' },
+                      ].map((item) => (
+                        <div
+                          key={item.action}
+                          className="rounded-lg bg-surface p-2 border border-border/50"
+                        >
+                          <p className="text-xs font-semibold text-text-primary">{item.action}</p>
+                          <p className="text-xs text-text-secondary opacity-70 mt-0.5">
+                            {item.effect}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -538,10 +652,9 @@ export function BiologicalAgeClient() {
             <p className="text-xs text-text-secondary leading-relaxed">
               PhenoAge combines multiple clinical biomarkers into a single biological age estimate
               that outperforms chronological age in predicting all-cause mortality, cancer
-              incidence, and healthy lifespan. The core insight: people of the same calendar age
-              vary enormously in their biological age, and that variation predicts who will live
-              longest. This page applies the same multi-biomarker logic using metrics available from
-              wearables (HRV, RHR, VO₂ max, gait speed).
+              incidence, and healthy lifespan. This page applies the same multi-biomarker logic
+              using metrics available from wearables (HRV, resting heart rate, sleep duration).
+              True biological age requires blood biomarkers (CRP, glucose, HbA1c).
             </p>
           </div>
 
@@ -582,82 +695,47 @@ export function BiologicalAgeClient() {
                 </tbody>
               </table>
             </div>
-            <p className="text-xs text-text-secondary opacity-60 mt-2">
-              Your RMSSD: 42 ms · closest norm: age 40 (45 ms) → autonomic age estimate: 38
-            </p>
+            {latestHrv !== null && (
+              <p className="text-xs text-text-secondary opacity-60 mt-2">
+                Your HRV: {Math.round(latestHrv)} ms · closest norm: age{' '}
+                {latestHrv >= 60 ? '20' : latestHrv >= 50 ? '30' : latestHrv >= 40 ? '40' : latestHrv >= 30 ? '50' : '60'}{' '}
+                → autonomic age estimate: {organSystems.find(o => o.key === 'autonomic')?.estimatedAge ?? '—'}
+              </p>
+            )}
           </div>
 
-          {/* Gait speed */}
+          {/* Sleep */}
           <div className="border-t border-border/50 pt-3">
             <p className="text-sm font-semibold text-text-primary mb-1">
-              Studenski et al. (2011) — JAMA · Gait Speed as Vital Sign
+              Walker (2017) — Why We Sleep · Optimal Sleep Duration
             </p>
             <p className="text-xs text-text-secondary leading-relaxed">
-              Pooled cohort of 34,485 adults: gait speed predicted 5- and 10-year survival
-              independent of age, sex, and chronic conditions. Speed of 0.8 m/s ={' '}
-              average survival; ≥1.0 m/s = above-average survival; ≥1.2 m/s = excellent
-              longevity signal. Your speed of 1.15 m/s falls in the above-average range.
-            </p>
-          </div>
-
-          {/* VO2 max */}
-          <div className="border-t border-border/50 pt-3">
-            <p className="text-sm font-semibold text-text-primary mb-1">
-              ACSM 11th Edition — VO₂ Max Age Norms (Male, ml/kg/min)
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-border/50">
-                    <th className="text-left pb-1.5 font-medium text-text-secondary">
-                      Age group
-                    </th>
-                    <th className="text-right pb-1.5 font-medium text-text-secondary">
-                      Poor (25th)
-                    </th>
-                    <th className="text-right pb-1.5 font-medium text-text-secondary">
-                      Avg (50th)
-                    </th>
-                    <th className="text-right pb-1.5 font-medium text-text-secondary">
-                      Excellent (75th)
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/30">
-                  {[
-                    { group: '20–29', poor: '38.1', avg: '44.2', exc: '50.2' },
-                    { group: '30–39', poor: '36.7', avg: '42.5', exc: '48.5' },
-                    { group: '40–49', poor: '33.8', avg: '39.9', exc: '46.4' },
-                    { group: '50–59', poor: '30.2', avg: '36.4', exc: '42.5' },
-                    { group: '60–69', poor: '26.1', avg: '32.3', exc: '38.1' },
-                  ].map((row) => (
-                    <tr key={row.group}>
-                      <td className="py-1.5 text-text-secondary">{row.group}</td>
-                      <td className="py-1.5 text-right tabular-nums text-text-primary">
-                        {row.poor}
-                      </td>
-                      <td className="py-1.5 text-right tabular-nums text-text-primary">
-                        {row.avg}
-                      </td>
-                      <td className="py-1.5 text-right tabular-nums font-semibold text-purple-400">
-                        {row.exc}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-xs text-text-secondary opacity-60 mt-2">
-              Your VO₂ max of 48.2 ml/kg/min exceeds the 75th percentile for the 30–39 group → aerobic age estimate: 33
+              Large-scale epidemiological data consistently shows 7–9 hours per night minimises
+              all-cause mortality risk. Sleeping under 6 hours chronically is associated with
+              accelerated telomere shortening, increased inflammatory markers, and a measurable
+              increase in biological age. Sleep is the single highest-leverage intervention for
+              biological age improvement available at zero cost.
             </p>
           </div>
 
           <p className="text-xs text-text-secondary opacity-50 leading-relaxed border-t border-border/50 pt-3">
-            Biological age estimates shown are based on published population norms applied to
+            Wellness age estimates are based on published population norms applied to
             wearable-derived biomarkers. Individual variation is high. This page is for
             informational purposes only and does not constitute medical advice.
           </p>
         </div>
+      </div>
+
+      {/* ── 7. Disclaimer card ────────────────────────────────────────────────── */}
+      <div className="bg-surface rounded-2xl border border-border p-4 flex gap-3">
+        <Info className="w-4 h-4 text-text-secondary flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-text-secondary leading-relaxed">
+          This is an estimation based on Apple Watch data. Add blood biomarker data for true
+          biological age tracking — labs like{' '}
+          <span className="font-semibold text-text-primary">Everly Health</span> or{' '}
+          <span className="font-semibold text-text-primary">InsideTracker</span> measure CRP,
+          glucose, HbA1c, and other markers that give a clinically validated biological age.
+        </p>
       </div>
 
     </div>
