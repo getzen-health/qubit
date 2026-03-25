@@ -138,3 +138,5 @@ function SleepTrendComponent({ data }: { data: { date: string; hours: number; qu
     </div>
   )
 }
+
+export const SleepTrend = React.memo(SleepTrendComponent)

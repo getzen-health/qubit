@@ -435,7 +435,7 @@ Deno.serve(async (req: Request) => {
 
   // Generate Claude explanations and build insert rows
   const detectedAt = new Date().toISOString()
-  const insertRows: AnomalyInsert[] = await Promise.all(
+  const explanationResults = await Promise.allSettled(
     detected.map(async (a) => {
       const explanation = await generateExplanation(
         anthropicKey,
@@ -458,6 +458,32 @@ Deno.serve(async (req: Request) => {
     })
   )
 
+  const insertRows: AnomalyInsert[] = explanationResults
+    .map((result, index) => {
+      if (result.status === 'fulfilled') {
+        return result.value
+      } else {
+        // Handle rejected promise gracefully
+        console.error(JSON.stringify({
+          timestamp: new Date().toISOString(),
+          error: 'Failed to generate anomaly explanation',
+          metric: detected[index]?.metric,
+          message: result.reason instanceof Error ? result.reason.message : String(result.reason),
+        }))
+        // Return anomaly row without explanation
+        return {
+          user_id,
+          detected_at: detectedAt,
+          metric: detected[index].metric,
+          value: detected[index].value,
+          avg_value: detected[index].avgValue,
+          deviation: detected[index].deviation,
+          severity: detected[index].severity,
+          claude_explanation: null,
+        }
+      }
+    })
+
   const { data: inserted, error: insertError } = await supabase
     .from("anomalies")
     .insert(insertRows)
@@ -471,7 +497,7 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── Send push notifications for each anomaly ────────────────────────────────
-  await Promise.all(
+  const notificationResults = await Promise.allSettled(
     detected.map((anomaly) =>
       sendAPNsNotification(
         supabase,
@@ -481,12 +507,21 @@ Deno.serve(async (req: Request) => {
         anomaly.avgValue,
         anomaly.severity,
         anomaly.direction
-      ).catch((err) => {
-        // Log but don't fail the request if notification sending fails
-        console.error(`Failed to send APNs notification: ${err instanceof Error ? err.message : 'Unknown error'}`)
-      })
+      )
     )
   )
+
+  // Log any failures but don't fail the request
+  notificationResults.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        error: 'Failed to send APNs notification',
+        metric: detected[index]?.metric,
+        message: result.reason instanceof Error ? result.reason.message : String(result.reason),
+      }))
+    }
+  })
 
   // ── Increment usage counter ────────────────────────────────────────────────
   if (usageData) {

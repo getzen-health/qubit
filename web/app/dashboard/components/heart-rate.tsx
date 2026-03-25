@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useMemo, useCallback } from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface HeartRateZone {
@@ -19,8 +20,8 @@ const DEFAULT_ZONES: HeartRateZone[] = [
   { name: 'Max', min: 180, max: 220, minutes: 0, color: '#EF4444', description: 'Maximum effort' },
 ]
 
-export function HeartRateZones({ zones = DEFAULT_ZONES }: { zones?: HeartRateZone[] }) {
-  const totalMinutes = zones.reduce((sum, z) => sum + z.minutes, 0)
+function HeartRateZonesComponent({ zones = DEFAULT_ZONES }: { zones?: HeartRateZone[] }) {
+  const totalMinutes = useMemo(() => zones.reduce((sum, z) => sum + z.minutes, 0), [zones])
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
