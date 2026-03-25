@@ -95,7 +95,12 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
   const fmt = (d: Date) => d.toISOString().slice(0, 10)
 
-  const [{ data: thisWeekData }, { data: lastWeekData }, { data: thisWeekWorkouts }, { data: lastWeekWorkouts }] = await Promise.all([
+  const [
+    { data: thisWeekData, error: err1 },
+    { data: lastWeekData, error: err2 },
+    { data: thisWeekWorkouts, error: err3 },
+    { data: lastWeekWorkouts, error: err4 },
+  ] = await Promise.all([
     supabase
       .from('daily_summaries')
       .select('steps, active_calories, sleep_duration_minutes, avg_hrv, recovery_score, active_minutes, distance_meters')
@@ -126,10 +131,14 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     return (rows ?? []).reduce((a, r) => a + ((r as Record<string, number>)[key] ?? 0), 0)
   }
   function avg(rows: typeof thisWeekData, key: string): number {
-    const vals = (rows ?? []).map((r) => (r as Record<string, number>)[key]).filter((v) => v > 0)
+    const vals = (rows ?? [])
+      .map((r) => (r as Record<string, number | null>)[key])
+      .filter((v): v is number => v != null && !isNaN(v as number) && (v as number) > 0)
     if (vals.length === 0) return 0
     return vals.reduce((a, b) => a + b, 0) / vals.length
   }
+
+  const hasDbError = !!(err1 ?? err2 ?? err3 ?? err4)
 
   const metrics: Metric[] = [
     {
@@ -234,10 +243,10 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
           .map((m) => (
             <MetricRow key={m.label} metric={m} />
           ))}
-        {metrics.every((m) => m.thisWeek === 0 && m.lastWeek === 0) && (
+        {(hasDbError || metrics.every((m) => m.thisWeek === 0 && m.lastWeek === 0)) && (
           <div className="text-center py-20 text-text-secondary">
             <TrendingUp className="w-10 h-10 mx-auto mb-3 opacity-30" />
-            <p>No data to compare yet.</p>
+            <p>No data available for comparison.</p>
           </div>
         )}
       </main>
