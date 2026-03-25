@@ -1,11 +1,11 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { SupplementsClient } from "./supplements-client"
 import { redirect } from "next/navigation"
 
 export const metadata = { title: "Supplements" }
 
 export default async function SupplementsPage() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 

@@ -193,7 +193,7 @@ export const GET = createSecureApiHandler(
               message: error.message,
             }))
           }
-        }).catch((err) => {
+        }).catch((err: unknown) => {
           console.error(JSON.stringify({
             timestamp: new Date().toISOString(),
             error: 'Product scan insert failed',
@@ -284,7 +284,7 @@ export const GET = createSecureApiHandler(
             message: error.message,
           }))
         }
-      }).catch((err) => {
+      }).catch((err: unknown) => {
         console.error(JSON.stringify({
           timestamp: new Date().toISOString(),
           error: 'Product scan insert failed',

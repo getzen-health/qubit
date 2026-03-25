@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import React, { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import React, { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
 
 interface MacroData {
   calories: { consumed: number; target: number; burned: number }

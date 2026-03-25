@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import React, { Moon, Activity, Heart, Apple, Zap, TrendingUp, Sparkles, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { Moon, Activity, Heart, Apple, Zap, TrendingUp, Sparkles, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface Insight {

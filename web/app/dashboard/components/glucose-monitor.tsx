@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import React, {
+import {
   AreaChart,
   Area,
   XAxis,
