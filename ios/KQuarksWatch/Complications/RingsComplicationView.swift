@@ -7,12 +7,28 @@ struct RingsComplicationView: View {
 
     var body: some View {
         ZStack {
+            // Outer ring: Move (red)
             Gauge(value: min(movePercent, 1.0)) {
-                Image(systemName: "figure.walk")
-                    .foregroundStyle(.red)
+                EmptyView()
             }
             .gaugeStyle(.accessoryCircularCapacity)
             .tint(.red)
+
+            // Middle ring: Exercise (green)
+            Gauge(value: min(exercisePercent, 1.0)) {
+                EmptyView()
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+            .tint(.green)
+            .scaleEffect(0.67)
+
+            // Inner ring: Stand (cyan)
+            Gauge(value: min(standPercent, 1.0)) {
+                EmptyView()
+            }
+            .gaugeStyle(.accessoryCircularCapacity)
+            .tint(.cyan)
+            .scaleEffect(0.34)
         }
     }
 }
