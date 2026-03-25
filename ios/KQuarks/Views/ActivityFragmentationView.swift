@@ -153,13 +153,14 @@ struct ActivityFragmentationView: View {
     }
 
     private var trendCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let recent = Array(days.suffix(30))
+        let fragmax = recent.map(\.fragmentationIndex).max().map { Swift.max($0, 0.1) } ?? 1.0
+        return VStack(alignment: .leading, spacing: 10) {
             Label("30-Day Fragmentation Trend", systemImage: "chart.bar.fill")
                 .font(.subheadline).bold()
             Text("Lower is better — values below 0.35 indicate sustained, uninterrupted activity bouts.")
                 .font(.caption2).foregroundStyle(.secondary)
 
-            let recent = Array(days.suffix(30))
             Chart(recent) { day in
                 BarMark(
                     x: .value("Date", day.date, unit: .day),
@@ -168,7 +169,7 @@ struct ActivityFragmentationView: View {
                 .foregroundStyle(fragColor(day.fragmentationIndex).gradient)
                 .cornerRadius(2)
             }
-            .chartYScale(domain: 0...1)
+            .chartYScale(domain: 0...fragmax)
             .chartYAxis {
                 AxisMarks(values: [0, 0.35, 0.55, 1.0]) { val in
                     AxisGridLine()

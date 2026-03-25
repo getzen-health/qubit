@@ -224,7 +224,8 @@ struct StandingHoursView: View {
     // MARK: - Hourly Pattern
 
     private var hourlyCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let standmax = hourlyEntries().map(\.pct).max().map { Swift.max($0, 0.1) } ?? 1.0
+        return VStack(alignment: .leading, spacing: 8) {
             Text("When You Stand — Hourly Pattern").font(.headline)
             Text("Hours when you most often have a stand (averaged over 30 days)")
                 .font(.caption).foregroundStyle(.secondary)
@@ -248,7 +249,7 @@ struct StandingHoursView: View {
                 }
             }
             .chartYAxisLabel("stand rate")
-            .chartYScale(domain: 0...1)
+            .chartYScale(domain: 0...standmax)
             .frame(height: 110)
         }
         .padding()
