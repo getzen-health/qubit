@@ -240,6 +240,12 @@ struct LogWorkoutView: View {
                 activeCalories: calories,
                 distanceMeters: distanceMeters
             )
+
+            // Persist strength sets to Supabase for strength workouts
+            if selectedType == .strengthTraining && !exercises.isEmpty {
+                await saveStrengthSets()
+            }
+
             #if os(iOS)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             #endif
@@ -248,6 +254,60 @@ struct LogWorkoutView: View {
             errorMessage = error.localizedDescription
             showError = true
         }
+    }
+
+    private func saveStrengthSets() async {
+        let service = SupabaseService.shared
+        guard let userId = service.currentSession?.user.id else { return }
+
+        // Create a strength session row
+        let sessionDate = Calendar.current.startOfDay(for: startDate)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let isoDate = formatter.string(from: sessionDate)
+
+        struct SessionRow: Encodable {
+            let user_id: String
+            let session_date: String
+        }
+        struct SessionResult: Decodable {
+            let id: String
+        }
+
+        guard let sessionResult: SessionResult = try? await service.client
+            .from("strength_sessions")
+            .insert(SessionRow(user_id: userId.uuidString, session_date: isoDate))
+            .select("id")
+            .single()
+            .execute()
+            .value else { return }
+
+        struct SetRow: Encodable {
+            let session_id: String
+            let user_id: String
+            let exercise_name: String
+            let set_number: Int
+            let reps: Int
+            let weight_kg: Double
+        }
+
+        let rows: [SetRow] = exercises.flatMap { exercise in
+            exercise.sets.enumerated().map { idx, set in
+                SetRow(
+                    session_id: sessionResult.id,
+                    user_id: userId.uuidString,
+                    exercise_name: exercise.name,
+                    set_number: idx + 1,
+                    reps: set.reps,
+                    weight_kg: set.weightKg
+                )
+            }
+        }
+
+        _ = try? await service.client
+            .from("strength_sets")
+            .insert(rows)
+            .execute()
     }
 }
 
