@@ -18,6 +18,11 @@ struct LogWorkoutView: View {
     @State private var caloriesText = ""
     @State private var distanceText = ""
 
+    // Strength training sets
+    @State private var exercises: [StrengthExercise] = []
+    @State private var showAddExercise = false
+    @State private var newExerciseName = ""
+
     // State
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -63,6 +68,11 @@ struct LogWorkoutView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
+                }
+
+                // Strength training: sets/reps/weight
+                if selectedType == .strengthTraining {
+                    strengthSection
                 }
 
                 // Optional stats
@@ -118,7 +128,100 @@ struct LogWorkoutView: View {
             } message: {
                 Text(errorMessage ?? "Failed to save workout")
             }
+            .sheet(isPresented: $showAddExercise) {
+                addExerciseSheet
+            }
         }
+    }
+
+    // MARK: - Strength Section
+
+    @ViewBuilder
+    private var strengthSection: some View {
+        Section {
+            ForEach($exercises) { $exercise in
+                DisclosureGroup {
+                    ForEach($exercise.sets) { $set in
+                        StrengthSetRow(set: $set)
+                    }
+                    .onDelete { exercise.sets.remove(atOffsets: $0) }
+
+                    Button {
+                        exercise.sets.append(StrengthSet())
+                    } label: {
+                        Label("Add Set", systemImage: "plus")
+                            .font(.caption)
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "dumbbell.fill")
+                            .foregroundStyle(.purple)
+                        VStack(alignment: .leading) {
+                            Text(exercise.name).font(.body)
+                            Text("\(exercise.sets.count) set\(exercise.sets.count == 1 ? "" : "s")")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            .onDelete { exercises.remove(atOffsets: $0) }
+
+            Button {
+                newExerciseName = ""
+                showAddExercise = true
+            } label: {
+                Label("Add Exercise", systemImage: "plus.circle.fill")
+            }
+        } header: {
+            Text("Exercises")
+        } footer: {
+            if !exercises.isEmpty {
+                let totalSets = exercises.reduce(0) { $0 + $1.sets.count }
+                let totalVolume = exercises.flatMap(\.sets).reduce(0.0) { $0 + (Double($1.reps) * $1.weightKg) }
+                Text("\(totalSets) sets · \(Int(totalVolume)) kg total volume")
+            }
+        }
+    }
+
+    private var addExerciseSheet: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Exercise name", text: $newExerciseName)
+                }
+
+                Section("Quick add") {
+                    let common = ["Squat", "Deadlift", "Bench Press", "Overhead Press",
+                                  "Pull-up", "Row", "Lunge", "Hip Thrust", "Plank"]
+                    ForEach(common, id: \.self) { name in
+                        Button(name) {
+                            newExerciseName = name
+                        }
+                        .foregroundStyle(.primary)
+                    }
+                }
+            }
+            .navigationTitle("Add Exercise")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showAddExercise = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        let name = newExerciseName.trimmingCharacters(in: .whitespaces)
+                        guard !name.isEmpty else { return }
+                        exercises.append(StrengthExercise(name: name))
+                        showAddExercise = false
+                    }
+                    .disabled(newExerciseName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .bold()
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 
     private func save() async {
@@ -147,6 +250,53 @@ struct LogWorkoutView: View {
         }
     }
 }
+
+// MARK: - Strength Data Models
+
+struct StrengthExercise: Identifiable {
+    let id = UUID()
+    var name: String
+    var sets: [StrengthSet] = [StrengthSet()]
+}
+
+struct StrengthSet: Identifiable {
+    let id = UUID()
+    var reps: Int = 10
+    var weightKg: Double = 20
+    var isCompleted: Bool = false
+}
+
+// MARK: - StrengthSetRow
+
+private struct StrengthSetRow: View {
+    @Binding var set: StrengthSet
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Button {
+                set.isCompleted.toggle()
+            } label: {
+                Image(systemName: set.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(set.isCompleted ? .green : .secondary)
+                    .font(.title3)
+            }
+            .buttonStyle(.plain)
+
+            Stepper("\(set.reps) reps", value: $set.reps, in: 1...100)
+                .labelsHidden()
+            Text("\(set.reps) reps")
+                .font(.subheadline)
+                .frame(minWidth: 55)
+
+            Stepper(String(format: "%.1f kg", set.weightKg), value: $set.weightKg, in: 0...500, step: 2.5)
+                .labelsHidden()
+            Text(String(format: "%.1f kg", set.weightKg))
+                .font(.subheadline)
+                .frame(minWidth: 60)
+        }
+    }
+}
+
 
 // MARK: - WorkoutType
 
