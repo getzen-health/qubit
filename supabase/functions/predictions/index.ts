@@ -253,7 +253,8 @@ async function callClaude(
     })
 
     if (!res.ok) {
-      console.error("[predictions] Claude API error:", res.status, await res.text())
+      await res.text() // consume body
+      console.error("[predictions] Claude API error: status", res.status)
       return null
     }
 
@@ -273,7 +274,7 @@ async function callClaude(
     try {
       prediction = JSON.parse(jsonText) as ClaudePrediction
     } catch {
-      console.error("[predictions] Failed to parse Claude JSON:", jsonText)
+      console.error("[predictions] Failed to parse Claude JSON response")
       return null
     }
 
@@ -282,13 +283,13 @@ async function callClaude(
       typeof prediction.performance_window !== "string" ||
       typeof prediction.caution_flags !== "string"
     ) {
-      console.error("[predictions] Claude response missing required keys:", prediction)
+      console.error("[predictions] Claude response missing required keys")
       return null
     }
 
     return { prediction, rawResponse }
   } catch (err) {
-    console.error("[predictions] Failed to call Claude API:", err)
+    console.error("[predictions] Failed to call Claude API:", err instanceof Error ? err.message : "Unknown error")
     return null
   }
 }
@@ -335,6 +336,20 @@ Deno.serve(async (req: Request) => {
   const userId = user.id
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+  // ── Per-user rate limiting: max 10 calls/day ──────────────────────────────
+  const today = new Date().toISOString().slice(0, 10)
+  const { data: usageData } = await supabase
+    .from("ai_usage")
+    .select("call_count")
+    .eq("user_id", userId)
+    .eq("function_name", "predictions")
+    .eq("used_at", today)
+    .maybeSingle()
+
+  if ((usageData?.call_count ?? 0) >= 10) {
+    return jsonResponse({ error: "Daily limit reached. Upgrade for more." }, 429)
+  }
 
   // Fetch last 90 days of daily_summaries
   const since90d = new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString().slice(0, 10)
@@ -407,8 +422,22 @@ Deno.serve(async (req: Request) => {
     .single()
 
   if (upsertError) {
-    console.error("[predictions] Failed to upsert prediction:", upsertError)
+    console.error("[predictions] Failed to upsert prediction:", upsertError instanceof Error ? upsertError.message : "Unknown error")
     return jsonResponse({ error: "Failed to save prediction" }, 500)
+  }
+
+  // ── Increment usage counter ────────────────────────────────────────────────
+  if (usageData) {
+    await supabase
+      .from("ai_usage")
+      .update({ call_count: usageData.call_count + 1 })
+      .eq("user_id", userId)
+      .eq("function_name", "predictions")
+      .eq("used_at", today)
+  } else {
+    await supabase
+      .from("ai_usage")
+      .insert({ user_id: userId, function_name: "predictions", used_at: today, call_count: 1 })
   }
 
   return jsonResponse({ prediction: upserted })

@@ -137,6 +137,20 @@ Deno.serve(async (req: Request) => {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
+  // ── Per-user rate limiting: max 20 messages/day ───────────────────────────
+  const today = new Date().toISOString().slice(0, 10)
+  const { data: usageData } = await supabase
+    .from("ai_usage")
+    .select("call_count")
+    .eq("user_id", user.id)
+    .eq("function_name", "health-chat")
+    .eq("used_at", today)
+    .maybeSingle()
+
+  if ((usageData?.call_count ?? 0) >= 20) {
+    return jsonResponse({ error: "Daily limit reached. Upgrade for more." }, 429)
+  }
+
   // ── Fetch last 30 days of daily summaries ──────────────────────────────────
   const since30d = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().slice(0, 10)
 
@@ -202,8 +216,8 @@ Deno.serve(async (req: Request) => {
     })
 
     if (!claudeRes.ok) {
-      const errorBody = await claudeRes.text()
-      console.error("[health-chat] Claude API error:", claudeRes.status, errorBody)
+      await claudeRes.text() // consume body
+      console.error("[health-chat] Claude API error: status", claudeRes.status)
       return jsonResponse({ error: "Claude API request failed" }, 502)
     }
 
@@ -211,14 +225,28 @@ Deno.serve(async (req: Request) => {
     const text = claudeData?.content?.[0]?.text
 
     if (!text || typeof text !== "string") {
-      console.error("[health-chat] Unexpected Claude response shape:", JSON.stringify(claudeData))
+      console.error("[health-chat] Unexpected Claude response shape")
       return jsonResponse({ error: "Unexpected response from Claude API" }, 502)
     }
 
     responseText = text
   } catch (err) {
-    console.error("[health-chat] Failed to call Claude API:", err)
+    console.error("[health-chat] Failed to call Claude API:", err instanceof Error ? err.message : "Unknown error")
     return jsonResponse({ error: "Failed to generate response" }, 502)
+  }
+
+  // ── Increment usage counter ────────────────────────────────────────────────
+  if (usageData) {
+    await supabase
+      .from("ai_usage")
+      .update({ call_count: usageData.call_count + 1 })
+      .eq("user_id", user.id)
+      .eq("function_name", "health-chat")
+      .eq("used_at", today)
+  } else {
+    await supabase
+      .from("ai_usage")
+      .insert({ user_id: user.id, function_name: "health-chat", used_at: today, call_count: 1 })
   }
 
   return jsonResponse({ response: responseText })
