@@ -5,7 +5,7 @@
  * Minimalistic, AI-first, expandable metrics layout
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -148,6 +148,7 @@ interface DashboardStreamProps {
     caution_flags: string[] | null
     generated_at: string
   } | null
+  readinessBanner?: React.ReactNode
 }
 
 export function DashboardStream({
@@ -171,6 +172,7 @@ export function DashboardStream({
   bodyBatteryScore = null,
   stressScore = null,
   latestPrediction = null,
+  readinessBanner,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -685,6 +687,9 @@ export function DashboardStream({
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+        {/* Readiness Score Banner */}
+        {readinessBanner}
+
         {/* AI Essence */}
         <AIEssence
           recoveryScore={recoveryScore}
