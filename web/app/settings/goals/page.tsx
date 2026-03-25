@@ -118,10 +118,6 @@ export default function GoalsSettingsPage() {
     if (isNaN(carbs) || carbs < 0 || carbs > 1000) return
     if (isNaN(fat) || fat < 0 || fat > 500) return
 
-    // Save to localStorage
-    localStorage.setItem(STEP_KEY, steps.toString())
-    localStorage.setItem(CAL_KEY, cal.toString())
-    localStorage.setItem(SLEEP_KEY, sleepMin.toString())
     setStepGoal(steps)
     setCalGoal(cal)
     setSleepGoal(sleepMin)
