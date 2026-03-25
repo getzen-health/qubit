@@ -181,6 +181,7 @@ struct SmallWidgetView: View {
         }
         .padding(12)
         .containerBackground(Color(.systemBackground), for: .widget)
+        .widgetURL(URL(string: "kquarks://dashboard"))
     }
 }
 
@@ -255,6 +256,7 @@ struct MediumWidgetView: View {
         }
         .padding(16)
         .containerBackground(Color(.systemBackground), for: .widget)
+        .widgetURL(URL(string: "kquarks://dashboard"))
     }
 }
 
@@ -279,6 +281,7 @@ struct AccessoryCircularView: View {
         .gaugeStyle(.accessoryCircular)
         .widgetAccentable()
         .containerBackground(.clear, for: .widget)
+        .widgetURL(URL(string: "kquarks://dashboard"))
     }
 }
 
@@ -319,6 +322,7 @@ struct AccessoryRectangularView: View {
             }
         }
         .containerBackground(.clear, for: .widget)
+        .widgetURL(URL(string: "kquarks://dashboard"))
     }
 }
 
@@ -513,6 +517,7 @@ struct LargeWidgetView: View {
         }
         .padding(16)
         .containerBackground(Color(.systemBackground), for: .widget)
+        .widgetURL(URL(string: "kquarks://dashboard"))
     }
 }
 

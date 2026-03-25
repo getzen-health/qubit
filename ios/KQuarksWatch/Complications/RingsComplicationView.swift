@@ -22,27 +22,33 @@ struct RingsComplicationView: View {
     var body: some View {
         ZStack {
             // Outer ring: Steps (red)
-            Gauge(value: min(stepsPercent, 1.0)) {
-                EmptyView()
+            Link(destination: URL(string: "kquarks://dashboard")!) {
+                Gauge(value: min(stepsPercent, 1.0)) {
+                    EmptyView()
+                }
+                .gaugeStyle(.accessoryCircularCapacity)
+                .tint(.red)
             }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.red)
 
             // Middle ring: Calories (green)
-            Gauge(value: min(caloriesPercent, 1.0)) {
-                EmptyView()
+            Link(destination: URL(string: "kquarks://dashboard")!) {
+                Gauge(value: min(caloriesPercent, 1.0)) {
+                    EmptyView()
+                }
+                .gaugeStyle(.accessoryCircularCapacity)
+                .tint(.green)
+                .scaleEffect(0.67)
             }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.green)
-            .scaleEffect(0.67)
 
             // Inner ring: Readiness (cyan)
-            Gauge(value: min(readinessPercent, 1.0)) {
-                EmptyView()
+            Link(destination: URL(string: "kquarks://ready")!) {
+                Gauge(value: min(readinessPercent, 1.0)) {
+                    EmptyView()
+                }
+                .gaugeStyle(.accessoryCircularCapacity)
+                .tint(.cyan)
+                .scaleEffect(0.34)
             }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.cyan)
-            .scaleEffect(0.34)
         }
     }
 }
