@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import OSLog
 #if os(iOS)
 import BackgroundTasks
 #endif
@@ -67,7 +68,7 @@ class AIBriefingService {
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            print("[AIBriefingService] Failed to schedule background task: \(error)")
+            Logger.briefing.error("Failed to schedule background task: \(error.localizedDescription)")
         }
         #endif
     }
@@ -99,7 +100,7 @@ class AIBriefingService {
     /// locally, and fires a push notification with the briefing's first sentence.
     func fetchBriefing() async {
         guard let userId = SupabaseService.shared.currentSession?.user.id.uuidString else {
-            print("[AIBriefingService] No authenticated user — skipping briefing fetch")
+            Logger.briefing.info("No authenticated user — skipping briefing fetch")
             return
         }
 
@@ -111,7 +112,7 @@ class AIBriefingService {
             ?? ""
 
         guard !supabaseUrl.isEmpty, let url = URL(string: "\(supabaseUrl)/functions/v1/morning-briefing") else {
-            print("[AIBriefingService] Invalid or missing SUPABASE_URL")
+            Logger.briefing.error("Invalid or missing SUPABASE_URL")
             return
         }
 
@@ -124,7 +125,7 @@ class AIBriefingService {
         do {
             request.httpBody = try JSONEncoder().encode(payload)
         } catch {
-            print("[AIBriefingService] Failed to encode request payload: \(error)")
+            Logger.briefing.error("Failed to encode request payload: \(error.localizedDescription)")
             return
         }
 
@@ -132,13 +133,13 @@ class AIBriefingService {
             let (data, response) = try await URLSession.shared.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
-                print("[AIBriefingService] Non-HTTP response received")
+                Logger.briefing.error("Non-HTTP response received")
                 return
             }
 
             guard httpResponse.statusCode == 200 else {
                 let body = String(data: data, encoding: .utf8) ?? "(unreadable)"
-                print("[AIBriefingService] Edge function returned HTTP \(httpResponse.statusCode): \(body)")
+                Logger.briefing.error("Edge function returned HTTP \(httpResponse.statusCode): \(body)")
                 return
             }
 
@@ -164,7 +165,7 @@ class AIBriefingService {
             await sendBriefingNotification(briefingText)
 
         } catch {
-            print("[AIBriefingService] Network request failed: \(error)")
+            Logger.briefing.error("Network request failed: \(error.localizedDescription)")
         }
     }
 
@@ -196,7 +197,7 @@ class AIBriefingService {
         do {
             try await UNUserNotificationCenter.current().add(request)
         } catch {
-            print("[AIBriefingService] Failed to schedule briefing notification: \(error)")
+            Logger.briefing.error("Failed to schedule briefing notification: \(error.localizedDescription)")
         }
     }
 }

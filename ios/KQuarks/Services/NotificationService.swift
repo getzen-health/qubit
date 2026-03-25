@@ -1,5 +1,6 @@
 import UserNotifications
 import SwiftUI
+import OSLog
 
 @Observable
 final class NotificationService {
@@ -135,7 +136,7 @@ final class NotificationService {
             do {
                 try await UNUserNotificationCenter.current().setBadgeCount(badgeValue)
             } catch {
-                print("[NotificationService] Failed to set badge count: \(error)")
+                    Logger.notifications.error("Failed to set badge count: \(error.localizedDescription)")
             }
         }
     }
@@ -209,11 +210,11 @@ final class NotificationService {
         let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
         var summaries: [DaySummaryForAI] = []
         do { summaries = try await HealthKitService.shared.fetchWeekSummaries(days: 7) } catch {
-            print("[NotificationService] Failed to fetch week summaries: \(error)")
+            Logger.notifications.error("Failed to fetch week summaries: \(error.localizedDescription)")
         }
         var workoutCount = 0
         do { workoutCount = try await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date()).count } catch {
-            print("[NotificationService] Failed to fetch workouts for weekly review: \(error)")
+            Logger.notifications.error("Failed to fetch workouts for weekly review: \(error.localizedDescription)")
         }
 
         let weeklySteps = summaries.reduce(0) { $0 + $1.steps }
@@ -237,7 +238,7 @@ final class NotificationService {
         do {
             try await UNUserNotificationCenter.current().add(request)
         } catch {
-            print("[NotificationService] Failed to schedule weekly review notification: \(error)")
+            Logger.notifications.error("Failed to schedule weekly review notification: \(error.localizedDescription)")
         }
         markWeeklyReviewNotified()
     }
@@ -312,7 +313,7 @@ final class NotificationService {
             let data = try JSONSerialization.data(withJSONObject: json)
             UserDefaults.standard.set(data, forKey: hrvHistoryKey)
         } catch {
-            print("[NotificationService] Failed to serialize HRV history: \(error)")
+            Logger.notifications.error("Failed to serialize HRV history: \(error.localizedDescription)")
         }
     }
 
@@ -547,7 +548,7 @@ final class NotificationService {
                 return (Date(timeIntervalSince1970: ts), hrv)
             }
         } catch {
-            print("[NotificationService] Failed to decode HRV history: \(error)")
+            Logger.notifications.error("Failed to decode HRV history: \(error.localizedDescription)")
             return []
         }
     }

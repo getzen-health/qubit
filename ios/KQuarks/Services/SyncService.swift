@@ -1,5 +1,6 @@
 import Foundation
 import HealthKit
+import OSLog
 #if os(iOS)
 import BackgroundTasks
 #endif
@@ -907,7 +908,7 @@ class SyncService {
                 do {
                     try await withRetry { try await self.supabase.uploadWorkoutRecord(upload) }
                 } catch {
-                    print("[SyncService] Failed to upload historical workout record: \(error)")
+                    Logger.sync.error("Failed to upload historical workout record: \(error.localizedDescription)")
                 }
             }
 
@@ -942,7 +943,7 @@ class SyncService {
                 do {
                     try await withRetry { try await self.supabase.uploadSleepRecord(upload) }
                 } catch {
-                    print("[SyncService] Failed to upload historical sleep record: \(error)")
+                    Logger.sync.error("Failed to upload historical sleep record: \(error.localizedDescription)")
                 }
             }
 
@@ -983,7 +984,7 @@ class SyncService {
         do {
             try BGTaskScheduler.shared.submit(refreshRequest)
         } catch {
-            print("[SyncService] Failed to schedule background refresh: \(error)")
+            Logger.sync.error("Failed to schedule background refresh: \(error.localizedDescription)")
         }
 
         let fullRequest = BGProcessingTaskRequest(identifier: "com.kquarks.sync.full")
@@ -992,7 +993,7 @@ class SyncService {
         do {
             try BGTaskScheduler.shared.submit(fullRequest)
         } catch {
-            print("[SyncService] Failed to schedule background processing: \(error)")
+            Logger.sync.error("Failed to schedule background processing: \(error.localizedDescription)")
         }
     }
 
@@ -1010,7 +1011,7 @@ class SyncService {
             Task { await NotificationService.shared.notifyAfterSync() }
             task.setTaskCompleted(success: true)
         } catch {
-            print("[BGTask] Refresh sync failed: \(error)")
+            Logger.sync.error("Refresh sync failed: \(error.localizedDescription)")
             task.setTaskCompleted(success: false)
         }
     }
@@ -1028,7 +1029,7 @@ class SyncService {
         var didExpire = false
         task.expirationHandler = {
             didExpire = true
-            print("[BGTask] Full sync task expired")
+            Logger.sync.warning("Full sync task expired")
         }
 
         await performFullSync()
