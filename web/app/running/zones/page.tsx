@@ -74,11 +74,16 @@ export default async function RunningZonesPage() {
         : null
 
   // Priority: users.max_heart_rate → user_profiles.max_heart_rate → 220−age → 190
-  const profileMaxHr = castUser?.max_heart_rate ?? castProfile?.max_heart_rate ?? null
+  // Use explicit null checks (not truthy) so 0 doesn't silently fall through
+  const usersMaxHr = castUser?.max_heart_rate != null && castUser.max_heart_rate > 100
+    ? castUser.max_heart_rate : null
+  const profilesMaxHr = castProfile?.max_heart_rate != null && castProfile.max_heart_rate > 100
+    ? castProfile.max_heart_rate : null
+  const resolvedMaxHr = usersMaxHr ?? profilesMaxHr
   let maxHr: number
   let maxHrSource: 'profile' | 'estimated' | 'default'
-  if (profileMaxHr && profileMaxHr > 100) {
-    maxHr = profileMaxHr
+  if (resolvedMaxHr != null) {
+    maxHr = resolvedMaxHr
     maxHrSource = 'profile'
   } else if (userAge) {
     maxHr = 220 - userAge
