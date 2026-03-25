@@ -29,7 +29,7 @@ struct BloodPressureView: View {
         .navigationTitle("Blood Pressure")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 HStack {
                     NavigationLink(destination: BloodPressurePatternView()) {
                         Image(systemName: "chart.bar.xaxis")
@@ -243,8 +243,10 @@ struct LogBPView: View {
                             .foregroundStyle(.red)
                         Spacer()
                         TextField("120", text: $systolicText)
+                            #if os(iOS)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
+                            #endif
                             .frame(width: 60)
                         Text("mmHg")
                             .foregroundStyle(.secondary)
@@ -254,8 +256,10 @@ struct LogBPView: View {
                             .foregroundStyle(.blue)
                         Spacer()
                         TextField("80", text: $diastolicText)
+                            #if os(iOS)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
+                            #endif
                             .frame(width: 60)
                         Text("mmHg")
                             .foregroundStyle(.secondary)
@@ -280,10 +284,10 @@ struct LogBPView: View {
             .navigationTitle("Log Blood Pressure")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         Task { await save() }
                     }

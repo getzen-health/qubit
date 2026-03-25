@@ -22,6 +22,7 @@ Current baseline: **334** (as of 2026-03-24)
 | `isLoading = false` init | ×3 | Views that flash empty before loading |
 | Silent `try?` in services | ×8 | Errors swallowed, user gets no feedback |
 | Web API missing error handling | ×6 | Supabase calls ignoring errors |
+| ForEach `$binding` anti-pattern | ×20 | `ForEach($items)` causes Plottable/binding errors |
 
 ## Action Catalog (ranked by impact)
 

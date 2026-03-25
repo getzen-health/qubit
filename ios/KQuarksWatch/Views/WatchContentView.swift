@@ -52,7 +52,7 @@ private struct SnapshotView: View {
             }
             .padding(.vertical, 4)
         }
-        .containerBackground(.black.gradient, for: .widget)
+        .background(.black.gradient)
     }
 
     private func minutesAgo(_ date: Date) -> Int {
@@ -141,7 +141,7 @@ private struct NoDataView: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
         }
-        .containerBackground(.black.gradient, for: .widget)
+        .background(.black.gradient)
     }
 }
 

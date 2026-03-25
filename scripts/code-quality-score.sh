@@ -43,11 +43,16 @@ web_missing_errors=$(grep -rn --include="*.ts" \
   -E 'await supabase\.(from|rpc)\(' \
   "$WEB" 2>/dev/null | grep -vc 'error\|Error\|catch\|\.error' || true)
 
+# ── Metric 6: ForEach $binding anti-pattern (causes Plottable errors) ────────────
+foreach_binding=$(grep -rn --include="*.swift" \
+  -E 'ForEach\(\$[a-zA-Z]|\{ \$[a-zA-Z]+[[:space:]]in' \
+  "$VIEWS" 2>/dev/null | grep -vc '^\s*//' || true)
+
 # ── Composite score (weights reflect crash/UX severity) ─────────────────────────
-score=$(( force_unwraps * 15 + hardcoded_charts * 5 + loading_false * 3 + silent_errors * 8 + web_missing_errors * 6 ))
+score=$(( force_unwraps * 15 + hardcoded_charts * 5 + loading_false * 3 + silent_errors * 8 + web_missing_errors * 6 + foreach_binding * 20 ))
 
 if [[ "${1:-}" == "--json" ]]; then
-  echo "{\"force_unwraps\":$force_unwraps,\"hardcoded_charts\":$hardcoded_charts,\"loading_false\":$loading_false,\"silent_errors\":$silent_errors,\"web_missing_errors\":$web_missing_errors,\"score\":$score}"
+  echo "{\"force_unwraps\":$force_unwraps,\"hardcoded_charts\":$hardcoded_charts,\"loading_false\":$loading_false,\"silent_errors\":$silent_errors,\"web_missing_errors\":$web_missing_errors,\"foreach_binding\":$foreach_binding,\"score\":$score}"
   exit 0
 fi
 
@@ -64,6 +69,7 @@ printf "║  Hardcoded charts (×5):  %4d  →  %5d pts ║\n" "$hardcoded_chart
 printf "║  isLoading=false (×3):   %4d  →  %5d pts ║\n" "$loading_false" "$((loading_false * 3))"
 printf "║  Silent try? (×8):       %4d  →  %5d pts ║\n" "$silent_errors" "$((silent_errors * 8))"
 printf "║  Web missing errors(×6): %4d  →  %5d pts ║\n" "$web_missing_errors" "$((web_missing_errors * 6))"
+printf "║  ForEach \$binding (×20):  %4d  →  %5d pts ║\n" "$foreach_binding" "$((foreach_binding * 20))"
 echo "╠══════════════════════════════════════════════╣"
 printf "║  TOTAL SCORE: %-6d  (target: 0)          ║\n" "$score"
 echo "╚══════════════════════════════════════════════╝"
