@@ -421,14 +421,13 @@ export function WorkoutsList({ workouts: initialWorkouts, weeklyKm, weeklyMinute
           >
             <Trophy className="w-5 h-5" />
           </Link>
-          <button
-            type="button"
-            onClick={() => setShowLogModal(true)}
+          <Link
+            href="/workouts/log"
             className="flex items-center gap-1.5 px-3 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors"
           >
             <Plus className="w-4 h-4" />
             Log
-          </button>
+          </Link>
         </div>
       </header>
 
