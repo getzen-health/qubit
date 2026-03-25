@@ -360,8 +360,9 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
       </div>
 
       {/* ── 30-day trend chart ────────────────────────────────────────────── */}
-      <div className="bg-surface rounded-2xl border border-border p-4">
+      <div role="img" aria-label="Readiness score trend over the last 30 days" className="bg-surface rounded-2xl border border-border p-4">
         <h3 className="text-sm font-semibold text-text-primary mb-1">30-Day Trend</h3>
+        <p className="sr-only">Your readiness score today is {adjustedScore} ({zoneLabel}). Average over the last 30 days: {daily.length > 0 ? Math.round(daily.reduce((s, d) => s + d.score, 0) / daily.length) : adjustedScore}.</p>
         <p className="text-xs text-text-secondary mb-4 opacity-70">
           Dots colored by zone — green: optimal · yellow: good · orange: moderate · red: low
         </p>

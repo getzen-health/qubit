@@ -299,8 +299,9 @@ export function HrvClient({ summaries, sleepRecords, workoutDays }: HrvClientPro
 
       {/* HRV trend with baseline band */}
       {chartData.length >= 3 && (
-        <div className="bg-surface rounded-xl border border-border p-4">
+        <div role="img" aria-label="HRV trend over the last 30 days" className="bg-surface rounded-xl border border-border p-4">
           <h3 className="text-sm font-medium text-text-secondary mb-1">HRV Trend</h3>
+          <p className="sr-only">Your HRV averaged {baseline} ms over the last 30 days{trendPct !== null ? `, ${trendPct > 0 ? 'trending up' : 'trending down'} ${Math.abs(trendPct)}% vs 7-day average` : ''}.</p>
           <p className="text-xs text-text-secondary mb-3">
             Dots = daily · Line = 7-day EMA · Dashed zone = your baseline ±1 SD
           </p>

@@ -158,8 +158,9 @@ export function StepsClient({ summaries, dbStepGoal }: StepsClientProps) {
       </div>
 
       {/* Steps bar chart */}
-      <div className="bg-surface rounded-xl border border-border p-4">
+      <div role="img" aria-label="Daily step count for the last 30 days" className="bg-surface rounded-xl border border-border p-4">
         <h2 className="text-sm font-medium text-text-secondary mb-3">Daily Steps</h2>
+        <p className="sr-only">Your 30-day average is {Math.round(avg30).toLocaleString()} steps per day, with a daily goal of {stepGoal.toLocaleString()} steps.</p>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />

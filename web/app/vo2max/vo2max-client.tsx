@@ -185,10 +185,11 @@ export function VO2MaxClient({ readings }: VO2MaxClientProps) {
 
       {/* ── Line chart: all readings over past year ── */}
       {dailyData.length >= 2 && (
-        <div className="bg-surface rounded-2xl border border-border p-4">
+        <div role="img" aria-label="VO2 max trend over the past year" className="bg-surface rounded-2xl border border-border p-4">
           <h3 className="text-sm font-medium text-text-secondary mb-3">
             VO₂ Max — Past Year
           </h3>
+          <p className="sr-only">Your current VO₂ max is {current.toFixed(1)} ml/kg/min, rated {currentLevel.label}.</p>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={dailyData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
               <CartesianGrid

@@ -155,10 +155,11 @@ export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathing
   return (
     <div className="space-y-6">
       {/* Bar chart */}
-      <div className="bg-surface rounded-xl border border-border p-4">
+      <div role="img" aria-label="Sleep duration chart for the last 30 days" className="bg-surface rounded-xl border border-border p-4">
         <h2 className="text-sm font-medium text-text-secondary mb-1">
           {hasStages ? 'Sleep Stages (hours)' : 'Sleep Duration (hours)'}
         </h2>
+        <p className="sr-only">Your average nightly sleep over the last 7 days is {(avgTotal / 60).toFixed(1)} hours, with a goal of {sleepGoalHours} hours.</p>
         {hasStages && (
           <div className="flex gap-3 mb-3 text-xs text-text-secondary">
             <span><span className="text-blue-500">●</span> Deep</span>
