@@ -65,6 +65,11 @@ struct WeeklyBalanceView: View {
     @State private var weekStart: Date?
     @State private var isLoading = true
 
+    private var historyChartDomainMax: Double {
+        let maxVal = weeklyHistory.map { $0.overall }.max() ?? 100.0
+        return max(maxVal, 100.0)
+    }
+
     private let healthStore = HKHealthStore()
     private let calendar = Calendar.current
 
@@ -195,7 +200,7 @@ struct WeeklyBalanceView: View {
                 .foregroundStyle(scoreColor(wk.overall).gradient)
                 .cornerRadius(4)
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...historyChartDomainMax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
