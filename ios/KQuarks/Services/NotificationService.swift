@@ -175,18 +175,17 @@ final class NotificationService {
 
     private func scheduleWeeklyReview() async {
         let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
-        var summaries: [DailySummary] = []
+        var summaries: [DaySummaryForAI] = []
         do { summaries = try await HealthKitService.shared.fetchWeekSummaries(days: 7) } catch {
             print("[NotificationService] Failed to fetch week summaries: \(error)")
         }
-        var workouts: [HKWorkout] = []
-        do { workouts = try await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date()) } catch {
+        var workoutCount = 0
+        do { workoutCount = try await HealthKitService.shared.fetchWorkouts(from: weekStart, to: Date()).count } catch {
             print("[NotificationService] Failed to fetch workouts for weekly review: \(error)")
         }
 
         let weeklySteps = summaries.reduce(0) { $0 + $1.steps }
         let goalDays = summaries.filter { Double($0.steps) >= GoalService.shared.stepsGoal }.count
-        let workoutCount = workouts.count
 
         let content = UNMutableNotificationContent()
         content.title = "Your Week in Review"
