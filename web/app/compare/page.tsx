@@ -3,8 +3,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { ComparePeriodSelector } from './compare-period-selector'
 
-export const metadata = { title: 'Compare Weeks' }
+export const metadata = { title: 'Compare Periods' }
 
 function fmtSteps(n: number) { return n.toLocaleString() }
 function fmtCal(n: number) { return `${Math.round(n)} kcal` }
@@ -18,12 +19,21 @@ function fmtRecovery(n: number) { return `${Math.round(n)}%` }
 function fmtMin(n: number) { return `${Math.round(n)} min` }
 function fmtDist(m: number) { return `${(m / 1000).toFixed(1)} km` }
 
+const PERIODS: Record<string, { days: number; label: string; currentLabel: string; priorLabel: string }> = {
+  week:   { days: 7,   label: 'Last 7 days',  currentLabel: 'This week',   priorLabel: 'Last week' },
+  month:  { days: 30,  label: 'Last 30 days',  currentLabel: 'This month',  priorLabel: 'Prior month' },
+  '3m':   { days: 90,  label: 'Last 3 months', currentLabel: 'This 3 mo',  priorLabel: 'Prior 3 mo' },
+  year:   { days: 365, label: 'Last year',     currentLabel: 'This year',   priorLabel: 'Prior year' },
+}
+
 interface Metric {
   label: string
   thisWeek: number
   lastWeek: number
   format: (n: number) => string
   higherIsBetter: boolean
+  currentLabel: string
+  priorLabel: string
 }
 
 function pct(a: number, b: number): number | null {
@@ -43,11 +53,11 @@ function MetricRow({ metric }: { metric: Metric }) {
       <p className="text-xs text-text-secondary font-medium uppercase tracking-wide mb-3">{metric.label}</p>
       <div className="flex items-end justify-between gap-4">
         <div className="flex-1">
-          <p className="text-xs text-text-secondary mb-0.5">This week</p>
+          <p className="text-xs text-text-secondary mb-0.5">{metric.currentLabel}</p>
           <p className="text-xl font-bold text-text-primary">{metric.thisWeek > 0 ? metric.format(metric.thisWeek) : '—'}</p>
         </div>
         <div className="flex-1">
-          <p className="text-xs text-text-secondary mb-0.5">Last week</p>
+          <p className="text-xs text-text-secondary mb-0.5">{metric.priorLabel}</p>
           <p className="text-lg font-semibold text-text-secondary">{metric.lastWeek > 0 ? metric.format(metric.lastWeek) : '—'}</p>
         </div>
         <div className="shrink-0 text-right">
@@ -65,20 +75,23 @@ function MetricRow({ metric }: { metric: Metric }) {
   )
 }
 
-export default async function ComparePage() {
+export default async function ComparePage({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const params = await searchParams
+  const periodKey = (params.period && PERIODS[params.period]) ? params.period : 'week'
+  const period = PERIODS[periodKey]
+
   const today = new Date()
-  // This week: last 7 days (including today)
-  const thisWeekStart = new Date(today)
-  thisWeekStart.setDate(today.getDate() - 6)
-  // Last week: 7 days before that
-  const lastWeekStart = new Date(thisWeekStart)
-  lastWeekStart.setDate(thisWeekStart.getDate() - 7)
-  const lastWeekEnd = new Date(thisWeekStart)
-  lastWeekEnd.setDate(thisWeekStart.getDate() - 1)
+  const currentStart = new Date(today)
+  currentStart.setDate(today.getDate() - (period.days - 1))
+
+  const priorEnd = new Date(currentStart)
+  priorEnd.setDate(currentStart.getDate() - 1)
+  const priorStart = new Date(priorEnd)
+  priorStart.setDate(priorEnd.getDate() - (period.days - 1))
 
   const fmt = (d: Date) => d.toISOString().slice(0, 10)
 
@@ -87,26 +100,26 @@ export default async function ComparePage() {
       .from('daily_summaries')
       .select('steps, active_calories, sleep_duration_minutes, avg_hrv, recovery_score, active_minutes, distance_meters')
       .eq('user_id', user.id)
-      .gte('date', fmt(thisWeekStart))
+      .gte('date', fmt(currentStart))
       .lte('date', fmt(today)),
     supabase
       .from('daily_summaries')
       .select('steps, active_calories, sleep_duration_minutes, avg_hrv, recovery_score, active_minutes, distance_meters')
       .eq('user_id', user.id)
-      .gte('date', fmt(lastWeekStart))
-      .lte('date', fmt(lastWeekEnd)),
+      .gte('date', fmt(priorStart))
+      .lte('date', fmt(priorEnd)),
     supabase
       .from('workout_records')
       .select('id')
       .eq('user_id', user.id)
-      .gte('start_time', `${fmt(thisWeekStart)}T00:00:00`)
+      .gte('start_time', `${fmt(currentStart)}T00:00:00`)
       .lte('start_time', `${fmt(today)}T23:59:59`),
     supabase
       .from('workout_records')
       .select('id')
       .eq('user_id', user.id)
-      .gte('start_time', `${fmt(lastWeekStart)}T00:00:00`)
-      .lte('start_time', `${fmt(lastWeekEnd)}T23:59:59`),
+      .gte('start_time', `${fmt(priorStart)}T00:00:00`)
+      .lte('start_time', `${fmt(priorEnd)}T23:59:59`),
   ])
 
   function sum(rows: typeof thisWeekData, key: string): number {
@@ -125,6 +138,8 @@ export default async function ComparePage() {
       lastWeek: sum(lastWeekData, 'steps'),
       format: fmtSteps,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Active Calories',
@@ -132,6 +147,8 @@ export default async function ComparePage() {
       lastWeek: sum(lastWeekData, 'active_calories'),
       format: fmtCal,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Distance',
@@ -139,6 +156,8 @@ export default async function ComparePage() {
       lastWeek: sum(lastWeekData, 'distance_meters'),
       format: fmtDist,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Active Minutes',
@@ -146,6 +165,8 @@ export default async function ComparePage() {
       lastWeek: sum(lastWeekData, 'active_minutes'),
       format: fmtMin,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Avg Sleep',
@@ -153,6 +174,8 @@ export default async function ComparePage() {
       lastWeek: avg(lastWeekData, 'sleep_duration_minutes'),
       format: fmtSleep,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Avg HRV',
@@ -160,6 +183,8 @@ export default async function ComparePage() {
       lastWeek: avg(lastWeekData, 'avg_hrv'),
       format: fmtHrv,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Avg Recovery',
@@ -167,6 +192,8 @@ export default async function ComparePage() {
       lastWeek: avg(lastWeekData, 'recovery_score'),
       format: fmtRecovery,
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
     {
       label: 'Workouts',
@@ -174,11 +201,13 @@ export default async function ComparePage() {
       lastWeek: (lastWeekWorkouts ?? []).length,
       format: (n) => n.toString(),
       higherIsBetter: true,
+      currentLabel: period.currentLabel,
+      priorLabel: period.priorLabel,
     },
   ]
 
-  const thisWeekLabel = `${thisWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-  const lastWeekLabel = `${lastWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastWeekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+  const currentRangeLabel = `${currentStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+  const priorRangeLabel = `${priorStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${priorEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
 
   return (
     <div className="min-h-screen bg-background">
@@ -191,14 +220,15 @@ export default async function ComparePage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">Week Comparison</h1>
-            <p className="text-sm text-text-secondary">{lastWeekLabel} vs {thisWeekLabel}</p>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-text-primary">Period Comparison</h1>
+            <p className="text-sm text-text-secondary">{priorRangeLabel} vs {currentRangeLabel}</p>
           </div>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 pb-24 space-y-3">
+        <ComparePeriodSelector currentPeriod={periodKey} periods={PERIODS} />
         {metrics
           .filter((m) => m.thisWeek > 0 || m.lastWeek > 0)
           .map((m) => (
@@ -215,3 +245,4 @@ export default async function ComparePage() {
     </div>
   )
 }
+
