@@ -520,8 +520,19 @@ class SyncService {
                 Array(records[$0..<min($0 + 100, records.count)])
             }
 
-            for batch in batches {
-                try await supabase.uploadHealthRecords(batch)
+            var failedBatches = 0
+            for (index, batch) in batches.enumerated() {
+                do {
+                    try await supabase.uploadHealthRecords(batch)
+                } catch {
+                    // Log and skip failed batches rather than aborting entire sync
+                    // This prevents 1 bad record from losing all subsequent data
+                    failedBatches += 1
+                    NSLog("[SyncService] Batch %d/%d failed (skipping): %@", index + 1, batches.count, error.localizedDescription)
+                }
+            }
+            if failedBatches > 0 {
+                NSLog("[SyncService] Health records sync: %d/%d batches failed", failedBatches, batches.count)
             }
         }
     }

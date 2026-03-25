@@ -107,6 +107,7 @@ async function generateExplanation(
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
+      signal: AbortSignal.timeout(25000),
       method: "POST",
       headers: {
         "x-api-key": anthropicKey,

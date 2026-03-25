@@ -1,12 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-const claudeRequestSchema = z.object({
+const bodySchema = z.object({
   messages: z
     .array(
       z.object({
@@ -19,50 +24,42 @@ const claudeRequestSchema = z.object({
   systemPrompt: z.string().min(1).max(2000),
 })
 
-export async function POST(request: NextRequest) {
-  try {
-    const raw = await request.json()
-    const parsed = claudeRequestSchema.safeParse(raw)
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'aiChat',
+    requireAuth: true,
+    bodySchema,
+    auditAction: 'CREATE',
+    auditResource: 'ai_chat',
+  },
+  async (_request: NextRequest, { body }) => {
+    const { messages, systemPrompt } = body as z.infer<typeof bodySchema>
 
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.errors[0]?.message ?? 'Invalid request' },
-        { status: 400 }
-      )
-    }
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+      })
 
-    const { messages, systemPrompt } = parsed.data
-
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-    })
-
-    const textBlock = response.content.find((block) => block.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') {
-      return NextResponse.json({ error: 'No text response from Claude' }, { status: 500 })
-    }
-
-    return NextResponse.json({ content: textBlock.text })
-  } catch (error) {
-    if (error instanceof Anthropic.APIError) {
-      if (error.status === 401) {
-        return NextResponse.json(
-          { error: 'Claude API key is invalid or missing. Configure ANTHROPIC_API_KEY.' },
-          { status: 500 }
-        )
+      const textBlock = response.content.find((block) => block.type === 'text')
+      if (!textBlock || textBlock.type !== 'text') {
+        return secureErrorResponse('No text response from Claude', 500)
       }
-      if (error.status === 429) {
-        return NextResponse.json({ error: 'Rate limit exceeded. Please try again.' }, { status: 429 })
-      }
-      return NextResponse.json({ error: `Claude API error: ${error.message}` }, { status: 502 })
-    }
 
-    return NextResponse.json({ error: 'Failed to call Claude API' }, { status: 500 })
+      return secureJsonResponse({ content: textBlock.text })
+    } catch (error) {
+      if (error instanceof Anthropic.APIError) {
+        if (error.status === 429) {
+          return secureErrorResponse('Rate limit exceeded. Please try again.', 429)
+        }
+        return secureErrorResponse('AI service temporarily unavailable', 502)
+      }
+      return secureErrorResponse('Failed to call AI API', 500)
+    }
   }
-}
+)

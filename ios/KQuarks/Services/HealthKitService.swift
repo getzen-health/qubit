@@ -134,8 +134,14 @@ class HealthKitService {
             HKCorrelationType(.bloodPressure),
         ]
         try await healthStore.requestAuthorization(toShare: shareTypes, read: readTypes)
+
+        // Verify at least steps are authorized; user may have denied all types
+        let stepsStatus = healthStore.authorizationStatus(for: HKQuantityType(.stepCount))
         await MainActor.run {
-            isAuthorized = true
+            // HealthKit only tells us "not determined" vs "sharingAuthorized/Denied" for write types
+            // For read types, we can't get a definitive denied status — always treat as authorized
+            // and let queries return empty results if actually denied.
+            isAuthorized = stepsStatus != .notDetermined || !isHealthDataAvailable
         }
     }
 

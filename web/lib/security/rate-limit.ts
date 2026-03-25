@@ -41,6 +41,9 @@ export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   // Food scanning - allow more frequent use
   foodScan: { maxRequests: 30, windowMs: 60000 }, // 30 scans per minute
 
+  // AI chat/insights - limit to reduce API costs
+  aiChat: { maxRequests: 10, windowMs: 3600000 }, // 10 requests per hour per user
+
   // General API - default
   default: { maxRequests: 100, windowMs: 60000 }, // 100 requests per minute
 }

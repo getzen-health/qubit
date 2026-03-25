@@ -1,6 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+// Escape a CSV cell to prevent formula injection (OWASP CSV injection prevention)
+// Prepend tab to values starting with formula trigger chars: =, +, -, @
+function escapeCsvCell(value: string | number | null | undefined): string {
+  const str = String(value ?? '')
+  if (/^[=+\-@\t\r]/.test(str)) return `\t${str}`
+  // Quote strings containing comma, newline, or double-quote
+  if (/[,"\n\r]/.test(str)) return `"${str.replace(/"/g, '""')}"`
+  return str
+}
+
 export async function GET(request: Request) {
   const supabase = await createClient()
   const {
@@ -116,15 +126,15 @@ export async function GET(request: Request) {
       const date = meal.logged_at?.slice(0, 10) ?? ''
       for (const item of (Array.isArray(meal.meal_items) ? meal.meal_items as Array<{ name: string; servings: number; calories: number; protein?: number | null; carbs?: number | null; fat?: number | null }> : [])) {
         rows.push([
-          date,
-          meal.meal_type ?? '',
-          meal.name ?? '',
-          item.name ?? '',
-          item.servings ?? '',
-          item.calories ?? '',
-          item.protein ?? '',
-          item.carbs ?? '',
-          item.fat ?? '',
+          escapeCsvCell(date),
+          escapeCsvCell(meal.meal_type),
+          escapeCsvCell(meal.name),
+          escapeCsvCell(item.name),
+          escapeCsvCell(item.servings),
+          escapeCsvCell(item.calories),
+          escapeCsvCell(item.protein),
+          escapeCsvCell(item.carbs),
+          escapeCsvCell(item.fat),
         ].join(','))
       }
     }
@@ -150,12 +160,12 @@ export async function GET(request: Request) {
       headers.join(','),
       ...rows.map((r) =>
         [
-          r.date ?? '',
-          r.energy ?? '',
-          r.mood ?? '',
-          r.stress ?? '',
-          `"${(r.notes ?? '').replace(/"/g, '""')}"`,
-          r.created_at ?? '',
+          escapeCsvCell(r.date),
+          escapeCsvCell(r.energy),
+          escapeCsvCell(r.mood),
+          escapeCsvCell(r.stress),
+          escapeCsvCell(r.notes),
+          escapeCsvCell(r.created_at),
         ].join(',')
       ),
     ].join('\n')
@@ -213,12 +223,12 @@ export async function GET(request: Request) {
       headers.join(','),
       ...rows.map((r) =>
         [
-          r.protocol ?? '',
-          r.target_hours ?? '',
-          r.started_at ?? '',
-          r.ended_at ?? '',
-          r.actual_hours ?? '',
-          r.completed ?? '',
+          escapeCsvCell(r.protocol),
+          escapeCsvCell(r.target_hours),
+          escapeCsvCell(r.started_at),
+          escapeCsvCell(r.ended_at),
+          escapeCsvCell(r.actual_hours),
+          escapeCsvCell(r.completed),
         ].join(',')
       ),
     ].join('\n')
