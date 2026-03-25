@@ -22,6 +22,7 @@ struct ScannedProduct: Identifiable {
     let ingredients: String?
     let categories: [String]
     let novaGroup: Int?
+    let allergenTags: [String]
 }
 
 struct ProductHealthScore {
@@ -308,17 +309,20 @@ struct ProductDetailView: View {
     @State private var selectedMealType: MealTypeOption = .snack
     @State private var alternatives: [ScannedProduct] = []
     @State private var isLoadingAlternatives = false
+    @State private var showComparison = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
                     productHeader
+                    allergenBadgesSection
                     healthScoreCard
                     nutritionCard
                     if let ingredients = product.ingredients, !ingredients.isEmpty {
                         ingredientsCard(ingredients)
                     }
+                    compareButton
                     logButton
                     betterAlternativesSection
                 }
@@ -337,6 +341,23 @@ struct ProductDetailView: View {
             } message: {
                 Text("\(product.name) has been added to your \(selectedMealType.label).")
             }
+            .sheet(isPresented: $showComparison) {
+                ProductComparisonView(productA: product)
+            }
+        }
+    }
+
+    private var compareButton: some View {
+        Button {
+            showComparison = true
+        } label: {
+            Label("Compare with another product", systemImage: "rectangle.on.rectangle")
+                .font(.subheadline.bold())
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .foregroundStyle(.accentColor)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
 
@@ -507,8 +528,68 @@ struct ProductDetailView: View {
         }
     }
 
-    private func nutriScoreColor(_ grade: String) -> Color {
-        switch grade.lowercased() {
+    // MARK: - Allergen Badges
+
+    private struct AllergenInfo: Identifiable {
+        let id: String
+        let key: String
+        let name: String
+        let emoji: String
+    }
+
+    private static let knownAllergens: [AllergenInfo] = [
+        .init(id: "milk",        key: "milk",        name: "Milk",      emoji: "🥛"),
+        .init(id: "eggs",        key: "eggs",        name: "Eggs",      emoji: "🥚"),
+        .init(id: "nuts",        key: "nuts",        name: "Tree Nuts", emoji: "🌰"),
+        .init(id: "peanuts",     key: "peanuts",     name: "Peanuts",   emoji: "🥜"),
+        .init(id: "wheat",       key: "wheat",       name: "Wheat",     emoji: "🌾"),
+        .init(id: "gluten",      key: "gluten",      name: "Gluten",    emoji: "🌾"),
+        .init(id: "soybeans",    key: "soybeans",    name: "Soy",       emoji: "🫘"),
+        .init(id: "fish",        key: "fish",        name: "Fish",      emoji: "🐟"),
+        .init(id: "crustaceans", key: "crustaceans", name: "Shellfish", emoji: "🦐"),
+        .init(id: "sesame",      key: "sesame",      name: "Sesame",    emoji: "🌿"),
+    ]
+
+    @ViewBuilder private var allergenBadgesSection: some View {
+        let present = Self.knownAllergens.filter { info in
+            product.allergenTags.contains { $0.lowercased().contains(info.key) }
+        }
+        if !present.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                    Text("Contains Allergens")
+                        .font(.caption.bold())
+                        .foregroundStyle(.red)
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(present) { info in
+                            HStack(spacing: 4) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.caption2)
+                                Text("\(info.emoji) \(info.name)")
+                                    .font(.caption.bold())
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(Color.red.opacity(0.1))
+                            .foregroundStyle(.red)
+                            .clipShape(Capsule())
+                            .overlay(Capsule().stroke(Color.red.opacity(0.3), lineWidth: 1))
+                        }
+                    }
+                }
+            }
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+    }
+
+    private func nutriScoreColor(_ grade: String) -> Color {        switch grade.lowercased() {
         case "a": return .green
         case "b": return Color(red: 0.6, green: 0.8, blue: 0)
         case "c": return .yellow
@@ -824,7 +905,8 @@ struct OpenFoodFactsService {
             healthScore: score,
             ingredients: p["ingredients_text"] as? String,
             categories: (p["categories_tags"] as? [String])?.prefix(5).map { $0 } ?? [],
-            novaGroup: novaGroup
+            novaGroup: novaGroup,
+            allergenTags: p["allergens_tags"] as? [String] ?? []
         )
     }
 
