@@ -4,6 +4,11 @@ import HealthKit
 import BackgroundTasks
 #endif
 
+extension Notification.Name {
+    static let syncDidFail = Notification.Name("com.kquarks.syncDidFail")
+    static let syncDidSucceed = Notification.Name("com.kquarks.syncDidSucceed")
+}
+
 @Observable
 @MainActor
 class SyncService {
@@ -79,12 +84,25 @@ class SyncService {
             lastSyncDate = Date()
                 UserDefaults.standard.set(lastSyncDate, forKey: lastSyncKey)
                 isSyncing = false
+            let sharedDefaults = UserDefaults(suiteName: "group.com.qxlsz.kquarks") ?? UserDefaults.standard
+            sharedDefaults.set("success", forKey: "last_sync_status")
+            sharedDefaults.set(ISO8601DateFormatter().string(from: Date()), forKey: "last_sync_time")
+            NotificationCenter.default.post(name: .syncDidSucceed, object: nil)
             Task { await NotificationService.shared.notifyAfterSync() }
             Task { await SupabaseService.shared.checkAchievements() }
             await supabase.updateLastSyncAt()
         } catch {
             syncError = error
                 isSyncing = false
+            let errorMessage = error.localizedDescription
+            let sharedDefaults = UserDefaults(suiteName: "group.com.qxlsz.kquarks") ?? UserDefaults.standard
+            sharedDefaults.set("failed", forKey: "last_sync_status")
+            sharedDefaults.set(ISO8601DateFormatter().string(from: Date()), forKey: "last_sync_time")
+            NotificationCenter.default.post(
+                name: .syncDidFail,
+                object: nil,
+                userInfo: ["error": errorMessage]
+            )
         }
     }
 
