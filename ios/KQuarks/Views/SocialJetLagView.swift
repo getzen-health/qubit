@@ -217,7 +217,8 @@ struct SocialJetLagView: View {
     }
 
     private var dowChartCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let hourmax = dowPoints.map(\.avgMidpointHour).max().map { Swift.max($0, 1) } ?? 6
+        return VStack(alignment: .leading, spacing: 10) {
             Label("Sleep Midpoint by Day of Week", systemImage: "chart.bar.fill")
                 .font(.subheadline).bold()
             Text("Average sleep midpoint hour for each day. Weekend shift = social jet lag.")
@@ -240,7 +241,7 @@ struct SocialJetLagView: View {
                     AxisGridLine()
                 }
             }
-            .chartYScale(domain: 0...6)
+            .chartYScale(domain: 0...hourmax)
 
             HStack(spacing: 12) {
                 HStack(spacing: 4) {
