@@ -37,11 +37,13 @@ export const metadata: Metadata = {
     siteName: 'KQuarks',
     title: 'KQuarks - AI-Powered Health Tracking & Insights',
     description: 'Sync your Apple Health data to the cloud, visualize trends, and get AI-powered insights to optimize your wellness journey.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KQuarks Health Dashboard' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'KQuarks - AI-Powered Health Tracking & Insights',
     description: 'Sync your Apple Health data to the cloud, visualize trends, and get AI-powered insights to optimize your wellness journey.',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
