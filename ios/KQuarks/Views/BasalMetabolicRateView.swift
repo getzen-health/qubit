@@ -115,7 +115,7 @@ struct BasalMetabolicRateView: View {
             .padding()
         }
         .navigationTitle("Basal Metabolic Rate")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

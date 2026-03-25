@@ -61,7 +61,7 @@ struct SleepArchitectureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Architecture")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -65,7 +65,7 @@ struct WorkoutConsistencyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Consistency")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

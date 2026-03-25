@@ -29,7 +29,7 @@ struct NutritionView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Nutrition")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {
@@ -326,7 +326,7 @@ struct LogMealView: View {
                 }
             }
             .navigationTitle("Log Food")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
@@ -374,7 +374,9 @@ struct LogMealView: View {
                 try? await HKHealthStore().save(sample)
             }
 
+            #if os(iOS)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #endif
             dismiss()
         } catch {
             errorMsg = error.localizedDescription

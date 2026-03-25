@@ -120,7 +120,7 @@ struct CardioFitnessTrajectoryView: View {
             .padding()
         }
         .navigationTitle("Cardio Fitness Trajectory")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

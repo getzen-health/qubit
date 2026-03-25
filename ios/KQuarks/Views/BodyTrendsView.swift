@@ -65,7 +65,7 @@ struct BodyTrendsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Body Weight Trends")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

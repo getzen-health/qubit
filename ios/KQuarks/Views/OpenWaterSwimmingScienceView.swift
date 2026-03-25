@@ -85,7 +85,7 @@ struct OpenWaterSwimmingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Open Water Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -85,7 +85,7 @@ struct IndoorCyclingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Indoor Cycling Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

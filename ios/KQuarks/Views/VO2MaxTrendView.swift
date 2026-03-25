@@ -110,7 +110,7 @@ struct VO2MaxTrendView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("VO₂ Max Trend")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

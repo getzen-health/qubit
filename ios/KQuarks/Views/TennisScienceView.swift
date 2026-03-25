@@ -26,7 +26,7 @@ struct TennisScienceView: View {
             .padding()
         }
         .navigationTitle("Tennis Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

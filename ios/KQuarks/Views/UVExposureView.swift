@@ -94,7 +94,7 @@ struct UVExposureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("UV Exposure")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -110,7 +110,7 @@ struct ProgressiveOverloadView: View {
             .padding(.vertical)
         }
         .navigationTitle("Progressive Overload")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

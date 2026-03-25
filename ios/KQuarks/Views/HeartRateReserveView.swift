@@ -96,7 +96,7 @@ struct HeartRateReserveView: View {
             .padding()
         }
         .navigationTitle("Heart Rate Reserve")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

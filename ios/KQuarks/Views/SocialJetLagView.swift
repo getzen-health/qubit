@@ -86,7 +86,7 @@ struct SocialJetLagView: View {
             .padding(.vertical)
         }
         .navigationTitle("Social Jet Lag")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

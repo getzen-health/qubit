@@ -54,7 +54,7 @@ struct TennisAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Tennis")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

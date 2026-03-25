@@ -109,7 +109,7 @@ struct CaloriePatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Calorie Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

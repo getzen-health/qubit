@@ -116,7 +116,7 @@ struct HandballView: View {
             .padding(.vertical)
         }
         .navigationTitle("Handball")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

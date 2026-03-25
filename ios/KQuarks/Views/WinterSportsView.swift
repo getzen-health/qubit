@@ -101,7 +101,7 @@ struct WinterSportsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Winter Sports")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -84,7 +84,7 @@ struct RunningAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Running")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
         .toolbar {

@@ -88,7 +88,7 @@ struct SweatRateView: View {
             .padding(.vertical)
         }
         .navigationTitle("Sweat Rate Estimator")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

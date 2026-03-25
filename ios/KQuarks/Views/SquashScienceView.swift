@@ -117,7 +117,7 @@ struct SquashScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Squash Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

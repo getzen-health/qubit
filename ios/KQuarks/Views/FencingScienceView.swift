@@ -85,7 +85,7 @@ struct FencingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Fencing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

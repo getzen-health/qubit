@@ -85,7 +85,7 @@ struct WrestlingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Wrestling Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

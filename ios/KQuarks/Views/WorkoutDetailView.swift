@@ -163,7 +163,7 @@ struct WorkoutDetailView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle(workout.workoutActivityType.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(item: shareText) {

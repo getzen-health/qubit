@@ -83,7 +83,7 @@ struct ArcheryScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Archery Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

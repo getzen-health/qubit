@@ -87,7 +87,7 @@ struct CheckinPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Check-in Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -79,7 +79,7 @@ struct CircadianPerformanceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Circadian Performance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

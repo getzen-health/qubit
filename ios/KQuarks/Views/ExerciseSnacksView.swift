@@ -87,7 +87,7 @@ struct ExerciseSnacksView: View {
             .padding(.vertical)
         }
         .navigationTitle("Exercise Snacks")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

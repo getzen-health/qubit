@@ -52,7 +52,7 @@ struct SleepStagesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Stages")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

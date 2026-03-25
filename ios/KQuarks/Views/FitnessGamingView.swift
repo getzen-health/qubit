@@ -126,7 +126,7 @@ struct FitnessGamingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Fitness Gaming")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

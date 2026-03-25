@@ -74,7 +74,7 @@ struct EllipticalAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Elliptical")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

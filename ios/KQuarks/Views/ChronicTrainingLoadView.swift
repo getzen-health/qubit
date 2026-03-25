@@ -90,7 +90,7 @@ struct ChronicTrainingLoadView: View {
             .padding(.vertical)
         }
         .navigationTitle("Training Load (CTL/ATL)")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

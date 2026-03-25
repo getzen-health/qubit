@@ -52,7 +52,7 @@ struct WalkingPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Walking Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -73,7 +73,7 @@ struct HealthTimelineView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Timeline")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

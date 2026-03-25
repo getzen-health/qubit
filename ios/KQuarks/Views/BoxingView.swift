@@ -53,7 +53,7 @@ struct BoxingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Boxing")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

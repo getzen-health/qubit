@@ -119,7 +119,7 @@ struct BowlingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Bowling")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

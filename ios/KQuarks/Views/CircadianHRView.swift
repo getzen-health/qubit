@@ -91,7 +91,7 @@ struct CircadianHRView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daily HR Pattern")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

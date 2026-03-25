@@ -137,7 +137,7 @@ struct RHRPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("RHR Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

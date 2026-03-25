@@ -83,7 +83,7 @@ struct BodyTemperatureInsightsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Temperature Insights")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

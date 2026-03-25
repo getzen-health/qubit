@@ -85,7 +85,7 @@ struct WaterSportsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Water & Paddle Sports")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

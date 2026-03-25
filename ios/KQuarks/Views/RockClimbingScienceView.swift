@@ -26,7 +26,7 @@ struct RockClimbingScienceView: View {
             .padding()
         }
         .navigationTitle("Rock Climbing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

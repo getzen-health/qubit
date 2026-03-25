@@ -65,7 +65,7 @@ struct ActivityRingsHistoryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Activity Rings")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

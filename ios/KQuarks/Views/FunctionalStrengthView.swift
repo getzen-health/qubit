@@ -56,7 +56,7 @@ struct FunctionalStrengthView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Functional Strength")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

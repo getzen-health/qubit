@@ -136,7 +136,7 @@ struct HRVSessionRecommenderView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Today's Recommendation")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

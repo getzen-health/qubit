@@ -85,7 +85,7 @@ struct HeartRateZonesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Heart Rate Zones")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

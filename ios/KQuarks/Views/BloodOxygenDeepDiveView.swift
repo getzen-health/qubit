@@ -84,7 +84,7 @@ struct BloodOxygenDeepDiveView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blood Oxygen (SpO₂)")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

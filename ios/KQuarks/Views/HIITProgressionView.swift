@@ -80,7 +80,7 @@ struct HIITProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HIIT Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -97,7 +97,7 @@ struct RunningCadenceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Running Cadence")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -158,7 +158,7 @@ struct AnomalyAlertView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Health Alerts")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

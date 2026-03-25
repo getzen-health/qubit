@@ -100,7 +100,7 @@ struct SleepQualityScoreView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Quality Score")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -85,7 +85,7 @@ struct MartialArtsScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Martial Arts Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -22,7 +22,7 @@ struct LactateThresholdScienceView: View {
             .padding()
         }
         .navigationTitle("Lactate Threshold Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

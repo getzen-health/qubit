@@ -58,7 +58,7 @@ struct SwimmingProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Swimming Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

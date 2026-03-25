@@ -85,7 +85,7 @@ struct AustralianFootballScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("AFL Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

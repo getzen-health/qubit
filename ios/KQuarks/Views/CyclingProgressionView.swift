@@ -61,7 +61,7 @@ struct CyclingProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycling Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

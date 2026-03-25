@@ -80,7 +80,7 @@ struct SwimmingAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Swimming")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

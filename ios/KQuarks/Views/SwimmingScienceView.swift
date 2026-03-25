@@ -26,7 +26,7 @@ struct SwimmingScienceView: View {
             .padding()
         }
         .navigationTitle("Swimming Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

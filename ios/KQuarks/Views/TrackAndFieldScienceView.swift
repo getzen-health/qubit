@@ -100,7 +100,7 @@ struct TrackAndFieldScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Track & Field Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

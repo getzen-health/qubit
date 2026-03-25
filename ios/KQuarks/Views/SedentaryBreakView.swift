@@ -86,7 +86,7 @@ struct SedentaryBreakView: View {
             .padding(.vertical)
         }
         .navigationTitle("Sedentary Breaks")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

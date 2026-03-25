@@ -55,7 +55,7 @@ struct YearInReviewView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Year in Review")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

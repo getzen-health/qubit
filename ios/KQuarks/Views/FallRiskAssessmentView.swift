@@ -82,7 +82,7 @@ struct FallRiskAssessmentView: View {
             .padding(.vertical)
         }
         .navigationTitle("Fall Risk Assessment")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

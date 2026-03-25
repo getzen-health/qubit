@@ -34,7 +34,7 @@ struct BodyCompositionView: View {
                 }
             }
             .navigationTitle("Body Weight")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack {

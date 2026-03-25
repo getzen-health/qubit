@@ -22,7 +22,7 @@ struct AerobicDecouplingScienceView: View {
             .padding()
         }
         .navigationTitle("Aerobic Decoupling Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

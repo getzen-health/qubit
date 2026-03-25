@@ -31,7 +31,7 @@ struct VO2MaxView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cardio Fitness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: VO2PatternView()) {

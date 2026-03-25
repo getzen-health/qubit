@@ -32,7 +32,7 @@ struct LongevityView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Vitality Score")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

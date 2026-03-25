@@ -37,7 +37,7 @@ struct WaterView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Hydration")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 NavigationLink(destination: HydrationPatternView()) {
                     Image(systemName: "chart.bar.xaxis")
@@ -191,7 +191,9 @@ struct WaterView: View {
         do {
             try await SupabaseService.shared.logWater(amountMl: ml)
             todayTotal = (try? await SupabaseService.shared.getTodayWaterTotal()) ?? (todayTotal + ml)
+            #if os(iOS)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            #endif
         } catch {
             print("[WaterView] addWater failed: \(error)")
         }

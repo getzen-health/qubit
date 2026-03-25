@@ -32,7 +32,7 @@ struct HealthMetricDetailView: View {
             }
         }
         .navigationTitle(dataType.displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if dataType == .floorsClimbed {
                 ToolbarItem(placement: .topBarTrailing) {

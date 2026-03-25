@@ -22,7 +22,7 @@ struct MentalHealthScienceView: View {
             .padding()
         }
         .navigationTitle("Mental Health Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

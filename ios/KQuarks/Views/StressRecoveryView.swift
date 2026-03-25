@@ -107,7 +107,7 @@ struct StressRecoveryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Stress & Recovery")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

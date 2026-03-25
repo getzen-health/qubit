@@ -77,7 +77,7 @@ struct MaxHRAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Max HR Analysis")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

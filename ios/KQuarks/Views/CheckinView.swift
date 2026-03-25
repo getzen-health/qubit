@@ -110,7 +110,7 @@ struct CheckinView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Daily Check-in")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack(spacing: 4) {

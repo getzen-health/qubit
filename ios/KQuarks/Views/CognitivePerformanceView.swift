@@ -103,7 +103,7 @@ struct CognitivePerformanceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Cognitive Performance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

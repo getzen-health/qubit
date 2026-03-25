@@ -120,7 +120,7 @@ struct CurlingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Curling")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

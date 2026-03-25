@@ -131,7 +131,7 @@ struct AudiogramView: View {
             .padding(.vertical)
         }
         .navigationTitle("Audiogram")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

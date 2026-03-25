@@ -137,7 +137,7 @@ struct PAIScoreView: View {
             .padding()
         }
         .navigationTitle("PAI Score")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

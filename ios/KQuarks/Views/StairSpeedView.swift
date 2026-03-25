@@ -96,7 +96,7 @@ struct StairSpeedView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Stair Speed")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

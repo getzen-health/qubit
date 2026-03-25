@@ -105,7 +105,7 @@ struct RacePredictorView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Race Predictor")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

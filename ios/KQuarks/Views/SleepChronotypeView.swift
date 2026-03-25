@@ -132,7 +132,7 @@ struct SleepChronotypeView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Chronotype")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

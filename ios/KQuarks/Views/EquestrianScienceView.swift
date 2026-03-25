@@ -85,7 +85,7 @@ struct EquestrianScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Equestrian Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -117,7 +117,7 @@ struct TaiChiView: View {
             .padding(.vertical)
         }
         .navigationTitle("Tai Chi")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

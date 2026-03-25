@@ -83,7 +83,7 @@ struct GymnasticsScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Gymnastics Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

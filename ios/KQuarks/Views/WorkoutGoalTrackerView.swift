@@ -57,7 +57,7 @@ struct WorkoutGoalTrackerView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Workout Goals")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Edit Goal") { showGoalPicker = true }
@@ -251,7 +251,7 @@ struct WorkoutGoalTrackerView: View {
                 }
             }
             .navigationTitle("Set Goal")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { showGoalPicker = false }

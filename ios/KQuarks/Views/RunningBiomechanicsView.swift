@@ -22,7 +22,7 @@ struct RunningBiomechanicsView: View {
                 description: Text("Running biomechanics metrics require iOS 16.0+ and Apple Watch Series 8 or Ultra.")
             )
             .navigationTitle("Running Biomechanics")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
         }
     }
 }
@@ -86,7 +86,7 @@ private struct RunningBiomechanicsContent: View {
             .padding(.vertical)
         }
         .navigationTitle("Running Biomechanics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

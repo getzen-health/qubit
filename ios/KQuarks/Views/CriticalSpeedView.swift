@@ -75,7 +75,7 @@ struct CriticalSpeedView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Critical Speed")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

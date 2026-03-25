@@ -100,7 +100,7 @@ struct CycleTrackingView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycle Tracking")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

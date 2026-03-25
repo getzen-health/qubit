@@ -56,7 +56,7 @@ struct GolfAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Golf")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

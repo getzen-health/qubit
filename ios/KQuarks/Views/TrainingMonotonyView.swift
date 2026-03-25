@@ -88,7 +88,7 @@ struct TrainingMonotonyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Monotony & Strain")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

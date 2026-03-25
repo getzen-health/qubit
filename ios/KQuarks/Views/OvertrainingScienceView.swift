@@ -22,7 +22,7 @@ struct OvertrainingScienceView: View {
             .padding()
         }
         .navigationTitle("Overtraining Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

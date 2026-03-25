@@ -131,7 +131,7 @@ struct MASTrainingView: View {
             .padding(.vertical)
         }
         .navigationTitle("MAS Training Zones")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

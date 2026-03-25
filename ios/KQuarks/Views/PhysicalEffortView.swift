@@ -111,7 +111,7 @@ private struct PhysicalEffortContent: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Workout Effort")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

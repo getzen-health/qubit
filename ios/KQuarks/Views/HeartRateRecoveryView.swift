@@ -87,7 +87,7 @@ struct HeartRateRecoveryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HR Recovery")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

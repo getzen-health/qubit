@@ -60,7 +60,7 @@ struct ActivitySummaryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Activity Summary")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

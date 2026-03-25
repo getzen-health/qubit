@@ -22,7 +22,7 @@ struct BreathingView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Breathing")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .sheet(item: $selectedTechnique) { technique in
                 BreathingSessionView(technique: technique)
             }
@@ -243,7 +243,9 @@ struct BreathingSessionView: View {
         countdown = currentPhaseSpec.duration
         isActive = true
         animateForPhase(currentPhaseSpec)
+        #if os(iOS)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        #endif
     }
 
     private func stopSession() {
@@ -277,14 +279,18 @@ struct BreathingSessionView: View {
         let next = currentPhaseSpec
         countdown = next.duration
         animateForPhase(next)
+        #if os(iOS)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        #endif
     }
 
     private func completeSession() {
         isActive = false
         isComplete = true
         withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) { scale = 0.85 }
+        #if os(iOS)
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        #endif
 
         // Save to HealthKit as mindfulness session
         let duration = Double(totalRounds) * technique.roundDuration

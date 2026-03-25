@@ -132,7 +132,7 @@ struct DaylightPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daylight Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

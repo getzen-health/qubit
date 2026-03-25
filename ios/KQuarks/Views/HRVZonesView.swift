@@ -94,7 +94,7 @@ struct HRVZonesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HRV Zones")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

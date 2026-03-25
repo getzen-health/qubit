@@ -88,7 +88,7 @@ struct LactateThresholdView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Lactate Threshold")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

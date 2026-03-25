@@ -87,7 +87,7 @@ struct CrossCountrySkiingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("XC Skiing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

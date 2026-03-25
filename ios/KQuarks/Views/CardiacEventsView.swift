@@ -99,7 +99,7 @@ struct CardiacEventsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cardiac Events")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

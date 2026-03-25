@@ -65,7 +65,7 @@ struct Zone2TrainingView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Zone 2 Training")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

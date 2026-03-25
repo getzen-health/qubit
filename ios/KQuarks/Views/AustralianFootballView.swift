@@ -53,7 +53,7 @@ struct AustralianFootballView: View {
             .padding(.vertical)
         }
         .navigationTitle("Australian Football")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

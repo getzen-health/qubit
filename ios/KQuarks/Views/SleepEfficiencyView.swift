@@ -82,7 +82,7 @@ struct SleepEfficiencyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Efficiency")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

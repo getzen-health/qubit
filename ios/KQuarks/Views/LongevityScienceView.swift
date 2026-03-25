@@ -22,7 +22,7 @@ struct LongevityScienceView: View {
             .padding()
         }
         .navigationTitle("Longevity Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

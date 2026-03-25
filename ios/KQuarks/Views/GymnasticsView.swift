@@ -117,7 +117,7 @@ struct GymnasticsView: View {
             .padding(.vertical)
         }
         .navigationTitle("Gymnastics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

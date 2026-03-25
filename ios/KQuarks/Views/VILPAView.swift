@@ -87,7 +87,7 @@ struct VILPAView: View {
             .padding(.vertical)
         }
         .navigationTitle("VILPA")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

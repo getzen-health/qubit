@@ -105,7 +105,7 @@ struct RestingHRDeepDiveView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Resting HR Deep Dive")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

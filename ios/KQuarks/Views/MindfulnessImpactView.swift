@@ -58,7 +58,7 @@ struct MindfulnessImpactView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Mindfulness Impact")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: MindfulnessPatternView()) {

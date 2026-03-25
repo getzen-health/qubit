@@ -53,7 +53,7 @@ struct LacrosseView: View {
             .padding(.vertical)
         }
         .navigationTitle("Lacrosse")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

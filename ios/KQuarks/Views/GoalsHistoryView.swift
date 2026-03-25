@@ -73,7 +73,7 @@ struct GoalsHistoryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Goals History")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

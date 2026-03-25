@@ -30,7 +30,7 @@ struct GaitScienceView: View {
             .padding()
         }
         .navigationTitle("Gait Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

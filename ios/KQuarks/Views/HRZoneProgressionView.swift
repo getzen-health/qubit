@@ -126,7 +126,7 @@ struct HRZoneProgressionView: View {
             .padding(.vertical)
         }
         .navigationTitle("Zone Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

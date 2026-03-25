@@ -26,7 +26,7 @@ struct DanceScienceView: View {
             .padding()
         }
         .navigationTitle("Dance Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

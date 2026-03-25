@@ -103,7 +103,7 @@ struct OvertrainingWarningView: View {
             .padding(.vertical)
         }
         .navigationTitle("Overtraining Warning")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

@@ -27,7 +27,7 @@ struct BloodPressureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blood Pressure")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
@@ -278,7 +278,7 @@ struct LogBPView: View {
                 }
             }
             .navigationTitle("Log Blood Pressure")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
@@ -303,7 +303,9 @@ struct LogBPView: View {
         defer { isSaving = false }
         do {
             try await HealthKitService.shared.saveBloodPressure(systolic: sys, diastolic: dia)
+            #if os(iOS)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #endif
             dismiss()
         } catch {
             errorMsg = error.localizedDescription

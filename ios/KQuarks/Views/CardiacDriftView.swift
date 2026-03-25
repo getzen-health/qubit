@@ -83,7 +83,7 @@ struct CardiacDriftView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cardiac Drift")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -123,7 +123,7 @@ struct StepAerobicsView: View {
             .padding(.vertical)
         }
         .navigationTitle("Step Aerobics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -84,7 +84,7 @@ struct HikingProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Hiking Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

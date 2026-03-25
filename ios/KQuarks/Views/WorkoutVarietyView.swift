@@ -71,7 +71,7 @@ struct WorkoutVarietyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Workout Variety")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -43,7 +43,7 @@ struct RespiratoryRateView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Respiratory Rate")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: RespiratoryPatternView()) {

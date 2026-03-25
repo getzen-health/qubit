@@ -98,7 +98,7 @@ struct MindfulMinutesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Mindful Minutes")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

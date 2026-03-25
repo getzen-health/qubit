@@ -101,7 +101,7 @@ struct StrengthAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Strength Training")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

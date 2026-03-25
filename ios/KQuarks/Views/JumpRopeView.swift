@@ -54,7 +54,7 @@ struct JumpRopeView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Jump Rope")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

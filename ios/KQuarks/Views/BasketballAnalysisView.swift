@@ -55,7 +55,7 @@ struct BasketballAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Basketball")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

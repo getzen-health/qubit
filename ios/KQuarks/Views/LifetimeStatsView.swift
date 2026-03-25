@@ -71,7 +71,7 @@ struct LifetimeStatsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Lifetime Training")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

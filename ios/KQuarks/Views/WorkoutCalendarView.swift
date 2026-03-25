@@ -123,7 +123,7 @@ struct WorkoutCalendarView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Calendar")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

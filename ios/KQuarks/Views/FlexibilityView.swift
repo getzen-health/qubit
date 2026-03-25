@@ -123,7 +123,7 @@ struct FlexibilityView: View {
             .padding(.vertical)
         }
         .navigationTitle("Flexibility")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

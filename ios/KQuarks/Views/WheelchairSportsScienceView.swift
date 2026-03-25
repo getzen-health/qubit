@@ -85,7 +85,7 @@ struct WheelchairSportsScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Wheelchair Sports Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

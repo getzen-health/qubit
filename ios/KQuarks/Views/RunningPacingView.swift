@@ -77,7 +77,7 @@ private struct RunningPacingContent: View {
             .padding()
         }
         .navigationTitle("Running Pacing")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

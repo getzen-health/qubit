@@ -112,7 +112,7 @@ struct RaceGoalPlannerView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Race Goal Planner")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
         .onChange(of: selectedDistanceRaw) { buildPlan() }

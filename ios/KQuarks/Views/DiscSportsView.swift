@@ -113,7 +113,7 @@ struct DiscSportsView: View {
             .padding(.vertical)
         }
         .navigationTitle("Disc Sports")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

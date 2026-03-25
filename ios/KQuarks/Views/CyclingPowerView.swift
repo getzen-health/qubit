@@ -131,7 +131,7 @@ struct CyclingPowerView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycling Power")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

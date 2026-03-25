@@ -114,7 +114,7 @@ struct ElevationAnalysisView: View {
             .padding(.vertical)
         }
         .navigationTitle("Elevation Analysis")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -120,7 +120,7 @@ struct CoreTrainingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Core Training")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

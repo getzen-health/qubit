@@ -30,7 +30,7 @@ struct TrainingLoadView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Load")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -24,7 +24,7 @@ struct HealthChatView: View {
             inputBar
         }
         .navigationTitle("Health Coach")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if !service.messages.isEmpty {

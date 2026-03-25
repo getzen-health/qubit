@@ -47,7 +47,7 @@ private struct RunningFormContent: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Running Form")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -364,7 +364,7 @@ struct RunningFormView: View {
                     .padding(.horizontal, 32)
             }
             .navigationTitle("Running Form")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
         }
     }
 }

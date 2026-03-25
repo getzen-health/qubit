@@ -58,7 +58,7 @@ struct DashboardListView: View {
                 await viewModel.loadData()
             }
             .navigationTitle(greeting)
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
@@ -98,7 +98,9 @@ struct DashboardListView: View {
             }
             .onChange(of: viewModel.isSyncing) { wasSyncing, isSyncing in
                 if wasSyncing && !isSyncing {
+                    #if os(iOS)
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    #endif
                 }
             }
             .task {

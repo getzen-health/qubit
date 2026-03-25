@@ -85,7 +85,7 @@ struct TaekwondoScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Taekwondo Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

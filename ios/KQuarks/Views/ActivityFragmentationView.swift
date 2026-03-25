@@ -93,7 +93,7 @@ struct ActivityFragmentationView: View {
             .padding(.vertical)
         }
         .navigationTitle("Activity Fragmentation")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

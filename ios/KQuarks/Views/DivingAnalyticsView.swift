@@ -102,7 +102,7 @@ struct DivingAnalyticsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Diving Analytics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

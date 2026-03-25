@@ -118,7 +118,7 @@ struct PrepRecoveryView: View {
             .padding(.vertical)
         }
         .navigationTitle("Prep & Recovery")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

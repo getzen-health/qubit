@@ -85,7 +85,7 @@ struct RugbyScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Rugby Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -21,7 +21,7 @@ struct BloodOxygenScienceView: View {
             .padding()
         }
         .navigationTitle("Blood Oxygen Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

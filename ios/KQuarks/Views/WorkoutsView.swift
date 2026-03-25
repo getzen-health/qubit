@@ -77,7 +77,7 @@ struct WorkoutsView: View {
                 }
             }
             .navigationTitle("Workouts")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

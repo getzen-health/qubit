@@ -57,7 +57,7 @@ struct SkateboardingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Skateboarding")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

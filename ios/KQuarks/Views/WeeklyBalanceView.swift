@@ -91,7 +91,7 @@ struct WeeklyBalanceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Weekly Balance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

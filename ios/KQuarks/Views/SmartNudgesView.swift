@@ -40,7 +40,7 @@ struct SmartNudgesView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Smart Nudges")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

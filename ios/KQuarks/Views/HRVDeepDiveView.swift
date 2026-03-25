@@ -86,7 +86,7 @@ struct HRVDeepDiveView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HRV Deep Dive")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

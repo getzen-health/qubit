@@ -125,7 +125,7 @@ struct TrainingAgeView: View {
             .padding(.vertical)
         }
         .navigationTitle("Training Age")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

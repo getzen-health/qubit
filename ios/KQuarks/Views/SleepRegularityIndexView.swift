@@ -60,7 +60,7 @@ struct SleepRegularityIndexView: View {
             .padding(.vertical)
         }
         .navigationTitle("Sleep Regularity")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

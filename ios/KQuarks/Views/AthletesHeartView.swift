@@ -89,7 +89,7 @@ struct AthletesHeartView: View {
             .padding()
         }
         .navigationTitle("Athlete's Heart")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

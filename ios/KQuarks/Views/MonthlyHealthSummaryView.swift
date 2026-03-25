@@ -104,7 +104,7 @@ struct MonthlyHealthSummaryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Monthly Summary")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

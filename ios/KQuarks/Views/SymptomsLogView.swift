@@ -117,7 +117,7 @@ struct SymptomsLogView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Symptoms Log")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

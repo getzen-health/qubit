@@ -123,7 +123,7 @@ struct RugbyAnalysisView: View {
             .padding(.vertical)
         }
         .navigationTitle("Rugby & Football")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

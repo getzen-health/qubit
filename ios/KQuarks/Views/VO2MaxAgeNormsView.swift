@@ -71,7 +71,7 @@ struct VO2MaxAgeNormsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("VO₂ Max & Age Norms")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

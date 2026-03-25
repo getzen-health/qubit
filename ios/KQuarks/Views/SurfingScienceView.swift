@@ -85,7 +85,7 @@ struct SurfingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Surfing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

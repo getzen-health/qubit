@@ -90,7 +90,7 @@ struct CyclingSpeedView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycling Speed")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 
     // MARK: - Content

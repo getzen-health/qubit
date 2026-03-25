@@ -83,7 +83,7 @@ struct RacquetSportsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Racquet Sports")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

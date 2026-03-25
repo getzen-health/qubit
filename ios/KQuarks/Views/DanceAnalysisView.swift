@@ -72,7 +72,7 @@ struct DanceAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Dance & Aerobics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

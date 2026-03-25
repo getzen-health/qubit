@@ -116,7 +116,7 @@ struct WaterPoloView: View {
             .padding(.vertical)
         }
         .navigationTitle("Water Polo")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

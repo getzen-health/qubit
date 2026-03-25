@@ -30,7 +30,7 @@ struct DashboardConfigView: View {
             }
         }
         .navigationTitle("Dashboard Widgets")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 }
 
@@ -107,7 +107,7 @@ struct WidgetOrderView: View {
             }
         }
         .navigationTitle("Widget Order")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
     }
 }

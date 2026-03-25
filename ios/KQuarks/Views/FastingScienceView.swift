@@ -16,7 +16,7 @@ struct FastingScienceView: View {
             .padding()
         }
         .navigationTitle("Fasting Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 
     // MARK: - Protocol Row

@@ -59,7 +59,7 @@ struct SidebarView: View {
         }
         .listStyle(.sidebar)
         .navigationTitle("KQuarks")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 }
 

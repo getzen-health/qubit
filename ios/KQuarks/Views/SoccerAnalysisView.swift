@@ -62,7 +62,7 @@ struct SoccerAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Soccer")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

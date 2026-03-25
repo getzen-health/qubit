@@ -85,7 +85,7 @@ struct PaddleSportsScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Paddle Sports Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

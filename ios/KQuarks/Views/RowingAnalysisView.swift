@@ -116,7 +116,7 @@ struct RowingAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Rowing")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -113,7 +113,7 @@ struct ExerciseBloodPressureView: View {
             .padding(.vertical)
         }
         .navigationTitle("Exercise & Blood Pressure")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

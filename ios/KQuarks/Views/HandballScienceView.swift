@@ -85,7 +85,7 @@ struct HandballScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Handball Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

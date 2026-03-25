@@ -50,7 +50,7 @@ struct MobilityView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Mobility")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: WalkingSteadinessView()) {

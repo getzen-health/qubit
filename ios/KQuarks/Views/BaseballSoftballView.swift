@@ -101,7 +101,7 @@ struct BaseballSoftballView: View {
             .padding(.vertical)
         }
         .navigationTitle("Baseball & Softball")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -114,7 +114,7 @@ struct SquashView: View {
             .padding(.vertical)
         }
         .navigationTitle("Squash")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

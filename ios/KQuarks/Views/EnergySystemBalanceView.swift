@@ -70,7 +70,7 @@ struct EnergySystemBalanceView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Energy Balance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

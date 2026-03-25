@@ -103,7 +103,7 @@ struct BoneLoadingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Bone Loading")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

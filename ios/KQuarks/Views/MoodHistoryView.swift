@@ -28,7 +28,7 @@ struct MoodHistoryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Mood History")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -88,7 +88,8 @@ struct MoodHistoryView: View {
     // MARK: - Chart
 
     private var trendChart: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let moodmax = 5
+        return VStack(alignment: .leading, spacing: 10) {
             Text("Last 14 Days")
                 .font(.headline)
 
@@ -128,7 +129,7 @@ struct MoodHistoryView: View {
                     }
                 }
             }
-            .chartYScale(domain: 1...5)
+            .chartYScale(domain: 1...moodmax)
             .chartYAxis {
                 AxisMarks(values: [1, 2, 3, 4, 5]) { v in
                     AxisGridLine()

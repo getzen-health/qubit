@@ -58,7 +58,7 @@ struct PerformanceOverviewView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Performance Overview")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

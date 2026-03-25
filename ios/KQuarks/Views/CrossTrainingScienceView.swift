@@ -26,7 +26,7 @@ struct CrossTrainingScienceView: View {
             .padding()
         }
         .navigationTitle("Cross-Training Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

@@ -60,7 +60,7 @@ struct RowingProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Rowing Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

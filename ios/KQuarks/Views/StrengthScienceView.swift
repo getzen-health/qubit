@@ -22,7 +22,7 @@ struct StrengthScienceView: View {
             .padding()
         }
         .navigationTitle("Strength Training Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

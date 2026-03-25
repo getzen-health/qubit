@@ -81,7 +81,7 @@ struct YogaAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Yoga & Mind-Body")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

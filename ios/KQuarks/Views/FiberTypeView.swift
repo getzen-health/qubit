@@ -147,7 +147,7 @@ struct FiberTypeView: View {
             .padding(.vertical)
         }
         .navigationTitle("Fiber Type Estimator")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

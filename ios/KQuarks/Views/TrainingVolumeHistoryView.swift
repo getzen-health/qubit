@@ -83,7 +83,7 @@ struct TrainingVolumeHistoryView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Volume History")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

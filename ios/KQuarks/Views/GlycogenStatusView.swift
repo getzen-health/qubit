@@ -126,7 +126,7 @@ struct GlycogenStatusView: View {
             .padding(.vertical)
         }
         .navigationTitle("Glycogen Status")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -465,7 +465,7 @@ struct WorkoutAnalyticsView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Analytics")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 }
 

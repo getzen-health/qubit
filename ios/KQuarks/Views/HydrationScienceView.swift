@@ -22,7 +22,7 @@ struct HydrationScienceView: View {
             .padding()
         }
         .navigationTitle("Hydration Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

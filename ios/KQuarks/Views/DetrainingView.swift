@@ -122,7 +122,7 @@ struct DetrainingView: View {
             .padding()
         }
         .navigationTitle("Detraining Model")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

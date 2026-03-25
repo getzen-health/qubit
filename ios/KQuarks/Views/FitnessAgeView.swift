@@ -75,7 +75,7 @@ struct FitnessAgeView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Fitness Age")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -86,7 +86,7 @@ struct WalkingAsymmetryView: View {
             .padding(.vertical)
         }
         .navigationTitle("Walking Asymmetry")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

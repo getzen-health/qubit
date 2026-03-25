@@ -22,7 +22,7 @@ struct StairClimbingScienceView: View {
             .padding()
         }
         .navigationTitle("Stair Climbing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

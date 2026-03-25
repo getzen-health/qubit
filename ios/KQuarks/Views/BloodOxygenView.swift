@@ -43,7 +43,7 @@ struct BloodOxygenView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Blood Oxygen")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: SpO2PatternView()) {

@@ -118,7 +118,7 @@ struct PickleballView: View {
             .padding(.vertical)
         }
         .navigationTitle("Pickleball")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

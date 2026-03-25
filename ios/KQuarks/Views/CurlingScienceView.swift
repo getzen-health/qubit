@@ -85,7 +85,7 @@ struct CurlingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Curling Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

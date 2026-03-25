@@ -108,7 +108,7 @@ struct ECGAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("ECG Analysis")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

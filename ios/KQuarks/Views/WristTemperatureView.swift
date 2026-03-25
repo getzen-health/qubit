@@ -44,7 +44,7 @@ struct WristTemperatureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Wrist Temperature")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: TemperatureInsightsView()) {

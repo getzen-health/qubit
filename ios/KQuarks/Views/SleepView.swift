@@ -44,7 +44,7 @@ struct SleepView: View {
                 }
             }
             .navigationTitle("Sleep")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {

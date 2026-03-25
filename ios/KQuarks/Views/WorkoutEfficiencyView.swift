@@ -94,7 +94,7 @@ struct WorkoutEfficiencyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Workout Efficiency")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

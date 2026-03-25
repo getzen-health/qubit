@@ -21,7 +21,7 @@ struct InjuryScienceView: View {
             .padding()
         }
         .navigationTitle("Injury Prevention Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

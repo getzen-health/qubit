@@ -67,7 +67,7 @@ struct FastingView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Fasting")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 NavigationLink(destination: FastingInsightsView()) {
                     Image(systemName: "chart.bar.xaxis")
@@ -225,7 +225,7 @@ struct FastingView: View {
                 }
             }
             .navigationTitle("Start Fast")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { showStartSheet = false } }
                 ToolbarItem(placement: .confirmationAction) {

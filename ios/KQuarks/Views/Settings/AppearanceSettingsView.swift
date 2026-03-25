@@ -58,7 +58,7 @@ struct AppearanceSettingsView: View {
             }
         }
         .navigationTitle("Appearance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
     }
 }
 

@@ -124,7 +124,7 @@ struct TrainingAdvisorView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Advisor")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

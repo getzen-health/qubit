@@ -87,7 +87,7 @@ struct BoxingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Boxing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -22,7 +22,7 @@ struct PilatesScienceView: View {
             .padding()
         }
         .navigationTitle("Pilates Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

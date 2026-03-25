@@ -49,7 +49,7 @@ struct GoalsSettingsView: View {
             }
         }
         .navigationTitle("Health Goals")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onChange(of: goalService.stepsGoal) { goalService.saveToSupabase() }
         .onChange(of: goalService.activeCaloriesGoal) { goalService.saveToSupabase() }
         .onChange(of: goalService.sleepGoalMinutes) { goalService.saveToSupabase() }

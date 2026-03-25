@@ -42,7 +42,7 @@ struct HistoryView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Day History")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .onChange(of: selectedDate) { _, _ in Task { await load() } }
             .task { await load() }
             .refreshable { await load() }

@@ -70,7 +70,7 @@ struct FunctionalFitnessBatteryView: View {
             .padding(.vertical)
         }
         .navigationTitle("Functional Fitness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

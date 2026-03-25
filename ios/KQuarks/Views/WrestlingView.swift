@@ -53,7 +53,7 @@ struct WrestlingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Wrestling")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

@@ -69,7 +69,7 @@ struct StrengthProgressionView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Strength Progression")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

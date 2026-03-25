@@ -86,7 +86,7 @@ struct TrainingPolarizationView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Training Polarization")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

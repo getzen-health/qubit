@@ -90,7 +90,7 @@ struct HydrationPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Hydration Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

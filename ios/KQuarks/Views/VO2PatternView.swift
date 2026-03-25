@@ -81,7 +81,7 @@ struct VO2PatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("VO₂ Max History")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

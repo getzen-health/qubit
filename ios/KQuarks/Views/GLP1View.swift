@@ -155,7 +155,7 @@ struct GLP1View: View {
             }
         }
         .navigationTitle("GLP-1 Tracker")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if glp1Enabled {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -1023,7 +1023,7 @@ struct GLP1SetupSheet: View {
                 }
             }
             .navigationTitle("GLP-1 Setup")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }

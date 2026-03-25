@@ -74,7 +74,7 @@ struct HearingHealthView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Hearing Health")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: HearingPatternView()) {

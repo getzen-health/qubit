@@ -92,7 +92,7 @@ struct HIITAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HIIT")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

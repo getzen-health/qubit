@@ -85,7 +85,7 @@ struct AmericanFootballScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("American Football Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

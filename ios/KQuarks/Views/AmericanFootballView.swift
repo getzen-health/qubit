@@ -54,7 +54,7 @@ struct AmericanFootballView: View {
             .padding(.vertical)
         }
         .navigationTitle("American Football")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

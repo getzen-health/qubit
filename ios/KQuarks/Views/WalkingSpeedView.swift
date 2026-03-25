@@ -99,7 +99,7 @@ struct WalkingSpeedView: View {
             .padding(.vertical)
         }
         .navigationTitle("Walking Speed")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

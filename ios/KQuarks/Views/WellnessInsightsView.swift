@@ -54,7 +54,7 @@ struct WellnessInsightsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Wellness Insights")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -99,6 +99,7 @@ struct WellnessInsightsView: View {
 
     private var trendChart: some View {
         let data = records.suffix(21)
+        let wellnessmax = 5
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Last 21 Days").font(.headline).padding(.horizontal, 4)
@@ -122,7 +123,7 @@ struct WellnessInsightsView: View {
                 }
                 RuleMark(y: .value("Midpoint", 3)).foregroundStyle(.secondary.opacity(0.2))
             }
-            .chartYScale(domain: 0.5...5.5)
+            .chartYScale(domain: 0...wellnessmax)
             .chartYAxis {
                 AxisMarks(values: [1, 2, 3, 4, 5]) { _ in AxisValueLabel() }
             }

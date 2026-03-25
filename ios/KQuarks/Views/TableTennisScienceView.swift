@@ -83,7 +83,7 @@ struct TableTennisScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Table Tennis Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

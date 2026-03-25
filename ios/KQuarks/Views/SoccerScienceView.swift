@@ -53,7 +53,7 @@ struct SoccerScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Soccer Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

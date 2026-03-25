@@ -91,7 +91,7 @@ struct LogWorkoutView: View {
                 }
             }
             .navigationTitle("Log Workout")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
@@ -133,7 +133,9 @@ struct LogWorkoutView: View {
                 activeCalories: calories,
                 distanceMeters: distanceMeters
             )
+            #if os(iOS)
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #endif
             dismiss()
         } catch {
             errorMessage = error.localizedDescription

@@ -117,7 +117,7 @@ struct CricketView: View {
             .padding(.vertical)
         }
         .navigationTitle("Cricket")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

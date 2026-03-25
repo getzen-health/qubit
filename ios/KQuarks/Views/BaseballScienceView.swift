@@ -85,7 +85,7 @@ struct BaseballScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Baseball Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

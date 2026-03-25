@@ -21,7 +21,7 @@ struct FiberTypeScienceView: View {
             .padding()
         }
         .navigationTitle("Fiber Type Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

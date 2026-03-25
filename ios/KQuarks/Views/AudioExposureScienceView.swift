@@ -36,7 +36,7 @@ struct AudioExposureScienceView: View {
             .padding()
         }
         .navigationTitle("Audio Exposure Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

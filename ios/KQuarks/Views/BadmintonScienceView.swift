@@ -85,7 +85,7 @@ struct BadmintonScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Badminton Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

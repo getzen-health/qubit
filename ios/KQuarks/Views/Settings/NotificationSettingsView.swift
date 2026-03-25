@@ -131,7 +131,7 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationTitle("Notifications")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await notificationService.refreshAuthorizationStatus() }
     }
 }

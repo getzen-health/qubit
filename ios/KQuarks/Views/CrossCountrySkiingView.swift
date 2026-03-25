@@ -54,7 +54,7 @@ struct CrossCountrySkiingView: View {
             .padding(.vertical)
         }
         .navigationTitle("Cross-Country Skiing")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

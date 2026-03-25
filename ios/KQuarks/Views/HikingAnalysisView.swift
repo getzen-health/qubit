@@ -77,7 +77,7 @@ struct HikingAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Hiking")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

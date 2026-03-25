@@ -21,7 +21,7 @@ struct BloodGlucoseScienceView: View {
             .padding()
         }
         .navigationTitle("Blood Glucose Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

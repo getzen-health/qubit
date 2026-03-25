@@ -54,7 +54,7 @@ struct StreaksView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Streaks")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

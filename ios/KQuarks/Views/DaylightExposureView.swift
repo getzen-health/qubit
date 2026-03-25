@@ -51,7 +51,7 @@ struct DaylightExposureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daylight Exposure")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: DaylightPatternView()) {

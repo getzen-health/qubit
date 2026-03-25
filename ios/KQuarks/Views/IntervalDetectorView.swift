@@ -89,7 +89,7 @@ struct IntervalDetectorView: View {
             .padding(.vertical)
         }
         .navigationTitle("Interval Detector")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

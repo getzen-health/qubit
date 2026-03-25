@@ -52,7 +52,7 @@ struct HealthHeatmapView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Health Heatmap")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -69,7 +69,7 @@ struct WalkingAnalysisView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Walking")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

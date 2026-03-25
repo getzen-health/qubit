@@ -22,7 +22,7 @@ struct YogaScienceView: View {
             .padding()
         }
         .navigationTitle("Yoga Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

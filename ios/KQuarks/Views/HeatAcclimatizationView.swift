@@ -126,7 +126,7 @@ struct HeatAcclimatizationView: View {
             .padding(.vertical)
         }
         .navigationTitle("Heat Acclimatization")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

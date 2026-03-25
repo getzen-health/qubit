@@ -107,7 +107,7 @@ struct CyclingCadenceView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Cycling Cadence")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

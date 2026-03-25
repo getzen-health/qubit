@@ -99,7 +99,7 @@ struct NutritionPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Nutrition Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

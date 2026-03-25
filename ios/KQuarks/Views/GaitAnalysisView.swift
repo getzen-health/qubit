@@ -176,7 +176,7 @@ struct GaitAnalysisView: View {
             } // end else
         }
         .navigationTitle("Gait Analysis")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
         .overlay {

@@ -83,7 +83,7 @@ struct AudioExposureView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Audio Exposure")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -85,7 +85,7 @@ struct IceSkatingScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Ice Skating Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

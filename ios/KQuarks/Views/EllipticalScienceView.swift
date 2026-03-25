@@ -23,7 +23,7 @@ struct EllipticalScienceView: View {
             .padding()
         }
         .navigationTitle("Elliptical Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

@@ -81,7 +81,7 @@ struct SleepBreathingView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Breathing")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

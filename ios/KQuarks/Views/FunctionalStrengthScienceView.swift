@@ -85,7 +85,7 @@ struct FunctionalStrengthScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Functional Strength Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

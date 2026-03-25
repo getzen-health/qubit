@@ -26,7 +26,7 @@ struct RowingScienceView: View {
             .padding()
         }
         .navigationTitle("Rowing Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

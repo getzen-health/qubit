@@ -27,7 +27,7 @@ struct CorrelationInsightsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Correlations")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

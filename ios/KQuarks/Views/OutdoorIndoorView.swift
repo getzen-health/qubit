@@ -67,7 +67,7 @@ struct OutdoorIndoorView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Outdoor vs Indoor")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

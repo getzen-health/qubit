@@ -68,7 +68,7 @@ struct TrainingPerformanceCorrelationView: View {
             .padding(.vertical)
         }
         .navigationTitle("Load vs Performance")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

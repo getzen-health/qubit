@@ -107,7 +107,7 @@ struct StepPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Step Pattern")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

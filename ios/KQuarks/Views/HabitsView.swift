@@ -147,7 +147,7 @@ struct HabitsView: View {
                 }
             }
             .navigationTitle("Habits")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .environment(\.editMode, $editMode)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -312,7 +312,7 @@ struct HabitsView: View {
                 }
             }
             .navigationTitle("New Habit")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {

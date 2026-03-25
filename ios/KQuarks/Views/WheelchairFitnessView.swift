@@ -139,7 +139,7 @@ struct WheelchairFitnessView: View {
             .padding(.vertical)
         }
         .navigationTitle("Wheelchair Fitness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

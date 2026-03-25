@@ -45,7 +45,7 @@ struct MindfulnessView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Mindfulness")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: MindfulnessPatternView()) {
@@ -252,7 +252,9 @@ struct MindfulnessView: View {
         isActive = true
         isPaused = false
         saveSuccess = false
+        #if os(iOS)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        #endif
     }
 
     private func togglePause() {
@@ -268,7 +270,9 @@ struct MindfulnessView: View {
             sessionStart = nil
             isPaused = true
         }
+        #if os(iOS)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        #endif
     }
 
     private func endSession() async {
@@ -294,7 +298,9 @@ struct MindfulnessView: View {
         sessions = (try? await HealthKitService.shared.fetchMindfulnessSessions(days: 30)) ?? []
 
         withAnimation { saveSuccess = true }
+        #if os(iOS)
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        #endif
 
         // Hide success banner after 3s
         try? await Task.sleep(nanoseconds: 3_000_000_000)

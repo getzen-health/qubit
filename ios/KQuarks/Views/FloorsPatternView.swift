@@ -128,7 +128,7 @@ struct FloorsPatternView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Floors Patterns")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

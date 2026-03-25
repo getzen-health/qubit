@@ -22,7 +22,7 @@ struct PowerToWeightScienceView: View {
             .padding()
         }
         .navigationTitle("Power-to-Weight Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

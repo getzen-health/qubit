@@ -95,7 +95,7 @@ struct SixMinuteWalkView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("6-Min Walk Test")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

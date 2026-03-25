@@ -97,7 +97,7 @@ struct RowingStrokeRateView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Rowing Stroke Rate")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: RowingPatternView()) {

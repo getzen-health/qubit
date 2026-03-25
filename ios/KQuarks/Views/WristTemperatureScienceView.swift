@@ -21,7 +21,7 @@ struct WristTemperatureScienceView: View {
             .padding()
         }
         .navigationTitle("Wrist Temperature Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 

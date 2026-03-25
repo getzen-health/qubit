@@ -87,7 +87,7 @@ struct SleepConsistencyView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Sleep Consistency")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

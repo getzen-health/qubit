@@ -61,7 +61,7 @@ struct OpenWaterSwimmingView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Open Water Swimming")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -139,7 +139,7 @@ struct TriathlonView: View {
             .padding()
         }
         .navigationTitle("Triathlon")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

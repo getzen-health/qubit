@@ -119,7 +119,7 @@ struct ArcheryView: View {
             .padding(.vertical)
         }
         .navigationTitle("Archery")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

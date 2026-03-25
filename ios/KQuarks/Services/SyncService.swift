@@ -1,6 +1,8 @@
 import Foundation
 import HealthKit
+#if os(iOS)
 import BackgroundTasks
+#endif
 
 @Observable
 class SyncService {
@@ -866,6 +868,7 @@ class SyncService {
 
     // MARK: - Background Sync
 
+    #if os(iOS)
     func scheduleBackgroundSync() {
         let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.kquarks.sync.refresh")
         refreshRequest.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 3600)
@@ -925,6 +928,7 @@ class SyncService {
         let succeeded = await MainActor.run { self.syncError == nil } && !didExpire
         task.setTaskCompleted(success: succeeded)
     }
+    #endif
 }
 
 // MARK: - Workout Type Name Extension

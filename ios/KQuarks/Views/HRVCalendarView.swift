@@ -91,7 +91,7 @@ struct HRVCalendarView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("HRV Calendar")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

@@ -139,7 +139,7 @@ private struct AFibBurdenContent: View {
             .padding()
         }
         .navigationTitle("AFib Burden")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }

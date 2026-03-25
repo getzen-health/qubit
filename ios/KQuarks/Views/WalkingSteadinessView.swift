@@ -54,7 +54,7 @@ struct WalkingSteadinessView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Walking Steadiness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(destination: WalkingSteadinessPatternView()) {

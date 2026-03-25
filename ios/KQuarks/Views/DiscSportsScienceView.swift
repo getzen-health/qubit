@@ -85,7 +85,7 @@ struct DiscSportsScienceView: View {
             .padding(.vertical)
         }
         .navigationTitle("Disc Sports Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
         .refreshable { await loadData() }
     }

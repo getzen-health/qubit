@@ -22,7 +22,7 @@ struct MetabolicRateScienceView: View {
             .padding()
         }
         .navigationTitle("Metabolic Rate Science")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .onAppear { Task { await loadData() } }
     }
 
