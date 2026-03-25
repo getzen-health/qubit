@@ -84,6 +84,7 @@ class HealthKitService {
             types.insert(HKQuantityType(.runningVerticalOscillation))
             types.insert(HKQuantityType(.runningGroundContactTime))
             types.insert(HKQuantityType(.runningPower))
+            types.insert(HKQuantityType(.runningCadence))
         }
 
         // Mobility (iPhone walking metrics, iOS 14+)
