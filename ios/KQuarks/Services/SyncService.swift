@@ -5,6 +5,7 @@ import BackgroundTasks
 #endif
 
 @Observable
+@MainActor
 class SyncService {
     static let shared = SyncService()
 
@@ -27,10 +28,8 @@ class SyncService {
         guard !isSyncing else { return }
         guard supabase.isAuthenticated else { return }
 
-        await MainActor.run {
-            isSyncing = true
+        isSyncing = true
             syncError = nil
-        }
 
         do {
             // Sync today's summary
@@ -45,19 +44,15 @@ class SyncService {
             // Sync workouts
             try await syncWorkouts()
 
-            await MainActor.run {
-                lastSyncDate = Date()
+            lastSyncDate = Date()
                 UserDefaults.standard.set(lastSyncDate, forKey: lastSyncKey)
                 isSyncing = false
-            }
             Task { await NotificationService.shared.notifyAfterSync() }
             Task { await SupabaseService.shared.checkAchievements() }
             await supabase.updateLastSyncAt()
         } catch {
-            await MainActor.run {
-                syncError = error
+            syncError = error
                 isSyncing = false
-            }
         }
     }
 
@@ -679,10 +674,8 @@ class SyncService {
         guard !isHistoricalSyncing && !isSyncing else { return }
         guard let userId = supabase.currentUser?.id else { return }
 
-        await MainActor.run {
-            isHistoricalSyncing = true
+        isHistoricalSyncing = true
             historicalSyncProgress = 0.0
-        }
 
         do {
             let calendar = Calendar.current
@@ -690,7 +683,7 @@ class SyncService {
             let endDate = calendar.startOfDay(for: now) // up to start of today (today handled by regular sync)
             let startDate = calendar.date(byAdding: .day, value: -daysBack, to: endDate) ?? Date()
 
-            await MainActor.run { historicalSyncProgress = 0.05 }
+            historicalSyncProgress = 0.05
 
             // Fetch all daily activity stats in parallel using efficient collection queries
             async let stepMap = healthKit.fetchDailyStats(for: .stepCount, from: startDate, to: endDate, isDiscrete: false)
@@ -704,13 +697,13 @@ class SyncService {
             async let hrvMap = healthKit.fetchDailyStats(for: .heartRateVariabilitySDNN, from: startDate, to: endDate, isDiscrete: true)
             let (exercise, rhr, hrv) = try await (exerciseMap, rhrMap, hrvMap)
 
-            await MainActor.run { historicalSyncProgress = 0.35 }
+            historicalSyncProgress = 0.35
 
             // Fetch all sleep samples for the range and group into per-day minutes
             let sleepSamples = try await healthKit.fetchSleepAnalysis(from: startDate, to: endDate)
             let sleepByDay = buildDailySleepMap(from: sleepSamples)
 
-            await MainActor.run { historicalSyncProgress = 0.45 }
+            historicalSyncProgress = 0.45
 
             // Build ordered list of days to upload
             var allDates: [Date] = []
@@ -754,7 +747,7 @@ class SyncService {
                 )
                 try await supabase.uploadDailySummary(upload)
                 let progress = 0.45 + 0.35 * Double(i + 1) / total
-                await MainActor.run { historicalSyncProgress = progress }
+                historicalSyncProgress = progress
             }
 
             // Sync historical workouts
@@ -834,15 +827,11 @@ class SyncService {
                 }
             }
 
-            await MainActor.run {
-                historicalSyncProgress = 1.0
-                isHistoricalSyncing = false
-            }
+            historicalSyncProgress = 1.0
+            isHistoricalSyncing = false
         } catch {
-            await MainActor.run {
-                syncError = error
-                isHistoricalSyncing = false
-            }
+            syncError = error
+            isHistoricalSyncing = false
         }
     }
 
@@ -924,8 +913,7 @@ class SyncService {
         }
 
         await performFullSync()
-        // Read syncError on MainActor to avoid data race
-        let succeeded = await MainActor.run { self.syncError == nil } && !didExpire
+        let succeeded = syncError == nil && !didExpire
         task.setTaskCompleted(success: succeeded)
     }
     #endif

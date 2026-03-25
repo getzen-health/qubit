@@ -1,32 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { z } from 'zod'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-interface ChatMessage {
-  role: 'user' | 'assistant'
-  content: string
-}
-
-interface ClaudeRequestBody {
-  messages: ChatMessage[]
-  systemPrompt: string
-}
+const claudeRequestSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().min(1).max(5000),
+      })
+    )
+    .min(1, 'messages array is required')
+    .max(50, 'Too many messages (max 50)'),
+  systemPrompt: z.string().min(1).max(2000),
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const body: ClaudeRequestBody = await request.json()
-    const { messages, systemPrompt } = body
+    const raw = await request.json()
+    const parsed = claudeRequestSchema.safeParse(raw)
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json({ error: 'messages array is required' }, { status: 400 })
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.errors[0]?.message ?? 'Invalid request' },
+        { status: 400 }
+      )
     }
 
-    if (!systemPrompt || typeof systemPrompt !== 'string') {
-      return NextResponse.json({ error: 'systemPrompt is required' }, { status: 400 })
-    }
+    const { messages, systemPrompt } = parsed.data
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
@@ -45,8 +50,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ content: textBlock.text })
   } catch (error) {
-    console.error('Claude API error:', error)
-
     if (error instanceof Anthropic.APIError) {
       if (error.status === 401) {
         return NextResponse.json(
