@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Bell,
   Upload,
+  Lock,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -38,6 +39,12 @@ export default async function SettingsPage() {
       description: 'Profile and account settings',
       href: '/settings/account',
       icon: User,
+    },
+    {
+      title: 'Privacy & Sharing',
+      description: 'Control what data you share with friends',
+      href: '/settings/privacy',
+      icon: Lock,
     },
     {
       title: 'Goals',

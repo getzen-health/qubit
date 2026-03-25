@@ -1,0 +1,42 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase/server'
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const body = await request.json()
+    const { name, brand, category, dosage_amount, dosage_unit, frequency, notes } = body
+
+    if (!name) {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    }
+
+    const { data, error } = await supabase
+      .from('supplements')
+      .insert({
+        user_id: user.id,
+        name,
+        brand: brand || null,
+        category: category || null,
+        dosage_amount: dosage_amount || null,
+        dosage_unit: dosage_unit || 'mg',
+        frequency: frequency || 'daily',
+        notes: notes || null,
+        is_active: true,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+
+    return NextResponse.json(data)
+  } catch (error) {
+    console.error('Error creating supplement:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
