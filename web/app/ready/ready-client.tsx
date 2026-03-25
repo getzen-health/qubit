@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import {
   AreaChart,
   Area,
@@ -211,12 +213,54 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
     daily,
   } = data
 
+  // ── Check-in cross-reference ─────────────────────────────────────────────
+  // Fetch today's subjective check-in and apply a -10 penalty if energy is
+  // low (≤2) or stress is high (≥4). Subjective wellness questionnaires
+  // predict overtraining more accurately than HRV alone (Saw et al., 2016).
+  const [checkinPenalty, setCheckinPenalty] = useState(0)
+  const [checkinNote, setCheckinNote] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchCheckin() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const today = new Date().toISOString().slice(0, 10)
+      const { data: todayCheckin } = await supabase
+        .from('daily_checkins')
+        .select('energy_level, mood, stress_level')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .single()
+
+      if (!todayCheckin) return
+
+      const lowEnergy = todayCheckin.energy_level <= 2
+      const highStress = todayCheckin.stress_level >= 4
+
+      if (lowEnergy || highStress) {
+        setCheckinPenalty(10)
+        const reasons: string[] = []
+        if (lowEnergy)  reasons.push('low subjective energy')
+        if (highStress) reasons.push('high stress')
+        setCheckinNote(
+          `Score adjusted −10 due to ${reasons.join(' and ')} reported in today's check-in. ` +
+          `Subjective wellness is a strong predictor of overtraining (Saw et al., Sports Med 2016).`
+        )
+      }
+    }
+    fetchCheckin()
+  }, [])
+
+  const adjustedScore = Math.max(0, todayScore - checkinPenalty)
+
   // Determine today's zone
   let todayZone: ReadinessZone
-  if (todayScore >= 80)      todayZone = 'optimal'
-  else if (todayScore >= 60) todayZone = 'good'
-  else if (todayScore >= 40) todayZone = 'moderate'
-  else                       todayZone = 'low'
+  if (adjustedScore >= 80)      todayZone = 'optimal'
+  else if (adjustedScore >= 60) todayZone = 'good'
+  else if (adjustedScore >= 40) todayZone = 'moderate'
+  else                          todayZone = 'low'
 
   const { color: mainColor, label: zoneLabel, textClass: zoneText } = ZONE_CONFIG[todayZone]
   const guidanceItems = getGuidanceItems(todayZone)
@@ -235,7 +279,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
       >
         {/* Top row: gauge + text */}
         <div className="flex items-center gap-5 mb-4">
-          <CircularGauge score={todayScore} color={mainColor} />
+          <CircularGauge score={adjustedScore} color={mainColor} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <p className="text-xs text-text-secondary uppercase tracking-wide font-medium">
@@ -278,6 +322,14 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
           </div>
         </div>
       </div>
+
+      {/* ── Check-in adjustment note ──────────────────────────────────────── */}
+      {checkinNote && (
+        <div className="flex gap-2 items-start text-xs text-text-secondary bg-surface-secondary rounded-xl p-3 border border-border">
+          <span className="text-yellow-400">●</span>
+          <span>{checkinNote}</span>
+        </div>
+      )}
 
       {/* ── Training guidance grid ────────────────────────────────────────── */}
       <div className="bg-surface rounded-2xl border border-border p-4">

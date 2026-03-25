@@ -74,9 +74,21 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
   const latestRecovery = withRecovery[withRecovery.length - 1]?.recovery_score ?? null
   const latestStrain = withStrain[withStrain.length - 1]?.strain_score ?? null
 
+  const latest = summaries[summaries.length - 1] ?? null
+
+  const hrvValues = summaries.map(s => s.avg_hrv).filter((v): v is number => v != null && v > 0)
+  const rhrValues = summaries.map(s => s.resting_heart_rate).filter((v): v is number => v != null && v > 0)
+  const hrvBaseline = hrvValues.length > 0 ? hrvValues.reduce((a, b) => a + b, 0) / hrvValues.length : null
+  const rhrBaseline = rhrValues.length > 0 ? rhrValues.reduce((a, b) => a + b, 0) / rhrValues.length : null
+
+  const todayHrv = latest?.avg_hrv ?? null
+  const todayRhr = latest?.resting_heart_rate ?? null
+
+  const hrvDelta = (todayHrv && hrvBaseline) ? Math.round(todayHrv - hrvBaseline) : null
+  const rhrDelta = (todayRhr && rhrBaseline) ? Math.round(todayRhr - rhrBaseline) : null
+
   const router = useRouter()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleChartClick(data: { activePayload?: Array<{ payload: { date: string; score: number } }> }) {
     const date = data?.activePayload?.[0]?.payload?.rawDate
     if (date) router.push(`/day/${date}`)
@@ -121,6 +133,50 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
           <p className="text-xs text-text-secondary mt-0.5">Avg Strain</p>
         </div>
       </div>
+
+      {/* HRV and RHR baseline delta cards */}
+      {(todayHrv || todayRhr) && (
+        <div className="grid grid-cols-2 gap-3">
+          {/* HRV Delta Card */}
+          {todayHrv && (
+            <div className="bg-surface rounded-2xl border border-border p-4">
+              <p className="text-xs text-text-secondary mb-1">Heart Rate Variability</p>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-bold text-text-primary">{Math.round(todayHrv)}</span>
+                <span className="text-sm text-text-secondary mb-0.5">ms</span>
+                {hrvDelta !== null && (
+                  <span className={`text-sm font-semibold mb-0.5 ${hrvDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {hrvDelta >= 0 ? `↑${hrvDelta}` : `↓${Math.abs(hrvDelta)}`} vs baseline
+                  </span>
+                )}
+              </div>
+              {hrvBaseline && (
+                <p className="text-xs text-text-secondary mt-1">14-day avg: {Math.round(hrvBaseline)} ms</p>
+              )}
+            </div>
+          )}
+
+          {/* RHR Delta Card */}
+          {todayRhr && (
+            <div className="bg-surface rounded-2xl border border-border p-4">
+              <p className="text-xs text-text-secondary mb-1">Resting Heart Rate</p>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-bold text-text-primary">{Math.round(todayRhr)}</span>
+                <span className="text-sm text-text-secondary mb-0.5">bpm</span>
+                {rhrDelta !== null && (
+                  // Lower RHR = better recovery (green when negative delta)
+                  <span className={`text-sm font-semibold mb-0.5 ${rhrDelta <= 0 ? 'text-green-400' : 'text-orange-400'}`}>
+                    {rhrDelta > 0 ? `↑${rhrDelta}` : `↓${Math.abs(rhrDelta)}`} vs baseline
+                  </span>
+                )}
+              </div>
+              {rhrBaseline && (
+                <p className="text-xs text-text-secondary mt-1">14-day avg: {Math.round(rhrBaseline)} bpm</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Recovery chart */}
       {withRecovery.length > 1 && (

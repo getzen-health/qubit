@@ -4,10 +4,22 @@
 //! and ensure data integrity.
 
 use regex::Regex;
+use std::sync::OnceLock;
 use thiserror::Error;
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
+
+
+/// Returns a compiled static regex (panics only at first call if pattern is invalid,
+/// which is a compile-time guarantee for literal patterns)
+macro_rules! static_regex {
+    ($pattern:expr) => {{
+        static RE: OnceLock<Regex> = OnceLock::new();
+        RE.get_or_init(|| Regex::new($pattern).expect("static regex pattern is valid"))
+    }};
+}
+
 
 /// Validation errors
 #[derive(Error, Debug)]
@@ -36,9 +48,9 @@ pub enum ValidationError {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn validate_email(email: &str) -> bool {
     // Basic email regex - not exhaustive but catches most issues
-    let email_regex = Regex::new(
+    let email_regex = static_regex!(
         r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    ).unwrap();
+    );
 
     email_regex.is_match(email) && email.len() <= 254
 }
@@ -111,7 +123,7 @@ fn validate_ean_checksum(barcode: &str) -> bool {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn sanitize_string(input: &str) -> String {
     // Remove HTML tags
-    let tag_regex = Regex::new(r"<[^>]*>").unwrap();
+    let tag_regex = static_regex!(r"<[^>]*>");
     let no_tags = tag_regex.replace_all(input, "");
 
     // Remove or encode dangerous characters
@@ -155,7 +167,7 @@ pub fn sanitize_string_with_limit(input: &str, max_length: usize) -> String {
 /// true if valid, false otherwise
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn validate_date(date: &str) -> bool {
-    let date_regex = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+    let date_regex = static_regex!(r"^\d{4}-\d{2}-\d{2}$");
 
     if !date_regex.is_match(date) {
         return false;
@@ -219,9 +231,9 @@ pub fn validate_date(date: &str) -> bool {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn validate_datetime(datetime: &str) -> bool {
     // ISO 8601 format: YYYY-MM-DDTHH:MM:SS or with timezone
-    let datetime_regex = Regex::new(
+    let datetime_regex = static_regex!(
         r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|[+-]\d{2}:\d{2})?$"
-    ).unwrap();
+    );
 
     if !datetime_regex.is_match(datetime) {
         return false;
@@ -244,9 +256,9 @@ pub fn validate_datetime(datetime: &str) -> bool {
 /// true if valid, false otherwise
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn validate_uuid(uuid: &str) -> bool {
-    let uuid_regex = Regex::new(
+    let uuid_regex = static_regex!(
         r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    ).unwrap();
+    );
 
     uuid_regex.is_match(uuid)
 }
@@ -311,7 +323,7 @@ pub fn validate_meal_type(meal_type: &str) -> bool {
 /// true if valid, false otherwise
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn validate_fasting_protocol(protocol: &str) -> bool {
-    let protocol_regex = Regex::new(r"^\d{1,2}:\d{1,2}$").unwrap();
+    let protocol_regex = static_regex!(r"^\d{1,2}:\d{1,2}$");
 
     if !protocol_regex.is_match(protocol) {
         return false;
