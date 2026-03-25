@@ -118,13 +118,18 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
 
   async function handleDelete(itemId: string) {
     if (!window.confirm('Remove this item from your diary?')) return
+    const previous = meals
     setMeals((prev) =>
       prev.map((m) => ({
         ...m,
         meal_items: (m.meal_items ?? []).filter((i) => i.id !== itemId),
       }))
     )
-    await fetch(`/api/food/diary?id=${encodeURIComponent(itemId)}`, { method: 'DELETE' })
+    const res = await fetch(`/api/food/diary?id=${encodeURIComponent(itemId)}`, { method: 'DELETE' })
+    if (!res.ok) {
+      setMeals(previous)
+      setFormError('Failed to delete item. Please try again.')
+    }
   }
 
   function startEdit(item: MealItem) {
@@ -143,6 +148,7 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
       cancelEdit()
       return
     }
+    const previous = meals
     setMeals((prev) =>
       prev.map((m) => ({
         ...m,
@@ -153,11 +159,15 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
     )
     setEditingId(null)
     setEditValue('')
-    await fetch('/api/food/diary', {
+    const res = await fetch('/api/food/diary', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: item.id, servings: newServings }),
     })
+    if (!res.ok) {
+      setMeals(previous)
+      setFormError('Failed to update serving size. Please try again.')
+    }
   }
 
   function updateForm(field: keyof ManualFormState, value: string) {
