@@ -825,8 +825,8 @@ class DashboardListViewModel {
             let capturedStreak = streak
             await MainActor.run { currentStreak = capturedStreak }
 
-            // Compute sleep streak (7h = 420 min goal, newest first, skip today)
-            let sleepGoalMinutes = 420
+            // Compute sleep streak (newest first, skip today)
+            let sleepGoalMinutes = Int(GoalService.shared.sleepGoalMinutes)
             var sleepStreakCount = 0
             for day in streakData.dropFirst() {
                 if (day.sleepDurationMinutes ?? 0) >= sleepGoalMinutes {

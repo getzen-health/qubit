@@ -7,7 +7,7 @@ struct HistoryView: View {
     @State private var summary: DailySummary?
     @State private var workouts: [WorkoutRecord] = []
     @State private var sleepRecords: [SleepRecord] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var maxDate: Date { Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date() }
     private var minDate: Date { Calendar.current.date(byAdding: .day, value: -365, to: Date()) ?? Date() }
@@ -74,8 +74,12 @@ struct HistoryView: View {
                 .padding(.bottom, 8)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                StatTile(label: "Steps", value: s.steps.formatted(), icon: "figure.walk", color: .green)
-                StatTile(label: "Calories", value: "\(Int(s.activeCalories)) kcal", icon: "flame.fill", color: .orange)
+                if s.steps > 0 {
+                    StatTile(label: "Steps", value: s.steps.formatted(), icon: "figure.walk", color: .green)
+                }
+                if s.activeCalories > 0 {
+                    StatTile(label: "Calories", value: "\(Int(s.activeCalories)) kcal", icon: "flame.fill", color: .orange)
+                }
                 if s.distanceMeters > 0 {
                     StatTile(label: "Distance",
                              value: String(format: "%.1f km", s.distanceMeters / 1000),

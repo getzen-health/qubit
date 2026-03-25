@@ -430,13 +430,13 @@ struct RugbyAnalysisView: View {
         let weekFmt = DateFormatter(); weekFmt.dateFormat = "MMM d"
         var weekMap: [Date: (kcal: Double, sessions: Int)] = [:]
         for s in sessions {
-            let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date))!
+            guard let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date)) else { continue }
             let cur = weekMap[weekStart] ?? (0, 0)
             weekMap[weekStart] = (cur.kcal + s.kcal, cur.sessions + 1)
         }
 
         var weekCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
-        weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: weekCursor))!
+        weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: weekCursor)) ?? weekCursor
         var weekLoads: [WeekLoad] = []
         while weekCursor <= end {
             let data = weekMap[weekCursor] ?? (0, 0)

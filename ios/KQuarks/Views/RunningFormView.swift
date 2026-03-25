@@ -14,7 +14,7 @@ private struct RunningFormContent: View {
     @State private var vertOscDays: [(date: Date, value: Double)] = []
     @State private var groundContactDays: [(date: Date, value: Double)] = []
     @State private var powerDays: [(date: Date, value: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

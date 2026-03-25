@@ -30,7 +30,7 @@ struct FloorsDistBucket: Identifiable {
 
 struct FloorsPatternView: View {
     @State private var days: [(floors: Int, date: String)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let goal = 10
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]

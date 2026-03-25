@@ -337,8 +337,8 @@ struct WorkoutRecoveryOptimizerView: View {
 
         let types: Set<HKObjectType> = [
             HKObjectType.workoutType(),
-            HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN)!,
-            HKQuantityType.quantityType(forIdentifier: .restingHeartRate)!,
+            HKQuantityType(.heartRateVariabilitySDNN),
+            HKQuantityType(.restingHeartRate),
         ]
         do { try await healthStore.requestAuthorization(toShare: [], read: types) }
         catch { await MainActor.run { isLoading = false }; return }

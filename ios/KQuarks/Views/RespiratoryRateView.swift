@@ -7,7 +7,7 @@ import HealthKit
 /// Respiratory rate trend from Apple Watch sleep tracking, with normal-range guidance.
 struct RespiratoryRateView: View {
     @State private var samples: [(date: Date, value: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

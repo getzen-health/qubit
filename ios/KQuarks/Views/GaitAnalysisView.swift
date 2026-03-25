@@ -133,6 +133,14 @@ struct GaitAnalysisView: View {
 
     var body: some View {
         ScrollView {
+            if !isLoading && dailyPoints.isEmpty {
+                ContentUnavailableView(
+                    "No Gait Data",
+                    systemImage: "figure.walk",
+                    description: Text("Carry your iPhone while walking to enable passive gait measurement. Requires iPhone with motion sensors or Apple Watch.")
+                )
+                .padding(.top, 60)
+            } else {
             LazyVStack(spacing: 16) {
 
                 // Vital sign headline
@@ -165,6 +173,7 @@ struct GaitAnalysisView: View {
                 ageNormsCard
             }
             .padding(.vertical)
+            } // end else
         }
         .navigationTitle("Gait Analysis")
         .navigationBarTitleDisplayMode(.inline)

@@ -14,7 +14,7 @@ struct WeightSample: Identifiable {
 
 struct BodyCompositionView: View {
     @State private var samples: [WeightSample] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var showLogWeight = false
     @State private var logWeightText = ""
     @State private var selectedRange: Int = 90 // days
@@ -109,11 +109,13 @@ struct BodyCompositionView: View {
             let current = filtered.last!.kg
             let min = filtered.map(\.kg).min()!
             let max = filtered.map(\.kg).max()!
-            let change = filtered.count > 1 ? current - filtered.first!.kg : 0
+            let change: Double? = filtered.count > 1 ? current - filtered.first!.kg : nil
 
             HStack(spacing: 12) {
                 BodyStatCard(title: "Current", value: String(format: "%.1f kg", current), color: .primary)
-                BodyStatCard(title: "Change", value: String(format: "%+.1f kg", change), color: change < 0 ? .green : change > 0 ? .orange : .secondary)
+                BodyStatCard(title: "Change",
+                             value: change.map { String(format: "%+.1f kg", $0) } ?? "—",
+                             color: (change ?? 0) < 0 ? .green : (change ?? 0) > 0 ? .orange : .secondary)
                 BodyStatCard(title: "Range", value: String(format: "%.1f–%.1f", min, max), color: .secondary)
             }
             .padding(.horizontal)

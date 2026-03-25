@@ -9,7 +9,7 @@ import HealthKit
 struct LongevityView: View {
     @State private var metricData = LongevityMetrics()
     @State private var weeklyScores: [(week: Date, score: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

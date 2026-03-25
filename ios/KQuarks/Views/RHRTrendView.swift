@@ -7,7 +7,7 @@ import HealthKit
 /// Resting Heart Rate trend: 6-month history, fitness zone classification, and key stats.
 struct RHRTrendView: View {
     @State private var samples: [(date: Date, value: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

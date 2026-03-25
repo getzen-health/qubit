@@ -7,7 +7,7 @@ import HealthKit
 /// Aggregates cycling workouts to show speed trends, mileage, and personal bests.
 struct CyclingAnalysisView: View {
     @State private var rides: [RideEntry] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

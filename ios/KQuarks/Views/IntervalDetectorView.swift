@@ -316,7 +316,7 @@ struct IntervalDetectorView: View {
         // Monthly stats
         var byMonth: [Date: [IntervalSession]] = [:]
         for s in intervalSessions {
-            let key = calendar.date(from: calendar.dateComponents([.year, .month], from: s.date))!
+            guard let key = calendar.date(from: calendar.dateComponents([.year, .month], from: s.date)) else { continue }
             byMonth[key, default: []].append(s)
         }
         let monthlyStats = byMonth.sorted { $0.key < $1.key }.map { date, sessions in
@@ -336,7 +336,6 @@ struct IntervalDetectorView: View {
             self.peakWorkHR = peakWork
             self.isLoading = false
         }
-        isLoading = false
     }
 
     private func workoutTypeName(_ type: HKWorkoutActivityType) -> String {

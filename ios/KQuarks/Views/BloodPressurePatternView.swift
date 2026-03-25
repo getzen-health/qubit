@@ -47,7 +47,7 @@ struct BloodPressurePatternView: View {
     @State private var timePeriods: [BPTimePeriod] = []
     @State private var monthData: [BPMonthStat] = []
     @State private var categoryDist: [BPCategoryDist] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
     private let monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]

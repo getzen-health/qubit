@@ -372,11 +372,11 @@ struct ElevationAnalysisView: View {
         let monthFmt = DateFormatter(); monthFmt.dateFormat = "MMM"
         var monthMap: [Date: (gain: Double, count: Int)] = [:]
         for w in result {
-            let ms = calendar.date(from: calendar.dateComponents([.year, .month], from: w.date))!
+            guard let ms = calendar.date(from: calendar.dateComponents([.year, .month], from: w.date)) else { continue }
             let cur = monthMap[ms] ?? (0, 0)
             monthMap[ms] = (cur.gain + w.gainMeters, cur.count + 1)
         }
-        var monthCursor = calendar.date(from: calendar.dateComponents([.year, .month], from: start))!
+        var monthCursor = calendar.date(from: calendar.dateComponents([.year, .month], from: start)) ?? Date()
         var monthly: [MonthGain] = []
         while monthCursor <= end {
             let d = monthMap[monthCursor] ?? (0, 0)

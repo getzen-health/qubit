@@ -6,7 +6,7 @@ import Charts
 /// Deep-dive HRV analysis: trend, personal baseline, day-of-week patterns.
 struct HRVDetailView: View {
     @State private var rows: [SupabaseService.DailySummaryRow] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var validRows: [SupabaseService.DailySummaryRow] {
         rows.filter { ($0.avg_hrv ?? 0) > 0 }

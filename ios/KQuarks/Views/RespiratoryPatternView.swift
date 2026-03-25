@@ -31,7 +31,7 @@ struct RespHourBucket: Identifiable {
 
 struct RespiratoryPatternView: View {
     @State private var readings: [(bpm: Double, date: Date)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -42,6 +42,7 @@ struct RespiratoryPatternView: View {
     private var n: Int { readings.count }
     private var avgBpm: Double { n > 0 ? readings.reduce(0) { $0 + $1.bpm } / Double(n) : 0 }
     private var minBpm: Double { readings.map(\.bpm).min() ?? 0 }
+    private var maxBpm: Double { readings.map(\.bpm).max() ?? 20 }
     private var normalCount: Int { readings.filter { $0.bpm >= 12 && $0.bpm <= 20 }.count }
     private var lowCount: Int { readings.filter { $0.bpm < 12 }.count }
     private var highCount: Int { readings.filter { $0.bpm > 20 }.count }
@@ -260,7 +261,7 @@ struct RespiratoryPatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: max(8, minBpm - 1)...min(30, minBpm + 15))
+            .chartYScale(domain: max(8, minBpm - 1)...max(30, maxBpm + 1))
             .frame(height: 140)
         }
         .padding()
@@ -280,7 +281,7 @@ struct RespiratoryPatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: max(8, minBpm - 1)...min(30, minBpm + 15))
+            .chartYScale(domain: max(8, minBpm - 1)...max(30, maxBpm + 1))
             .frame(height: 140)
         }
         .padding()
@@ -312,7 +313,7 @@ struct RespiratoryPatternView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                     .foregroundStyle(.indigo.opacity(0.5))
             }
-            .chartYScale(domain: max(8, minBpm - 1)...min(30, minBpm + 15))
+            .chartYScale(domain: max(8, minBpm - 1)...max(30, maxBpm + 1))
             .frame(height: 160)
         }
         .padding()

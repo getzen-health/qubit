@@ -8,7 +8,7 @@ import HealthKit
 /// volume trends, average heart rate per session, and personal bests.
 struct StrengthAnalysisView: View {
     @State private var sessions: [StrengthSession] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

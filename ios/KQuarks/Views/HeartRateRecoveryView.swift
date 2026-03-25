@@ -47,7 +47,7 @@ private enum HRRClass {
 
 struct HeartRateRecoveryView: View {
     @State private var points: [RecoveryPoint] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var errorMsg: String?
     @State private var selectedPoint: RecoveryPoint?
 

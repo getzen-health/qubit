@@ -30,7 +30,7 @@ private struct DailyStepBar: Identifiable {
 // MARK: - MonthlyHealthSummaryView
 
 struct MonthlyHealthSummaryView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     // This month
     @State private var thisSteps: MonthMetric?
@@ -72,13 +72,13 @@ struct MonthlyHealthSummaryView: View {
 
     private var thisMonthRange: (start: Date, end: Date) {
         let now = Date()
-        let start = cal.date(from: cal.dateComponents([.year, .month], from: now))!
+        let start = cal.date(from: cal.dateComponents([.year, .month], from: now)) ?? now
         return (start, now)
     }
 
     private var lastMonthRange: (start: Date, end: Date) {
         let now = Date()
-        let thisStart = cal.date(from: cal.dateComponents([.year, .month], from: now))!
+        let thisStart = cal.date(from: cal.dateComponents([.year, .month], from: now)) ?? now
         let lastStart = cal.date(byAdding: .month, value: -1, to: thisStart) ?? Date()
         let lastEnd   = cal.date(byAdding: .second, value: -1, to: thisStart) ?? Date()
         return (lastStart, lastEnd)

@@ -8,7 +8,7 @@ import HealthKit
 /// Mirrors the web /score page's scoring algorithm.
 struct HealthScoreView: View {
     @State private var scoredDays: [ScoredDay] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

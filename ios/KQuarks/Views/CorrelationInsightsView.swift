@@ -7,7 +7,7 @@ import Charts
 /// and presents actionable health insights.
 struct CorrelationInsightsView: View {
     @State private var insights: [CorrelationInsight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     var body: some View {
         ScrollView {
@@ -166,6 +166,46 @@ struct CorrelationInsightsView: View {
                         : "Interestingly, higher recovery days don't translate to higher activity for you.",
                     correlation: r,
                     takeaway: nil
+                ))
+            }
+        }
+
+        // Sleep → RHR (more sleep typically lowers resting HR)
+        let sleepRHR = paired(summaries, x: \.sleepHours, y: \.restingHeartRate)
+        if sleepRHR.count >= 10 {
+            let r = pearson(sleepRHR.map(\.0), sleepRHR.map(\.1))
+            if abs(r) >= 0.2 {
+                let highSleepRHR = sleepRHR.filter { $0.0 >= 7 }.map(\.1).average
+                let lowSleepRHR  = sleepRHR.filter { $0.0 < 7 }.map(\.1).average
+                results.append(CorrelationInsight(
+                    id: "sleep-rhr",
+                    icon: "heart.fill",
+                    color: .red,
+                    title: "Sleep & Resting Heart Rate",
+                    body: r < 0
+                        ? "7+ hour nights average \(format(highSleepRHR)) bpm RHR vs \(format(lowSleepRHR)) bpm on shorter nights — quality sleep aids cardiac recovery."
+                        : "Your resting heart rate doesn't drop significantly with more sleep. Check sleep quality and stress levels.",
+                    correlation: r,
+                    takeaway: r < -0.25 ? "Consistent sleep is one of the most reliable ways to lower resting heart rate over time." : nil
+                ))
+            }
+        }
+
+        // HRV → RHR (inversely related: high HRV typically means low RHR)
+        let hrvRHR = paired(summaries, x: \.avgHrv, y: \.restingHeartRate)
+        if hrvRHR.count >= 10 {
+            let r = pearson(hrvRHR.map(\.0), hrvRHR.map(\.1))
+            if abs(r) >= 0.2 {
+                results.append(CorrelationInsight(
+                    id: "hrv-rhr",
+                    icon: "waveform.path.ecg",
+                    color: .orange,
+                    title: "HRV & Resting Heart Rate",
+                    body: r < 0
+                        ? "Your HRV and resting heart rate move inversely — a healthy sign of good autonomic nervous system function."
+                        : "HRV and RHR are moving in the same direction, which may indicate your body is under cumulative stress.",
+                    correlation: r,
+                    takeaway: r < -0.3 ? "Both metrics confirm your cardiovascular fitness trend." : nil
                 ))
             }
         }

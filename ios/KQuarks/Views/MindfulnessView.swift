@@ -13,7 +13,7 @@ struct MindfulnessView: View {
 
     // History
     @State private var sessions: [HKCategorySample] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var isSaving = false
     @State private var saveSuccess = false
 

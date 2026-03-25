@@ -8,7 +8,7 @@ import HealthKit
 struct RacePredictorView: View {
     @State private var vo2Max: Double?
     @State private var bestRecentRun: BestRun?
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

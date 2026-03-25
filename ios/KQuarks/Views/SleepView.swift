@@ -4,7 +4,7 @@ import Charts
 
 struct SleepView: View {
     @State private var sessions: [SleepSession] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -229,6 +229,11 @@ struct SleepBarChart: View {
         }
     }
 
+    private var sleepDomainMax: Double {
+        let maxHours = chartData.map(\.hours).max() ?? 0
+        return max(10.0, maxHours + 0.5)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Last 7 Nights")
@@ -253,7 +258,7 @@ struct SleepBarChart: View {
                     .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: 0...10)
+            .chartYScale(domain: 0...sleepDomainMax)
             .chartYAxis {
                 AxisMarks(values: [0, 4, 6, 8, 10]) { value in
                     AxisGridLine()

@@ -27,7 +27,7 @@ private struct HeatmapRow {
 /// Each metric is a row; each day is a column; colour intensity = relative performance.
 struct HealthHeatmapView: View {
     @State private var summaries: [DaySummary] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var selectedCell: (rowIdx: Int, dayIdx: Int)? = nil
 
     private let columns = 30

@@ -540,8 +540,8 @@ struct FitnessProfileView: View {
 
         let validCurrent = dims.filter { $0.score > 0 }
         let validPrev    = dims.filter { $0.prevScore > 0 }
-        let overall     = validCurrent.isEmpty ? 50 : validCurrent.map { $0.score }.reduce(0, +) / validCurrent.count
-        let prevOverall = validPrev.isEmpty ? 50    : validPrev.map { $0.prevScore }.reduce(0, +) / validPrev.count
+        let overall     = validCurrent.isEmpty ? 50 : Int((Double(validCurrent.map { $0.score }.reduce(0, +)) / Double(validCurrent.count)).rounded())
+        let prevOverall = validPrev.isEmpty ? 50    : Int((Double(validPrev.map { $0.prevScore }.reduce(0, +)) / Double(validPrev.count)).rounded())
 
         await MainActor.run {
             self.dimensions = dims

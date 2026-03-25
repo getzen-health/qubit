@@ -52,7 +52,7 @@ struct NutritionPatternView: View {
     @State private var totalDays: Int = 0
     @State private var weekdayAvgCals: Double? = nil
     @State private var weekendAvgCals: Double? = nil
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

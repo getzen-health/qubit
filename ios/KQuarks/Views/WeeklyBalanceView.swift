@@ -357,7 +357,6 @@ struct WeeklyBalanceView: View {
             self.weekStart = weekStart
             self.isLoading = false
         }
-        isLoading = false
     }
 
     private func loadEmptyDimensions() {

@@ -65,6 +65,13 @@ struct CycleTrackingView: View {
 
     @State private var cycles: [CycleRecord] = []
     @State private var currentPhase: CyclePhase = .follicular
+
+    private var cycleLengthDomain: ClosedRange<Int> {
+        let lengths = cycleLengthPoints.map { $0.0 }
+        let lo = lengths.min().map { max(20, $0 - 2) } ?? 20
+        let hi = lengths.max().map { max(40, $0 + 2) } ?? 40
+        return lo...hi
+    }
     @State private var currentDayOfCycle: Int = 0
     @State private var avgCycleLength: Double = 0
     @State private var cycleLengthPoints: [(Int, Date)] = []  // (length, period start)
@@ -201,7 +208,7 @@ struct CycleTrackingView: View {
                     }
                 }
                 .chartYAxisLabel("Days")
-                .chartYScale(domain: 20...40)
+                .chartYScale(domain: cycleLengthDomain)
                 .frame(height: 150)
 
                 Text("Normal range: 21–35 days. Short < 21 or long > 35 days may indicate hormonal changes.")

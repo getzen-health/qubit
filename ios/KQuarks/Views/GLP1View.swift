@@ -72,7 +72,7 @@ struct GLP1View: View {
         let cal = Calendar.current
         var grouped: [Date: [Double]] = [:]
         for r in trackedWeightReadings {
-            let weekStart = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: r.date))!
+            guard let weekStart = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: r.date)) else { continue }
             grouped[weekStart, default: []].append(r.kg)
         }
         return grouped
@@ -660,7 +660,7 @@ struct GLP1View: View {
                         .symbolSize(16)
                     }
                 }
-                .chartYScale(domain: 50...220)
+                .chartYScale(domain: glucoseDomain(recent.map(\.mgdl)))
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: 3)) { _ in
                         AxisValueLabel(format: .dateTime.month(.abbreviated).day())
@@ -678,6 +678,12 @@ struct GLP1View: View {
         .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func glucoseDomain(_ values: [Double]) -> ClosedRange<Double> {
+        let lo = values.min().map { max(50.0, $0 - 10) } ?? 50.0
+        let hi = values.max().map { max(220.0, $0 + 10) } ?? 220.0
+        return lo...hi
     }
 
     private func glucoseColor(mgdl: Double) -> Color {

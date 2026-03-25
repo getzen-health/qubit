@@ -352,7 +352,6 @@ struct CognitivePerformanceView: View {
         }
 
         processSamples(sleep: sleepSamples, hrv: hrvSamples, workouts: rawWorkouts, start: start30, end: end)
-        isLoading = false
     }
 
     private func processSamples(sleep: [HKCategorySample], hrv: [HKQuantitySample],

@@ -48,7 +48,7 @@ struct CheckinPatternView: View {
     @State private var weekendAvgStress: Double? = nil
     @State private var bestMoodDow: String? = nil
     @State private var highStressDow: String? = nil
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]

@@ -8,7 +8,7 @@ import HealthKit
 /// calorie burn rate, and weekly volume trends.
 struct HIITAnalysisView: View {
     @State private var sessions: [HIITSession] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

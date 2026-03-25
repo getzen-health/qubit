@@ -15,7 +15,7 @@ private struct HRVDay: Identifiable {
 
 struct HRVCalendarView: View {
     @State private var days: [HRVDay] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var selected: HRVDay?
 
     private let cellSize: CGFloat = 12

@@ -10,7 +10,7 @@ struct WorkoutSleepImpactView: View {
     @State private var typeInsights: [TypeInsight] = []
     @State private var scatterPoints: [ScatterPoint] = []
     @State private var bestTiming: String?
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     // A group of workouts at a given time-of-day slot
     struct TimingInsight: Identifiable {

@@ -8,7 +8,7 @@ import HealthKit
 /// Reveals circadian HR trends: sleep dip, morning cortisol rise, workout peaks.
 struct CircadianHRView: View {
     @State private var hourlyData: [HourSlot] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

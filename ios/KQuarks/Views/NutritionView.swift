@@ -6,7 +6,7 @@ import HealthKit
 struct NutritionView: View {
     @State private var nutrition: SupabaseService.DailyNutrition?
     @State private var meals: [SupabaseService.MealEntry] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var showLogMeal = false
     @State private var selectedMealType: MealTypeOption = .breakfast
 

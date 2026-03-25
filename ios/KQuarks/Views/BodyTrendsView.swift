@@ -40,7 +40,7 @@ struct BodyTrendsView: View {
     @State private var bfChange: Double? = nil
     @State private var dowData: [BodyDowStat] = []
     @State private var monthData: [BodyMonthStat] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -422,9 +422,9 @@ struct BodyTrendsView: View {
                 let xi = Double(i)
                 sumX += xi; sumY += w; sumXY += xi * w; sumX2 += xi * xi
             }
-            let slope = (Double(n) * sumXY - sumX * sumY) / (Double(n) * sumX2 - sumX * sumX)
-            let daysSpan = max(1.0, Double(n))
-            weeklySlope = slope * 7 / (daysSpan / Double(n))
+            let denom = Double(n) * sumX2 - sumX * sumX
+            let slope = denom != 0 ? (Double(n) * sumXY - sumX * sumY) / denom : 0
+            weeklySlope = slope * 7
             trendDir = weeklySlope > 0.05 ? "gaining" : weeklySlope < -0.05 ? "losing" : "maintaining"
 
             // Body fat

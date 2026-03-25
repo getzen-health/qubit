@@ -28,7 +28,7 @@ private struct HistBucket: Identifiable {
 // MARK: - CaloriePatternView
 
 struct CaloriePatternView: View {
-    @State private var isLoading   = false
+    @State private var isLoading   = true
     @State private var dowData:    [DayBucket]   = []
     @State private var monthData:  [MonthBucket] = []
     @State private var histogram:  [HistBucket]  = []

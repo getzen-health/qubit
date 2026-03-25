@@ -274,7 +274,6 @@ struct SedentaryBreakView: View {
 
         guard let results = collection else { isLoading = false; return }
         processResults(results, start: start, end: end)
-        isLoading = false
     }
 
     private func processResults(_ results: HKStatisticsCollection, start: Date, end: Date) {

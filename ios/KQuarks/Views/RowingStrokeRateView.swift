@@ -70,6 +70,12 @@ struct RowingStrokeRateView: View {
     @State private var sessionCount: Int = 0
     @State private var isLoading = true
 
+    private var spmDomain: ClosedRange<Double> {
+        let lo = sessions.map(\.avgSPM).min().map { max(14.0, $0 - 2) } ?? 14.0
+        let hi = max(45.0, peakSPM + 2)
+        return lo...hi
+    }
+
     private let healthStore = HKHealthStore()
 
     var body: some View {
@@ -92,6 +98,13 @@ struct RowingStrokeRateView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Rowing Stroke Rate")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: RowingPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
         .refreshable { await load() }
     }
@@ -99,7 +112,7 @@ struct RowingStrokeRateView: View {
     // MARK: - Summary Card
 
     private var summaryCard: some View {
-        let zone = RowingZone(rpm: avgSPM)
+        let zone = RowingZone(spm: avgSPM)
         return VStack(spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
@@ -187,7 +200,7 @@ struct RowingStrokeRateView: View {
                 }
             }
             .chartYAxisLabel("SPM")
-            .chartYScale(domain: 14...45)
+            .chartYScale(domain: spmDomain)
             .frame(height: 180)
         }
         .padding()
@@ -376,9 +389,6 @@ struct RowingStrokeRateView: View {
     }
 }
 
-// Helper extension for RowingZone
-private extension RowingStrokeRateView.RowingZone {
-    init(rpm: Double) { self.init(spm: rpm) }
-}
+
 
 #Preview { NavigationStack { RowingStrokeRateView() } }

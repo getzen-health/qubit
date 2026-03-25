@@ -32,7 +32,7 @@ struct RHRDistBucket: Identifiable {
 
 struct RHRPatternView: View {
     @State private var days: [(rhr: Int, date: String)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -240,7 +240,7 @@ struct RHRPatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: Double(max(30, minRHR - 3))...Double(min(120, maxRHR + 3)))
+            .chartYScale(domain: Double(max(30, minRHR - 3))...Double(max(120, maxRHR + 3)))
             .frame(height: 140)
         }
         .padding()
@@ -261,7 +261,7 @@ struct RHRPatternView: View {
                         .interpolationMethod(.catmullRom)
                 }
             }
-            .chartYScale(domain: Double(max(30, minRHR - 3))...Double(min(120, maxRHR + 3)))
+            .chartYScale(domain: Double(max(30, minRHR - 3))...Double(max(120, maxRHR + 3)))
             .frame(height: 160)
         }
         .padding()

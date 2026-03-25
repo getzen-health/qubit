@@ -6,7 +6,7 @@ import Charts
 struct WaterView: View {
     @State private var todayTotal: Int = 0
     @State private var weekHistory: [(date: String, ml: Int)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var isLogging = false
     @State private var target: Int = 2500
 

@@ -6,7 +6,7 @@ import HealthKit
 /// Tracks consecutive-day streaks for steps, workouts, active calories, sleep, and mindfulness.
 /// All data fetched directly from HealthKit — no backend needed.
 struct StreaksView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var stepsByDay:  [String: Double] = [:]   // "yyyy-MM-dd" → steps
     @State private var calsByDay:   [String: Double] = [:]   // "yyyy-MM-dd" → kcal
     @State private var sleepByDay:  [String: Double] = [:]   // "yyyy-MM-dd" → hours

@@ -52,7 +52,7 @@ struct FastingInsightsView: View {
     @State private var longestStreak: Int = 0
     @State private var longestFastHours: Double = 0
     @State private var longestFastDate: Date? = nil
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

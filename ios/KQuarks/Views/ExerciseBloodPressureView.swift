@@ -226,7 +226,7 @@ struct ExerciseBloodPressureView: View {
                         }
                 }
                 .frame(height: 180)
-                .chartYScale(domain: max(60, (weeklyPoints.map(\.avgDiastolic).min() ?? 70) - 5)...min(180, (weeklyPoints.map(\.avgSystolic).max() ?? 130) + 10))
+                .chartYScale(domain: max(60, (weeklyPoints.map(\.avgDiastolic).min() ?? 70) - 5)...max(180, (weeklyPoints.map(\.avgSystolic).max() ?? 130) + 10))
             } else {
                 Chart(readings) { r in
                     LineMark(
@@ -485,7 +485,7 @@ struct ExerciseBloodPressureView: View {
         // Build weekly points (weeks with both BP and workout data)
         let weekFmt = DateFormatter(); weekFmt.dateFormat = "M/d"
         var weeklyPoints: [WeeklyPoint] = []
-        var weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: start))!
+        var weekCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: start)) ?? Date()
         while weekCursor <= end {
             let weekEnd = calendar.date(byAdding: .weekOfYear, value: 1, to: weekCursor) ?? Date()
             let weekBP = readings.filter { $0.date >= weekCursor && $0.date < weekEnd }

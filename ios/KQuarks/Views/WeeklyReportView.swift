@@ -6,7 +6,7 @@ import Charts
 /// Shows a digest comparing this week to last week across all key health metrics.
 struct WeeklyReportView: View {
     @State private var report: WeeklyReport?
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     var body: some View {
         ScrollView {

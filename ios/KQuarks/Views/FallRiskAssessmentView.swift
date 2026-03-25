@@ -221,7 +221,7 @@ struct FallRiskAssessmentView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
             }
             .frame(height: 120)
-            .chartYScale(domain: 0...6)
+            .chartYScale(domain: 0...max(6, (trendPoints.map(\.totalScore).max() ?? 5) + 0.5))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .month)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated))

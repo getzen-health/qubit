@@ -12,7 +12,7 @@ struct MobilityView: View {
     @State private var stepLengthDays: [(date: Date, value: Double)] = []
     @State private var asymmetryDays: [(date: Date, value: Double)] = []
     @State private var doubleSupportDays: [(date: Date, value: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

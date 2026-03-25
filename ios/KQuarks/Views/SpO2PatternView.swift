@@ -31,7 +31,7 @@ struct SpO2HourBucket: Identifiable {
 
 struct SpO2PatternView: View {
     @State private var readings: [(pct: Double, date: Date)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -259,7 +259,7 @@ struct SpO2PatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: max(85, minPct - 2)...100)
+            .chartYScale(domain: max(50, minPct - 2)...100)
             .frame(height: 140)
         }
         .padding()
@@ -279,7 +279,7 @@ struct SpO2PatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: max(85, minPct - 2)...100)
+            .chartYScale(domain: max(50, minPct - 2)...100)
             .frame(height: 140)
         }
         .padding()
@@ -308,7 +308,7 @@ struct SpO2PatternView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                     .foregroundStyle(.green.opacity(0.6))
             }
-            .chartYScale(domain: max(85, minPct - 2)...100)
+            .chartYScale(domain: max(50, minPct - 2)...100)
             .frame(height: 160)
         }
         .padding()

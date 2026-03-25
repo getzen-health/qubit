@@ -8,7 +8,7 @@ import HealthKit
 /// personal bests, and recent hike log.
 struct HikingAnalysisView: View {
     @State private var hikes: [HikeEntry] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -24,6 +24,7 @@ struct HikingAnalysisView: View {
         var paceMinPerKm: Double { distanceKm > 0 ? durationSecs / 60 / distanceKm : 0 }
 
         var formattedPace: String {
+            guard paceMinPerKm > 0 else { return "—" }
             let total = Int(paceMinPerKm)
             return "\(total / 60 > 0 ? "\(total / 60)h " : "")\(total % 60):\(String(format: "%02d", Int((paceMinPerKm - Double(total)) * 60))) /km"
         }

@@ -8,7 +8,7 @@ struct WorkoutCalendarView: View {
     @State private var workoutsByDate: [String: [CalWorkout]] = [:]
     @State private var displayDate: Date = Date()
     @State private var selectedDate: String? = nil
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
     private let cal = Calendar.current

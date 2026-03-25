@@ -175,7 +175,7 @@ struct BloodOxygenDeepDiveView: View {
                 }
             }
             .chartYAxisLabel("%")
-            .chartYScale(domain: 85...100)
+            .chartYScale(domain: max(50.0, minPct - 2)...100)
             .frame(height: 170)
         }
         .padding()

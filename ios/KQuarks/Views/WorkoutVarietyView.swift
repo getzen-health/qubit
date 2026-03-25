@@ -5,7 +5,7 @@ import Charts
 // Analyzes balance and diversity across workout types over the last 90 days.
 
 struct WorkoutVarietyView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var typeBuckets: [TypeBucket] = []
     @State private var weeklyVariety: [WeekBucket] = []
     @State private var totalSessions = 0

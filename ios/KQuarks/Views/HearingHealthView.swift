@@ -11,9 +11,20 @@ struct HearingHealthView: View {
     @State private var envDays: [AudioDay] = []
     @State private var headphoneDays: [AudioDay] = []
     @State private var loudEvents: [LoudEvent] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
+
+    private var envChartDomain: ClosedRange<Double> {
+        let lo = envDays.map(\.avgDb).min().map { max(40.0, $0 - 5) } ?? 40.0
+        let hi = envDays.map(\.avgDb).max().map { max(100.0, $0 + 5) } ?? 100.0
+        return lo...hi
+    }
+    private var headphoneChartDomain: ClosedRange<Double> {
+        let lo = headphoneDays.map(\.avgDb).min().map { max(40.0, $0 - 5) } ?? 40.0
+        let hi = headphoneDays.map(\.avgDb).max().map { max(100.0, $0 + 5) } ?? 100.0
+        return lo...hi
+    }
     private let loudThreshold: Double = 80 // dB — warn above this
     private let dangerThreshold: Double = 90 // dB — WHO 8-hour danger zone
 
@@ -208,7 +219,7 @@ struct HearingHealthView: View {
                 }
             }
             .chartYAxisLabel("dB(A)")
-            .chartYScale(domain: 40...100)
+            .chartYScale(domain: envChartDomain)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
@@ -257,7 +268,7 @@ struct HearingHealthView: View {
                 }
             }
             .chartYAxisLabel("dB(A)")
-            .chartYScale(domain: 40...100)
+            .chartYScale(domain: headphoneChartDomain)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())

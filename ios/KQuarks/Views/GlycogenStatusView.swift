@@ -367,7 +367,6 @@ struct GlycogenStatusView: View {
         let capacity = bodyMassKg * 0.75 * 8.0
 
         processWorkouts(rawWorkouts, capacity: capacity, end: end)
-        isLoading = false
     }
 
     private func processWorkouts(_ rawWorkouts: [HKWorkout], capacity: Double, end: Date) {

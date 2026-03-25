@@ -7,7 +7,7 @@ import HealthKit
 /// and quantifies Social Jet Lag — the shift between weekday and weekend sleep timing.
 struct SleepChronotypeView: View {
     @State private var nights: [NightPoint] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
 

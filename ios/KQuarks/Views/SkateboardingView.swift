@@ -483,6 +483,6 @@ struct SkateboardingView: View {
         }
         self.weeklyCalories = weekData
 
-        DispatchQueue.main.async { self.isLoading = false }
+        isLoading = false
     }
 }

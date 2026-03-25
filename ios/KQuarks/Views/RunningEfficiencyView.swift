@@ -7,7 +7,7 @@ import HealthKit
 /// A rising AEI means you're running faster at the same heart rate — aerobic fitness improving.
 struct RunningEfficiencyView: View {
     @State private var points: [EffPoint] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
 

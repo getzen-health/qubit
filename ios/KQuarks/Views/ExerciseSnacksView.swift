@@ -331,7 +331,6 @@ struct ExerciseSnacksView: View {
             self.snackCalorieFraction = fraction
             self.isLoading = false
         }
-        isLoading = false
     }
 
     private func workoutTypeName(_ type: HKWorkoutActivityType) -> String {

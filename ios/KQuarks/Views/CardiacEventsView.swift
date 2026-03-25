@@ -8,7 +8,7 @@ import HealthKit
 /// and irregular rhythm (possible AFib) detections over the last 90 days.
 struct CardiacEventsView: View {
     @State private var events: [CardiacEvent] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

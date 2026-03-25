@@ -364,14 +364,14 @@ struct BaseballSoftballView: View {
         let monthFmt = DateFormatter(); monthFmt.dateFormat = "MMM"
         var bucketMap: [Date: (baseball: Int, softball: Int, kcal: Double)] = [:]
         for s in sessions {
-            let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: s.date))!
+            guard let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: s.date)) else { continue }
             var cur = bucketMap[monthStart] ?? (0, 0, 0)
             if s.sport == .baseball { cur.baseball += 1 } else { cur.softball += 1 }
             cur.kcal += s.kcal
             bucketMap[monthStart] = cur
         }
 
-        var cursor = calendar.date(from: calendar.dateComponents([.year, .month], from: start))!
+        var cursor = calendar.date(from: calendar.dateComponents([.year, .month], from: start)) ?? Date()
         var months: [MonthBucket] = []
         while cursor <= end {
             let data = bucketMap[cursor] ?? (0, 0, 0)

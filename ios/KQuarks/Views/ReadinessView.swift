@@ -9,7 +9,7 @@ import HealthKit
 struct ReadinessView: View {
     @State private var score: ReadinessScore?
     @State private var history: [HistoryPoint] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

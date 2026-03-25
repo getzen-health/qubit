@@ -6,7 +6,7 @@ import HealthKit
 // Shows how mindfulness sessions correlate with next-day HRV, RHR, and recovery.
 
 struct MindfulnessImpactView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     // Aggregated data
     @State private var totalSessions = 0
@@ -59,6 +59,13 @@ struct MindfulnessImpactView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Mindfulness Impact")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: MindfulnessPatternView()) {
+                    Image(systemName: "chart.bar.xaxis")
+                }
+            }
+        }
         .task { await load() }
         .refreshable { await load() }
     }

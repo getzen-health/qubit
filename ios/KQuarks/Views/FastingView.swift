@@ -7,7 +7,7 @@ struct FastingView: View {
     @State private var elapsedHours: Double = 0
     @State private var targetHours: Int = 16
     @State private var startedAt: Date?
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var isStarting = false
     @State private var isEnding = false
     @State private var showStartSheet = false

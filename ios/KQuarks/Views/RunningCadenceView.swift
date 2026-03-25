@@ -58,6 +58,12 @@ struct RunningCadenceView: View {
 
     @State private var runs: [RunPoint] = []
     @State private var buckets: [BucketBar] = []
+
+    private var cadenceChartDomain: ClosedRange<Double> {
+        let lo = runs.map(\.cadence).min().map { max(140.0, $0 - 5) } ?? 140.0
+        let hi = runs.map(\.cadence).max().map { max(200.0, $0 + 5) } ?? 200.0
+        return lo...hi
+    }
     @State private var avgCadence: Double?
     @State private var currentZone: CadenceZone?
     @State private var trend: Double?  // improvement over last 3 months
@@ -195,7 +201,7 @@ struct RunningCadenceView: View {
                     }
                 }
             }
-            .chartYScale(domain: 140...200)
+            .chartYScale(domain: cadenceChartDomain)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 14)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
@@ -403,6 +409,5 @@ struct RunningCadenceView: View {
             self.buckets = buckets
             self.isLoading = false
         }
-        isLoading = false
     }
 }

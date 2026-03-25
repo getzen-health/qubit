@@ -7,7 +7,12 @@ import HealthKit
 
 struct SleepEfficiencyView: View {
     @State private var nights: [EfficiencyNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
+
+    private var efficiencyDomain: ClosedRange<Double> {
+        let lo = validNights.map(\.efficiency).min().map { max(0.0, $0 - 5) } ?? 60.0
+        return lo...100.0
+    }
 
     private let healthKit = HealthKitService.shared
 
@@ -190,7 +195,7 @@ struct SleepEfficiencyView: View {
                     .foregroundStyle(Color.green.opacity(0.4))
                     .lineStyle(StrokeStyle(dash: [4, 3]))
             }
-            .chartYScale(domain: 60...100)
+            .chartYScale(domain: efficiencyDomain)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear, count: 1)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
@@ -227,7 +232,7 @@ struct SleepEfficiencyView: View {
                     .foregroundStyle(Color.green.opacity(0.4))
                     .lineStyle(StrokeStyle(dash: [3, 3]))
             }
-            .chartYScale(domain: 60...100)
+            .chartYScale(domain: efficiencyDomain)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 5)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())

@@ -238,7 +238,7 @@ struct OvertrainingWarningView: View {
                 }
             }
             .frame(height: 160)
-            .chartYScale(domain: 0...12)
+            .chartYScale(domain: 0...max(12, (weeklyScores.map(\.score).max() ?? 10) + 1))
             .chartXAxis { AxisMarks(values: .stride(by: .weekOfYear)) { _ in
                 AxisValueLabel(format: .dateTime.month(.abbreviated).day())
             }}

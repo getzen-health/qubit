@@ -8,7 +8,7 @@ import HealthKit
 /// Tracks Move (calories), Exercise (minutes), and Stand (hours) ring completion.
 struct ActivityRingsHistoryView: View {
     @State private var days: [RingDay] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

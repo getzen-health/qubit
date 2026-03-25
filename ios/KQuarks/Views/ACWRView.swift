@@ -234,7 +234,7 @@ struct ACWRView: View {
                         AxisValueLabel(format: .dateTime.month().day())
                     }
                 }
-                .chartYScale(domain: 0...2.2)
+                .chartYScale(domain: 0...max(2.2, (peakACWR ?? 1.5) + 0.2))
                 .frame(height: 160)
             }
 
@@ -337,7 +337,6 @@ struct ACWRView: View {
         }
 
         processWorkouts(workouts, start: start, end: end)
-        isLoading = false
     }
 
     private func processWorkouts(_ workouts: [HKWorkout], start: Date, end: Date) {

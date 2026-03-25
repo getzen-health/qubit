@@ -199,7 +199,7 @@ struct SleepRegularityIndexView: View {
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 }
             }
-            .chartYScale(domain: 40...100)
+            .chartYScale(domain: max(0, (weekBuckets.map(\.avgSRI).min() ?? 40) - 5)...100)
             .chartYAxis {
                 AxisMarks(values: [40, 60, 80, 100]) { v in
                     AxisValueLabel { Text("\(Int(v.as(Double.self) ?? 0))") }

@@ -357,6 +357,6 @@ struct WrestlingView: View {
             weekData.append(WeeklyWrestlingData(week: fmt.string(from: ws), calories: kcal, sessions: wk.count))
         }
         self.weeklyData = weekData
-        DispatchQueue.main.async { self.isLoading = false }
+        isLoading = false
     }
 }

@@ -49,7 +49,7 @@ struct GlucosePatternView: View {
     @State private var dowData: [GlucoseDowStat] = []
     @State private var timePeriods: [GlucoseTimePeriod] = []
     @State private var monthData: [GlucoseMonthStat] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let targetLow: Double = 70
     private let targetHigh: Double = 140

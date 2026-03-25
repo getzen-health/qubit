@@ -9,7 +9,7 @@ import HealthKit
 struct StepPatternView: View {
     @State private var hourlyData: [HourBucket] = []
     @State private var weekdayData: [DayBucket] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
 

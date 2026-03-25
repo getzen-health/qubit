@@ -7,7 +7,7 @@ import HealthKit
 /// Aggregates swimming workouts to show pace trends, pool/open-water volume, and personal bests.
 struct SwimmingAnalysisView: View {
     @State private var swims: [SwimEntry] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

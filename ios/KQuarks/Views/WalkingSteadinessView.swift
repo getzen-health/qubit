@@ -8,7 +8,7 @@ import HealthKit
 /// gait analysis. A score below 60% indicates increased risk and warrants attention.
 struct WalkingSteadinessView: View {
     @State private var samples: [HKQuantitySample] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

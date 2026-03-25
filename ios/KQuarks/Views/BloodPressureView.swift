@@ -5,7 +5,7 @@ import Charts
 
 struct BloodPressureView: View {
     @State private var readings: [HealthKitService.BPReading] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var showLogSheet = false
 
     var body: some View {
@@ -95,6 +95,13 @@ struct BloodPressureView: View {
 
     // MARK: - Chart
 
+    private var bpChartDomain: ClosedRange<Double> {
+        let allValues = readings.flatMap { [$0.diastolic, $0.systolic] }
+        let lo = allValues.min().map { max(50.0, $0 - 10) } ?? 50
+        let hi = allValues.max().map { max(180.0, $0 + 10) } ?? 180
+        return lo...hi
+    }
+
     private var trendChart: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("30-Day Trend")
@@ -128,7 +135,7 @@ struct BloodPressureView: View {
                     .lineStyle(StrokeStyle(dash: [4]))
             }
             .frame(height: 200)
-            .chartYScale(domain: 50...180)
+            .chartYScale(domain: bpChartDomain)
 
             HStack(spacing: 16) {
                 Label("Systolic", systemImage: "circle.fill")

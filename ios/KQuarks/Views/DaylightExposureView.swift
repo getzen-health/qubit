@@ -8,7 +8,7 @@ import HealthKit
 /// Helps track circadian health — recommended target is 20–30 minutes of bright outdoor light per day.
 struct DaylightExposureView: View {
     @State private var days: [DaylightDay] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
     private let targetMinutes: Double = 20

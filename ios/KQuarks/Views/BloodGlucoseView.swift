@@ -9,7 +9,7 @@ import HealthKit
 /// Standard targets: fasting 70–99 mg/dL, post-meal <180 mg/dL.
 struct BloodGlucoseView: View {
     @State private var readings: [GlucoseReading] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
     private let unit = HKUnit(from: "mg/dL")
@@ -183,7 +183,7 @@ struct BloodGlucoseView: View {
                     }
                 }
             }
-            .chartYScale(domain: max(50, minV)...min(300, maxV))
+            .chartYScale(domain: max(50, minV)...max(300, maxV))
             .chartYAxisLabel("mg/dL")
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in

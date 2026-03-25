@@ -5,7 +5,7 @@ import Charts
 // Day-of-week patterns, seasonal trends, duration histogram, and consistency metrics.
 
 struct SleepPatternView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     // DOW (0=Sun … 6=Sat)
     @State private var dowData: [DayBucket] = []

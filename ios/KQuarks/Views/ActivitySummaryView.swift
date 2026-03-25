@@ -32,7 +32,7 @@ struct ActivitySummaryView: View {
     @State private var thisWeek: [DayActivity] = []
     @State private var lastWeek: [DayActivity] = []
     @State private var last28: [DayActivity] = []  // for 4-week trend
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
     private let stepGoal = 7500

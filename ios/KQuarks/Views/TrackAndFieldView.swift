@@ -496,12 +496,12 @@ struct TrackAndFieldView: View {
         let weekFmt = DateFormatter(); weekFmt.dateFormat = "M/d"
         var weekMap: [Date: (kcal: Double, sessions: Int)] = [:]
         for s in sessions {
-            let ws = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date))!
+            guard let ws = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date)) else { continue }
             let cur = weekMap[ws] ?? (0, 0)
             weekMap[ws] = (cur.kcal + s.kcal, cur.sessions + 1)
         }
         var wCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
-        wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor))!
+        wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor)) ?? wCursor
         var weekLoads: [WeekLoad] = []
         while wCursor <= end {
             let d = weekMap[wCursor] ?? (0, 0)

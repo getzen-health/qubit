@@ -8,7 +8,7 @@ import HealthKit
 
 struct SleepBreathingView: View {
     @State private var nights: [BreathingNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -46,6 +46,12 @@ struct SleepBreathingView: View {
                 }
             }
         }
+    }
+
+    private var breathingChartDomain: ClosedRange<Double> {
+        let lo = nights.map(\.avgBpm).min().map { max(8.0, $0 - 2) } ?? 8.0
+        let hi = nights.map(\.avgBpm).max().map { max(28.0, $0 + 2) } ?? 28.0
+        return lo...hi
     }
 
     private var latest: BreathingNight? { nights.last }
@@ -163,7 +169,7 @@ struct SleepBreathingView: View {
                     .symbolSize(20)
                 }
             }
-            .chartYScale(domain: 8...28)
+            .chartYScale(domain: breathingChartDomain)
             .chartYAxis {
                 AxisMarks(values: [12, 15, 18, 21, 24]) { val in
                     AxisValueLabel { if let v = val.as(Int.self) { Text("\(v)") } }

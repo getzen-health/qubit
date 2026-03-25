@@ -18,7 +18,7 @@ struct VO2MonthStat: Identifiable {
 
 struct VO2PatternView: View {
     @State private var readings: [(value: Double, date: String)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -152,7 +152,7 @@ struct VO2PatternView: View {
                     AxisValueLabel()
                 }
             }
-            .chartYScale(domain: max(20, minVO2 - 3)...min(75, maxVO2 + 3))
+            .chartYScale(domain: max(20, minVO2 - 3)...(maxVO2 + 3))
             .frame(height: 180)
         }
         .padding()

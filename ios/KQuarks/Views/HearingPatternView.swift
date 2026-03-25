@@ -31,7 +31,7 @@ struct HearingHourBucket: Identifiable {
 
 struct HearingPatternView: View {
     @State private var readings: [(db: Double, type: String, date: Date)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -253,7 +253,7 @@ struct HearingPatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: 50...min(110, maxDb + 5))
+            .chartYScale(domain: 50...max(110, maxDb + 5))
             .frame(height: 140)
         }
         .padding()
@@ -273,7 +273,7 @@ struct HearingPatternView: View {
                         .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: 50...min(110, maxDb + 5))
+            .chartYScale(domain: 50...max(110, maxDb + 5))
             .frame(height: 140)
         }
         .padding()
@@ -305,7 +305,7 @@ struct HearingPatternView: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                     .foregroundStyle(.yellow.opacity(0.5))
             }
-            .chartYScale(domain: 50...min(110, maxDb + 5))
+            .chartYScale(domain: 50...max(110, maxDb + 5))
             .frame(height: 160)
         }
         .padding()

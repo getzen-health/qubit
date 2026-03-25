@@ -5,7 +5,7 @@ import SwiftUI
 /// GitHub-style contribution calendar showing daily step intensity over the past year.
 struct ActivityHeatmapView: View {
     @State private var dayData: [String: Int] = [:]  // "yyyy-MM-dd" -> steps
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var selectedDay: SelectedDay?
 
     private let stepGoal: Int = 10_000

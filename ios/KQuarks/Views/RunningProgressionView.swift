@@ -6,7 +6,7 @@ import HealthKit
 // 12-month pace trend, monthly volume, quarterly breakdown, and pace improvement analysis.
 
 struct RunningProgressionView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var runs: [RunEntry] = []
     @State private var months: [MonthEntry] = []
     @State private var quarters: [QuarterEntry] = []

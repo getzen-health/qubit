@@ -7,7 +7,7 @@ import HealthKit
 /// Aggregates running workouts to show pace trends, mileage, and personal bests.
 struct RunningAnalysisView: View {
     @State private var runs: [RunEntry] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

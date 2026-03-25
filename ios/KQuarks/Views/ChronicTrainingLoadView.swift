@@ -336,7 +336,6 @@ struct ChronicTrainingLoadView: View {
         }
 
         processWorkouts(workouts, start: start, end: end)
-        isLoading = false
     }
 
     private func processWorkouts(_ workouts: [HKWorkout], start: Date, end: Date) {

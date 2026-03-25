@@ -9,7 +9,7 @@ import HealthKit
 /// and shows whether the 80/20 (easy/hard) principle is being followed.
 struct RunningPaceZonesView: View {
     @State private var runs: [PaceRun] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthStore = HKHealthStore()
 
@@ -54,7 +54,7 @@ struct RunningPaceZonesView: View {
         let cal = Calendar.current
         var map: [Date: (easy: Double, hard: Double)] = [:]
         for r in runs {
-            let monday = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: r.date))!
+            guard let monday = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: r.date)) else { continue }
             if map[monday] == nil { map[monday] = (0, 0) }
             if r.zone <= 2 { map[monday]!.easy += r.durationSecs / 60 }
             else { map[monday]!.hard += r.durationSecs / 60 }

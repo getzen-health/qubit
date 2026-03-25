@@ -7,7 +7,7 @@ import HealthKit
 /// Blood Oxygen (SpO₂) trend from Apple Watch, with low-reading alerts.
 struct BloodOxygenView: View {
     @State private var samples: [(date: Date, value: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

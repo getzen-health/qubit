@@ -7,7 +7,7 @@ import HealthKit
 /// Analyses rowing workouts: 500m split trend, distance, heart rate, and weekly volume.
 struct RowingAnalysisView: View {
     @State private var sessions: [RowingSession] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

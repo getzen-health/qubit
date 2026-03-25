@@ -40,6 +40,11 @@ struct StandingHoursView: View {
     private let dailyGoal = 12
     private let healthStore = HKHealthStore()
 
+    private var standDomain: ClosedRange<Double> {
+        let hi = days.map(\.standHours).max().map { max(16, $0 + 1) } ?? 16
+        return 0...Double(hi)
+    }
+
     var body: some View {
         ScrollView {
             if isLoading {
@@ -191,7 +196,7 @@ struct StandingHoursView: View {
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 }
             }
-            .chartYScale(domain: 0...16)
+            .chartYScale(domain: standDomain)
             .chartYAxisLabel("hrs/day")
             .frame(height: 130)
         }

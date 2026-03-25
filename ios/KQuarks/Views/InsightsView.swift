@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InsightsView: View {
     @State private var insights: [InsightItem] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     var body: some View {
         NavigationStack {
@@ -63,6 +63,9 @@ struct InsightsView: View {
                 }
             }
             .task {
+                await loadInsights()
+            }
+            .refreshable {
                 await loadInsights()
             }
         }

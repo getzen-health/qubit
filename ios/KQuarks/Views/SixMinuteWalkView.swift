@@ -69,6 +69,12 @@ struct SixMinuteWalkView: View {
     @State private var fitnessLevel: FitnessLevel = .good
     @State private var isLoading = true
 
+    private var walkDomain: ClosedRange<Double> {
+        let lo = readings.map(\.distanceM).min().map { max(200.0, $0 - 30) } ?? 300.0
+        let hi = readings.map(\.distanceM).max().map { max(750.0, $0 + 30) } ?? 750.0
+        return lo...hi
+    }
+
     private let healthStore = HKHealthStore()
 
     var body: some View {
@@ -191,7 +197,7 @@ struct SixMinuteWalkView: View {
                 }
             }
             .chartYAxisLabel("metres")
-            .chartYScale(domain: 300...750)
+            .chartYScale(domain: walkDomain)
             .frame(height: 180)
         }
         .padding()

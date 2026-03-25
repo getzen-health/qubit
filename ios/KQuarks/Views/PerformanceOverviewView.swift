@@ -396,8 +396,8 @@ struct PerformanceOverviewView: View {
                 return v.isEmpty ? nil : v.reduce(0, +) / Double(v.count)
             }
 
-            nowRHR  = nil
-            thenRHR = nil
+            nowRHR  = avgValid(nowSums.map  { $0.resting_heart_rate })
+            thenRHR = avgValid(thenSums.map { $0.resting_heart_rate })
             nowHRV  = avgValid(nowSums.map  { $0.avg_hrv })
             thenHRV = avgValid(thenSums.map { $0.avg_hrv })
         }

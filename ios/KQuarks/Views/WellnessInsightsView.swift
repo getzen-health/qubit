@@ -6,7 +6,7 @@ import Charts
 
 struct WellnessInsightsView: View {
     @State private var records: [WellnessRecord] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     struct WellnessRecord: Identifiable {
         let id = UUID()

@@ -3,7 +3,7 @@ import HealthKit
 
 struct WorkoutsView: View {
     @State private var workouts: [HKWorkout] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var selectedPeriod: WorkoutPeriod = .month
     @State private var searchText = ""
     @State private var showLogWorkout = false

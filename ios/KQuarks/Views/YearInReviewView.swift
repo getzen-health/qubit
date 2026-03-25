@@ -8,7 +8,7 @@ import HealthKit
 /// total steps, workouts, sleep, personal bests, and monthly activity breakdown.
 struct YearInReviewView: View {
     @State private var stats: YearStats?
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

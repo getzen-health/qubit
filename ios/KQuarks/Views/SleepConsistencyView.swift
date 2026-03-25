@@ -8,7 +8,7 @@ import HealthKit
 /// Regular sleep timing is as important as duration for circadian health.
 struct SleepConsistencyView: View {
     @State private var nights: [ConsSleepNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -74,7 +74,7 @@ struct SleepConsistencyView: View {
             VStack(spacing: 16) {
                 if isLoading {
                     ProgressView().padding(.top, 60)
-                } else if nights.count < 3 {
+                } else if nights.count < 5 {
                     emptyState
                 } else {
                     scoreCard

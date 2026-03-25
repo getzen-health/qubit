@@ -58,6 +58,7 @@ struct BodyTemperatureInsightsView: View {
     @State private var latestDeviation: Double = 0
     @State private var avgDeviation: Double = 0
     @State private var maxDeviation: Double = 0
+    @State private var minDeviation: Double = 0
     @State private var consecutiveElevated: Int = 0
     @State private var signal: TemperatureSignal = .normal
     @State private var isLoading = true
@@ -176,7 +177,7 @@ struct BodyTemperatureInsightsView: View {
                 }
             }
             .chartYAxisLabel("°C vs baseline")
-            .chartYScale(domain: -1.5...2.5)
+            .chartYScale(domain: min(-1.5, minDeviation - 0.2)...max(2.5, maxDeviation + 0.2))
             .frame(height: 180)
         }
         .padding()
@@ -315,6 +316,7 @@ struct BodyTemperatureInsightsView: View {
         let devs = allReadings.map(\.deviationC)
         avgDeviation = devs.reduce(0, +) / Double(devs.count)
         maxDeviation = devs.max() ?? 0
+        minDeviation = devs.min() ?? 0
 
         // Count consecutive nights ≥ 1°C ending at most recent
         consecutiveElevated = allReadings.reversed().prefix(while: { $0.deviationC >= 1.0 }).count

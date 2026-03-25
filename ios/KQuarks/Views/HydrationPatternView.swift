@@ -47,7 +47,7 @@ struct HydrationPatternView: View {
     @State private var bestDayDate: Date? = nil
     @State private var avgWorkoutDay: Double? = nil
     @State private var avgRestDay: Double? = nil
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

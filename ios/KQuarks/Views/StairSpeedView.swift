@@ -72,6 +72,12 @@ struct StairSpeedView: View {
 
     private let healthStore = HKHealthStore()
 
+    private var speedDomain: ClosedRange<Double> {
+        let allSpeeds = days.flatMap { [$0.ascentSpeed, $0.descentSpeed].compactMap { $0 } }
+        let hi = allSpeeds.max().map { max(1.2, $0 + 0.1) } ?? 1.2
+        return 0.2...hi
+    }
+
     var body: some View {
         ScrollView {
             if isLoading {
@@ -198,7 +204,7 @@ struct StairSpeedView: View {
                 }
             }
             .chartYAxisLabel("m/s")
-            .chartYScale(domain: 0.2...1.2)
+            .chartYScale(domain: speedDomain)
             .frame(height: 180)
         }
         .padding()

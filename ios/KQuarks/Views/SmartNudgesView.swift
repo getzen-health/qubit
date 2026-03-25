@@ -19,7 +19,7 @@ private struct Nudge: Identifiable {
 /// Rule-based — no AI API required. Refreshes whenever you open the view.
 struct SmartNudgesView: View {
     @State private var nudges: [Nudge] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var lastUpdated: Date?
 
     var body: some View {

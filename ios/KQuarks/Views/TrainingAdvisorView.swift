@@ -100,7 +100,7 @@ struct TrainingAdvisorView: View {
     @State private var currentHRVAvg: Double = 0
     @State private var currentSleepAvg: Double = 0
     @State private var hrvDevPct: Double = 0
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var selectedDay: DayPlan? { plan.first { $0.isToday } }
 

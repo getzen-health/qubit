@@ -55,6 +55,20 @@ struct TrainingVolumeHistoryView: View {
         ScrollView {
             if isLoading {
                 ProgressView().frame(maxWidth: .infinity, minHeight: 300)
+            } else if weeks.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "chart.bar.xaxis")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary)
+                    Text("No Workout Data")
+                        .font(.title3.bold())
+                    Text("Sync your workouts to see training volume history.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                }
+                .padding(.top, 60)
             } else {
                 VStack(spacing: 16) {
                     summaryCards

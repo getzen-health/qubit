@@ -6,7 +6,7 @@ import Charts
 // to reveal which sports are most intense and how efficiency changes over time.
 
 struct WorkoutEfficiencyView: View {
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var typeStats: [TypeEfficiency] = []
     @State private var topSessions: [SessionStat] = []
     @State private var weeklyTrend: [WeekPoint] = []
@@ -403,6 +403,7 @@ struct WorkoutEfficiencyView: View {
             var totalMins: Double = 0
             var totalCals: Double = 0
             var hrSum: Double = 0
+            var hrMins: Double = 0
             var hrSessions = 0
         }
 
@@ -414,7 +415,9 @@ struct WorkoutEfficiencyView: View {
             agg.totalMins += Double(w.durationMinutes)
             agg.totalCals += w.activeCalories ?? 0
             if let hr = w.avgHeartRate, hr > 40 {
-                agg.hrSum += Double(hr) * Double(w.durationMinutes)
+                let mins = Double(w.durationMinutes)
+                agg.hrSum += Double(hr) * mins
+                agg.hrMins += mins
                 agg.hrSessions += 1
             }
             typeMap[key] = agg
@@ -435,7 +438,7 @@ struct WorkoutEfficiencyView: View {
                 calPerMin: agg.totalCals / agg.totalMins,
                 avgDuration: agg.totalMins / Double(agg.sessions),
                 avgCals: agg.totalCals / Double(agg.sessions),
-                avgHr: agg.hrSessions > 0 ? agg.hrSum / agg.totalMins : nil,
+                avgHr: agg.hrMins > 0 ? agg.hrSum / agg.hrMins : nil,
                 color: colors[i % colors.count]
             )
         }

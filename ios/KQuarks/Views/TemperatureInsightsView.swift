@@ -38,7 +38,7 @@ enum TempCategory {
 
 struct TemperatureInsightsView: View {
     @State private var nights: [TempNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     // MARK: - Computed
 

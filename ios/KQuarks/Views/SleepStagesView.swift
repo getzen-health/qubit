@@ -7,7 +7,7 @@ import HealthKit
 
 struct SleepStagesView: View {
     @State private var nights: [SleepSession] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -159,6 +159,7 @@ struct SleepStagesView: View {
             let rem  = total > 0 ? Double(n.remMinutes)  / total * 100 : 0
             return StagePct(id: n.date, date: n.date, deep: deep, rem: rem)
         }
+        let stageDomainMax = (data.flatMap { [$0.deep, $0.rem] }.max() ?? 25.0) + 5.0
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Deep & REM Trend (Last 30 nights)")
@@ -182,7 +183,7 @@ struct SleepStagesView: View {
                 RuleMark(y: .value("Deep min", deepTarget.0)).foregroundStyle(Color.indigo.opacity(0.3)).lineStyle(StrokeStyle(dash: [4, 3]))
                 RuleMark(y: .value("REM min", remTarget.0)).foregroundStyle(Color.purple.opacity(0.3)).lineStyle(StrokeStyle(dash: [4, 3]))
             }
-            .chartYScale(domain: 0...45)
+            .chartYScale(domain: 0...max(45.0, stageDomainMax))
             .chartXAxis { AxisMarks(values: .stride(by: .weekOfYear, count: 1)) { _ in
                 AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 AxisTick()

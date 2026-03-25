@@ -48,7 +48,7 @@ private struct GoalTrack {
 
 struct GoalsHistoryView: View {
     @State private var tracks: [GoalTrack] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
     private let goals     = GoalService.shared

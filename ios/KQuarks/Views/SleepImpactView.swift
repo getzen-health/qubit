@@ -24,7 +24,7 @@ private struct HourBucket: Identifiable {
 
 struct SleepImpactView: View {
     @State private var nights: [ImpactSleepNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var hrvScatter: [ImpactSleepNight] { nights.filter { $0.nextDayHrv != nil } }
     private var stepsScatter: [ImpactSleepNight] { nights.filter { $0.nextDaySteps != nil } }

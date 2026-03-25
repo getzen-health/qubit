@@ -354,6 +354,6 @@ struct AustralianFootballView: View {
             weekData.append(WeeklyAFLData(week: fmt.string(from: ws), calories: kcal, sessions: wk.count))
         }
         self.weeklyData = weekData
-        DispatchQueue.main.async { self.isLoading = false }
+        isLoading = false
     }
 }

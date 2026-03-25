@@ -59,7 +59,7 @@ private struct CardioComponent: Identifiable {
 
 struct CardioHealthSummaryView: View {
     @State private var snapshot: CardioSnapshot?
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var components: [CardioComponent] {
         guard let s = snapshot else { return [] }
@@ -102,7 +102,7 @@ struct CardioHealthSummaryView: View {
             let trendStr = s.vo2MaxTrend.map { $0 > 0.5 ? "↑ improving" : $0 < -0.5 ? "↓ declining" : "→ stable" } ?? ""
             result.append(CardioComponent(
                 name: "VO₂ Max",
-                value: String(format: "%.1f", vo2),
+                value: String(format: "%.1f ml/kg/min", vo2),
                 detail: "\(classifyVO2(vo2))\(trendStr.isEmpty ? "" : " · \(trendStr)")",
                 status: status,
                 icon: "lungs.fill"

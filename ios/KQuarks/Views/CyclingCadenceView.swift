@@ -82,6 +82,12 @@ struct CyclingCadenceView: View {
     private let optimalMin: Double = 85
     private let optimalMax: Double = 100
 
+    private var cadenceDomain: ClosedRange<Double> {
+        let lo = dayAverages.map(\.avgRPM).min().map { max(40.0, $0 - 5) } ?? 40.0
+        let hi = dayAverages.map(\.avgRPM).max().map { max(130.0, $0 + 5) } ?? 130.0
+        return lo...hi
+    }
+
     var body: some View {
         ScrollView {
             if isLoading {
@@ -202,7 +208,7 @@ struct CyclingCadenceView: View {
                 }
             }
             .chartYAxisLabel("RPM")
-            .chartYScale(domain: 40...130)
+            .chartYScale(domain: cadenceDomain)
             .frame(height: 180)
         }
         .padding()

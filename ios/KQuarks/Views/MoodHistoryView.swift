@@ -5,7 +5,7 @@ import Charts
 
 struct MoodHistoryView: View {
     @State private var checkins: [DailyCheckin] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let energyEmojis = ["", "😴", "😑", "😐", "🙂", "😄"]
     private let moodEmojis   = ["", "😞", "😕", "😐", "🙂", "😁"]

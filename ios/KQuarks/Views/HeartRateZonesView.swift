@@ -12,7 +12,7 @@ struct HeartRateZonesView: View {
     @State private var weeklyZoneData: [WeeklyZone] = []
     @State private var workoutZones: [WorkoutZoneSummary] = []
     @State private var userMaxHR: Double = 180
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

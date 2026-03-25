@@ -26,6 +26,7 @@ final class CheckinViewModel {
     var notes        = ""
 
     var isEditing = false
+    var saveError: String?
 
     var hasFilledAny: Bool { energy != nil || mood != nil || stress != nil }
 
@@ -59,7 +60,7 @@ final class CheckinViewModel {
             await load()
             isEditing = false
         } catch {
-            print("[CheckinViewModel] save failed: \(error)")
+            saveError = "Failed to save check-in. Please try again."
         }
     }
 
@@ -137,6 +138,17 @@ struct CheckinView: View {
             }
             .task {
                 await vm.load()
+            }
+            .refreshable {
+                await vm.load()
+            }
+            .alert("Save Failed", isPresented: Binding(
+                get: { vm.saveError != nil },
+                set: { if !$0 { vm.saveError = nil } }
+            )) {
+                Button("OK") { vm.saveError = nil }
+            } message: {
+                Text(vm.saveError ?? "")
             }
         }
     }

@@ -143,6 +143,9 @@ struct AudioExposureView: View {
 
     private var envChart: some View {
         let withEnv = dailyData.filter { $0.envAvgDB != nil }
+        let envValues = withEnv.compactMap { $0.envAvgDB }
+        let envDomainLo = envValues.min().map { max(40.0, $0 - 5) } ?? 50.0
+        let envDomainHi = envValues.max().map { max(100.0, $0 + 5) } ?? 100.0
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Environmental Noise (dB)").font(.headline)
@@ -175,7 +178,7 @@ struct AudioExposureView: View {
                 }
             }
             .chartYAxisLabel("dB SPL")
-            .chartYScale(domain: 50...100)
+            .chartYScale(domain: envDomainLo...envDomainHi)
             .frame(height: 150)
         }
         .padding()

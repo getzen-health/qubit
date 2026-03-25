@@ -331,7 +331,6 @@ private struct RunningBiomechanicsContent: View {
             self.noData = points.isEmpty
             self.isLoading = false
         }
-        isLoading = false
     }
 
     private func fetchSamples(type: HKQuantityType, pred: NSPredicate, sort: NSSortDescriptor) async -> [HKQuantitySample] {

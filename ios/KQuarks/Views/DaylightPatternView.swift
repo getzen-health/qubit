@@ -31,7 +31,7 @@ struct DaylightZoneStat: Identifiable {
 
 struct DaylightPatternView: View {
     @State private var readings: [(date: Date, minutes: Double)] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let dow = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     private let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

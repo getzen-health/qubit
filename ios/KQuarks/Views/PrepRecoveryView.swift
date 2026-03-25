@@ -428,12 +428,12 @@ struct PrepRecoveryView: View {
         let weekFmt = DateFormatter(); weekFmt.dateFormat = "M/d"
         var weekMap: [Date: (sessions: Int, totalMin: Double)] = [:]
         for s in sessions {
-            let ws  = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date))!
+            guard let ws = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: s.date)) else { continue }
             let cur = weekMap[ws] ?? (0, 0)
             weekMap[ws] = (cur.sessions + 1, cur.totalMin + s.durationMin)
         }
         var wCursor = calendar.date(byAdding: .month, value: -3, to: end) ?? Date()
-        wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor))!
+        wCursor = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: wCursor)) ?? wCursor
         var weekLoads: [WeekLoad] = []
         while wCursor <= end {
             let d = weekMap[wCursor] ?? (0, 0)

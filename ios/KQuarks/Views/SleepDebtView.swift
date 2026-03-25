@@ -8,7 +8,7 @@ struct SleepDebtView: View {
     private let targetHours: Double = 8.0
 
     @State private var nights: [SleepNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private var cumulativeDebt: Double {
         nights.reduce(0) { $0 + $1.deficit }

@@ -54,7 +54,7 @@ private struct ScoredNight: Identifiable {
 
 struct SleepQualityScoreView: View {
     @State private var nights: [ScoredNight] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 
@@ -195,7 +195,7 @@ struct SleepQualityScoreView: View {
 
     private var trendChart: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Score Trend — Last 30 Nights")
+            Text("Score Trend — Last 60 Days")
                 .font(.headline)
                 .padding(.horizontal, 4)
 

@@ -79,6 +79,13 @@ struct SleepTrainingBalanceView: View {
     @State private var correlationR: Double = 0   // Pearson r between training hours and sleep hours
     @State private var isLoading = true
 
+    private var sleepDomain: ClosedRange<Double> {
+        let sleepVals = weeks.map(\.avgSleepHours).filter { $0 > 0 }
+        let lo = sleepVals.min().map { max(3.0, $0 - 0.5) } ?? 4.0
+        let hi = sleepVals.max().map { max(10.0, $0 + 0.5) } ?? 10.0
+        return lo...hi
+    }
+
     private let healthStore = HKHealthStore()
     private let calendar = Calendar.current
 
@@ -266,7 +273,7 @@ struct SleepTrainingBalanceView: View {
                 .chartXAxisLabel("Weekly Training Hours")
                 .chartYAxisLabel("Avg Sleep (h)")
                 .chartXScale(domain: 0...(weeks.map(\.trainingHours).max() ?? 12) + 2)
-                .chartYScale(domain: 4...10)
+                .chartYScale(domain: sleepDomain)
             }
         }
         .padding()

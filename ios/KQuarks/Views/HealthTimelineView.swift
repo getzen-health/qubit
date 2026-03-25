@@ -22,7 +22,7 @@ private struct TimelineEvent: Identifiable {
 
 struct HealthTimelineView: View {
     @State private var events: [TimelineEvent] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var filter: EventFilter = .all
 
     private let healthKit = HealthKitService.shared

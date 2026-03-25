@@ -8,7 +8,7 @@ import HealthKit
 struct TrainingLoadView: View {
     @State private var weeks: [WeekLoad] = []
     @State private var acwr: Double = 1.0
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     private let healthKit = HealthKitService.shared
 

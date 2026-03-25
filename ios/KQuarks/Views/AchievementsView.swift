@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AchievementsView: View {
     @State private var achievements: [SupabaseService.Achievement] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     var body: some View {
         NavigationStack {
