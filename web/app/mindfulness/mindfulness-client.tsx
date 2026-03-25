@@ -17,8 +17,26 @@ interface MindfulSession {
   source?: string | null
 }
 
+interface HrvEntry {
+  date: string
+  avg_hrv: number | null
+}
+
 interface MindfulnessClientProps {
   sessions: MindfulSession[]
+  hrvData: HrvEntry[]
+}
+
+function pearsonR(xs: number[], ys: number[]): number {
+  const n = xs.length
+  if (n < 3) return 0
+  const mx = xs.reduce((a, b) => a + b) / n
+  const my = ys.reduce((a, b) => a + b) / n
+  const num = xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0)
+  const den = Math.sqrt(
+    xs.reduce((s, x) => s + (x - mx) ** 2, 0) * ys.reduce((s, y) => s + (y - my) ** 2, 0),
+  )
+  return den === 0 ? 0 : +(num / den).toFixed(2)
 }
 
 const tooltipStyle = {
@@ -34,7 +52,7 @@ function fmtDur(min: number) {
   return `${Math.floor(m / 60)}h ${m % 60}m`
 }
 
-export function MindfulnessClient({ sessions }: MindfulnessClientProps) {
+export function MindfulnessClient({ sessions, hrvData }: MindfulnessClientProps) {
   if (sessions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -64,6 +82,46 @@ export function MindfulnessClient({ sessions }: MindfulnessClientProps) {
   const avgPerDay = chartData.length > 0 ? totalMin / chartData.length : 0
   const longestSession = Math.max(...sessions.map((s) => s.value))
   const daysWithSession = Object.keys(dailyMap).length
+
+  // HRV correlation: pair each day's mindfulness minutes with next-day HRV
+  const hrvMap: Record<string, number> = {}
+  for (const h of hrvData) {
+    if (h.avg_hrv !== null) hrvMap[h.date] = h.avg_hrv
+  }
+
+  const corrXs: number[] = []
+  const corrYs: number[] = []
+  const meditatedNextHrvs: number[] = []
+  const nonMeditatedNextHrvs: number[] = []
+
+  for (const hDate of Object.keys(hrvMap).sort()) {
+    const prev = new Date(hDate + 'T00:00:00')
+    prev.setDate(prev.getDate() - 1)
+    const prevStr = prev.toISOString().slice(0, 10)
+    const mins = dailyMap[prevStr] ?? 0
+    corrXs.push(mins)
+    corrYs.push(hrvMap[hDate])
+    if (mins >= 10) {
+      meditatedNextHrvs.push(hrvMap[hDate])
+    } else {
+      nonMeditatedNextHrvs.push(hrvMap[hDate])
+    }
+  }
+
+  const correlation = pearsonR(corrXs, corrYs)
+  const avgMeditatedHrv =
+    meditatedNextHrvs.length > 0
+      ? Math.round(meditatedNextHrvs.reduce((a, b) => a + b) / meditatedNextHrvs.length)
+      : null
+  const avgNonMeditatedHrv =
+    nonMeditatedNextHrvs.length > 0
+      ? Math.round(nonMeditatedNextHrvs.reduce((a, b) => a + b) / nonMeditatedNextHrvs.length)
+      : null
+  const meditatedMinsArr = Object.values(dailyMap).filter((m) => m >= 10)
+  const avgMedMinutes =
+    meditatedMinsArr.length > 0
+      ? Math.round(meditatedMinsArr.reduce((a, b) => a + b) / meditatedMinsArr.length)
+      : 0
 
   return (
     <div className="space-y-6">
@@ -106,6 +164,26 @@ export function MindfulnessClient({ sessions }: MindfulnessClientProps) {
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* HRV Impact */}
+      <div className="bg-surface rounded-xl border border-border p-4">
+        <h2 className="text-sm font-semibold text-text-primary mb-2">HRV Impact</h2>
+        {correlation > 0.2 && avgMeditatedHrv !== null && avgNonMeditatedHrv !== null ? (
+          <p className="text-sm text-text-secondary">
+            On days you meditated {avgMedMinutes}+ min, next-day HRV averaged{' '}
+            <span className="text-green-400 font-medium">{avgMeditatedHrv} ms</span> vs{' '}
+            <span className="font-medium text-text-primary">{avgNonMeditatedHrv} ms</span> on days
+            without meditation.
+          </p>
+        ) : (
+          <p className="text-sm text-text-secondary">
+            Not enough data yet for correlation. Keep logging mindfulness sessions.
+          </p>
+        )}
+        {correlation > 0 && (
+          <p className="text-xs text-text-secondary mt-2 opacity-60">Correlation: r = {correlation}</p>
+        )}
+      </div>
 
       {/* Session list */}
       <div className="space-y-2">

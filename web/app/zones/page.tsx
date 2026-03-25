@@ -18,7 +18,7 @@ export default async function ZonesPage() {
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
   const startIso = ninetyDaysAgo.toISOString()
 
-  const [{ data: workouts }, { data: dailyHr }] = await Promise.all([
+  const [{ data: workouts }, { data: dailyHr }, { data: profileRaw }] = await Promise.all([
     supabase
       .from('workout_records')
       .select('id, start_time, workout_type, duration_minutes, avg_heart_rate, max_heart_rate, distance_meters, active_calories')
@@ -35,15 +35,34 @@ export default async function ZonesPage() {
       .gt('max_hr', 0)
       .order('max_hr', { ascending: false })
       .limit(1),
+    supabase
+      .from('users')
+      .select('date_of_birth, age')
+      .eq('id', user.id)
+      .maybeSingle(),
   ])
 
-  // Determine max HR from observed data (take the highest max HR ever recorded)
+  // Determine observed max HR from workout and daily HR data
   const observedMax = Math.max(
     ...(workouts ?? []).map((w) => w.max_heart_rate ?? 0),
     ...(dailyHr ?? []).map((d) => d.max_hr ?? 0),
   )
-  // Use observed max or fall back to conservative 190
-  const maxHr = observedMax > 100 ? observedMax : 190
+  const observedMaxHr = observedMax > 100 ? observedMax : null
+
+  // Compute age-based max HR fallback (220 − age)
+  const profile = profileRaw as { date_of_birth?: string | null; age?: number | null } | null
+  const userAge =
+    profile?.age ??
+    (profile?.date_of_birth
+      ? Math.floor(
+          (Date.now() - new Date(profile.date_of_birth).getTime()) /
+            (365.25 * 24 * 3600 * 1000),
+        )
+      : null)
+  const ageBasedMaxHr = userAge ? 220 - userAge : null
+
+  // Priority: observed max HR > age-based > 190 default
+  const displayMaxHr = observedMaxHr ?? ageBasedMaxHr ?? 190
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,13 +77,13 @@ export default async function ZonesPage() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-text-primary">Training Zones</h1>
-            <p className="text-sm text-text-secondary">Last 90 days · Max HR {maxHr} bpm</p>
+            <p className="text-sm text-text-secondary">Last 90 days · Max HR {displayMaxHr} bpm</p>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <ZonesClient workouts={workouts ?? []} maxHr={maxHr} />
+        <ZonesClient workouts={workouts ?? []} observedMaxHr={observedMaxHr} ageBasedMaxHr={ageBasedMaxHr} />
       </main>
       <BottomNav />
     </div>

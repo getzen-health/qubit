@@ -26,7 +26,8 @@ interface Workout {
 
 interface ZonesClientProps {
   workouts: Workout[]
-  maxHr: number
+  observedMaxHr: number | null
+  ageBasedMaxHr: number | null
 }
 
 const ZONES = [
@@ -62,7 +63,14 @@ function fmtDuration(min: number) {
   return h > 0 ? `${h}h ${m}m` : `${m}m`
 }
 
-export function ZonesClient({ workouts, maxHr }: ZonesClientProps) {
+export function ZonesClient({ workouts, observedMaxHr, ageBasedMaxHr }: ZonesClientProps) {
+  // Priority: observed max HR > age-based > 190 default
+  const effectiveMaxHr = observedMaxHr ?? ageBasedMaxHr ?? 190
+  const maxHrSource = observedMaxHr
+    ? 'Derived from your highest recorded workout HR. Zone thresholds update automatically as new data syncs.'
+    : ageBasedMaxHr
+      ? 'Estimated using age-based formula (220 − age). Sync workout HR data for a personalised max.'
+      : 'Using default estimate (190 bpm). Sync workouts with heart rate for personalised zones.'
   if (workouts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -78,8 +86,8 @@ export function ZonesClient({ workouts, maxHr }: ZonesClientProps) {
   // Tag each workout with its zone
   const tagged = workouts.map((w) => ({
     ...w,
-    zone: getZone(w.avg_heart_rate, maxHr),
-    pct: w.avg_heart_rate / maxHr,
+    zone: getZone(w.avg_heart_rate, effectiveMaxHr),
+    pct: w.avg_heart_rate / effectiveMaxHr,
   }))
 
   // Zone distribution (count & minutes per zone)
@@ -91,7 +99,7 @@ export function ZonesClient({ workouts, maxHr }: ZonesClientProps) {
       color: z.color,
       count: inZone.length,
       minutes: inZone.reduce((s, w) => s + w.duration_minutes, 0),
-      bpmRange: `${Math.round(z.pctMin * maxHr)}–${z.zone === 5 ? maxHr : Math.round(z.pctMax * maxHr)} bpm`,
+      bpmRange: `${Math.round(z.pctMin * effectiveMaxHr)}–${z.zone === 5 ? effectiveMaxHr : Math.round(z.pctMax * effectiveMaxHr)} bpm`,
     }
   })
 
@@ -130,15 +138,31 @@ export function ZonesClient({ workouts, maxHr }: ZonesClientProps) {
       {/* Max HR context */}
       <div className="bg-surface rounded-xl border border-border p-4 flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-          <span className="text-red-400 text-lg font-bold">{maxHr}</span>
+          <span className="text-red-400 text-lg font-bold">{effectiveMaxHr}</span>
         </div>
         <div>
-          <p className="text-sm font-medium text-text-primary">Max Heart Rate: {maxHr} bpm</p>
-          <p className="text-xs text-text-secondary mt-0.5">
-            Derived from your highest recorded workout HR. Zone thresholds update automatically as new data syncs.
-          </p>
+          <p className="text-sm font-medium text-text-primary">Max Heart Rate: {effectiveMaxHr} bpm</p>
+          <p className="text-xs text-text-secondary mt-0.5">{maxHrSource}</p>
         </div>
       </div>
+
+      {/* Zone 2 advisory banner */}
+      {(() => {
+        const highIntensityMinutes =
+          (zoneSummary.find((z) => z.zone === 4)?.minutes ?? 0) +
+          (zoneSummary.find((z) => z.zone === 5)?.minutes ?? 0)
+        const highIntensityPct = totalMinutes > 0 ? highIntensityMinutes / totalMinutes : 0
+        return highIntensityPct > 0.4 ? (
+          <div className="bg-yellow-900/30 border border-yellow-600/40 rounded-xl p-3 text-sm text-yellow-200 flex gap-2">
+            <span>⚠️</span>
+            <span>
+              {Math.round(highIntensityPct * 100)}% of workout time is in Zone 4–5. Build aerobic base
+              with more Zone 2 training (60–70% max HR).
+              <span className="text-yellow-400 text-xs ml-2">Research: Seiler 2010 polarized training</span>
+            </span>
+          </div>
+        ) : null
+      })()}
 
       {/* Zone thresholds */}
       <div className="space-y-2">

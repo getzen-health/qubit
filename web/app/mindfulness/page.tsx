@@ -17,13 +17,21 @@ export default async function MindfulnessPage() {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  const { data: records } = await supabase
-    .from('health_records')
-    .select('value, start_time, end_time, source')
-    .eq('user_id', user.id)
-    .eq('type', 'mindfulness')
-    .gte('start_time', thirtyDaysAgo.toISOString())
-    .order('start_time', { ascending: false })
+  const [{ data: records }, { data: hrvData }] = await Promise.all([
+    supabase
+      .from('health_records')
+      .select('value, start_time, end_time, source')
+      .eq('user_id', user.id)
+      .eq('type', 'mindfulness')
+      .gte('start_time', thirtyDaysAgo.toISOString())
+      .order('start_time', { ascending: false }),
+    supabase
+      .from('daily_summaries')
+      .select('date, avg_hrv')
+      .eq('user_id', user.id)
+      .gte('date', thirtyDaysAgo.toISOString().slice(0, 10))
+      .not('avg_hrv', 'is', null),
+  ])
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,7 +62,7 @@ export default async function MindfulnessPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <MindfulnessClient sessions={records ?? []} />
+        <MindfulnessClient sessions={records ?? []} hrvData={hrvData ?? []} />
       </main>
       <BottomNav />
     </div>
