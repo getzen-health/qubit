@@ -174,7 +174,8 @@ struct ActivityHeatmapView: View {
                 Text(sel.date, style: .date)
                     .font(.subheadline.weight(.medium))
                 if sel.steps > 0 {
-                    Text("\(sel.steps.formatted()) steps · \(Int(Double(sel.steps) / Double(stepGoal) * 100))% of goal")
+                    let goalPct = Int(Double(sel.steps) / Double(stepGoal) * 100)
+                    Text("\(sel.steps.formatted()) steps · \(goalPct)% of goal")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {

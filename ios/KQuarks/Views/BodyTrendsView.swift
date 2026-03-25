@@ -131,7 +131,7 @@ struct BodyTrendsView: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                Rectangle().fill(Color(.separator)).frame(width: 1, height: 40)
+                Rectangle().fill(Color(.separator)).frame(width: CGFloat(1), height: CGFloat(40))
 
                 VStack(spacing: 4) {
                     Text("Last 30 days").font(.caption2).foregroundStyle(.secondary)
@@ -145,7 +145,7 @@ struct BodyTrendsView: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                Rectangle().fill(Color(.separator)).frame(width: 1, height: 40)
+                Rectangle().fill(Color(.separator)).frame(width: CGFloat(1), height: CGFloat(40))
 
                 VStack(spacing: 4) {
                     Text("Trend").font(.caption2).foregroundStyle(.secondary)
@@ -187,7 +187,7 @@ struct BodyTrendsView: View {
                     .frame(maxWidth: .infinity)
                 }
                 if let bf0 = earliestBf, latestBf != nil {
-                    Rectangle().fill(Color(.separator)).frame(width: 1, height: 40)
+                    Rectangle().fill(Color(.separator)).frame(width: CGFloat(1), height: CGFloat(40))
                     VStack(spacing: 4) {
                         Text("Started").font(.caption2).foregroundStyle(.secondary)
                         Text(String(format: "%.1f%%", bf0)).font(.title3.bold()).foregroundStyle(.primary)
@@ -195,7 +195,7 @@ struct BodyTrendsView: View {
                     .frame(maxWidth: .infinity)
                 }
                 if let bfc = bfChange {
-                    Rectangle().fill(Color(.separator)).frame(width: 1, height: 40)
+                    Rectangle().fill(Color(.separator)).frame(width: CGFloat(1), height: CGFloat(40))
                     VStack(spacing: 4) {
                         Text("Change").font(.caption2).foregroundStyle(.secondary)
                         Text((bfc >= 0 ? "+" : "") + String(format: "%.1f%%", bfc))
@@ -239,7 +239,7 @@ struct BodyTrendsView: View {
                             // Center line
                             Rectangle()
                                 .fill(Color(.separator))
-                                .frame(width: 1, height: 12)
+                                .frame(width: CGFloat(1), height: CGFloat(12))
                                 .frame(maxWidth: .infinity, alignment: .center)
 
                             if isPos {

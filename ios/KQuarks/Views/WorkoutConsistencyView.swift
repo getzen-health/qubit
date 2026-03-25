@@ -287,9 +287,10 @@ struct WorkoutConsistencyView: View {
                         .frame(width: 68, alignment: .leading)
                     GeometryReader { geo in
                         let pct = totalSessions > 0 ? Double(s.count) / Double(totalSessions) : 0
+                        let barWidth = max(CGFloat(4), geo.size.width * CGFloat(pct))
                         RoundedRectangle(cornerRadius: 4)
                             .fill(s.color)
-                            .frame(width: max(4, geo.size.width * pct))
+                            .frame(width: barWidth)
                     }
                     .frame(height: 16)
                     let pct = totalSessions > 0 ? Int(Double(s.count) / Double(totalSessions) * 100) : 0

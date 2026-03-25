@@ -336,24 +336,24 @@ struct EmojiSelectorView: View {
 
             HStack(spacing: 6) {
                 ForEach(1...5, id: \.self) { v in
+                    let isSelected = value == v
                     Button {
-                        value = (value == v) ? nil : v
+                        value = isSelected ? nil : v
                     } label: {
+                        let bgColor: Color = isSelected ? accent.opacity(0.2) : Color(.systemGroupedBackground)
+                        let strokeColor: Color = isSelected ? accent : Color.clear
+                        let scale: CGFloat = isSelected ? 1.08 : 1.0
                         Text(emojis[v])
                             .font(.system(size: 28))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .background(
-                                value == v
-                                    ? accent.opacity(0.2)
-                                    : Color(.systemGroupedBackground)
-                            )
+                            .background(bgColor)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(value == v ? accent : Color.clear, lineWidth: 2)
+                                    .stroke(strokeColor, lineWidth: 2)
                             )
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .scaleEffect(value == v ? 1.08 : 1.0)
+                            .scaleEffect(scale)
                             .animation(.spring(duration: 0.2), value: value)
                     }
                     .buttonStyle(.plain)
