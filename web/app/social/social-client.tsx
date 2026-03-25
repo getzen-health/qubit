@@ -1,8 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { Trophy, Users, Plus, X, Check, TrendingUp } from 'lucide-react'
+import { Trophy, Users, Plus, X, Check, TrendingUp, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+interface FriendPrivacy {
+  privacy_mode: 'public' | 'friends' | 'private'
+  share_steps: boolean
+  share_workouts: boolean
+  share_sleep: boolean
+  share_hrv: boolean
+  share_readiness: boolean
+}
 
 interface Friend {
   id: string
@@ -10,6 +19,7 @@ interface Friend {
   steps_today: number | null
   recovery_score: number | null
   sleep_minutes: number | null
+  privacy?: FriendPrivacy
 }
 
 interface Challenge {
@@ -39,6 +49,21 @@ const METRIC_LABELS: Record<string, string> = {
   hrv: 'HRV (ms)',
 }
 
+function canViewMetric(friend: Friend, metric: 'steps' | 'readiness' | 'sleep' | 'workouts' | 'hrv'): boolean {
+  if (!friend.privacy) return true // Default to visible if no privacy data
+  if (friend.privacy.privacy_mode === 'private') return false
+  
+  const shareMap: Record<string, boolean> = {
+    steps: friend.privacy.share_steps,
+    readiness: friend.privacy.share_readiness,
+    sleep: friend.privacy.share_sleep,
+    workouts: friend.privacy.share_workouts,
+    hrv: friend.privacy.share_hrv,
+  }
+  
+  return shareMap[metric] ?? true
+}
+
 function AvatarInitials({ name }: { name: string }) {
   const initials = name
     .split(' ')
@@ -53,7 +78,14 @@ function AvatarInitials({ name }: { name: string }) {
   )
 }
 
-function ReadinessRing({ score }: { score: number | null }) {
+function ReadinessRing({ score, isHidden }: { score: number | null; isHidden?: boolean }) {
+  if (isHidden) {
+    return (
+      <div className="w-10 h-10 rounded-full border-2 border-border flex items-center justify-center text-text-secondary">
+        <Lock className="w-4 h-4" />
+      </div>
+    )
+  }
   if (score === null) return <div className="w-10 h-10 rounded-full border-2 border-border flex items-center justify-center text-text-secondary text-xs">—</div>
   const pct = Math.min(100, Math.max(0, score))
   const colour = pct >= 70 ? '#22c55e' : pct >= 40 ? '#f59e0b' : '#ef4444'
@@ -193,26 +225,36 @@ export function SocialClient({ friends, activeChallenges }: SocialClientProps) {
               No friends yet. Invite someone to get started!
             </div>
           ) : (
-            friends.map((f) => (
-              <div key={f.id} className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
-                <AvatarInitials name={f.display_name} />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-text-primary text-sm truncate">{f.display_name}</p>
-                  <p className="text-xs text-text-secondary">
-                    {f.steps_today !== null ? `${f.steps_today.toLocaleString()} steps today` : 'No data today'}
-                  </p>
+            friends.map((f) => {
+              const canViewSteps = canViewMetric(f, 'steps')
+              const canViewReadiness = canViewMetric(f, 'readiness')
+              
+              return (
+                <div key={f.id} className="bg-surface rounded-xl border border-border p-4 flex items-center gap-3">
+                  <AvatarInitials name={f.display_name} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-text-primary text-sm truncate">{f.display_name}</p>
+                    <p className="text-xs text-text-secondary">
+                      {canViewSteps ? (
+                        f.steps_today !== null ? `${f.steps_today.toLocaleString()} steps today` : 'No data today'
+                      ) : (
+                        <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Private</span>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {canViewReadiness && f.sleep_minutes !== null && (
+                      <span className="text-xs text-text-secondary hidden sm:block">
+                        {Math.floor(f.sleep_minutes / 60)}h {f.sleep_minutes % 60}m
+                      </span>
+                    )}
+                    <ReadinessRing score={canViewReadiness ? f.recovery_score : null} isHidden={!canViewReadiness && f.recovery_score !== null} />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {f.sleep_minutes !== null && (
-                    <span className="text-xs text-text-secondary hidden sm:block">
-                      {Math.floor(f.sleep_minutes / 60)}h {f.sleep_minutes % 60}m
-                    </span>
-                  )}
-                  <ReadinessRing score={f.recovery_score} />
-                </div>
-              </div>
-            ))
-          )}
+              )
+            })
+          )
+        )}
         </div>
       )}
 

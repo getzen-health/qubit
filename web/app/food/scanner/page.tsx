@@ -142,6 +142,11 @@ export default function FoodScannerPage() {
   const [mealAdded, setMealAdded] = useState(false)
   const [isFavorited, setIsFavorited] = useState(false)
   const [favoriteLoading, setFavoriteLoading] = useState(false)
+  const [showReportForm, setShowReportForm] = useState(false)
+  const [reportName, setReportName] = useState('')
+  const [reportBrand, setReportBrand] = useState('')
+  const [reportNotes, setReportNotes] = useState('')
+  const [reportingMissing, setReportingMissing] = useState(false)
 
   function getDefaultMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
     const hour = new Date().getHours()
@@ -180,8 +185,10 @@ export default function FoodScannerPage() {
       })
       setMealAdded(true)
       setTimeout(() => setMealAdded(false), 3000)
-    } catch {
-      // silent fail — user will see no feedback but diary still works
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to add meal'
+      setError(message)
+      setTimeout(() => setError(null), 4000)
     } finally {
       setAddingToMeal(false)
     }
@@ -316,6 +323,37 @@ export default function FoodScannerPage() {
     }
   }, [searchQuery, lookupBarcode])
 
+  const handleReportMissing = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!reportName.trim()) return
+    setReportingMissing(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not signed in')
+      
+      const { error } = await supabase.from('missing_products').insert({
+        user_id: user.id,
+        barcode: barcode || null,
+        product_name: reportName,
+        brand: reportBrand || null,
+        notes: reportNotes || null,
+      })
+      if (error) throw error
+      
+      setReportName('')
+      setReportBrand('')
+      setReportNotes('')
+      setShowReportForm(false)
+      setError('Thank you for reporting! We\'ll investigate this product.')
+      setTimeout(() => setError(null), 3000)
+    } catch (err) {
+      console.error('Failed to report missing product:', err)
+    } finally {
+      setReportingMissing(false)
+    }
+  }, [reportName, reportBrand, reportNotes, barcode])
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
@@ -378,9 +416,66 @@ export default function FoodScannerPage() {
         )}
 
         {error && (
-          <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
-            <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
-            <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <div className="flex flex-col gap-3 p-4 rounded-xl border" style={{
+            backgroundColor: error.includes('Thank you') ? '#f0fdf4' : '#fef2f2',
+            borderColor: error.includes('Thank you') ? '#86efac' : '#fecaca',
+          }}>
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 shrink-0" style={{color: error.includes('Thank you') ? '#22c55e' : '#ef4444'}} />
+              <p className="text-sm" style={{color: error.includes('Thank you') ? '#166534' : '#991b1b'}}>
+                {error}
+              </p>
+            </div>
+            
+            {!error.includes('Thank you') && !product && !showReportForm && (
+              <button
+                onClick={() => setShowReportForm(true)}
+                className="text-purple-400 text-sm underline text-left hover:text-purple-300"
+              >
+                Report missing product
+              </button>
+            )}
+            
+            {!product && showReportForm && (
+              <form onSubmit={handleReportMissing} className="flex flex-col gap-2 mt-2">
+                <input
+                  required
+                  placeholder="Product name"
+                  value={reportName}
+                  onChange={(e) => setReportName(e.target.value)}
+                  className="bg-zinc-700 text-white rounded px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                />
+                <input
+                  placeholder="Brand (optional)"
+                  value={reportBrand}
+                  onChange={(e) => setReportBrand(e.target.value)}
+                  className="bg-zinc-700 text-white rounded px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                />
+                <textarea
+                  placeholder="Notes (optional)"
+                  value={reportNotes}
+                  onChange={(e) => setReportNotes(e.target.value)}
+                  className="bg-zinc-700 text-white rounded px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
+                  rows={2}
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={reportingMissing}
+                    className="flex-1 bg-purple-600 text-white rounded py-2 text-sm font-medium hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                  >
+                    {reportingMissing ? 'Submitting...' : 'Submit Report'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowReportForm(false)}
+                    className="px-4 bg-zinc-700 text-white rounded py-2 text-sm font-medium hover:bg-zinc-600 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
 

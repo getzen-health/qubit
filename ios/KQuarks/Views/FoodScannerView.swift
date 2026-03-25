@@ -614,7 +614,7 @@ struct ProductDetailView: View {
             )
             showSaved = true
         } catch {
-            // Silently fail — user can try again
+            errorMessage = "Failed to save meal: \(error.localizedDescription)"
         }
     }
 
@@ -876,7 +876,7 @@ final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOut
         let output = AVCaptureMetadataOutput()
         session.addOutput(output)
         output.setMetadataObjectsDelegate(self, queue: .main)
-        output.metadataObjectTypes = [.ean8, .ean13, .upce, .code128, .qr]
+        output.metadataObjectTypes = [.ean8, .ean13, .upca, .upce, .code128, .code39, .qr]
 
         let preview = AVCaptureVideoPreviewLayer(session: session)
         preview.frame = view.layer.bounds

@@ -1,29 +1,43 @@
 import SwiftUI
 
 struct RingsComplicationView: View {
-    var movePercent: Double  // 0.0 to 1.0+
-    var exercisePercent: Double
-    var standPercent: Double
+    let steps: Int
+    let stepGoal: Int
+    let readinessScore: Int
+    let activeCalories: Int
+    let calorieGoal: Int
+    
+    var stepsPercent: Double {
+        stepGoal > 0 ? Double(steps) / Double(stepGoal) : 0.0
+    }
+    
+    var caloriesPercent: Double {
+        calorieGoal > 0 ? Double(activeCalories) / Double(calorieGoal) : 0.0
+    }
+    
+    var readinessPercent: Double {
+        Double(readinessScore) / 100.0
+    }
 
     var body: some View {
         ZStack {
-            // Outer ring: Move (red)
-            Gauge(value: min(movePercent, 1.0)) {
+            // Outer ring: Steps (red)
+            Gauge(value: min(stepsPercent, 1.0)) {
                 EmptyView()
             }
             .gaugeStyle(.accessoryCircularCapacity)
             .tint(.red)
 
-            // Middle ring: Exercise (green)
-            Gauge(value: min(exercisePercent, 1.0)) {
+            // Middle ring: Calories (green)
+            Gauge(value: min(caloriesPercent, 1.0)) {
                 EmptyView()
             }
             .gaugeStyle(.accessoryCircularCapacity)
             .tint(.green)
             .scaleEffect(0.67)
 
-            // Inner ring: Stand (cyan)
-            Gauge(value: min(standPercent, 1.0)) {
+            // Inner ring: Readiness (cyan)
+            Gauge(value: min(readinessPercent, 1.0)) {
                 EmptyView()
             }
             .gaugeStyle(.accessoryCircularCapacity)
@@ -34,5 +48,5 @@ struct RingsComplicationView: View {
 }
 
 #Preview {
-    RingsComplicationView(movePercent: 0.75, exercisePercent: 0.5, standPercent: 1.0)
+    RingsComplicationView(steps: 7500, stepGoal: 10000, readinessScore: 72, activeCalories: 320, calorieGoal: 500)
 }

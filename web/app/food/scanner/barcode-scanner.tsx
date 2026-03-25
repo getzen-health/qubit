@@ -64,7 +64,7 @@ export default function BarcodeScanner({ onResult, onClose }: BarcodeScannerProp
         <div id={divId} className="w-full" />
 
         <p className="text-xs text-text-secondary text-center pb-4 px-4">
-          Point your camera at the product barcode (EAN / UPC)
+          Point your camera at the product barcode (EAN / UPC / Code 128 / etc.)
         </p>
       </div>
     </div>

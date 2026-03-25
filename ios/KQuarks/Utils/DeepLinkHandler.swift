@@ -30,11 +30,12 @@ final class DeepLinkHandler {
         let path = url.pathComponents.dropFirst().first ?? ""
         
         switch host {
-        case "food":
+        case "food", "nutrition":
             switch path {
-            case "scan":   pendingDestination = .foodScanner
-            case "diary":  pendingDestination = .foodDiary
-            default:       pendingDestination = .foodScanner
+            case "scan":    pendingDestination = .foodScanner
+            case "diary":   pendingDestination = .foodDiary
+            case "history": pendingDestination = .foodHistory
+            default:        pendingDestination = .foodScanner
             }
         case "ready", "readiness":
             pendingDestination = .readiness
@@ -42,10 +43,24 @@ final class DeepLinkHandler {
             pendingDestination = .sleep
         case "workouts", "workout":
             pendingDestination = .workouts
-        case "hrv":
-            pendingDestination = .hrv
         case "water":
             pendingDestination = .water
+        case "habits", "habit":
+            pendingDestination = .habits
+        case "hrv":
+            pendingDestination = .hrv
+        case "body":
+            pendingDestination = .body
+        case "glucose":
+            pendingDestination = .glucose
+        case "vitals":
+            pendingDestination = .vitals
+        case "social":
+            pendingDestination = .social
+        case "achievements":
+            pendingDestination = .achievements
+        case "settings":
+            pendingDestination = .settings
         case "profile":
             pendingDestination = .profile
         default:
