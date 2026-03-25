@@ -76,6 +76,12 @@ export default async function SettingsPage() {
       href: '/settings/import',
       icon: Upload,
     },
+    {
+      title: 'Export Health Data',
+      description: 'Download health data as CSV or JSON',
+      href: '/settings/data-export',
+      icon: Download,
+    },
   ]
 
   return (
