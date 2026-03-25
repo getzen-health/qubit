@@ -418,6 +418,35 @@ export function DashboardStream({
   const sleepHours = Math.floor(metrics.sleep.duration / 60)
   const sleepMins = metrics.sleep.duration % 60
 
+  // Latest sleep stage breakdown
+  const lastSleepRecord = recentSleepRecords[0]
+  const totalSleepTracked = lastSleepRecord
+    ? (lastSleepRecord.deep_minutes ?? 0) + (lastSleepRecord.rem_minutes ?? 0) +
+      (lastSleepRecord.core_minutes ?? 0) + (lastSleepRecord.awake_minutes ?? 0)
+    : 0
+  const hasSleepStages = totalSleepTracked > 30
+
+  // Sleep debt: accumulated deficit vs sleep goal over past 7 days (Walker 2017 methodology)
+  const sleepGoalMinutes = dbSleepGoalMinutes ?? DEFAULT_SLEEP_GOAL_MINUTES
+  const weekSleepDebt = summaries.slice(0, 7)
+    .map((s) => s.sleep_duration_minutes ?? sleepGoalMinutes)
+    .reduce((debt, actual) => debt + Math.max(0, sleepGoalMinutes - actual), 0)
+  const sleepDebtHours = Math.round(weekSleepDebt / 60 * 10) / 10
+
+  // Sleep consistency: stddev of sleep durations (lower = more regular, per Oura methodology)
+  const sleepDurations = summaries.slice(0, 7)
+    .map((s) => s.sleep_duration_minutes)
+    .filter((v): v is number => typeof v === 'number' && v > 0)
+  const sleepConsistencyScore = sleepDurations.length >= 3
+    ? (() => {
+        const avg = sleepDurations.reduce((a, b) => a + b, 0) / sleepDurations.length
+        const variance = sleepDurations.reduce((acc, v) => acc + Math.pow(v - avg, 2), 0) / sleepDurations.length
+        const stddev = Math.sqrt(variance)
+        // Score: 100 = perfectly consistent (0 stddev), 0 = very irregular (90min+ stddev)
+        return Math.max(0, Math.round(100 - (stddev / 90) * 100))
+      })()
+    : null
+
   // Generate AI insight based on data
   const generatePrimaryInsight = () => {
     if (recoveryScore >= 80) {
@@ -852,6 +881,53 @@ export function DashboardStream({
               label="Sleep"
               value={`${sleepHours}h ${sleepMins}m`}
               color="sleep"
+              expandContent={
+                <div className="space-y-3">
+                  {/* Sleep debt */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-text-secondary">7-day sleep debt</span>
+                    <span className={`text-xs font-semibold ${sleepDebtHours > 5 ? 'text-red-500' : sleepDebtHours > 2 ? 'text-orange-500' : 'text-green-500'}`}>
+                      {sleepDebtHours > 0 ? `-${sleepDebtHours}h` : 'None'}
+                    </span>
+                  </div>
+                  {/* Sleep consistency */}
+                  {sleepConsistencyScore !== null && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-text-secondary">Sleep regularity</span>
+                      <span className={`text-xs font-semibold ${sleepConsistencyScore >= 80 ? 'text-green-500' : sleepConsistencyScore >= 60 ? 'text-yellow-500' : 'text-orange-500'}`}>
+                        {sleepConsistencyScore}%
+                      </span>
+                    </div>
+                  )}
+                  {/* Sleep stages */}
+                  {hasSleepStages && (
+                    <div className="space-y-1.5 pt-1 border-t border-border">
+                      {[
+                        { label: 'Deep', mins: lastSleepRecord?.deep_minutes ?? 0, color: '#6366f1' },
+                        { label: 'REM', mins: lastSleepRecord?.rem_minutes ?? 0, color: '#8b5cf6' },
+                        { label: 'Core', mins: lastSleepRecord?.core_minutes ?? 0, color: '#a78bfa' },
+                        { label: 'Awake', mins: lastSleepRecord?.awake_minutes ?? 0, color: '#d1d5db' },
+                      ].map(({ label, mins, color }) => (
+                        <div key={label} className="flex items-center gap-2">
+                          <span className="text-xs text-text-secondary w-12">{label}</span>
+                          <div className="flex-1 bg-border rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${Math.min(100, (mins / totalSleepTracked) * 100)}%`,
+                                backgroundColor: color,
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs text-text-secondary w-10 text-right">
+                            {Math.floor(mins / 60)}h {mins % 60}m
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              }
             />
             {sleepStreak > 0 && (
               <MetricRow
