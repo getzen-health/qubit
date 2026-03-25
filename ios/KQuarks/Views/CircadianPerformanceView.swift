@@ -326,8 +326,8 @@ struct CircadianPerformanceView: View {
 
         // Normalize efficiency 0–100
         let effValues = effItems.map(\.eff)
-        let minEff = effValues.min()!
-        let maxEff = effValues.max()!
+        let minEff = effValues.min() ?? 0
+        let maxEff = effValues.max() ?? 0
         let range = max(0.001, maxEff - minEff)
         let normalized: [WorkoutEff] = effItems.map { item in
             WorkoutEff(date: item.date, hour: item.hour,

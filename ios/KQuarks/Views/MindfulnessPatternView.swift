@@ -55,7 +55,8 @@ struct MindfulnessPatternView: View {
     private var weeksSpan: Int {
         guard n > 0 else { return 1 }
         let sorted = sessions.sorted { $0.date < $1.date }
-        let diff = sorted.last!.date.timeIntervalSince(sorted.first!.date)
+        guard let firstItem = sorted.first, let lastItem = sorted.last else { return }
+        let diff = lastItem.date.timeIntervalSince(firstItem.date)
         return max(1, Int(diff / (7 * 86400)) + 1)
     }
 

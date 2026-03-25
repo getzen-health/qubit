@@ -365,11 +365,12 @@ struct DivingAnalyticsView: View {
             let maxD = depths.max() ?? 0
             guard maxD > 0.5 else { return nil }
             let avgD = depths.reduce(0,+) / Double(depths.count)
-            let dur = group.last!.endDate.timeIntervalSince(group.first!.startDate) / 60
+            guard let groupFirst = group.first, let groupLast = group.last else { return nil }
+            let dur = groupLast.endDate.timeIntervalSince(groupFirst.startDate) / 60
 
             // Find matching water temp
-            let diveStart = group.first!.startDate
-            let diveEnd = group.last!.endDate
+            let diveStart = groupFirst.startDate
+            let diveEnd = groupLast.endDate
             let matchTemp = tempSamples.filter { $0.startDate >= diveStart && $0.endDate <= diveEnd }
             let tempC: Double? = matchTemp.isEmpty ? nil : matchTemp.map { $0.quantity.doubleValue(for: celsius) }.reduce(0,+) / Double(matchTemp.count)
 

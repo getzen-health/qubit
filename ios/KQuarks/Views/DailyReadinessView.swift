@@ -452,7 +452,7 @@ struct DailyReadinessView: View {
         guard !scores.isEmpty else { return }
 
         history = scores.suffix(30)
-        let latest = scores.last!
+        guard let latest = scores.last else { return }
         todayScore = latest.score
         todayZone = latest.zone
         todayHRVRatio = latest.hrvRatio

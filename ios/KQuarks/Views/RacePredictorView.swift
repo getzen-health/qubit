@@ -53,13 +53,13 @@ struct RacePredictorView: View {
         ]
 
         let fraction: Double
-        if distanceKm <= anchor.first!.km {
-            fraction = anchor.first!.fraction
-        } else if distanceKm >= anchor.last!.km {
-            fraction = anchor.last!.fraction
+        if distanceKm <= anchor.first?.km ?? 0 {
+            fraction = anchor.first?.fraction ?? 0
+        } else if distanceKm >= anchor.last?.km ?? anchor.first?.km ?? 0 {
+            fraction = anchor.last?.fraction ?? 0
         } else {
             // Interpolate
-            var f = anchor.last!.fraction
+            var f = anchor.last?.fraction ?? 0
             for i in 0..<anchor.count - 1 {
                 if distanceKm >= anchor[i].km && distanceKm <= anchor[i+1].km {
                     let t = (distanceKm - anchor[i].km) / (anchor[i+1].km - anchor[i].km)

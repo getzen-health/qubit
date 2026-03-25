@@ -335,8 +335,8 @@ struct SleepConsistencyView: View {
                 }
             }
             guard !sleepSamples.isEmpty else { return nil }
-            let earliest = sleepSamples.min(by: { $0.startDate < $1.startDate })!
-            let latest = sleepSamples.max(by: { $0.endDate < $1.endDate })!
+            guard let earliest = sleepSamples.min(by: { $0.startDate < $1.startDate }),
+                  let latest = sleepSamples.max(by: { $0.endDate < $1.endDate }) else { return nil }
             let totalMins = sleepSamples.reduce(0) { $0 + Int($1.endDate.timeIntervalSince($1.startDate) / 60) }
             guard totalMins > 60 else { return nil }
             return ConsSleepNight(date: wakeDate, bedtime: earliest.startDate, wakeTime: latest.endDate, totalMinutes: totalMins)

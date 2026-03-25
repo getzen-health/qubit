@@ -330,7 +330,7 @@ struct TrainingAgeView: View {
     private func compute(from workouts: [HKWorkout]) {
         guard !workouts.isEmpty else { return }
 
-        let firstDate = workouts.first!.startDate
+        guard let firstDate = workouts.first?.startDate else { return }
         let now = Date()
 
         // Yearly buckets

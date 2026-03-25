@@ -106,10 +106,10 @@ struct BodyCompositionView: View {
     private var statsCards: some View {
         let filtered = filteredSamples
         if !filtered.isEmpty {
-            let current = filtered.last!.kg
-            let min = filtered.map(\.kg).min()!
-            let max = filtered.map(\.kg).max()!
-            let change: Double? = filtered.count > 1 ? current - filtered.first!.kg : nil
+            let current = filtered.last?.kg ?? 0
+            let min = filtered.map(\.kg).min() ?? 0
+            let max = filtered.map(\.kg).max() ?? 0
+            let change: Double? = filtered.count > 1 ? current - (filtered.first?.kg ?? 0) : nil
 
             HStack(spacing: 12) {
                 BodyStatCard(title: "Current", value: String(format: "%.1f kg", current), color: .primary)

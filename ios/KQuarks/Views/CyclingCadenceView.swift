@@ -416,10 +416,10 @@ struct CyclingCadenceView: View {
         guard !samples.isEmpty else { return nil }
         let vals = samples.map { $0.quantity.doubleValue(for: rpm) }
         let avg = vals.reduce(0, +) / Double(vals.count)
-        let duration = (samples.last?.startDate.timeIntervalSince(samples.first!.startDate) ?? 0) / 60
+        let duration = (samples.last?.startDate.timeIntervalSince(samples.first?.startDate ?? samples.last!.startDate) ?? 0) / 60
         return SessionStat(
             id: UUID(),
-            date: samples.first!.startDate,
+            date: samples.first?.startDate ?? Date(),
             workoutType: "Cycling",
             avgCadence: avg,
             minCadence: vals.min() ?? avg,

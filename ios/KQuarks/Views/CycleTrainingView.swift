@@ -276,7 +276,8 @@ struct CycleTrainingView: View {
         }
 
         // Find most recent period cluster start
-        var lastStart = periodStarts.first!
+        guard let firstStart = periodStarts.first else { return [] }
+        var lastStart = firstStart
         for date in periodStarts {
             if date.timeIntervalSince(lastStart) > 7 * 24 * 3600 {
                 lastStart = date

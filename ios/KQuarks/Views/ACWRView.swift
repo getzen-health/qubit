@@ -185,8 +185,8 @@ struct ACWRView: View {
                 Chart {
                     // Danger zone band
                     RectangleMark(
-                        xStart: .value("Start", validDays.first!.date),
-                        xEnd:   .value("End",   validDays.last!.date),
+                        xStart: .value("Start", validDays.first?.date ?? Date()),
+                        xEnd:   .value("End",   validDays.last?.date ?? Date()),
                         yStart: .value("Lo", 1.5),
                         yEnd:   .value("Hi", 2.2)
                     )
@@ -194,8 +194,8 @@ struct ACWRView: View {
 
                     // Sweet spot band
                     RectangleMark(
-                        xStart: .value("Start", validDays.first!.date),
-                        xEnd:   .value("End",   validDays.last!.date),
+                        xStart: .value("Start", validDays.first?.date ?? Date()),
+                        xEnd:   .value("End",   validDays.last?.date ?? Date()),
                         yStart: .value("Lo", 0.8),
                         yEnd:   .value("Hi", 1.3)
                     )

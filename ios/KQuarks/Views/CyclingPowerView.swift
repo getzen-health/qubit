@@ -432,7 +432,8 @@ struct CyclingPowerView: View {
             guard !current.isEmpty else { return }
             let vals = current.map { $0.quantity.doubleValue(for: watt) }
             let avg = vals.reduce(0, +) / Double(vals.count)
-            let dur = current.last!.startDate.timeIntervalSince(current.first!.startDate) / 60
+            guard let currentFirst = current.first, let currentLast = current.last else { current = []; continue }
+            let dur = currentLast.startDate.timeIntervalSince(currentFirst.startDate) / 60
             // Normalized power approximation
             let cubed = vals.map { $0 * $0 * $0 }
             let np = pow(cubed.reduce(0, +) / Double(cubed.count), 1.0/3.0)
@@ -440,7 +441,7 @@ struct CyclingPowerView: View {
             let tss = ftp > 0 ? (dur * 60 * np * if_) / (ftp * 3600) * 100 : 0
             rideList.append(CyclingSession(
                 id: UUID(),
-                date: current.first!.startDate,
+                date: currentFirst.startDate,
                 durationMins: max(dur, 1),
                 avgWatts: avg,
                 normalizedPower: np,
@@ -459,7 +460,7 @@ struct CyclingPowerView: View {
                     let vals = current.map { $0.quantity.doubleValue(for: watt) }
                     let avg = vals.reduce(0, +) / Double(vals.count)
                     // Store as DayPower candidate
-                    let day = cal.startOfDay(for: current.first!.startDate)
+                    let day = cal.startOfDay(for: current.first?.startDate ?? Date())
                     dayPowers.append(DayPower(id: day, date: day, avgWatts: avg))
                     current = []
                 }

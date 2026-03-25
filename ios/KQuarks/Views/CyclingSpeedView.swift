@@ -390,8 +390,9 @@ struct CyclingSpeedView: View {
             let vals = group.map { $0.quantity.doubleValue(for: mps) * 3.6 } // m/s → km/h
             let avg = vals.reduce(0,+) / Double(vals.count)
             guard avg > 1 else { return nil }
-            let dur = group.last!.endDate.timeIntervalSince(group.first!.startDate) / 60
-            return Session(id: UUID(), date: group.first!.startDate,
+            guard let groupFirst = group.first, let groupLast = group.last else { return nil }
+            let dur = groupLast.endDate.timeIntervalSince(groupFirst.startDate) / 60
+            return Session(id: UUID(), date: groupFirst.startDate,
                            avgKMH: avg, maxKMH: vals.max() ?? avg, durationMins: dur)
         }
 

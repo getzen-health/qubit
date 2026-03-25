@@ -41,6 +41,31 @@ import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
 import { GoalRings } from './components/goal-rings'
 import { BottomNav } from '@/components/bottom-nav'
+import { LineChart, Line, ResponsiveContainer } from 'recharts'
+
+// Tiny sparkline for 7-day recovery trend
+function RecoverySparkline({ history, current }: { history: number[], current: number }) {
+  const data = [...history].reverse().concat(current).map((v, i) => ({ i, v }))
+  if (data.length < 2) return null
+  const last = data[data.length - 1].v
+  const prev = data[data.length - 2].v
+  const up = last >= prev
+  return (
+    <div className="flex items-center gap-2 mt-1">
+      <div className="w-20 h-7">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <Line type="monotone" dataKey="v" dot={false} strokeWidth={1.5}
+              stroke={up ? '#22c55e' : '#f97316'} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <span className={`text-xs font-medium ${up ? 'text-green-500' : 'text-orange-500'}`}>
+        {up ? '▲' : '▼'} 7d
+      </span>
+    </div>
+  )
+}
 
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
@@ -808,6 +833,11 @@ export function DashboardStream({
               trend={recoveryTrend}
               color="recovery"
             />
+            {recoveryHistory.length >= 3 && (
+              <div className="px-4 pb-2">
+                <RecoverySparkline history={recoveryHistory} current={recoveryScore} />
+              </div>
+            )}
             <MetricRow
               icon={<Flame className="w-5 h-5" />}
               label="Strain"

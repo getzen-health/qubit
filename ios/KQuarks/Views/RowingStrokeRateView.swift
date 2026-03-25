@@ -358,10 +358,11 @@ struct RowingStrokeRateView: View {
             guard !current.isEmpty else { return }
             let vals = current.map { $0.quantity.doubleValue(for: spm) }
             let avg = vals.reduce(0, +) / Double(vals.count)
-            let duration = (current.last!.startDate.timeIntervalSince(current.first!.startDate)) / 60
+            guard let currentFirst = current.first, let currentLast = current.last else { return nil }
+            let duration = (currentLast.startDate.timeIntervalSince(currentFirst.startDate)) / 60
             sessionList.append(SessionStat(
                 id: UUID(),
-                date: current.first!.startDate,
+                date: currentFirst.startDate,
                 avgSPM: avg,
                 minSPM: vals.min() ?? avg,
                 maxSPM: vals.max() ?? avg,

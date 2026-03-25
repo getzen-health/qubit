@@ -90,8 +90,9 @@ struct GLP1View: View {
     var weeklyLossRate: Double? {
         let avgs = weeklyWeightAverages
         guard avgs.count >= 2 else { return nil }
-        let first = avgs.first!.kg
-        let last = avgs.last!.kg
+        guard let firstAvg = avgs.first, let lastAvg = avgs.last else { return }
+        let first = firstAvg.kg
+        let last = lastAvg.kg
         let weeks = Double(avgs.count - 1)
         return (first - last) / weeks
     }
