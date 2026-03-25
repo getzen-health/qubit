@@ -5,15 +5,18 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { AvatarUpload } from '@/components/AvatarUpload'
 
 interface AccountFormProps {
   email: string
   displayName: string
+  avatarUrl: string | null
   userId: string
 }
 
-export function AccountForm({ email, displayName, userId }: AccountFormProps) {
+export function AccountForm({ email, displayName, avatarUrl, userId }: AccountFormProps) {
   const [name, setName] = useState(displayName)
+  const [avatar, setAvatar] = useState(avatarUrl)
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
@@ -79,6 +82,16 @@ export function AccountForm({ email, displayName, userId }: AccountFormProps) {
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {/* Avatar */}
+        <section className="space-y-2">
+          <label className="text-sm font-medium text-text-primary">Profile Photo</label>
+          <AvatarUpload
+            userId={userId}
+            avatarUrl={avatar}
+            onUpdate={(url) => setAvatar(url)}
+          />
+        </section>
+
         {/* Email (read-only) */}
         <section className="space-y-2">
           <label className="text-sm font-medium text-text-secondary">Email</label>
