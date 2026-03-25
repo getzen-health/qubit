@@ -70,6 +70,9 @@ class SyncService {
             syncError = nil
 
         do {
+            // Flush offline sync queue first
+            await OfflineSyncQueue.shared.flushIfOnline(supabase: supabase)
+
             // Sync today's summary
             try await syncTodaySummary()
 
