@@ -118,13 +118,18 @@ export function ColorPicker({
 
           {/* Hue Slider */}
           <div className="space-y-2">
-            <label className="text-sm text-text-secondary">Hue</label>
+            <label htmlFor="hue-slider" className="text-sm text-text-secondary">Hue</label>
             <input
+              id="hue-slider"
               type="range"
               min="0"
               max="360"
               value={value.h}
               onChange={(e) => handleHueChange(Number(e.target.value))}
+              aria-label="Adjust hue (0-360)"
+              aria-valuenow={value.h}
+              aria-valuemin={0}
+              aria-valuemax={360}
               className="w-full h-3 rounded-full appearance-none cursor-pointer"
               style={{
                 background:
@@ -135,13 +140,18 @@ export function ColorPicker({
 
           {/* Saturation Slider */}
           <div className="space-y-2">
-            <label className="text-sm text-text-secondary">Saturation</label>
+            <label htmlFor="saturation-slider" className="text-sm text-text-secondary">Saturation</label>
             <input
+              id="saturation-slider"
               type="range"
               min="0"
               max="100"
               value={value.s}
               onChange={(e) => handleSaturationChange(Number(e.target.value))}
+              aria-label="Adjust saturation (0-100%)"
+              aria-valuenow={value.s}
+              aria-valuemin={0}
+              aria-valuemax={100}
               className="w-full h-3 rounded-full appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, hsl(${value.h}, 0%, ${value.l}%), hsl(${value.h}, 100%, ${value.l}%))`,
@@ -151,13 +161,18 @@ export function ColorPicker({
 
           {/* Lightness Slider */}
           <div className="space-y-2">
-            <label className="text-sm text-text-secondary">Lightness</label>
+            <label htmlFor="lightness-slider" className="text-sm text-text-secondary">Lightness</label>
             <input
+              id="lightness-slider"
               type="range"
               min="20"
               max="80"
               value={value.l}
               onChange={(e) => handleLightnessChange(Number(e.target.value))}
+              aria-label="Adjust lightness (20-80%)"
+              aria-valuenow={value.l}
+              aria-valuemin={20}
+              aria-valuemax={80}
               className="w-full h-3 rounded-full appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, hsl(${value.h}, ${value.s}%, 20%), hsl(${value.h}, ${value.s}%, 50%), hsl(${value.h}, ${value.s}%, 80%))`,
@@ -185,12 +200,14 @@ export function CompactColorPicker({
   className,
 }: CompactColorPickerProps) {
   return (
-    <div className={cn('flex gap-1', className)}>
+    <div className={cn('flex gap-1', className)} role="group" aria-label="Quick color selector">
       {defaultPresets.slice(0, 6).map((preset) => (
         <button
           key={preset.label}
           type="button"
           onClick={() => onChange(preset)}
+          aria-label={`${preset.label} color${value.h === preset.h && value.s === preset.s && value.l === preset.l ? ', currently selected' : ''}`}
+          aria-pressed={value.h === preset.h && value.s === preset.s && value.l === preset.l}
           className={cn(
             'w-6 h-6 rounded-full border transition-transform hover:scale-110',
             value.h === preset.h && value.s === preset.s && value.l === preset.l
@@ -200,7 +217,6 @@ export function CompactColorPicker({
           style={{
             backgroundColor: `hsl(${preset.h}, ${preset.s}%, ${preset.l}%)`,
           }}
-          title={preset.label}
         />
       ))}
     </div>
