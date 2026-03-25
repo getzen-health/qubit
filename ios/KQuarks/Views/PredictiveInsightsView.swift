@@ -31,7 +31,7 @@ struct PredictiveInsightsView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Week Ahead")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
