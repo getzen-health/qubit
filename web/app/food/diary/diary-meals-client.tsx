@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Pencil, Trash2, Check, X } from 'lucide-react'
+import { Pencil, Trash2, Check, X, PencilLine } from 'lucide-react'
 
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack', 'other'] as const
 type MealType = (typeof MEAL_TYPES)[number]
@@ -64,6 +64,24 @@ interface FoodItemRowProps {
   onDelete: () => void
 }
 
+interface ManualFormState {
+  name: string
+  calories: string
+  protein: string
+  carbs: string
+  fat: string
+  meal_type: MealType
+}
+
+const EMPTY_FORM: ManualFormState = {
+  name: '',
+  calories: '',
+  protein: '',
+  carbs: '',
+  fat: '',
+  meal_type: 'breakfast',
+}
+
 interface Props {
   initialMeals: Meal[]
   targets: NutritionTargets
@@ -74,6 +92,10 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
   const [meals, setMeals] = useState<Meal[]>(initialMeals)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
+  const [showManualForm, setShowManualForm] = useState(false)
+  const [form, setForm] = useState<ManualFormState>(EMPTY_FORM)
+  const [submitting, setSubmitting] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const allItems = meals.flatMap((m) => m.meal_items ?? [])
   const consumed = {
@@ -138,6 +160,69 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
     })
   }
 
+  function updateForm(field: keyof ManualFormState, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  async function handleManualSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.name.trim()) {
+      setFormError('Food name is required')
+      return
+    }
+    setFormError(null)
+    setSubmitting(true)
+
+    const calories = parseInt(form.calories || '0', 10)
+    const protein = parseFloat(form.protein || '0')
+    const carbs = parseFloat(form.carbs || '0')
+    const fat = parseFloat(form.fat || '0')
+
+    const loggedAt = new Date(`${dateStr}T12:00:00.000Z`).toISOString()
+
+    const payload = {
+      name: form.name.trim(),
+      meal_type: form.meal_type,
+      logged_at: loggedAt,
+      items: [
+        {
+          name: form.name.trim(),
+          serving_size: '1 serving',
+          servings: 1,
+          calories,
+          protein,
+          carbs,
+          fat,
+          source: 'manual' as const,
+        },
+      ],
+    }
+
+    try {
+      const res = await fetch('/api/meals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setFormError((data as { error?: string }).error ?? 'Failed to save entry')
+        setSubmitting(false)
+        return
+      }
+
+      const { meal } = (await res.json()) as { meal: Meal }
+      setMeals((prev) => [...prev, meal])
+      setForm(EMPTY_FORM)
+      setShowManualForm(false)
+    } catch {
+      setFormError('Network error — please try again')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <>
       <div className="grid grid-cols-4 gap-2">
@@ -178,6 +263,125 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
           barColor="bg-red-400"
         />
       </div>
+
+      {/* Log manually button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => {
+            setShowManualForm((v) => !v)
+            setFormError(null)
+          }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-surface border border-border text-text-primary hover:bg-surface-secondary transition-colors"
+          aria-expanded={showManualForm}
+        >
+          <PencilLine className="w-4 h-4" />
+          Log manually
+        </button>
+      </div>
+
+      {/* Inline manual entry form */}
+      {showManualForm && (
+        <form
+          onSubmit={handleManualSubmit}
+          className="bg-surface rounded-2xl p-4 space-y-4 border border-border"
+        >
+          <h2 className="font-semibold text-text-primary text-sm">Add food manually</h2>
+
+          {formError && (
+            <p className="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
+              {formError}
+            </p>
+          )}
+
+          {/* Food name */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-text-secondary" htmlFor="manual-name">
+              Food name <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="manual-name"
+              type="text"
+              required
+              value={form.name}
+              onChange={(e) => updateForm('name', e.target.value)}
+              placeholder="e.g. Homemade pasta"
+              className="w-full px-3 py-2 rounded-xl border border-border bg-surface-secondary text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+          </div>
+
+          {/* Macro fields */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {(
+              [
+                { key: 'calories', label: 'Calories', unit: 'kcal' },
+                { key: 'protein', label: 'Protein', unit: 'g' },
+                { key: 'carbs', label: 'Carbs', unit: 'g' },
+                { key: 'fat', label: 'Fat', unit: 'g' },
+              ] as { key: keyof ManualFormState; label: string; unit: string }[]
+            ).map(({ key, label, unit }) => (
+              <div key={key} className="space-y-1">
+                <label
+                  className="text-xs font-medium text-text-secondary"
+                  htmlFor={`manual-${key}`}
+                >
+                  {label} ({unit})
+                </label>
+                <input
+                  id={`manual-${key}`}
+                  type="number"
+                  min="0"
+                  step={key === 'calories' ? '1' : '0.1'}
+                  value={form[key]}
+                  onChange={(e) => updateForm(key, e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 rounded-xl border border-border bg-surface-secondary text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Meal type */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-text-secondary" htmlFor="manual-meal-type">
+              Meal type
+            </label>
+            <select
+              id="manual-meal-type"
+              value={form.meal_type}
+              onChange={(e) => updateForm('meal_type', e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-border bg-surface-secondary text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              {MEAL_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {MEAL_LABELS[t]}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setShowManualForm(false)
+                setForm(EMPTY_FORM)
+                setFormError(null)
+              }}
+              className="px-4 py-2 rounded-xl text-sm font-medium text-text-secondary hover:bg-surface-secondary transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-4 py-2 rounded-xl text-sm font-medium bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {submitting ? 'Saving…' : 'Add entry'}
+            </button>
+          </div>
+        </form>
+      )}
 
       {hasAnyMeals ? (
         <div className="space-y-4">
