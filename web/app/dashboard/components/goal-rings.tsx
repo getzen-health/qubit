@@ -48,7 +48,9 @@ function Ring({ value, goal, label, displayValue, unit, color, trackColor, size 
           style={{ gap: 1 }}
         >
           <span className="text-sm font-bold text-text-primary leading-none">{displayValue}</span>
-          <span className="text-[10px] text-text-secondary leading-none">{unit}</span>
+          <span className="text-[10px] font-medium text-text-secondary leading-none">
+            {goal > 0 ? `${Math.round((value / goal) * 100)}%` : unit}
+          </span>
         </div>
       </div>
       <span className="text-xs text-text-secondary">{label}</span>
