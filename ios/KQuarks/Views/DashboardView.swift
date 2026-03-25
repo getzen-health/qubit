@@ -357,6 +357,7 @@ struct StatCard: View {
 // MARK: - View Model
 
 @Observable
+@MainActor
 class DashboardViewModel {
     var todaySummary: TodayHealthSummary?
     var isLoading = true

@@ -19,6 +19,7 @@ struct HabitCompletion: Decodable {
 // MARK: - ViewModel
 
 @Observable
+@MainActor
 final class HabitsViewModel {
     var habits: [Habit] = []
     var completions: [HabitCompletion] = []

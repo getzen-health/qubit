@@ -14,6 +14,7 @@ struct DailyCheckin: Decodable, Equatable, Identifiable {
 // MARK: - ViewModel
 
 @Observable
+@MainActor
 final class CheckinViewModel {
     var checkin: DailyCheckin?
     var isLoading = true

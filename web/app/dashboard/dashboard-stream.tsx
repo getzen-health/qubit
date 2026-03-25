@@ -106,6 +106,8 @@ interface DashboardStreamProps {
     target_hours: number
     started_at: string
   } | null
+  bodyBatteryScore?: number | null
+  stressScore?: number | null
 }
 
 export function DashboardStream({
@@ -126,6 +128,8 @@ export function DashboardStream({
   todayCaloriesConsumed = 0,
   calorieIntakeTarget = 2000,
   activeFast = null,
+  bodyBatteryScore = null,
+  stressScore = null,
 }: DashboardStreamProps) {
   const router = useRouter()
   const supabase = createClient()
@@ -775,6 +779,26 @@ export function DashboardStream({
           ) : undefined}
         >
           <DataStream>
+            {bodyBatteryScore != null && (
+              <MetricRow
+                icon={<Zap className="w-5 h-5" />}
+                label="Body Battery"
+                value={bodyBatteryScore}
+                unit="%"
+                sublabel={bodyBatteryScore >= 75 ? 'Fully charged' : bodyBatteryScore >= 50 ? 'Good energy' : bodyBatteryScore >= 25 ? 'Draining' : 'Depleted'}
+                color="recovery"
+              />
+            )}
+            {stressScore != null && (
+              <MetricRow
+                icon={<Activity className="w-5 h-5" />}
+                label="Stress"
+                value={stressScore}
+                unit="%"
+                sublabel={stressScore < 25 ? 'Low' : stressScore < 50 ? 'Moderate' : stressScore < 75 ? 'Elevated' : 'High'}
+                color={stressScore >= 50 ? 'strain' : 'recovery'}
+              />
+            )}
             <MetricRow
               icon={<Zap className="w-5 h-5" />}
               label="Recovery"

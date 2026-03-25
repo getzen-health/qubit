@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       .single(),
     supabase
       .from('daily_summaries')
-      .select('date, steps, active_calories, distance_meters, exercise_minutes, stand_hours, resting_heart_rate, hrv, sleep_score, recovery_score')
+      .select('date, steps, active_calories, distance_meters, exercise_minutes, stand_hours, resting_heart_rate, hrv, sleep_score, recovery_score, strain_score, sleep_duration_minutes')
       .eq('user_id', user.id)
       .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
       .order('date', { ascending: false }),
@@ -143,6 +143,66 @@ export default async function DashboardPage() {
 
   const lastSyncAt = devices && devices.length > 0 ? devices[0].last_sync_at : null
 
+  // Body Battery: personalized baselines (WHOOP/Oura research)
+  // HRV vs 14-day baseline 60%, RHR vs baseline 20%, sleep vs baseline 20%
+  const allSummaries = summaries ?? []
+  const latestSummary = allSummaries[0]
+  const historySummaries = allSummaries.slice(1)
+
+  const bodyBatteryScore = (() => {
+    if (!latestSummary) return null
+
+    const todayHrv = latestSummary.hrv
+    const hrvHistory = historySummaries.map((s) => s.hrv).filter((v): v is number => v != null && v > 0)
+    const baselineHrv = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : null
+
+    const todayRhr = latestSummary.resting_heart_rate
+    const rhrHistory = historySummaries.map((s) => s.resting_heart_rate).filter((v): v is number => v != null && v > 0)
+    const baselineRhr = rhrHistory.length > 0 ? rhrHistory.reduce((a, b) => a + b, 0) / rhrHistory.length : null
+
+    const sleepHistory = historySummaries.map((s) => s.sleep_duration_minutes).filter((v): v is number => v != null && v > 0)
+    const baselineSleep = sleepHistory.length > 0 ? sleepHistory.reduce((a, b) => a + b, 0) / sleepHistory.length : null
+
+    if (todayHrv && baselineHrv && baselineHrv > 0) {
+      const deviation = (todayHrv - baselineHrv) / baselineHrv
+      const hrvScore = Math.max(0, Math.min(100, 50 + deviation * 125))
+
+      let rhrScore = 50
+      if (todayRhr && baselineRhr && baselineRhr > 0) {
+        const rhrDev = (baselineRhr - todayRhr) / baselineRhr
+        rhrScore = Math.max(0, Math.min(100, 50 + rhrDev * 200))
+      }
+
+      let sleepScore = 50
+      const sleepMins = latestSummary.sleep_duration_minutes ?? 0
+      if (sleepMins > 0 && baselineSleep && baselineSleep > 0) {
+        const sleepPerf = sleepMins / baselineSleep
+        sleepScore = Math.max(0, Math.min(100, Math.min(sleepPerf, 1.2) * 80))
+      } else if (sleepMins > 0) {
+        sleepScore = Math.max(0, Math.min(100, (sleepMins / (7 * 60)) * 100))
+      }
+
+      return Math.round(hrvScore * 0.6 + rhrScore * 0.2 + sleepScore * 0.2)
+    }
+
+    // Fallback: use recovery_score when no HRV data
+    const recovery = latestSummary.recovery_score ?? 0
+    const sleepMins = latestSummary.sleep_duration_minutes ?? 0
+    const sleepQuality = Math.min(100, (sleepMins / (7 * 60)) * 100)
+    return Math.round(recovery * 0.6 + sleepQuality * 0.4)
+  })()
+
+  // Stress Score: HRV deviation below personal baseline (WHOOP-style)
+  const stressScore = (() => {
+    if (!latestSummary?.hrv || !historySummaries.length) return null
+    const todayHrv = latestSummary.hrv
+    const hrvHistory = historySummaries.map((s) => s.hrv).filter((v): v is number => v != null && v > 0)
+    if (!hrvHistory.length) return null
+    const baseline = hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length
+    const deficit = Math.max(0, baseline - todayHrv) / baseline
+    return Math.min(100, Math.round(deficit * 250))
+  })()
+
   return (
     <DashboardStream
       user={user}
@@ -162,6 +222,8 @@ export default async function DashboardPage() {
       activeFast={activeFast ?? null}
       todayCaloriesConsumed={Math.round(todayCaloriesConsumed)}
       calorieIntakeTarget={nutritionSettings?.calorie_target ?? 2000}
+      bodyBatteryScore={bodyBatteryScore}
+      stressScore={stressScore}
     />
   )
 }

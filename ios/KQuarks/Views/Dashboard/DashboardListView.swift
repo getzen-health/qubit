@@ -486,6 +486,16 @@ struct DashboardListView: View {
                     color: .recovery
                 )
 
+                // Stress Score (HRV-based, WHOOP/Bevel research)
+                MetricRowView(
+                    icon: "waveform.path.ecg",
+                    label: "Stress",
+                    value: "\(viewModel.stressScore)",
+                    unit: "%",
+                    sublabel: viewModel.stressLabel,
+                    color: viewModel.stressScore >= 50 ? .strain : .recovery
+                )
+
                 // Strain
                 MetricRowView(
                     icon: "flame.fill",
@@ -769,22 +779,63 @@ class DashboardListViewModel {
     var weeklyData: [DaySummaryForAI] = []
     var lastSyncDate: Date?
     var syncError: String?
-    /// Body Battery: Bevel-style energy estimate (0–100).
-    /// Formula: recovery 50% + sleep quality 30% + inverse strain 20%
+
+    // Personal baselines (14-day rolling, computed in calculateTrends)
+    // Inspired by WHOOP (30-day) and Oura (14/60-day) personalized baseline approach
+    var baselineHrv: Double? = nil
+    var baselineRhr: Double? = nil
+    var baselineSleepMinutes: Double? = nil
+    var todayRhr: Double? = nil
+
+    /// Body Battery: personalized energy estimate (0–100).
+    /// Algorithm based on WHOOP/Oura research:
+    ///   HRV vs personal 14-day baseline: 60%
+    ///   RHR vs personal 14-day baseline (inverse): 20%
+    ///   Sleep performance vs personal baseline: 20%
     var bodyBatteryScore: Int {
-        let sleepScore: Double = {
-            guard let ctx = latestSleepContext, ctx.durationMinutes > 0 else { return Double(recoveryScore) }
-            let hours = Double(ctx.durationMinutes) / 60.0
-            let hoursScore = min(100, max(0, (hours / 8.0) * 100))
-            let deepPct = Double(ctx.deepMinutes) / Double(ctx.durationMinutes)
-            let remPct  = Double(ctx.remMinutes)  / Double(ctx.durationMinutes)
-            let qualityBonus = min(20, (deepPct * 100) + (remPct * 50))
-            return min(100, hoursScore + qualityBonus)
-        }()
-        let strainPenalty = min(100, (strainScore / 21.0) * 100)
-        let inverseStrain = max(0, 100 - strainPenalty)
-        let raw = Double(recoveryScore) * 0.5 + sleepScore * 0.3 + inverseStrain * 0.2
-        return max(0, min(100, Int(raw)))
+        var score: Double = 50 // default if no baseline data
+
+        let todayHrv = weeklyData.first?.avgHrv
+
+        if let todayHrv, let baseline = baselineHrv, baseline > 0 {
+            // HRV above baseline = good recovery. Range: -40% to +40% maps to 0–100
+            let deviation = (todayHrv - baseline) / baseline
+            let hrvScore = max(0, min(100, 50 + deviation * 125))
+
+            var rhrScore: Double = 50
+            if let rhr = todayRhr, let rhrBaseline = baselineRhr, rhrBaseline > 0 {
+                // Lower RHR than baseline = better recovery
+                let rhrDev = (rhrBaseline - rhr) / rhrBaseline
+                rhrScore = max(0, min(100, 50 + rhrDev * 200))
+            }
+
+            var sleepScore: Double = 50
+            if let ctx = latestSleepContext, ctx.durationMinutes > 0,
+               let sleepBaseline = baselineSleepMinutes, sleepBaseline > 0 {
+                // Sleep vs personal norm (not hard 8h target)
+                let sleepPerf = Double(ctx.durationMinutes) / sleepBaseline
+                let deepPct = Double(ctx.deepMinutes) / Double(ctx.durationMinutes)
+                let remPct = Double(ctx.remMinutes) / Double(ctx.durationMinutes)
+                let qualityBonus = (deepPct * 0.2) + (remPct * 0.1)
+                sleepScore = max(0, min(100, (min(sleepPerf, 1.2) * 80) + qualityBonus * 100))
+            } else if let ctx = latestSleepContext, ctx.durationMinutes > 0 {
+                // Fallback: use 7h as soft target when no baseline
+                let hours = Double(ctx.durationMinutes) / 60.0
+                sleepScore = max(0, min(100, (hours / 7.0) * 100))
+            }
+
+            score = hrvScore * 0.6 + rhrScore * 0.2 + sleepScore * 0.2
+        } else {
+            // No HRV data: fall back to recovery score + sleep
+            let sleepScore: Double = {
+                guard let ctx = latestSleepContext, ctx.durationMinutes > 0 else { return Double(recoveryScore) }
+                let hours = Double(ctx.durationMinutes) / 60.0
+                return min(100, max(0, (hours / 7.5) * 100))
+            }()
+            score = Double(recoveryScore) * 0.6 + sleepScore * 0.4
+        }
+
+        return max(0, min(100, Int(score)))
     }
 
     var bodyBatteryLabel: String {
@@ -793,6 +844,24 @@ class DashboardListViewModel {
         case 50..<75:  return "Good energy"
         case 25..<50:  return "Draining"
         default:       return "Depleted"
+        }
+    }
+
+    /// HRV-based stress score (0–100): WHOOP/Bevel physiological stress signal
+    /// 0 = no stress (HRV at or above baseline); 100 = high stress (HRV >40% below baseline)
+    var stressScore: Int {
+        guard let todayHrv = weeklyData.first?.avgHrv,
+              let baseline = baselineHrv, baseline > 0 else { return 30 }
+        let deficit = max(0, baseline - todayHrv) / baseline
+        return max(0, min(100, Int(deficit * 250)))
+    }
+
+    var stressLabel: String {
+        switch stressScore {
+        case 0..<25:  return "Low"
+        case 25..<50: return "Moderate"
+        case 50..<75: return "Elevated"
+        default:      return "High"
         }
     }
 
@@ -904,25 +973,44 @@ class DashboardListViewModel {
 
     private func calculateTrends() async {
         do {
-            let weekData = try await healthKit.fetchWeekSummaries(days: 7)
-             self.weeklyData = weekData 
+            // Fetch 14 days for personalized baseline (WHOOP/Oura approach)
+            let weekData = try await healthKit.fetchWeekSummaries(days: 14)
+            self.weeklyData = weekData
             guard weekData.count >= 2 else { return }
 
             let todaySteps = weekData.first?.steps ?? 0
             let avgSteps = weekData.dropFirst().reduce(0) { $0 + $1.steps } / max(weekData.count - 1, 1)
             if avgSteps > 0 {
-                                stepsTrend = Int(((Double(todaySteps) - Double(avgSteps)) / Double(avgSteps)) * 100)
-            
+                stepsTrend = Int(((Double(todaySteps) - Double(avgSteps)) / Double(avgSteps)) * 100)
             }
 
+            // HRV: compare today vs 14-day personal baseline (WHOOP methodology)
             let todayHrv = weekData.first?.avgHrv
             let hrvValues = weekData.dropFirst().compactMap { $0.avgHrv }
-            if let todayHrv = todayHrv, !hrvValues.isEmpty {
-                let avgHrv = hrvValues.reduce(0, +) / Double(hrvValues.count)
-                if avgHrv > 0 {
-                                        hrvTrend = Int(((todayHrv - avgHrv) / avgHrv) * 100)
-                
+            if let todayHrv, !hrvValues.isEmpty {
+                let baselineHrv = hrvValues.reduce(0, +) / Double(hrvValues.count)
+                if baselineHrv > 0 {
+                    hrvTrend = Int(((todayHrv - baselineHrv) / baselineHrv) * 100)
                 }
+                // Store baseline HRV for body battery calculation
+                self.baselineHrv = baselineHrv
+            }
+
+            // RHR: compare today vs 14-day personal baseline
+            let todayRhr = weekData.first?.restingHeartRate
+            let rhrValues = weekData.dropFirst().compactMap { $0.restingHeartRate }
+            if let todayRhr, !rhrValues.isEmpty {
+                let baselineRhr = Double(rhrValues.reduce(0, +)) / Double(rhrValues.count)
+                if baselineRhr > 0 {
+                    self.baselineRhr = baselineRhr
+                    self.todayRhr = Double(todayRhr)
+                }
+            }
+
+            // Sleep baseline: personal avg from last 14 days
+            let sleepValues = weekData.dropFirst().compactMap { $0.sleepDurationMinutes }
+            if !sleepValues.isEmpty {
+                self.baselineSleepMinutes = Double(sleepValues.reduce(0, +)) / Double(sleepValues.count)
             }
 
             // Compute step goal streak (60 days, newest first)

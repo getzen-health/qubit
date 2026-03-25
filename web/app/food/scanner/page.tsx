@@ -29,6 +29,7 @@ interface HealthScore {
   organicBonus: number
   flaggedAdditives: FlaggedAdditive[]
   allergens: string[]
+  novaGroup?: 1 | 2 | 3 | 4 | null
 }
 
 interface FoodProduct {
@@ -263,6 +264,22 @@ export default function FoodScannerPage() {
                 <div className="px-4 pb-3">
                   <p className="text-xs text-text-secondary mb-1.5">Nutri-Score</p>
                   <NutriScoreBar grade={product.healthScore.nutriScore} />
+                </div>
+              )}
+
+              {product.healthScore.novaGroup && (
+                <div className="px-4 pb-3 flex items-center gap-2">
+                  <span className="text-xs text-text-secondary">NOVA Group {product.healthScore.novaGroup}:</span>
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                    product.healthScore.novaGroup === 1 ? 'bg-green-100 text-green-800' :
+                    product.healthScore.novaGroup === 2 ? 'bg-lime-100 text-lime-800' :
+                    product.healthScore.novaGroup === 3 ? 'bg-orange-100 text-orange-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {product.healthScore.novaGroup === 1 ? 'Unprocessed' :
+                     product.healthScore.novaGroup === 2 ? 'Culinary ingredient' :
+                     product.healthScore.novaGroup === 3 ? 'Processed' : 'Ultra-processed ⚠️'}
+                  </span>
                 </div>
               )}
 
