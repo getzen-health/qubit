@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import {
   LineChart,
   Line,
@@ -10,6 +11,7 @@ import {
   CartesianGrid,
   ReferenceLine,
 } from 'recharts'
+import { createClient } from '@/lib/supabase/client'
 
 interface RunData {
   date: string
@@ -162,6 +164,20 @@ export function RunningClient({ runs }: RunningClientProps) {
     if (v >= 37) return { label: 'Fair', color: 'text-yellow-400' }
     return { label: 'Needs work', color: 'text-orange-400' }
   }
+
+  // Persist latest VO2max estimate to Supabase for long-term trending
+  useEffect(() => {
+    if (!latestVO2max) return
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      const today = new Date().toISOString().split('T')[0]
+      supabase.from('vo2max_estimates').upsert(
+        { user_id: user.id, date: today, vo2max: latestVO2max, source: 'daniels_vdot' },
+        { onConflict: 'user_id,date' }
+      ).then(() => {}) // fire-and-forget
+    })
+  }, [latestVO2max])
 
   // Chart data
   const paceChartData = runs
