@@ -44,6 +44,20 @@ struct KQuarksApp: App {
                     // Only after HealthKit is authorized (no-op if not yet authorized)
                     HealthKitService.shared.setupBackgroundDelivery()
                 }
+                .onOpenURL { url in
+                    if let deepLink = DeepLinkHandler.handleDeepLink(url) {
+                        handleDeepLink(deepLink)
+                    }
+                }
+        }
+    }
+
+    private func handleDeepLink(_ deepLink: DeepLink) {
+        switch deepLink.action {
+        case .dashboard, .foodScan, .readiness, .social:
+            // Tab navigation will be handled by passing the tab selection
+            // through an observable state or environment variable
+            break
         }
     }
 }

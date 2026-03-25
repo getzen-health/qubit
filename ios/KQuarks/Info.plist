@@ -23,5 +23,16 @@
 		<string>com.kquarks.sync.refresh</string>
 		<string>com.kquarks.sync.full</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.kquarks.deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kquarks</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
