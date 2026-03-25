@@ -381,7 +381,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
               interval={4}
             />
             <YAxis
-              domain={[20, 100]}
+              domain={[0, 100]}
               tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }}
               width={28}
             />

@@ -230,7 +230,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
                 tickLine={false}
                 interval="preserveStartEnd"
               />
-              <YAxis hide domain={[0, 21]} />
+              <YAxis hide domain={['auto', 'auto']} />
               <Tooltip
                 contentStyle={tooltipStyle}
                 formatter={(value: number) => [value.toFixed(1), 'Strain']}
