@@ -180,7 +180,9 @@ export const GET = createSecureApiHandler(
           nova_group: 1,
           nutriscore: null,
           thumbnail_url: null,
-        }).then(() => {})
+        }).then(({ error }) => {
+          if (error) console.error('[barcode] Failed to save scan history:', error.message)
+        })
       }
 
       return secureJsonResponse({ food: usdaMapped, dataSource: 'usda' })
@@ -251,7 +253,9 @@ export const GET = createSecureApiHandler(
         nova_group: food.novaGroup ?? null,
         nutriscore: product.nutriscore_grade ?? null,
         thumbnail_url: food.imageUrl ?? null,
-      }).then(() => {})
+      }).then(({ error }) => {
+        if (error) console.error('[barcode] Failed to save scan history:', error.message)
+      })
     }
 
     return secureJsonResponse({ food, dataSource: 'off' })
