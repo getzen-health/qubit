@@ -130,6 +130,73 @@ async function generateExplanation(
   }
 }
 
+// MARK: - APNs notification sending
+
+async function sendAPNsNotification(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  metric: string,
+  value: number,
+  avgValue: number,
+  severity: string,
+  direction: "low" | "high"
+): Promise<void> {
+  // Check if user has notifications enabled (default to true if no preference)
+  const { data: prefs } = await supabase
+    .from("notification_preferences")
+    .select("anomaly_alerts")
+    .eq("user_id", userId)
+    .maybeSingle()
+  
+  const anomalyAlertsEnabled = prefs?.anomaly_alerts !== false
+
+  if (!anomalyAlertsEnabled) return
+
+  // Get device token
+  const { data: tokenData } = await supabase
+    .from("push_tokens")
+    .select("token")
+    .eq("user_id", userId)
+    .maybeSingle()
+
+  if (!tokenData?.token) return
+
+  // Build notification message
+  const metricLabels: Record<string, string> = {
+    avg_hrv: "HRV",
+    resting_heart_rate: "resting heart rate",
+    sleep_duration_minutes: "sleep duration",
+    steps: "step count",
+  }
+
+  const metricLabel = metricLabels[metric] ?? metric
+  const formattedValue = metric === "sleep_duration_minutes"
+    ? `${(value / 60).toFixed(1)}h`
+    : metric === "avg_hrv"
+    ? `${value.toFixed(0)}ms`
+    : metric === "resting_heart_rate"
+    ? `${Math.round(value)} bpm`
+    : `${Math.round(value).toLocaleString()}`
+  
+  const formattedAvg = metric === "sleep_duration_minutes"
+    ? `${(avgValue / 60).toFixed(1)}h`
+    : metric === "avg_hrv"
+    ? `${avgValue.toFixed(0)}ms`
+    : metric === "resting_heart_rate"
+    ? `${Math.round(avgValue)} bpm`
+    : `${Math.round(avgValue).toLocaleString()}`
+
+  const directionText = direction === "low" ? "below" : "above"
+  const body = `Your ${metricLabel} is ${directionText} normal (${formattedValue} vs ${formattedAvg})`
+
+  // Send via APNs
+  // NOTE: In production, this would use an APNs provider like Firebase Cloud Messaging,
+  // AWS SNS, or a dedicated APNs service. For now, we log the intent.
+  // The token is stored and ready for integration with a push notification service.
+  
+  console.log(`[APNs] Sending to ${tokenData.token}: ${body}`)
+}
+
 // MARK: - Anomaly detection
 
 interface DetectedAnomaly {
@@ -398,6 +465,24 @@ Deno.serve(async (req: Request) => {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     })
   }
+
+  // ── Send push notifications for each anomaly ────────────────────────────────
+  await Promise.all(
+    detected.map((anomaly) =>
+      sendAPNsNotification(
+        supabase,
+        user_id,
+        anomaly.metric,
+        anomaly.value,
+        anomaly.avgValue,
+        anomaly.severity,
+        anomaly.direction
+      ).catch((err) => {
+        // Log but don't fail the request if notification sending fails
+        console.error(`Failed to send APNs notification: ${err instanceof Error ? err.message : 'Unknown error'}`)
+      })
+    )
+  )
 
   // ── Increment usage counter ────────────────────────────────────────────────
   if (usageData) {
