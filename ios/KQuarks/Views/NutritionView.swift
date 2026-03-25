@@ -39,6 +39,9 @@ struct NutritionView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack {
+                        NavigationLink(destination: FoodDiaryView()) {
+                            Image(systemName: "calendar")
+                        }
                         NavigationLink(destination: NutritionPatternView()) {
                             Image(systemName: "chart.bar.xaxis")
                         }

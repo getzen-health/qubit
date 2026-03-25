@@ -29,6 +29,28 @@ struct FastingView: View {
 
     var remaining: Double { max(Double(targetHours) - currentElapsed, 0) }
 
+    var metabolicPhase: (name: String, emoji: String, color: Color) {
+        let hours = currentElapsed
+        switch hours {
+        case ..<4:   return ("Fed State", "🍽️", .gray)
+        case ..<8:   return ("Early Fasting", "⏳", .yellow)
+        case ..<16:  return ("Fat Burning", "🔥", .orange)
+        case ..<24:  return ("Ketosis", "⚡", .purple)
+        default:     return ("Deep Ketosis", "💫", .indigo)
+        }
+    }
+
+    var hoursUntilNextPhase: Double? {
+        let hours = currentElapsed
+        switch hours {
+        case ..<4:   return 4 - hours
+        case ..<8:   return 8 - hours
+        case ..<16:  return 16 - hours
+        case ..<24:  return 24 - hours
+        default:     return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -86,6 +108,24 @@ struct FastingView: View {
 
     private var timerRing: some View {
         VStack(spacing: 16) {
+            // Metabolic phase badge
+            if isActive {
+                VStack(spacing: 8) {
+                    Text(metabolicPhase.emoji).font(.system(size: 40))
+                    Text(metabolicPhase.name).font(.headline).bold().foregroundStyle(metabolicPhase.color)
+                    if let hours = hoursUntilNextPhase, hours > 0 {
+                        Text(String(format: "Next phase in %.1fh", hours))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(metabolicPhase.color.opacity(0.1))
+                .cornerRadius(12)
+                .padding(.horizontal)
+            }
+
             ZStack {
                 // Background ring
                 Circle()

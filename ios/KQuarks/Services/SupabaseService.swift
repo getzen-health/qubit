@@ -1065,6 +1065,56 @@ class SupabaseService {
         try await client.from("meals").delete().eq("id", value: mealId).execute()
     }
 
+    func getFoodDiaryEntries(date: String) async throws -> [FoodDiaryEntry] {
+        guard let session = currentSession else { throw SupabaseError.notAuthenticated }
+        
+        struct MealItemRow: Decodable {
+            let id: String
+            let calories: Int
+            let protein: Double
+            let carbs: Double
+            let fat: Double
+        }
+        
+        struct MealRow: Decodable {
+            let id: String
+            let name: String
+            let meal_type: String
+            let logged_at: String
+            let meal_items: [MealItemRow]
+        }
+        
+        let startOfDay = date + "T00:00:00Z"
+        let endOfDay = date + "T23:59:59Z"
+        
+        let rows: [MealRow] = try await client.from("meals")
+            .select("id, name, meal_type, logged_at, meal_items(id, calories, protein, carbs, fat)")
+            .eq("user_id", value: session.user.id.uuidString)
+            .gte("logged_at", value: startOfDay)
+            .lte("logged_at", value: endOfDay)
+            .order("logged_at", ascending: true)
+            .execute()
+            .value
+        
+        var entries: [FoodDiaryEntry] = []
+        for row in rows {
+            for item in row.meal_items {
+                entries.append(FoodDiaryEntry(
+                    id: item.id,
+                    name: row.name,
+                    calories: item.calories,
+                    protein: item.protein,
+                    carbs: item.carbs,
+                    fat: item.fat,
+                    mealType: row.meal_type,
+                    loggedAt: ISO8601DateFormatter().date(from: row.logged_at) ?? Date()
+                ))
+            }
+        }
+        
+        return entries
+    }
+
     // MARK: - Habits
 
     func fetchHabits(userId: String) async throws -> ([Habit], [HabitCompletion]) {

@@ -62,10 +62,13 @@ export default function GoalsSettingsPage() {
           // Load water + macro goals + HRV from nutrition settings
           const { data: nutrition } = await supabase
             .from('user_nutrition_settings')
-            .select('water_target_ml, calorie_target, protein_target, carbs_target, fat_target, hrv_target')
+            .select('water_goal_ml, water_target_ml, calorie_target, protein_target, carbs_target, fat_target, hrv_target')
             .eq('user_id', user.id)
             .single()
-          if (nutrition?.water_target_ml) {
+          if (nutrition?.water_goal_ml) {
+            setWaterGoal(nutrition.water_goal_ml)
+            setWaterInput(nutrition.water_goal_ml.toString())
+          } else if (nutrition?.water_target_ml) {
             setWaterGoal(nutrition.water_target_ml)
             setWaterInput(nutrition.water_target_ml.toString())
           }
@@ -152,6 +155,7 @@ export default function GoalsSettingsPage() {
           .from('user_nutrition_settings')
           .upsert({
             user_id: user.id,
+            water_goal_ml: water,
             water_target_ml: water,
             hrv_target: hrv,
             calorie_target: calorieIntake,

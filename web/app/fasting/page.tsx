@@ -72,6 +72,30 @@ function fmtDate(iso: string): string {
   })
 }
 
+function getMetabolicPhase(hours: number): { name: string; emoji: string; color: string } {
+  if (hours < 4) return { name: 'Fed State', emoji: '🍽️', color: 'text-gray-400' }
+  if (hours < 8) return { name: 'Early Fasting', emoji: '⏳', color: 'text-yellow-400' }
+  if (hours < 16) return { name: 'Fat Burning', emoji: '🔥', color: 'text-orange-400' }
+  if (hours < 24) return { name: 'Ketosis', emoji: '⚡', color: 'text-purple-400' }
+  return { name: 'Deep Ketosis', emoji: '💫', color: 'text-indigo-400' }
+}
+
+function getPhaseBackground(hours: number): string {
+  if (hours < 4) return 'bg-gray-900/30'
+  if (hours < 8) return 'bg-yellow-900/30'
+  if (hours < 16) return 'bg-orange-900/30'
+  if (hours < 24) return 'bg-purple-900/30'
+  return 'bg-indigo-900/30'
+}
+
+function getHoursUntilNextPhase(hours: number): number | null {
+  if (hours < 4) return 4 - hours
+  if (hours < 8) return 8 - hours
+  if (hours < 16) return 16 - hours
+  if (hours < 24) return 24 - hours
+  return null
+}
+
 function ActiveFastTimer({ session, onEnd }: { session: ActiveSession; onEnd: () => void }) {
   const [elapsed, setElapsed] = useState(session.elapsed_hours)
   const [ending, setEnding] = useState(false)
@@ -90,6 +114,8 @@ function ActiveFastTimer({ session, onEnd }: { session: ActiveSession; onEnd: ()
   const progress = Math.min(elapsed / session.target_hours, 1)
   const remaining = Math.max(0, session.target_hours - elapsed)
   const done = elapsed >= session.target_hours
+  const phase = getMetabolicPhase(elapsed)
+  const nextPhaseHours = getHoursUntilNextPhase(elapsed)
 
   const size = 220
   const strokeWidth = 16
@@ -115,6 +141,15 @@ function ActiveFastTimer({ session, onEnd }: { session: ActiveSession; onEnd: ()
 
   return (
     <div className="flex flex-col items-center gap-6">
+      {/* Metabolic Phase Badge */}
+      <div className={`flex flex-col items-center gap-2 p-4 rounded-xl w-full max-w-xs ${getPhaseBackground(elapsed)}`}>
+        <span className="text-4xl">{phase.emoji}</span>
+        <span className={`text-lg font-bold ${phase.color}`}>{phase.name}</span>
+        {nextPhaseHours && nextPhaseHours > 0 && (
+          <span className="text-xs text-zinc-400">Next phase in {nextPhaseHours.toFixed(1)}h</span>
+        )}
+      </div>
+
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
           <circle cx={center} cy={center} r={radius} fill="none" stroke="rgba(245,158,11,0.15)" strokeWidth={strokeWidth} />

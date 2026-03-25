@@ -85,11 +85,27 @@ export default function WaterPage() {
   const today = new Date().toISOString().slice(0, 10)
 
   const loadToday = useCallback(async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    // Load water goal from Supabase
+    let loadedGoal = 2500
+    if (user) {
+      const { data: nutrition } = await supabase
+        .from('user_nutrition_settings')
+        .select('water_goal_ml')
+        .eq('user_id', user.id)
+        .single()
+      if (nutrition?.water_goal_ml) {
+        loadedGoal = nutrition.water_goal_ml
+      }
+    }
+    setTargetMl(loadedGoal)
+    
     const res = await fetch(`/api/water?date=${today}`)
     if (res.ok) {
       const data = await res.json()
       setTotalMl(data.total_ml ?? 0)
-      setTargetMl(data.target_ml ?? 2500)
       setLogs(data.logs ?? [])
     }
     setLoading(false)
