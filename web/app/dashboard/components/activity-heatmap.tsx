@@ -13,7 +13,7 @@ interface ActivityHeatmapProps {
   weeks?: number
 }
 
-export function ActivityHeatmap({ data, weeks = 12 }: ActivityHeatmapProps) {
+function ActivityHeatmapComponent({ data, weeks = 12 }: ActivityHeatmapProps) {
   const levelColors = [
     'bg-gray-100 dark:bg-gray-800',
     'bg-green-200 dark:bg-green-900',
@@ -113,7 +113,7 @@ export function ActivityHeatmap({ data, weeks = 12 }: ActivityHeatmapProps) {
   )
 }
 
-export function WeeklyComparison({
+function WeeklyComparisonComponent({
   thisWeek,
   lastWeek
 }: {
@@ -184,3 +184,6 @@ export function WeeklyComparison({
     </div>
   )
 }
+
+export const ActivityHeatmap = React.memo(ActivityHeatmapComponent)
+export const WeeklyComparison = React.memo(WeeklyComparisonComponent)

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import {
+import React, { useState } from 'react'
+import React, {
   LineChart,
   Line,
   AreaChart,
@@ -36,7 +36,7 @@ interface PersonalRecord {
   improvement?: number
 }
 
-export function PersonalRecords({ records }: { records: PersonalRecord[] }) {
+function PersonalRecordsComponent({ records }: { records: PersonalRecord[] }) {
   return (
     <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white">
       <div className="flex items-center justify-between mb-6">
@@ -85,7 +85,7 @@ interface StatCardData {
   icon: string
 }
 
-export function StatCards({ stats }: { stats: StatCardData[] }) {
+function StatCardsComponent({ stats }: { stats: StatCardData[] }) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, i) => (
@@ -133,7 +133,7 @@ interface CorrelationData {
   correlations: number[][] // -1 to 1
 }
 
-export function CorrelationMatrix({ data }: { data: CorrelationData }) {
+function CorrelationMatrixComponent({ data }: { data: CorrelationData }) {
   const getColor = (value: number) => {
     if (value > 0.7) return 'bg-green-500'
     if (value > 0.3) return 'bg-green-300'
@@ -211,7 +211,7 @@ interface PercentileData {
   icon: string
 }
 
-export function PercentileRankings({ rankings }: { rankings: PercentileData[] }) {
+function PercentileRankingsComponent({ rankings }: { rankings: PercentileData[] }) {
   const getPercentileStyle = (p: number) => {
     if (p >= 90) return { color: '#22C55E', label: 'Elite', bg: 'bg-green-500' }
     if (p >= 75) return { color: '#3B82F6', label: 'Excellent', bg: 'bg-blue-500' }
@@ -282,7 +282,7 @@ interface MonthlyReviewData {
   achievements: string[]
 }
 
-export function MonthlyReview({ data }: { data: MonthlyReviewData }) {
+function MonthlyReviewComponent({ data }: { data: MonthlyReviewData }) {
   return (
     <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden">
       {/* Background decoration */}
@@ -370,7 +370,7 @@ interface PredictionData {
   historicalData: { date: string; actual: number; predicted?: number }[]
 }
 
-export function TrendPrediction({ data }: { data: PredictionData }) {
+function TrendPredictionComponent({ data }: { data: PredictionData }) {
   const trendColors = {
     up: '#22C55E',
     down: '#EF4444',
@@ -450,7 +450,7 @@ interface ShareableCardData {
   gradient: string
 }
 
-export function ShareableStatCard({ data }: { data: ShareableCardData }) {
+function ShareableStatCardComponent({ data }: { data: ShareableCardData }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = async () => {
@@ -512,7 +512,7 @@ interface TimelineEvent {
   icon: string
 }
 
-export function HealthTimeline({ events }: { events: TimelineEvent[] }) {
+function HealthTimelineComponent({ events }: { events: TimelineEvent[] }) {
   const typeStyles = {
     activity: 'bg-green-500',
     meal: 'bg-orange-500',
@@ -565,7 +565,7 @@ interface DataPoint {
   [key: string]: number | string
 }
 
-export function DataExplorer({ data, metrics }: { data: DataPoint[]; metrics: { key: string; label: string; color: string }[] }) {
+function DataExplorerComponent({ data, metrics }: { data: DataPoint[]; metrics: { key: string; label: string; color: string }[] }) {
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([metrics[0]?.key || ''])
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
 
@@ -677,7 +677,7 @@ interface LifetimeStats {
   longestStreak: number
 }
 
-export function LifetimeStatsCard({ stats }: { stats: LifetimeStats }) {
+function LifetimeStatsCardComponent({ stats }: { stats: LifetimeStats }) {
   const formatLargeNumber = (n: number) => {
     if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
     if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
@@ -743,7 +743,7 @@ interface ComparisonData {
   icon: string
 }
 
-export function ComparisonCards({ comparisons, periodLabel }: { comparisons: ComparisonData[]; periodLabel: string }) {
+function ComparisonCardsComponent({ comparisons, periodLabel }: { comparisons: ComparisonData[]; periodLabel: string }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
@@ -782,3 +782,15 @@ export function ComparisonCards({ comparisons, periodLabel }: { comparisons: Com
     </div>
   )
 }
+
+export const PersonalRecords = React.memo(PersonalRecordsComponent)
+export const StatCards = React.memo(StatCardsComponent)
+export const CorrelationMatrix = React.memo(CorrelationMatrixComponent)
+export const PercentileRankings = React.memo(PercentileRankingsComponent)
+export const MonthlyReview = React.memo(MonthlyReviewComponent)
+export const TrendPrediction = React.memo(TrendPredictionComponent)
+export const ShareableStatCard = React.memo(ShareableStatCardComponent)
+export const HealthTimeline = React.memo(HealthTimelineComponent)
+export const DataExplorer = React.memo(DataExplorerComponent)
+export const LifetimeStatsCard = React.memo(LifetimeStatsCardComponent)
+export const ComparisonCards = React.memo(ComparisonCardsComponent)

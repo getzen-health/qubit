@@ -1,0 +1,133 @@
+import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { NextResponse } from 'next/server'
+import { checkRateLimit } from '@/lib/security/rate-limit'
+import { API_VERSION } from '@/lib/api-version'
+
+function escapeCsvCell(value: string | number | null | undefined): string {
+  const str = String(value ?? '')
+  if (/^[=+\-@\t\r]/.test(str)) return `\t${str}`
+  if (/[,"\n\r]/.test(str)) return `"${str.replace(/"/g, '""')}"`
+  return str
+}
+
+async function logExportAudit(userId: string, days: number, rowCount: number): Promise<void> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) return
+  const admin = createAdminClient(url, key, { auth: { persistSession: false } })
+  await admin.from('audit_logs').insert({
+    user_id: userId,
+    action: 'EXPORT',
+    resource_type: 'health_data',
+    details: { export_type: 'consolidated_health', days, row_count: rowCount },
+  })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function buildHealthDataExport(supabase: any, userId: string, days: number): Promise<{ csv: string; json: string; filename: string; rowCount: number } | null> {
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - days)
+  const startDateStr = startDate.toISOString().split('T')[0]
+
+  // Fetch daily summaries
+  const { data: dailyData, error: dailyError } = await supabase
+    .from('daily_summaries')
+    .select('date, steps, active_calories, distance_meters, resting_heart_rate, avg_hrv, sleep_duration_minutes, weight_kg')
+    .eq('user_id', userId)
+    .gte('date', startDateStr)
+    .order('date', { ascending: false })
+
+  if (dailyError) return null
+
+  const rows = dailyData ?? []
+  const headers = ['date', 'steps', 'active_calories', 'distance_meters', 'resting_heart_rate', 'avg_hrv', 'sleep_hours', 'weight_kg']
+  
+  const csvRows: string[] = [headers.join(',')]
+  const jsonData: Array<Record<string, string | number | null>> = []
+
+  for (const row of rows) {
+    const sleepHours = row.sleep_duration_minutes ? Math.round((row.sleep_duration_minutes / 60) * 10) / 10 : null
+    const csvRow = [
+      escapeCsvCell(row.date),
+      escapeCsvCell(row.steps),
+      escapeCsvCell(row.active_calories),
+      escapeCsvCell(row.distance_meters),
+      escapeCsvCell(row.resting_heart_rate),
+      escapeCsvCell(row.avg_hrv),
+      escapeCsvCell(sleepHours),
+      escapeCsvCell(row.weight_kg),
+    ].join(',')
+    csvRows.push(csvRow)
+    
+    jsonData.push({
+      date: row.date,
+      steps: row.steps || 0,
+      active_calories: row.active_calories || 0,
+      distance_meters: row.distance_meters || 0,
+      resting_heart_rate: row.resting_heart_rate || null,
+      avg_hrv: row.avg_hrv || null,
+      sleep_hours: sleepHours,
+      weight_kg: row.weight_kg || null,
+    })
+  }
+
+  const csv = csvRows.join('\n')
+  const json = JSON.stringify({ data: jsonData, days, exportedAt: new Date().toISOString() }, null, 2)
+  const filename = `kquarks_health_${days}d`
+
+  return { csv, json, filename, rowCount: rows.length }
+}
+
+export async function GET(request: Request) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { searchParams } = new URL(request.url)
+  const days = parseInt(searchParams.get('days') ?? '30', 10)
+  const format = searchParams.get('format') ?? 'csv'
+
+  if (![30, 90, 365].includes(days)) {
+    return NextResponse.json({ error: 'Days must be 30, 90, or 365' }, { status: 400 })
+  }
+
+  // Rate limiting: max 3 exports per hour per user
+  const rl = await checkRateLimit(user.id, 'export')
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Maximum 3 exports per hour.' },
+      { status: 429, headers: { 'Retry-After': '3600' } }
+    )
+  }
+
+  const result = await buildHealthDataExport(supabase, user.id, days)
+  if (!result) {
+    return NextResponse.json({ error: 'Export failed' }, { status: 500 })
+  }
+
+  void logExportAudit(user.id, days, result.rowCount)
+
+  if (format === 'json') {
+    return new Response(result.json, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Disposition': `attachment; filename="${result.filename}.json"`,
+        'X-API-Version': API_VERSION,
+      },
+    })
+  }
+
+  return new Response(result.csv, {
+    headers: {
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="${result.filename}.csv"`,
+      'X-API-Version': API_VERSION,
+    },
+  })
+}

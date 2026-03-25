@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useMemo } from 'react'
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 
 interface BodyBatteryData {
@@ -10,15 +11,15 @@ interface BodyBatteryData {
   drained: number // how much drained during day
 }
 
-export function BodyBattery({ data }: { data: BodyBatteryData }) {
-  const getBatteryColor = (level: number) => {
+function BodyBatteryComponent({ data }: { data: BodyBatteryData }) {
+  const getBatteryColor = useMemo(() => (level: number) => {
     if (level >= 75) return { color: '#22C55E', label: 'High', gradient: 'from-green-400 to-green-600' }
     if (level >= 50) return { color: '#3B82F6', label: 'Medium', gradient: 'from-blue-400 to-blue-600' }
     if (level >= 25) return { color: '#F59E0B', label: 'Low', gradient: 'from-yellow-400 to-orange-500' }
     return { color: '#EF4444', label: 'Critical', gradient: 'from-red-400 to-red-600' }
-  }
+  }, [])
 
-  const battery = getBatteryColor(data.current)
+  const battery = useMemo(() => getBatteryColor(data.current), [getBatteryColor, data.current])
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
@@ -89,7 +90,7 @@ export function BodyBattery({ data }: { data: BodyBatteryData }) {
   )
 }
 
-export function BodyBatteryTrend({ data }: { data: { time: string; level: number }[] }) {
+function BodyBatteryTrendComponent({ data }: { data: { time: string; level: number }[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Battery Timeline</h3>
@@ -124,7 +125,7 @@ interface StressData {
   timeline: { time: string; level: number }[]
 }
 
-export function StressLevel({ data }: { data: StressData }) {
+function StressLevelComponent({ data }: { data: StressData }) {
   const getStressStatus = (level: number) => {
     if (level <= 25) return { label: 'Resting', color: '#3B82F6', icon: '😌' }
     if (level <= 50) return { label: 'Low', color: '#22C55E', icon: '🙂' }
@@ -213,7 +214,7 @@ interface ReadinessData {
   recommendation: string
 }
 
-export function Readiness({ data }: { data: ReadinessData }) {
+function ReadinessComponent({ data }: { data: ReadinessData }) {
   const getReadinessStatus = (score: number) => {
     if (score >= 85) return { label: 'Optimal', color: '#22C55E', bg: 'from-green-500 to-emerald-600' }
     if (score >= 70) return { label: 'Good', color: '#3B82F6', bg: 'from-blue-500 to-cyan-600' }
@@ -266,7 +267,7 @@ export function Readiness({ data }: { data: ReadinessData }) {
   )
 }
 
-export function SleepDebt({ current, ideal, history }: { current: number; ideal: number; history: { day: string; debt: number }[] }) {
+function SleepDebtComponent({ current, ideal, history }: { current: number; ideal: number; history: { day: string; debt: number }[] }) {
   const debtHours = ideal - current
   const isInDebt = debtHours > 0
 
@@ -315,3 +316,9 @@ export function SleepDebt({ current, ideal, history }: { current: number; ideal:
     </div>
   )
 }
+
+export const BodyBattery = React.memo(BodyBatteryComponent)
+export const BodyBatteryTrend = React.memo(BodyBatteryTrendComponent)
+export const StressLevel = React.memo(StressLevelComponent)
+export const Readiness = React.memo(ReadinessComponent)
+export const SleepDebt = React.memo(SleepDebtComponent)

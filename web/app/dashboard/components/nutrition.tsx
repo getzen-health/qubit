@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
+import React, { useState, useEffect } from 'react'
+import React, { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import React, { BarcodeScanner, FoodImageRecognition, AddFoodButton } from './food-scanner'
 
 interface MacroData {
   calories: { consumed: number; target: number; burned: number }
@@ -113,7 +113,7 @@ async function saveMealToDatabase(foods: FoodItem[]): Promise<{ success: boolean
   }
 }
 
-export function NutritionOverview({ data, onFoodAdded, onMealSaved }: {
+function NutritionOverviewComponent({ data, onFoodAdded, onMealSaved }: {
   data: MacroData
   onFoodAdded?: (food: FoodItem) => void
   onMealSaved?: () => void
@@ -291,7 +291,7 @@ function QuickStat({ label, value, unit, color }: { label: string; value: string
   )
 }
 
-export function MealLog({ meals }: { meals: Meal[] }) {
+function MealLogComponent({ meals }: { meals: Meal[] }) {
   const mealIcons: Record<string, string> = {
     breakfast: '🍳',
     lunch: '🥗',
@@ -352,7 +352,7 @@ export function MealLog({ meals }: { meals: Meal[] }) {
   )
 }
 
-export function WaterTracker({ consumed, target, onWaterAdded }: {
+function WaterTrackerComponent({ consumed, target, onWaterAdded }: {
   consumed: number
   target: number
   onWaterAdded?: (newTotal: number) => void
@@ -440,7 +440,7 @@ export function WaterTracker({ consumed, target, onWaterAdded }: {
   )
 }
 
-export function MacroDistribution({ protein, carbs, fat }: { protein: number; carbs: number; fat: number }) {
+function MacroDistributionComponent({ protein, carbs, fat }: { protein: number; carbs: number; fat: number }) {
   const total = protein * 4 + carbs * 4 + fat * 9 // calories from macros
   const data = [
     { name: 'Protein', value: (protein * 4 / total) * 100, grams: protein, color: '#EF4444' },
@@ -503,7 +503,7 @@ interface FastingSession {
   progress_percent?: number
 }
 
-export function FastingTimer({
+function FastingTimerComponent({
   initialSession,
   defaultProtocol = '16:8',
   defaultHours = 16,
@@ -671,3 +671,9 @@ export function FastingTimer({
     </div>
   )
 }
+
+export const NutritionOverview = React.memo(NutritionOverviewComponent)
+export const MealLog = React.memo(MealLogComponent)
+export const WaterTracker = React.memo(WaterTrackerComponent)
+export const MacroDistribution = React.memo(MacroDistributionComponent)
+export const FastingTimer = React.memo(FastingTimerComponent)

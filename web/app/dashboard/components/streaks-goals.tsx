@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Trophy } from 'lucide-react'
+import React, { Check, Trophy } from 'lucide-react'
 
 interface Streak {
   name: string
@@ -18,7 +18,7 @@ interface Goal {
   icon: string
 }
 
-export function StreaksCard({ streaks }: { streaks: Streak[] }) {
+function StreaksCardComponent({ streaks }: { streaks: Streak[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Active Streaks</h3>
@@ -45,7 +45,7 @@ export function StreaksCard({ streaks }: { streaks: Streak[] }) {
   )
 }
 
-export function GoalsProgress({ goals }: { goals: Goal[] }) {
+function GoalsProgressComponent({ goals }: { goals: Goal[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
@@ -99,7 +99,7 @@ export function GoalsProgress({ goals }: { goals: Goal[] }) {
   )
 }
 
-export function AchievementBadges({ badges }: { badges: { name: string; icon: string; earned: boolean; description: string }[] }) {
+function AchievementBadgesComponent({ badges }: { badges: { name: string; icon: string; earned: boolean; description: string }[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Achievements</h3>
@@ -133,7 +133,7 @@ export function AchievementBadges({ badges }: { badges: { name: string; icon: st
   )
 }
 
-export function WeeklyChallenge({ challenge }: { challenge: { name: string; description: string; progress: number; reward: string; daysLeft: number } }) {
+function WeeklyChallengeComponent({ challenge }: { challenge: { name: string; description: string; progress: number; reward: string; daysLeft: number } }) {
   return (
     <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl shadow-lg p-6 text-white">
       <div className="flex items-start justify-between">
@@ -165,3 +165,8 @@ export function WeeklyChallenge({ challenge }: { challenge: { name: string; desc
     </div>
   )
 }
+
+export const StreaksCard = React.memo(StreaksCardComponent)
+export const GoalsProgress = React.memo(GoalsProgressComponent)
+export const AchievementBadges = React.memo(AchievementBadgesComponent)
+export const WeeklyChallenge = React.memo(WeeklyChallengeComponent)

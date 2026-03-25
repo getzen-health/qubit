@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import {
+import React, { useState } from 'react'
+import React, {
   AreaChart,
   Area,
   XAxis,
@@ -78,7 +78,7 @@ const getGlucoseStatus = (value: number) => {
   return { label: 'High', color: '#DC2626', bg: 'bg-red-500' }
 }
 
-export function CurrentGlucose({ data }: { data: GlucoseData }) {
+function CurrentGlucoseComponent({ data }: { data: GlucoseData }) {
   const status = getGlucoseStatus(data.current)
   const trend = getTrendArrow(data.trend)
 
@@ -124,7 +124,7 @@ export function CurrentGlucose({ data }: { data: GlucoseData }) {
   )
 }
 
-export function GlucoseChart({ data }: { data: GlucoseData }) {
+function GlucoseChartComponent({ data }: { data: GlucoseData }) {
   const chartData = data.readings.map((r) => ({
     time: new Date(r.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
     glucose: r.value,
@@ -205,7 +205,7 @@ export function GlucoseChart({ data }: { data: GlucoseData }) {
   )
 }
 
-export function TimeInRange({ data }: { data: GlucoseData['timeInRange'] }) {
+function TimeInRangeComponent({ data }: { data: GlucoseData['timeInRange'] }) {
   const segments = [
     { label: 'Low', value: data.low, color: '#F97316', target: '<4%' },
     { label: 'In Range', value: data.inRange, color: '#22C55E', target: '>70%' },
@@ -258,7 +258,7 @@ interface GlucoseImpact {
   score: 'excellent' | 'good' | 'moderate' | 'poor'
 }
 
-export function MealGlucoseImpact({ impacts }: { impacts: GlucoseImpact[] }) {
+function MealGlucoseImpactComponent({ impacts }: { impacts: GlucoseImpact[] }) {
   const getScoreStyle = (score: string) => {
     switch (score) {
       case 'excellent':
@@ -354,7 +354,7 @@ export function MealGlucoseImpact({ impacts }: { impacts: GlucoseImpact[] }) {
   )
 }
 
-export function GlucoseInsights({ data }: { data: GlucoseData }) {
+function GlucoseInsightsComponent({ data }: { data: GlucoseData }) {
   const insights = []
 
   // Generate insights based on data
@@ -423,7 +423,7 @@ export function GlucoseInsights({ data }: { data: GlucoseData }) {
   )
 }
 
-export function CGMConnectionCard() {
+function CGMConnectionCardComponent() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [connected, setConnected] = useState(false)
 
@@ -479,7 +479,7 @@ export function CGMConnectionCard() {
   )
 }
 
-export function DailyGlucosePattern({ readings }: { readings: GlucoseReading[] }) {
+function DailyGlucosePatternComponent({ readings }: { readings: GlucoseReading[] }) {
   // Group readings by hour and calculate averages
   const hourlyData = Array.from({ length: 24 }, (_, hour) => {
     const hourReadings = readings.filter((r) => new Date(r.timestamp).getHours() === hour)
@@ -553,3 +553,11 @@ export function DailyGlucosePattern({ readings }: { readings: GlucoseReading[] }
     </div>
   )
 }
+
+export const CurrentGlucose = React.memo(CurrentGlucoseComponent)
+export const GlucoseChart = React.memo(GlucoseChartComponent)
+export const TimeInRange = React.memo(TimeInRangeComponent)
+export const MealGlucoseImpact = React.memo(MealGlucoseImpactComponent)
+export const GlucoseInsights = React.memo(GlucoseInsightsComponent)
+export const CGMConnectionCard = React.memo(CGMConnectionCardComponent)
+export const DailyGlucosePattern = React.memo(DailyGlucosePatternComponent)

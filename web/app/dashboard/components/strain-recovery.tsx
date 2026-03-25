@@ -1,6 +1,6 @@
 'use client'
 
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import React, { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface StrainData {
   score: number // 0-21 scale like Whoop
@@ -12,7 +12,7 @@ interface StrainData {
   avgHR: number
 }
 
-export function StrainGauge({ data }: { data: StrainData }) {
+function StrainGaugeComponent({ data }: { data: StrainData }) {
   const getStrainColor = (score: number) => {
     if (score <= 7) return { color: '#3B82F6', label: 'Light', bg: 'from-blue-500 to-blue-600' }
     if (score <= 13) return { color: '#22C55E', label: 'Moderate', bg: 'from-green-500 to-green-600' }
@@ -114,7 +114,7 @@ interface RecoveryData {
   bloodOxygen: number
 }
 
-export function RecoveryScore({ data }: { data: RecoveryData }) {
+function RecoveryScoreComponent({ data }: { data: RecoveryData }) {
   const getRecoveryStatus = (score: number) => {
     if (score >= 67) return { label: 'Green', color: '#22C55E', bg: 'from-green-500 to-emerald-600', advice: 'Peak performance day. Push yourself!' }
     if (score >= 34) return { label: 'Yellow', color: '#EAB308', bg: 'from-yellow-500 to-amber-600', advice: 'Moderate intensity recommended.' }
@@ -166,7 +166,7 @@ function MetricPill({ label, value }: { label: string; value: string }) {
   )
 }
 
-export function StrainTrend({ data }: { data: { date: string; strain: number; recovery: number }[] }) {
+function StrainTrendComponent({ data }: { data: { date: string; strain: number; recovery: number }[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Strain vs Recovery</h3>
@@ -206,7 +206,7 @@ export function StrainTrend({ data }: { data: { date: string; strain: number; re
   )
 }
 
-export function TrainingLoad({ weeklyLoad, optimalRange }: { weeklyLoad: number[]; optimalRange: [number, number] }) {
+function TrainingLoadComponent({ weeklyLoad, optimalRange }: { weeklyLoad: number[]; optimalRange: [number, number] }) {
   const currentLoad = weeklyLoad[weeklyLoad.length - 1]
   const previousLoad = weeklyLoad[weeklyLoad.length - 2] || currentLoad
   const trend = currentLoad - previousLoad
@@ -266,3 +266,8 @@ export function TrainingLoad({ weeklyLoad, optimalRange }: { weeklyLoad: number[
     </div>
   )
 }
+
+export const StrainGauge = React.memo(StrainGaugeComponent)
+export const RecoveryScore = React.memo(RecoveryScoreComponent)
+export const StrainTrend = React.memo(StrainTrendComponent)
+export const TrainingLoad = React.memo(TrainingLoadComponent)

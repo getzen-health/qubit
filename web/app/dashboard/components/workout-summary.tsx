@@ -11,7 +11,7 @@ interface Workout {
   icon: string
 }
 
-export function RecentWorkouts({ workouts }: { workouts: Workout[] }) {
+function RecentWorkoutsComponent({ workouts }: { workouts: Workout[] }) {
   if (workouts.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
@@ -56,7 +56,7 @@ export function RecentWorkouts({ workouts }: { workouts: Workout[] }) {
   )
 }
 
-export function WorkoutStats({ stats }: { stats: { thisWeek: number; lastWeek: number; totalMinutes: number; totalCalories: number } }) {
+function WorkoutStatsComponent({ stats }: { stats: { thisWeek: number; lastWeek: number; totalMinutes: number; totalCalories: number } }) {
   const change = stats.lastWeek > 0 ? ((stats.thisWeek - stats.lastWeek) / stats.lastWeek) * 100 : 0
 
   return (
@@ -86,7 +86,7 @@ export function WorkoutStats({ stats }: { stats: { thisWeek: number; lastWeek: n
   )
 }
 
-export function WorkoutDistribution({ data }: { data: { type: string; count: number; color: string }[] }) {
+function WorkoutDistributionComponent({ data }: { data: { type: string; count: number; color: string }[] }) {
   const total = data.reduce((sum, d) => sum + d.count, 0)
 
   return (
@@ -121,3 +121,7 @@ export function WorkoutDistribution({ data }: { data: { type: string; count: num
     </div>
   )
 }
+
+export const RecentWorkouts = React.memo(RecentWorkoutsComponent)
+export const WorkoutStats = React.memo(WorkoutStatsComponent)
+export const WorkoutDistribution = React.memo(WorkoutDistributionComponent)

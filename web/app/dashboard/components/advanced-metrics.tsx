@@ -1,6 +1,6 @@
 'use client'
 
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts'
+import React, { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts'
 
 interface RespiratoryData {
   current: number
@@ -10,7 +10,7 @@ interface RespiratoryData {
   trend: { time: string; rate: number }[]
 }
 
-export function RespiratoryRate({ data }: { data: RespiratoryData }) {
+function RespiratoryRateComponent({ data }: { data: RespiratoryData }) {
   const isNormal = data.current >= 12 && data.current <= 20
 
   return (
@@ -64,7 +64,7 @@ interface SpO2Data {
   timeline: { time: string; value: number }[]
 }
 
-export function BloodOxygen({ data }: { data: SpO2Data }) {
+function BloodOxygenComponent({ data }: { data: SpO2Data }) {
   const getStatus = (value: number) => {
     if (value >= 95) return { label: 'Normal', color: '#22C55E' }
     if (value >= 90) return { label: 'Low', color: '#F59E0B' }
@@ -115,7 +115,7 @@ interface SkinTempData {
   history: { date: string; temp: number }[]
 }
 
-export function SkinTemperature({ data }: { data: SkinTempData }) {
+function SkinTemperatureComponent({ data }: { data: SkinTempData }) {
   const deviation = data.current - data.baseline
   const isElevated = deviation > 0.5
 
@@ -158,7 +158,7 @@ interface WellnessData {
   mindfulness: number
 }
 
-export function WellnessRadar({ data }: { data: WellnessData }) {
+function WellnessRadarComponent({ data }: { data: WellnessData }) {
   const chartData = [
     { metric: 'Sleep', value: data.sleep },
     { metric: 'Activity', value: data.activity },
@@ -204,7 +204,7 @@ interface MenstrualData {
   symptoms: string[]
 }
 
-export function MenstrualCycle({ data }: { data: MenstrualData }) {
+function MenstrualCycleComponent({ data }: { data: MenstrualData }) {
   const phases = {
     menstrual: { label: 'Menstrual', color: '#EF4444', icon: '🔴', advice: 'Rest and gentle movement recommended' },
     follicular: { label: 'Follicular', color: '#3B82F6', icon: '🔵', advice: 'Great time for high-intensity workouts' },
@@ -284,7 +284,7 @@ interface SocialData {
   weeklyChallenge?: { name: string; progress: number }
 }
 
-export function Leaderboard({ data }: { data: SocialData }) {
+function LeaderboardComponent({ data }: { data: SocialData }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
@@ -329,7 +329,7 @@ export function Leaderboard({ data }: { data: SocialData }) {
   )
 }
 
-export function QuickActions() {
+function QuickActionsComponent() {
   const actions = [
     { icon: '🏃', label: 'Start Workout', color: 'from-green-500 to-emerald-600' },
     { icon: '🍎', label: 'Log Food', color: 'from-red-500 to-rose-600' },
@@ -359,7 +359,7 @@ export function QuickActions() {
   )
 }
 
-export function DailyTip({ tip, category }: { tip: string; category: string }) {
+function DailyTipComponent({ tip, category }: { tip: string; category: string }) {
   const categoryStyles: Record<string, { icon: string; gradient: string }> = {
     sleep: { icon: '😴', gradient: 'from-indigo-500 to-purple-600' },
     nutrition: { icon: '🥗', gradient: 'from-green-500 to-teal-600' },
@@ -382,3 +382,12 @@ export function DailyTip({ tip, category }: { tip: string; category: string }) {
     </div>
   )
 }
+
+export const RespiratoryRate = React.memo(RespiratoryRateComponent)
+export const BloodOxygen = React.memo(BloodOxygenComponent)
+export const SkinTemperature = React.memo(SkinTemperatureComponent)
+export const WellnessRadar = React.memo(WellnessRadarComponent)
+export const MenstrualCycle = React.memo(MenstrualCycleComponent)
+export const Leaderboard = React.memo(LeaderboardComponent)
+export const QuickActions = React.memo(QuickActionsComponent)
+export const DailyTip = React.memo(DailyTipComponent)

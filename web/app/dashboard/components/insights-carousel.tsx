@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Moon, Activity, Heart, Apple, Zap, TrendingUp, Sparkles, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import React, { useState } from 'react'
+import React, { Moon, Activity, Heart, Apple, Zap, TrendingUp, Sparkles, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface Insight {
@@ -29,7 +29,7 @@ const priorityStyles = {
   high: 'border-red-500 bg-red-500/10',
 }
 
-export function InsightsCarousel({ insights }: { insights: Insight[] }) {
+function InsightsCarouselComponent({ insights }: { insights: Insight[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   if (insights.length === 0) {
@@ -124,7 +124,7 @@ export function InsightsCarousel({ insights }: { insights: Insight[] }) {
   )
 }
 
-export function InsightsList({ insights }: { insights: Insight[] }) {
+function InsightsListComponent({ insights }: { insights: Insight[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Insights</h3>
@@ -156,3 +156,6 @@ export function InsightsList({ insights }: { insights: Insight[] }) {
     </div>
   )
 }
+
+export const InsightsCarousel = React.memo(InsightsCarouselComponent)
+export const InsightsList = React.memo(InsightsListComponent)

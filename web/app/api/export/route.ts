@@ -288,6 +288,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const type = searchParams.get('type') ?? 'daily'
+  const format = searchParams.get('format') ?? 'csv'
 
   // Rate limiting: max 3 exports per hour per user
   const rl = await checkRateLimit(user.id, 'export')
@@ -305,6 +306,29 @@ export async function GET(request: Request) {
 
   // Audit log the successful export (fire-and-forget)
   void logExportAudit(user.id, type, result.rowCount)
+
+  // Support JSON format
+  if (format === 'json') {
+    const lines = result.csv.split('\n')
+    const headers = lines[0].split(',').map(h => h.trim())
+    const data = lines.slice(1).filter(l => l.trim()).map(line => {
+      const values = line.split(',')
+      const obj: Record<string, string> = {}
+      headers.forEach((h, i) => {
+        obj[h] = values[i]?.trim() ?? ''
+      })
+      return obj
+    })
+    
+    const filename = result.filename.replace('.csv', '.json')
+    return new Response(JSON.stringify({ data, exportedAt: new Date().toISOString() }, null, 2), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'X-API-Version': API_VERSION,
+      },
+    })
+  }
 
   return new Response(result.csv, {
     headers: {

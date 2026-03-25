@@ -7,7 +7,7 @@ interface HealthScoreProps {
   trendValue?: number
 }
 
-export function HealthScore({ score, label, trend, trendValue }: HealthScoreProps) {
+function HealthScoreComponent({ score, label, trend, trendValue }: HealthScoreProps) {
   const circumference = 2 * Math.PI * 45
   const strokeDashoffset = circumference - (score / 100) * circumference
 
@@ -89,7 +89,7 @@ export function HealthScore({ score, label, trend, trendValue }: HealthScoreProp
   )
 }
 
-export function HealthScoreGrid({ scores }: { scores: { label: string; score: number; icon: string }[] }) {
+function HealthScoreGridComponent({ scores }: { scores: { label: string; score: number; icon: string }[] }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {scores.map((item) => (
@@ -112,3 +112,6 @@ export function HealthScoreGrid({ scores }: { scores: { label: string; score: nu
     </div>
   )
 }
+
+export const HealthScore = React.memo(HealthScoreComponent)
+export const HealthScoreGrid = React.memo(HealthScoreGridComponent)
