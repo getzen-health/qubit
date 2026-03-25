@@ -10,8 +10,23 @@ struct ReadinessView: View {
     @State private var score: ReadinessScore?
     @State private var history: [HistoryPoint] = []
     @State private var isLoading = true
+    @State private var checkins: [(date: String, energy: Int, mood: Int, stress: Int, notes: String?)] = []
 
     private let healthKit = HealthKitService.shared
+    private let supabase = SupabaseService.shared
+
+    // Today's check-in (if any)
+    private var todayCheckin: (date: String, energy: Int, mood: Int, stress: Int, notes: String?)? {
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let today = df.string(from: Date())
+        return checkins.first { $0.date == today }
+    }
+
+    // True when check-in penalty applies (energy ≤ 2 OR stress ≥ 4)
+    private var hasPenalty: Bool {
+        guard let c = todayCheckin else { return false }
+        return c.energy <= 2 || c.stress >= 4
+    }
 
     struct ReadinessScore {
         let overall: Int
@@ -95,6 +110,7 @@ struct ReadinessView: View {
                     heroCard(s)
                     factorsCard(s)
                     recommendationCard(s)
+                    checkinCorrelationCard
                     if history.count >= 5 { historyChart }
                     methodologyCard
                 } else {
@@ -123,9 +139,20 @@ struct ReadinessView: View {
                     Text("\(s.overall)")
                         .font(.system(size: 64, weight: .heavy, design: .rounded))
                         .foregroundStyle(z.color)
-                    Text(z.label)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(z.color)
+                    HStack(spacing: 6) {
+                        Text(z.label)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(z.color)
+                        if hasPenalty {
+                            Text("−10 check-in adjustment")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.orange)
+                                .clipShape(Capsule())
+                        }
+                    }
                 }
                 Spacer()
 
@@ -231,6 +258,155 @@ struct ReadinessView: View {
 
     private func scoreColor(_ v: Int) -> Color {
         v >= 80 ? .green : v >= 60 ? .blue : v >= 40 ? .yellow : .red
+    }
+
+    // MARK: - Check-in Correlation Card
+
+    private var checkinCorrelationCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "heart.text.square.fill")
+                    .foregroundStyle(.pink)
+                Text("Subjective Impact")
+                    .font(.headline)
+            }
+            .padding(.horizontal, 4)
+
+            if checkins.isEmpty {
+                HStack(spacing: 10) {
+                    Image(systemName: "square.and.pencil")
+                        .foregroundStyle(.secondary)
+                    Text("Log a daily check-in to see subjective impact")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            } else {
+                // Energy correlation rows
+                let highEnergyAvg = correlationAvg(minEnergy: 4)
+                let lowEnergyAvg = correlationAvg(maxEnergy: 2)
+
+                VStack(spacing: 0) {
+                    if let high = highEnergyAvg {
+                        correlationRow(
+                            label: "High energy days",
+                            detail: "energy ≥ 4",
+                            avg: high,
+                            color: .green
+                        )
+                        Divider().padding(.leading, 16)
+                    }
+                    if let low = lowEnergyAvg {
+                        correlationRow(
+                            label: "Low energy days",
+                            detail: "energy ≤ 2",
+                            avg: low,
+                            color: .red
+                        )
+                    }
+                    if highEnergyAvg == nil && lowEnergyAvg == nil {
+                        Text("Not enough check-in variety yet — keep logging!")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding()
+                    }
+                }
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                // Recent check-ins mini list
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Recent Check-ins")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 4)
+
+                    VStack(spacing: 0) {
+                        ForEach(Array(checkins.prefix(3).enumerated()), id: \.offset) { idx, c in
+                            HStack(spacing: 12) {
+                                Text(c.date)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .frame(width: 80, alignment: .leading)
+                                HStack(spacing: 6) {
+                                    Label("\(c.energy)", systemImage: "bolt.fill")
+                                        .font(.caption2)
+                                        .foregroundStyle(.yellow)
+                                    Label("\(c.mood)", systemImage: "face.smiling")
+                                        .font(.caption2)
+                                        .foregroundStyle(.green)
+                                    Label("\(c.stress)", systemImage: "brain.head.profile")
+                                        .font(.caption2)
+                                        .foregroundStyle(c.stress >= 4 ? .orange : .secondary)
+                                }
+                                Spacer()
+                                if c.energy <= 2 || c.stress >= 4 {
+                                    Image(systemName: "exclamationmark.circle.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.orange)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            if idx < min(checkins.count, 3) - 1 {
+                                Divider().padding(.leading, 16)
+                            }
+                        }
+                    }
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+            }
+        }
+    }
+
+    private func correlationAvg(minEnergy: Int? = nil, maxEnergy: Int? = nil) -> Int? {
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        // Build a lookup: date string → readiness score from 7-day history
+        let scoreMap: [String: Int] = Dictionary(
+            history.compactMap { pt -> (String, Int)? in
+                (df.string(from: pt.date), pt.score)
+            },
+            uniquingKeysWith: { a, _ in a }
+        )
+
+        let filtered = checkins.filter { c in
+            if let min = minEnergy { guard c.energy >= min else { return false } }
+            if let max = maxEnergy { guard c.energy <= max else { return false } }
+            return scoreMap[c.date] != nil
+        }
+        guard !filtered.isEmpty else { return nil }
+        let total = filtered.compactMap { scoreMap[$0.date] }.reduce(0, +)
+        return total / filtered.count
+    }
+
+    private func correlationRow(label: String, detail: String, avg: Int, color: Color) -> some View {
+        HStack(spacing: 12) {
+            Circle()
+                .fill(color.opacity(0.15))
+                .frame(width: 36, height: 36)
+                .overlay(
+                    Text("\(avg)")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(color)
+                )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.subheadline.weight(.medium))
+                Text(detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("avg \(avg)")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(color)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
     }
 
     // MARK: - Recommendation Card
@@ -489,6 +665,9 @@ struct ReadinessView: View {
             pts.append(HistoryPoint(date: day, score: dOverall))
         }
         history = pts
+
+        // Fetch check-in history (best-effort; not authenticated = skip)
+        checkins = (try? await supabase.getCheckinHistory(days: 7)) ?? []
     }
 }
 

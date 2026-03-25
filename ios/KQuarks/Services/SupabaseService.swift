@@ -581,6 +581,30 @@ class SupabaseService {
             .execute()
     }
 
+    func getCheckinHistory(days: Int = 7) async throws -> [(date: String, energy: Int, mood: Int, stress: Int, notes: String?)] {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+        let cutoffStr = df.string(from: cutoff)
+
+        struct CheckinRow: Decodable {
+            let date: String
+            let energy: Int
+            let mood: Int
+            let stress: Int
+            let notes: String?
+        }
+        let rows: [CheckinRow] = try await client.from("daily_checkins")
+            .select("date, energy, mood, stress, notes")
+            .eq("user_id", value: userId.uuidString)
+            .gte("date", value: cutoffStr)
+            .order("date", ascending: false)
+            .execute()
+            .value
+
+        return rows.map { ($0.date, $0.energy, $0.mood, $0.stress, $0.notes) }
+    }
+
     // MARK: - Nutrition
 
     struct MealEntry: Identifiable, Decodable {
