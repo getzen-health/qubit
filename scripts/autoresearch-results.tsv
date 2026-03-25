@@ -3,3 +3,4 @@ iteration	commit	score	delta	status	description
 2	ffdfd6d	206	-80	keep	Replace silent try? with do-catch in SyncService (10 occurrences)
 3	04ae3f1	150	-56	keep	Replace silent try? with do-catch in NotificationService and GoalService (6 occurrences)
 4	fd9c794	133	-17	keep	Make chart Y-scale domains data-driven in CheckinPatternView (2 occurrences)
+5	eeb39bf	113	-20	keep	Fix chart domain properties to use ClosedRange in WeeklyBalanceView and CheckinPatternView (4 occurrences)
