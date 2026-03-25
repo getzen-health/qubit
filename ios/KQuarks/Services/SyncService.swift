@@ -65,10 +65,10 @@ class SyncService {
         guard let userId = supabase.currentUser?.id else { return }
 
         let summary = try await healthKit.fetchTodaySummary()
-        async let weightKgTask = healthKit.fetchLatest(for: .bodyMass)
-        async let bodyFatTask = healthKit.fetchLatest(for: .bodyFatPercentage)
-        let weightKg = try? await weightKgTask
-        let bodyFatRaw = try? await bodyFatTask
+        var weightKg: Double?
+        do { weightKg = try await healthKit.fetchLatest(for: .bodyMass) } catch { weightKg = nil }
+        var bodyFatRaw: Double?
+        do { bodyFatRaw = try await healthKit.fetchLatest(for: .bodyFatPercentage) } catch { bodyFatRaw = nil }
         // HealthKit stores body fat as a fraction (0.0–1.0); convert to percent
         let bodyFatPercent = bodyFatRaw.map { $0 > 1.0 ? $0 : $0 * 100.0 }
 
@@ -628,8 +628,12 @@ class SyncService {
         let workouts = try await healthKit.fetchWorkouts(from: startDate, to: now)
 
         for workout in workouts {
-            let avgHR = (try? await healthKit.fetchAverageHeartRate(during: workout)).map { Int($0) }
-            let maxHR = (try? await healthKit.fetchMaxHeartRate(during: workout)).map { Int($0) }
+            var avgHRValue: Double?
+            do { avgHRValue = try await healthKit.fetchAverageHeartRate(during: workout) } catch { avgHRValue = nil }
+            var maxHRValue: Double?
+            do { maxHRValue = try await healthKit.fetchMaxHeartRate(during: workout) } catch { maxHRValue = nil }
+            let avgHR = avgHRValue.map { Int($0) }
+            let maxHR = maxHRValue.map { Int($0) }
             let elevationGain: Double? = {
                 if let quantity = workout.metadata?[HKMetadataKeyElevationAscended] as? HKQuantity {
                     return quantity.doubleValue(for: .meter())
@@ -754,8 +758,12 @@ class SyncService {
             // Sync historical workouts
             let workouts = try await healthKit.fetchWorkouts(from: startDate, to: endDate)
             for workout in workouts {
-                let avgHR = (try? await healthKit.fetchAverageHeartRate(during: workout)).map { Int($0) }
-                let maxHR = (try? await healthKit.fetchMaxHeartRate(during: workout)).map { Int($0) }
+                var avgHRValue: Double?
+                do { avgHRValue = try await healthKit.fetchAverageHeartRate(during: workout) } catch { avgHRValue = nil }
+                var maxHRValue: Double?
+                do { maxHRValue = try await healthKit.fetchMaxHeartRate(during: workout) } catch { maxHRValue = nil }
+                let avgHR = avgHRValue.map { Int($0) }
+                let maxHR = maxHRValue.map { Int($0) }
                 let elevationGain: Double? = {
                     if let quantity = workout.metadata?[HKMetadataKeyElevationAscended] as? HKQuantity {
                         return quantity.doubleValue(for: .meter())
@@ -782,7 +790,11 @@ class SyncService {
                     avgPacePerKm: avgPacePerKm,
                     source: workout.sourceRevision.source.name
                 )
-                try? await supabase.uploadWorkoutRecord(upload)
+                do {
+                    try await supabase.uploadWorkoutRecord(upload)
+                } catch {
+                    print("[SyncService] Failed to upload historical workout record: \(error)")
+                }
             }
 
             // Sync historical sleep sessions
@@ -813,7 +825,11 @@ class SyncService {
                     deepMinutes: deep,
                     source: first.sourceRevision.source.name
                 )
-                try? await supabase.uploadSleepRecord(upload)
+                do {
+                    try await supabase.uploadSleepRecord(upload)
+                } catch {
+                    print("[SyncService] Failed to upload historical sleep record: \(error)")
+                }
             }
 
             await MainActor.run {
@@ -853,12 +869,20 @@ class SyncService {
     func scheduleBackgroundSync() {
         let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.kquarks.sync.refresh")
         refreshRequest.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 3600)
-        try? BGTaskScheduler.shared.submit(refreshRequest)
+        do {
+            try BGTaskScheduler.shared.submit(refreshRequest)
+        } catch {
+            print("[SyncService] Failed to schedule background refresh: \(error)")
+        }
 
         let fullRequest = BGProcessingTaskRequest(identifier: "com.kquarks.sync.full")
         fullRequest.requiresNetworkConnectivity = true
         fullRequest.requiresExternalPower = true
-        try? BGTaskScheduler.shared.submit(fullRequest)
+        do {
+            try BGTaskScheduler.shared.submit(fullRequest)
+        } catch {
+            print("[SyncService] Failed to schedule background processing: \(error)")
+        }
     }
 
     func handleRefreshTask(_ task: BGAppRefreshTask) async {
