@@ -52,15 +52,17 @@ export async function POST(request: NextRequest) {
   if (!habit) return NextResponse.json({ error: 'Habit not found' }, { status: 404 })
 
   if (completed) {
-    await supabase
+    const { error } = await supabase
       .from('habit_completions')
       .upsert({ habit_id, user_id: user.id, date }, { onConflict: 'habit_id,date' })
+    if (error) return NextResponse.json({ error: 'Failed to record completion' }, { status: 500 })
   } else {
-    await supabase
+    const { error } = await supabase
       .from('habit_completions')
       .delete()
       .eq('habit_id', habit_id)
       .eq('date', date)
+    if (error) return NextResponse.json({ error: 'Failed to remove completion' }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })
