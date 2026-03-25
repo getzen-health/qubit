@@ -285,6 +285,7 @@ interface WorkoutsListProps {
   weeklyKm: number
   weeklyMinutes: number
   weeklyCount: number
+  hasMore?: boolean
 }
 
 // Compute ISO week label "MMM d" for the Monday of each week
@@ -296,14 +297,31 @@ function weekLabel(date: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }: WorkoutsListProps) {
+export function WorkoutsList({ workouts: initialWorkouts, weeklyKm, weeklyMinutes, weeklyCount, hasMore: initialHasMore = false }: WorkoutsListProps) {
+  const [allWorkouts, setAllWorkouts] = useState<Workout[]>(initialWorkouts)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [activeType, setActiveType] = useState<string | null>(null)
   const [showLogModal, setShowLogModal] = useState(false)
   const router = useRouter()
 
+  const handleLoadMore = async () => {
+    setIsLoadingMore(true)
+    try {
+      const res = await fetch(`/api/workouts/more?offset=${allWorkouts.length}&limit=30`)
+      if (res.ok) {
+        const json = await res.json()
+        setAllWorkouts((prev) => [...prev, ...(json.workouts ?? [])])
+        setHasMore(json.hasMore ?? false)
+      }
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
   // Unique types that appear in this user's workouts, preserving occurrence order
-  const types = Array.from(new Set(workouts.map((w) => w.workout_type)))
-  const filtered = activeType ? workouts.filter((w) => w.workout_type === activeType) : workouts
+  const types = Array.from(new Set(allWorkouts.map((w) => w.workout_type)))
+  const filtered = activeType ? allWorkouts.filter((w) => w.workout_type === activeType) : allWorkouts
 
   // 12-week frequency chart (always from full workouts list, not filtered)
   const weekFrequency = (() => {
@@ -315,7 +333,7 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
       d.setDate(d.getDate() - i * 7)
       weeks.set(weekLabel(d), 0)
     }
-    for (const w of workouts) {
+    for (const w of allWorkouts) {
       const label = weekLabel(new Date(w.start_time))
       if (weeks.has(label)) {
         weeks.set(label, (weeks.get(label) ?? 0) + 1)
@@ -338,7 +356,7 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Workouts</h1>
-            <p className="text-sm text-text-secondary">{workouts.length} sessions</p>
+            <p className="text-sm text-text-secondary">{allWorkouts.length} sessions</p>
           </div>
           <Link
             href="/hiit"
@@ -422,7 +440,7 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
         )}
 
         {/* 12-week frequency chart */}
-        {workouts.length > 0 && (
+        {allWorkouts.length > 0 && (
           <div className="mb-6">
             <h2 className="text-sm font-medium text-text-secondary mb-2">Weekly Frequency</h2>
             <ResponsiveContainer width="100%" height={120}>
@@ -487,7 +505,7 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
           </div>
         )}
 
-        {workouts.length > 0 && (() => {
+        {allWorkouts.length > 0 && (() => {
           const totalMinutes = filtered.reduce((s, w) => s + w.duration_minutes, 0)
           const totalCal = filtered.reduce((s, w) => s + (w.active_calories ?? 0), 0)
           const h = Math.floor(totalMinutes / 60)
@@ -507,7 +525,7 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
             </div>
           )
         })()}
-        {workouts.length === 0 ? (
+        {allWorkouts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <span className="text-5xl mb-4">⚡</span>
             <h2 className="text-lg font-semibold text-text-primary mb-2">No workouts yet</h2>
@@ -572,6 +590,22 @@ export function WorkoutsList({ workouts, weeklyKm, weeklyMinutes, weeklyCount }:
                 </div>
               ))
             })()}
+          </div>
+        )}
+
+        {hasMore && !isLoadingMore && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleLoadMore}
+              className="px-6 py-2.5 bg-surface border border-border rounded-xl text-sm font-medium text-text-secondary hover:bg-surface-secondary transition-colors"
+            >
+              Load more workouts
+            </button>
+          </div>
+        )}
+        {isLoadingMore && (
+          <div className="mt-6 flex justify-center">
+            <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </main>

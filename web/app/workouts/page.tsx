@@ -43,6 +43,7 @@ export default async function WorkoutsPage() {
       weeklyKm={weeklyKm}
       weeklyMinutes={weeklyMinutes}
       weeklyCount={weeklyCount}
+      hasMore={(workouts ?? []).length === 30}
     />
   )
 }
