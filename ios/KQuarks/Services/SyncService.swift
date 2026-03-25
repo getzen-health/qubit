@@ -22,6 +22,33 @@ class SyncService {
         lastSyncDate = UserDefaults.standard.object(forKey: lastSyncKey) as? Date
     }
 
+    // MARK: - Retry Helper
+
+    /// Retries an async throwing operation with exponential backoff.
+    /// - Parameters:
+    ///   - maxAttempts: Maximum number of attempts (default 3)
+    ///   - initialDelay: Initial delay in seconds before first retry (default 1.0)
+    ///   - operation: The async operation to retry
+    private func withRetry<T>(
+        maxAttempts: Int = 3,
+        initialDelay: TimeInterval = 1.0,
+        operation: () async throws -> T
+    ) async throws -> T {
+        var lastError: Error?
+        for attempt in 0..<maxAttempts {
+            do {
+                return try await operation()
+            } catch {
+                lastError = error
+                if attempt < maxAttempts - 1 {
+                    let delay = initialDelay * pow(2.0, Double(attempt))
+                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                }
+            }
+        }
+        throw lastError!
+    }
+
     // MARK: - Full Sync
 
     func performFullSync() async {
@@ -91,7 +118,7 @@ class SyncService {
             bodyFatPercent: bodyFatPercent
         )
 
-        try await supabase.uploadDailySummary(upload)
+        try await withRetry { try await self.supabase.uploadDailySummary(upload) }
 
         // Cache recovery score for morning brief notification
         // Using Keychain (not UserDefaults) to prevent exposure via iCloud backup
@@ -526,7 +553,7 @@ class SyncService {
             var failedBatches = 0
             for (index, batch) in batches.enumerated() {
                 do {
-                    try await supabase.uploadHealthRecords(batch)
+                    try await withRetry { try await self.supabase.uploadHealthRecords(batch) }
                 } catch {
                     // Log and skip failed batches rather than aborting entire sync
                     // This prevents 1 bad record from losing all subsequent data
@@ -591,7 +618,7 @@ class SyncService {
                 source: first.sourceRevision.source.name
             )
 
-            try await supabase.uploadSleepRecord(upload)
+            try await withRetry { try await self.supabase.uploadSleepRecord(upload) }
         }
     }
 
@@ -673,7 +700,7 @@ class SyncService {
                 avgPacePerKm: avgPacePerKm,
                 source: workout.sourceRevision.source.name
             )
-            try await supabase.uploadWorkoutRecord(upload)
+            try await withRetry { try await self.supabase.uploadWorkoutRecord(upload) }
         }
     }
 
@@ -759,7 +786,7 @@ class SyncService {
                     weightKg: nil,
                     bodyFatPercent: nil
                 )
-                try await supabase.uploadDailySummary(upload)
+                try await withRetry { try await self.supabase.uploadDailySummary(upload) }
                 let progress = 0.45 + 0.35 * Double(i + 1) / total
                 historicalSyncProgress = progress
             }
@@ -800,7 +827,7 @@ class SyncService {
                     source: workout.sourceRevision.source.name
                 )
                 do {
-                    try await supabase.uploadWorkoutRecord(upload)
+                    try await withRetry { try await self.supabase.uploadWorkoutRecord(upload) }
                 } catch {
                     print("[SyncService] Failed to upload historical workout record: \(error)")
                 }
@@ -835,7 +862,7 @@ class SyncService {
                     source: first.sourceRevision.source.name
                 )
                 do {
-                    try await supabase.uploadSleepRecord(upload)
+                    try await withRetry { try await self.supabase.uploadSleepRecord(upload) }
                 } catch {
                     print("[SyncService] Failed to upload historical sleep record: \(error)")
                 }
