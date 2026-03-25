@@ -76,7 +76,11 @@ class SupabaseService {
                 .joined(separator: " ")
 
             if !displayName.isEmpty {
-                try? await updateUserProfile(displayName: displayName)
+                do {
+                    try await updateUserProfile(displayName: displayName)
+                } catch {
+                    print("[SupabaseService] Failed to update user profile on sign-in: \(error)")
+                }
             }
         }
 
@@ -1030,23 +1034,36 @@ class SupabaseService {
         request.httpMethod = "POST"
         request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: ["userId": userId])
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: ["userId": userId])
+        } catch {
+            print("[SupabaseService] Failed to serialize achievements request body: \(error)")
+            return
+        }
 
-        guard let (data, _) = try? await URLSession.shared.data(for: request) else { return }
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let newlyGranted = json["newly_granted"] as? [String],
-              !newlyGranted.isEmpty else { return }
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let jsonObject = try JSONSerialization.jsonObject(with: data)
+            guard let json = jsonObject as? [String: Any],
+                  let newlyGranted = json["newly_granted"] as? [String],
+                  !newlyGranted.isEmpty else { return }
 
-        // Fetch titles for newly granted achievements to show in notifications
-        if let achievements = try? await fetchAchievements() {
-            let newAchievements = achievements.filter { newlyGranted.contains($0.achievement_type) }
-            for achievement in newAchievements {
-                NotificationService.shared.scheduleAchievementUnlocked(
-                    icon: achievement.icon,
-                    title: achievement.title,
-                    description: achievement.description
-                )
+            // Fetch titles for newly granted achievements to show in notifications
+            do {
+                let achievements = try await fetchAchievements()
+                let newAchievements = achievements.filter { newlyGranted.contains($0.achievement_type) }
+                for achievement in newAchievements {
+                    NotificationService.shared.scheduleAchievementUnlocked(
+                        icon: achievement.icon,
+                        title: achievement.title,
+                        description: achievement.description
+                    )
+                }
+            } catch {
+                print("[SupabaseService] Failed to fetch achievements for notifications: \(error)")
             }
+        } catch {
+            print("[SupabaseService] checkAchievements network error: \(error)")
         }
     }
 
@@ -1087,9 +1104,15 @@ class SupabaseService {
         }
 
         guard httpResponse.statusCode == 200 else {
-            if let errorBody = try? JSONDecoder().decode([String: String].self, from: data),
-               let errorMessage = errorBody["error"] {
-                throw SupabaseError.unknown(NSError(domain: "AI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage]))
+            do {
+                let errorBody = try JSONDecoder().decode([String: String].self, from: data)
+                if let errorMessage = errorBody["error"] {
+                    throw SupabaseError.unknown(NSError(domain: "AI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage]))
+                }
+            } catch let decodeError as SupabaseError {
+                throw decodeError
+            } catch {
+                // Error body could not be decoded; fall through to generic error
             }
             throw SupabaseError.networkError
         }
