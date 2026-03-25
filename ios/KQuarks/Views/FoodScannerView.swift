@@ -74,6 +74,7 @@ struct FoodScannerView: View {
     @State private var showNutritionScanner = false
     @State private var ocrPrefill: ParsedNutritionLabel?
     @State private var showOCRLogMeal = false
+    @State private var showManualBarcodeEntry = false
 
     var body: some View {
         NavigationStack {
@@ -102,6 +103,7 @@ struct FoodScannerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
+                    .accessibilityLabel("Close food scanner")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -124,6 +126,11 @@ struct FoodScannerView: View {
             }
             .sheet(isPresented: $showOCRLogMeal) {
                 LogMealView(initialMealType: .snack, prefill: ocrPrefill)
+            }
+            .sheet(isPresented: $showManualBarcodeEntry) {
+                ManualBarcodeEntryView { barcode in
+                    Task { await lookupBarcode(barcode) }
+                }
             }
             .alert("Camera Access Required", isPresented: $cameraPermissionDenied) {
                 Button("Open Settings") {
@@ -255,6 +262,13 @@ struct FoodScannerView: View {
                 .padding(.vertical, 6)
                 .background(.ultraThinMaterial)
                 .clipShape(Capsule())
+
+            Button("Enter barcode manually") {
+                showManualBarcodeEntry = true
+            }
+            .font(.footnote)
+            .foregroundColor(.gray)
+            .padding(.top, 8)
 
             searchBar
                 .padding(.bottom, 30)

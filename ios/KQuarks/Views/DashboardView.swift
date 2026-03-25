@@ -30,6 +30,8 @@ struct DashboardView: View {
                                     .rotationEffect(.degrees(viewModel.isSyncing ? 360 : 0))
                                     .animation(viewModel.isSyncing ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: viewModel.isSyncing)
                             }
+                            .accessibilityLabel("Sync health data")
+                            .accessibilityHint("Refreshes your health data from HealthKit")
                             .disabled(viewModel.isSyncing)
 
                             if viewModel.isSyncing {
@@ -62,6 +64,7 @@ struct DashboardView: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
+                            .accessibilityLabel("Dismiss sync error")
                         }
                         .padding(12)
                         .background(Color.orange.opacity(0.12))
@@ -174,6 +177,7 @@ struct DashboardView: View {
                                     await viewModel.loadData()
                                 }
                             }
+                            .accessibilityLabel("Retry loading health data")
                         }
                         .padding(.top, 50)
                     }
@@ -194,9 +198,13 @@ struct DashboardView: View {
                         NavigationLink(destination: HealthScoreView()) {
                             Image(systemName: "chart.bar.doc.horizontal")
                         }
+                        .accessibilityLabel("Health score")
+                        .accessibilityHint("View your overall health score and metrics")
                         NavigationLink(destination: ReadinessView()) {
                             Image(systemName: "gauge.with.dots.needle.67percent")
                         }
+                        .accessibilityLabel("Readiness")
+                        .accessibilityHint("View your daily readiness score")
                     }
                 }
             }
@@ -235,6 +243,9 @@ struct ActivityRingsView: View {
                 }
                 .foregroundColor(.green)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Step progress")
+            .accessibilityValue("\(summary.steps) of \(stepsGoal.formatted()) steps")
 
             // Calories ring
             RingView(
@@ -252,6 +263,9 @@ struct ActivityRingsView: View {
                 }
                 .foregroundColor(.orange)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Calorie progress")
+            .accessibilityValue("\(Int(summary.activeCalories)) of \(Int(caloriesGoal.rounded(.up()))) calories")
 
             // Sleep ring
             RingView(
@@ -269,6 +283,9 @@ struct ActivityRingsView: View {
                 }
                 .foregroundColor(.indigo)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Sleep progress")
+            .accessibilityValue(String(format: "%.1f of %.1f hours", sleepHours, sleepGoalHours))
 
             Spacer()
 
@@ -351,6 +368,9 @@ struct StatCard: View {
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(value)
     }
 }
 
