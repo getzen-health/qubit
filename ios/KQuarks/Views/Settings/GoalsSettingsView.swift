@@ -42,6 +42,21 @@ struct GoalsSettingsView: View {
                 }
             }
 
+            Section("Heart Health") {
+                HStack {
+                    Label("HRV Target", systemImage: "heart.text.square")
+                    Spacer()
+                    Stepper(
+                        "\(Int(goalService.hrvTarget)) ms",
+                        value: $goalService.hrvTarget,
+                        in: 20...100,
+                        step: 5
+                    )
+                }
+            } footer: {
+                Text("Target heart rate variability in milliseconds. Higher values indicate better recovery.")
+            }
+
             Section {
                 Button("Reset to Defaults", role: .destructive) {
                     goalService.reset()
@@ -53,6 +68,7 @@ struct GoalsSettingsView: View {
         .onChange(of: goalService.stepsGoal) { goalService.saveToSupabase() }
         .onChange(of: goalService.activeCaloriesGoal) { goalService.saveToSupabase() }
         .onChange(of: goalService.sleepGoalMinutes) { goalService.saveToSupabase() }
+        .onChange(of: goalService.hrvTarget) { goalService.saveToSupabase() }
     }
 
     private func fmtSleepGoal(_ minutes: Double) -> String {
@@ -67,3 +83,4 @@ struct GoalsSettingsView: View {
         GoalsSettingsView()
     }
 }
+

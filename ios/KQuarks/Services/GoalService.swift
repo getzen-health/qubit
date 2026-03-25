@@ -17,6 +17,9 @@ final class GoalService {
     @ObservationIgnored
     @AppStorage("goal_sleepMinutes", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) private var storedSleepGoalMinutes: Double = 480
 
+    @ObservationIgnored
+    @AppStorage("goal_hrv", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) private var storedHrvTarget: Double = 50
+
     var stepsGoal: Double {
         get { storedStepsGoal }
         set { storedStepsGoal = newValue }
@@ -30,6 +33,11 @@ final class GoalService {
     var sleepGoalMinutes: Double {
         get { storedSleepGoalMinutes }
         set { storedSleepGoalMinutes = newValue }
+    }
+
+    var hrvTarget: Double {
+        get { storedHrvTarget }
+        set { storedHrvTarget = newValue }
     }
 
     func goal(for dataType: HealthDataType) -> Double? {
@@ -71,6 +79,7 @@ final class GoalService {
         stepsGoal = 10_000
         activeCaloriesGoal = 500
         sleepGoalMinutes = 480
+        hrvTarget = 50
         saveToSupabase()
     }
 }

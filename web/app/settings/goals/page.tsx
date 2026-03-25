@@ -8,10 +8,12 @@ import { createClient } from '@/lib/supabase/client'
 const STEP_KEY = 'kquarks_step_goal'
 const CAL_KEY = 'kquarks_calorie_goal'
 const SLEEP_KEY = 'kquarks_sleep_goal_minutes'
+const HRV_KEY = 'kquarks_hrv_target'
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
 const DEFAULT_SLEEP_GOAL = 480 // 8 hours
 const DEFAULT_WATER_GOAL = 2500 // ml
+const DEFAULT_HRV_TARGET = 50 // ms
 const DEFAULT_CALORIE_INTAKE_GOAL = 2000
 const DEFAULT_PROTEIN_GOAL = 150
 const DEFAULT_CARBS_GOAL = 250
@@ -26,6 +28,8 @@ export default function GoalsSettingsPage() {
   const [sleepInput, setSleepInput] = useState((DEFAULT_SLEEP_GOAL / 60).toString())
   const [waterGoal, setWaterGoal] = useState(DEFAULT_WATER_GOAL)
   const [waterInput, setWaterInput] = useState(DEFAULT_WATER_GOAL.toString())
+  const [hrvTarget, setHrvTarget] = useState(DEFAULT_HRV_TARGET)
+  const [hrvInput, setHrvInput] = useState(DEFAULT_HRV_TARGET.toString())
   const [calorieIntakeGoal, setCalorieIntakeGoal] = useState(DEFAULT_CALORIE_INTAKE_GOAL)
   const [calorieIntakeInput, setCalorieIntakeInput] = useState(DEFAULT_CALORIE_INTAKE_GOAL.toString())
   const [proteinGoal, setProteinGoal] = useState(DEFAULT_PROTEIN_GOAL)
@@ -55,15 +59,19 @@ export default function GoalsSettingsPage() {
           setStepGoal(s); setStepInput(s.toString())
           setCalGoal(c); setCalInput(c.toString())
           setSleepGoal(sl); setSleepInput((sl / 60).toString())
-          // Load water + macro goals from nutrition settings
+          // Load water + macro goals + HRV from nutrition settings
           const { data: nutrition } = await supabase
             .from('user_nutrition_settings')
-            .select('water_target_ml, calorie_target, protein_target, carbs_target, fat_target')
+            .select('water_target_ml, calorie_target, protein_target, carbs_target, fat_target, hrv_target')
             .eq('user_id', user.id)
             .single()
           if (nutrition?.water_target_ml) {
             setWaterGoal(nutrition.water_target_ml)
             setWaterInput(nutrition.water_target_ml.toString())
+          }
+          if (nutrition?.hrv_target) {
+            setHrvTarget(nutrition.hrv_target)
+            setHrvInput(nutrition.hrv_target.toString())
           }
           if (nutrition?.calorie_target) {
             setCalorieIntakeGoal(nutrition.calorie_target)
@@ -92,6 +100,8 @@ export default function GoalsSettingsPage() {
       if (storedCal) { const n = parseInt(storedCal, 10); if (!isNaN(n) && n > 0) { setCalGoal(n); setCalInput(n.toString()) } }
       const storedSleep = localStorage.getItem(SLEEP_KEY)
       if (storedSleep) { const n = parseInt(storedSleep, 10); if (!isNaN(n) && n > 0) { setSleepGoal(n); setSleepInput((n / 60).toString()) } }
+      const storedHrv = localStorage.getItem(HRV_KEY)
+      if (storedHrv) { const n = parseInt(storedHrv, 10); if (!isNaN(n) && n > 0) { setHrvTarget(n); setHrvInput(n.toString()) } }
       setLoading(false)
     }
     loadGoals()
@@ -104,6 +114,7 @@ export default function GoalsSettingsPage() {
     const sleepHours = parseFloat(sleepInput)
     const sleepMin = Math.round(sleepHours * 60)
     const water = parseInt(waterInput, 10)
+    const hrv = parseInt(hrvInput, 10)
     const calorieIntake = parseInt(calorieIntakeInput, 10)
     const protein = parseInt(proteinInput, 10)
     const carbs = parseInt(carbsInput, 10)
@@ -113,6 +124,7 @@ export default function GoalsSettingsPage() {
     if (isNaN(cal) || cal <= 0 || cal > 5000) return
     if (isNaN(sleepHours) || sleepHours < 4 || sleepHours > 12) return
     if (isNaN(water) || water < 500 || water > 6000) return
+    if (isNaN(hrv) || hrv < 20 || hrv > 100) return
     if (isNaN(calorieIntake) || calorieIntake < 500 || calorieIntake > 8000) return
     if (isNaN(protein) || protein < 0 || protein > 500) return
     if (isNaN(carbs) || carbs < 0 || carbs > 1000) return
@@ -122,6 +134,7 @@ export default function GoalsSettingsPage() {
     setCalGoal(cal)
     setSleepGoal(sleepMin)
     setWaterGoal(water)
+    setHrvTarget(hrv)
     setCalorieIntakeGoal(calorieIntake)
     setProteinGoal(protein)
     setCarbsGoal(carbs)
@@ -140,6 +153,7 @@ export default function GoalsSettingsPage() {
           .upsert({
             user_id: user.id,
             water_target_ml: water,
+            hrv_target: hrv,
             calorie_target: calorieIntake,
             protein_target: protein,
             carbs_target: carbs,
@@ -331,6 +345,46 @@ export default function GoalsSettingsPage() {
                 }`}
               >
                 {preset >= 1000 ? `${preset / 1000}L` : `${preset}ml`}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* HRV Target */}
+        <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
+          <div>
+            <h2 className="font-semibold text-text-primary">HRV Target</h2>
+            <p className="text-sm text-text-secondary mt-0.5">
+              Target heart rate variability in milliseconds. Higher values indicate better recovery.
+            </p>
+          </div>
+
+          <div className="flex gap-3 items-center">
+            <input
+              type="number"
+              min={20}
+              max={100}
+              step={5}
+              value={hrvInput}
+              onChange={(e) => setHrvInput(e.target.value)}
+              className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
+            />
+            <span className="text-text-secondary text-sm">ms</span>
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            {[30, 40, 50, 60, 80].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setHrvInput(preset.toString())}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  hrvTarget === preset
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-border text-text-secondary hover:bg-surface-secondary'
+                }`}
+              >
+                {preset}ms
               </button>
             ))}
           </div>
