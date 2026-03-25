@@ -110,11 +110,16 @@ Return ONLY the JSON, no other text.`,
 
     const foods = (result.foods as Record<string, unknown>[]).map((food) => {
       // Apply Yuka-style health score (no additive/nutriscore data from image, so baseline)
-      const healthScore = calculateProductScore({
+        const healthScore = calculateProductScore({
         nutriscoreGrade: undefined,
         additivesTags: [],
         isOrganic: false,
         allergensTags: [],
+        fiberPer100g: food.fiber ? Number(food.fiber) : null,
+        calories: food.calories ? Number(food.calories) : null,
+        protein: food.protein ? Number(food.protein) : null,
+        carbs: food.carbs ? Number(food.carbs) : null,
+        fat: food.fat ? Number(food.fat) : null,
       })
       return {
         name: String(food.name || 'Unknown Food'),

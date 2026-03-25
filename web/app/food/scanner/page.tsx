@@ -32,6 +32,7 @@ interface HealthScore {
   flaggedAdditives: FlaggedAdditive[]
   allergens: string[]
   novaGroup?: 1 | 2 | 3 | 4 | null
+  hasCompleteData?: boolean
 }
 
 interface FoodProduct {
@@ -341,6 +342,13 @@ export default function FoodScannerPage() {
                 </div>
                 <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
               </div>
+
+              {product.healthScore.hasCompleteData === false && (
+                <div className="mx-4 mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-3 py-2">
+                  <span className="text-amber-500 text-sm">⚠️</span>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">Limited nutritional data — score is approximate</p>
+                </div>
+              )}
 
               {product.healthScore.nutriScore && (
                 <div className="px-4 pb-3">

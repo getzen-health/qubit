@@ -115,6 +115,11 @@ export const GET = createSecureApiHandler(
           additivesTags: p.additives_tags ?? [],
           isOrganic,
           allergensTags: p.allergens_tags ?? [],
+          fiberPer100g: p.nutriments?.fiber_100g ?? null,
+          calories: p.nutriments?.['energy-kcal_100g'] ?? null,
+          protein: p.nutriments?.proteins_100g ?? null,
+          carbs: p.nutriments?.carbohydrates_100g ?? null,
+          fat: p.nutriments?.fat_100g ?? null,
         })
 
         return {
@@ -166,6 +171,11 @@ export const GET = createSecureApiHandler(
               additivesTags: [],
               isOrganic,
               allergensTags: [],
+              fiberPer100g: getUSDANutrient(nutrients, 1079) || null,
+              calories: getUSDANutrient(nutrients, 1008) || null,
+              protein: getUSDANutrient(nutrients, 1003) || null,
+              carbs: getUSDANutrient(nutrients, 1005) || null,
+              fat: getUSDANutrient(nutrients, 1004) || null,
             })
 
             return {

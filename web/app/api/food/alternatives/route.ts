@@ -21,6 +21,7 @@ interface OFFProduct {
     proteins_100g?: number
     carbohydrates_100g?: number
     fat_100g?: number
+    fiber_100g?: number
   }
 }
 
@@ -72,6 +73,11 @@ export const GET = createSecureApiHandler(
           additivesTags: p.additives_tags ?? [],
           isOrganic,
           allergensTags: p.allergens_tags ?? [],
+          fiberPer100g: p.nutriments?.fiber_100g ?? null,
+          calories: p.nutriments?.['energy-kcal_100g'] ?? null,
+          protein: p.nutriments?.proteins_100g ?? null,
+          carbs: p.nutriments?.carbohydrates_100g ?? null,
+          fat: p.nutriments?.fat_100g ?? null,
         })
         return {
           id: p.id,
