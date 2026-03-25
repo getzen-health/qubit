@@ -51,6 +51,34 @@ struct NotificationSettingsView: View {
             }
 
             Section {
+                Toggle(isOn: $notificationService.morningReadinessEnabled) {
+                    Label("Morning Readiness Alerts", systemImage: "heart.circle")
+                }
+            } header: {
+                Text("Notification Types")
+            } footer: {
+                Text("Enable individual notification types you'd like to receive.")
+            }
+
+            Section {
+                Toggle(isOn: $notificationService.hrvAlertEnabled) {
+                    Label("HRV Alerts", systemImage: "waveform.circle")
+                }
+
+                Toggle(isOn: $notificationService.achievementEnabled) {
+                    Label("Achievement Unlocked", systemImage: "star.circle")
+                }
+
+                Toggle(isOn: $notificationService.recoveryDipEnabled) {
+                    Label("Low Recovery Alerts", systemImage: "exclamationmark.circle")
+                }
+
+                Toggle(isOn: $notificationService.weeklyDigestEnabled) {
+                    Label("Weekly Digest", systemImage: "calendar.circle")
+                }
+            }
+
+            Section {
                 Toggle(isOn: $notificationService.stepReminderEnabled) {
                     Label("Afternoon Step Reminder", systemImage: "figure.walk")
                 }
@@ -141,3 +169,4 @@ struct NotificationSettingsView: View {
         NotificationSettingsView()
     }
 }
+

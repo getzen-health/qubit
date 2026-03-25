@@ -42,6 +42,22 @@ final class NotificationService {
     @ObservationIgnored
     @AppStorage("sleepReminderHour") var sleepReminderHour: Int = 21
 
+    // Per-type notification toggles (stored in shared UserDefaults)
+    @ObservationIgnored
+    @AppStorage("notify_morning_readiness", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) var morningReadinessEnabled: Bool = true
+
+    @ObservationIgnored
+    @AppStorage("notify_hrv_alert", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) var hrvAlertEnabled: Bool = true
+
+    @ObservationIgnored
+    @AppStorage("notify_achievement", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) var achievementEnabled: Bool = true
+
+    @ObservationIgnored
+    @AppStorage("notify_recovery_dip", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) var recoveryDipEnabled: Bool = true
+
+    @ObservationIgnored
+    @AppStorage("notify_weekly_digest", store: UserDefaults(suiteName: "group.com.qxlsz.kquarks")) var weeklyDigestEnabled: Bool = true
+
     func requestPermission() async {
         do {
             let granted = try await UNUserNotificationCenter.current()
@@ -126,7 +142,7 @@ final class NotificationService {
 
     /// Schedules (or replaces) tomorrow's 8am morning brief with today's data.
     func scheduleMorningBrief(recoveryScore: Int?, steps: Int, stepGoal: Int) {
-        guard isAuthorized else { return }
+        guard isAuthorized, morningReadinessEnabled else { return }
 
         let content = UNMutableNotificationContent()
         content.title = "Morning Brief"
@@ -176,6 +192,8 @@ final class NotificationService {
     }
 
     private func scheduleWeeklyReview() async {
+        guard weeklyDigestEnabled else { return }
+
         let weekStart = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
         var summaries: [DaySummaryForAI] = []
         do { summaries = try await HealthKitService.shared.fetchWeekSummaries(days: 7) } catch {
@@ -317,6 +335,8 @@ final class NotificationService {
     }
 
     private func scheduleHRVAlert(currentHRV: Int, baseline: Int, diff: Int) {
+        guard hrvAlertEnabled else { return }
+
         let content = UNMutableNotificationContent()
         content.title = "HRV Below Baseline"
         content.body = "Your HRV (\(currentHRV) ms) is \(diff) ms below your baseline of \(baseline) ms. Consider prioritising rest and recovery today."
@@ -364,7 +384,7 @@ final class NotificationService {
 
     /// Fires immediately if recovery score is below 40.
     func scheduleRecoveryDipAlert(recoveryScore: Int) async {
-        guard isAuthorized else { return }
+        guard isAuthorized, recoveryDipEnabled else { return }
         guard recoveryScore < 40 else { return }
 
         let content = UNMutableNotificationContent()
@@ -405,7 +425,7 @@ final class NotificationService {
     // MARK: - Achievement Unlocked
 
     func scheduleAchievementUnlocked(icon: String, title: String, description: String) {
-        guard isAuthorized else { return }
+        guard isAuthorized, achievementEnabled else { return }
         let content = UNMutableNotificationContent()
         content.title = "\(icon) Achievement Unlocked!"
         content.body = "\(title) — \(description)"
