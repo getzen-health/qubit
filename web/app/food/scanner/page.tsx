@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react'
+import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronDown, ChevronUp, RefreshCw, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
+import { getReadinessContext, getFoodReadinessWarning } from '@/lib/readiness'
+import { createClient } from '@/lib/supabase/client'
 
 // Dynamically import the scanner (client-only, uses browser APIs)
 const BarcodeScanner = dynamic(() => import('./barcode-scanner'), { ssr: false })
@@ -128,11 +130,44 @@ export default function FoodScannerPage() {
   const [scanning, setScanning] = useState(false)
   const [barcode, setBarcode] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [readinessScore, setReadinessScore] = useState<number | null>(null)
   const [product, setProduct] = useState<FoodProduct | null>(null)
   const [alternatives, setAlternatives] = useState<Alternative[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showIngredients, setShowIngredients] = useState(false)
+
+  // Fetch latest readiness/body-battery score for contextual food guidance
+  useEffect(() => {
+    const fetchReadiness = async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        const { data } = await supabase
+          .from('daily_summaries')
+          .select('hrv, resting_heart_rate, sleep_duration_minutes, recovery_score')
+          .eq('user_id', user.id)
+          .order('date', { ascending: false })
+          .limit(14)
+        if (!data?.length) return
+        const latest = data[0]
+        const history = data.slice(1)
+        const hrvHistory = history.map(s => s.hrv).filter((v): v is number => v != null && v > 0)
+        const baselineHrv = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : null
+        if (latest.hrv && baselineHrv) {
+          const dev = (latest.hrv - baselineHrv) / baselineHrv
+          const score = Math.max(0, Math.min(100, Math.round(50 + dev * 125)))
+          setReadinessScore(score)
+        } else if (latest.recovery_score) {
+          setReadinessScore(latest.recovery_score)
+        }
+      } catch { /* non-critical */ }
+    }
+    fetchReadiness()
+  }, [])
+
+  const readinessCtx = getReadinessContext(readinessScore)
 
   const lookupBarcode = useCallback(async (code: string) => {
     setLoading(true)
@@ -199,6 +234,12 @@ export default function FoodScannerPage() {
           <div>
             <h1 className="text-xl font-bold text-text-primary">Food Scanner</h1>
             <p className="text-xs text-text-secondary">Scan barcode · search · see health score</p>
+            {readinessScore != null && (
+              <div className={`flex items-center gap-1.5 mt-2 text-xs font-medium ${readinessCtx.colorClass}`}>
+                <Activity className="w-3.5 h-3.5" />
+                <span>Readiness: {readinessCtx.label}</span>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -282,6 +323,21 @@ export default function FoodScannerPage() {
                   </span>
                 </div>
               )}
+
+              {/* Readiness-aware food warning */}
+              {(() => {
+                const warning = getFoodReadinessWarning(
+                  product.healthScore.score,
+                  product.healthScore.novaGroup ?? null,
+                  readinessScore
+                )
+                return warning ? (
+                  <div className="mx-4 mb-3 flex gap-2 items-start bg-orange-500/10 border border-orange-500/20 rounded-xl p-3">
+                    <Activity className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
+                    <p className="text-xs text-orange-300">{warning}</p>
+                  </div>
+                ) : null
+              })()}
 
               <div className="grid grid-cols-4 divide-x divide-border border-t border-border">
                 {[
