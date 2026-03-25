@@ -363,6 +363,9 @@ class SyncService {
             (.walkingAsymmetryPercentage, "walking_asymmetry", .percent(), "%"),
             (.walkingDoubleSupportPercentage, "walking_double_support", .percent(), "%"),
             (.appleWalkingSteadiness, "walking_steadiness", .percent(), "%"),
+            (.walkingHeartRateAverage, "walking_heart_rate_avg", HKUnit.count().unitDivided(by: .minute()), "bpm"),
+            (.stairAscentSpeed, "stair_ascent_speed", HKUnit.meter().unitDivided(by: .second()), "m/s"),
+            (.stairDescentSpeed, "stair_descent_speed", HKUnit.meter().unitDivided(by: .second()), "m/s"),
         ]
         for (identifier, typeName, unit, unitStr) in mobilityTypes {
             let samples = try await healthKit.fetchSamples(
@@ -444,6 +447,7 @@ class SyncService {
             DietaryMetric(identifier: .dietaryFatTotal, type: "dietary_fat", unit: .gram(), unitName: "g"),
             DietaryMetric(identifier: .dietaryFiber, type: "dietary_fiber", unit: .gram(), unitName: "g"),
             DietaryMetric(identifier: .dietaryWater, type: "dietary_water", unit: HKUnit.liter(), unitName: "mL"),
+            DietaryMetric(identifier: .numberOfAlcoholicBeverages, type: "alcoholic_beverages", unit: HKUnit.count(), unitName: "drinks"),
         ]
         for metric in dietaryMetrics {
             let samples = try await healthKit.fetchSamples(for: metric.identifier, from: startDate, to: now)
@@ -758,6 +762,11 @@ class SyncService {
                     }
                     return nil
                 }()
+                let distMeters = workout.totalDistance?.doubleValue(for: .meter())
+                let avgPacePerKm: Double? = {
+                    guard let d = distMeters, d > 100, workout.duration > 0 else { return nil }
+                    return (workout.duration / d) * 1000
+                }()
                 let upload = WorkoutRecordUpload(
                     userId: userId,
                     workoutType: workout.workoutActivityType.name,
@@ -766,11 +775,11 @@ class SyncService {
                     durationMinutes: Int(workout.duration / 60),
                     activeCalories: workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()),
                     totalCalories: nil,
-                    distanceMeters: workout.totalDistance?.doubleValue(for: .meter()),
+                    distanceMeters: distMeters,
                     avgHeartRate: avgHR,
                     maxHeartRate: maxHR,
                     elevationGainMeters: elevationGain,
-                    avgPacePerKm: nil,
+                    avgPacePerKm: avgPacePerKm,
                     source: workout.sourceRevision.source.name
                 )
                 try? await supabase.uploadWorkoutRecord(upload)

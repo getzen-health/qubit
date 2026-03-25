@@ -46,6 +46,15 @@ class HealthKitService {
         // Mindfulness
         types.insert(HKCategoryType(.mindfulSession))
 
+        // Hygiene tracking (Apple Watch)
+        types.insert(HKCategoryType(.toothbrushingEvent))
+        types.insert(HKCategoryType(.handwashingEvent))
+
+        // Cycle tracking
+        types.insert(HKCategoryType(.menstrualFlow))
+        types.insert(HKCategoryType(.ovulationTestResult))
+        types.insert(HKCategoryType(.intermenstrualBleeding))
+
         // Temperature (Apple Watch Series 8+)
         if #available(iOS 16.0, *) {
             types.insert(HKQuantityType(.appleSleepingWristTemperature))
@@ -82,9 +91,13 @@ class HealthKitService {
         types.insert(HKQuantityType(.walkingAsymmetryPercentage))
         types.insert(HKQuantityType(.walkingDoubleSupportPercentage))
         types.insert(HKQuantityType(.appleWalkingSteadiness))
+        types.insert(HKQuantityType(.walkingHeartRateAverage))
+        types.insert(HKQuantityType(.stairAscentSpeed))
+        types.insert(HKQuantityType(.stairDescentSpeed))
 
         // Metabolic
         types.insert(HKQuantityType(.bloodGlucose))
+        types.insert(HKQuantityType(.numberOfAlcoholicBeverages))
 
         // Dietary (synced from third-party apps like MyFitnessPal)
         types.insert(HKQuantityType(.dietaryEnergyConsumed))

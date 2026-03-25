@@ -936,6 +936,7 @@ class SupabaseService {
         let active_calories: Double?
         let strain_score: Int?
         let distance_meters: Double?
+        let resting_heart_rate: Double?
 
         var sleepHours: Double? {
             guard let mins = sleep_duration_minutes, mins > 0 else { return nil }
@@ -943,14 +944,17 @@ class SupabaseService {
         }
         var avgHrv: Double? { avg_hrv }
         var recoveryScore: Int? { recovery_score }
+        var restingHeartRate: Double? { resting_heart_rate }
     }
+
+    private static let summarySelectFields = "date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters, resting_heart_rate"
 
     func fetchDailySummariesForCorrelation(days: Int = 60) async throws -> [DailySummaryRow] {
         guard currentSession != nil else { throw SupabaseError.notAuthenticated }
         let since = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         return try await client.from("daily_summaries")
-            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")
+            .select(Self.summarySelectFields)
             .gte("date", value: df.string(from: since))
             .order("date", ascending: true)
             .execute()
@@ -962,7 +966,7 @@ class SupabaseService {
         let since = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         return try await client.from("daily_summaries")
-            .select("date, steps, sleep_duration_minutes, avg_hrv, recovery_score, active_calories, strain_score, distance_meters")
+            .select(Self.summarySelectFields)
             .gte("date", value: df.string(from: since))
             .order("date", ascending: false)
             .execute()
