@@ -134,7 +134,7 @@ Deno.serve(async (req: Request) => {
     const prompt = buildHealthPrompt(healthContext)
 
     const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(30000),
       method: "POST",
       headers: {
         "Content-Type": "application/json",
