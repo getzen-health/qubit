@@ -1,203 +1,223 @@
-'use client'
-
 import Link from 'next/link'
-import { ArrowLeft, BookOpen, TrendingUp, Calendar, Moon } from 'lucide-react'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  ReferenceLine,
-} from 'recharts'
+import { ArrowLeft, Moon } from 'lucide-react'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { BottomNav } from '@/components/bottom-nav'
+import { RegularityClient, type WeeklySRIPoint, type HeatmapWeek } from './regularity-client'
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+export const metadata = { title: 'Sleep Regularity Index' }
 
-const SRI_SCORE = 79
-const NIGHTS_ANALYZED = 58
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-// 8 weeks of weekly SRI values (oldest → newest)
-const WEEKLY_SRI: { week: string; sri: number }[] = [
-  { week: 'Jan 20', sri: 72 },
-  { week: 'Jan 27', sri: 75 },
-  { week: 'Feb 3',  sri: 74 },
-  { week: 'Feb 10', sri: 78 },
-  { week: 'Feb 17', sri: 81 },
-  { week: 'Feb 24', sri: 80 },
-  { week: 'Mar 3',  sri: 84 },
-  { week: 'Mar 10', sri: 79 },
-]
-
-// 6 weeks × 7 days calendar heatmap (Sun → Sat)
-// Each cell: match rate 0–100. -1 = future/no data.
-// Mostly yellow/green with a few orange cells.
-const HEATMAP_WEEKS: { label: string; days: number[] }[] = [
-  { label: 'Feb 3',  days: [82, 79, 88, 75, 91, 68, 85] },
-  { label: 'Feb 10', days: [76, 85, 80, 92, 72, 88, 78] },
-  { label: 'Feb 17', days: [90, 83, 77, 86, 81, 65, 89] },
-  { label: 'Feb 24', days: [74, 91, 84, 79, 88, 82, 76] },
-  { label: 'Mar 3',  days: [87, 75, 93, 80, 84, 78, 91] },
-  { label: 'Mar 10', days: [82, 88, 76, 85, 79, -1, -1] },
-]
-
-const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-
-// ─── Types & Helpers ──────────────────────────────────────────────────────────
-
-type SRIClass = 'Regular' | 'Moderate' | 'Irregular' | 'Very Irregular'
-
-function classifySRI(sri: number): SRIClass {
-  if (sri >= 87) return 'Regular'
-  if (sri >= 70) return 'Moderate'
-  if (sri >= 50) return 'Irregular'
-  return 'Very Irregular'
+/** Returns [startMinutes, endMinutes] where endMinutes may exceed 1440 for cross-midnight sleep. */
+function sleepWindowMinutes(start: Date, end: Date): [number, number] {
+  const s = start.getHours() * 60 + start.getMinutes()
+  const e = end.getHours() * 60 + end.getMinutes()
+  return e <= s ? [s, e + 1440] : [s, e]
 }
 
-const CLASS_COLOR: Record<SRIClass, string> = {
-  Regular: '#22c55e',
-  Moderate: '#eab308',
-  Irregular: '#f97316',
-  'Very Irregular': '#ef4444',
+/** Minutes of clock-time overlap between two sleep windows. */
+function overlapMinutes(s1: Date, e1: Date, s2: Date, e2: Date): number {
+  const [a, b] = sleepWindowMinutes(s1, e1)
+  const [c, d] = sleepWindowMinutes(s2, e2)
+  return Math.max(0, Math.min(b, d) - Math.max(a, c))
 }
 
-const CLASS_BG: Record<SRIClass, string> = {
-  Regular: 'bg-green-500/10 border-green-500/30',
-  Moderate: 'bg-yellow-500/10 border-yellow-500/30',
-  Irregular: 'bg-orange-500/10 border-orange-500/30',
-  'Very Irregular': 'bg-red-500/10 border-red-500/30',
+function getWeekSunday(date: Date): Date {
+  const d = new Date(date)
+  d.setDate(d.getDate() - d.getDay())
+  d.setHours(0, 0, 0, 0)
+  return d
 }
 
-const CLASS_TEXT: Record<SRIClass, string> = {
-  Regular: 'text-green-400',
-  Moderate: 'text-yellow-400',
-  Irregular: 'text-orange-400',
-  'Very Irregular': 'text-red-400',
+function isoDate(date: Date): string {
+  return date.toISOString().slice(0, 10)
 }
 
-function heatmapColor(rate: number): string {
-  if (rate < 0) return 'bg-surface-secondary opacity-30'
-  if (rate >= 87) return 'bg-green-500/70'
-  if (rate >= 70) return 'bg-yellow-500/70'
-  if (rate >= 50) return 'bg-orange-500/70'
-  return 'bg-red-500/70'
+function weekLabel(date: Date): string {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-const tooltipStyle = {
-  background: 'var(--color-surface, #1a1a1a)',
-  border: '1px solid var(--color-border, #333)',
-  borderRadius: 8,
-  fontSize: 12,
+/** Map bedtime hours < 12 (post-midnight) to > 24 for linear comparison. */
+function normalizeBedtime(hour: number): number {
+  return hour < 12 ? hour + 24 : hour
 }
 
-// ─── Derived stats ────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
-const currentClass = classifySRI(SRI_SCORE)
-const classColor = CLASS_COLOR[currentClass]
+export default async function SleepRegularityPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-const allRates = HEATMAP_WEEKS.flatMap((w) => w.days.filter((d) => d >= 0))
-const avgMatchRate = Math.round(allRates.reduce((s, v) => s + v, 0) / allRates.length)
+  const eightFourDaysAgo = new Date()
+  eightFourDaysAgo.setDate(eightFourDaysAgo.getDate() - 84)
 
-const bestWeek = Math.max(...WEEKLY_SRI.map((w) => w.sri))
-const worstWeek = Math.min(...WEEKLY_SRI.map((w) => w.sri))
+  const { data: rawRecords } = await supabase
+    .from('sleep_records')
+    .select('start_time, end_time, duration_minutes, sleep_efficiency')
+    .eq('user_id', user.id)
+    .gte('start_time', eightFourDaysAgo.toISOString())
+    .gt('duration_minutes', 60)
+    .order('start_time', { ascending: true })
 
-// Count average match rate by weekday index (0=Sun)
-const weekdayTotals = [0, 0, 0, 0, 0, 0, 0]
-const weekdayCounts = [0, 0, 0, 0, 0, 0, 0]
-HEATMAP_WEEKS.forEach((week) => {
-  week.days.forEach((rate, i) => {
-    if (rate >= 0) {
-      weekdayTotals[i] += rate
-      weekdayCounts[i]++
+  const records = rawRecords ?? []
+
+  const header = (
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+        <Link
+          href="/explore"
+          className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
+          aria-label="Back to explore"
+        >
+          <ArrowLeft className="w-5 h-5 text-text-secondary" />
+        </Link>
+        <div className="flex-1">
+          <h1 className="text-xl font-bold text-text-primary">Sleep Regularity Index</h1>
+          <p className="text-sm text-text-secondary">12-Week Circadian Consistency</p>
+        </div>
+        <Moon className="w-5 h-5 text-text-secondary" />
+      </div>
+    </header>
+  )
+
+  // Not enough data — show empty state
+  if (records.length < 7) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {header}
+        <main className="flex-1 flex items-center justify-center p-8 pb-24 text-center">
+          <div className="space-y-3">
+            <Moon className="w-12 h-12 text-text-secondary mx-auto" />
+            <p className="text-text-secondary text-sm leading-relaxed max-w-xs mx-auto">
+              Not enough sleep data yet — sync at least 7 nights to see regularity trends.
+            </p>
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    )
+  }
+
+  // ── Build day-keyed map (latest record per calendar date) ─────────────────
+  const byDate = new Map<string, { start: Date; end: Date; duration: number }>()
+  for (const r of records) {
+    const key = r.start_time.slice(0, 10)
+    byDate.set(key, {
+      start: new Date(r.start_time),
+      end: new Date(r.end_time),
+      duration: r.duration_minutes,
+    })
+  }
+
+  // ── Compute night-to-night match rate for each date ───────────────────────
+  const sortedDates = Array.from(byDate.keys()).sort()
+  const dayMatchRate = new Map<string, number>()
+
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prev = byDate.get(sortedDates[i - 1])!
+    const curr = byDate.get(sortedDates[i])!
+    // Only pair consecutive nights (≤ 2 calendar days apart)
+    const dayGap =
+      (new Date(sortedDates[i]).getTime() - new Date(sortedDates[i - 1]).getTime()) /
+      86_400_000
+    if (dayGap > 2) continue
+    const overlap = overlapMinutes(prev.start, prev.end, curr.start, curr.end)
+    dayMatchRate.set(sortedDates[i], Math.round((overlap / 1440) * 100))
+  }
+
+  // ── Build 12-week grid (Sunday → Saturday, oldest first) ─────────────────
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const currentWeekSunday = getWeekSunday(today)
+  const firstWeekSunday = new Date(currentWeekSunday)
+  firstWeekSunday.setDate(firstWeekSunday.getDate() - 7 * 11)
+
+  const heatmapWeeks: HeatmapWeek[] = []
+  const weeklySRI: WeeklySRIPoint[] = []
+
+  for (let w = 0; w < 12; w++) {
+    const weekStart = new Date(firstWeekSunday)
+    weekStart.setDate(weekStart.getDate() + w * 7)
+
+    const days: number[] = []
+    const weekRates: number[] = []
+
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(weekStart)
+      day.setDate(day.getDate() + d)
+      const key = isoDate(day)
+      const rate = dayMatchRate.get(key)
+
+      if (day > today) {
+        days.push(-1) // future
+      } else if (rate !== undefined) {
+        days.push(rate)
+        weekRates.push(rate)
+      } else {
+        days.push(-1) // no record
+      }
     }
+
+    heatmapWeeks.push({ label: weekLabel(weekStart), days })
+    weeklySRI.push({
+      week: weekLabel(weekStart),
+      sri: weekRates.length >= 4
+        ? Math.round(weekRates.reduce((s, v) => s + v, 0) / weekRates.length)
+        : null,
+    })
+  }
+
+  // ── Summary stats ─────────────────────────────────────────────────────────
+  const nonNullSRIs = weeklySRI.filter((w) => w.sri !== null).map((w) => w.sri!)
+  const avgSRI =
+    nonNullSRIs.length > 0
+      ? Math.round(nonNullSRIs.reduce((s, v) => s + v, 0) / nonNullSRIs.length)
+      : 0
+
+  // Bedtime consistency: % of nights within 30 min of median bedtime
+  const bedtimes = records.map((r) => {
+    const d = new Date(r.start_time)
+    return normalizeBedtime(d.getHours() + d.getMinutes() / 60)
   })
-})
-const weekdayAvgs = weekdayTotals.map((t, i) => (weekdayCounts[i] > 0 ? t / weekdayCounts[i] : 0))
-const bestDayIdx = weekdayAvgs.indexOf(Math.max(...weekdayAvgs))
-const FULL_DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const sortedBedtimes = [...bedtimes].sort((a, b) => a - b)
+  const medianBedtime = sortedBedtimes[Math.floor(sortedBedtimes.length / 2)]
+  const consistencyPct = Math.round(
+    (bedtimes.filter((b) => Math.abs(b - medianBedtime) * 60 < 30).length / bedtimes.length) * 100,
+  )
 
-// ─── SVG Circular Gauge ───────────────────────────────────────────────────────
-
-function CircularGauge({ value, max = 100 }: { value: number; max?: number }) {
-  const radius = 72
-  const strokeWidth = 12
-  const cx = 96
-  const cy = 96
-  const circumference = Math.PI * radius // semicircle
-
-  // Arc goes from 7 o'clock (210°) to 5 o'clock (330°) = 240° sweep
-  const startAngle = 210  // degrees
-  const sweepAngle = 240
-  const pct = Math.min(1, Math.max(0, value / max))
-  const filledAngle = sweepAngle * pct
-
-  function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
-    const rad = ((angleDeg - 90) * Math.PI) / 180
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
-  }
-
-  function describeArc(cx: number, cy: number, r: number, startDeg: number, endDeg: number) {
-    const s = polarToCartesian(cx, cy, r, startDeg)
-    const e = polarToCartesian(cx, cy, r, endDeg)
-    const largeArc = endDeg - startDeg > 180 ? 1 : 0
-    return `M ${s.x} ${s.y} A ${r} ${r} 0 ${largeArc} 1 ${e.x} ${e.y}`
-  }
-
-  const trackPath = describeArc(cx, cy, radius, startAngle, startAngle + sweepAngle)
-  const valuePath = describeArc(cx, cy, radius, startAngle, startAngle + filledAngle)
-
-  // Gradient stops: red → orange → yellow → green
-  const gradientId = 'sriGaugeGradient'
+  const avgSleepDurationHours =
+    Math.round(
+      (records.reduce((s, r) => s + r.duration_minutes, 0) / records.length / 60) * 10,
+    ) / 10
 
   return (
-    <svg width={192} height={160} viewBox="0 0 192 160" className="mx-auto">
-      <defs>
-        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#ef4444" />
-          <stop offset="33%"  stopColor="#f97316" />
-          <stop offset="66%"  stopColor="#eab308" />
-          <stop offset="100%" stopColor="#22c55e" />
-        </linearGradient>
-      </defs>
-
-      {/* Track */}
-      <path
-        d={trackPath}
-        fill="none"
-        stroke="rgba(255,255,255,0.08)"
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
+    <div className="min-h-screen bg-background">
+      {header}
+      <RegularityClient
+        weeklySRI={weeklySRI}
+        heatmapWeeks={heatmapWeeks}
+        avgSRI={avgSRI}
+        nightsAnalyzed={records.length}
+        consistencyPct={consistencyPct}
+        avgSleepDurationHours={avgSleepDurationHours}
       />
+      <BottomNav />
+    </div>
+  )
+}
 
-      {/* Filled arc */}
-      <path
-        d={valuePath}
-        fill="none"
-        stroke={classColor}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        style={{ filter: `drop-shadow(0 0 6px ${classColor}66)` }}
-      />
+// ─── Dead code removed — CircularGauge, ReferenceScale, and all chart
+// components now live in regularity-client.tsx ────────────────────────────────
 
-      {/* Score */}
-      <text
-        x={cx}
-        y={cy + 4}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={38}
-        fontWeight="700"
-        fill={classColor}
-        fontFamily="inherit"
-      >
-        {value}
-      </text>
-
-      {/* Label */}
+function _unusedPlaceholder() {
+  // This function intentionally kept empty so linters don't complain about
+  // the file having only imports. All logic is in regularity-client.tsx.
+  return null
+}
       <text
         x={cx}
         y={cy + 30}
