@@ -69,12 +69,12 @@ export const POST = createSecureApiHandler(
 
     // Invoke the predictions edge function
     const edgeFunctionUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/predictions`
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
     const { data: { session } } = await supabase.auth.getSession()
-    const authHeader = session?.access_token
-      ? `Bearer ${session.access_token}`
-      : `Bearer ${serviceKey}`
+    if (!session?.access_token) {
+      return secureErrorResponse('Unauthorized', 401)
+    }
+    const authHeader = `Bearer ${session.access_token}`
 
     const response = await fetch(edgeFunctionUrl, {
       method: 'POST',
