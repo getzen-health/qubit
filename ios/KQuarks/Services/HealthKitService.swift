@@ -53,8 +53,6 @@ class HealthKitService {
 
         // Cycle tracking
         types.insert(HKCategoryType(.menstrualFlow))
-        types.insert(HKCategoryType(.ovulationTestResult))
-        types.insert(HKCategoryType(.intermenstrualBleeding))
 
         // Temperature (Apple Watch Series 8+)
         if #available(iOS 16.0, *) {
