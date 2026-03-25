@@ -109,7 +109,7 @@ struct DailyReadinessView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daily Readiness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -187,7 +187,8 @@ struct DailyReadinessView: View {
     // MARK: - 30-Day Trend Chart
 
     private var trendChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let scoremax = history.map(\.score).max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 8) {
             Text("30-Day Readiness Trend").font(.headline)
             Chart {
                 ForEach(history) { d in
@@ -219,7 +220,7 @@ struct DailyReadinessView: View {
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...scoremax)
             .frame(height: 170)
 
             // Zone legend

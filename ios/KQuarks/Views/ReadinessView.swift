@@ -105,7 +105,7 @@ struct ReadinessView: View {
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Daily Readiness")
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -259,7 +259,8 @@ struct ReadinessView: View {
     // MARK: - History Chart
 
     private var historyChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let scoremax = history.map(\.score).max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 8) {
             Text("7-Day Readiness History")
                 .font(.headline)
                 .padding(.horizontal, 4)
@@ -298,7 +299,7 @@ struct ReadinessView: View {
                     .symbolSize(40)
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...scoremax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) { _ in
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated))
