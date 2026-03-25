@@ -467,13 +467,61 @@ struct ProductDetailView: View {
     private func ingredientsCard(_ ingredients: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Ingredients").font(.headline)
-            Text(ingredients)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            Text(coloredIngredients(ingredients))
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    // Colors known risky E-number additives within ingredient text.
+    // Colorants (E1xx) and preservatives (E2xx) in red; others amber.
+    private func coloredIngredients(_ text: String) -> AttributedString {
+        let baseAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.secondaryLabel,
+            .font: UIFont.preferredFont(forTextStyle: .caption1)
+        ]
+        let mutable = NSMutableAttributedString(string: text, attributes: baseAttrs)
+
+        let riskMap: [String: UIColor] = [
+            "E102":  .systemRed,    // Tartrazine
+            "E104":  .systemOrange, // Quinoline Yellow
+            "E110":  .systemRed,    // Sunset Yellow FCF
+            "E122":  .systemRed,    // Carmoisine
+            "E123":  .systemRed,    // Amaranth
+            "E124":  .systemRed,    // Ponceau 4R
+            "E127":  .systemRed,    // Erythrosine
+            "E129":  .systemRed,    // Allura Red AC
+            "E131":  .systemRed,    // Patent Blue V
+            "E133":  .systemRed,    // Brilliant Blue FCF
+            "E150D": .systemOrange, // Caramel IV
+            "E171":  .systemOrange, // Titanium Dioxide
+            "E211":  .systemRed,    // Sodium Benzoate
+            "E212":  .systemOrange, // Potassium Benzoate
+            "E213":  .systemOrange, // Calcium Benzoate
+            "E220":  .systemOrange, // Sulphur Dioxide
+            "E249":  .systemOrange, // Potassium Nitrite
+            "E250":  .systemOrange, // Sodium Nitrite
+            "E621":  .systemRed,    // Monosodium Glutamate
+            "E951":  .systemRed,    // Aspartame
+        ]
+
+        guard let regex = try? NSRegularExpression(
+            pattern: "\\bE\\d{3,4}[a-z]?\\b",
+            options: .caseInsensitive
+        ) else { return AttributedString(mutable) }
+
+        let nsText = text as NSString
+        let boldFont = UIFont.boldSystemFont(
+            ofSize: UIFont.preferredFont(forTextStyle: .caption1).pointSize
+        )
+        for match in regex.matches(in: text, range: NSRange(location: 0, length: nsText.length)) {
+            let upper = nsText.substring(with: match.range).uppercased()
+            let color = riskMap[upper] ?? UIColor.systemOrange
+            mutable.addAttribute(.foregroundColor, value: color, range: match.range)
+            mutable.addAttribute(.font, value: boldFont, range: match.range)
+        }
+        return AttributedString(mutable)
     }
 
     private var logButton: some View {
