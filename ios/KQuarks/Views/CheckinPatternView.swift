@@ -51,6 +51,19 @@ struct CheckinPatternView: View {
     @State private var isLoading = true
 
     private let dowLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+    private var dowChartDomainMax: Double {
+        let maxVal = dowData.flatMap { [$0.avgEnergy, $0.avgMood, $0.avgStress] }.max() ?? 5.0
+        return max(maxVal, 5.0)
+    }
+    private var monthChartDomainMin: Double {
+        let minVal = monthData.flatMap { [$0.avgEnergy, $0.avgMood, $0.avgStress] }.min() ?? 1.0
+        return min(minVal, 1.0)
+    }
+    private var monthChartDomainMax: Double {
+        let maxVal = monthData.flatMap { [$0.avgEnergy, $0.avgMood, $0.avgStress] }.max() ?? 5.0
+        return max(maxVal, 5.0)
+    }
     private let monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     private let energyEmojis = ["", "😴", "😑", "😐", "🙂", "😄"]
     private let moodEmojis   = ["", "😞", "😕", "😐", "🙂", "😁"]
@@ -150,7 +163,7 @@ struct CheckinPatternView: View {
                     .position(by: .value("Metric", "Mood"))
                 }
             }
-            .chartYScale(domain: 0...5)
+            .chartYScale(domain: 0...dowChartDomainMax)
             .chartYAxis {
                 AxisMarks(values: [0, 1, 2, 3, 4, 5]) { v in
                     AxisValueLabel { Text("\(v.as(Int.self) ?? 0)").font(.caption2) }
@@ -250,7 +263,7 @@ struct CheckinPatternView: View {
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 2]))
                 }
             }
-            .chartYScale(domain: 1...5)
+            .chartYScale(domain: monthChartDomainMin...monthChartDomainMax)
             .frame(height: 160)
 
             HStack(spacing: 16) {
