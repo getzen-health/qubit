@@ -141,6 +141,17 @@ export default function FoodScannerPage() {
   const [addingToMeal, setAddingToMeal] = useState(false)
   const [mealAdded, setMealAdded] = useState(false)
 
+  function getDefaultMealType(): 'breakfast' | 'lunch' | 'dinner' | 'snack' {
+    const hour = new Date().getHours()
+    if (hour >= 5 && hour < 10) return 'breakfast'
+    if (hour >= 10 && hour < 14) return 'lunch'
+    if (hour >= 14 && hour < 18) return 'snack'
+    if (hour >= 18 && hour < 22) return 'dinner'
+    return 'snack'
+  }
+
+  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>(getDefaultMealType)
+
   async function handleAddToMeal() {
     if (!product) return
     setAddingToMeal(true)
@@ -152,7 +163,7 @@ export default function FoodScannerPage() {
       // Ensure a 'snack' meal row exists for today
       const { data: meal, error: mealErr } = await supabase
         .from('meals')
-        .upsert({ user_id: user.id, date: today, meal_type: 'snack' }, { onConflict: 'user_id,date,meal_type' })
+        .upsert({ user_id: user.id, date: today, meal_type: selectedMealType }, { onConflict: 'user_id,date,meal_type' })
         .select('id')
         .single()
       if (mealErr || !meal) throw mealErr ?? new Error('Could not create meal')
@@ -408,17 +419,34 @@ export default function FoodScannerPage() {
               <div className="px-4 pb-4 pt-1">
                 {mealAdded ? (
                   <div className="flex items-center justify-center gap-2 bg-green-500/15 text-green-400 rounded-xl py-2.5 text-sm font-medium">
-                    ✓ Added to today&apos;s diary
+                    ✓ Added to {selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}
                     <Link href="/food/diary" className="underline underline-offset-2 text-green-300 ml-1">View diary →</Link>
                   </div>
                 ) : (
-                  <button
-                    onClick={handleAddToMeal}
-                    disabled={addingToMeal}
-                    className="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30 rounded-xl py-2.5 text-sm font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
-                  >
-                    {addingToMeal ? 'Adding…' : '+ Add to Today\'s Diary'}
-                  </button>
+                  <>
+                    <div className="flex gap-2 mb-3">
+                      {(['breakfast', 'lunch', 'dinner', 'snack'] as const).map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => setSelectedMealType(type)}
+                          className={`flex-1 py-1.5 rounded-full text-xs font-medium capitalize transition-colors ${
+                            selectedMealType === type
+                              ? 'bg-purple-600 text-white'
+                              : 'bg-surface text-text-secondary border border-border'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleAddToMeal}
+                      disabled={addingToMeal}
+                      className="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30 rounded-xl py-2.5 text-sm font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
+                    >
+                      {addingToMeal ? 'Adding…' : '+ Add to Today\'s Diary'}
+                    </button>
+                  </>
                 )}
               </div>
             </div>
