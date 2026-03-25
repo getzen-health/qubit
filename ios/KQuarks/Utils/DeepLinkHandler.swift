@@ -17,6 +17,8 @@ enum DeepLinkDestination: Hashable {
     case achievements
     case settings
     case profile
+    // Metric-specific deep links
+    case metric(String) // Generic metric type (steps, sleep, recovery, readiness, etc.)
 }
 
 @Observable
@@ -28,6 +30,12 @@ final class DeepLinkHandler {
         guard url.scheme == "kquarks" else { return }
         let host = url.host ?? ""
         let path = url.pathComponents.dropFirst().first ?? ""
+        
+        // Handle metric-specific deep links: kquarks://metric/steps
+        if host == "metric" {
+            pendingDestination = .metric(path)
+            return
+        }
         
         switch host {
         case "food", "nutrition":

@@ -181,11 +181,7 @@ struct SmallWidgetView: View {
         }
         .padding(12)
         .containerBackground(Color(.systemBackground), for: .widget)
-        .widgetURL(URL(string: "kquarks://dashboard"))
-    }
-}
-
-// MARK: - Home Screen: Medium Widget
+        .widgetURL(URL(string: "kquarks://metric/steps"))
 
 struct MediumWidgetView: View {
     let entry: KQuarksEntry
@@ -255,12 +251,7 @@ struct MediumWidgetView: View {
             Spacer()
         }
         .padding(16)
-        .containerBackground(Color(.systemBackground), for: .widget)
-        .widgetURL(URL(string: "kquarks://dashboard"))
-    }
-}
-
-// MARK: - Lock Screen: Circular (step progress gauge)
+        .widgetURL(URL(string: "kquarks://metric/steps"))
 
 struct AccessoryCircularView: View {
     let entry: KQuarksEntry
@@ -278,14 +269,7 @@ struct AccessoryCircularView: View {
                  : "\(entry.steps)")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
         }
-        .gaugeStyle(.accessoryCircular)
-        .widgetAccentable()
-        .containerBackground(.clear, for: .widget)
-        .widgetURL(URL(string: "kquarks://dashboard"))
-    }
-}
-
-// MARK: - Lock Screen: Rectangular
+        .widgetURL(URL(string: "kquarks://metric/steps"))
 
 struct AccessoryRectangularView: View {
     let entry: KQuarksEntry
@@ -320,13 +304,7 @@ struct AccessoryRectangularView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-        }
-        .containerBackground(.clear, for: .widget)
-        .widgetURL(URL(string: "kquarks://dashboard"))
-    }
-}
-
-// MARK: - Lock Screen: Inline
+        .widgetURL(URL(string: "kquarks://metric/sleep"))
 
 struct AccessoryInlineView: View {
     let entry: KQuarksEntry
@@ -514,14 +492,7 @@ struct LargeWidgetView: View {
                 }
                 .frame(height: 60)
             }
-        }
-        .padding(16)
-        .containerBackground(Color(.systemBackground), for: .widget)
-        .widgetURL(URL(string: "kquarks://dashboard"))
-    }
-}
-
-// MARK: - Entry View
+        .widgetURL(URL(string: "kquarks://metric/recovery"))
 
 struct KQuarksWidgetEntryView: View {
     let entry: KQuarksEntry
