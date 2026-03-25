@@ -74,10 +74,12 @@ final class NotificationService {
             // Update app icon badge with step progress (remaining steps to goal, 0 when goal reached)
             updateStepBadge(steps: summary.steps, goal: Int(goal))
 
-            // Update morning brief with fresh data
-            let recoveryScore = KeychainHelper.load(key: "cached_recovery_score").flatMap { Int($0) } ?? 0
+            // Update morning brief with fresh data; fall back to Keychain cache if network unavailable
+            let cachedScore = KeychainHelper.load(key: "cached_recovery_score").flatMap { Int($0) } ?? 0
+            let freshScore = try? await SupabaseService.shared.fetchTodayReadinessScore()
+            let recoveryScore = freshScore ?? (cachedScore > 0 ? cachedScore : nil)
             scheduleMorningBrief(
-                recoveryScore: recoveryScore > 0 ? recoveryScore : nil,
+                recoveryScore: recoveryScore,
                 steps: summary.steps,
                 stepGoal: Int(goal)
             )
