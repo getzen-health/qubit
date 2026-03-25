@@ -106,6 +106,23 @@ Deno.serve(async (req: Request) => {
       userApiKey?: string
     }
 
+    // ── Per-user rate limiting: max 3 calls/day ───────────────────────────────
+    const today = new Date().toISOString().slice(0, 10)
+    const { data: usageData } = await supabase
+      .from("ai_usage")
+      .select("call_count")
+      .eq("user_id", user.id)
+      .eq("function_name", "generate-insights")
+      .eq("used_at", today)
+      .maybeSingle()
+
+    if ((usageData?.call_count ?? 0) >= 3) {
+      return new Response(JSON.stringify({ error: "Daily limit reached" }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      })
+    }
+
     const apiKey = userApiKey || Deno.env.get("ANTHROPIC_API_KEY")
     if (!apiKey) {
       return new Response(
@@ -208,6 +225,20 @@ Generate 3-5 insights covering different categories. At least one should be acti
       if (insertError) {
         console.error("Failed to store insights:", insertError)
       }
+    }
+
+    // ── Increment usage counter ────────────────────────────────────────────────
+    if (usageData) {
+      await supabase
+        .from("ai_usage")
+        .update({ call_count: usageData.call_count + 1 })
+        .eq("user_id", user.id)
+        .eq("function_name", "generate-insights")
+        .eq("used_at", today)
+    } else {
+      await supabase
+        .from("ai_usage")
+        .insert({ user_id: user.id, function_name: "generate-insights", used_at: today, call_count: 1 })
     }
 
     return new Response(

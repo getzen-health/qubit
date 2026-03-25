@@ -304,6 +304,23 @@ Deno.serve(async (req: Request) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   )
 
+  // ── Per-user rate limiting: max 5 calls/day ───────────────────────────────
+  const todayDate = new Date().toISOString().slice(0, 10)
+  const { data: usageData } = await supabase
+    .from("ai_usage")
+    .select("call_count")
+    .eq("user_id", user_id)
+    .eq("function_name", "anomaly-detector")
+    .eq("used_at", todayDate)
+    .maybeSingle()
+
+  if ((usageData?.call_count ?? 0) >= 5) {
+    return new Response(JSON.stringify({ error: "Daily limit reached" }), {
+      status: 429,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+    })
+  }
+
   // Fetch last 14 rows (inclusive of today) ordered newest first
   const { data: rows, error: fetchError } = await supabase
     .from("daily_summaries")
@@ -380,6 +397,20 @@ Deno.serve(async (req: Request) => {
       status: 500,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     })
+  }
+
+  // ── Increment usage counter ────────────────────────────────────────────────
+  if (usageData) {
+    await supabase
+      .from("ai_usage")
+      .update({ call_count: usageData.call_count + 1 })
+      .eq("user_id", user_id)
+      .eq("function_name", "anomaly-detector")
+      .eq("used_at", todayDate)
+  } else {
+    await supabase
+      .from("ai_usage")
+      .insert({ user_id: user_id, function_name: "anomaly-detector", used_at: todayDate, call_count: 1 })
   }
 
   return new Response(JSON.stringify({ anomalies: inserted ?? [] }), {
