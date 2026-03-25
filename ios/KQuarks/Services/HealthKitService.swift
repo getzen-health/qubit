@@ -112,6 +112,11 @@ class HealthKitService {
         // Workouts
         types.insert(HKObjectType.workoutType())
 
+        // ECG (Apple Watch Series 4+, iOS 14+)
+        if #available(iOS 14.0, *) {
+            types.insert(HKObjectType.electrocardiogramType())
+        }
+
         return types
     }
 
@@ -610,6 +615,54 @@ class HealthKitService {
             }
 
             healthStore.execute(query)
+        }
+    }
+
+    // MARK: - ECG
+
+    @available(iOS 14.0, *)
+    func fetchECGSamples(from startDate: Date, to endDate: Date) async throws -> [HKElectrocardiogram] {
+        let predicate = HKQuery.predicateForSamples(
+            withStart: startDate,
+            end: endDate,
+            options: .strictStartDate
+        )
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: HKObjectType.electrocardiogramType(),
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [sortDescriptor]
+            ) { _, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                let ecgs = (samples as? [HKElectrocardiogram]) ?? []
+                continuation.resume(returning: ecgs)
+            }
+
+            self.healthStore.execute(query)
+        }
+    }
+
+    @available(iOS 14.0, *)
+    func fetchRecentECGs(limit: Int = 20) async -> [HKElectrocardiogram] {
+        return await withCheckedContinuation { continuation in
+            let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+            let query = HKSampleQuery(
+                sampleType: HKObjectType.electrocardiogramType(),
+                predicate: nil,
+                limit: limit,
+                sortDescriptors: [sort]
+            ) { _, samples, _ in
+                continuation.resume(returning: (samples as? [HKElectrocardiogram]) ?? [])
+            }
+            self.healthStore.execute(query)
         }
     }
 

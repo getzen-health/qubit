@@ -71,6 +71,11 @@ class SyncService {
             // Sync workouts
             try await syncWorkouts()
 
+            // Sync ECG recordings (Apple Watch Series 4+, iOS 14+)
+            if #available(iOS 14.0, *) {
+                await syncECGRecords()
+            }
+
             lastSyncDate = Date()
                 UserDefaults.standard.set(lastSyncDate, forKey: lastSyncKey)
                 isSyncing = false
@@ -543,6 +548,26 @@ class SyncService {
             }
         }
 
+        // Fetch ECG samples (Apple Watch Series 4+, iOS 14+)
+        if #available(iOS 14.0, *) {
+            let ecgSamples = try await healthKit.fetchECGSamples(from: startDate, to: now)
+            let bpmUnit = HKUnit.count().unitDivided(by: .minute())
+            for ecg in ecgSamples {
+                let avgHR = ecg.averageHeartRate?.doubleValue(for: bpmUnit) ?? 0.0
+                let classification = ecg.classification.syncName
+                records.append(HealthRecordUpload(
+                    userId: userId,
+                    type: "ecg",
+                    value: avgHR,
+                    unit: "bpm",
+                    source: ecg.sourceRevision.source.name,
+                    startTime: ecg.startDate,
+                    endTime: ecg.endDate,
+                    metadata: ["classification": classification]
+                ))
+            }
+        }
+
         // Batch upload
         if !records.isEmpty {
             // Split into batches of 100
@@ -702,6 +727,39 @@ class SyncService {
             )
             try await withRetry { try await self.supabase.uploadWorkoutRecord(upload) }
         }
+    }
+
+    // MARK: - ECG Sync
+
+    @available(iOS 14.0, *)
+    private func syncECGRecords() async {
+        guard let userId = supabase.currentUser?.id else { return }
+        let ecgs = await healthKit.fetchRecentECGs(limit: 20)
+        let beatsPerMinute = HKUnit.count().unitDivided(by: .minute())
+        let records: [ECGRecordUpload] = ecgs.map { ecg in
+            let classification: String
+            switch ecg.classification {
+            case .sinusRhythm:              classification = "sinusRhythm"
+            case .atrialFibrillation:       classification = "atrialFibrillation"
+            case .inconclusiveLowHeartRate: classification = "inconclusiveLowHR"
+            case .inconclusiveHighHeartRate: classification = "inconclusiveHighHR"
+            case .inconclusiveOther:        classification = "inconclusiveOther"
+            default:                        classification = "unrecognized"
+            }
+            let avgHrBpm = ecg.averageHeartRate.map { Int($0.doubleValue(for: beatsPerMinute)) }
+            let samplingHz = ecg.samplingFrequency?.doubleValue(for: .hertz())
+            let symptomsStatus = ecg.symptomsStatus == .none ? "none" : "notSet"
+            return ECGRecordUpload(
+                userId: userId,
+                recordedAt: ecg.startDate,
+                classification: classification,
+                averageHrBpm: avgHrBpm,
+                samplingFrequencyHz: samplingHz,
+                symptomsStatus: symptomsStatus
+            )
+        }
+        guard !records.isEmpty else { return }
+        try? await withRetry { try await self.supabase.uploadECGRecords(records) }
     }
 
     // MARK: - Historical Backfill
@@ -987,6 +1045,25 @@ extension HKWorkoutActivityType {
         case .tennis: return "Tennis"
         case .golf: return "Golf"
         default: return "Workout"
+        }
+    }
+}
+
+// MARK: - ECG Classification Name Extension
+
+@available(iOS 14.0, *)
+extension HKElectrocardiogram.Classification {
+    var syncName: String {
+        switch self {
+        case .sinusRhythm: return "sinus_rhythm"
+        case .atrialFibrillation: return "atrial_fibrillation"
+        case .inconclusiveLowHeartRate: return "inconclusive_low_heart_rate"
+        case .inconclusiveHighHeartRate: return "inconclusive_high_heart_rate"
+        case .inconclusivePoorReading: return "inconclusive_poor_reading"
+        case .inconclusiveOther: return "inconclusive_other"
+        case .unrecognized: return "unrecognized"
+        case .notSet: return "not_set"
+        @unknown default: return "unknown"
         }
     }
 }

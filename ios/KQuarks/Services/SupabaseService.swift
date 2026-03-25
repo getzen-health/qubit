@@ -237,6 +237,17 @@ class SupabaseService {
             .execute()
     }
 
+    @available(iOS 14.0, *)
+    func uploadECGRecords(_ records: [ECGRecordUpload]) async throws {
+        guard !records.isEmpty else { return }
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+
+        try await client
+            .from("ecg_records")
+            .upsert(records, onConflict: "user_id,recorded_at")
+            .execute()
+    }
+
     // MARK: - Fetch Data
 
     func fetchDailySummary(for date: Date) async throws -> DailySummary? {
@@ -1189,6 +1200,7 @@ struct HealthRecordUpload: Encodable {
     let source: String?
     let startTime: Date
     let endTime: Date?
+    let metadata: [String: String]? = nil
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
@@ -1198,6 +1210,21 @@ struct HealthRecordUpload: Encodable {
         case source
         case startTime = "start_time"
         case endTime = "end_time"
+        case metadata
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(userId, forKey: .userId)
+        try container.encode(type, forKey: .type)
+        try container.encode(value, forKey: .value)
+        try container.encode(unit, forKey: .unit)
+        try container.encodeIfPresent(source, forKey: .source)
+        try container.encode(startTime, forKey: .startTime)
+        try container.encodeIfPresent(endTime, forKey: .endTime)
+        if let metadata = metadata, !metadata.isEmpty {
+            try container.encode(metadata, forKey: .metadata)
+        }
     }
 }
 
@@ -1292,6 +1319,27 @@ struct WorkoutRecordUpload: Encodable {
         case elevationGainMeters = "elevation_gain_meters"
         case avgPacePerKm = "avg_pace_per_km"
         case source
+    }
+}
+
+// MARK: - ECG Upload Model
+
+@available(iOS 14.0, *)
+struct ECGRecordUpload: Encodable {
+    let userId: UUID
+    let recordedAt: Date
+    let classification: String
+    let averageHrBpm: Int?
+    let samplingFrequencyHz: Double?
+    let symptomsStatus: String?
+
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case recordedAt = "recorded_at"
+        case classification
+        case averageHrBpm = "average_hr_bpm"
+        case samplingFrequencyHz = "sampling_frequency_hz"
+        case symptomsStatus = "symptoms_status"
     }
 }
 

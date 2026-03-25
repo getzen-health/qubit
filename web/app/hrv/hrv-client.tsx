@@ -16,6 +16,7 @@ import {
   Area,
 } from 'recharts'
 import { AlertTriangle } from 'lucide-react'
+import Link from 'next/link'
 
 interface DailySummary {
   date: string
@@ -530,6 +531,18 @@ export function HrvClient({ summaries, sleepRecords, workoutDays }: HrvClientPro
           baseline: {baseline} ms ± {Math.round(std)} ms.
         </p>
       </div>
+
+      {/* ECG History link */}
+      <Link
+        href="/hrv/ecg"
+        className="flex items-center justify-between bg-surface rounded-xl border border-border p-4 hover:bg-surface-secondary transition-colors"
+      >
+        <div>
+          <p className="text-sm font-medium text-text-primary">ECG History</p>
+          <p className="text-xs text-text-secondary mt-0.5">Apple Watch recordings</p>
+        </div>
+        <span className="text-sm text-text-secondary">View ECG History →</span>
+      </Link>
     </div>
   )
 }
