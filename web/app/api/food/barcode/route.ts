@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { calculateProductScore } from '@/lib/product-scoring'
 
 interface OpenFoodFactsProduct {
   product_name?: string
@@ -22,6 +23,14 @@ interface OpenFoodFactsProduct {
   serving_size?: string
   image_url?: string
   code?: string
+  nutriscore_grade?: string
+  additives_tags?: string[]
+  allergens_tags?: string[]
+  ingredients_text?: string
+  labels_tags?: string[]
+  categories_tags?: string[]
+  quantity?: string
+  packaging?: string
 }
 
 export async function GET(request: NextRequest) {
@@ -35,7 +44,7 @@ export async function GET(request: NextRequest) {
   try {
     // Use Open Food Facts API (free, no API key needed)
     const response = await fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`,
+      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity`,
       {
         headers: {
           'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
@@ -58,11 +67,22 @@ export async function GET(request: NextRequest) {
 
     // Prefer serving size values, fall back to 100g
     const hasServing = nutriments['energy-kcal_serving'] !== undefined
-    const multiplier = hasServing ? 1 : 1 // If using 100g, user can adjust serving
+
+    const isOrganic = (product.labels_tags ?? []).some(
+      (l) => l.includes('organic') || l.includes('bio')
+    )
+
+    const healthScore = calculateProductScore({
+      nutriscoreGrade: product.nutriscore_grade,
+      additivesTags: product.additives_tags ?? [],
+      isOrganic,
+      allergensTags: product.allergens_tags ?? [],
+    })
 
     const food = {
       name: product.product_name || 'Unknown Product',
       brand: product.brands,
+      quantity: product.quantity,
       calories: Math.round(
         (hasServing ? nutriments['energy-kcal_serving'] : nutriments['energy-kcal_100g']) || 0
       ),
@@ -87,6 +107,10 @@ export async function GET(request: NextRequest) {
       servingSize: product.serving_size || '100g',
       barcode: product.code,
       imageUrl: product.image_url,
+      // Yuka-style scoring
+      healthScore,
+      ingredients: product.ingredients_text || null,
+      categories: product.categories_tags?.slice(0, 5) ?? [],
     }
 
     return NextResponse.json({ food })
