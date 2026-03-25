@@ -434,10 +434,31 @@ class SupabaseService {
     func observeAuthStateChanges() -> AsyncStream<AuthChangeEvent> {
         AsyncStream { continuation in
             Task {
-                for await (event, _) in client.auth.authStateChanges {
+                for await (event, session) in client.auth.authStateChanges {
+                    switch event {
+                    case .signedIn, .tokenRefreshed, .userUpdated:
+                        await MainActor.run {
+                            self.currentSession = session
+                            self.currentUser = nil
+                        }
+                    case .signedOut:
+                        await MainActor.run {
+                            self.currentSession = nil
+                            self.currentUser = nil
+                        }
+                    default:
+                        break
+                    }
                     continuation.yield(event)
                 }
             }
+        }
+    }
+
+    func ensureValidSession() async throws {
+        if currentSession == nil {
+            let session = try await client.auth.session
+            await MainActor.run { self.currentSession = session }
         }
     }
 
@@ -1064,6 +1085,13 @@ class SupabaseService {
 
     func deleteMeal(mealId: String) async throws {
         try await client.from("meals").delete().eq("id", value: mealId).execute()
+    }
+    
+    func updateMealItem(itemId: String, calories: Int, protein: Double, carbs: Double, fat: Double) async throws {
+        try await client.from("meal_items")
+            .update(["calories": calories, "protein": protein, "carbs": carbs, "fat": fat])
+            .eq("id", value: itemId)
+            .execute()
     }
 
     func getFoodDiaryEntries(date: String) async throws -> [FoodDiaryEntry] {
