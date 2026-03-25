@@ -42,6 +42,7 @@ import { cn } from '@/lib/utils'
 import { WeeklyCharts } from './components/weekly-charts'
 import { GoalRings } from './components/goal-rings'
 import { BottomNav } from '@/components/bottom-nav'
+import { AnomalyAlertBanner } from '@/components/AnomalyAlertBanner'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { ShareCard } from '@/components/ShareCard'
 
@@ -692,6 +693,11 @@ export function DashboardStream({
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
         {/* Readiness Score Banner */}
         {readinessBanner}
+
+        {/* Anomaly Alerts */}
+        <div className="mt-4">
+          <AnomalyAlertBanner />
+        </div>
 
         {/* AI Essence */}
         <AIEssence
