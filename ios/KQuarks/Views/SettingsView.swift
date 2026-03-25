@@ -169,7 +169,13 @@ struct SettingsView: View {
                     NavigationLink {
                         GoalsSettingsView()
                     } label: {
-                        Label("Goals", systemImage: "target")
+                        Label("Health Goals", systemImage: "target")
+                    }
+
+                    NavigationLink {
+                        NutritionGoalsView()
+                    } label: {
+                        Label("Nutrition Goals", systemImage: "fork.knife")
                     }
 
                     NavigationLink {

@@ -846,6 +846,34 @@ class SupabaseService {
         )
     }
 
+    func saveNutritionGoals(
+        calorieGoal: Int,
+        proteinGoal: Int,
+        carbsGoal: Int,
+        fatGoal: Int
+    ) async throws {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+
+        struct UpdateData: Encodable {
+            let calories_target: Int
+            let protein_target: Int
+            let carbs_target: Int
+            let fat_target: Int
+        }
+
+        let data = UpdateData(
+            calories_target: calorieGoal,
+            protein_target: proteinGoal,
+            carbs_target: carbsGoal,
+            fat_target: fatGoal
+        )
+
+        _ = try await client.from("user_nutrition_settings")
+            .update(data)
+            .eq("user_id", value: userId.uuidString)
+            .execute()
+    }
+
     func fetchTodayNutrition() async throws -> DailyNutrition? {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"

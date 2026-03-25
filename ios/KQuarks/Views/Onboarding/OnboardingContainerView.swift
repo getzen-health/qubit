@@ -23,23 +23,26 @@ struct OnboardingContainerView: View {
                 OnboardingWelcomeView(onNext: advance)
                     .tag(0)
 
-                OnboardingHealthKitView(onNext: advance)
+                OnboardingGoalSettingView(onNext: advance)
                     .tag(1)
 
-                OnboardingNotificationsView(onNext: advance)
+                OnboardingHealthKitView(onNext: advance)
                     .tag(2)
 
-                OnboardingProfileView(onNext: advance)
+                OnboardingNotificationsView(onNext: advance)
                     .tag(3)
 
-                OnboardingFirstSyncView()
+                OnboardingProfileView(onNext: advance)
                     .tag(4)
+
+                OnboardingFirstSyncView()
+                    .tag(5)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: currentPage)
 
-            // Dot indicators (visible on pages 0–3; FirstSync manages its own footer)
-            if currentPage < 4 {
+            // Dot indicators (visible on pages 0–4; FirstSync manages its own footer)
+            if currentPage < 5 {
                 pageIndicator
                     .padding(.bottom, 20)
             }
@@ -49,7 +52,7 @@ struct OnboardingContainerView: View {
 
     private var pageIndicator: some View {
         HStack(spacing: 8) {
-            ForEach(0..<4) { index in
+            ForEach(0..<5) { index in
                 Circle()
                     .fill(index == currentPage
                           ? Color.accentColor
@@ -62,7 +65,7 @@ struct OnboardingContainerView: View {
 
     private func advance() {
         withAnimation {
-            currentPage = min(currentPage + 1, 4)
+            currentPage = min(currentPage + 1, 5)
         }
     }
 }
