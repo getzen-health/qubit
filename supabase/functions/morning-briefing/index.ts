@@ -120,11 +120,62 @@ Deno.serve(async (req: Request) => {
 
   const typedSummaries = summaries as DailySummaryRow[]
 
+  // Fetch yesterday's subjective check-in, water intake, and nutrition
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+  const [checkinResult, waterResult, nutritionResult] = await Promise.all([
+    supabase
+      .from('daily_checkins')
+      .select('energy, mood, stress, notes')
+      .eq('user_id', userId)
+      .eq('date', yesterdayStr)
+      .maybeSingle(),
+    supabase
+      .from('daily_water')
+      .select('total_ml')
+      .eq('user_id', userId)
+      .eq('date', yesterdayStr)
+      .maybeSingle(),
+    supabase
+      .from('daily_nutrition')
+      .select('calories_consumed, protein_consumed, carbs_consumed, fat_consumed')
+      .eq('user_id', userId)
+      .eq('date', yesterdayStr)
+      .maybeSingle(),
+  ])
+
+  const checkin = checkinResult.data
+  const water = waterResult.data
+  const nutrition = nutritionResult.data
+
   // Call Claude API
   const systemPrompt =
-    "You are a concise personal health coach. Analyze the last 7 days of health data and write a 2-3 sentence morning briefing. Be specific with numbers. End with one actionable tip for today."
+    "You are a concise personal health coach. Analyze the last 7 days of health data and write a 2-3 sentence morning briefing. Be specific with numbers. End with one actionable tip for today. " +
+    "When subjective check-in data is available (energy 1-5, mood 1-5, stress 1-5), reference it contextually. " +
+    "When water intake is below 2000ml, recommend increased hydration and explain the HRV/recovery connection. " +
+    "When nutrition data is present, comment on protein sufficiency (goal: 0.8g per kg bodyweight, assume 70kg default). " +
+    "Connect subjective feelings to objective metrics (e.g., low mood + low HRV = high stress state)."
 
-  const userMessage = JSON.stringify(typedSummaries, null, 2)
+  const userMessage = JSON.stringify({
+    summaries: typedSummaries,
+    yesterday: {
+      checkin: checkin ? {
+        energy: checkin.energy,  // 1-5 scale
+        mood: checkin.mood,
+        stress: checkin.stress,
+        notes: checkin.notes,
+      } : null,
+      water_ml: water?.total_ml ?? null,
+      nutrition: nutrition ? {
+        calories: nutrition.calories_consumed,
+        protein_g: nutrition.protein_consumed,
+        carbs_g: nutrition.carbs_consumed,
+        fat_g: nutrition.fat_consumed,
+      } : null,
+    }
+  }, null, 2)
 
   let briefingContent: string
   try {

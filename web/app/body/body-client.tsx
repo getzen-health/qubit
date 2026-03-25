@@ -18,6 +18,12 @@ interface DaySummary {
   body_fat_percent?: number | null
 }
 
+function computeLeanMass(weightKg: number, bodyFatPercent: number) {
+  const fatMass = weightKg * (bodyFatPercent / 100)
+  const leanMass = weightKg - fatMass
+  return { fatMass: +fatMass.toFixed(1), leanMass: +leanMass.toFixed(1) }
+}
+
 interface BodyClientProps {
   summaries: DaySummary[]
 }
@@ -164,6 +170,62 @@ export function BodyClient({ summaries }: BodyClientProps) {
         )
       })()}
 
+      {/* Lean Mass Composition (if body fat data available) */}
+      {summaries.some((s) => (s.body_fat_percent ?? 0) > 0) && (() => {
+        const compositionData = summaries
+          .filter((s) => (s.body_fat_percent ?? 0) > 0)
+          .map((s) => {
+            const { fatMass, leanMass } = computeLeanMass(s.weight_kg, s.body_fat_percent!)
+            return { date: fmtDate(s.date), lean: leanMass, fat: fatMass }
+          })
+        const latest = compositionData[compositionData.length - 1]
+        const earliest = compositionData[0]
+        const leanChange = latest && earliest ? +(latest.lean - earliest.lean).toFixed(1) : null
+        const leanChangeSign = leanChange !== null && leanChange >= 0 ? '+' : ''
+        return (
+          <div className="bg-surface rounded-xl border border-border p-4">
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-sm font-medium text-text-secondary">Body Composition</h2>
+              {leanChange !== null && (
+                <span className={`text-xs font-medium ${leanChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  Lean mass {leanChangeSign}{leanChange} kg
+                </span>
+              )}
+            </div>
+            {latest && (
+              <div className="flex gap-4 mb-3">
+                <div>
+                  <p className="text-lg font-bold text-green-400">{latest.lean} kg</p>
+                  <p className="text-xs text-text-secondary">Lean Mass</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-purple-400">{latest.fat} kg</p>
+                  <p className="text-xs text-text-secondary">Fat Mass</p>
+                </div>
+                <div className="ml-auto text-right">
+                  <p className="text-xs text-text-secondary">Formula: Katch-McArdle</p>
+                  <p className="text-xs text-text-secondary">lean = weight × (1 − bf%)</p>
+                </div>
+              </div>
+            )}
+            <ResponsiveContainer width="100%" height={120}>
+              <LineChart data={compositionData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis hide domain={['dataMin - 2', 'dataMax + 2']} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number, name: string) => [`${v} kg`, name === 'lean' ? 'Lean Mass' : 'Fat Mass']} />
+                <Line type="monotone" dataKey="lean" stroke="#4ade80" strokeWidth={1.5} dot={false} />
+                <Line type="monotone" dataKey="fat" stroke="#a78bfa" strokeWidth={1.5} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+            <div className="flex gap-4 mt-2 text-xs text-text-secondary">
+              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-green-400 inline-block" /> Lean</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-purple-400 inline-block" /> Fat</span>
+            </div>
+          </div>
+        )
+      })()}
+
       {/* Measurement list */}
       <div className="space-y-2">
         {[...summaries].reverse().map((s) => (
@@ -181,9 +243,15 @@ export function BodyClient({ summaries }: BodyClientProps) {
             </p>
             <div className="text-right">
               <p className="text-blue-400 font-semibold">{s.weight_kg.toFixed(1)} kg</p>
-              {(s.body_fat_percent ?? 0) > 0 && (
-                <p className="text-xs text-purple-400">{s.body_fat_percent!.toFixed(1)}% fat</p>
-              )}
+              {(s.body_fat_percent ?? 0) > 0 && (() => {
+                const { leanMass, fatMass } = computeLeanMass(s.weight_kg, s.body_fat_percent!)
+                return (
+                  <>
+                    <p className="text-xs text-green-400">{leanMass} kg lean</p>
+                    <p className="text-xs text-purple-400">{fatMass} kg fat ({s.body_fat_percent!.toFixed(1)}%)</p>
+                  </>
+                )
+              })()}
             </div>
           </div>
         ))}
