@@ -32,6 +32,30 @@ interface OFFSearchProduct {
   }
 }
 
+interface USDASearchFood {
+  fdcId: number
+  description: string
+  brandOwner?: string
+  brandName?: string
+  ingredients?: string
+  servingSize?: number
+  servingSizeUnit?: string
+  foodNutrients: Array<{
+    nutrientId: number
+    nutrientName: string
+    value: number
+    unitName: string
+  }>
+}
+
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function getUSDANutrient(nutrients: USDASearchFood['foodNutrients'], id: number): number {
+  return nutrients.find((n) => n.nutrientId === id)?.value ?? 0
+}
+
 const querySchema = z.object({
   q: z.string().min(2, 'Query too short').max(200, 'Query too long'),
   page: z.coerce.number().int().min(1).max(100).default(1),
@@ -48,32 +72,39 @@ export const GET = createSecureApiHandler(
   async (request: NextRequest, { query }) => {
     const { q, page } = query as z.infer<typeof querySchema>
 
-    const url = new URL('https://world.openfoodfacts.org/cgi/search.pl')
-    url.searchParams.set('search_terms', q)
-    url.searchParams.set('search_simple', '1')
-    url.searchParams.set('action', 'process')
-    url.searchParams.set('json', '1')
-    url.searchParams.set('page_size', '20')
-    url.searchParams.set('page', String(page))
-    url.searchParams.set(
+    const offUrl = new URL('https://world.openfoodfacts.org/cgi/search.pl')
+    offUrl.searchParams.set('search_terms', q)
+    offUrl.searchParams.set('search_simple', '1')
+    offUrl.searchParams.set('action', 'process')
+    offUrl.searchParams.set('json', '1')
+    offUrl.searchParams.set('page_size', '20')
+    offUrl.searchParams.set('page', String(page))
+    offUrl.searchParams.set(
       'fields',
       'id,product_name,brands,image_url,nutriscore_grade,additives_tags,allergens_tags,labels_tags,nutriments,categories_tags,ingredients_text,quantity,serving_size,nova_group'
     )
 
-    const response = await fetch(url.toString(), {
-      headers: {
-        'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
-      },
-    })
+    const usdaKey = process.env.USDA_API_KEY ?? 'DEMO_KEY'
+    const usdaUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(q)}&dataType=Branded&pageSize=5&api_key=${usdaKey}`
 
-    if (!response.ok) {
+    const [offResponse, usdaResponse] = await Promise.allSettled([
+      fetch(offUrl.toString(), {
+        headers: { 'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks' },
+      }),
+      fetch(usdaUrl, {
+        headers: { 'User-Agent': 'KQuarks/1.0' },
+        signal: AbortSignal.timeout(8000),
+      }),
+    ])
+
+    if (offResponse.status === 'rejected' || !offResponse.value.ok) {
       return secureErrorResponse('Failed to search products', 500)
     }
 
-    const data = await response.json()
+    const data = await offResponse.value.json()
     const rawProducts: OFFSearchProduct[] = data.products ?? []
 
-    const products = rawProducts
+    const offProducts = rawProducts
       .filter((p) => p.product_name)
       .map((p) => {
         const isOrganic = (p.labels_tags ?? []).some(
@@ -103,6 +134,7 @@ export const GET = createSecureApiHandler(
           categories: p.categories_tags?.slice(0, 5) ?? [],
           ingredients: p.ingredients_text || null,
           novaGroup: p.nova_group ?? null,
+          dataSource: 'off' as 'off' | 'usda',
           healthScore: {
             score: healthScore.score,
             grade: healthScore.grade,
@@ -112,6 +144,69 @@ export const GET = createSecureApiHandler(
           },
         }
       })
+
+    const offNames = new Set(offProducts.map((p) => (p.name ?? '').toLowerCase()))
+
+    let usdaProducts: typeof offProducts = []
+    if (usdaResponse.status === 'fulfilled' && usdaResponse.value.ok) {
+      try {
+        const usdaData = await usdaResponse.value.json()
+        const usdaFoods: USDASearchFood[] = usdaData.foods ?? []
+
+        usdaProducts = usdaFoods
+          .filter((f) => {
+            const titleName = toTitleCase(f.description)
+            return !offNames.has(titleName.toLowerCase())
+          })
+          .map((f) => {
+            const nutrients = f.foodNutrients ?? []
+            const isOrganic = f.description.toLowerCase().includes('organic')
+            const healthScore = calculateProductScore({
+              nutriscoreGrade: undefined,
+              additivesTags: [],
+              isOrganic,
+              allergensTags: [],
+            })
+
+            return {
+              id: String(f.fdcId),
+              name: toTitleCase(f.description),
+              brand: f.brandOwner ?? f.brandName,
+              imageUrl: undefined as string | undefined,
+              quantity:
+                f.servingSize != null && f.servingSizeUnit
+                  ? `${f.servingSize} ${f.servingSizeUnit}`
+                  : undefined,
+              servingSize:
+                f.servingSize != null && f.servingSizeUnit
+                  ? `${f.servingSize} ${f.servingSizeUnit}`
+                  : '100g',
+              calories: Math.round(getUSDANutrient(nutrients, 1008)),
+              protein: Math.round(getUSDANutrient(nutrients, 1003)),
+              carbs: Math.round(getUSDANutrient(nutrients, 1005)),
+              fat: Math.round(getUSDANutrient(nutrients, 1004)),
+              fiber: Math.round(getUSDANutrient(nutrients, 1079)),
+              sugar: Math.round(getUSDANutrient(nutrients, 2000)),
+              sodium: Math.round(getUSDANutrient(nutrients, 1093)),
+              categories: [] as string[],
+              ingredients: f.ingredients ?? null,
+              novaGroup: 1,
+              dataSource: 'usda' as const,
+              healthScore: {
+                score: healthScore.score,
+                grade: healthScore.grade,
+                color: healthScore.color,
+                nutriScore: healthScore.nutriScore,
+                novaGroup: 1,
+              },
+            }
+          })
+      } catch {
+        // USDA parse error — continue with OFF results only
+      }
+    }
+
+    const products = [...offProducts, ...usdaProducts]
 
     return secureJsonResponse({
       products,

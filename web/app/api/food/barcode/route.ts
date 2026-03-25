@@ -41,6 +41,30 @@ interface OpenFoodFactsProduct {
   nova_group?: number
 }
 
+interface USDAFood {
+  fdcId: number
+  description: string
+  brandOwner?: string
+  brandName?: string
+  ingredients?: string
+  servingSize?: number
+  servingSizeUnit?: string
+  foodNutrients: Array<{
+    nutrientId: number
+    nutrientName: string
+    value: number
+    unitName: string
+  }>
+}
+
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function getNutrient(nutrients: USDAFood['foodNutrients'], id: number): number {
+  return nutrients.find((n) => n.nutrientId === id)?.value ?? 0
+}
+
 const querySchema = barcodeSchema.extend({
   code: z.string().min(8).max(14).regex(/^[0-9]+$/, 'Barcode must be numeric'),
 }).omit({ barcode: true })
@@ -72,7 +96,69 @@ export const GET = createSecureApiHandler(
     const data = await response.json()
 
     if (data.status !== 1 || !data.product) {
-      return secureErrorResponse('Product not found', 404)
+      // Fallback to USDA FoodData Central
+      const usdaKey = process.env.USDA_API_KEY ?? 'DEMO_KEY'
+      const usdaUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(barcode)}&dataType=Branded&pageSize=1&api_key=${usdaKey}`
+
+      let usdaRes: Response
+      try {
+        usdaRes = await fetch(usdaUrl, {
+          headers: { 'User-Agent': 'KQuarks/1.0' },
+          signal: AbortSignal.timeout(8000),
+        })
+      } catch {
+        return secureErrorResponse('Product not found in any database', 404)
+      }
+
+      if (!usdaRes.ok) {
+        return secureErrorResponse('Product not found in any database', 404)
+      }
+
+      const usdaData = await usdaRes.json()
+      const usdaFoods: USDAFood[] = usdaData.foods ?? []
+      if (!usdaFoods.length) {
+        return secureErrorResponse('Product not found in any database', 404)
+      }
+
+      const usdaFood = usdaFoods[0]
+      const nutrients = usdaFood.foodNutrients ?? []
+      const isOrganic = usdaFood.description.toLowerCase().includes('organic')
+
+      const healthScore = calculateProductScore({
+        nutriscoreGrade: undefined,
+        additivesTags: [],
+        isOrganic,
+        allergensTags: [],
+      })
+
+      const usdaMapped = {
+        name: toTitleCase(usdaFood.description),
+        brand: usdaFood.brandOwner ?? usdaFood.brandName,
+        quantity:
+          usdaFood.servingSize != null && usdaFood.servingSizeUnit
+            ? `${usdaFood.servingSize} ${usdaFood.servingSizeUnit}`
+            : undefined,
+        calories: Math.round(getNutrient(nutrients, 1008)),
+        protein: Math.round(getNutrient(nutrients, 1003)),
+        carbs: Math.round(getNutrient(nutrients, 1005)),
+        fat: Math.round(getNutrient(nutrients, 1004)),
+        fiber: Math.round(getNutrient(nutrients, 1079)),
+        sugar: Math.round(getNutrient(nutrients, 2000)),
+        sodium: Math.round(getNutrient(nutrients, 1093)),
+        servingSize:
+          usdaFood.servingSize != null && usdaFood.servingSizeUnit
+            ? `${usdaFood.servingSize} ${usdaFood.servingSizeUnit}`
+            : '100g',
+        barcode,
+        imageUrl: null,
+        healthScore,
+        ingredients: usdaFood.ingredients ?? null,
+        categories: [],
+        novaGroup: 1,
+        allergens: [],
+      }
+
+      return secureJsonResponse({ food: usdaMapped, dataSource: 'usda' })
     }
 
     const product: OpenFoodFactsProduct = data.product
@@ -125,6 +211,6 @@ export const GET = createSecureApiHandler(
       novaGroup: product.nova_group ?? null,
     }
 
-    return secureJsonResponse({ food })
+    return secureJsonResponse({ food, dataSource: 'off' })
   }
 )
