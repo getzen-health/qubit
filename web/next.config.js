@@ -9,6 +9,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.openfoodfacts.org' },
       { protocol: 'https', hostname: 'static.openfoodfacts.org' },
       { protocol: 'https', hostname: 'world.openfoodfacts.org' },
+      // USDA FoodData Central
+      { protocol: 'https', hostname: 'fdc.nal.usda.gov' },
       // Supabase storage (user avatars, uploads)
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: '*.supabase.in' },

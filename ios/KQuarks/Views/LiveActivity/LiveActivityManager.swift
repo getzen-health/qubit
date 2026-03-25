@@ -83,4 +83,14 @@ class LiveActivityManager: ObservableObject {
             workoutActivity = nil
         }
     }
+    
+    func scheduleFastingUpdate() {
+        let request = BGAppRefreshTaskRequest(identifier: "com.kquarks.fasting-update")
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 60)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            print("Failed to schedule fasting update: \(error)")
+        }
+    }
 }
