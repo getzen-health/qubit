@@ -1,5 +1,7 @@
 import SwiftUI
 import HealthKit
+import MapKit
+import OSLog
 
 struct WorkoutDetailView: View {
     let workout: HKWorkout
@@ -71,6 +73,15 @@ struct WorkoutDetailView: View {
                     }
                 }
                 .padding(.vertical, 4)
+            }
+
+            // GPS Route Map for outdoor activities
+            let isOutdoor = [HKWorkoutActivityType.running, .walking, .hiking, .cycling].contains(workout.workoutActivityType)
+            if isOutdoor {
+                Section("Route") {
+                    WorkoutRouteMapView(workout: workout)
+                        .frame(height: 200)
+                }
             }
 
             // Stats section
@@ -225,6 +236,123 @@ struct WorkoutStatRow: View {
             Spacer()
             Text(value)
                 .font(.headline)
+        }
+    }
+}
+
+struct WorkoutRouteMapView: View {
+    let workout: HKWorkout
+    @State private var route: [CLLocationCoordinate2D] = []
+    @State private var region: MKCoordinateRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.33, longitude: -122.01),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    )
+    @State private var isLoadingRoute = false
+
+    var body: some View {
+        Group {
+            if isLoadingRoute {
+                HStack {
+                    Spacer()
+                    VStack(spacing: 8) {
+                        ProgressView()
+                        Text("Loading route...")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+            } else if route.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "location.slash")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    Text("No GPS route available")
+                        .foregroundColor(.gray)
+                        .font(.subheadline)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                Map(position: .constant(.region(region))) {
+                    MapPolyline(coordinates: route)
+                        .stroke(.orange, lineWidth: 3)
+                    
+                    if let first = route.first {
+                        Annotation("Start", coordinate: first) {
+                            Image(systemName: "location.fill")
+                                .foregroundStyle(.green)
+                        }
+                    }
+                    if let last = route.last {
+                        Annotation("Finish", coordinate: last) {
+                            Image(systemName: "flag.fill")
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
+                .cornerRadius(12)
+            }
+        }
+        .task {
+            await loadRoute()
+        }
+    }
+
+    private func loadRoute() async {
+        isLoadingRoute = true
+        defer { isLoadingRoute = false }
+
+        do {
+            let query = HKQuery.predicateForWorkout(with: workout.workoutActivityType)
+            let predicate = HKQuery.predicateForSamples(
+                withStart: workout.startDate,
+                end: workout.endDate,
+                options: .strictStartDate
+            )
+            let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [query, predicate])
+
+            let store = HKHealthStore()
+            let samples = try await store.samples(
+                matching: compound,
+                with: HKWorkoutRoute.self
+            )
+
+            if let workoutRoute = samples.first as? HKWorkoutRoute {
+                var coordinates: [CLLocationCoordinate2D] = []
+                var minLat = Double.infinity, maxLat = -Double.infinity
+                var minLon = Double.infinity, maxLon = -Double.infinity
+
+                try await workoutRoute.locations(between: workout.startDate, and: workout.endDate) { locations in
+                    if let locations = locations {
+                        for location in locations {
+                            let coord = location.coordinate
+                            coordinates.append(coord)
+                            minLat = min(minLat, coord.latitude)
+                            maxLat = max(maxLat, coord.latitude)
+                            minLon = min(minLon, coord.longitude)
+                            maxLon = max(maxLon, coord.longitude)
+                        }
+                    }
+                }
+
+                if !coordinates.isEmpty {
+                    route = coordinates
+
+                    let center = CLLocationCoordinate2D(
+                        latitude: (minLat + maxLat) / 2,
+                        longitude: (minLon + maxLon) / 2
+                    )
+                    let latSpan = maxLat - minLat + 0.01
+                    let lonSpan = maxLon - minLon + 0.01
+
+                    region = MKCoordinateRegion(
+                        center: center,
+                        span: MKCoordinateSpan(latitudeDelta: latSpan, longitudeDelta: lonSpan)
+                    )
+                }
+            }
+        } catch {
+            Logger.sync.error("Failed to load workout route: \(error.localizedDescription)")
         }
     }
 }
