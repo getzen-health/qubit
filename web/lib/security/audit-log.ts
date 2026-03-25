@@ -30,6 +30,8 @@ export type AuditResource =
   | 'user_preferences'
   | 'user_widgets'
   | 'workout'
+  | 'ai_settings'
+  | 'ai_chat'
 
 interface AuditLogEntry {
   user_id: string

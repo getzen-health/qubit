@@ -6,10 +6,7 @@ import {
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-})
+import { getUserApiKey } from '@/app/api/user/ai-key/route'
 
 const bodySchema = z.object({
   messages: z
@@ -32,8 +29,15 @@ export const POST = createSecureApiHandler(
     auditAction: 'CREATE',
     auditResource: 'ai_chat',
   },
-  async (_request: NextRequest, { body }) => {
+  async (_request: NextRequest, { user, body, supabase }) => {
     const { messages, systemPrompt } = body as z.infer<typeof bodySchema>
+
+    // Prefer the user's own key; fall back to the shared server key.
+    const userApiKey = await getUserApiKey(user!.id, supabase)
+    const apiKey = userApiKey ?? process.env.ANTHROPIC_API_KEY
+    if (!apiKey) return secureErrorResponse('AI service not configured', 503)
+
+    const anthropic = new Anthropic({ apiKey })
 
     try {
       const response = await anthropic.messages.create({
@@ -63,3 +67,4 @@ export const POST = createSecureApiHandler(
     }
   }
 )
+
