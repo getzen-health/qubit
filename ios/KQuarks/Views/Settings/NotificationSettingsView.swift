@@ -160,7 +160,23 @@ struct NotificationSettingsView: View {
         }
         .navigationTitle("Notifications")
         .toolbarTitleDisplayMode(.inline)
-        .task { await notificationService.refreshAuthorizationStatus() }
+        .task {
+            await notificationService.refreshAuthorizationStatus()
+            // Restore preferences from Supabase on every view appearance so
+            // they survive reinstalls and are consistent across devices.
+            await SupabaseService.shared.syncNotificationPreferences()
+        }
+        .onChange(of: notificationService.morningBriefHour) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.morningReadinessEnabled) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.hrvAlertEnabled) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.achievementEnabled) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.recoveryDipEnabled) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.weeklyDigestEnabled) { _, _ in saveToSupabase() }
+        .onChange(of: notificationService.stepReminderEnabled) { _, _ in saveToSupabase() }
+    }
+
+    private func saveToSupabase() {
+        Task { await SupabaseService.shared.saveNotificationPreferences() }
     }
 }
 

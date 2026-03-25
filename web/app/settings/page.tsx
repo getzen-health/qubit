@@ -10,6 +10,7 @@ import {
   Download,
   Sparkles,
   RefreshCw,
+  Bell,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -42,6 +43,12 @@ export default async function SettingsPage() {
       description: 'Configure daily step goal and targets',
       href: '/settings/goals',
       icon: Target,
+    },
+    {
+      title: 'Notifications',
+      description: 'Alerts, reminders, and thresholds',
+      href: '/settings/notifications',
+      icon: Bell,
     },
     {
       title: 'AI Insights',

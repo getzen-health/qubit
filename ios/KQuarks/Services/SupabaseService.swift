@@ -244,6 +244,139 @@ class SupabaseService {
         }
     }
 
+    // MARK: - Notification Preferences
+
+    struct NotificationPreferences: Codable {
+        var morningBriefing: Bool
+        var goalReminders: Bool
+        var anomalyAlerts: Bool
+        var streakMilestones: Bool
+        var weeklyDigest: Bool
+        var hrvAlerts: Bool
+        var sleepAlerts: Bool
+        var activityReminders: Bool
+        var briefingHour: Int
+        var hrvThresholdPercent: Int
+        var rhrThresholdBpm: Int
+
+        enum CodingKeys: String, CodingKey {
+            case morningBriefing = "morning_briefing"
+            case goalReminders = "goal_reminders"
+            case anomalyAlerts = "anomaly_alerts"
+            case streakMilestones = "streak_milestones"
+            case weeklyDigest = "weekly_digest"
+            case hrvAlerts = "hrv_alerts"
+            case sleepAlerts = "sleep_alerts"
+            case activityReminders = "activity_reminders"
+            case briefingHour = "briefing_hour"
+            case hrvThresholdPercent = "hrv_threshold_percent"
+            case rhrThresholdBpm = "rhr_threshold_bpm"
+        }
+    }
+
+    /// Fetches notification preferences from Supabase and updates NotificationService accordingly.
+    /// Call on app launch so preferences survive reinstalls.
+    func syncNotificationPreferences() async {
+        guard let userId = currentSession?.user.id else { return }
+
+        do {
+            let rows: [NotificationPreferences] = try await client
+                .from("notification_preferences")
+                .select()
+                .eq("user_id", value: userId.uuidString)
+                .limit(1)
+                .execute()
+                .value
+
+            guard let prefs = rows.first else { return }
+
+            await MainActor.run {
+                let svc = NotificationService.shared
+                svc.morningBriefHour = prefs.briefingHour
+                svc.weeklyDigestEnabled = prefs.weeklyDigest
+                svc.hrvAlertEnabled = prefs.hrvAlerts
+                svc.stepReminderEnabled = prefs.activityReminders
+                svc.morningReadinessEnabled = prefs.morningBriefing
+            }
+        } catch {
+            print("[SupabaseService] syncNotificationPreferences failed: \(error)")
+        }
+    }
+
+    /// Persists the current NotificationService state to Supabase.
+    func saveNotificationPreferences() async {
+        guard let userId = currentSession?.user.id else { return }
+
+        let svc = NotificationService.shared
+        let prefs = NotificationPreferences(
+            morningBriefing: svc.morningReadinessEnabled,
+            goalReminders: svc.stepReminderEnabled,
+            anomalyAlerts: true,
+            streakMilestones: svc.achievementEnabled,
+            weeklyDigest: svc.weeklyDigestEnabled,
+            hrvAlerts: svc.hrvAlertEnabled,
+            sleepAlerts: svc.sleepReminderEnabled,
+            activityReminders: svc.stepReminderEnabled,
+            briefingHour: svc.morningBriefHour,
+            hrvThresholdPercent: 20,
+            rhrThresholdBpm: 10
+        )
+
+        struct UpsertRow: Encodable {
+            let userId: String
+            let morningBriefing: Bool
+            let goalReminders: Bool
+            let anomalyAlerts: Bool
+            let streakMilestones: Bool
+            let weeklyDigest: Bool
+            let hrvAlerts: Bool
+            let sleepAlerts: Bool
+            let activityReminders: Bool
+            let briefingHour: Int
+            let hrvThresholdPercent: Int
+            let rhrThresholdBpm: Int
+            enum CodingKeys: String, CodingKey {
+                case userId = "user_id"
+                case morningBriefing = "morning_briefing"
+                case goalReminders = "goal_reminders"
+                case anomalyAlerts = "anomaly_alerts"
+                case streakMilestones = "streak_milestones"
+                case weeklyDigest = "weekly_digest"
+                case hrvAlerts = "hrv_alerts"
+                case sleepAlerts = "sleep_alerts"
+                case activityReminders = "activity_reminders"
+                case briefingHour = "briefing_hour"
+                case hrvThresholdPercent = "hrv_threshold_percent"
+                case rhrThresholdBpm = "rhr_threshold_bpm"
+            }
+        }
+
+        do {
+            try await client
+                .from("notification_preferences")
+                .upsert(
+                    UpsertRow(
+                        userId: userId.uuidString,
+                        morningBriefing: prefs.morningBriefing,
+                        goalReminders: prefs.goalReminders,
+                        anomalyAlerts: prefs.anomalyAlerts,
+                        streakMilestones: prefs.streakMilestones,
+                        weeklyDigest: prefs.weeklyDigest,
+                        hrvAlerts: prefs.hrvAlerts,
+                        sleepAlerts: prefs.sleepAlerts,
+                        activityReminders: prefs.activityReminders,
+                        briefingHour: prefs.briefingHour,
+                        hrvThresholdPercent: prefs.hrvThresholdPercent,
+                        rhrThresholdBpm: prefs.rhrThresholdBpm
+                    ),
+                    onConflict: "user_id"
+                )
+                .execute()
+        } catch {
+            print("[SupabaseService] saveNotificationPreferences failed: \(error)")
+        }
+    }
+
     func saveUserGoals(stepGoal: Int, calorieGoal: Int, sleepGoalMinutes: Int) async throws {
         guard let userId = currentSession?.user.id else { return }
 
