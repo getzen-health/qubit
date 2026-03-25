@@ -70,7 +70,7 @@ struct WorkoutCalendarView: View {
         firstComponents.day = 1
         guard let firstDay = cal.date(from: firstComponents) else { return [] }
         let weekday = cal.component(.weekday, from: firstDay) - 1  // 0=Sun
-        let daysInMonth = cal.range(of: .day, in: .month, for: firstDay)!.count
+        let daysInMonth = cal.range(of: .day, in: .month, for: firstDay)?.count ?? 31
 
         var cells: [(date: String?, day: Int?)] = Array(repeating: (nil, nil), count: weekday)
         for d in 1...daysInMonth {

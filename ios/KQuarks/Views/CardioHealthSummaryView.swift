@@ -428,8 +428,11 @@ struct CardioHealthSummaryView: View {
 
         let hrv7  = hrv7Vals.isEmpty  ? nil : hrv7Vals.reduce(0, +)  / Double(hrv7Vals.count)
         let hrv28 = hrv28Vals.isEmpty ? nil : hrv28Vals.reduce(0, +) / Double(hrv28Vals.count)
-        let hrvDev: Double? = (hrv7 != nil && hrv28 != nil && hrv28! > 0)
-            ? ((hrv7! - hrv28!) / hrv28!) * 100 : nil
+        let hrvDev: Double? = if let h7 = hrv7, let h28 = hrv28, h28 > 0 {
+            ((h7 - h28) / h28) * 100
+        } else {
+            nil
+        }
 
         // HRV 14-day chart
         let hrv14 = withHRV.suffix(14).compactMap { row -> (date: Date, hrv: Double)? in

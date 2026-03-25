@@ -104,19 +104,21 @@ struct WalkingProgressionView: View {
             } else {
                 Chart {
                     ForEach(paced) { b in
-                        LineMark(
-                            x: .value("Month", b.monthStart, unit: .month),
-                            y: .value("min/km", b.avgPaceMinPerKm!)
-                        )
-                        .foregroundStyle(Color.mint)
-                        .interpolationMethod(.monotone)
+                        if let pace = b.avgPaceMinPerKm {
+                            LineMark(
+                                x: .value("Month", b.monthStart, unit: .month),
+                                y: .value("min/km", pace)
+                            )
+                            .foregroundStyle(Color.mint)
+                            .interpolationMethod(.monotone)
 
-                        PointMark(
-                            x: .value("Month", b.monthStart, unit: .month),
-                            y: .value("min/km", b.avgPaceMinPerKm!)
-                        )
-                        .foregroundStyle(Color.mint)
-                        .symbolSize(48)
+                            PointMark(
+                                x: .value("Month", b.monthStart, unit: .month),
+                                y: .value("min/km", pace)
+                            )
+                            .foregroundStyle(Color.mint)
+                            .symbolSize(48)
+                        }
                     }
                 }
                 .chartXAxis {

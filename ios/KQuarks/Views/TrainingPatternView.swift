@@ -472,9 +472,9 @@ struct TrainingPatternView: View {
             let label = "W\(comps.weekOfYear ?? 0)"
             let weekStart = cal.date(from: comps) ?? w.startDate
             if weekMap[label] == nil { weekMap[label] = (0, 0, 0, weekStart) }
-            weekMap[label]!.mins += w.duration / 60
-            weekMap[label]!.sessions += 1
-            weekMap[label]!.cals += w.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0
+            weekMap[label]?.mins += w.duration / 60
+            weekMap[label]?.sessions += 1
+            weekMap[label]?.cals += w.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0
         }
         let weeks: [WeekVolume] = weekMap
             .sorted { $0.value.start < $1.value.start }

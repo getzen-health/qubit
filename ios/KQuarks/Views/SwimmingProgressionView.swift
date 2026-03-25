@@ -345,9 +345,9 @@ struct SwimmingProgressionView: View {
             let monthKey = String(format: "%04d-%02d", monthComps.year ?? 0, monthComps.month ?? 0)
             let label = monthFmt.string(from: w.startDate)
             if monthMap[monthKey] == nil { monthMap[monthKey] = (label, 0, 0, []) }
-            monthMap[monthKey]!.count += 1
-            monthMap[monthKey]!.totalM += distM
-            monthMap[monthKey]!.paces.append(pace100)
+            monthMap[monthKey]?.count += 1
+            monthMap[monthKey]?.totalM += distM
+            monthMap[monthKey]?.paces.append(pace100)
         }
 
         let paceSeries = allPacePoints.map(\.pace100Secs)

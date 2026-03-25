@@ -458,9 +458,9 @@ struct TriathlonView: View {
                     guard let ws = cal.date(from: weekStart) else { continue }
                     if weekDict[ws] == nil { weekDict[ws] = WeekVolume(weekStart: ws) }
                     switch w.discipline {
-                    case .swim: weekDict[ws]!.swimMin += w.durationMin
-                    case .bike: weekDict[ws]!.bikeMin += w.durationMin
-                    case .run:  weekDict[ws]!.runMin  += w.durationMin
+                    case .swim: weekDict[ws]?.swimMin += w.durationMin
+                    case .bike: weekDict[ws]?.bikeMin += w.durationMin
+                    case .run:  weekDict[ws]?.runMin  += w.durationMin
                     }
                 }
                 let sortedWeeks = weekDict.values.sorted { $0.weekStart < $1.weekStart }

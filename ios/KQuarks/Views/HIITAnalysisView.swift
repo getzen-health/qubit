@@ -231,21 +231,25 @@ struct HIITAnalysisView: View {
                     }
 
                 ForEach(Array(hrSessions.enumerated()), id: \.offset) { _, s in
-                    PointMark(
-                        x: .value("Date", s.date),
-                        y: .value("bpm", s.maxHR!)
-                    )
-                    .foregroundStyle(s.intensityColor)
-                    .symbolSize(35)
+                    if let hr = s.maxHR {
+                        PointMark(
+                            x: .value("Date", s.date),
+                            y: .value("bpm", hr)
+                        )
+                        .foregroundStyle(s.intensityColor)
+                        .symbolSize(35)
+                    }
                 }
 
                 ForEach(Array(hrSessions.enumerated()), id: \.offset) { _, s in
-                    LineMark(
-                        x: .value("Date", s.date),
-                        y: .value("bpm", s.maxHR!)
-                    )
-                    .foregroundStyle(.red.opacity(0.4))
-                    .interpolationMethod(.catmullRom)
+                    if let hr = s.maxHR {
+                        LineMark(
+                            x: .value("Date", s.date),
+                            y: .value("bpm", hr)
+                        )
+                        .foregroundStyle(.red.opacity(0.4))
+                        .interpolationMethod(.catmullRom)
+                    }
                 }
             }
             .chartYScale(domain: max(100, (hrs.min() ?? 130) - 10)...(hrs.max() ?? 190) + 10)
@@ -275,12 +279,14 @@ struct HIITAnalysisView: View {
 
             Chart {
                 ForEach(Array(cpmSessions.enumerated()), id: \.offset) { _, s in
-                    BarMark(
-                        x: .value("Date", s.date),
-                        y: .value("cal/min", s.calPerMin!)
-                    )
-                    .foregroundStyle(Color.orange.opacity(0.75))
-                    .cornerRadius(4)
+                    if let cpm = s.calPerMin {
+                        BarMark(
+                            x: .value("Date", s.date),
+                            y: .value("cal/min", cpm)
+                        )
+                        .foregroundStyle(Color.orange.opacity(0.75))
+                        .cornerRadius(4)
+                    }
                 }
                 if let avg = avgCalPerMin {
                     RuleMark(y: .value("Avg", avg))

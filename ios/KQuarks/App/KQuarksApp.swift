@@ -66,10 +66,13 @@ class AppState {
         isCheckingAuth = true
 
         // Check if there's an existing session
-        if let user = try? await supabaseService.fetchCurrentUser() {
+        do {
+            let user = try await supabaseService.fetchCurrentUser()
             self.user = user
             self.isAuthenticated = true
             GoalService.shared.apply(from: user)
+        } catch {
+            // No existing session — user needs to sign in
         }
 
         isCheckingAuth = false
@@ -84,10 +87,13 @@ class AppState {
     private func handleAuthEvent(_ event: AuthChangeEvent) async {
         switch event {
         case .signedIn:
-            if let user = try? await supabaseService.fetchCurrentUser() {
+            do {
+                let user = try await supabaseService.fetchCurrentUser()
                 self.user = user
                 self.isAuthenticated = true
                 GoalService.shared.apply(from: user)
+            } catch {
+                // fetchCurrentUser failed after signIn — session may not have propagated yet
             }
         case .signedOut:
             self.user = nil

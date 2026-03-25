@@ -454,6 +454,7 @@ struct MetricScore: Identifiable {
     // MARK: - Piecewise scoring
 
     private static func piecewise(_ v: Double, _ pts: [(Double, Double)]) -> Double {
+        guard !pts.isEmpty else { return 0 }
         if v <= pts.first!.0 { return pts.first!.1 }
         if v >= pts.last!.0 { return pts.last!.1 }
         for i in 0..<(pts.count - 1) {

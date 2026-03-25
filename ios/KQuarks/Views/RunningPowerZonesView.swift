@@ -366,16 +366,17 @@ struct RunningPowerZonesView: View {
         var lastTime: Date? = nil
 
         func flushRun() {
-            guard !current.isEmpty else { return }
+            guard !current.isEmpty,
+                  let firstSample = current.first,
+                  let lastSample = current.last else { return }
             let vals = current.map { $0.quantity.doubleValue(for: watt) }
             let avg = vals.reduce(0, +) / Double(vals.count)
-            let duration = current.last!.startDate.timeIntervalSince(current.first!.startDate) / 60
-            // Approximate normalized power (cube root of mean cube approximation)
+            let duration = lastSample.startDate.timeIntervalSince(firstSample.startDate) / 60
             let cubed = vals.map { $0 * $0 * $0 }
             let np = pow(cubed.reduce(0, +) / Double(cubed.count), 1.0/3.0)
             sessionList.append(RunStat(
                 id: UUID(),
-                date: current.first!.startDate,
+                date: firstSample.startDate,
                 durationMins: max(duration, 1),
                 avgWatts: avg,
                 maxWatts: vals.max() ?? avg,
