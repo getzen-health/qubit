@@ -49,7 +49,7 @@ export function BottomNav() {
         <div className="px-4 pt-4 pb-3">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">More</span>
-            <button onClick={() => setMoreOpen(false)} className="p-1 rounded-lg hover:bg-surface-secondary">
+            <button onClick={() => setMoreOpen(false)} className="p-1 rounded-lg hover:bg-surface-secondary" aria-label="Close menu">
               <X className="w-4 h-4 text-text-secondary" />
             </button>
           </div>
@@ -99,6 +99,7 @@ export function BottomNav() {
           })}
           {/* More button */}
           <button
+            aria-label="More navigation options"
             onClick={() => setMoreOpen((o) => !o)}
             className={cn(
               'flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-0',
