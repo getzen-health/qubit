@@ -123,6 +123,61 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
   const intensityLabel: 'Easy' | 'Moderate' | 'Hard' | 'Very Hard' =
     z45pct < 0.15 ? 'Easy' : z45pct < 0.30 ? 'Moderate' : z45pct < 0.50 ? 'Hard' : 'Very Hard'
 
+  // Fetch last 7 days of workouts for next-workout recommendation
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const { data: recentWorkouts } = await supabase
+    .from('workout_records')
+    .select('workout_type, duration_minutes')
+    .eq('user_id', user.id)
+    .gte('start_time', sevenDaysAgo)
+    .order('start_time', { ascending: false })
+    .limit(10)
+
+  const typeCounts = (recentWorkouts ?? []).reduce<Record<string, number>>((acc, w) => {
+    acc[w.workout_type] = (acc[w.workout_type] ?? 0) + 1
+    return acc
+  }, {})
+
+  const coreTypes = ['Running', 'Cycling', 'Strength Training', 'Yoga', 'HIIT'] as const
+
+  // Determine suggested next workout based on recovery and recent variety
+  let suggestionType: string
+  let suggestionReason: string
+  let suggestionIsRest: boolean
+
+  if (recoveryMin > 36) {
+    suggestionType = 'Rest'
+    suggestionReason = `You need ~${recoveryMin}h of recovery. Take a full rest day to rebuild.`
+    suggestionIsRest = true
+  } else if (recoveryMin > 24) {
+    suggestionType = 'Yoga'
+    suggestionReason = 'Light active recovery like yoga helps flush lactic acid and reduce soreness.'
+    suggestionIsRest = false
+  } else if (workout.workout_type === 'Running' && !typeCounts['Strength Training']) {
+    suggestionType = 'Strength Training'
+    suggestionReason = "You haven't done strength work this week — it improves running economy."
+    suggestionIsRest = false
+  } else if (workout.workout_type === 'Strength Training' && !typeCounts['Running'] && !typeCounts['Cycling']) {
+    suggestionType = 'Running'
+    suggestionReason = 'Balance strength work with cardio for well-rounded fitness.'
+    suggestionIsRest = false
+  } else {
+    const typeReasons: Record<string, string> = {
+      Running: 'Running builds cardiovascular endurance and is great for calorie burn.',
+      Cycling: 'Cycling offers low-impact cardio — ideal cross-training.',
+      'Strength Training': 'Strength work improves overall fitness and metabolism.',
+      Yoga: 'Yoga improves flexibility, balance, and mental recovery.',
+      HIIT: 'HIIT is time-efficient and boosts your metabolism effectively.',
+    }
+    const leastDone = coreTypes.reduce<string>(
+      (min, t) => ((typeCounts[t] ?? 0) < (typeCounts[min] ?? 0) ? t : min),
+      'Running',
+    )
+    suggestionType = leastDone
+    suggestionReason = typeReasons[leastDone] ?? 'A balanced routine leads to better long-term results.'
+    suggestionIsRest = false
+  }
+
   function fmtZoneTime(secs: number) {
     const m = Math.floor(secs / 60)
     const s = Math.round(secs % 60)
@@ -300,6 +355,34 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           </div>
           <p className="text-xs text-text-secondary">
             Based on {hasZoneData ? 'time in Z4/Z5 and total duration' : 'total duration'}
+          </p>
+        </div>
+
+        {/* Suggested Next Workout */}
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
+            <span className="text-base">🎯</span>
+            Suggested Next Workout
+          </h3>
+          {suggestionIsRest ? (
+            <div className="flex items-start gap-3">
+              <span className="text-3xl">😴</span>
+              <div>
+                <p className="font-semibold text-text-primary">Rest Day</p>
+                <p className="text-sm text-text-secondary mt-0.5">{suggestionReason}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-start gap-3">
+              <span className="text-3xl">{workoutIcon(suggestionType)}</span>
+              <div>
+                <p className="font-semibold text-text-primary">{suggestionType}</p>
+                <p className="text-sm text-text-secondary mt-0.5">{suggestionReason}</p>
+              </div>
+            </div>
+          )}
+          <p className="text-xs text-text-secondary mt-3 pt-3 border-t border-border">
+            Based on workout intensity &amp; last 7 days of variety
           </p>
         </div>
 
