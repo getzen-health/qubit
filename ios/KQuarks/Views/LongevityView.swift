@@ -190,7 +190,8 @@ struct LongevityView: View {
     // MARK: - Trend Chart
 
     private var trendCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let yMax = max(weeklyScores.map(\.score).max() ?? 100, 10)
+        return VStack(alignment: .leading, spacing: 8) {
             Text("Vitality Trend").font(.headline).padding(.horizontal, 4)
             Chart(weeklyScores, id: \.week) { point in
                 LineMark(x: .value("Week", point.week, unit: .weekOfYear),
@@ -202,7 +203,7 @@ struct LongevityView: View {
                 .foregroundStyle(Color.purple)
                 .symbolSize(30)
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...yMax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .weekOfYear, count: 2)) { _ in
                     AxisValueLabel(format: .dateTime.month().day())
