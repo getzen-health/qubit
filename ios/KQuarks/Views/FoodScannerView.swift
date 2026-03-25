@@ -71,6 +71,9 @@ struct FoodScannerView: View {
     @State private var showManualSearch = false
     @State private var showProductSheet = false
     @State private var cameraPermissionDenied = false
+    @State private var showNutritionScanner = false
+    @State private var ocrPrefill: ParsedNutritionLabel?
+    @State private var showOCRLogMeal = false
 
     var body: some View {
         NavigationStack {
@@ -112,6 +115,15 @@ struct FoodScannerView: View {
             }
             .sheet(item: $scannedProduct) { product in
                 ProductDetailView(product: product)
+            }
+            .sheet(isPresented: $showNutritionScanner) {
+                NutritionLabelScannerView { parsed in
+                    ocrPrefill = parsed
+                    showOCRLogMeal = true
+                }
+            }
+            .sheet(isPresented: $showOCRLogMeal) {
+                LogMealView(initialMealType: .snack, prefill: ocrPrefill)
             }
             .alert("Camera Access Required", isPresented: $cameraPermissionDenied) {
                 Button("Open Settings") {
@@ -169,6 +181,21 @@ struct FoodScannerView: View {
                 }
                 .accessibilityLabel("Scan barcode")
                 .accessibilityHint("Opens camera to scan a food product barcode")
+                .padding(.horizontal, 32)
+
+                Button {
+                    showNutritionScanner = true
+                } label: {
+                    Label("Scan Nutrition Label", systemImage: "text.viewfinder")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.secondarySystemBackground))
+                        .foregroundStyle(.primary)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+                .accessibilityLabel("Scan nutrition label")
+                .accessibilityHint("OCR scan a nutrition facts label to pre-fill a food entry")
                 .padding(.horizontal, 32)
             }
 

@@ -341,9 +341,19 @@ struct LogMealView: View {
     @State private var showError = false
     @State private var errorMsg = ""
 
-    init(initialMealType: MealTypeOption) {
+    init(initialMealType: MealTypeOption, prefill: ParsedNutritionLabel? = nil) {
         self.initialMealType = initialMealType
         _mealType = State(initialValue: initialMealType)
+        if let p = prefill {
+            _calories = State(initialValue: Int(p.calories ?? 300))
+            _protein = State(initialValue: p.protein ?? 20)
+            _carbs = State(initialValue: p.carbs ?? 40)
+            _fat = State(initialValue: p.fat ?? 10)
+            _showMacros = State(initialValue: p.protein != nil || p.carbs != nil || p.fat != nil)
+            if let serving = p.servingSize {
+                _foodName = State(initialValue: serving)
+            }
+        }
     }
 
     var body: some View {

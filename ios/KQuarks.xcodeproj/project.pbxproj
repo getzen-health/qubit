@@ -422,6 +422,8 @@
 		FF7E1098E79257043DF5D5C5 /* WalkingPatternView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F66F134E8DEA3DC29C1B39 /* WalkingPatternView.swift */; };
 		FFBA7DEF368615942B806AB2 /* RunningBiomechanicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C8AD90DFEF6E9E964444B /* RunningBiomechanicsView.swift */; };
 		FFCA601CEE56C46E65C6995F /* StreaksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33322CC951400AA588A27BB /* StreaksView.swift */; };
+		6E2D81CA2E47461B9A8639E0 /* NutritionLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4713EF33D9BB4D0F92A8141F /* NutritionLabelParser.swift */; };
+		1B47E5B43AE84279BAEFE25D /* NutritionLabelScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09AB59331AF49DF883EDDE5 /* NutritionLabelScannerView.swift */; };
 		W01 /* KQuarksWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = W11 /* KQuarksWidget.swift */; };
 		W02 /* KQuarksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = W10 /* KQuarksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -872,6 +874,8 @@
 		W11 /* KQuarksWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KQuarksWidget.swift; sourceTree = "<group>"; };
 		W12 /* KQuarksWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarksWidget.entitlements; sourceTree = "<group>"; };
 		W13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4713EF33D9BB4D0F92A8141F /* NutritionLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParser.swift; sourceTree = "<group>"; };
+		B09AB59331AF49DF883EDDE5 /* NutritionLabelScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelScannerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -911,6 +915,7 @@
 				505 /* Models */,
 				506 /* Views */,
 				507 /* Services */,
+				C15A43E788CF453A9B1C1D30 /* Utils */,
 				508 /* Theme */,
 				509 /* Widgets */,
 				201 /* Assets.xcassets */,
@@ -964,6 +969,7 @@
 				510 /* Dashboard */,
 				511 /* Navigation */,
 				512 /* Settings */,
+				F404B85EF6264CE2BCA7C5FE /* Food */,
 				108 /* OnboardingView.swift */,
 				109 /* AuthView.swift */,
 				110 /* DashboardView.swift */,
@@ -1393,6 +1399,22 @@
 				139 /* DashboardWeeklyChartView.swift */,
 			);
 			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		F404B85EF6264CE2BCA7C5FE /* Food */ = {
+			isa = PBXGroup;
+			children = (
+				B09AB59331AF49DF883EDDE5 /* NutritionLabelScannerView.swift */,
+			);
+			path = Food;
+			sourceTree = "<group>";
+		};
+		C15A43E788CF453A9B1C1D30 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4713EF33D9BB4D0F92A8141F /* NutritionLabelParser.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		511 /* Navigation */ = {
@@ -1942,6 +1964,8 @@
 				CFDEB51311EC75FD61625579 /* YogaScienceView.swift in Sources */,
 				81CA4F5A53D22CE26BC585ED /* Zone2ScienceView.swift in Sources */,
 				B1474B9DDFF1041D5A97E847 /* Zone2TrainingView.swift in Sources */,
+				6E2D81CA2E47461B9A8639E0 /* NutritionLabelParser.swift in Sources */,
+				1B47E5B43AE84279BAEFE25D /* NutritionLabelScannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
