@@ -175,7 +175,8 @@ private struct PhysicalEffortContent: View {
     // MARK: - Trend Chart
 
     private var trendChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let yMax = max(sessions.map(\.effortScore).max() ?? 10, 10)
+        return VStack(alignment: .leading, spacing: 8) {
             Text("90-Day Effort History").font(.headline)
             Text("Workout effort score per session — colored by intensity level")
                 .font(.caption).foregroundStyle(.secondary)
@@ -205,7 +206,7 @@ private struct PhysicalEffortContent: View {
                 }
             }
             .chartYAxisLabel("Effort (1–10)")
-            .chartYScale(domain: 0...10)
+            .chartYScale(domain: 0...yMax)
             .frame(height: 160)
         }
         .padding()
