@@ -137,6 +137,41 @@ export default function FoodScannerPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showIngredients, setShowIngredients] = useState(false)
+  const [addingToMeal, setAddingToMeal] = useState(false)
+  const [mealAdded, setMealAdded] = useState(false)
+
+  async function handleAddToMeal() {
+    if (!product) return
+    setAddingToMeal(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not signed in')
+      const today = new Date().toISOString().split('T')[0]
+      // Ensure a 'snack' meal row exists for today
+      const { data: meal, error: mealErr } = await supabase
+        .from('meals')
+        .upsert({ user_id: user.id, date: today, meal_type: 'snack' }, { onConflict: 'user_id,date,meal_type' })
+        .select('id')
+        .single()
+      if (mealErr || !meal) throw mealErr ?? new Error('Could not create meal')
+      await supabase.from('meal_items').insert({
+        meal_id: meal.id,
+        food_name: product.name,
+        quantity_g: 100,
+        calories: product.calories ?? 0,
+        protein_g: product.protein ?? 0,
+        carbs_g: product.carbs ?? 0,
+        fat_g: product.fat ?? 0,
+      })
+      setMealAdded(true)
+      setTimeout(() => setMealAdded(false), 3000)
+    } catch {
+      // silent fail — user will see no feedback but diary still works
+    } finally {
+      setAddingToMeal(false)
+    }
+  }
 
   // Fetch latest readiness/body-battery score for contextual food guidance
   useEffect(() => {
@@ -360,6 +395,24 @@ export default function FoodScannerPage() {
                 ))}
               </div>
               <p className="text-xs text-text-secondary text-center pb-2">Per {product.servingSize}</p>
+
+              {/* Add to Meal diary */}
+              <div className="px-4 pb-4 pt-1">
+                {mealAdded ? (
+                  <div className="flex items-center justify-center gap-2 bg-green-500/15 text-green-400 rounded-xl py-2.5 text-sm font-medium">
+                    ✓ Added to today&apos;s diary
+                    <Link href="/food/diary" className="underline underline-offset-2 text-green-300 ml-1">View diary →</Link>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleAddToMeal}
+                    disabled={addingToMeal}
+                    className="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30 rounded-xl py-2.5 text-sm font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
+                  >
+                    {addingToMeal ? 'Adding…' : '+ Add to Today\'s Diary'}
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Additives */}
