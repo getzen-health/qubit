@@ -1,0 +1,45 @@
+{
+  "navigation": {
+    "dashboard": "Panel de Control",
+    "vitals": "Signos Vitales",
+    "workouts": "Entrenamientos",
+    "settings": "Configuración",
+    "insights": "Perspectivas"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "dashboard": {
+    "title": "Panel de Salud",
+    "welcome": "Bienvenido a tu panel de salud",
+    "todaysSummary": "Resumen de Hoy",
+    "dailyGoals": "Objetivos Diarios",
+    "steps": "Pasos",
+    "sleepHours": "Horas de Sueño",
+    "heartRate": "Frecuencia Cardíaca",
+    "calories": "Calorías"
+  },
+  "settings": {
+    "title": "Configuración",
+    "profile": "Perfil",
+    "privacy": "Privacidad",
+    "notifications": "Notificaciones",
+    "appearance": "Apariencia",
+    "language": "Idioma",
+    "dataExport": "Exportar Datos"
+  },
+  "errors": {
+    "notFound": "Página no encontrada",
+    "unauthorized": "Necesitas iniciar sesión",
+    "serverError": "Error del servidor. Por favor intenta más tarde"
+  }
+}

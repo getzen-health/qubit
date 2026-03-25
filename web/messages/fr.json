@@ -1,0 +1,45 @@
+{
+  "navigation": {
+    "dashboard": "Tableau de Bord",
+    "vitals": "Signes Vitaux",
+    "workouts": "Entraînements",
+    "settings": "Paramètres",
+    "insights": "Perspectives"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
+  },
+  "dashboard": {
+    "title": "Tableau de Santé",
+    "welcome": "Bienvenue sur votre tableau de santé",
+    "todaysSummary": "Résumé Aujourd'hui",
+    "dailyGoals": "Objectifs Quotidiens",
+    "steps": "Pas",
+    "sleepHours": "Heures de Sommeil",
+    "heartRate": "Fréquence Cardiaque",
+    "calories": "Calories"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "profile": "Profil",
+    "privacy": "Confidentialité",
+    "notifications": "Notifications",
+    "appearance": "Apparence",
+    "language": "Langue",
+    "dataExport": "Exporter les Données"
+  },
+  "errors": {
+    "notFound": "Page non trouvée",
+    "unauthorized": "Vous devez vous connecter",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard"
+  }
+}

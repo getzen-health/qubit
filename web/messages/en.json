@@ -1,0 +1,45 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "vitals": "Vitals",
+    "workouts": "Workouts",
+    "settings": "Settings",
+    "insights": "Insights"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "dashboard": {
+    "title": "Health Dashboard",
+    "welcome": "Welcome to your health dashboard",
+    "todaysSummary": "Today's Summary",
+    "dailyGoals": "Daily Goals",
+    "steps": "Steps",
+    "sleepHours": "Sleep Hours",
+    "heartRate": "Heart Rate",
+    "calories": "Calories"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "privacy": "Privacy",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "language": "Language",
+    "dataExport": "Export Data"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "You need to be logged in",
+    "serverError": "Server error. Please try again later"
+  }
+}

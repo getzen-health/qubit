@@ -1,12 +1,26 @@
 import { type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import createMiddleware from 'next-intl/middleware'
+
+const intlMiddleware = createMiddleware({
+  locales: ['en', 'es', 'fr'],
+  defaultLocale: 'en',
+  localePrefix: 'as-needed',
+})
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  // Apply i18n middleware first
+  const intlResponse = intlMiddleware(request)
+  
+  // Then apply Supabase session middleware
+  const sessionResponse = await updateSession(intlResponse)
+  return sessionResponse
 }
 
 export const config = {
   matcher: [
+    '/',
+    '/(en|es|fr)/:path*',
     '/dashboard/:path*',
     '/workouts/:path*',
     '/sleep/:path*',
@@ -28,3 +42,4 @@ export const config = {
     '/api/((?!auth).)*',
   ],
 }
+
