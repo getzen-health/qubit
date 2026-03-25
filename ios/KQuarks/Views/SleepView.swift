@@ -229,7 +229,7 @@ struct SleepBarChart: View {
         }
     }
 
-    private var sleepDomainMax: Double {
+    private var sleepdatamax: Double {
         let maxHours = chartData.map(\.hours).max() ?? 0
         return max(10.0, maxHours + 0.5)
     }
@@ -258,7 +258,7 @@ struct SleepBarChart: View {
                     .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: 0...sleepDomainMax)
+            .chartYScale(domain: 0...sleepdatamax)
             .chartYAxis {
                 AxisMarks(values: [0, 4, 6, 8, 10]) { value in
                     AxisGridLine()

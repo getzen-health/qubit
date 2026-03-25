@@ -211,7 +211,7 @@ struct GlycogenStatusView: View {
 
     // MARK: - Glycogen Chart (14-day history)
 
-    private var glycogenChartDomainMax: Double {
+    private var glycogenchartmax: Double {
         let maxVal = dayGlycogen.suffix(14).map(\.pctFull).max() ?? 0
         return max(105.0, maxVal * 1.1)
     }
@@ -236,7 +236,7 @@ struct GlycogenStatusView: View {
                 .foregroundStyle(Color.green)
                 .lineStyle(StrokeStyle(lineWidth: 2))
             }
-            .chartYScale(domain: 0...glycogenChartDomainMax)
+            .chartYScale(domain: 0...glycogenchartmax)
             .chartYAxis {
                 AxisMarks(values: [0, 25, 50, 75, 100]) { val in
                     AxisValueLabel { if let v = val.as(Double.self) { Text("\(Int(v))%") } }

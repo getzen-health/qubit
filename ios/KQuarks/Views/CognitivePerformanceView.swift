@@ -206,7 +206,7 @@ struct CognitivePerformanceView: View {
 
     // MARK: - History Chart
 
-    private var historyChartDomainMax: Double {
+    private var historychartmax: Double {
         let maxVal = days.suffix(30).map(\.overallScore).max() ?? 0
         return max(105.0, maxVal * 1.1)
     }
@@ -235,7 +235,7 @@ struct CognitivePerformanceView: View {
                 .foregroundStyle(Color.cyan)
                 .lineStyle(StrokeStyle(lineWidth: 2))
             }
-            .chartYScale(domain: 0...historyChartDomainMax)
+            .chartYScale(domain: 0...historychartmax)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())

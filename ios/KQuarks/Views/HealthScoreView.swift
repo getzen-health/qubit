@@ -160,7 +160,7 @@ struct HealthScoreView: View {
 
     // MARK: - Trend Chart
 
-    private var trendChartDomainMax: Double {
+    private var trendchartmax: Double {
         let maxScore = scoredDays.compactMap(\.overall).max() ?? 0
         return max(100.0, maxScore + 5)
     }
@@ -208,7 +208,7 @@ struct HealthScoreView: View {
                     .lineStyle(StrokeStyle(lineWidth: 2))
                 }
             }
-            .chartYScale(domain: 0...trendChartDomainMax)
+            .chartYScale(domain: 0...trendchartmax)
             .chartYAxisLabel("score")
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { _ in

@@ -225,8 +225,8 @@ struct MonthlyHealthSummaryView: View {
                 .font(.headline)
                 .padding(.horizontal, 4)
 
-            let maxSteps = dailySteps.map(\.steps).max() ?? stepGoal
-            let yMax = max(maxSteps, stepGoal) + 1000
+            let maxsteps = dailySteps.map(\.steps).max() ?? stepGoal
+            let stepmax = Swift.max(maxsteps, stepGoal) + 1000
 
             Chart {
                 RuleMark(y: .value("Goal", stepGoal))
@@ -247,7 +247,7 @@ struct MonthlyHealthSummaryView: View {
                     AxisValueLabel(format: .dateTime.day())
                 }
             }
-            .chartYScale(domain: 0...yMax)
+            .chartYScale(domain: 0...stepmax)
             .frame(height: 180)
         }
         .padding()
