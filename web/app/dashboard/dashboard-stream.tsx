@@ -43,6 +43,7 @@ import { WeeklyCharts } from './components/weekly-charts'
 import { GoalRings } from './components/goal-rings'
 import { BottomNav } from '@/components/bottom-nav'
 import { GlobalSearch } from '@/components/global-search'
+import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { AnomalyAlertBanner } from '@/components/AnomalyAlertBanner'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { ShareCard } from '@/components/ShareCard'
@@ -636,6 +637,7 @@ export function DashboardStream({
           </div>
           <div className="flex items-center gap-2">
             <GlobalSearch />
+            <DarkModeToggle />
             <Link
               href="/explore"
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"

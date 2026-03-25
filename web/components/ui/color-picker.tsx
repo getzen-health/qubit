@@ -67,12 +67,14 @@ export function ColorPicker({
   return (
     <div className={cn('space-y-4', className)}>
       {/* Preset Colors */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Preset color options">
         {presets.map((preset) => (
           <button
             key={preset.label}
             type="button"
             onClick={() => handlePresetClick(preset)}
+            aria-label={`${preset.label} color${value.h === preset.h && value.s === preset.s && value.l === preset.l ? ', currently selected' : ''}`}
+            aria-pressed={value.h === preset.h && value.s === preset.s && value.l === preset.l}
             className={cn(
               'w-10 h-10 rounded-full border-2 transition-transform hover:scale-110',
               value.h === preset.h && value.s === preset.s && value.l === preset.l
@@ -82,7 +84,6 @@ export function ColorPicker({
             style={{
               backgroundColor: `hsl(${preset.h}, ${preset.s}%, ${preset.l}%)`,
             }}
-            title={preset.label}
           />
         ))}
       </div>
@@ -91,6 +92,7 @@ export function ColorPicker({
       <button
         type="button"
         onClick={() => setShowSliders(!showSliders)}
+        aria-expanded={showSliders}
         className="text-sm text-text-secondary hover:text-text-primary transition-colors"
       >
         {showSliders ? 'Hide custom colors' : 'Custom color'}

@@ -234,6 +234,7 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
       <div className="flex gap-2">
         <button
           onClick={handleCopyLink}
+          aria-label={copied ? 'Link copied to clipboard' : 'Copy health snapshot link'}
           className={cn(
             'flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl border transition-all',
             copied
@@ -247,6 +248,7 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
         <button
           onClick={handleDownload}
           disabled={downloading}
+          aria-label={downloading ? 'Saving snapshot as image' : 'Download health snapshot as image'}
           className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition-colors disabled:opacity-60"
         >
           <Download className="w-3.5 h-3.5" />

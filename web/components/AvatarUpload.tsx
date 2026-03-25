@@ -57,16 +57,24 @@ export function AvatarUpload({ userId, avatarUrl, onUpdate }: Props) {
       <div
         className="relative w-20 h-20 rounded-full overflow-hidden bg-zinc-800 cursor-pointer"
         onClick={() => inputRef.current?.click()}
+        role="button"
+        tabIndex={0}
+        aria-label="Click to upload profile photo"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            inputRef.current?.click()
+          }
+        }}
       >
         {avatarUrl ? (
-          <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
+          <Image src={avatarUrl} alt="User profile photo" fill className="object-cover" />
         ) : (
-          <span className="flex items-center justify-center w-full h-full text-3xl text-zinc-500">
+          <span className="flex items-center justify-center w-full h-full text-3xl text-zinc-500" aria-hidden="true">
             👤
           </span>
         )}
         {uploading && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center" aria-busy="true" aria-label="Uploading photo">
             <span className="text-white text-xs">Uploading…</span>
           </div>
         )}
@@ -74,15 +82,17 @@ export function AvatarUpload({ userId, avatarUrl, onUpdate }: Props) {
       <button
         onClick={() => inputRef.current?.click()}
         className="text-xs text-zinc-400 hover:text-white"
+        aria-label="Change profile photo"
       >
         {uploading ? "Uploading…" : "Change photo"}
       </button>
-      {error && <p className="text-red-400 text-xs">{error}</p>}
+      {error && <p className="text-red-400 text-xs" role="alert">{error}</p>}
       <input
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
+        aria-label="Select image file for profile photo"
         onChange={(e) => {
           const f = e.target.files?.[0]
           if (f) uploadAvatar(f)
