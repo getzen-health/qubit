@@ -349,6 +349,7 @@ struct ProductDetailView: View {
     @State private var alternatives: [ScannedProduct] = []
     @State private var isLoadingAlternatives = false
     @State private var showComparison = false
+    @State private var servings: Double = 1.0
 
     var body: some View {
         NavigationStack {
@@ -607,10 +608,11 @@ struct ProductDetailView: View {
             try await SupabaseService.shared.logMeal(
                 mealType: selectedMealType.rawValue,
                 name: product.name,
-                calories: product.calories,
-                protein: product.protein,
-                carbs: product.carbs,
-                fat: product.fat
+                calories: Int(Double(product.calories) * servings),
+                protein: product.protein * servings,
+                carbs: product.carbs * servings,
+                fat: product.fat * servings,
+                servings: servings
             )
             showSaved = true
         } catch {

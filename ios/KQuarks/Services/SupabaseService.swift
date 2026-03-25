@@ -896,7 +896,8 @@ class SupabaseService {
         calories: Int,
         protein: Double,
         carbs: Double,
-        fat: Double
+        fat: Double,
+        servings: Double = 1.0
     ) async throws {
         guard let session = currentSession else { throw SupabaseError.notAuthenticated }
         let userId = session.user.id.uuidString
@@ -936,7 +937,7 @@ class SupabaseService {
                 user_id: userId,
                 name: name,
                 serving_size: "1 serving",
-                servings: 1,
+                servings: servings,
                 calories: calories,
                 protein: protein,
                 carbs: carbs,
