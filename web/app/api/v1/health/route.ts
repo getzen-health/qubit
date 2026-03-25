@@ -1,8 +1,9 @@
-import { versionedHeaders } from '@/lib/api-version'
+import { apiResponse } from '@/lib/api-response'
 
 export async function GET() {
-  return new Response(
-    JSON.stringify({ version: "v1", status: "ok", timestamp: new Date().toISOString() }),
-    { headers: versionedHeaders() }
-  )
+  return apiResponse({
+    version: "1.0",
+    status: "ok",
+    timestamp: new Date().toISOString()
+  }, 200)
 }
