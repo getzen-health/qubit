@@ -293,6 +293,24 @@ export function DashboardStream({
         ...(calorieIntakeTarget > 0 && todayCaloriesConsumed > 0 ? { nutrition: { todayCalories: todayCaloriesConsumed, calorieTarget: calorieIntakeTarget } } : {}),
         ...(activeFast ? { fasting: { isActive: true, protocol: activeFast.protocol, elapsedHours: fastElapsedHours } } : {}),
       }
+      // Enrich with today's subjective check-in data if available
+      const todayDateStr = new Date().toISOString().slice(0, 10)
+      const { data: todayCheckin } = await supabase
+        .from('daily_checkins')
+        .select('energy, mood, stress, notes')
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id ?? '')
+        .eq('date', todayDateStr)
+        .single()
+      if (todayCheckin) {
+        Object.assign(extendedContext, {
+          checkin: {
+            energy: todayCheckin.energy,
+            mood: todayCheckin.mood,
+            stress: todayCheckin.stress,
+            notes: todayCheckin.notes ?? null,
+          },
+        })
+      }
       const { error } = await supabase.functions.invoke('generate-insights', {
         body: { healthContext: extendedContext, userApiKey },
       })

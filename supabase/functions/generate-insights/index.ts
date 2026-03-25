@@ -61,6 +61,12 @@ interface HealthContext {
     protocol: string | null
     elapsedHours: number
   }
+  checkin?: {
+    energy: number   // 1-5
+    mood: number     // 1-5
+    stress: number   // 1-5
+    notes: string | null
+  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -295,6 +301,16 @@ function buildHealthPrompt(ctx: HealthContext): string {
   if (ctx.fasting) {
     if (ctx.fasting.isActive) {
       prompt += `\n**Fasting:**\n- Active fast: ${ctx.fasting.protocol ?? "Intermittent fasting"}, ${ctx.fasting.elapsedHours.toFixed(1)} hours elapsed\n`
+    }
+  }
+
+  if (ctx.checkin) {
+    const energyLabel = ctx.checkin.energy <= 2 ? "Low" : ctx.checkin.energy >= 4 ? "High" : "Moderate"
+    const moodLabel = ctx.checkin.mood <= 2 ? "Low" : ctx.checkin.mood >= 4 ? "High" : "Moderate"
+    const stressLabel = ctx.checkin.stress >= 4 ? "High" : ctx.checkin.stress <= 2 ? "Low" : "Moderate"
+    prompt += `\n**Subjective Well-being (Today's Check-in):**\n- Energy: ${energyLabel} (${ctx.checkin.energy}/5)\n- Mood: ${moodLabel} (${ctx.checkin.mood}/5)\n- Stress: ${stressLabel} (${ctx.checkin.stress}/5)\n`
+    if (ctx.checkin.notes) {
+      prompt += `- Notes: "${ctx.checkin.notes}"\n`
     }
   }
 
