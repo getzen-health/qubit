@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
+import { checkRateLimit, getClientIdentifier, createRateLimitHeaders } from "@/lib/security/rate-limit"
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 5 freeze attempts per hour
+  const clientId = getClientIdentifier(req)
+  const rateLimit = await checkRateLimit(clientId, 'streakFreeze')
+  if (!rateLimit.allowed) {
+    const response = NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      { status: 429 }
+    )
+    Object.entries(createRateLimitHeaders(0, rateLimit.resetIn)).forEach(([key, value]) => {
+      response.headers.set(key, String(value))
+    })
+    return response
+  }
+
   try {
     const supabase = await createServerClient()
     const { data: { user } } = await supabase.auth.getUser()

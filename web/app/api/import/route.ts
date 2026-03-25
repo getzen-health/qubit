@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase/server"
+import { checkRateLimit, getClientIdentifier, createRateLimitHeaders } from "@/lib/security/rate-limit"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 3 imports per hour
+  const clientId = getClientIdentifier(req)
+  const rateLimit = await checkRateLimit(clientId, 'import')
+  if (!rateLimit.allowed) {
+    const response = NextResponse.json(
+      { error: "Too many import requests. Try again in an hour." },
+      { status: 429 }
+    )
+    Object.entries(createRateLimitHeaders(0, rateLimit.resetIn)).forEach(([key, value]) => {
+      response.headers.set(key, String(value))
+    })
+    return response
+  }
+
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
