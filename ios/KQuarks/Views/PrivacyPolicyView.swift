@@ -14,13 +14,12 @@ struct PrivacyPolicyView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                PolicySection(title: "Overview") {
+                PolicySection(title: "Overview",
                     """
                     KQuarks is a personal health analytics app. We take your privacy seriously. This policy explains what data we collect, how we use it, and your rights over it.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Data We Collect") {
+                PolicySection(title: "Data We Collect",
                     """
                     KQuarks reads the following data from Apple Health (HealthKit), with your explicit permission:
 
@@ -35,10 +34,9 @@ struct PrivacyPolicyView: View {
                     We also collect:
                     • Your name and birth year, if you voluntarily provide them during onboarding
                     • An anonymous user identifier created by Sign In with Apple
-                    """
-                }
+                    """)
 
-                PolicySection(title: "How We Use Your Data") {
+                PolicySection(title: "How We Use Your Data",
                     """
                     Your health data is used exclusively to provide KQuarks features:
 
@@ -49,20 +47,18 @@ struct PrivacyPolicyView: View {
                     3. AI insights (Claude API) — with your permission, daily summaries (not raw samples) are sent to Anthropic's Claude API to generate your morning briefings and anomaly alerts. These requests are proxied through Supabase Edge Functions. We do not store your data with Anthropic beyond the duration of a single API call.
 
                     We do not use your health data for advertising, profiling, or any purpose other than providing KQuarks features to you.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Data Storage & Security") {
+                PolicySection(title: "Data Storage & Security",
                     """
                     • Local storage: raw HealthKit data stays on your device and in Apple Health. KQuarks stores aggregated summaries locally via SwiftData.
 
                     • Cloud storage: aggregated daily summaries are stored in Supabase Postgres, hosted on infrastructure that complies with SOC 2 Type II. All data is encrypted in transit (TLS 1.3) and at rest (AES-256).
 
                     • Your API key (if you provide your own Claude or OpenAI key): stored encrypted in your Supabase row, never in plain text.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Third-Party Services") {
+                PolicySection(title: "Third-Party Services",
                     """
                     KQuarks uses the following third-party services:
 
@@ -71,10 +67,9 @@ struct PrivacyPolicyView: View {
                     • Apple HealthKit — the source of all health data. KQuarks is a read-only consumer of HealthKit; we never write data back to Apple Health.
 
                     We do not sell, rent, or share your personal data with any third party for their own purposes.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Your Rights") {
+                PolicySection(title: "Your Rights",
                     """
                     You have the right to:
 
@@ -82,30 +77,26 @@ struct PrivacyPolicyView: View {
                     • Delete your data — delete your account from Settings > Account > Delete Account. This permanently removes all your data from our servers within 30 days.
                     • Revoke Health access — in iOS Settings > Health > Data Access & Devices > KQuarks, you can revoke HealthKit permissions at any time. The app will continue to work for data already synced.
                     • Opt out of AI features — disable morning briefings in KQuarks Settings > Notifications. No health data will be sent to Claude.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Children's Privacy") {
+                PolicySection(title: "Children's Privacy",
                     """
                     KQuarks is not intended for users under the age of 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us data, please contact us immediately.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Changes to This Policy") {
+                PolicySection(title: "Changes to This Policy",
                     """
                     We may update this privacy policy from time to time. We will notify you of significant changes via an in-app notice and update the effective date above. Continued use of the app after changes constitutes acceptance of the revised policy.
-                    """
-                }
+                    """)
 
-                PolicySection(title: "Contact Us") {
+                PolicySection(title: "Contact Us",
                     """
                     If you have questions about this privacy policy or your data, contact us at:
 
                     privacy@kquarks.app
 
                     We aim to respond within 5 business days.
-                    """
-                }
+                    """)
 
                 Spacer().frame(height: 32)
             }
@@ -119,19 +110,13 @@ struct PrivacyPolicyView: View {
 
 // MARK: - Supporting subview
 
-private struct PolicySection<Content: StringProtocol>: View {
+private struct PolicySection: View {
     let title: String
-    let body: () -> Content
+    let content: String
 
-    init(title: String, @ViewBuilder body: () -> Content) {
+    init(title: String, _ content: String) {
         self.title = title
-        self.body = body
-    }
-
-    // Convenience init for plain string literals
-    init(title: String, _ text: @escaping @autoclosure () -> Content) {
-        self.title = title
-        self.body = text
+        self.content = content
     }
 
     var body: some View {
@@ -139,7 +124,7 @@ private struct PolicySection<Content: StringProtocol>: View {
             Text(title)
                 .font(.headline)
 
-            Text(body())
+            Text(content)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
