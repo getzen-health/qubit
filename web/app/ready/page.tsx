@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { ReadyClient, type ReadinessData, type DailyScore, type ReadinessZone } from './ready-client'
 import { BottomNav } from '@/components/bottom-nav'
+import { calculateReadinessScore, toHrvScore, toRhrScore, toSleepScore } from '@/lib/readiness'
 
 export const metadata = { title: 'Daily Readiness Score' }
 
@@ -116,24 +117,18 @@ export default async function ReadyPage() {
     return 'low'
   }
 
-  function computeScore(hrv: number | null, rhr: number | null, sleepEff: number | null): number {
-    const hrvScore  = hrv       ? Math.min((hrv / 65) * 100, 100)               : 50
-    const rhrScore  = rhr       ? Math.max(0, ((80 - rhr) / 40) * 100)          : 50
-    const sleepScore = sleepEff ? sleepEff * 100                                 : 50
-    return Math.round(0.4 * hrvScore + 0.3 * sleepScore + 0.3 * rhrScore)
-  }
-
   const summaries = rows ?? []
 
   const daily: DailyScore[] = summaries.map((r) => {
-    const score = r.recovery_score ?? computeScore(r.avg_hrv, r.resting_heart_rate, r.sleep_efficiency)
+    const sleepHours = r.sleep_duration_minutes ? r.sleep_duration_minutes / 60 : null
+    const score = r.recovery_score ?? (calculateReadinessScore(r.avg_hrv, r.resting_heart_rate, sleepHours) ?? 0)
     return {
       date:  r.date,
       score,
       zone:  scoreZone(score),
       hrv:   r.avg_hrv ?? 0,
       rhr:   r.resting_heart_rate ?? 0,
-      sleep: r.sleep_duration_minutes ? r.sleep_duration_minutes / 60 : 0,
+      sleep: sleepHours ?? 0,
     }
   })
 
@@ -146,12 +141,12 @@ export default async function ReadyPage() {
   const todayRhr   = latest?.resting_heart_rate ?? 0
   const todaySleep = latest?.sleep_duration_minutes ? latest.sleep_duration_minutes / 60 : 0
   const todayScore = latest
-    ? (latest.recovery_score ?? computeScore(latest.avg_hrv, latest.resting_heart_rate, latest.sleep_efficiency))
+    ? (latest.recovery_score ?? (calculateReadinessScore(latest.avg_hrv, latest.resting_heart_rate, todaySleep || null) ?? 0))
     : 0
 
-  const todayHrvScore   = todayHrv  ? Math.round(Math.min((todayHrv / 65) * 100, 100))           : 0
-  const todayRhrScore   = todayRhr  ? Math.round(Math.max(0, ((80 - todayRhr) / 40) * 100))      : 0
-  const todaySleepScore = latest?.sleep_efficiency ? Math.round(latest.sleep_efficiency * 100)   : 0
+  const todayHrvScore   = todayHrv   ? Math.round(toHrvScore(todayHrv))          : 0
+  const todayRhrScore   = todayRhr   ? Math.round(toRhrScore(todayRhr))           : 0
+  const todaySleepScore = todaySleep ? Math.round(toSleepScore(todaySleep))       : 0
 
   const data: ReadinessData = {
     todayScore, todayHrv, todayRhr, todaySleep,

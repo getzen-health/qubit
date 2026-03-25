@@ -446,7 +446,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-sm font-medium text-text-primary">Resting HR</span>
-              <span className="text-xs text-text-secondary ml-2 opacity-70">30% weight</span>
+              <span className="text-xs text-text-secondary ml-2 opacity-70">25% weight</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-text-secondary tabular-nums">{todayRhr} bpm</span>
@@ -464,7 +464,7 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-sm font-medium text-text-primary">Sleep</span>
-              <span className="text-xs text-text-secondary ml-2 opacity-70">30% weight</span>
+              <span className="text-xs text-text-secondary ml-2 opacity-70">35% weight</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-text-secondary tabular-nums">{todaySleep}h</span>
@@ -532,9 +532,9 @@ export function ReadyClient({ data }: { data: ReadinessData }) {
             </div>
             <div className="space-y-2">
               {[
-                { label: 'HRV (40%)',       detail: 'Heart rate variability vs your 30-day average. Higher HRV = better autonomic recovery.',  color: '#a78bfa' },
-                { label: 'Resting HR (30%)', detail: 'Lower resting HR relative to your baseline signals less cardiovascular stress.',           color: '#38bdf8' },
-                { label: 'Sleep (30%)',      detail: 'Last night\'s total sleep hours scaled against a 9-hour ceiling target.',                   color: '#818cf8' },
+                { label: 'HRV (40%)',        detail: 'Heart rate variability vs your 30-day average. Higher HRV = better autonomic recovery.',  color: '#a78bfa' },
+                { label: 'Sleep (35%)',       detail: 'Last night\'s total sleep hours scaled against a 9-hour ceiling target.',                   color: '#818cf8' },
+                { label: 'Resting HR (25%)',  detail: 'Lower resting HR relative to your baseline signals less cardiovascular stress.',           color: '#38bdf8' },
               ].map(({ label, detail, color }) => (
                 <div key={label} className="flex gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-none" style={{ background: color }} />

@@ -1,8 +1,54 @@
 /**
  * Readiness / Body Battery utilities
- * Based on WHOOP/Oura methodology (HRV 60%, RHR 20%, Sleep 20%)
+ * Canonical weighting (Bevel-style): HRV 40 % · Sleep 35 % · Resting HR 25 %
  * Research: Flatt et al. (Int J Sports Physiol Perform 2022), Merrigan et al. (NSCA 2023)
  */
+
+// ─── Raw → 0-100 normalisers ─────────────────────────────────────────────────
+
+/** Normalise raw HRV (ms) to 0-100. Ceiling: 65 ms ≈ elite baseline. */
+export function toHrvScore(hrv: number): number {
+  return Math.min(100, (hrv / 65) * 100)
+}
+
+/** Normalise resting HR (bpm) to 0-100. 80 bpm = 0, 40 bpm = 100. */
+export function toRhrScore(rhr: number): number {
+  return Math.max(0, Math.min(100, ((80 - rhr) / 40) * 100))
+}
+
+/** Normalise sleep duration (hours) to 0-100. Ceiling: 9 h = 100. */
+export function toSleepScore(sleepHours: number): number {
+  return Math.min(100, (sleepHours / 9) * 100)
+}
+
+// ─── Canonical readiness score ────────────────────────────────────────────────
+
+/**
+ * Canonical readiness score: HRV 40 % · Sleep 35 % · Resting HR 25 %.
+ *
+ * Inputs:
+ *   hrv        – HRV in milliseconds          (null = missing)
+ *   rhr        – Resting heart rate in bpm    (null = missing)
+ *   sleepHours – Total sleep in hours         (null = missing)
+ *
+ * Returns a 0-100 integer, or null when all inputs are absent.
+ * Missing inputs are excluded and the remaining weights are re-normalised.
+ */
+export function calculateReadinessScore(
+  hrv: number | null,
+  rhr: number | null,
+  sleepHours: number | null,
+): number | null {
+  const components: Array<{ score: number; weight: number }> = []
+  if (hrv != null)        components.push({ score: toHrvScore(hrv),         weight: 0.40 })
+  if (sleepHours != null) components.push({ score: toSleepScore(sleepHours), weight: 0.35 })
+  if (rhr != null)        components.push({ score: toRhrScore(rhr),          weight: 0.25 })
+  if (components.length === 0) return null
+
+  const totalWeight = components.reduce((s, c) => s + c.weight, 0)
+  const weighted    = components.reduce((s, c) => s + c.score * c.weight, 0)
+  return Math.round(weighted / totalWeight)
+}
 
 export type ReadinessZone = 'peak' | 'optimal' | 'moderate' | 'low' | 'unknown'
 

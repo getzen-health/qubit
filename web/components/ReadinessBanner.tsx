@@ -1,39 +1,24 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { calculateReadinessScore, toHrvScore, toRhrScore, toSleepScore } from '@/lib/readiness'
 
 interface DailySummaryRow {
   date: string
   avg_hrv: number | null
   resting_heart_rate: number | null
-  sleep_quality_score: number | null
+  sleep_duration_minutes: number | null
 }
 
 function computeFactors(row: DailySummaryRow) {
-  const hrvScore =
-    row.avg_hrv != null ? Math.min(row.avg_hrv / 65, 1) * 100 : null
-  const rhrScore =
-    row.resting_heart_rate != null
-      ? Math.max(0, (80 - row.resting_heart_rate) / (80 - 40)) * 100
-      : null
-  const sleepScore =
-    row.sleep_quality_score != null ? row.sleep_quality_score : null
+  const sleepHours =
+    row.sleep_duration_minutes != null ? row.sleep_duration_minutes / 60 : null
 
-  const availableFactors = [
-    hrvScore != null ? hrvScore * 0.4 : null,
-    sleepScore != null ? sleepScore * 0.3 : null,
-    rhrScore != null ? rhrScore * 0.3 : null,
-  ].filter((v): v is number => v !== null)
+  const hrvScore   = row.avg_hrv            != null ? toHrvScore(row.avg_hrv)            : null
+  const rhrScore   = row.resting_heart_rate != null ? toRhrScore(row.resting_heart_rate) : null
+  const sleepScore = sleepHours             != null ? toSleepScore(sleepHours)            : null
 
-  if (availableFactors.length === 0) return null
-
-  const totalWeight =
-    (hrvScore != null ? 0.4 : 0) +
-    (sleepScore != null ? 0.3 : 0) +
-    (rhrScore != null ? 0.3 : 0)
-
-  const score = Math.round(
-    availableFactors.reduce((a, b) => a + b, 0) / totalWeight
-  )
+  const score = calculateReadinessScore(row.avg_hrv, row.resting_heart_rate, sleepHours)
+  if (score == null) return null
 
   return { score, hrvScore, sleepScore, rhrScore }
 }
@@ -111,7 +96,7 @@ export async function ReadinessBanner({ userId }: { userId: string }) {
 
   const { data } = await supabase
     .from('daily_summaries')
-    .select('date, avg_hrv, resting_heart_rate, sleep_quality_score')
+    .select('date, avg_hrv, resting_heart_rate, sleep_duration_minutes')
     .eq('user_id', userId)
     .in('date', [todayStr, yesterdayStr])
     .order('date', { ascending: false })
@@ -203,12 +188,12 @@ export async function ReadinessBanner({ userId }: { userId: string }) {
           <div className="space-y-2">
             <FactorBar label="HRV (40%)" value={hrvScore} color={ringColor} />
             <FactorBar
-              label="Sleep (30%)"
+              label="Sleep (35%)"
               value={sleepScore}
               color={ringColor}
             />
             <FactorBar
-              label="Recovery/RHR (30%)"
+              label="Recovery/RHR (25%)"
               value={rhrScore}
               color={ringColor}
             />
