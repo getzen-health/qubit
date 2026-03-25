@@ -33,9 +33,34 @@ function formatDate(iso: string): string {
   })
 }
 
-export function HistoryClient({ scans: initial }: { scans: ScanRecord[] }) {
+export function HistoryClient({
+  scans: initial,
+  initialOffset = 0,
+  hasMore: initialHasMore = false,
+}: {
+  scans: ScanRecord[]
+  initialOffset?: number
+  hasMore?: boolean
+}) {
   const [scans, setScans] = useState<ScanRecord[]>(initial)
   const [clearing, setClearing] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [offset, setOffset] = useState(initialOffset + initial.length)
+
+  async function handleLoadMore() {
+    setLoadingMore(true)
+    try {
+      const res = await fetch(`/api/food/history?offset=${offset}&limit=20`)
+      if (!res.ok) return
+      const json = await res.json()
+      setScans((prev) => [...prev, ...(json.scans ?? [])])
+      setOffset(offset + (json.scans?.length ?? 0))
+      setHasMore(json.hasMore ?? false)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   async function handleClearHistory() {
     if (!confirm('Clear all scan history?')) return
@@ -46,6 +71,8 @@ export function HistoryClient({ scans: initial }: { scans: ScanRecord[] }) {
       if (!user) return
       await supabase.from('product_scans').delete().eq('user_id', user.id)
       setScans([])
+      setHasMore(false)
+      setOffset(0)
     } finally {
       setClearing(false)
     }
@@ -119,6 +146,16 @@ export function HistoryClient({ scans: initial }: { scans: ScanRecord[] }) {
           )
         })}
       </div>
+
+      {hasMore && (
+        <button
+          onClick={handleLoadMore}
+          disabled={loadingMore}
+          className="w-full py-3 rounded-2xl border border-border text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-colors disabled:opacity-50"
+        >
+          {loadingMore ? 'Loading…' : 'Load more'}
+        </button>
+      )}
     </div>
   )
 }

@@ -5,17 +5,28 @@ import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { HistoryClient } from './history-client'
 
-export default async function ScanHistoryPage() {
+const PAGE_SIZE = 20
+
+export default async function ScanHistoryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ offset?: string }>
+}) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
+
+  const { offset: offsetParam } = await searchParams
+  const offset = Math.max(0, parseInt(offsetParam ?? '0', 10))
 
   const { data: scans } = await supabase
     .from('product_scans')
     .select('*')
     .eq('user_id', user.id)
     .order('scanned_at', { ascending: false })
-    .limit(50)
+    .range(offset, offset + PAGE_SIZE - 1)
+
+  const hasMore = (scans?.length ?? 0) === PAGE_SIZE
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -26,13 +37,13 @@ export default async function ScanHistoryPage() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-text-primary">Scan History</h1>
-            <p className="text-xs text-text-secondary">Last {scans?.length ?? 0} scanned products</p>
+            <p className="text-xs text-text-secondary">Showing {scans?.length ?? 0} scanned products</p>
           </div>
         </div>
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <HistoryClient scans={scans ?? []} />
+        <HistoryClient scans={scans ?? []} initialOffset={offset} hasMore={hasMore} />
       </div>
 
       <BottomNav />
