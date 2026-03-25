@@ -62,7 +62,7 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
       if (!config.skipRateLimit) {
         const clientId = getClientIdentifier(request)
         const rateLimitType = config.rateLimit || 'default'
-        const rateLimit = checkRateLimit(clientId, rateLimitType)
+        const rateLimit = await checkRateLimit(clientId, rateLimitType)
 
         if (!rateLimit.allowed) {
           const response = NextResponse.json(
