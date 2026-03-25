@@ -62,6 +62,14 @@ function rollingAverage(readings: { date: string; sdnn: number }[], window: numb
   })
 }
 
+function sevenDayAverage(readings: { date: string; sdnn: number; rolling: number }[]) {
+  return readings.map((r, i) => {
+    const slice = readings.slice(Math.max(0, i - 6), i + 1)
+    const avg = slice.reduce((s, x) => s + x.sdnn, 0) / slice.length
+    return { ...r, sevenDay: Math.round(avg * 10) / 10 }
+  })
+}
+
 function monthlyAverages(readings: { date: string; sdnn: number }[]) {
   const buckets: Map<string, number[]> = new Map()
   for (const r of readings) {
@@ -84,7 +92,8 @@ export default async function HrvDeepDivePage() {
   if (!user) redirect('/login')
 
   const rawReadings = generateHrvData()
-  const readings = rollingAverage(rawReadings, 30)
+  const readings30 = rollingAverage(rawReadings, 30)
+  const readings = sevenDayAverage(readings30)
   const monthly = monthlyAverages(rawReadings)
 
   const latestHrv = readings[readings.length - 1].sdnn

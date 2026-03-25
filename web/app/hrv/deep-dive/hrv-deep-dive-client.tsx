@@ -20,6 +20,7 @@ interface HrvReading {
   date: string
   sdnn: number
   rolling: number
+  sevenDay: number
 }
 
 interface MonthlyAvg {
@@ -100,9 +101,16 @@ function ansColor(state: string) {
   return ORANGE
 }
 
+function getHrvDotColor(sdnn: number, baseline: number): string {
+  const deviation = ((sdnn - baseline) / baseline) * 100
+  if (deviation >= 10) return '#10b981' // Green: >+10%
+  if (deviation <= -10) return '#ef4444' // Red: <-10%
+  return '#f59e0b' // Amber: otherwise
+}
+
 // ─── Custom tooltip for trend chart ──────────────────────────────────────────
 
-function TrendTooltip({ active, payload }: { active?: boolean; payload?: { payload: HrvReading }[] }) {
+function TrendTooltip({ active, payload, baseline }: { active?: boolean; payload?: { payload: HrvReading }[]; baseline?: number }) {
   if (!active || !payload?.length) return null
   const d = payload[0].payload
   return (
@@ -113,6 +121,9 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
       </p>
       <p className="text-[11px]" style={{ color: GREEN_DARK }}>
         {d.rolling} ms <span className="text-text-secondary">30-day avg</span>
+      </p>
+      <p className="text-[11px]" style={{ color: TEAL }}>
+        {d.sevenDay} ms <span className="text-text-secondary">7-day avg</span>
       </p>
     </div>
   )
@@ -200,9 +211,9 @@ export function HrvDeepDiveClient({
           12-Month SDNN Trend
         </h3>
         <p className="text-[11px] text-text-secondary mb-3">
-          Daily readings (dots) · 30-day rolling average (line) · baseline {baseline} ms (dashed)
+          Daily readings (color-coded) · 30-day rolling average (solid line) · 7-day rolling average (dashed line) · baseline {baseline} ms
         </p>
-        <ResponsiveContainer width="100%" height={240}>
+       <ResponsiveContainer width="100%" height={240}>
           <ComposedChart data={readings} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
             <XAxis
@@ -222,7 +233,7 @@ export function HrvDeepDiveClient({
               width={28}
               tickFormatter={(v: number) => `${v}`}
             />
-            <Tooltip content={<TrendTooltip />} />
+            <Tooltip content={<TrendTooltip baseline={baseline} />} />
             <ReferenceLine
               y={baseline}
               stroke={GREEN}
@@ -236,10 +247,21 @@ export function HrvDeepDiveClient({
                 opacity: 0.7,
               }}
             />
-            {/* Daily scatter rendered as a line with dots but no connecting line */}
+            {/* Daily scatter with color-coded dots based on baseline deviation */}
             <Line
               dataKey="sdnn"
-              dot={{ r: 2.5, fill: GREEN_DIM, stroke: 'none' }}
+              dot={(props: any) => {
+                const { cx, cy, payload } = props
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={2.5}
+                    fill={getHrvDotColor(payload.sdnn, baseline)}
+                    stroke="none"
+                  />
+                )
+              }}
               activeDot={{ r: 4, fill: GREEN, stroke: 'none' }}
               stroke="none"
               isAnimationActive={false}
@@ -253,16 +275,38 @@ export function HrvDeepDiveClient({
               isAnimationActive={false}
               activeDot={{ r: 4, fill: GREEN }}
             />
+            {/* 7-day rolling average */}
+            <Line
+              dataKey="sevenDay"
+              dot={false}
+              stroke={TEAL}
+              strokeWidth={2.5}
+              strokeDasharray="5 5"
+              isAnimationActive={false}
+              activeDot={{ r: 4, fill: TEAL }}
+            />
           </ComposedChart>
         </ResponsiveContainer>
-        <div className="flex items-center gap-4 mt-2 justify-end">
+        <div className="flex items-center gap-4 mt-2 justify-end flex-wrap">
           <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: GREEN_DIM }} />
-            Daily SDNN
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+            HRV +10% (recovered)
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            HRV ±10% (normal)
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+            HRV -10% (fatigued)
           </span>
           <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
             <span className="w-5 h-0.5 rounded" style={{ background: GREEN }} />
             30-day avg
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
+            <span className="w-5 border-t border-dashed" style={{ borderColor: TEAL }} />
+            7-day avg
           </span>
           <span className="flex items-center gap-1.5 text-[10px] text-text-secondary">
             <span className="w-5 border-t border-dashed" style={{ borderColor: `${GREEN}80` }} />
