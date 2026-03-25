@@ -13,13 +13,20 @@ export default async function BodyPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: summaries } = await supabase
-    .from('daily_summaries')
-    .select('date, weight_kg, body_fat_percent')
-    .eq('user_id', user.id)
-    .not('weight_kg', 'is', null)
-    .gt('weight_kg', 0)
-    .order('date', { ascending: true })
+  const [{ data: summaries }, { data: profile }] = await Promise.all([
+    supabase
+      .from('daily_summaries')
+      .select('date, weight_kg, body_fat_percent')
+      .eq('user_id', user.id)
+      .not('weight_kg', 'is', null)
+      .gt('weight_kg', 0)
+      .order('date', { ascending: true }),
+    supabase
+      .from('users')
+      .select('height_cm')
+      .eq('id', user.id)
+      .single(),
+  ])
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,7 +63,7 @@ export default async function BodyPage() {
           <h2 className="text-sm font-medium text-text-secondary mb-3">Log Today&apos;s Weight</h2>
           <LogWeightForm latestKg={summaries && summaries.length > 0 ? summaries[summaries.length - 1].weight_kg : undefined} />
         </div>
-        <BodyClient summaries={summaries ?? []} />
+        <BodyClient summaries={summaries ?? []} heightCm={profile?.height_cm ?? null} />
       </main>
       <BottomNav />
     </div>

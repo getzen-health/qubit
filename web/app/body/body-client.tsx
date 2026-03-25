@@ -3,6 +3,8 @@
 import {
   LineChart,
   Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -26,13 +28,14 @@ function computeLeanMass(weightKg: number, bodyFatPercent: number) {
 
 interface BodyClientProps {
   summaries: DaySummary[]
+  heightCm?: number | null
 }
 
 function fmtDate(dateStr: string) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-export function BodyClient({ summaries }: BodyClientProps) {
+export function BodyClient({ summaries, heightCm }: BodyClientProps) {
   if (summaries.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -53,6 +56,23 @@ export function BodyClient({ summaries }: BodyClientProps) {
   const avgWeight = weights.reduce((a, b) => a + b, 0) / weights.length
   const change = latest - earliest
   const changeSign = change >= 0 ? '+' : ''
+
+  // 30-day delta helpers
+  const thirtyDaysAgo = summaries.length > 30 ? summaries[summaries.length - 31] : summaries[0]
+  const weight30Delta = +(latest - thirtyDaysAgo.weight_kg).toFixed(1)
+  const weight30Sign = weight30Delta >= 0 ? '+' : ''
+
+  // BMI data (requires height)
+  const heightM = heightCm ? heightCm / 100 : null
+  const bmiData = heightM
+    ? summaries.map((s) => ({
+        date: fmtDate(s.date),
+        bmi: +(s.weight_kg / (heightM * heightM)).toFixed(1),
+      }))
+    : []
+  const latestBmi = bmiData.length > 0 ? bmiData[bmiData.length - 1].bmi : null
+  const earliestBmi30 = bmiData.length > 30 ? bmiData[bmiData.length - 31].bmi : bmiData[0]?.bmi ?? null
+  const bmi30Delta = latestBmi != null && earliestBmi30 != null ? +(latestBmi - earliestBmi30).toFixed(1) : null
 
   const chartData = summaries.map((s, i) => {
     const slice = summaries.slice(Math.max(0, i - 29), i + 1)
@@ -77,7 +97,7 @@ export function BodyClient({ summaries }: BodyClientProps) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { label: 'Current', value: `${latest.toFixed(1)} kg`, color: 'text-text-primary' },
-          { label: 'Change', value: `${changeSign}${change.toFixed(1)} kg`, color: change <= 0 ? 'text-green-400' : 'text-red-400' },
+          { label: '30-day change', value: `${weight30Sign}${weight30Delta} kg`, color: weight30Delta <= 0 ? 'text-green-400' : 'text-red-400' },
           { label: 'Average', value: `${avgWeight.toFixed(1)} kg`, color: 'text-blue-400' },
           { label: 'Range', value: `${minWeight.toFixed(1)}–${maxWeight.toFixed(1)}`, color: 'text-text-secondary' },
         ].map(({ label, value, color }) => (
@@ -145,26 +165,92 @@ export function BodyClient({ summaries }: BodyClientProps) {
         )}
       </div>
 
+      {/* BMI chart (if height available) */}
+      {bmiData.length > 0 && (() => {
+        const bmiChartData = bmiData.map((d, i) => {
+          const slice = bmiData.slice(Math.max(0, i - 29), i + 1)
+          const avg = slice.reduce((a, b) => a + b.bmi, 0) / slice.length
+          return { ...d, avg: +avg.toFixed(1) }
+        })
+        const latestBmi = bmiChartData[bmiChartData.length - 1].bmi
+        const avgBmi = bmiChartData.reduce((a, b) => a + b.bmi, 0) / bmiChartData.length
+        return (
+          <div className="bg-surface rounded-xl border border-border p-4">
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-sm font-medium text-text-secondary">BMI</h2>
+              <div className="flex items-center gap-2">
+                {bmi30Delta != null && (
+                  <span className={`text-xs font-medium ${bmi30Delta <= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {bmi30Delta >= 0 ? '+' : ''}{bmi30Delta} (30d)
+                  </span>
+                )}
+                {latestBmi && <span className="text-sm font-semibold text-text-primary">{latestBmi}</span>}
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={140}>
+              <LineChart data={bmiChartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}`, 'BMI']} />
+                <ReferenceLine y={avgBmi} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 3" />
+                <Line type="monotone" dataKey="bmi" stroke="#6366f1" strokeWidth={1.5} dot={{ r: 2, fill: '#6366f1' }} activeDot={{ r: 4 }} />
+                {bmiChartData.length > 14 && (
+                  <Line type="monotone" dataKey="avg" stroke="#f97316" strokeWidth={2} dot={false} />
+                )}
+              </LineChart>
+            </ResponsiveContainer>
+            {bmiChartData.length > 14 && (
+              <div className="flex gap-4 mt-2 text-xs text-text-secondary">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-0.5 bg-indigo-400 inline-block" /> Daily
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-0.5 bg-orange-400 inline-block" /> 30d avg
+                </span>
+              </div>
+            )}
+          </div>
+        )
+      })()}
+
       {/* Body fat chart (if data available) */}
       {summaries.some((s) => (s.body_fat_percent ?? 0) > 0) && (() => {
         const bfData = summaries
           .filter((s) => (s.body_fat_percent ?? 0) > 0)
           .map((s) => ({ date: fmtDate(s.date), bf: +((s.body_fat_percent ?? 0).toFixed(1)) }))
         const latestBf = bfData[bfData.length - 1]?.bf
+        const bf30Delta = bfData.length > 30
+          ? +(latestBf - bfData[bfData.length - 31].bf).toFixed(1)
+          : bfData.length > 1 ? +(latestBf - bfData[0].bf).toFixed(1) : null
+        const bf30Sign = bf30Delta != null && bf30Delta >= 0 ? '+' : ''
         return (
           <div className="bg-surface rounded-xl border border-border p-4">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-medium text-text-secondary">Body Fat %</h2>
-              {latestBf && <span className="text-sm font-semibold text-text-primary">{latestBf}%</span>}
+              <div className="flex items-center gap-2">
+                {bf30Delta != null && (
+                  <span className={`text-xs font-medium ${bf30Delta <= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {bf30Sign}{bf30Delta}% (30d)
+                  </span>
+                )}
+                {latestBf && <span className="text-sm font-semibold text-text-primary">{latestBf}%</span>}
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={140}>
-              <LineChart data={bfData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+              <AreaChart data={bfData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="bfGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#a78bfa" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                 <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}%`, 'Body Fat']} />
-                <Line type="monotone" dataKey="bf" stroke="#a78bfa" strokeWidth={1.5} dot={{ r: 2, fill: '#a78bfa' }} activeDot={{ r: 4 }} />
-              </LineChart>
+                <Area type="monotone" dataKey="bf" stroke="#a78bfa" strokeWidth={1.5} fill="url(#bfGradient)" dot={{ r: 2, fill: '#a78bfa' }} activeDot={{ r: 4 }} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         )
