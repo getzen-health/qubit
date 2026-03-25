@@ -7,6 +7,7 @@ import {
   secureErrorResponse,
   foodImageSchema,
 } from '@/lib/security'
+import { calculateProductScore } from '@/lib/product-scoring'
 
 const anthropic = new Anthropic()
 
@@ -95,18 +96,45 @@ Return ONLY the JSON, no other text.`,
     if (jsonText.endsWith('```')) jsonText = jsonText.slice(0, -3)
     jsonText = jsonText.trim()
 
-    const result = JSON.parse(jsonText)
+    let result: { foods?: unknown[] }
+    try {
+      result = JSON.parse(jsonText)
+    } catch (parseErr) {
+      console.error('[recognize] JSON parse error:', parseErr, 'Raw text:', jsonText.slice(0, 200))
+      return secureErrorResponse('AI returned invalid response format', 500)
+    }
 
-    const foods = (result.foods || []).map((food: Record<string, unknown>) => ({
-      name: String(food.name || 'Unknown Food'),
-      calories: Math.round(Number(food.calories) || 0),
-      protein: Math.round(Number(food.protein) || 0),
-      carbs: Math.round(Number(food.carbs) || 0),
-      fat: Math.round(Number(food.fat) || 0),
-      fiber: food.fiber ? Math.round(Number(food.fiber)) : undefined,
-      servingSize: String(food.servingSize || '1 serving'),
-      confidence: Number(food.confidence) || 0.5,
-    }))
+    if (!result.foods || !Array.isArray(result.foods)) {
+      return secureErrorResponse('AI response missing foods array', 500)
+    }
+
+    const foods = result.foods.map((food: Record<string, unknown>) => {
+      // Apply Yuka-style health score (no additive/nutriscore data from image, so baseline)
+      const healthScore = calculateProductScore({
+        nutriscoreGrade: undefined,
+        additivesTags: [],
+        isOrganic: false,
+        allergensTags: [],
+      })
+      return {
+        name: String(food.name || 'Unknown Food'),
+        calories: Math.round(Number(food.calories) || 0),
+        protein: Math.round(Number(food.protein) || 0),
+        carbs: Math.round(Number(food.carbs) || 0),
+        fat: Math.round(Number(food.fat) || 0),
+        fiber: food.fiber ? Math.round(Number(food.fiber)) : undefined,
+        servingSize: String(food.servingSize || '1 serving'),
+        confidence: Number(food.confidence) || 0.5,
+        healthScore: {
+          score: healthScore.score,
+          grade: healthScore.grade,
+          color: healthScore.color,
+          nutriScore: null,
+          novaGroup: null,
+          note: 'Score estimated from photo — scan barcode for full analysis',
+        },
+      }
+    })
 
     return secureJsonResponse({ foods })
   }
