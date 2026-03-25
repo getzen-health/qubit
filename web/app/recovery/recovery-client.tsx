@@ -77,7 +77,7 @@ export function RecoveryClient({ summaries }: RecoveryClientProps) {
   const router = useRouter()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleChartClick(data: any) {
+  function handleChartClick(data: { activePayload?: Array<{ payload: { date: string; score: number } }> }) {
     const date = data?.activePayload?.[0]?.payload?.rawDate
     if (date) router.push(`/day/${date}`)
   }

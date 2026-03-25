@@ -283,7 +283,7 @@ export function CardioHealthClient({ data }: Props) {
                 dataKey="hrv"
                 stroke="#818cf8"
                 strokeWidth={2}
-                dot={(props: any) => {
+                dot={(props: { cx?: number; cy?: number; payload?: { isAnomaly?: boolean } }) => {
                   const isAbove = data.hrv28Day !== null && props.payload.hrv >= data.hrv28Day
                   return (
                     <circle

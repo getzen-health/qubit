@@ -95,7 +95,7 @@ const tooltipStyle = {
   color: '#94a3b8',
 }
 
-function SweatRateTooltip({ active, payload, label }: any) {
+function SweatRateTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string; color: string }>; label?: string }) {
   if (!active || !payload?.length) return null
   const val: number = payload[0].value
   return (

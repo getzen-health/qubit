@@ -403,7 +403,7 @@ export default function StateOfMindPage() {
               <Scatter
                 name="valence"
                 data={scatterData}
-                shape={(props: any) => {
+                shape={(props: { cx?: number; cy?: number; payload?: Record<string, number> }) => {
                   const { cx, cy, payload } = props
                   const color = valenceColor(payload.valence)
                   return (
@@ -482,7 +482,7 @@ export default function StateOfMindPage() {
               />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
-                formatter={(v: number, _: string, props: any) => [
+                formatter={(v: number, _: string, props: { payload?: { note?: string } }) => [
                   `${v} entries`,
                   props.payload.positive ? 'Positive' : 'Negative',
                 ]}

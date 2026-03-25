@@ -12,6 +12,7 @@ import {
   CartesianGrid,
   ReferenceDot,
   ReferenceLine,
+  DotProps,
 } from 'recharts'
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -162,8 +163,7 @@ function severityLabel(daysOff: number): string {
 
 // ─── Custom dot for the "you are here" position ───────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CurrentPositionDot(props: any) {
+function CurrentPositionDot(props: DotProps) {
   const { cx, cy } = props
   if (cx == null || cy == null) return null
   return (
