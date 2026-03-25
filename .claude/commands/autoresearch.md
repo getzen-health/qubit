@@ -72,6 +72,14 @@ Then commit the TSV update: `git add scripts/autoresearch-results.tsv && git com
 - If score = 0, print "🎯 Target reached!" and stop
 - If 10 consecutive no-improvement iterations, print current score and surface to human
 
+## Push After Each Batch
+
+After every 5 kept commits (not reverts), push to remote:
+```bash
+git push origin main
+```
+If push fails (upstream diverged), run `git pull --rebase origin main` then push.
+
 ## Rules (never break these)
 
 1. **One change per iteration** — atomic and debuggable
