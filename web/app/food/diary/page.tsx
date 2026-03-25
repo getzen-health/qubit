@@ -92,7 +92,7 @@ export default async function FoodDiaryPage({
   const dateStr = parseDateParam(params.date)
   const nextDateStr = shiftDate(dateStr, 1)
 
-  const [{ data: mealsRaw }, { data: nutritionRaw }] = await Promise.all([
+  const [{ data: mealsRaw }, { data: nutritionRaw }, { data: userSettingsRaw }] = await Promise.all([
     supabase
       .from('meals')
       .select(
@@ -109,6 +109,12 @@ export default async function FoodDiaryPage({
       .eq('user_id', user.id)
       .eq('date', dateStr)
       .maybeSingle(),
+
+    supabase
+      .from('user_nutrition_settings')
+      .select('calorie_target, protein_target, carbs_target, fat_target')
+      .eq('user_id', user.id)
+      .maybeSingle(),
   ])
 
   const meals = (mealsRaw ?? []) as Meal[]
@@ -120,11 +126,18 @@ export default async function FoodDiaryPage({
     fat_target: number | null
   } | null
 
+  const userSettings = userSettingsRaw as {
+    calorie_target: number | null
+    protein_target: number | null
+    carbs_target: number | null
+    fat_target: number | null
+  } | null
+
   const targets: NutritionTargets = {
-    calories_target: dn?.calories_target ?? MACRO_DEFAULTS.calories_target,
-    protein_target: dn?.protein_target ?? MACRO_DEFAULTS.protein_target,
-    carbs_target: dn?.carbs_target ?? MACRO_DEFAULTS.carbs_target,
-    fat_target: dn?.fat_target ?? MACRO_DEFAULTS.fat_target,
+    calories_target: dn?.calories_target ?? userSettings?.calorie_target ?? MACRO_DEFAULTS.calories_target,
+    protein_target: dn?.protein_target ?? userSettings?.protein_target ?? MACRO_DEFAULTS.protein_target,
+    carbs_target: dn?.carbs_target ?? userSettings?.carbs_target ?? MACRO_DEFAULTS.carbs_target,
+    fat_target: dn?.fat_target ?? userSettings?.fat_target ?? MACRO_DEFAULTS.fat_target,
   }
 
   const displayDate = formatDisplayDate(dateStr)

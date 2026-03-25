@@ -96,13 +96,22 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
   const [form, setForm] = useState<ManualFormState>(EMPTY_FORM)
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [mealFilter, setMealFilter] = useState<string>('All')
 
   const allItems = meals.flatMap((m) => m.meal_items ?? [])
+  
+  const filtered = allItems.filter(
+    (item) =>
+      (mealFilter === 'All' || item.name.toLowerCase().includes(mealFilter.toLowerCase())) &&
+      item.name.toLowerCase().includes(search.toLowerCase())
+  )
+
   const consumed = {
-    calories: allItems.reduce((s, i) => s + i.calories * i.servings, 0),
-    protein: allItems.reduce((s, i) => s + i.protein * i.servings, 0),
-    carbs: allItems.reduce((s, i) => s + i.carbs * i.servings, 0),
-    fat: allItems.reduce((s, i) => s + i.fat * i.servings, 0),
+    calories: filtered.reduce((s, i) => s + i.calories * i.servings, 0),
+    protein: filtered.reduce((s, i) => s + i.protein * i.servings, 0),
+    carbs: filtered.reduce((s, i) => s + i.carbs * i.servings, 0),
+    fat: filtered.reduce((s, i) => s + i.fat * i.servings, 0),
   }
 
   const grouped: Partial<Record<MealType, MealItem[]>> = {}
@@ -111,7 +120,11 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
       ? (meal.meal_type as MealType)
       : 'other'
     if (!grouped[type]) grouped[type] = []
-    grouped[type]!.push(...(meal.meal_items ?? []))
+    const mealItems = (meal.meal_items ?? []).filter((item) =>
+      (mealFilter === 'All' || item.name.toLowerCase().includes(mealFilter.toLowerCase())) &&
+      item.name.toLowerCase().includes(search.toLowerCase())
+    )
+    grouped[type]!.push(...mealItems)
   }
 
   const hasAnyMeals = allItems.length > 0
@@ -235,6 +248,33 @@ export function DiaryMealsClient({ initialMeals, targets, dateStr }: Props) {
 
   return (
     <>
+      {/* Search, date picker, and meal filter */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <input
+          type="search"
+          placeholder="Search foods…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 bg-surface rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-tertiary border border-border focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+        <div className="flex gap-1 flex-wrap sm:flex-nowrap">
+          {['All', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'].map((m) => (
+            <button
+              key={m}
+              onClick={() => setMealFilter(m)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                mealFilter === m
+                  ? 'bg-accent text-accent-foreground'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-secondary'
+              }`}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Nutrition summary cards */}
       <div className="grid grid-cols-4 gap-2">
         <MacroCard
           label="Calories"
