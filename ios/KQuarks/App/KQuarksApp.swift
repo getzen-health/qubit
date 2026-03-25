@@ -20,6 +20,7 @@ struct KQuarksApp: App {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.full", using: nil) { task in
             Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
         }
+        AIBriefingService.shared.registerBackgroundTask()
         #endif
     }
 

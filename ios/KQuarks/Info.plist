@@ -22,6 +22,8 @@
 	<array>
 		<string>com.kquarks.sync.refresh</string>
 		<string>com.kquarks.sync.full</string>
+		<string>com.kquarks.morning-briefing</string>
+		<string>com.kquarks.health-sync</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
