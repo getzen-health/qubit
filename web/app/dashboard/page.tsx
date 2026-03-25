@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { DashboardStream } from './dashboard-stream'
 import { ReadinessBanner } from '@/components/ReadinessBanner'
+import Link from 'next/link'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -220,8 +221,21 @@ export default async function DashboardPage() {
     return Math.min(100, Math.round(deficit * 250))
   })()
 
+  const hasNoData = (summaries ?? []).length === 0
+
   return (
-    <DashboardStream
+    <>
+      {hasNoData && (
+        <div className="fixed bottom-20 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
+          <Link
+            href="/onboarding"
+            className="pointer-events-auto inline-flex items-center gap-2 px-5 py-3 bg-accent text-accent-foreground rounded-2xl shadow-lg font-medium text-sm hover:opacity-90 transition-opacity"
+          >
+            ⚡ Set up your health profile →
+          </Link>
+        </div>
+      )}
+      <DashboardStream
       user={user}
       profile={profile}
       summaries={summaries ?? []}
@@ -245,6 +259,7 @@ export default async function DashboardPage() {
       latestVo2max={latestVo2maxRow?.vo2max ?? null}
       readinessBanner={<ReadinessBanner userId={user.id} />}
     />
+    </>
   )
 }
 
