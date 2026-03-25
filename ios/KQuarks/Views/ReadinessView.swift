@@ -668,6 +668,11 @@ struct ReadinessView: View {
 
         // Fetch check-in history (best-effort; not authenticated = skip)
         checkins = (try? await supabase.getCheckinHistory(days: 7)) ?? []
+
+        // Sync readiness score to Supabase so the web dashboard can display it
+        if let computed = score {
+            await supabase.syncReadinessScore(computed.overall, date: today)
+        }
     }
 }
 
