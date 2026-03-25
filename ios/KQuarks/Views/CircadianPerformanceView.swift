@@ -119,7 +119,8 @@ struct CircadianPerformanceView: View {
     }
 
     private var radarCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let effmax = windows.filter { $0.sessions > 0 }.map(\.avgEfficiency).max().map { Swift.max($0, 10) } ?? 100
+        return VStack(alignment: .leading, spacing: 10) {
             Label("Performance by Time of Day", systemImage: "chart.bar.fill")
                 .font(.subheadline).bold()
             Text("Normalized efficiency score (kcal·min⁻¹ / avg HR × 100). Higher = more aerobic output per heartbeat.")
@@ -140,7 +141,7 @@ struct CircadianPerformanceView: View {
                     }
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0...effmax)
             .chartXAxis {
                 AxisMarks { val in
                     AxisValueLabel(centered: true)
