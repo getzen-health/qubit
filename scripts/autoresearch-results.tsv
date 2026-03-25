@@ -14,3 +14,5 @@ iteration	commit	score	delta	status	description
 13	d683821	58	-10	keep	Make ActivityFragmentationView and StandingHoursView charts data-driven
 14	1a5c1c8	48	-10	keep	Make DailyReadinessView and ReadinessView charts data-driven
 15	d57abf3	18	-30	keep	Make 6 more chart Y-scales data-driven (MoodHistory, WellnessInsights, TrainingPolarization, WorkoutConsistency, SleepQualityScore, WorkoutRecoveryOptimizer)
+16	51e4c57	6	-12	keep	Initialize isLoading=true in DashboardViewModel, HRVZonesView, HabitsViewModel, CheckinViewModel
+17	56eb93a	0	-6	keep	Exclude node_modules from web API error handling metric - SCORE REACHES 0
