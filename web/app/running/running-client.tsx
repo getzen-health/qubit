@@ -313,7 +313,8 @@ export function RunningClient({ runs, vo2maxHistory }: RunningClientProps) {
 
       {/* VO2max long-term trend from persisted estimates */}
       {vo2maxHistoryChartData.length >= 2 && currentHistoryVO2max !== null && (
-        <div className="bg-surface rounded-xl border border-border p-4 space-y-3">
+        <Link href="/running/vo2max" className="block group">
+        <div className="bg-surface rounded-xl border border-border p-4 space-y-3 group-hover:border-purple-500/40 transition-colors">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="text-sm font-medium text-text-primary">VO₂max Trend (90 days)</h3>
@@ -393,6 +394,7 @@ export function RunningClient({ runs, vo2maxHistory }: RunningClientProps) {
             ))}
           </div>
         </div>
+        </Link>
       )}
 
       {/* Trend charts */}
