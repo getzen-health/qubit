@@ -24,10 +24,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'KQuarks' }],
   creator: 'KQuarks',
   metadataBase: new URL('https://kquarks.com'),
-  manifest: '/manifest.webmanifest',
+  manifest: '/manifest.json',
+  themeColor: '#000000',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
     title: 'KQuarks',
   },
   openGraph: {
