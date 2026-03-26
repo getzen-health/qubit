@@ -2,7 +2,7 @@ interface QueuedRequest {
   id: string
   method: string
   url: string
-  body?: any
+  body?: Record<string, unknown> | string | undefined
   timestamp: number
   retryCount: number
 }

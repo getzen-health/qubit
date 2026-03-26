@@ -21,7 +21,7 @@ interface CacheEntry<T> {
 }
 
 export class ServerCache {
-  private cache = new Map<string, CacheEntry<any>>()
+  private cache = new Map<string, CacheEntry<unknown>>()
   private readonly maxSize: number = 1000
   private cleanupInterval: NodeJS.Timeout | null = null
 

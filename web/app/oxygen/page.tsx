@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { OxygenClient } from './oxygen-client'
 import { BottomNav } from '@/components/bottom-nav'
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 
 export const metadata = { title: 'Blood Oxygen' }
 
