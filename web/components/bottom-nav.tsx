@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/mental-health', label: 'Wellbeing', icon: '🧠' },
   { href: '/share', label: 'Share', icon: '📤' },
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
+  { href: '/recovery', icon: Activity, label: 'Recovery' },
   { href: '/coach/chat', icon: Bot, label: 'Coach' },
   { href: '/coach', icon: Sparkles, label: 'AI Coach' },
   { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
@@ -58,6 +59,7 @@ const moreItems = [
   { href: '/upgrade', icon: Sparkles, label: 'Upgrade' },
   { href: '/water', icon: Droplets, label: 'Water' },
   { href: '/measurements', icon: BookOpen, label: 'Measurements' },
+  { href: '/body-measurements', icon: Ruler, label: 'Body Size' },
   { href: '/supplements', icon: Pill, label: 'Supplements' },
   { href: '/medications', icon: Pill, label: 'Medications' },
   { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scan' },
