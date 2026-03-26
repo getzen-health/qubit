@@ -303,6 +303,25 @@ Deno.serve(async (req: Request) => {
       )
     }
 
+    // Batch-fetch yesterday's health summary for all users (avoid N+1 queries)
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toISOString().split("T")[0]
+
+    const userIds = usersWithDigest.map(u => u.user_id)
+    const { data: allSummaries } = await supabaseAdmin
+      .from("daily_summaries")
+      .select("*")
+      .in("user_id", userIds)
+      .eq("date", yesterdayStr)
+
+    // Index summaries by user_id
+    const userSummaryCache = new Map<string, DailySummary | null>()
+    for (const userId of userIds) {
+      const summary = (allSummaries ?? []).find((s: any) => s.user_id === userId) ?? null
+      userSummaryCache.set(userId, summary)
+    }
+
     let emailsSent = 0
     let errors = 0
 
@@ -325,7 +344,8 @@ Deno.serve(async (req: Request) => {
           user_id,
           userEmail!,
           userName,
-          anthropicKey
+          anthropicKey,
+          userSummaryCache
         )
 
         if (sent) {
