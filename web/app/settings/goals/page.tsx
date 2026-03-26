@@ -133,7 +133,6 @@ export default function GoalsSettingsPage() {
               Steps target shown on your dashboard and used for streak tracking.
             </p>
           </div>
-
           <div className="flex gap-3 items-center">
             <input
               type="number"
@@ -147,230 +146,95 @@ export default function GoalsSettingsPage() {
             />
             <span className="text-text-secondary text-sm">steps / day</span>
           </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {[5000, 8000, 10000, 12000, 15000].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setStepInput(preset.toString())}
-                aria-pressed={stepGoal === preset}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  stepGoal === preset
-                    ? 'bg-accent text-white border-accent'
-                    : 'border-border text-text-secondary hover:bg-surface-secondary'
-                }`}
-              >
-                {preset.toLocaleString()}
-              </button>
-            ))}
-          </div>
         </section>
-
-        {/* Calorie Goal */}
-        <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
-          <div>
-            <h2 className="font-semibold text-text-primary">Daily Active Calorie Goal</h2>
-            <p className="text-sm text-text-secondary mt-0.5">
-              Active calorie burn target shown on your dashboard.
-            </p>
-          </div>
-
-          <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              min={100}
-              max={5000}
-              step={50}
-              value={calInput}
-              onChange={(e) => setCalInput(e.target.value)}
-              aria-label="Daily active calorie goal (100-5000)"
-              className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
-            />
-            <span className="text-text-secondary text-sm">cal / day</span>
-          </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {[300, 400, 500, 600, 800].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setCalInput(preset.toString())}
-                aria-pressed={calGoal === preset}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  calGoal === preset
-                    ? 'bg-accent text-white border-accent'
-                    : 'border-border text-text-secondary hover:bg-surface-secondary'
-                }`}
-              >
-                {preset}
-              </button>
-            ))}
-          </div>
-        </section>
-
         {/* Sleep Goal */}
         <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
           <div>
-            <h2 className="font-semibold text-text-primary">Sleep Duration Goal</h2>
+            <h2 className="font-semibold text-text-primary">Sleep Hours Goal</h2>
             <p className="text-sm text-text-secondary mt-0.5">
-              Target hours of sleep per night. Used by AI insights to assess your sleep patterns.
+              Target hours of sleep per night.
             </p>
           </div>
-
           <div className="flex gap-3 items-center">
             <input
               type="number"
               min={4}
               max={12}
-              step={0.5}
+              step={0.1}
               value={sleepInput}
               onChange={(e) => setSleepInput(e.target.value)}
-              aria-label="Sleep duration goal (4-12 hours)"
+              aria-label="Sleep hours goal (4-12)"
               className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
             <span className="text-text-secondary text-sm">hours / night</span>
           </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {[6, 7, 7.5, 8, 9].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setSleepInput(preset.toString())}
-                aria-pressed={sleepGoal === preset * 60}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  sleepGoal === preset * 60
-                    ? 'bg-accent text-white border-accent'
-                    : 'border-border text-text-secondary hover:bg-surface-secondary'
-                }`}
-              >
-                {preset}h
-              </button>
-            ))}
-          </div>
         </section>
-
         {/* Water Goal */}
         <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
           <div>
-            <h2 className="font-semibold text-text-primary">Daily Water Goal</h2>
+            <h2 className="font-semibold text-text-primary">Daily Water Goal (L)</h2>
             <p className="text-sm text-text-secondary mt-0.5">
-              Daily hydration target shown on your hydration tracker.
+              Daily hydration target in liters.
             </p>
           </div>
-
           <div className="flex gap-3 items-center">
             <input
               type="number"
-              min={500}
-              max={6000}
-              step={250}
+              min={0.5}
+              max={10}
+              step={0.1}
               value={waterInput}
               onChange={(e) => setWaterInput(e.target.value)}
-              aria-label="Daily water goal (500-6000 ml)"
-              className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
+              aria-label="Daily water goal (liters)"
+              className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
-            <span className="text-text-secondary text-sm">ml / day</span>
-          </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {[1500, 2000, 2500, 3000, 3500].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setWaterInput(preset.toString())}
-                aria-pressed={waterGoal === preset}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  waterGoal === preset
-                    ? 'bg-accent text-white border-accent'
-                    : 'border-border text-text-secondary hover:bg-surface-secondary'
-                }`}
-              >
-                {preset >= 1000 ? `${preset / 1000}L` : `${preset}ml`}
-              </button>
-            ))}
+            <span className="text-text-secondary text-sm">liters / day</span>
           </div>
         </section>
-
-        {/* HRV Target */}
+        {/* Target Weight */}
         <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
           <div>
-            <h2 className="font-semibold text-text-primary">HRV Target</h2>
+            <h2 className="font-semibold text-text-primary">Target Weight (kg)</h2>
             <p className="text-sm text-text-secondary mt-0.5">
-              Target heart rate variability in milliseconds. Higher values indicate better recovery.
+              Optional. Set a target body weight.
             </p>
           </div>
-
           <div className="flex gap-3 items-center">
             <input
               type="number"
               min={20}
-              max={100}
-              step={5}
-              value={hrvInput}
-              onChange={(e) => setHrvInput(e.target.value)}
-              aria-label="HRV target (20-100 ms)"
+              max={500}
+              step={0.1}
+              value={weightGoal}
+              onChange={(e) => setWeightGoal(e.target.value)}
+              aria-label="Target weight (kg)"
               className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
             />
-            <span className="text-text-secondary text-sm">ms</span>
-          </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {[30, 40, 50, 60, 80].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setHrvInput(preset.toString())}
-                aria-pressed={hrvTarget === preset}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  hrvTarget === preset
-                    ? 'bg-accent text-white border-accent'
-                    : 'border-border text-text-secondary hover:bg-surface-secondary'
-                }`}
-              >
-                {preset}ms
-              </button>
-            ))}
+            <span className="text-text-secondary text-sm">kg</span>
           </div>
         </section>
-
-        {/* Nutrition Goals */}
+        {/* Calorie Budget */}
         <section className="bg-surface rounded-xl border border-border p-4 space-y-4">
           <div>
-            <h2 className="font-semibold text-text-primary">Daily Nutrition Goals</h2>
+            <h2 className="font-semibold text-text-primary">Daily Calorie Budget</h2>
             <p className="text-sm text-text-secondary mt-0.5">
-              Calorie intake and macro targets for your nutrition tracker.
+              Daily calorie intake target.
             </p>
           </div>
-
-          <div className="space-y-3">
-            {[
-              { label: 'Calorie Intake', unit: 'kcal / day', value: calorieIntakeInput, set: setCalorieIntakeInput, min: 500, max: 8000, step: 100, ariaLabel: 'Daily calorie intake goal (500-8000 kcal)' },
-              { label: 'Protein', unit: 'g / day', value: proteinInput, set: setProteinInput, min: 0, max: 500, step: 5, ariaLabel: 'Daily protein goal (0-500g)' },
-              { label: 'Carbohydrates', unit: 'g / day', value: carbsInput, set: setCarbsInput, min: 0, max: 1000, step: 10, ariaLabel: 'Daily carbohydrate goal (0-1000g)' },
-              { label: 'Fat', unit: 'g / day', value: fatInput, set: setFatInput, min: 0, max: 500, step: 5, ariaLabel: 'Daily fat goal (0-500g)' },
-            ].map(({ label, unit, value, set, min, max, step, ariaLabel }) => (
-              <div key={label} className="flex gap-3 items-center">
-                <div className="flex-1">
-                  <p className="text-sm text-text-primary">{label}</p>
-                </div>
-                <input
-                  type="number"
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={value}
-                  onChange={(e) => set(e.target.value)}
-                  aria-label={ariaLabel}
-                  className="w-24 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-sm font-mono focus:outline-none focus:border-accent"
-                />
-                <span className="text-text-secondary text-xs w-16 shrink-0">{unit}</span>
-              </div>
-            ))}
+          <div className="flex gap-3 items-center">
+            <input
+              type="number"
+              min={500}
+              max={8000}
+              step={10}
+              value={calorieInput}
+              onChange={(e) => setCalorieInput(e.target.value)}
+              aria-label="Daily calorie budget (kcal)"
+              className="w-32 px-3 py-2 bg-background border border-border rounded-lg text-text-primary text-center text-lg font-mono focus:outline-none focus:border-accent"
+            />
+            <span className="text-text-secondary text-sm">kcal / day</span>
           </div>
         </section>
-
         <button
           type="button"
           onClick={handleSave}
@@ -378,7 +242,6 @@ export default function GoalsSettingsPage() {
         >
           Save Goals
         </button>
-
         <p className="text-xs text-text-secondary text-center">
           Goals sync across devices and inform your AI-powered health insights.
         </p>
