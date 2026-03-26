@@ -54,7 +54,7 @@ class LiveActivityManager: ObservableObject {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let attributes = WorkoutLiveActivityAttributes(workoutType: workoutType, startTime: startTime)
         let state = WorkoutLiveActivityAttributes.ContentState(
-            heartRate: 0, calories: 0, durationSeconds: 0,
+            heartRate: 0, calories: 0, durationSeconds: 0, distanceMeters: 0,
             zone: "Zone 1", zoneColor: "#4CAF50"
         )
         do {
@@ -67,10 +67,10 @@ class LiveActivityManager: ObservableObject {
         }
     }
     
-    func updateWorkoutActivity(heartRate: Int, calories: Int, durationSeconds: Int, zone: String, zoneColor: String) {
+    func updateWorkoutActivity(heartRate: Int, calories: Int, durationSeconds: Int, distanceMeters: Int, zone: String, zoneColor: String) {
         Task {
             let state = WorkoutLiveActivityAttributes.ContentState(
-                heartRate: heartRate, calories: calories, durationSeconds: durationSeconds,
+                heartRate: heartRate, calories: calories, durationSeconds: durationSeconds, distanceMeters: distanceMeters,
                 zone: zone, zoneColor: zoneColor
             )
             await workoutActivity?.update(.init(state: state, staleDate: nil))
