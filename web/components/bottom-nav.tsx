@@ -15,6 +15,7 @@ const navItems = [
   { href: '/recovery', icon: Activity, label: 'Recovery' },
   { href: '/coach/chat', icon: Bot, label: 'Coach' },
   { href: '/coach', icon: Sparkles, label: 'AI Coach' },
+  { href: '/financial', icon: TrendingUp, label: 'Financial' },
   { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
   { href: '/training', icon: CalendarRange, label: 'Training' },
   { href: '/water', icon: Droplets, label: 'Water' },
