@@ -130,3 +130,111 @@ export function isValidEncryptionKey(key: string): boolean {
   if (key.length !== 64) return false // 32 bytes = 64 hex chars
   return /^[0-9a-f]{64}$/i.test(key)
 }
+
+/**
+ * Health Data Encryption
+ * Encrypts/decrypts sensitive health notes using Supabase pgp_sym_encrypt
+ */
+
+export interface HealthAnnotationInput {
+  date: string
+  category: string
+  note: string
+  user_id?: string
+}
+
+export interface HealthAnnotationOutput {
+  id: string
+  date: string
+  category: string
+  note: string
+  encrypted_note?: Uint8Array
+  is_encrypted: boolean
+  user_id: string
+  created_at: string
+}
+
+/**
+ * Encrypt a health annotation note using the Supabase encryption key
+ * Called before inserting into the database
+ */
+export async function encryptHealthAnnotation(
+  supabase: any,
+  annotation: HealthAnnotationInput,
+  encryptionKey: string
+): Promise<any> {
+  if (!annotation.note || !encryptionKey) {
+    return annotation
+  }
+
+  // Use Supabase RPC to encrypt via database function
+  const { data, error } = await supabase.rpc('encrypt_health_note', {
+    note_text: annotation.note,
+    encryption_key: encryptionKey,
+  })
+
+  if (error) {
+    console.error('Health note encryption failed:', error)
+    // Fall back to plaintext if encryption fails
+    return annotation
+  }
+
+  return {
+    ...annotation,
+    encrypted_note: data,
+    is_encrypted: true,
+    note: '', // Clear plaintext note
+  }
+}
+
+/**
+ * Decrypt health annotation notes after fetching from database
+ * Called when retrieving annotations to display
+ */
+export async function decryptHealthAnnotation(
+  supabase: any,
+  annotation: HealthAnnotationOutput,
+  encryptionKey: string
+): Promise<HealthAnnotationOutput> {
+  if (!annotation.is_encrypted || !annotation.encrypted_note || !encryptionKey) {
+    return annotation
+  }
+
+  try {
+    // Use Supabase RPC to decrypt via database function
+    const { data, error } = await supabase.rpc('decrypt_health_note', {
+      encrypted_data: annotation.encrypted_note,
+      encryption_key: encryptionKey,
+    })
+
+    if (error) {
+      console.error('Health note decryption failed:', error)
+      return annotation
+    }
+
+    return {
+      ...annotation,
+      note: data || '',
+    }
+  } catch (err) {
+    console.error('Decryption error:', err)
+    return annotation
+  }
+}
+
+/**
+ * Batch decrypt health annotations
+ */
+export async function decryptHealthAnnotations(
+  supabase: any,
+  annotations: HealthAnnotationOutput[],
+  encryptionKey: string
+): Promise<HealthAnnotationOutput[]> {
+  if (!encryptionKey) {
+    return annotations
+  }
+
+  return Promise.all(
+    annotations.map((ann) => decryptHealthAnnotation(supabase, ann, encryptionKey))
+  )
+}

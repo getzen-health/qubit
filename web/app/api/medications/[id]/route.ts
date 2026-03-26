@@ -1,104 +1,141 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
-export async function PUT(
+const VALID_FREQUENCIES = [
+  'once_daily',
+  'twice_daily',
+  'three_times_daily',
+  'four_times_daily',
+  'as_needed',
+  'weekly',
+  'biweekly',
+  'monthly',
+] as const
+
+const VALID_TIMES_OF_DAY = ['morning', 'afternoon', 'evening', 'night'] as const
+
+const medicationUpdateSchema = z
+  .object({
+    name: z.string().min(1).max(200).optional(),
+    dosage: z.number().positive('Dosage must be greater than 0').optional(),
+    unit: z.string().min(1).max(20).optional(),
+    frequency: z.enum(VALID_FREQUENCIES).optional(),
+    time_of_day: z.array(z.enum(VALID_TIMES_OF_DAY)).min(1).optional(),
+    start_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'start_date must be YYYY-MM-DD')
+      .optional(),
+    end_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'end_date must be YYYY-MM-DD')
+      .nullable()
+      .optional(),
+    notes: z.string().max(1000).nullable().optional(),
+    active: z.boolean().optional(),
+  })
+  .strict()
+
+// GET /api/medications/[id] — get a specific medication
+export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+): Promise<NextResponse> {
+  const { id } = await params
+  return createSecureApiHandler(
+    {
+      rateLimit: 'healthData',
+      requireAuth: true,
+      auditAction: 'READ',
+      auditResource: 'medication',
+    },
+    async (_req, { user, supabase }) => {
+      const { data, error } = await supabase
+        .from('medications')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', user!.id)
+        .single()
 
-    const { id } = await params
-    const body = await request.json()
-    const { name, dosage, unit, frequency, time_of_day, start_date, end_date, notes } = body
+      if (error || !data) return secureErrorResponse('Medication not found', 404)
 
-    if (!name) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
-    if (!dosage || dosage <= 0) return NextResponse.json({ error: 'Dosage must be greater than 0' }, { status: 400 })
-
-    const { data, error } = await supabase
-      .from('medications')
-      .update({
-        name: name.trim(),
-        dosage: parseFloat(dosage),
-        unit: unit.trim(),
-        frequency,
-        time_of_day: time_of_day || [],
-        start_date,
-        end_date: end_date || null,
-        notes: notes?.trim() || null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .select()
-      .single()
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error('Error updating medication:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+      return secureJsonResponse({ medication: data })
+    }
+  )(request)
 }
 
+// PATCH /api/medications/[id] — partially update a medication
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+): Promise<NextResponse> {
+  const { id } = await params
+  return createSecureApiHandler(
+    {
+      rateLimit: 'healthData',
+      requireAuth: true,
+      auditAction: 'UPDATE',
+      auditResource: 'medication',
+      bodySchema: medicationUpdateSchema,
+    },
+    async (_req, { user, body, supabase }) => {
+      const updates = body as z.infer<typeof medicationUpdateSchema>
 
-    const { id } = await params
-    const body = await request.json()
-    const { active } = body
+      if (Object.keys(updates).length === 0) {
+        return secureErrorResponse('No fields provided for update', 400)
+      }
 
-    const { data, error } = await supabase
-      .from('medications')
-      .update({ active, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .select()
-      .single()
+      // Trim string fields before persisting
+      const payload: Record<string, unknown> = {}
+      for (const [key, value] of Object.entries(updates)) {
+        if (value !== undefined) {
+          payload[key] = typeof value === 'string' ? value.trim() : value
+        }
+      }
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error('Error toggling medication status:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+      const { data, error } = await supabase
+        .from('medications')
+        .update(payload)
+        .eq('id', id)
+        .eq('user_id', user!.id)
+        .select()
+        .single()
+
+      if (error) return secureErrorResponse('Failed to update medication', 500)
+      if (!data) return secureErrorResponse('Medication not found', 404)
+
+      return secureJsonResponse({ medication: data })
+    }
+  )(request)
 }
 
+// DELETE /api/medications/[id] — hard-delete a medication
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+): Promise<NextResponse> {
+  const { id } = await params
+  return createSecureApiHandler(
+    {
+      rateLimit: 'healthData',
+      requireAuth: true,
+      auditAction: 'DELETE',
+      auditResource: 'medication',
+    },
+    async (_req, { user, supabase }) => {
+      const { error } = await supabase
+        .from('medications')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user!.id)
 
-    const { id } = await params
+      if (error) return secureErrorResponse('Failed to delete medication', 500)
 
-    const { error } = await supabase
-      .from('medications')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Error deleting medication:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+      return secureJsonResponse({ success: true })
+    }
+  )(request)
 }
