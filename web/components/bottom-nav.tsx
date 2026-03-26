@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer, FlameKindling, Crosshair, Wine, Plane, Flower2, UtensilsCrossed, Scale, Telescope } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer, FlameKindling, Crosshair, Wine, Plane, Flower2, UtensilsCrossed, Scale } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -74,6 +74,7 @@ const navItems = [
 const moreItems = [
   { href: '/labs', icon: FlaskConical, label: 'Lab Results' },
   { href: '/longevity', icon: Dna, label: 'Longevity' },
+  { href: '/sleep-optimizer', icon: Moon, label: 'Sleep Optimizer' },
   { href: '/mindfulness', icon: Leaf, label: 'Mindfulness' },
   { href: '/import', icon: Upload, label: 'Import' },
   { href: '/export', icon: Download, label: 'Export' },
