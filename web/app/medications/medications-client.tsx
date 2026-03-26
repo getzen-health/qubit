@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Plus,
   Edit2,
@@ -13,8 +13,24 @@ import {
   Pill,
   X,
   AlertCircle,
+  ShieldAlert,
+  AlertTriangle,
+  Info,
+  Search,
+  ChevronDown,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  checkMedicationInteractions,
+  getMedicationFoodInteractions,
+  getMedicationSupplementInteractions,
+  searchMedications,
+  SEVERITY_COLORS,
+  SEVERITY_BADGE_COLORS,
+  type DrugDrugInteraction,
+  type FoodInteraction,
+  type SupplementInteraction,
+} from '@/lib/medications'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -338,6 +354,47 @@ interface ModalProps {
 }
 
 function MedicationModal({ editingMed, form, setForm, onSave, onClose, status, error }: ModalProps) {
+  const [suggestions, setSuggestions] = useState<Array<{ name: string; rxcui: string }>>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const suggestionRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
+    const timer = setTimeout(async () => {
+      const results = await searchMedications(searchQuery)
+      setSuggestions(results)
+      setShowSuggestions(results.length > 0)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (suggestionRef.current && !suggestionRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  function handleNameChange(value: string) {
+    setSearchQuery(value)
+    setForm({ ...form, name: value })
+  }
+
+  function selectSuggestion(name: string) {
+    setSearchQuery('')
+    setSuggestions([])
+    setShowSuggestions(false)
+    setForm({ ...form, name })
+  }
+
   function toggleTimeOfDay(t: string) {
     setForm({
       ...form,
@@ -365,18 +422,42 @@ function MedicationModal({ editingMed, form, setForm, onSave, onClose, status, e
 
         {/* Form */}
         <div className="px-5 py-4 space-y-4">
-          {/* Name */}
+          {/* Name with typeahead */}
           <div>
             <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
               Medication name <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Lisinopril"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <div className="relative" ref={suggestionRef}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  onFocus={() => searchQuery.length >= 2 && setShowSuggestions(suggestions.length > 0)}
+                  placeholder="e.g. Lisinopril"
+                  className="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden max-h-48 overflow-y-auto">
+                  {suggestions.map((s) => (
+                    <button
+                      key={s.name}
+                      type="button"
+                      onMouseDown={(e) => { e.preventDefault(); selectSuggestion(s.name) }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 flex items-center gap-2"
+                    >
+                      <Pill className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      {s.name}
+                    </button>
+                  ))}
+                  <div className="px-3 py-1.5 border-t border-gray-100 dark:border-gray-700">
+                    <p className="text-[10px] text-gray-400">Source: FDA OpenFDA</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Dosage + Unit */}
@@ -519,6 +600,216 @@ function MedicationModal({ editingMed, form, setForm, onSave, onClose, status, e
         </div>
       </div>
     </div>
+  )
+}
+
+// ─── Severity Badge ───────────────────────────────────────────────────────────
+
+function SeverityBadge({ severity }: { severity: string }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold shrink-0',
+        SEVERITY_BADGE_COLORS[severity] ?? 'bg-gray-500 text-white',
+      )}
+    >
+      {severity}
+    </span>
+  )
+}
+
+// ─── Interaction Panel ────────────────────────────────────────────────────────
+
+function DrugInteractionCard({ ix }: { ix: DrugDrugInteraction }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={cn('rounded-xl border', SEVERITY_COLORS[ix.severity])}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-start justify-between gap-3 p-4 text-left"
+      >
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="text-sm font-semibold capitalize">{ix.drug1}</span>
+            <span className="text-xs opacity-60">+</span>
+            <span className="text-sm font-semibold capitalize">{ix.drug2}</span>
+          </div>
+          <p className="text-xs leading-relaxed">{ix.description}</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <SeverityBadge severity={ix.severity} />
+          <ChevronDown className={cn('w-4 h-4 opacity-50 transition-transform', open && 'rotate-180')} />
+        </div>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-2 border-t border-current/10 pt-3">
+          <p className="text-xs">
+            <span className="font-semibold">Mechanism: </span>{ix.mechanism}
+          </p>
+          <p className="text-xs">
+            <span className="font-semibold">Clinical significance: </span>{ix.clinicalSignificance}
+          </p>
+          <div className="flex items-start gap-2 bg-white/40 dark:bg-black/20 rounded-lg p-2.5">
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <p className="text-xs font-medium">{ix.recommendation}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function FoodCard({ fi }: { fi: FoodInteraction }) {
+  return (
+    <div className={cn('rounded-xl border p-3', SEVERITY_COLORS[fi.severity])}>
+      <div className="flex items-start justify-between gap-2 mb-1.5">
+        <span className="text-sm font-semibold">{fi.food}</span>
+        <SeverityBadge severity={fi.severity} />
+      </div>
+      <p className="text-xs mb-2 leading-relaxed">{fi.effect}</p>
+      <div className="flex items-start gap-1.5 bg-white/40 dark:bg-black/20 rounded-lg p-2">
+        <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
+        <p className="text-xs font-medium">{fi.recommendation}</p>
+      </div>
+    </div>
+  )
+}
+
+function SupplementCard({ si }: { si: SupplementInteraction }) {
+  return (
+    <div className={cn('rounded-xl border p-3', SEVERITY_COLORS[si.severity])}>
+      <div className="flex items-start justify-between gap-2 mb-1.5">
+        <span className="text-sm font-semibold">{si.supplement}</span>
+        <SeverityBadge severity={si.severity} />
+      </div>
+      <p className="text-xs mb-2 leading-relaxed">{si.effect}</p>
+      <div className="flex items-start gap-1.5 bg-white/40 dark:bg-black/20 rounded-lg p-2">
+        <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
+        <p className="text-xs font-medium">{si.recommendation}</p>
+      </div>
+    </div>
+  )
+}
+
+function InteractionPanel({ medications }: { medications: Medication[] }) {
+  const activeMedNames = useMemo(
+    () => medications.filter((m) => m.active).map((m) => m.name),
+    [medications],
+  )
+
+  const drugInteractions = useMemo(
+    () => checkMedicationInteractions(activeMedNames),
+    [activeMedNames],
+  )
+  const foodWarnings = useMemo(
+    () => getMedicationFoodInteractions(activeMedNames),
+    [activeMedNames],
+  )
+  const supplementWarnings = useMemo(
+    () => getMedicationSupplementInteractions(activeMedNames),
+    [activeMedNames],
+  )
+
+  const totalWarnings = drugInteractions.length + foodWarnings.length + supplementWarnings.length
+
+  return (
+    <section className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-2">
+        <ShieldAlert className="w-5 h-5 text-orange-500" />
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+          Interaction Checker
+        </h2>
+        {totalWarnings > 0 && (
+          <span className="ml-auto text-xs font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 px-2 py-0.5 rounded-full">
+            {totalWarnings} warning{totalWarnings !== 1 ? 's' : ''}
+          </span>
+        )}
+      </div>
+
+      {/* Medical disclaimer */}
+      <div className="flex gap-2.5 p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+        <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+        <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+          <strong>Medical Disclaimer:</strong> This tool is for informational purposes only and does
+          not substitute professional medical advice, diagnosis, or treatment. Always consult your
+          healthcare provider or pharmacist before making any changes to your medications or
+          supplements.
+        </p>
+      </div>
+
+      {activeMedNames.length === 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <Pill className="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-2" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Add active medications to check for interactions.
+          </p>
+        </div>
+      )}
+
+      {activeMedNames.length > 0 && totalWarnings === 0 && (
+        <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-center">
+          <CheckCircle2 className="w-6 h-6 text-green-500 mx-auto mb-1.5" />
+          <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+            No known interactions detected
+          </p>
+          <p className="text-xs text-green-600 dark:text-green-400 mt-0.5">
+            Based on your current active medications and our curated interaction database
+          </p>
+        </div>
+      )}
+
+      {/* Drug / supplement interactions */}
+      {drugInteractions.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            Drug &amp; Supplement Interactions
+          </h3>
+          {drugInteractions.map((ix, i) => (
+            <DrugInteractionCard key={i} ix={ix} />
+          ))}
+        </div>
+      )}
+
+      {/* Food interactions */}
+      {foodWarnings.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            Food Interactions
+          </h3>
+          {foodWarnings.map(({ medication, interactions }) => (
+            <div key={medication} className="space-y-2">
+              <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                {medication}
+              </p>
+              {interactions.map((fi, i) => (
+                <FoodCard key={i} fi={fi} />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Supplement interaction profiles */}
+      {supplementWarnings.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            Supplement Interactions
+          </h3>
+          {supplementWarnings.map(({ medication, interactions }) => (
+            <div key={medication} className="space-y-2">
+              <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                {medication}
+              </p>
+              {interactions.map((si, i) => (
+                <SupplementCard key={i} si={si} />
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
 
@@ -709,6 +1000,9 @@ export function MedicationsClient({
         onDelete={deleteMedication}
         actionLoadingId={actionLoadingId}
       />
+
+      {/* Interaction checker */}
+      <InteractionPanel medications={medications} />
 
       {/* Add/Edit modal */}
       {showModal && (
