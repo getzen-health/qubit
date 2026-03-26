@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Ruler, Weight, TapeMeasure } from "lucide-react";
+import { Ruler, Weight } from "lucide-react";
 
 const bmiCategories = [
   { label: "Underweight", min: 0, max: 18.5, color: "bg-blue-200 text-blue-800" },
@@ -57,23 +57,23 @@ export default function BMICalculatorPage() {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">Height ({unit === "metric" ? "cm" : "in"})</label>
-          <Input type="number" value={height} min={0} onChange={e => setHeight(Number(e.target.value))} />
+          <Input type="number" value={height} min={0} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeight(Number(e.target.value))} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Weight ({unit === "metric" ? "kg" : "lb"})</label>
-          <Input type="number" value={weight} min={0} onChange={e => setWeight(Number(e.target.value))} />
+          <Input type="number" value={weight} min={0} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeight(Number(e.target.value))} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Waist ({unit === "metric" ? "cm" : "in"})</label>
-          <Input type="number" value={waist} min={0} onChange={e => setWaist(Number(e.target.value))} />
+          <Input type="number" value={waist} min={0} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWaist(Number(e.target.value))} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Neck ({unit === "metric" ? "cm" : "in"})</label>
-          <Input type="number" value={neck} min={0} onChange={e => setNeck(Number(e.target.value))} />
+          <Input type="number" value={neck} min={0} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNeck(Number(e.target.value))} />
         </div>
         <div className="col-span-2">
           <label className="block text-sm font-medium mb-1">Gender</label>
-          <select className="w-full border rounded p-2" value={gender} onChange={e => setGender(e.target.value as "male" | "female")}> 
+          <select className="w-full border rounded p-2" value={gender} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setGender(e.target.value as "male" | "female")}> 
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>

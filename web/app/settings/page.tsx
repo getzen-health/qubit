@@ -70,8 +70,8 @@ export default async function SettingsPage() {
       icon: Lock,
     },
     {
-      title: 'Goals',
-      description: 'Configure daily step goal and targets',
+      title: 'Health Goals',
+      description: 'Set daily steps, sleep, water, weight, and calorie targets',
       href: '/settings/goals',
       icon: Target,
     },

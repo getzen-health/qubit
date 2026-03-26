@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       longest_streak,
       last_activity_date: today,
       updated_at: new Date().toISOString()
-    }, { onConflict: ['user_id', 'streak_type'] })
+    }, { onConflict: 'user_id,streak_type' })
     .select()
     .single()
 

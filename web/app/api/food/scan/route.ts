@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
 import {
@@ -79,7 +79,8 @@ export const GET = createSecureApiHandler(
     auditAction: 'READ',
     auditResource: 'food_product',
   },
-  async (request: NextRequest, { query, supabase, user }: { query: unknown; supabase: import('@supabase/supabase-js').SupabaseClient; user: import('@supabase/supabase-js').User }) : Promise<NextResponse> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (async (request: NextRequest, { query, supabase, user }: { query: unknown; supabase: import('@supabase/supabase-js').SupabaseClient; user: import('@supabase/supabase-js').User }) : Promise<NextResponse> => {
     const { barcode } = query as z.infer<typeof querySchema>
 
     // Fetch product from Open Food Facts
@@ -207,5 +208,5 @@ export const GET = createSecureApiHandler(
     }
 
     return NextResponse.json({ food, allergenWarnings, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
-  }
+  }) as unknown as Parameters<typeof createSecureApiHandler>[1]
 )

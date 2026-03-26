@@ -19,155 +19,85 @@ const DEFAULT_PROTEIN_GOAL = 150
 const DEFAULT_CARBS_GOAL = 250
 const DEFAULT_FAT_GOAL = 65
 
+import { useRouter } from 'next/navigation'
+
 export default function GoalsSettingsPage() {
   const [stepGoal, setStepGoal] = useState(DEFAULT_STEP_GOAL)
   const [stepInput, setStepInput] = useState(DEFAULT_STEP_GOAL.toString())
-  const [calGoal, setCalGoal] = useState(DEFAULT_CAL_GOAL)
-  const [calInput, setCalInput] = useState(DEFAULT_CAL_GOAL.toString())
-  const [sleepGoal, setSleepGoal] = useState(DEFAULT_SLEEP_GOAL)
-  const [sleepInput, setSleepInput] = useState((DEFAULT_SLEEP_GOAL / 60).toString())
-  const [waterGoal, setWaterGoal] = useState(DEFAULT_WATER_GOAL)
-  const [waterInput, setWaterInput] = useState(DEFAULT_WATER_GOAL.toString())
-  const [hrvTarget, setHrvTarget] = useState(DEFAULT_HRV_TARGET)
-  const [hrvInput, setHrvInput] = useState(DEFAULT_HRV_TARGET.toString())
-  const [calorieIntakeGoal, setCalorieIntakeGoal] = useState(DEFAULT_CALORIE_INTAKE_GOAL)
-  const [calorieIntakeInput, setCalorieIntakeInput] = useState(DEFAULT_CALORIE_INTAKE_GOAL.toString())
-  const [proteinGoal, setProteinGoal] = useState(DEFAULT_PROTEIN_GOAL)
-  const [proteinInput, setProteinInput] = useState(DEFAULT_PROTEIN_GOAL.toString())
-  const [carbsGoal, setCarbsGoal] = useState(DEFAULT_CARBS_GOAL)
-  const [carbsInput, setCarbsInput] = useState(DEFAULT_CARBS_GOAL.toString())
-  const [fatGoal, setFatGoal] = useState(DEFAULT_FAT_GOAL)
-  const [fatInput, setFatInput] = useState(DEFAULT_FAT_GOAL.toString())
+  const [sleepGoal, setSleepGoal] = useState(8.0)
+  const [sleepInput, setSleepInput] = useState('8.0')
+  const [waterGoal, setWaterGoal] = useState(2.5)
+  const [waterInput, setWaterInput] = useState('2.5')
+  const [weightGoal, setWeightGoal] = useState('')
+  const [calorieGoal, setCalorieGoal] = useState(2000)
+  const [calorieInput, setCalorieInput] = useState('2000')
+  const [calGoal, setCalGoal] = useState(2000)
+  const [calInput, setCalInput] = useState('2000')
+  const [hrvTarget, setHrvTarget] = useState(50)
+  const [hrvInput, setHrvInput] = useState('50')
+  const [calorieIntakeInput, setCalorieIntakeInput] = useState('2000')
+  const [proteinInput, setProteinInput] = useState('150')
+  const [carbsInput, setCarbsInput] = useState('250')
+  const [fatInput, setFatInput] = useState('65')
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  const router = useRouter()
 
   useEffect(() => {
     async function loadGoals() {
-      // Try DB first
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('step_goal, calorie_goal, sleep_goal_minutes')
-          .eq('id', user.id)
-          .single()
-        if (profile) {
-          const s = profile.step_goal ?? DEFAULT_STEP_GOAL
-          const c = profile.calorie_goal ?? DEFAULT_CAL_GOAL
-          const sl = profile.sleep_goal_minutes ?? DEFAULT_SLEEP_GOAL
-          setStepGoal(s); setStepInput(s.toString())
-          setCalGoal(c); setCalInput(c.toString())
-          setSleepGoal(sl); setSleepInput((sl / 60).toString())
-          // Load water + macro goals + HRV from nutrition settings
-          const { data: nutrition } = await supabase
-            .from('user_nutrition_settings')
-            .select('water_goal_ml, water_target_ml, calorie_target, protein_target, carbs_target, fat_target, hrv_target')
-            .eq('user_id', user.id)
-            .single()
-          if (nutrition?.water_goal_ml) {
-            setWaterGoal(nutrition.water_goal_ml)
-            setWaterInput(nutrition.water_goal_ml.toString())
-          } else if (nutrition?.water_target_ml) {
-            setWaterGoal(nutrition.water_target_ml)
-            setWaterInput(nutrition.water_target_ml.toString())
-          }
-          if (nutrition?.hrv_target) {
-            setHrvTarget(nutrition.hrv_target)
-            setHrvInput(nutrition.hrv_target.toString())
-          }
-          if (nutrition?.calorie_target) {
-            setCalorieIntakeGoal(nutrition.calorie_target)
-            setCalorieIntakeInput(nutrition.calorie_target.toString())
-          }
-          if (nutrition?.protein_target) {
-            setProteinGoal(nutrition.protein_target)
-            setProteinInput(nutrition.protein_target.toString())
-          }
-          if (nutrition?.carbs_target) {
-            setCarbsGoal(nutrition.carbs_target)
-            setCarbsInput(nutrition.carbs_target.toString())
-          }
-          if (nutrition?.fat_target) {
-            setFatGoal(nutrition.fat_target)
-            setFatInput(nutrition.fat_target.toString())
-          }
-          setLoading(false)
-          return
-        }
+      const res = await fetch('/api/goals')
+      if (res.ok) {
+        const data = await res.json()
+        setStepGoal(data.daily_steps ?? DEFAULT_STEP_GOAL)
+        setStepInput((data.daily_steps ?? DEFAULT_STEP_GOAL).toString())
+        setSleepGoal(data.sleep_hours ?? 8.0)
+        setSleepInput((data.sleep_hours ?? 8.0).toString())
+        setWaterGoal(data.water_liters ?? 2.5)
+        setWaterInput((data.water_liters ?? 2.5).toString())
+        setWeightGoal(data.target_weight_kg ? data.target_weight_kg.toString() : '')
+        setCalorieGoal(data.calorie_budget ?? 2000)
+        setCalorieInput((data.calorie_budget ?? 2000).toString())
       }
-      // Fall back to localStorage
-      const storedSteps = localStorage.getItem(STEP_KEY)
-      if (storedSteps) { const n = parseInt(storedSteps, 10); if (!isNaN(n) && n > 0) { setStepGoal(n); setStepInput(n.toString()) } }
-      const storedCal = localStorage.getItem(CAL_KEY)
-      if (storedCal) { const n = parseInt(storedCal, 10); if (!isNaN(n) && n > 0) { setCalGoal(n); setCalInput(n.toString()) } }
-      const storedSleep = localStorage.getItem(SLEEP_KEY)
-      if (storedSleep) { const n = parseInt(storedSleep, 10); if (!isNaN(n) && n > 0) { setSleepGoal(n); setSleepInput((n / 60).toString()) } }
-      const storedHrv = localStorage.getItem(HRV_KEY)
-      if (storedHrv) { const n = parseInt(storedHrv, 10); if (!isNaN(n) && n > 0) { setHrvTarget(n); setHrvInput(n.toString()) } }
       setLoading(false)
     }
     loadGoals()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleSave = async () => {
     const steps = parseInt(stepInput, 10)
-    const cal = parseInt(calInput, 10)
     const sleepHours = parseFloat(sleepInput)
-    const sleepMin = Math.round(sleepHours * 60)
-    const water = parseInt(waterInput, 10)
-    const hrv = parseInt(hrvInput, 10)
-    const calorieIntake = parseInt(calorieIntakeInput, 10)
-    const protein = parseInt(proteinInput, 10)
-    const carbs = parseInt(carbsInput, 10)
-    const fat = parseInt(fatInput, 10)
-
+    const waterLiters = parseFloat(waterInput)
+    const weight = weightGoal ? parseFloat(weightGoal) : null
+    const calorieBudget = parseInt(calorieInput, 10)
     if (isNaN(steps) || steps <= 0 || steps > 100000) return
-    if (isNaN(cal) || cal <= 0 || cal > 5000) return
     if (isNaN(sleepHours) || sleepHours < 4 || sleepHours > 12) return
-    if (isNaN(water) || water < 500 || water > 6000) return
-    if (isNaN(hrv) || hrv < 20 || hrv > 100) return
-    if (isNaN(calorieIntake) || calorieIntake < 500 || calorieIntake > 8000) return
-    if (isNaN(protein) || protein < 0 || protein > 500) return
-    if (isNaN(carbs) || carbs < 0 || carbs > 1000) return
-    if (isNaN(fat) || fat < 0 || fat > 500) return
-
+    if (isNaN(waterLiters) || waterLiters < 0.5 || waterLiters > 10) return
+    if (weightGoal && (weight === null || isNaN(weight) || weight < 20 || weight > 500)) return
+    if (isNaN(calorieBudget) || calorieBudget < 500 || calorieBudget > 8000) return
     setStepGoal(steps)
-    setCalGoal(cal)
-    setSleepGoal(sleepMin)
-    setWaterGoal(water)
-    setHrvTarget(hrv)
-    setCalorieIntakeGoal(calorieIntake)
-    setProteinGoal(protein)
-    setCarbsGoal(carbs)
-    setFatGoal(fat)
-
-    // Save to DB (best effort)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      await Promise.all([
-        supabase
-          .from('users')
-          .update({ step_goal: steps, calorie_goal: cal, sleep_goal_minutes: sleepMin })
-          .eq('id', user.id),
-        supabase
-          .from('user_nutrition_settings')
-          .upsert({
-            user_id: user.id,
-            water_goal_ml: water,
-            water_target_ml: water,
-            hrv_target: hrv,
-            calorie_target: calorieIntake,
-            protein_target: protein,
-            carbs_target: carbs,
-            fat_target: fat,
-          }, { onConflict: 'user_id' }),
-      ])
+    setSleepGoal(sleepHours)
+    setWaterGoal(waterLiters)
+    setWeightGoal(weightGoal)
+    setCalorieGoal(calorieBudget)
+    setCalorieInput(calorieBudget.toString())
+    // Save to DB
+    const res = await fetch('/api/goals', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        daily_steps: steps,
+        sleep_hours: sleepHours,
+        water_liters: waterLiters,
+        target_weight_kg: weight,
+        calorie_budget: calorieBudget
+      })
+    })
+    if (res.ok) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+      router.refresh()
     }
-
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
   }
 
   if (loading) {

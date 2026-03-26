@@ -6,6 +6,9 @@ import { WeeklyActivityChart } from '@/components/weekly-activity-chart'
 import { ReadinessBanner } from '@/components/ReadinessBanner'
 import { ReadinessBannerSkeleton } from '@/components/skeletons'
 import Link from 'next/link'
+import { SleepSummaryCard } from '@/components/sleep-summary-card'
+import { WorkoutSummaryCard } from '@/components/workout-summary-card'
+import { MoodSummaryCard } from '@/components/mood-summary-card'
 
 export async function DashboardDataLoader({ user }: { user: User }) {
   const supabase = await createClient()
@@ -216,7 +219,7 @@ export async function DashboardDataLoader({ user }: { user: User }) {
   const sleepQuality = null // Not available in schema, placeholder
   const workoutCount = recentWorkouts?.length ?? 0
   const workoutMinutes = recentWorkouts?.reduce((s, w) => s + (w.duration_minutes || 0), 0)
-  const todayMood = null // Not available in loader, placeholder
+  const todayMood: number | undefined = undefined // Not available in loader, placeholder
   const supplementsTaken = 0 // Not available in loader, placeholder
 
   return (
@@ -232,13 +235,9 @@ export async function DashboardDataLoader({ user }: { user: User }) {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        import SleepSummaryCard from '@/components/sleep-summary-card'
-import WorkoutSummaryCard from '@/components/workout-summary-card'
-import MoodSummaryCard from '@/components/mood-summary-card'
 
-<SleepSummaryCard hours={sleepHours} quality={sleepQuality} />
-        <WorkoutSummaryCard count={workoutCount} totalMinutes={workoutMinutes} />
-        <MoodSummaryCard todayScore={todayMood} />
+        {typeof WorkoutSummaryCard !== 'undefined' && <WorkoutSummaryCard count={workoutCount} totalMinutes={workoutMinutes} />}
+        {typeof MoodSummaryCard !== 'undefined' && <MoodSummaryCard todayScore={todayMood} />}
       </div>
       <DashboardStream
         user={user}
