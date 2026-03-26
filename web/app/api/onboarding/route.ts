@@ -1,0 +1,16 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase/server'
+
+export async function POST(request: NextRequest) {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const body = await request.json()
+  // Save onboarding data to user profile (assume a user_profiles table with jsonb column 'onboarding')
+  const { error } = await supabase
+    .from('user_profiles')
+    .update({ onboarding: body })
+    .eq('user_id', user.id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
+}
