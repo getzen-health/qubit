@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { ArrowLeft, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+import { IngredientDetailsSection } from '../../ingredients/IngredientDetailsSection'
 
 // Nutrient reference daily values (adult, 2000 kcal diet)
 const DAILY_VALUES: Record<string, { label: string; unit: string; dv: number; category: string }> = {
@@ -107,6 +108,16 @@ export default function ProductDetailPage() {
   const ingredientsText = product.ingredients_text ?? ''
   const flags = FLAGGED_INGREDIENTS.filter(f => f.pattern.test(ingredientsText))
 
+  // Dietary compatibility badges
+  const labels = (product.labels_tags ?? []) as string[]
+  const dietaryBadges = [
+    { label: 'Vegan', tag: 'vegan', color: labels.includes('vegan') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700', ok: labels.includes('vegan') },
+    { label: 'Vegetarian', tag: 'vegetarian', color: labels.includes('vegetarian') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700', ok: labels.includes('vegetarian') },
+    { label: 'Gluten-Free', tag: 'gluten-free', color: labels.includes('gluten-free') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700', ok: labels.includes('gluten-free') },
+    { label: 'Halal', tag: 'halal', color: labels.includes('halal') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700', ok: labels.includes('halal') },
+    { label: 'Kosher', tag: 'kosher', color: labels.includes('kosher') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700', ok: labels.includes('kosher') },
+  ]
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Link href="/food/scanner" className="flex items-center gap-2 text-text-secondary text-sm mb-6 hover:text-text-primary">
@@ -126,6 +137,12 @@ export default function ProductDetailPage() {
               Nutri-Score {product.nutriscore_grade.toUpperCase()}
             </span>
           )}
+          {/* Dietary badges */}
+          <div className="flex gap-2 mt-2 flex-wrap">
+            {dietaryBadges.map(b => (
+              <span key={b.label} className={`px-2 py-0.5 rounded-2xl text-xs font-semibold ${b.color}`}>{b.label} {b.ok ? '✓' : '✗'}</span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -171,6 +188,7 @@ export default function ProductDetailPage() {
         <div className="bg-surface border border-border rounded-2xl p-4">
           <h2 className="font-semibold text-text-primary mb-2">Ingredients</h2>
           <p className="text-xs text-text-secondary leading-relaxed">{ingredientsText}</p>
+          <IngredientDetailsSection ingredientsText={ingredientsText} />
         </div>
       )}
     </div>

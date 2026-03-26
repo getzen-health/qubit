@@ -10,6 +10,7 @@ import { getReadinessContext, getFoodReadinessWarning } from '@/lib/readiness'
 import { NutrientTrafficLights } from '@/components/nutrient-traffic-lights'
 import { createClient } from '@/lib/supabase/client'
 import { ShareButton } from '@/components/share-button'
+import { IngredientDetailsSection } from '../ingredients/IngredientDetailsSection'
 
 // Dynamically import the scanner (client-only, uses browser APIs)
 const BarcodeScanner = dynamic(() => import('./barcode-scanner'), { ssr: false })
@@ -768,7 +769,10 @@ export default function FoodScannerPage() {
                   {showIngredients ? <ChevronUp className="w-4 h-4 text-text-secondary" /> : <ChevronDown className="w-4 h-4 text-text-secondary" />}
                 </button>
                 {showIngredients && (
-                  <p className="text-xs text-text-secondary mt-2 leading-relaxed">{product.ingredients}</p>
+                  <>
+                    <p className="text-xs text-text-secondary mt-2 leading-relaxed">{product.ingredients}</p>
+                    <IngredientDetailsSection ingredientsText={product.ingredients} />
+                  </>
                 )}
               </div>
             )}
