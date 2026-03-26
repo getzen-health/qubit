@@ -15,6 +15,7 @@ This file defines specialized agents for parallel development of KQuarks.
 - Supabase iOS SDK integration
 - MVVM view models
 - Background sync implementation
+- **WidgetKit widgets (KQuarksWidget target)**
 
 **Tools**: Read, Write, Edit, Glob, Grep, Bash (for xcodebuild)
 
@@ -23,6 +24,13 @@ This file defines specialized agents for parallel development of KQuarks.
 - `CLAUDE.md`
 
 ---
+
+## WidgetKit
+
+- `KQuarksWidget` is a separate Xcode target for iOS widgets.
+- You must add the Widget Extension target manually in Xcode: File > New > Target > Widget Extension.
+- The widget displays daily health summary and health score.
+
 
 ### web-agent
 

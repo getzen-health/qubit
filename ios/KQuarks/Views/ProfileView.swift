@@ -23,6 +23,13 @@ struct ProfileView: View {
                 }
                 
                 Section("Health Settings") {
+                // Widget info
+                HStack {
+                    Image(systemName: "rectangle.stack.fill.badge.plus").foregroundColor(.accentColor)
+                    Text("Add the KQuarks widget to your Home Screen for quick health stats.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                     NavigationLink("Units (kg / lbs)") {
                         UnitsSettingsView()
                     }
