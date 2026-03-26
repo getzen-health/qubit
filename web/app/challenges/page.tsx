@@ -1,45 +1,138 @@
+"use client"
+import { useEffect, useState } from 'react'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 import { redirect } from 'next/navigation'
 
-const SAMPLE_CHALLENGES = [
-  { title: '10K Steps Daily', description: 'Walk 10,000 steps every day for a week', metric: 'steps', target: 70000, participants: 142, daysLeft: 5 },
-  { title: 'Sleep 7+ Hours', description: 'Get at least 7 hours of sleep for 7 consecutive nights', metric: 'sleep', target: 49, participants: 89, daysLeft: 3 },
-  { title: 'Workout Streak', description: 'Complete 5 workouts this week', metric: 'workouts', target: 5, participants: 67, daysLeft: 7 },
-]
+const ICONS: Record<string, string> = {
+  steps: '🚶‍♂️',
+  active_minutes: '🏃‍♀️',
+  workouts: '🏋️',
+  water: '💧',
+}
 
-export default async function ChallengesPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+export default function ChallengesPage() {
+  const [challenges, setChallenges] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showLeaderboard, setShowLeaderboard] = useState<string|null>(null)
+  const [leaderboard, setLeaderboard] = useState<any[]>([])
+  const [form, setForm] = useState({ title: '', description: '', type: 'steps', target_value: 10000, duration_days: 7, is_public: true })
+  const [creating, setCreating] = useState(false)
+
+  useEffect(() => {
+    fetchChallenges()
+  }, [])
+
+  async function fetchChallenges() {
+    setLoading(true)
+    const res = await fetch('/api/challenges')
+    const data = await res.json()
+    setChallenges(data.challenges || [])
+    setLoading(false)
+  }
+
+  async function joinChallenge(id: string) {
+    await fetch(`/api/challenges/${id}/join`, { method: 'POST' })
+    fetchChallenges()
+  }
+
+  async function openLeaderboard(id: string) {
+    setShowLeaderboard(id)
+    const res = await fetch(`/api/challenges/${id}/leaderboard`)
+    const data = await res.json()
+    setLeaderboard(data.leaderboard || [])
+  }
+
+  async function createChallenge(e: any) {
+    e.preventDefault()
+    setCreating(true)
+    await fetch('/api/challenges', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
+    })
+    setCreating(false)
+    setForm({ title: '', description: '', type: 'steps', target_value: 10000, duration_days: 7, is_public: true })
+    fetchChallenges()
+  }
 
   return (
     <main role="main" aria-label="Community Challenges" id="main-content">
       <div className="container mx-auto py-8">
-      <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Challenges'}]} />
-      <h1 className="text-2xl font-bold mb-2">Community Challenges</h1>
-      <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {SAMPLE_CHALLENGES.map((c, i) => (
-          <div key={i} className="rounded-xl border border-border p-5 space-y-3">
-            <div>
-              <p className="font-semibold">{c.title}</p>
+        <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Challenges'}]} />
+        <h1 className="text-2xl font-bold mb-2">Community Challenges <span className="ml-2">🏆</span></h1>
+        <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          {loading ? <div>Loading...</div> : challenges.map((c, i) => (
+            <div key={c.id} className="rounded-2xl border border-border bg-surface p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{ICONS[c.type] || '🏆'}</span>
+                <p className="font-semibold text-text-primary">{c.title}</p>
+              </div>
               <p className="text-sm text-muted-foreground">{c.description}</p>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>👥 {c.participant_count} joined</span>
+                <span>🎯 {c.target_value} {c.type.replace('_',' ')}</span>
+                <span>⏱ {c.duration_days}d</span>
+              </div>
+              {c.joined && (
+                <div className="space-y-1">
+                  <div className="h-1.5 bg-muted rounded-full">
+                    <div className="h-full bg-primary rounded-full" style={{ width: `${Math.min(100, Math.round(100 * c.current_value / c.target_value))}%` }} />
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-text-primary">Progress: {c.current_value} / {c.target_value}</span>
+                    <button className="text-primary underline" onClick={() => openLeaderboard(c.id)}>Leaderboard</button>
+                  </div>
+                </div>
+              )}
+              {!c.joined && (
+                <button className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity" onClick={() => joinChallenge(c.id)}>
+                  Join Challenge
+                </button>
+              )}
             </div>
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>👥 {c.participants} joined</span>
-              <span>⏱ {c.daysLeft}d left</span>
+          ))}
+        </div>
+        {/* Leaderboard Modal */}
+        {showLeaderboard && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-surface rounded-2xl p-6 w-full max-w-md border border-border">
+              <h2 className="text-xl font-bold mb-2">Leaderboard</h2>
+              <ol className="mb-4">
+                {leaderboard.slice(0,10).map((p, i) => (
+                  <li key={i} className="flex justify-between py-1">
+                    <span>{p.rank}. {p.name}</span>
+                    <span className="font-mono">{p.current_value}</span>
+                  </li>
+                ))}
+              </ol>
+              <button className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium" onClick={() => setShowLeaderboard(null)}>Close</button>
             </div>
-            <div className="h-1.5 bg-muted rounded-full">
-              <div className="h-full bg-primary rounded-full" style={{ width: '35%' }} />
-            </div>
-            <button className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-              Join Challenge
-            </button>
           </div>
-        ))}
+        )}
+        {/* Create Challenge Form */}
+        <div className="mt-12 max-w-lg mx-auto bg-surface border border-border rounded-2xl p-6">
+          <h2 className="text-lg font-bold mb-4">Create Challenge</h2>
+          <form className="space-y-3" onSubmit={createChallenge}>
+            <input required className="w-full border border-border rounded-lg px-3 py-2" placeholder="Title" value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))} />
+            <textarea className="w-full border border-border rounded-lg px-3 py-2" placeholder="Description" value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} />
+            <div className="flex gap-2">
+              <select className="border border-border rounded-lg px-2 py-1" value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}>
+                <option value="steps">Steps</option>
+                <option value="active_minutes">Active Minutes</option>
+                <option value="workouts">Workouts</option>
+                <option value="water">Water</option>
+              </select>
+              <input type="number" min={1} className="border border-border rounded-lg px-2 py-1 w-32" placeholder="Target" value={form.target_value} onChange={e=>setForm(f=>({...f,target_value:Number(e.target.value)}))} />
+              <input type="number" min={1} className="border border-border rounded-lg px-2 py-1 w-20" placeholder="Days" value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:Number(e.target.value)}))} />
+            </div>
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_public} onChange={e=>setForm(f=>({...f,is_public:e.target.checked}))} /> Public</label>
+            <button type="submit" className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium" disabled={creating}>{creating ? 'Creating...' : 'Create Challenge'}</button>
+          </form>
+        </div>
       </div>
-    </div>
     </main>
   )
 }
+

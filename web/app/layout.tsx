@@ -83,7 +83,11 @@ export default function RootLayout({
           >
             Skip to main content
           </a>
-          <div id="main-content">{children}</div>
+          <nav className="flex gap-4 items-center px-4 py-2 border-b border-border bg-surface">
+  <a href="/dashboard" className="text-primary font-bold">Dashboard</a>
+  <a href="/challenges" className="ml-auto text-xl" title="Challenges">🏆 Challenges</a>
+</nav>
+<div id="main-content">{children}</div>
         </WidgetProvider>
         <Analytics />
       </body>
