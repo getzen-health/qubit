@@ -35,6 +35,7 @@ const moreItems = [
   { href: '/water', icon: Droplets, label: 'Water' },
   { href: '/measurements', icon: BookOpen, label: 'Measurements' },
   { href: '/supplements', icon: Pill, label: 'Supplements' },
+  { href: '/medications', icon: Pill, label: 'Medications' },
   { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scan' },
   { href: '/cosmetics/scanner', icon: FlaskConical, label: 'Cosmetics Scan' },
   { href: '/scanner/history', icon: Package, label: 'Scan History' },
