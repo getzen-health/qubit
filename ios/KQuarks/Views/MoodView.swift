@@ -5,6 +5,7 @@ struct MoodView: View {
     @State private var notes: String = ""
     @State private var isLoading: Bool = false
     @State private var message: String = ""
+    @State private var recentLogs: [(score: Int, notes: String?, date: Date)] = []
     
     let moodEmojis = ["😔","😞","😕","😐","🙂","😊","😄","😁","🤩","🥳"]
     
@@ -91,12 +92,40 @@ struct MoodView: View {
     
     func logMood() async {
         isLoading = true
-        // POST to API - implementation via SupabaseService or direct URLSession
-        try? await Task.sleep(nanoseconds: 500_000_000)
-        message = "Mood logged! \(moodEmojis[selectedScore - 1])"
-        notes = ""
-        isLoading = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { message = "" }
+        defer { isLoading = false }
+        
+        let urlString = (Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? "")
+        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/mood") else {
+            message = "Configuration error"
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = [
+            "score": selectedScore,
+            "notes": notes.isEmpty ? NSNull() : notes as Any
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if (response as? HTTPURLResponse)?.statusCode == 201 {
+                message = "Mood logged! \(moodEmojis[selectedScore - 1])"
+                notes = ""
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { self.message = "" }
+            } else {
+                message = "Failed to save mood"
+            }
+        } catch {
+            message = "Network error"
+        }
+    }
+    
+    func loadRecentLogs() async {
+        // TODO: Implement API call to fetch recent mood logs
     }
 }
 
