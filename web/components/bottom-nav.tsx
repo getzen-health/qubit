@@ -38,6 +38,7 @@ const navItems = [
   { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
+  { href: '/reports', label: 'Reports', icon: '📋' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
