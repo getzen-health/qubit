@@ -7,6 +7,7 @@ import { ArrowLeft, Search, ScanLine, AlertTriangle, CheckCircle, Info, ChevronD
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
 import { getReadinessContext, getFoodReadinessWarning } from '@/lib/readiness'
+import { NutrientTrafficLights } from '@/components/nutrient-traffic-lights'
 import { createClient } from '@/lib/supabase/client'
 
 // Dynamically import the scanner (client-only, uses browser APIs)
@@ -728,6 +729,15 @@ export default function FoodScannerPage() {
             <div className="bg-surface rounded-2xl border border-border p-4">
               <h3 className="font-semibold text-text-primary mb-3">Score Breakdown</h3>
               <div className="space-y-2">
+              </div>
+            </div>
+
+            {/* Nutrient traffic lights */}
+            <div className="bg-surface rounded-2xl border border-border p-4">
+              <NutrientTrafficLights nutriments={product as any} />
+            </div>
+
+
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-text-secondary">Nutritional quality (60%)</span>
                   <span className="text-sm font-semibold text-text-primary">
