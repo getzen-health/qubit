@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot } from 'lucide-react'
 // 'Run' icon does not exist in lucide-react, remove from navItems
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
+  { href: '/coach/chat', icon: Bot, label: 'Coach' },
   { href: '/coach', icon: Sparkles, label: 'AI Coach' },
   { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
   { href: '/training', icon: CalendarRange, label: 'Training' },

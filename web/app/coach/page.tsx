@@ -14,6 +14,10 @@ export default async function CoachPage() {
       <h1 className="text-2xl font-bold mb-2">AI Health Coach</h1>
       <p className="text-muted-foreground mb-8">Personalized guidance based on your health data.</p>
       <div className="grid gap-4">
+        <a href="/coach/chat" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold shadow hover:bg-primary/90 transition-colors mb-2 w-fit">
+          <span>Chat with Coach</span>
+          <span aria-hidden="true">→</span>
+        </a>
         <div className="rounded-xl border border-border p-5 space-y-3">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">🤖</div>

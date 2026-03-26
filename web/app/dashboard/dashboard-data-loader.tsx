@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { SleepSummaryCard } from '@/components/sleep-summary-card'
 import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
+import { MacroRingsCard } from '@/components/macro-rings-card'
 
 export async function DashboardDataLoader({ user }: { user: User }) {
   const supabase = await createClient()
