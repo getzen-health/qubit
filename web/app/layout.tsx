@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar'
+import { SWRegister } from '@/components/sw-register'
 import { WidgetProvider } from '@/lib/widgets/widget-context'
 import './globals.css'
 
@@ -75,7 +75,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ServiceWorkerRegistrar />
+        <SWRegister />
         <WidgetProvider>
           <a
             href="#main-content"
