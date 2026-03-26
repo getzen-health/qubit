@@ -1,4 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase/server'
+
+export async function GET() {
+  const supabase = createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Garmin uses OAuth 1.0a - redirect to auth page with instructions
+  const consumerKey = process.env.GARMIN_CONSUMER_KEY
+  if (!consumerKey) {
+    return NextResponse.json({ error: 'Garmin not configured. Set GARMIN_CONSUMER_KEY and GARMIN_CONSUMER_SECRET.' }, { status: 503 })
+  }
+
+  // OAuth 1.0a request token flow placeholder
+  // Full implementation requires oauth-1.0a library
+  return NextResponse.redirect('https://connect.garmin.com/oauthConfirm')
+}
+
 import crypto from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/security/rate-limit'
