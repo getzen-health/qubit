@@ -22,14 +22,17 @@ class WaterIntakeViewModel {
     }
 
     func addWater(_ ml: Int) async {
-        totalMl += ml
-        logs.insert(WaterEntry(
-            id: UUID().uuidString,
-            amount_ml: ml,
-            logged_at: ISO8601DateFormatter().string(from: Date())
-        ), at: 0)
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/water") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["amount_ml": ml])
+        guard let (_, response) = try? await URLSession.shared.data(for: request),
+              (response as? HTTPURLResponse)?.statusCode == 201 else { return }
+        // Refresh total
+        await loadToday()
         HapticService.impact(.light)
-        // In production: POST to /api/water or Supabase directly
     }
 }
 
