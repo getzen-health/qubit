@@ -12,7 +12,7 @@ const navItems = [
   { href: '/coach', icon: Sparkles, label: 'AI Coach' },
   { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
   { href: '/training', icon: CalendarRange, label: 'Training' },
-  { href: '/allergens', icon: ShieldAlert, label: 'Allergens' },
+  { href: '/water', icon: Droplets, label: 'Water' },
   { href: '/mood', icon: Smile, label: 'Mood' },
   // { href: '/workouts', icon: Run, label: 'Workouts' },
   { href: '/streaks', icon: Trophy, label: 'Streaks' },
