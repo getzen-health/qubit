@@ -31,6 +31,7 @@ const navItems = [
   { href: '/sleep', icon: Moon, label: 'Sleep' },
   { href: '/sleep-analytics', icon: BedDouble, label: 'Sleep+' },
   { href: '/sleep-apnea-screener', icon: Moon, label: 'Sleep Screen' },
+  { href: '/sleep-environment', icon: Moon, label: 'Sleep Env' },
   { href: '/thermal', label: 'Thermal', icon: '🌡️' },
   { href: '/environment', label: 'Air', icon: '🌬️' },
   { href: '/environmental', icon: Leaf, label: 'Toxins' },
