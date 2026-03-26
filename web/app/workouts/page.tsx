@@ -4,6 +4,8 @@ import { WorkoutsList } from './workouts-list'
 
 export const metadata = { title: 'Workouts' }
 
+import { WorkoutForm } from './workout-form'
+
 export default async function WorkoutsPage() {
   const supabase = await createClient()
 
@@ -38,12 +40,15 @@ export default async function WorkoutsPage() {
   const weeklyCount = (weekWorkouts ?? []).length
 
   return (
-    <WorkoutsList
-      workouts={workouts ?? []}
-      weeklyKm={weeklyKm}
-      weeklyMinutes={weeklyMinutes}
-      weeklyCount={weeklyCount}
-      hasMore={(workouts ?? []).length === 30}
-    />
+    <>
+      <WorkoutForm />
+      <WorkoutsList
+        workouts={workouts ?? []}
+        weeklyKm={weeklyKm}
+        weeklyMinutes={weeklyMinutes}
+        weeklyCount={weeklyCount}
+        hasMore={(workouts ?? []).length === 30}
+      />
+    </>
   )
 }
