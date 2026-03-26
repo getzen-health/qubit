@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 function getBodyFatCategory(pct: number, sex: string): { label: string; color: string } {
@@ -15,8 +15,6 @@ function getBodyFatCategory(pct: number, sex: string): { label: string; color: s
   if (pct < 32) return { label: 'Average', color: 'text-yellow-600' }
   return { label: 'Obese', color: 'text-red-600' }
 }
-
-import MeasurementsForm from './measurements-form'
 
 import MeasurementsForm from './measurements-form'
 

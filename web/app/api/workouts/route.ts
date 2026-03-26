@@ -45,17 +45,4 @@ export async function DELETE(request: NextRequest) {
   const { error } = await supabase.from('workout_logs').delete().eq('id', id).eq('user_id', user.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
-
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  const { type, duration_minutes, calories, notes } = body
-  if (!type || !duration_minutes) return NextResponse.json({ error: 'type and duration_minutes required' }, { status: 400 })
-  const { data, error } = await supabase
-    .from('workout_logs')
-    .insert({ user_id: user.id, type, duration_minutes: Number(duration_minutes), calories: calories ? Number(calories) : null, notes: notes || null, workout_date: new Date().toISOString() })
-    .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data }, { status: 201 })
 }

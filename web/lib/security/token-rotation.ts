@@ -1,5 +1,5 @@
 // PKCE + refresh token rotation utilities
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function rotateSessionIfNeeded(): Promise<boolean> {
   try {

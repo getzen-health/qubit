@@ -1,5 +1,4 @@
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
-import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 

@@ -79,7 +79,7 @@ export const GET = createSecureApiHandler(
     auditAction: 'READ',
     auditResource: 'food_product',
   },
-  async (request: NextRequest, { query, supabase, user }) => {
+  async ({ query, supabase, user }: SecureApiContext<unknown, unknown>, request: NextRequest) => {
     const { barcode } = query as z.infer<typeof querySchema>
 
     // Fetch product from Open Food Facts

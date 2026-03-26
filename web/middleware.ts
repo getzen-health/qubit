@@ -29,8 +29,8 @@ export async function middleware(request: NextRequest) {
   for (const [key, value] of sessionResponse.headers.entries()) {
     response.headers.set(key, value)
   }
-  response.cookies = sessionResponse.cookies
-  response.body = sessionResponse.body
+  // response.cookies = sessionResponse.cookies
+  // response.body = sessionResponse.body
 
   return response
 }

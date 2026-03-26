@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 function getHypertensionStage(systolic: number, diastolic: number): { label: string; color: string } {
@@ -8,8 +8,6 @@ function getHypertensionStage(systolic: number, diastolic: number): { label: str
   if (systolic >= 120 && diastolic < 80) return { label: 'Elevated', color: 'text-yellow-500' }
   return { label: 'Normal', color: 'text-green-600' }
 }
-
-import BPForm from './bp-form'
 
 import BPForm from './bp-form'
 

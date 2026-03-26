@@ -1,121 +1,65 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
-import { StreaksClient } from './streaks-client'
-import { BottomNav } from '@/components/bottom-nav'
-
-export const metadata = { title: 'Streaks' }
+import { notFound } from 'next/navigation'
+import StreaksSummaryCard from '@/components/streaks-summary-card'
 
 export default async function StreaksPage() {
   const supabase = await createClient()
   const {
     data: { user },
+    error: userError
   } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (userError || !user) return notFound()
 
-  // Fetch user's timezone preference for accurate streak calculations
-  const { data: userPrefs } = await supabase
-    .from('users')
-    .select('timezone')
-    .eq('id', user.id)
-    .single()
+  const { data: streaks } = await supabase
+    .from('user_streaks')
+    .select('*')
+    .eq('user_id', user.id)
 
-  const userTimezone = userPrefs?.timezone || 'UTC'
-  
-  // Calculate date boundaries in user's timezone for accurate streak detection
-  const now = new Date()
-  const localDate = new Date(now.toLocaleString('en-US', { timeZone: userTimezone }))
-  const ninetyDaysAgo = new Date(localDate)
-  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
-  const thirtyDaysAgo = new Date(localDate)
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  const { data: achievements } = await supabase
+    .from('user_achievements')
+    .select('*')
+    .eq('user_id', user.id)
 
-  const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().slice(0, 10)
-  const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().slice(0, 10)
-
-  const [
-    { data: profile },
-    { data: summaries },
-    { data: workouts },
-    { data: mindfulness },
-    { data: waterLogs },
-    { data: nutritionSettings },
-  ] = await Promise.all([
-    // User goals
-    supabase
-      .from('users')
-      .select('step_goal, sleep_goal_minutes, calorie_goal')
-      .eq('id', user.id)
-      .single(),
-    // 90 days of daily summaries for streak computation
-    supabase
-      .from('daily_summaries')
-      .select('date, steps, sleep_duration_minutes, active_calories, avg_hrv, recovery_score')
-      .eq('user_id', user.id)
-      .gte('date', ninetyDaysAgoStr)
-      .order('date', { ascending: false }),
-    // 90 days of workout records for workout streak
-    supabase
-      .from('workout_records')
-      .select('start_time')
-      .eq('user_id', user.id)
-      .gte('start_time', ninetyDaysAgo.toISOString()),
-    // 30 days of mindfulness sessions
-    supabase
-      .from('health_records')
-      .select('start_time, value')
-      .eq('user_id', user.id)
-      .eq('type', 'mindfulness')
-      .gte('start_time', thirtyDaysAgo.toISOString()),
-    // 90 days of water logs
-    supabase
-      .from('daily_water')
-      .select('date, total_ml')
-      .eq('user_id', user.id)
-      .gte('date', ninetyDaysAgoStr),
-    // Nutrition settings for water goal
-    supabase
-      .from('user_nutrition_settings')
-      .select('water_target_ml')
-      .eq('user_id', user.id)
-      .single(),
-  ])
-
-  const workoutDays = new Set((workouts ?? []).map((w) => w.start_time.slice(0, 10)))
-  const mindfulnessDays = new Set((mindfulness ?? []).map((m) => m.start_time.slice(0, 10)))
+  // Example achievements
+  const allAchievements = [
+    { id: '7-day-streak', label: '7-Day Streak', icon: '🔥' },
+    { id: '30-day-streak', label: '30-Day Streak', icon: '🔥' },
+    { id: 'first-scan', label: 'First Scan', icon: '🔍' },
+    { id: '10-workouts', label: '10 Workouts', icon: '💪' },
+    { id: '100-water-logs', label: '100 Water Logs', icon: '💧' }
+  ]
+  const unlocked = new Set((achievements ?? []).map(a => a.achievement_id))
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link
-            href="/dashboard"
-            className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
-            aria-label="Back to dashboard"
-          >
-            <ArrowLeft className="w-5 h-5 text-text-secondary" />
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">Streaks</h1>
-            <p className="text-sm text-text-secondary">Your consistency over time</p>
-          </div>
+    <div className="max-w-2xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Streaks & Achievements</h1>
+      <div className="mb-8">
+        <h2 className="font-semibold mb-2">Current Streaks</h2>
+        <div className="flex flex-wrap gap-4">
+          {(streaks ?? []).map(s => (
+            <div key={s.streak_type} className="flex items-center gap-2 bg-orange-50 rounded-lg px-4 py-2 shadow">
+              <span className="text-2xl">🔥</span>
+              <span className="font-bold text-lg">{s.current_streak}</span>
+              <span className="capitalize text-gray-700">{s.streak_type.replace('_', ' ')}</span>
+            </div>
+          ))}
         </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <StreaksClient
-          summaries={summaries ?? []}
-          workoutDays={Array.from(workoutDays)}
-          mindfulnessDays={Array.from(mindfulnessDays)}
-          waterLogs={waterLogs ?? []}
-          stepGoal={profile?.step_goal ?? 10000}
-          sleepGoalMinutes={profile?.sleep_goal_minutes ?? 480}
-          calGoal={profile?.calorie_goal ?? 500}
-          waterGoalMl={nutritionSettings?.water_target_ml ?? 2500}
-        />
-      </main>
-      <BottomNav />
+      </div>
+      <div>
+        <h2 className="font-semibold mb-2">Achievements</h2>
+        <div className="flex flex-wrap gap-4">
+          {allAchievements.map(a => (
+            <div key={a.id} className={`flex flex-col items-center p-3 rounded-lg border shadow w-28 ${unlocked.has(a.id) ? 'bg-green-50 border-green-300' : 'bg-gray-100 border-gray-200 opacity-60'}`}>
+              <span className="text-3xl mb-1">{a.icon}</span>
+              <span className="text-sm font-medium text-center">{a.label}</span>
+              {!unlocked.has(a.id) && <span className="text-xs text-gray-400 mt-1">Locked</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-8">
+        <StreaksSummaryCard streaks={streaks ?? []} />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
-import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, AlertTriangle } from 'lucide-react'
