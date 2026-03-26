@@ -1,81 +1,89 @@
-import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+// Replaced with new smart habits API implementation
+import { createClient } from '@/lib/supabase/server'
+import { checkRateLimit } from '@/lib/security'
+import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-// GET /api/habits?days=30 — returns habits + completions window
-export const GET = createSecureApiHandler(
-  {
-    rateLimit: 'healthData',
-    requireAuth: true,
-    querySchema: z.object({ days: z.coerce.number().int().min(1).max(365).default(30) }),
-    auditAction: 'READ',
-    auditResource: 'habit',
-  },
-  async (_request, { user, query, supabase }) => {
-    const days = Math.min((query as { days: number }).days, 90)
-    const since = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
+const HabitSchema = z.object({
+  name: z.string().min(1),
+  icon: z.string().default('⭐'),
+  category: z.enum(['health', 'fitness', 'nutrition', 'sleep', 'mental', 'custom']).default('health'),
+  target_value: z.number().optional(),
+  target_unit: z.string().optional(),
+  frequency: z.enum(['daily', 'weekdays', 'weekends', 'custom']).default('daily'),
+  reminder_time: z.string().optional(),
+  reminder_enabled: z.boolean().optional(),
+})
 
-    const [{ data: habits, error: habitsError }, { data: completions, error: completionsError }] = await Promise.all([
-      supabase
-        .from('habits')
-        .select('id, name, emoji, target_days, sort_order, created_at')
-        .eq('user_id', user!.id)
-        .is('archived_at', null)
-        .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: true }),
-      supabase
-        .from('habit_completions')
-        .select('habit_id, date')
-        .eq('user_id', user!.id)
-        .gte('date', since),
-    ])
+export async function GET(req: NextRequest) {
+  await checkRateLimit(req, 'healthData')
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (habitsError) return secureErrorResponse('Failed to fetch habits', 500)
-    if (completionsError) return secureErrorResponse('Failed to fetch completions', 500)
+  // Get all active habits
+  const { data: habits } = await supabase
+    .from('user_habits')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .order('created_at', { ascending: true })
 
-    return secureJsonResponse({ habits: habits ?? [], completions: completions ?? [] })
-  }
-)
+  // Get completions for last 90 days
+  const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10)
+  const { data: completions } = await supabase
+    .from('habit_completions')
+    .select('*')
+    .eq('user_id', user.id)
+    .gte('completed_date', since)
 
-// POST /api/habits — toggle completion for a date
-export const POST = createSecureApiHandler(
-  {
-    rateLimit: 'healthData',
-    requireAuth: true,
-    bodySchema: z.object({
-      habit_id: z.string(),
-      date: z.string(),
-      completed: z.boolean().optional(),
-    }),
-    auditAction: 'UPDATE',
-    auditResource: 'habit',
-  },
-  async (_request, { user, body, supabase }) => {
-    const { habit_id, date, completed } = body as { habit_id: string; date: string; completed?: boolean }
-
-    // Verify habit belongs to user
-    const { data: habit } = await supabase
-      .from('habits')
-      .select('id')
-      .eq('id', habit_id)
-      .eq('user_id', user!.id)
-      .single()
-
-    if (!habit) return secureErrorResponse('Habit not found', 404)
-
-    if (completed) {
-      const { error } = await supabase
-        .from('habit_completions')
-        .upsert({ habit_id, user_id: user!.id, date }, { onConflict: 'habit_id,date' })
-      if (error) return secureErrorResponse('Failed to record completion', 500)
-    } else {
-      const { error } = await supabase
-        .from('habit_completions')
-        .delete()
-        .eq('habit_id', habit_id)
-        .eq('date', date)
-      if (error) return secureErrorResponse('Failed to remove completion', 500)
+  // Compute streaks and today's status
+  const today = new Date().toISOString().slice(0, 10)
+  const result = (habits ?? []).map((habit) => {
+    const habitCompletions = (completions ?? []).filter((c) => c.habit_id === habit.id)
+    // Compute streak
+    let streak = 0, best_streak = 0, current = 0
+    let prev = null
+    for (let i = 0; i < 90; i++) {
+      const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10)
+      if (habitCompletions.some((c) => c.completed_date === d)) {
+        current++
+        if (current > best_streak) best_streak = current
+        if (i === 0) streak = current
+      } else {
+        if (i === 0) streak = 0
+        current = 0
+      }
     }
+    const is_done_today = habitCompletions.some((c) => c.completed_date === today)
+    return {
+      ...habit,
+      is_done_today,
+      current_streak: streak,
+      best_streak,
+    }
+  })
+  return NextResponse.json(result)
+}
 
-    return secureJsonResponse({ ok: true })
-  }
-)
+export async function POST(req: NextRequest) {
+  await checkRateLimit(req, 'healthData')
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const body = await req.json()
+  const parsed = HabitSchema.safeParse(body)
+  if (!parsed.success) return NextResponse.json({ error: parsed.error }, { status: 400 })
+  const habit = parsed.data
+  const { data, error } = await supabase
+    .from('user_habits')
+    .insert({ ...habit, user_id: user.id })
+    .select()
+    .single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(data, { status: 201 })
+}
