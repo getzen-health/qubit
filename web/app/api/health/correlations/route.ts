@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { apiResponse } from '@/lib/api-response'
+import { getServerCache } from '@/lib/server-cache'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,6 +41,14 @@ export async function GET(request: Request) {
 
     if (!user) {
       return apiResponse({ error: 'Unauthorized' }, 401)
+    }
+
+    // Check cache first
+    const cache = getServerCache()
+    const cacheKey = `correlations:${user.id}:${days}`
+    const cached = cache.get(cacheKey)
+    if (cached) {
+      return apiResponse(cached, 200, undefined, { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
     }
 
     const endDate = new Date()
@@ -128,7 +137,10 @@ export async function GET(request: Request) {
       date_range: { start: startDateStr, end: endDateStr },
     }
 
-    return apiResponse(result)
+    // Cache for 1 hour for correlations
+    cache.set(cacheKey, result, 3600)
+
+    return apiResponse(result, 200, undefined, { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
   } catch (error) {
     console.error('Correlation calculation error:', error)
     return apiResponse(

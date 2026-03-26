@@ -74,9 +74,16 @@ export async function GET(request: Request) {
         days_recorded: m.days_recorded || 0,
       }))
 
-      return NextResponse.json({
+      const result = {
         monthly_data: formatted,
         yearly_summary: calculateYearlySummary(formatted, year),
+      }
+
+      // Cache for 1 hour for monthly reports
+      cache.set(cacheKey, result, 3600)
+
+      return NextResponse.json(result, {
+        headers: { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' },
       })
     }
 
@@ -90,7 +97,7 @@ export async function GET(request: Request) {
       .order('date', { ascending: true })
 
     if (!dailyData || dailyData.length === 0) {
-      return NextResponse.json({
+      const emptyResult = {
         monthly_data: [],
         yearly_summary: {
           year,
@@ -103,6 +110,10 @@ export async function GET(request: Request) {
           avg_recovery_score: 0,
           months_with_data: 0,
         },
+      }
+      cache.set(cacheKey, emptyResult, 3600)
+      return NextResponse.json(emptyResult, {
+        headers: { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' },
       })
     }
 
@@ -140,9 +151,16 @@ export async function GET(request: Request) {
       })
     }
 
-    return NextResponse.json({
+    const result = {
       monthly_data: monthly,
       yearly_summary: calculateYearlySummary(monthly, year),
+    }
+
+    // Cache for 1 hour
+    cache.set(cacheKey, result, 3600)
+
+    return NextResponse.json(result, {
+      headers: { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' },
     })
   } catch (error) {
     console.error('Monthly summary error:', error)

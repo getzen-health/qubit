@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getServerCache } from '@/lib/server-cache'
 
 export async function GET(request: Request) {
   const supabase = await createClient()
@@ -17,6 +18,16 @@ export async function GET(request: Request) {
   let rangeMs = 86400000 // default 24h
   if (rangeParam === '7d') rangeMs = 7 * 86400000
   if (rangeParam === '30d') rangeMs = 30 * 86400000
+
+  // Check cache first
+  const cache = getServerCache()
+  const cacheKey = `glucose:${user.id}:${rangeParam}`
+  const cached = cache.get(cacheKey)
+  if (cached) {
+    return NextResponse.json(cached, {
+      headers: { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=300, s-maxage=300' },
+    })
+  }
 
   const startTime = new Date(Date.now() - rangeMs).toISOString()
 
@@ -43,5 +54,12 @@ export async function GET(request: Request) {
       hour: new Date(r.start_time).getHours(),
     }))
 
-  return NextResponse.json({ readings })
+  const result = { readings }
+
+  // Cache for 5 minutes
+  cache.set(cacheKey, result, 300)
+
+  return NextResponse.json(result, {
+    headers: { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=300, s-maxage=300' },
+  })
 }
