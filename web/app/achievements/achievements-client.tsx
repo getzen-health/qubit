@@ -1,6 +1,16 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import type { Achievement, Category, Rarity } from './page'
+
+interface StreakData {
+  type: string
+  label: string
+  emoji: string
+  currentCount: number
+  nextMilestone: number
+  progressPercent: number
+}
 
 const RARITY_LABEL: Record<Rarity, string> = {
   bronze: 'Bronze',
@@ -59,9 +69,59 @@ interface Props {
 
 export function AchievementsClient({ achievements, earnedCount }: Props) {
   const totalCount = achievements.length
+  const [streaks, setStreaks] = useState<StreakData[]>([])
+  const [loadingStreaks, setLoadingStreaks] = useState(true)
+
+  useEffect(() => {
+    const fetchStreaks = async () => {
+      try {
+        const res = await fetch('/api/achievements')
+        if (res.ok) {
+          const data = await res.json()
+          setStreaks(data.streaks || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch streaks:', error)
+      } finally {
+        setLoadingStreaks(false)
+      }
+    }
+    fetchStreaks()
+  }, [])
 
   return (
     <div className="space-y-6">
+      {/* Active Streaks */}
+      {!loadingStreaks && streaks.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-xl border border-orange-500/20 p-4 space-y-3">
+          <h2 className="text-sm font-semibold text-text-primary flex items-center gap-2">
+            <span>🔥</span> Active Streaks
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {streaks.map((streak) => (
+              <div key={streak.type} className="bg-surface/50 rounded-lg p-3 space-y-2">
+                <div className="flex items-start justify-between">
+                  <span className="text-2xl">{streak.emoji}</span>
+                  <span className="text-lg font-bold text-orange-400">{streak.currentCount}</span>
+                </div>
+                <p className="text-xs font-medium text-text-secondary">{streak.label}</p>
+                <div className="space-y-1">
+                  <div className="h-1.5 bg-surface-secondary rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all"
+                      style={{ width: `${streak.progressPercent}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-text-secondary opacity-60">
+                    {streak.nextMilestone} days to {streak.nextMilestone + streak.currentCount}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className="bg-surface rounded-xl border border-border p-4 space-y-3">
         <div className="flex items-center justify-between">
