@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Thermometer, Clock, TrendingDown, TrendingUp, Layers, Percent, Moon, Zap, Star, BarChart2 } from 'lucide-react'
 import { SleepPageClient } from './sleep-client'
 import { BottomNav } from '@/components/bottom-nav'
+import { SleepForm } from './sleep-form'
 
 export default async function SleepPage() {
   const supabase = await createClient()
@@ -148,6 +149,9 @@ export default async function SleepPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+  <div className="max-w-2xl mx-auto mb-8">
+    <SleepForm />
+  </div>
         <SleepPageClient
           records={records ?? []}
           sleepGoalHours={sleepGoalHours}
