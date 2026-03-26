@@ -1,3 +1,5 @@
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -15,6 +17,7 @@ export default async function ChallengesPage() {
   return (
     <main role="main" aria-label="Community Challenges" id="main-content">
       <div className="container mx-auto py-8">
+      <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Challenges'}]} />
       <h1 className="text-2xl font-bold mb-2">Community Challenges</h1>
       <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

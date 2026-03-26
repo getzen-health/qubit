@@ -1,3 +1,5 @@
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -9,6 +11,7 @@ export default async function CoachPage() {
   return (
     <main role="main" aria-label="AI Health Coach" id="main-content">
       <div className="container mx-auto py-8 max-w-3xl">
+      <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'AI Coach'}]} />
       <h1 className="text-2xl font-bold mb-2">AI Health Coach</h1>
       <p className="text-muted-foreground mb-8">Personalized guidance based on your health data.</p>
       <div className="grid gap-4">

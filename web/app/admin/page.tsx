@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 
 interface TableCount { table: string; count: number }
 
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
+
 export default async function AdminPage() {
   // Auth guard is handled by layout.tsx – but double-check for defence in depth
   const supabase = await createServerClient()
@@ -55,6 +57,7 @@ export default async function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-8">
+      <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Admin'}]} />
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Admin Dashboard</h1>
         <p className="text-sm text-text-secondary mt-1">System overview and user management</p>

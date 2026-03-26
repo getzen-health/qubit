@@ -1,3 +1,5 @@
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
+import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { createServerClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -15,6 +17,7 @@ export default async function UpgradePage() {
   return (
     <main role="main" aria-label="Upgrade Plan" id="main-content">
       <div className="container mx-auto py-12 max-w-4xl">
+      <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Upgrade'}]} />
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold mb-2">Choose Your Plan</h1>
         <p className="text-muted-foreground">Unlock the full power of your health data</p>
