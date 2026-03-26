@@ -2,11 +2,13 @@ import { createServerClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
+  try {
+  try {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/injury-risk`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/injury-risk`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,4 +18,7 @@ export async function GET() {
   })
   const data = await res.json()
   return NextResponse.json(data)
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to fetch injury risk' }, { status: 500 })
+  }
 }
