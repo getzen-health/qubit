@@ -70,6 +70,7 @@ const navItems = [
 ]
 
 const moreItems = [
+  { href: '/mindfulness', icon: Leaf, label: 'Mindfulness' },
   { href: '/import', icon: Upload, label: 'Import' },
   { href: '/export', icon: Download, label: 'Export' },
   { href: '/bmi', icon: BarChart2, label: 'BMI' },
