@@ -508,14 +508,16 @@ struct DashboardListView: View {
                 )
 
                 // Stress Score (HRV-based, WHOOP/Bevel research)
-                MetricRowView(
-                    icon: "waveform.path.ecg",
-                    label: "Stress",
-                    value: "\(viewModel.stressScore)",
-                    unit: "%",
-                    sublabel: viewModel.stressLabel,
-                    color: viewModel.stressScore >= 50 ? .strain : .recovery
-                )
+                NavigationLink(destination: StressView()) {
+                    MetricRowView(
+                        icon: "waveform.path.ecg",
+                        label: "Stress",
+                        value: "\(viewModel.stressScore)",
+                        unit: "%",
+                        sublabel: viewModel.stressLabel,
+                        color: viewModel.stressScore >= 50 ? .strain : .recovery
+                    )
+                }
 
                 // Strain
                 MetricRowView(
