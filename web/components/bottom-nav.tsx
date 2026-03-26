@@ -25,6 +25,7 @@ const navItems = [
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/body', label: 'Body', icon: '⚖️' },
   { href: '/fasting', label: 'Fast', icon: undefined /* ⏱️ */ },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
