@@ -70,10 +70,10 @@ export default async function SettingsPage() {
       icon: User,
     },
     {
-      title: 'Privacy & Sharing',
-      description: 'Control what data you share with friends',
+      title: 'Privacy & Data',
+      description: 'Export or delete your health data, and see how it is used',
       href: '/settings/privacy',
-      icon: Lock,
+      icon: Shield,
     },
     {
       title: 'Health Goals',
