@@ -27,6 +27,7 @@ const navItems = [
   { href: '/sleep', icon: Moon, label: 'Sleep' },
   { href: '/breathing', label: 'Breathe', icon: '🫁' },
   { href: '/body', label: 'Body', icon: '⚖️' },
+  { href: '/injuries', label: 'Injuries', icon: '🩹' },
   { href: '/fasting', label: 'Fast', icon: undefined /* ⏱️ */ },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
