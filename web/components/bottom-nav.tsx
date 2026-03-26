@@ -45,6 +45,7 @@ const navItems = [
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
   { href: '/reports', label: 'Reports', icon: '📋' },
   { href: '/goals', label: 'Goals', icon: '🎯' },
+  { href: '/longevity', label: 'Longevity', icon: '🔬' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
