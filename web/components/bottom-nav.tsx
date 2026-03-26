@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/cognitive', icon: Brain, label: 'Cognitive' },
-  { href: '/gut-health', label: 'Gut', icon: '🦠' },
+  { href: '/gut', label: 'Gut', icon: Activity },
   { href: '/mental-health', label: 'Wellbeing', icon: '🧠' },
   { href: '/share', label: 'Share', icon: '📤' },
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
