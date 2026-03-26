@@ -2,6 +2,13 @@ import SwiftUI
 import HealthKit
 
 struct WorkoutsView: View {
+    // MARK: - Live Activity Integration
+    // Inject WorkoutLiveActivityService as @State or via environment
+    // Call service.startActivity(workoutType: selectedWorkout) when starting
+    // Call service.update(elapsedSeconds:heartRate:calories:pace:) every 15 seconds from a Timer
+    // Call service.stop() when workout ends
+    // Use @available(iOS 16.1, *) guard around any Live Activity usage
+
     @State private var workouts: [HKWorkout] = []
     @State private var isLoading = true
     @State private var selectedPeriod: WorkoutPeriod = .month
