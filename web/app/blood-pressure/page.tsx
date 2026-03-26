@@ -9,6 +9,10 @@ function getHypertensionStage(systolic: number, diastolic: number): { label: str
   return { label: 'Normal', color: 'text-green-600' }
 }
 
+import BPForm from './bp-form'
+
+import BPForm from './bp-form'
+
 export default async function BloodPressurePage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()

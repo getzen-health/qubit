@@ -1,0 +1,32 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase/server'
+
+export async function GET(request: NextRequest) {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { data, error } = await supabase
+    .from('body_measurements')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('measured_at', { ascending: false })
+    .limit(30)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data })
+}
+
+export async function POST(request: NextRequest) {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const body = await request.json()
+  const { weight_kg, waist_cm, neck_cm, hips_cm, height_cm } = body
+  if (!weight_kg) return NextResponse.json({ error: 'weight_kg required' }, { status: 400 })
+  const { data, error } = await supabase
+    .from('body_measurements')
+    .insert({ user_id: user.id, weight_kg: Number(weight_kg), waist_cm: waist_cm ? Number(waist_cm) : null, neck_cm: neck_cm ? Number(neck_cm) : null, hips_cm: hips_cm ? Number(hips_cm) : null, height_cm: height_cm ? Number(height_cm) : null, measured_at: new Date().toISOString() })
+    .select()
+    .single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data }, { status: 201 })
+}

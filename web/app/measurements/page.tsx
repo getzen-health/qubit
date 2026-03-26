@@ -16,6 +16,10 @@ function getBodyFatCategory(pct: number, sex: string): { label: string; color: s
   return { label: 'Obese', color: 'text-red-600' }
 }
 
+import MeasurementsForm from './measurements-form'
+
+import MeasurementsForm from './measurements-form'
+
 export default async function MeasurementsPage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()

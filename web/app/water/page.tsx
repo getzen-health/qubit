@@ -75,6 +75,8 @@ function ProgressRing({ totalMl, targetMl }: { totalMl: number; targetMl: number
 
 import { WaterClient } from './water-client'
 
+import { WaterChart } from './water-chart'
+
 export default async function WaterPage() {
   // Fetch initial data for SSR
   const today = new Date().toISOString().slice(0, 10)
