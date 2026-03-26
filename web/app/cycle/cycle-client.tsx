@@ -911,6 +911,8 @@ interface CyclePageClientProps {
   cycles: MenstrualCycle[]
 }
 
+import { PHASE_INFO, estimateCurrentPhase, estimateCycleDay, estimateNextPeriod, estimateFertileWindow, CyclePhase } from '@/lib/cycle'
+
 export function CyclePageClient({ cycles: initialCycles }: CyclePageClientProps) {
   const router = useRouter()
   const [showLogModal, setShowLogModal] = useState(false)
@@ -932,6 +934,21 @@ export function CyclePageClient({ cycles: initialCycles }: CyclePageClientProps)
   const dayMap = buildDayMap(cycles, avgCycleLength)
   const currentCycle = cycles[0]
 
+  // Phase/energy guidance
+  let phase: CyclePhase = 'menstrual'
+  let phaseInfo = PHASE_INFO['menstrual']
+  let dayOfCycle = 1
+  let nextPeriod: Date | null = null
+  let fertileWindow: { start: Date; end: Date } | null = null
+  if (currentCycle) {
+    const lastStart = new Date(currentCycle.start_date)
+    phase = estimateCurrentPhase(lastStart, avgCycleLength)
+    phaseInfo = PHASE_INFO[phase]
+    dayOfCycle = estimateCycleDay(lastStart, avgCycleLength)
+    nextPeriod = estimateNextPeriod(lastStart, avgCycleLength)
+    fertileWindow = estimateFertileWindow(lastStart, avgCycleLength)
+  }
+
   return (
     <div className="space-y-5">
       {showLogModal && (
@@ -941,12 +958,57 @@ export function CyclePageClient({ cycles: initialCycles }: CyclePageClientProps)
         />
       )}
 
-      {/* Prediction card */}
-      <CyclePredictionCard
-        cycles={cycles}
-        avgCycleLength={avgCycleLength}
-        onLogPeriod={() => setShowLogModal(true)}
-      />
+      {/* Current Phase Card */}
+      <div className="rounded-2xl border p-5 space-y-4" style={{ borderColor: phaseInfo.color, background: phaseInfo.color + '10' }}>
+        <div className="flex items-center gap-4">
+          <span className="text-5xl" aria-label={phaseInfo.name}>{phaseInfo.emoji}</span>
+          <div>
+            <div className="text-lg font-bold" style={{ color: phaseInfo.color }}>{phaseInfo.name}</div>
+            <div className="text-xs text-text-secondary">Day {dayOfCycle} · {phaseInfo.dayRange}</div>
+            <div className="text-xs text-text-secondary mt-1">Energy: <span className="font-semibold capitalize">{phaseInfo.energyLevel}</span></div>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <div className="text-xs text-text-secondary">Next period</div>
+            <div className="text-base font-bold text-text-primary">{nextPeriod ? nextPeriod.toLocaleDateString() : '-'}</div>
+            <div className="text-xs text-text-secondary">{nextPeriod ? `${Math.max(0, Math.round((nextPeriod.getTime() - Date.now()) / 86400000))} days` : ''}</div>
+          </div>
+          <div className="flex-1">
+            <div className="text-xs text-text-secondary">Fertile window</div>
+            <div className="text-base font-bold text-text-primary">{fertileWindow ? `${fertileWindow.start.toLocaleDateString()}–${fertileWindow.end.toLocaleDateString()}` : '-'}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Phase Guidance Tabs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <div className="flex items-center gap-2 mb-2"><span className="text-xl">🏋️</span><span className="font-semibold">Workout</span></div>
+          <div className="text-sm text-text-primary mb-1">{phaseInfo.workout}</div>
+          <ul className="text-xs text-text-secondary list-disc ml-5">
+            {phaseInfo.tips.filter(t => t.toLowerCase().includes('workout') || t.toLowerCase().includes('exercise')).map(t => <li key={t}>{t}</li>)}
+          </ul>
+        </div>
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <div className="flex items-center gap-2 mb-2"><span className="text-xl">🥗</span><span className="font-semibold">Nutrition</span></div>
+          <div className="text-sm text-text-primary mb-1">{phaseInfo.nutrition}</div>
+          <ul className="text-xs text-text-secondary list-disc ml-5">
+            {phaseInfo.tips.filter(t => t.toLowerCase().includes('diet') || t.toLowerCase().includes('food') || t.toLowerCase().includes('nutrition')).map(t => <li key={t}>{t}</li>)}
+          </ul>
+        </div>
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <div className="flex items-center gap-2 mb-2"><span className="text-xl">😴</span><span className="font-semibold">Sleep</span></div>
+          <div className="text-sm text-text-primary mb-1">{phaseInfo.sleep}</div>
+        </div>
+        <div className="bg-surface rounded-2xl border border-border p-4">
+          <div className="flex items-center gap-2 mb-2"><span className="text-xl">😊</span><span className="font-semibold">Mood & Wellness</span></div>
+          <div className="text-sm text-text-primary mb-1">{phaseInfo.mood}</div>
+          <ul className="text-xs text-text-secondary list-disc ml-5">
+            {phaseInfo.tips.filter(t => t.toLowerCase().includes('mood') || t.toLowerCase().includes('mental') || t.toLowerCase().includes('serotonin')).map(t => <li key={t}>{t}</li>)}
+          </ul>
+        </div>
+      </div>
 
       {/* Calendar */}
       <CycleCalendar dayMap={dayMap} />
