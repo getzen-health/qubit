@@ -123,6 +123,12 @@ export default async function SettingsPage() {
       href: '/settings/data-export',
       icon: Download,
     },
+    {
+      title: 'Export Health Report',
+      description: '📄 PDF summary for your doctor',
+      href: '/settings/export',
+      icon: Download,
+    },
   ]
 
   return (
