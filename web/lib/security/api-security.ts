@@ -1,8 +1,3 @@
-/**
- * Unified API Security Wrapper
- * Combines rate limiting, validation, and audit logging for API routes
- */
-
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
@@ -16,6 +11,7 @@ import { applySecurityHeaders } from './headers'
 import { createAuditContext, AuditAction, AuditResource } from './audit-log'
 import { validateInput } from './validation'
 import { redactForLogging } from './encryption'
+import { trackApiCall } from '@/lib/monitoring'
 
 interface SecureApiConfig {
   // Rate limiting
@@ -161,13 +157,22 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
       // 7. Add security headers to response
       applySecurityHeaders(response.headers)
 
-      // 8. Log successful request (if audit is configured)
+      // 8. Track API metrics
+      const duration = Date.now() - startTime
+      void trackApiCall({
+        endpoint: request.nextUrl.pathname,
+        duration_ms: duration,
+        status_code: response.status,
+        user_id: user?.id,
+      })
+
+      // 9. Log successful request (if audit is configured)
       if (config.auditAction && config.auditResource && user) {
         await audit.log(user.id, config.auditAction, config.auditResource, {
           details: {
             method: request.method,
             path: request.nextUrl.pathname,
-            duration_ms: Date.now() - startTime,
+            duration_ms: duration,
             body: redactForLogging(validatedBody as Record<string, unknown>),
           },
           success: true,
@@ -177,6 +182,15 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
       return response
     } catch (error) {
       console.error('API error:', error)
+      
+      // Track error metrics
+      const duration = Date.now() - startTime
+      void trackApiCall({
+        endpoint: request.nextUrl.pathname,
+        duration_ms: duration,
+        status_code: 500,
+        user_id: user?.id,
+      })
 
       const response = NextResponse.json(
         { error: 'Internal server error' },

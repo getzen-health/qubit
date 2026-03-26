@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { apiResponse } from '@/lib/api-response'
 import { getServerCache } from '@/lib/server-cache'
+import { trackApiCall } from '@/lib/monitoring'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,11 +29,16 @@ function calculateCorrelation(x: number[], y: number[]): number {
 }
 
 export async function GET(request: Request) {
+  const startTime = Date.now()
+  let statusCode = 200
+  const user_id = (await createClient()).auth.getUser().then(r => r.data.user?.id)
+
   try {
     const { searchParams } = new URL(request.url)
     const days = parseInt(searchParams.get('days') || '90', 10)
 
     if (![30, 90, 180, 365].includes(days)) {
+      statusCode = 400
       return apiResponse({ error: 'Days must be 30, 90, 180, or 365' }, 400)
     }
 
@@ -40,6 +46,7 @@ export async function GET(request: Request) {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
+      statusCode = 401
       return apiResponse({ error: 'Unauthorized' }, 401)
     }
 
@@ -48,6 +55,13 @@ export async function GET(request: Request) {
     const cacheKey = `correlations:${user.id}:${days}`
     const cached = cache.get(cacheKey)
     if (cached) {
+      const duration = Date.now() - startTime
+      void trackApiCall({
+        endpoint: '/api/health/correlations',
+        duration_ms: duration,
+        status_code: 200,
+        user_id: user.id,
+      })
       return apiResponse(cached, 200, undefined, { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
     }
 
@@ -68,6 +82,14 @@ export async function GET(request: Request) {
       .order('date', { ascending: true })
 
     if (error || !dailyData || dailyData.length < 10) {
+      const duration = Date.now() - startTime
+      statusCode = 200 // Still valid response with empty data
+      void trackApiCall({
+        endpoint: '/api/health/correlations',
+        duration_ms: duration,
+        status_code: statusCode,
+        user_id: user.id,
+      })
       return apiResponse({
         metrics: ['steps', 'sleep', 'hrv', 'resting_hr', 'calories'],
         values: [[], [], [], [], []],
@@ -140,9 +162,24 @@ export async function GET(request: Request) {
     // Cache for 1 hour for correlations
     cache.set(cacheKey, result, 3600)
 
+    const duration = Date.now() - startTime
+    void trackApiCall({
+      endpoint: '/api/health/correlations',
+      duration_ms: duration,
+      status_code: 200,
+      user_id: user.id,
+    })
+
     return apiResponse(result, 200, undefined, { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
   } catch (error) {
+    const duration = Date.now() - startTime
     console.error('Correlation calculation error:', error)
+    void trackApiCall({
+      endpoint: '/api/health/correlations',
+      duration_ms: duration,
+      status_code: 500,
+      user_id: user_id,
+    })
     return apiResponse(
       { error: 'Failed to calculate correlations' },
       500

@@ -2,10 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { CycleClient } from './cycle-client'
+import { CyclePageClient } from './cycle-client'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Cycle Tracking' }
+export const metadata = { title: 'Menstrual Cycle' }
+
+const MS_PER_DAY = 86_400_000
 
 export default async function CyclePage() {
   const supabase = await createClient()
@@ -14,15 +16,27 @@ export default async function CyclePage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // cycle_records table may not exist — handle error gracefully
-  const { data: records, error } = await supabase
-    .from('cycle_records')
-    .select('id, start_date, end_date, cycle_length_days, period_length_days, phase, notes')
+  // Fetch one extra cycle to compute the length of the oldest visible cycle
+  const { data: rawCycles, error } = await supabase
+    .from('menstrual_cycles')
+    .select('id, start_date, end_date, cycle_length, flow_intensity, symptoms, notes, created_at')
     .eq('user_id', user.id)
     .order('start_date', { ascending: false })
+    .limit(13)
 
-  // Treat a missing-table error the same as an empty result
-  const cycles = error ? [] : (records ?? [])
+  const allCycles = error ? [] : (rawCycles ?? [])
+
+  // Enrich with computed cycle lengths (distance between consecutive start_dates)
+  const enrichedCycles = allCycles.slice(0, 12).map((cycle, i) => {
+    const nextCycle = allCycles[i + 1]
+    const computedLength = nextCycle
+      ? Math.round(
+          (new Date(cycle.start_date).getTime() - new Date(nextCycle.start_date).getTime()) /
+            MS_PER_DAY,
+        )
+      : (cycle.cycle_length ?? null)
+    return { ...cycle, symptoms: cycle.symptoms ?? [], computed_cycle_length: computedLength }
+  })
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,16 +50,18 @@ export default async function CyclePage() {
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-text-primary">Cycle Tracking</h1>
+            <h1 className="text-xl font-bold text-text-primary">Menstrual Cycle</h1>
             <p className="text-sm text-text-secondary">
-              {cycles.length > 0 ? `${cycles.length} cycles logged` : 'Phase-based training'}
+              {enrichedCycles.length > 0
+                ? `${enrichedCycles.length} cycles tracked`
+                : 'Track your cycle'}
             </p>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <CycleClient cycles={cycles} />
+        <CyclePageClient cycles={enrichedCycles} />
       </main>
       <BottomNav />
     </div>

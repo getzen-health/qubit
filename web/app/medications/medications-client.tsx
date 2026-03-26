@@ -1,562 +1,522 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  LineChart,
-  Line,
-  Legend,
-} from 'recharts'
-import {
-  Pill,
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  ArrowUpRight,
-  ArrowDownRight,
-  Heart,
-  FlaskConical,
-  ShieldCheck,
-  BookOpen,
   Plus,
+  Edit2,
+  Trash2,
+  Pause,
+  Play,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  Pill,
+  X,
+  AlertCircle,
 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { cn } from '@/lib/utils'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Medication {
-  id?: string
+  id: string
+  user_id: string
   name: string
-  dosage?: string
-  frequency?: string
-  times?: string[]
-  start_date?: string
-  end_date?: string
-  is_active?: boolean
+  dosage: number
+  unit: string
+  frequency: string
+  time_of_day: string[]
+  start_date: string
+  end_date: string | null
+  notes: string | null
+  active: boolean
+  created_at: string
+  updated_at: string
 }
 
-interface BiomarkerImpact {
-  medication: string
-  shortName: string
-  hrvBefore: number
-  hrvAfter: number
-  rhrBefore: number
-  rhrAfter: number
+interface MedicationLog {
+  id: string
+  user_id: string
+  medication_id: string
+  taken_at: string
+  skipped: boolean
+  notes: string | null
 }
 
-interface HrvDay {
-  day: string
-  hrv: number
+interface MedicationsClientProps {
+  initialMedications: Medication[]
+  initialTodayLogs: MedicationLog[]
+  userId: string
 }
 
-// Generate 30 days of HRV with mild upward trend (30–50ms)
-const HRV_TREND: HrvDay[] = Array.from({ length: 30 }, (_, i) => {
-  const base = 34 + i * 0.45
-  const noise = (Math.sin(i * 1.7) * 4 + Math.cos(i * 2.3) * 3)
-  return {
-    day: `Day ${i + 1}`,
-    hrv: Math.round(Math.min(50, Math.max(30, base + noise)) * 10) / 10,
-  }
-})
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-// Demo biomarker data for visualization
-const DEMO_BIOMARKER_DATA: BiomarkerImpact[] = [
-  {
-    medication: 'Lisinopril',
-    shortName: 'Lisinopril',
-    hrvBefore: 38,
-    hrvAfter: 42,
-    rhrBefore: 72,
-    rhrAfter: 68,
-  },
-  {
-    medication: 'Metformin',
-    shortName: 'Metformin',
-    hrvBefore: 35,
-    hrvAfter: 37,
-    rhrBefore: 74,
-    rhrAfter: 73,
-  },
-  {
-    medication: 'Atorvastatin',
-    shortName: 'Atorvastatin',
-    hrvBefore: 34,
-    hrvAfter: 35,
-    rhrBefore: 75,
-    rhrAfter: 74,
-  },
+const FREQUENCY_OPTIONS = [
+  { value: 'once_daily', label: 'Once daily' },
+  { value: 'twice_daily', label: 'Twice daily' },
+  { value: 'three_times_daily', label: 'Three times daily' },
+  { value: 'as_needed', label: 'As needed' },
 ]
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+const TIME_OF_DAY_OPTIONS = [
+  { value: 'morning', label: 'Morning' },
+  { value: 'afternoon', label: 'Afternoon' },
+  { value: 'evening', label: 'Evening' },
+  { value: 'night', label: 'Night' },
+]
 
-const tooltipStyle = {
-  background: 'var(--color-surface, #1e2130)',
-  border: '1px solid var(--color-border, #2d3047)',
-  borderRadius: 8,
-  fontSize: 12,
+const UNIT_OPTIONS = ['mg', 'mcg', 'g', 'ml', 'IU', 'tablet', 'capsule', 'drop', 'patch']
+
+const FREQUENCY_LABELS: Record<string, string> = {
+  once_daily: 'Once daily',
+  twice_daily: 'Twice daily',
+  three_times_daily: 'Three times daily',
+  as_needed: 'As needed',
 }
 
-function statusBadge(isActive: boolean) {
-  const styles = isActive
-    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${styles}`}>
-      {isActive ? 'Active' : 'Inactive'}
-    </span>
-  )
-}
+// ─── Empty form state ─────────────────────────────────────────────────────────
 
-function DeltaBadge({ before, after, unit }: { before: number; after: number; unit: string }) {
-  const delta = after - before
-  const positive = delta > 0
-  const color = positive
-    ? 'text-green-600 dark:text-green-400'
-    : 'text-orange-600 dark:text-orange-400'
-  const Icon = positive ? ArrowUpRight : ArrowDownRight
-  return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${color}`}>
-      <Icon className="w-3 h-3" />
-      {positive ? '+' : ''}{delta}{unit}
-    </span>
-  )
-}
-
-// ─── Sections ─────────────────────────────────────────────────────────────────
-
-function ConnectionStatusCard() {
-  const steps = [
-    {
-      icon: <Heart className="w-5 h-5 text-red-500" />,
-      title: 'Open Health app on iPhone',
-      desc: 'Go to the Browse tab and select Health Records',
-    },
-    {
-      icon: <FlaskConical className="w-5 h-5 text-blue-500" />,
-      title: 'Connect your healthcare providers',
-      desc: 'Search for your hospital or clinic and sign in with your patient portal',
-    },
-    {
-      icon: <ShieldCheck className="w-5 h-5 text-green-500" />,
-      title: 'Authorize FHIR data access',
-      desc: 'Apple Health downloads clinical records — medications, lab results, and more',
-    },
-    {
-      icon: <Activity className="w-5 h-5 text-purple-500" />,
-      title: 'KQuarks syncs automatically',
-      desc: 'Your medication list updates whenever Apple Health receives new FHIR records',
-    },
-  ]
-
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-          <Pill className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-        </div>
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-            Connect Health Records
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">FHIR R4 via Apple Health</p>
-        </div>
-        <div className="ml-auto flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-full">
-          <AlertTriangle className="w-3 h-3" />
-          Not connected
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        {steps.map((step, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">
-              {i + 1}
-            </div>
-            <div className="flex-shrink-0 mt-1.5">{step.icon}</div>
-            <div>
-              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{step.title}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{step.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-1 border-t border-gray-100 dark:border-gray-800 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-        <ShieldCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
-        Records are stored locally on-device and never leave Apple Health unless you authorize sync.
-      </div>
-    </div>
-  )
-}
-
-function ActiveMedications() {
-  const [medications, setMedications] = useState<Medication[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({
+function emptyForm() {
+  return {
     name: '',
     dosage: '',
-    frequency: '',
+    unit: 'mg',
+    frequency: 'once_daily',
+    time_of_day: [] as string[],
+    start_date: new Date().toISOString().slice(0, 10),
+    end_date: '',
+    notes: '',
+  }
+}
+
+// ─── Today's Checklist ────────────────────────────────────────────────────────
+
+interface ChecklistProps {
+  medications: Medication[]
+  logs: MedicationLog[]
+  onMark: (medication: Medication, skipped: boolean, logId?: string) => void
+  loadingId: string | null
+}
+
+function TodayChecklist({ medications, logs, onMark, loadingId }: ChecklistProps) {
+  const today = new Date().toISOString().slice(0, 10)
+
+  const activeDueToday = medications.filter((m) => {
+    if (!m.active) return false
+    if (m.start_date > today) return false
+    if (m.end_date && m.end_date < today) return false
+    if (m.frequency === 'as_needed') return false
+    return true
   })
 
-  useEffect(() => {
-    fetchMedications()
-  }, [])
+  const logByMedId = useMemo(() => {
+    const map = new Map<string, MedicationLog>()
+    for (const log of logs) map.set(log.medication_id, log)
+    return map
+  }, [logs])
 
-  const fetchMedications = async () => {
-    try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('medications')
-        .select('*')
-        .eq('is_active', true)
-        .order('name')
-
-      if (error) throw error
-      setMedications(data || [])
-    } catch (error) {
-      console.error('Error fetching medications:', error)
-    } finally {
-      setLoading(false)
-    }
+  if (activeDueToday.length === 0) {
+    return (
+      <section>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">
+          Today's Checklist
+        </h2>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <Pill className="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-2" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">No medications scheduled for today.</p>
+        </div>
+      </section>
+    )
   }
 
-  const handleAddMedication = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.name.trim()) return
+  const total = activeDueToday.length
+  const taken = activeDueToday.filter((m) => {
+    const log = logByMedId.get(m.id)
+    return log && !log.skipped
+  }).length
 
-    try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('medications')
-        .insert([
-          {
-            name: formData.name,
-            dosage: formData.dosage || null,
-            frequency: formData.frequency || 'daily',
-            is_active: true,
-            start_date: new Date().toISOString().split('T')[0],
-          },
-        ])
-        .select()
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Today's Checklist</h2>
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          {taken}/{total} taken
+        </span>
+      </div>
 
-      if (error) throw error
-      setMedications([...medications, data[0]])
-      setFormData({ name: '', dosage: '', frequency: '' })
-      setShowForm(false)
-    } catch (error) {
-      console.error('Error adding medication:', error)
-    }
+      {/* Progress bar */}
+      <div className="mb-4 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-green-500 rounded-full transition-all duration-500"
+          style={{ width: `${total > 0 ? (taken / total) * 100 : 0}%` }}
+        />
+      </div>
+
+      <div className="space-y-2">
+        {activeDueToday.map((med) => {
+          const log = logByMedId.get(med.id)
+          const isTaken = !!log && !log.skipped
+          const isSkipped = !!log && log.skipped
+          const isLoading = loadingId === med.id
+
+          return (
+            <div
+              key={med.id}
+              className={cn(
+                'flex items-center gap-3 p-4 rounded-xl border transition-all',
+                isTaken
+                  ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
+                  : isSkipped
+                  ? 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-60'
+                  : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800'
+              )}
+            >
+              <div className="flex-1 min-w-0">
+                <p className={cn('text-sm font-medium truncate', isTaken ? 'text-green-800 dark:text-green-300' : 'text-gray-900 dark:text-gray-100')}>
+                  {med.name}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {med.dosage} {med.unit}
+                  {med.time_of_day.length > 0 && (
+                    <> · {med.time_of_day.join(', ')}</>
+                  )}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                {log ? (
+                  <button
+                    onClick={() => onMark(med, false, log.id)}
+                    disabled={isLoading}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                    title="Undo"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                ) : null}
+                {!isTaken && (
+                  <button
+                    onClick={() => onMark(med, true)}
+                    disabled={isLoading}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors disabled:opacity-50"
+                    title="Mark as skipped"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={() => log ? onMark(med, false, log.id) : onMark(med, false)}
+                  disabled={isLoading || isTaken}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50',
+                    isTaken
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-default'
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  )}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {isTaken ? 'Taken' : isLoading ? '…' : 'Take'}
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+// ─── Active Medications List ──────────────────────────────────────────────────
+
+interface MedicationListProps {
+  medications: Medication[]
+  onEdit: (med: Medication) => void
+  onToggle: (med: Medication) => void
+  onDelete: (med: Medication) => void
+  actionLoadingId: string | null
+}
+
+function ActiveMedicationsList({ medications, onEdit, onToggle, onDelete, actionLoadingId }: MedicationListProps) {
+  return (
+    <section>
+      <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        All Medications
+      </h2>
+      {medications.length === 0 ? (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center">
+          <Pill className="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-2" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">No medications added yet.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {medications.map((med) => (
+            <div
+              key={med.id}
+              className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                      {med.name}
+                    </span>
+                    <span
+                      className={cn(
+                        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shrink-0',
+                        med.active
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                      )}
+                    >
+                      {med.active ? 'Active' : 'Paused'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {med.dosage} {med.unit} · {FREQUENCY_LABELS[med.frequency] ?? med.frequency}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    Started {med.start_date}
+                    {med.end_date && <> · Until {med.end_date}</>}
+                  </p>
+                  {med.time_of_day.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {med.time_of_day.map((t) => (
+                        <span key={t} className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded text-xs">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {med.notes && (
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 italic">{med.notes}</p>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => onEdit(med)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    title="Edit"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onToggle(med)}
+                    disabled={actionLoadingId === med.id}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors disabled:opacity-50"
+                    title={med.active ? 'Pause' : 'Resume'}
+                  >
+                    {med.active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => onDelete(med)}
+                    disabled={actionLoadingId === med.id}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+// ─── Add/Edit Modal ───────────────────────────────────────────────────────────
+
+interface ModalProps {
+  editingMed: Medication | null
+  form: ReturnType<typeof emptyForm>
+  setForm: (f: ReturnType<typeof emptyForm>) => void
+  onSave: () => void
+  onClose: () => void
+  status: 'idle' | 'loading' | 'success' | 'error'
+  error: string
+}
+
+function MedicationModal({ editingMed, form, setForm, onSave, onClose, status, error }: ModalProps) {
+  function toggleTimeOfDay(t: string) {
+    setForm({
+      ...form,
+      time_of_day: form.time_of_day.includes(t)
+        ? form.time_of_day.filter((v) => v !== t)
+        : [...form.time_of_day, t],
+    })
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-          <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
-        </div>
-        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-          Active Medications
-        </h2>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
-        >
-          <Plus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-
-      {showForm && (
-        <form onSubmit={handleAddMedication} className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-3 space-y-2 border border-gray-100 dark:border-gray-700">
-          <input
-            type="text"
-            placeholder="Medication name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Dosage (e.g., 10mg)"
-            value={formData.dosage}
-            onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
-            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-          />
-          <select
-            value={formData.frequency}
-            onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
-            className="w-full px-2 py-1.5 text-xs rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100 dark:border-gray-800 sticky top-0 bg-white dark:bg-gray-900">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+            {editingMed ? 'Edit Medication' : 'Add Medication'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400"
           >
-            <option value="daily">Daily</option>
-            <option value="twice daily">Twice daily</option>
-            <option value="as needed">As needed</option>
-          </select>
-          <div className="flex gap-2 justify-end">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Form */}
+        <div className="px-5 py-4 space-y-4">
+          {/* Name */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Medication name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="e.g. Lisinopril"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Dosage + Unit */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                Dosage <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={form.dosage}
+                onChange={(e) => setForm({ ...form, dosage: e.target.value })}
+                placeholder="0"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                Unit <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={form.unit}
+                onChange={(e) => setForm({ ...form, unit: e.target.value })}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                {UNIT_OPTIONS.map((u) => (
+                  <option key={u} value={u}>{u}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Frequency */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Frequency <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={form.frequency}
+              onChange={(e) => setForm({ ...form, frequency: e.target.value })}
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              {FREQUENCY_OPTIONS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Time of day */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+              Time of day
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {TIME_OF_DAY_OPTIONS.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => toggleTimeOfDay(t.value)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
+                    form.time_of_day.includes(t.value)
+                      ? 'bg-blue-600 border-blue-600 text-white'
+                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-blue-400'
+                  )}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Start / End date */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                Start date <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                value={form.start_date}
+                onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                End date
+              </label>
+              <input
+                type="date"
+                value={form.end_date}
+                onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+                min={form.start_date}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Notes
+            </label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              rows={2}
+              placeholder="Optional notes…"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            />
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              {error}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-1 pb-1">
             <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="px-3 py-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               Cancel
             </button>
             <button
-              type="submit"
-              className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={onSave}
+              disabled={status === 'loading'}
+              className="flex-1 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium transition-colors"
             >
-              Add Medication
+              {status === 'loading' ? 'Saving…' : status === 'success' ? '✓ Saved' : 'Save'}
             </button>
           </div>
-        </form>
-      )}
-
-      <div className="space-y-3">
-        {loading ? (
-          <p className="text-xs text-gray-500 dark:text-gray-400">Loading medications...</p>
-        ) : medications.length === 0 ? (
-          <p className="text-xs text-gray-500 dark:text-gray-400">No active medications. Add one to get started.</p>
-        ) : (
-          medications.map((med) => (
-            <div
-              key={med.id}
-              className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700"
-            >
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <Pill className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    {med.name}
-                  </span>
-                  {med.dosage && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">
-                      {med.dosage}
-                    </span>
-                  )}
-                  {statusBadge(med.is_active ?? true)}
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  {med.frequency ? `${med.frequency} · ` : ''}
-                  {med.start_date ? `Since ${new Date(med.start_date).toLocaleDateString()}` : 'No start date'}
-                </p>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  )
-}
-
-function BiomarkerImpactChart() {
-  const hrvData = DEMO_BIOMARKER_DATA.map((d) => ({
-    name: d.shortName,
-    Before: d.hrvBefore,
-    After: d.hrvAfter,
-  }))
-
-  const rhrData = DEMO_BIOMARKER_DATA.map((d) => ({
-    name: d.shortName,
-    Before: d.rhrBefore,
-    After: d.rhrAfter,
-  }))
-
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-5">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-          <Activity className="w-4 h-4 text-purple-600 dark:text-purple-400" />
         </div>
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-            Biomarker Impact
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            HRV &amp; RHR before vs. after medication start
-          </p>
-        </div>
-        <span className="ml-auto text-xs text-gray-400 dark:text-gray-500 italic">Demo data</span>
-      </div>
-
-      {/* HRV Impact */}
-      <div>
-        <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
-          HRV (ms)
-        </p>
-        <div className="flex flex-col gap-3 mb-3">
-          {DEMO_BIOMARKER_DATA.map((d) => (
-            <div key={d.medication} className="flex items-center gap-2 text-xs">
-              <span className="w-24 text-gray-700 dark:text-gray-300 font-medium">{d.medication}</span>
-              <span className="text-gray-500 dark:text-gray-400">{d.hrvBefore}ms → {d.hrvAfter}ms</span>
-              <DeltaBadge before={d.hrvBefore} after={d.hrvAfter} unit="ms" />
-            </div>
-          ))}
-        </div>
-        <ResponsiveContainer width="100%" height={160}>
-          <BarChart data={hrvData} barCategoryGap="30%" barGap={4}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis domain={[30, 46]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={32} unit="ms" />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} ms`]} />
-            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
-            <Bar dataKey="Before" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="After" fill="#22c55e" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* RHR Impact */}
-      <div>
-        <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
-          Resting Heart Rate (bpm)
-        </p>
-        <div className="flex flex-col gap-3 mb-3">
-          {DEMO_BIOMARKER_DATA.map((d) => (
-            <div key={d.medication} className="flex items-center gap-2 text-xs">
-              <span className="w-24 text-gray-700 dark:text-gray-300 font-medium">{d.medication}</span>
-              <span className="text-gray-500 dark:text-gray-400">{d.rhrBefore} → {d.rhrAfter} bpm</span>
-              <DeltaBadge before={d.rhrAfter} after={d.rhrBefore} unit=" bpm" />
-            </div>
-          ))}
-        </div>
-        <ResponsiveContainer width="100%" height={160}>
-          <BarChart data={rhrData} barCategoryGap="30%" barGap={4}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis domain={[64, 78]} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={36} unit=" bpm" />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} bpm`]} />
-            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
-            <Bar dataKey="Before" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="After" fill="#f97316" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  )
-}
-
-function HrvTrendChart() {
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-          <Activity className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-        </div>
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-            30-Day HRV Trend
-          </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Heart rate variability · mild upward trend
-          </p>
-        </div>
-        <span className="ml-auto text-xs text-gray-400 dark:text-gray-500 italic">Demo data</span>
-      </div>
-
-      <ResponsiveContainer width="100%" height={200}>
-        <LineChart data={HRV_TREND} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
-          <XAxis
-            dataKey="day"
-            tick={{ fontSize: 10 }}
-            axisLine={false}
-            tickLine={false}
-            interval={4}
-          />
-          <YAxis
-            domain={[28, 52]}
-            tick={{ fontSize: 11 }}
-            axisLine={false}
-            tickLine={false}
-            width={36}
-            unit="ms"
-          />
-          <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} ms`, 'HRV']} />
-          <Line
-            type="monotone"
-            dataKey="hrv"
-            stroke="#6366f1"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: '#6366f1' }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-
-      {/* Simple stats row */}
-      <div className="grid grid-cols-3 gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">
-        {[
-          { label: 'Start avg', value: `${Math.round((HRV_TREND.slice(0, 5).reduce((s, d) => s + d.hrv, 0) / 5) * 10) / 10} ms` },
-          { label: 'End avg', value: `${Math.round((HRV_TREND.slice(-5).reduce((s, d) => s + d.hrv, 0) / 5) * 10) / 10} ms` },
-          { label: 'Trend', value: '+13%', positive: true },
-        ].map((stat) => (
-          <div key={stat.label} className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">{stat.label}</p>
-            <p className={`text-sm font-bold ${stat.positive ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-gray-100'}`}>
-              {stat.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ScienceCard() {
-  const items = [
-    {
-      icon: <FlaskConical className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />,
-      label: 'FHIR R4 Standard',
-      text: 'Clinical records are retrieved using the HL7 FHIR R4 standard via Apple HealthKit ClinicalRecord APIs.',
-    },
-    {
-      icon: <ShieldCheck className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />,
-      label: 'Privacy — local only',
-      text: 'Medication data is processed on-device. No clinical records are transmitted without explicit user authorization.',
-    },
-    {
-      icon: <Heart className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />,
-      label: 'Cardiovascular drug interactions',
-      text: 'Beta-blockers reduce resting heart rate by 5–15 bpm (Bhatt et al., 2020). SSRIs modulate autonomic tone, affecting HRV (Ahmad et al., 2018).',
-    },
-    {
-      icon: <BookOpen className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />,
-      label: 'Medical disclaimer',
-      text: 'Biomarker correlations shown are observational and for informational purposes only. Do not adjust medications based on this data. Always consult your prescribing physician.',
-    },
-  ]
-
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <BookOpen className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-        </div>
-        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-          Science &amp; Privacy
-        </h2>
-      </div>
-
-      <div className="space-y-4">
-        {items.map((item) => (
-          <div key={item.label} className="flex gap-3">
-            {item.icon}
-            <div>
-              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{item.label}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">
-                {item.text}
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   )
@@ -564,14 +524,204 @@ function ScienceCard() {
 
 // ─── Main Client Component ────────────────────────────────────────────────────
 
-export function MedicationsClient() {
+export function MedicationsClient({
+  initialMedications,
+  initialTodayLogs,
+}: MedicationsClientProps) {
+  const [medications, setMedications] = useState<Medication[]>(initialMedications)
+  const [todayLogs, setTodayLogs] = useState<MedicationLog[]>(initialTodayLogs)
+
+  const [showModal, setShowModal] = useState(false)
+  const [editingMed, setEditingMed] = useState<Medication | null>(null)
+  const [form, setForm] = useState(emptyForm())
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [formError, setFormError] = useState('')
+
+  const [checklistLoadingId, setChecklistLoadingId] = useState<string | null>(null)
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
+
+  function openAdd() {
+    setEditingMed(null)
+    setForm(emptyForm())
+    setFormStatus('idle')
+    setFormError('')
+    setShowModal(true)
+  }
+
+  function openEdit(med: Medication) {
+    setEditingMed(med)
+    setForm({
+      name: med.name,
+      dosage: med.dosage.toString(),
+      unit: med.unit,
+      frequency: med.frequency,
+      time_of_day: med.time_of_day,
+      start_date: med.start_date,
+      end_date: med.end_date ?? '',
+      notes: med.notes ?? '',
+    })
+    setFormStatus('idle')
+    setFormError('')
+    setShowModal(true)
+  }
+
+  function closeModal() {
+    setShowModal(false)
+    setEditingMed(null)
+    setFormStatus('idle')
+    setFormError('')
+  }
+
+  async function saveMedication() {
+    if (!form.name.trim()) { setFormError('Medication name is required'); return }
+    const dosageNum = parseFloat(form.dosage)
+    if (!form.dosage || isNaN(dosageNum) || dosageNum <= 0) { setFormError('Dosage must be greater than 0'); return }
+    if (!form.start_date) { setFormError('Start date is required'); return }
+
+    setFormStatus('loading')
+    setFormError('')
+
+    const payload = {
+      name: form.name.trim(),
+      dosage: dosageNum,
+      unit: form.unit,
+      frequency: form.frequency,
+      time_of_day: form.time_of_day,
+      start_date: form.start_date,
+      end_date: form.end_date || null,
+      notes: form.notes.trim() || null,
+    }
+
+    try {
+      const method = editingMed ? 'PUT' : 'POST'
+      const url = editingMed ? `/api/medications/${editingMed.id}` : '/api/medications'
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const err = await res.json()
+        setFormError(err.error ?? 'Failed to save medication')
+        setFormStatus('error')
+        return
+      }
+
+      const saved: Medication = await res.json()
+      if (editingMed) {
+        setMedications((prev) => prev.map((m) => (m.id === editingMed.id ? saved : m)))
+      } else {
+        setMedications((prev) => [saved, ...prev].sort((a, b) => a.name.localeCompare(b.name)))
+      }
+      setFormStatus('success')
+      setTimeout(closeModal, 800)
+    } catch {
+      setFormError('Network error')
+      setFormStatus('error')
+    }
+  }
+
+  async function toggleActive(med: Medication) {
+    setActionLoadingId(med.id)
+    try {
+      const res = await fetch(`/api/medications/${med.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active: !med.active }),
+      })
+      if (res.ok) {
+        const updated: Medication = await res.json()
+        setMedications((prev) => prev.map((m) => (m.id === med.id ? updated : m)))
+      }
+    } catch { /* silently fail */ }
+    setActionLoadingId(null)
+  }
+
+  async function deleteMedication(med: Medication) {
+    if (!confirm(`Delete "${med.name}"? This cannot be undone.`)) return
+    setActionLoadingId(med.id)
+    try {
+      const res = await fetch(`/api/medications/${med.id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setMedications((prev) => prev.filter((m) => m.id !== med.id))
+        setTodayLogs((prev) => prev.filter((l) => l.medication_id !== med.id))
+      }
+    } catch { /* silently fail */ }
+    setActionLoadingId(null)
+  }
+
+  async function markMedication(med: Medication, skipped: boolean, logId?: string) {
+    setChecklistLoadingId(med.id)
+    try {
+      if (logId) {
+        // Undo: delete the log
+        const res = await fetch(`/api/medication-logs?id=${logId}`, { method: 'DELETE' })
+        if (res.ok) {
+          setTodayLogs((prev) => prev.filter((l) => l.id !== logId))
+        }
+      } else {
+        const res = await fetch('/api/medication-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            medication_id: med.id,
+            taken_at: new Date().toISOString(),
+            skipped,
+          }),
+        })
+        if (res.ok) {
+          const log: MedicationLog = await res.json()
+          // Replace any existing log for this med today, then add new
+          setTodayLogs((prev) => [...prev.filter((l) => l.medication_id !== med.id), log])
+        }
+      }
+    } catch { /* silently fail */ }
+    setChecklistLoadingId(null)
+  }
+
   return (
-    <div className="space-y-5">
-      <ConnectionStatusCard />
-      <ActiveMedications />
-      <BiomarkerImpactChart />
-      <HrvTrendChart />
-      <ScienceCard />
-    </div>
+    <>
+      {/* Add Medication button */}
+      <div className="flex justify-end">
+        <button
+          onClick={openAdd}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          Add Medication
+        </button>
+      </div>
+
+      {/* Today's checklist */}
+      <TodayChecklist
+        medications={medications}
+        logs={todayLogs}
+        onMark={markMedication}
+        loadingId={checklistLoadingId}
+      />
+
+      {/* All medications */}
+      <ActiveMedicationsList
+        medications={medications}
+        onEdit={openEdit}
+        onToggle={toggleActive}
+        onDelete={deleteMedication}
+        actionLoadingId={actionLoadingId}
+      />
+
+      {/* Add/Edit modal */}
+      {showModal && (
+        <MedicationModal
+          editingMed={editingMed}
+          form={form}
+          setForm={setForm}
+          onSave={saveMedication}
+          onClose={closeModal}
+          status={formStatus}
+          error={formError}
+        />
+      )}
+    </>
   )
 }
