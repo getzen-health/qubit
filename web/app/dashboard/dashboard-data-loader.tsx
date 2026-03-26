@@ -222,6 +222,34 @@ export async function DashboardDataLoader({ user }: { user: User }) {
   const todayMood: number | undefined = undefined // Not available in loader, placeholder
   const supplementsTaken = 0 // Not available in loader, placeholder
 
+  // --- Dashboard card customization ---
+  const [preferences, setPreferences] = useState<{
+    dashboard_card_order: string[]
+    dashboard_hidden_cards: string[]
+  } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/preferences')
+      .then(r => r.json())
+      .then(setPreferences)
+      .catch(() => setPreferences(null))
+  }, [])
+
+  const CARD_COMPONENTS: Record<string, JSX.Element> = {
+    'health-score': <div key="health-score">{/* Health Score Card */}</div>,
+    'steps': <div key="steps">{/* Steps Card */}</div>,
+    'sleep': <SleepSummaryCard key="sleep" recentSleepRecords={recentSleepRecords ?? []} />,
+    'water': <div key="water">{/* Water Intake Card */}</div>,
+    'workout': typeof WorkoutSummaryCard !== 'undefined' ? <WorkoutSummaryCard key="workout" count={workoutCount} totalMinutes={workoutMinutes} /> : null,
+    'mood': typeof MoodSummaryCard !== 'undefined' ? <MoodSummaryCard key="mood" todayScore={todayMood} /> : null,
+    'streaks': null, // handled separately
+    'nutrition': <NutritionSummaryCard key="nutrition" />,
+  }
+
+  const cardOrder = preferences?.dashboard_card_order || [
+    'health-score','steps','sleep','water','workout','mood','streaks','nutrition']
+  const hiddenCards = preferences?.dashboard_hidden_cards || []
+
   return (
     <>
       {hasNoData && (
@@ -235,9 +263,11 @@ export async function DashboardDataLoader({ user }: { user: User }) {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-
-        {typeof WorkoutSummaryCard !== 'undefined' && <WorkoutSummaryCard count={workoutCount} totalMinutes={workoutMinutes} />}
-        {typeof MoodSummaryCard !== 'undefined' && <MoodSummaryCard todayScore={todayMood} />}
+        {cardOrder.map((key) => {
+          if (hiddenCards.includes(key)) return null
+          if (key === 'streaks') return null // handled in parent
+          return CARD_COMPONENTS[key] || null
+        })}
       </div>
       <DashboardStream
         user={user}
