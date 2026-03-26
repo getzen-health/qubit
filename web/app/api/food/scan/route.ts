@@ -192,6 +192,15 @@ export const GET = createSecureApiHandler(
       })
     }
 
-    return secureJsonResponse({ food, allergenWarnings, dataSource: 'off' })
+    return new Response(
+      JSON.stringify({ food, allergenWarnings, dataSource: 'off' }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+        },
+      }
+    )
   }
 )

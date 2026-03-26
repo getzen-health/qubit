@@ -5,16 +5,16 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      // OpenFoodFacts product images
       { protocol: 'https', hostname: 'images.openfoodfacts.org' },
       { protocol: 'https', hostname: 'static.openfoodfacts.org' },
       { protocol: 'https', hostname: 'world.openfoodfacts.org' },
-      // USDA FoodData Central
-      { protocol: 'https', hostname: 'fdc.nal.usda.gov' },
-      // Supabase storage (user avatars, uploads)
       { protocol: 'https', hostname: '*.supabase.co' },
-      { protocol: 'https', hostname: '*.supabase.in' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
     ],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 3600,
   },
 }
 
