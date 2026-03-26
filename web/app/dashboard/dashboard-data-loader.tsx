@@ -210,6 +210,14 @@ export async function DashboardDataLoader({ user }: { user: User }) {
 
   const hasNoData = allSummaries.length === 0
 
+  // Dashboard summary cards real data
+  const sleepHours = (recentSleepRecords?.[0]?.duration_minutes ?? 0) / 60
+  const sleepQuality = null // Not available in schema, placeholder
+  const workoutCount = recentWorkouts?.length ?? 0
+  const workoutMinutes = recentWorkouts?.reduce((s, w) => s + (w.duration_minutes || 0), 0)
+  const todayMood = null // Not available in loader, placeholder
+  const supplementsTaken = 0 // Not available in loader, placeholder
+
   return (
     <>
       {hasNoData && (
@@ -222,6 +230,11 @@ export async function DashboardDataLoader({ user }: { user: User }) {
           </Link>
         </div>
       )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <SleepSummaryCard hours={sleepHours} quality={sleepQuality} />
+        <WorkoutSummaryCard count={workoutCount} totalMinutes={workoutMinutes} />
+        <MoodSummaryCard todayScore={todayMood} />
+      </div>
       <DashboardStream
         user={user}
         profile={profile}
