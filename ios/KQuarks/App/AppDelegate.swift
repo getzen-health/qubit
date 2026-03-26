@@ -1,14 +1,30 @@
 import UIKit
+import UserNotifications
 
 extension Notification.Name {
     static let quickActionTriggered = Notification.Name("KQuarks.quickAction")
 }
 
-final class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        // Setup UNUserNotificationCenter delegate to handle notifications
+        UNUserNotificationCenter.current().delegate = self
+        
+        // Request notification permissions
+        Task {
+            do {
+                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            } catch {
+                print("Failed to request notification permissions: \(error)")
+            }
+        }
+        
         application.shortcutItems = Self.makeShortcutItems()
         // Handle shortcut launched cold
         if let shortcut = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem {
@@ -78,5 +94,38 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 userInfo: nil
             ),
         ]
+    }
+    
+    // MARK: - UNUserNotificationCenterDelegate
+    
+    // Handle notifications when app is in foreground
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        let userInfo = notification.request.content.userInfo
+        print("[AppDelegate] Foreground notification received: \(userInfo)")
+        
+        // Display notification even when app is in foreground
+        completionHandler([.banner, .sound, .badge])
+    }
+    
+    // Handle notification tap
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        print("[AppDelegate] Notification tapped: \(userInfo)")
+        
+        // Handle deep links from notification data
+        if let deepLink = userInfo["deepLink"] as? String,
+           let url = URL(string: deepLink) {
+            DeepLinkHandler.shared.handleDeepLink(url)
+        }
+        
+        completionHandler()
     }
 }

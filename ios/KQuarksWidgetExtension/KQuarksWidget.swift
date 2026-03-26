@@ -546,5 +546,10 @@ struct KQuarksWidget: Widget {
 struct KQuarksWidgetBundle: WidgetBundle {
     var body: some Widget {
         KQuarksWidget()
+        ReadinessScoreWidget()
+        CalorieProgressWidget()
+        HeartRateInlineWidget()
+        StepsInlineWidget()
+        SleepInlineWidget()
     }
 }
