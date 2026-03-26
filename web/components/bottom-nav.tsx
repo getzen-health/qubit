@@ -10,6 +10,7 @@ import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, 
 import { cn } from '@/lib/utils'
 
 const navItems = [
+  { href: '/gut-health', label: 'Gut', icon: '🦠' },
   { href: '/mental-health', label: 'Wellbeing', icon: '🧠' },
   { href: '/share', label: 'Share', icon: '📤' },
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
