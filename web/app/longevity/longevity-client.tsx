@@ -1,45 +1,66 @@
 'use client'
 
+import React, { useState, useCallback } from 'react'
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  RadialBarChart,
-  RadialBar,
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+  RadarChart, PolarGrid, PolarAngleAxis, Radar,
+  BarChart, Bar, Cell as ReCell,
 } from 'recharts'
+import {
+  LONGEVITY_INTERVENTIONS, BLUEPRINT_CHECKLIST,
+  calculateLongevityScore, calculateBlueprintScore, projectedHealthspanGain,
+  estimateEpigeneticAge,
+  type LongevityIntervention, type EvidenceGrade, type PillarScores,
+} from '@/lib/longevity'
 
-interface Metrics {
-  vo2Max: number | null
-  rhr: number | null
-  hrv: number | null
-  walkingSpeed: number | null
-  dailySteps: number | null
-  sleepMinutes: number | null
-}
+// ── Types ────────────────────────────────────────────────────
 
-interface DailySummary {
+interface Checkin {
+  id: string
   date: string
-  avg_hrv: number | null
-  resting_heart_rate: number | null
-  steps: number | null
-  sleep_duration_minutes: number | null
-  active_calories: number | null
+  pillar_scores: PillarScores
+  blueprint_items_completed: string[]
+  blueprint_score: number
+  overall_score: number
+  epigenetic_age_delta: number
+  notes?: string | null
 }
 
-interface HealthRecord {
-  start_time: string
-  value: number
+interface Props {
+  checkins: Checkin[]
+  latestVO2: number | null
 }
 
-interface LongevityClientProps {
-  metrics: Metrics
-  summaries: DailySummary[]
-  vo2Records: HealthRecord[]
-  walkingRecords: HealthRecord[]
+// ── Constants ────────────────────────────────────────────────
+
+const PILLARS: { key: keyof PillarScores; label: string; emoji: string; color: string }[] = [
+  { key: 'exercise',    label: 'Exercise',     emoji: '💪', color: '#f59e0b' },
+  { key: 'sleep',       label: 'Sleep',        emoji: '🌙', color: '#8b5cf6' },
+  { key: 'nutrition',   label: 'Nutrition',    emoji: '🥗', color: '#22c55e' },
+  { key: 'fasting',     label: 'Fasting',      emoji: '⏱️', color: '#06b6d4' },
+  { key: 'stress',      label: 'Stress Mgmt',  emoji: '🧘', color: '#f43f5e' },
+  { key: 'supplements', label: 'Supplements',  emoji: '💊', color: '#a78bfa' },
+  { key: 'social',      label: 'Social',       emoji: '👥', color: '#fb923c' },
+  { key: 'purpose',     label: 'Purpose',      emoji: '🎯', color: '#4ade80' },
+]
+
+const GRADE_COLORS: Record<EvidenceGrade, string> = {
+  A: '#22c55e',
+  B: '#3b82f6',
+  C: '#f59e0b',
+  D: '#ef4444',
+}
+
+const GRADE_BG: Record<EvidenceGrade, string> = {
+  A: 'bg-green-500/10 text-green-400 border-green-500/20',
+  B: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  C: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  D: 'bg-red-500/10 text-red-400 border-red-500/20',
+}
+
+const BLANK_PILLARS: PillarScores = {
+  sleep: 50, exercise: 50, nutrition: 50, fasting: 50,
+  stress: 50, supplements: 50, social: 50, purpose: 50,
 }
 
 const tooltipStyle = {
@@ -49,392 +70,495 @@ const tooltipStyle = {
   fontSize: 12,
 }
 
-// --- Scoring functions ---
-// Each returns 0–100 using piecewise linear interpolation
+// ── Score Gauge ──────────────────────────────────────────────
 
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * Math.max(0, Math.min(1, t))
-}
-
-function piecewise(v: number, pts: [number, number][]) {
-  if (v <= pts[0][0]) return pts[0][1]
-  if (v >= pts[pts.length - 1][0]) return pts[pts.length - 1][1]
-  for (let i = 0; i < pts.length - 1; i++) {
-    const [v0, s0] = pts[i]
-    const [v1, s1] = pts[i + 1]
-    if (v >= v0 && v <= v1) return lerp(s0, s1, (v - v0) / (v1 - v0))
-  }
-  return 50
-}
-
-const scoreVO2 = (v: number) => piecewise(v, [[18, 5], [28, 25], [35, 50], [42, 70], [50, 88], [60, 100]])
-const scoreRHR = (v: number) => piecewise(v, [[44, 100], [55, 88], [63, 72], [70, 55], [78, 35], [90, 10]])
-const scoreHRV = (v: number) => piecewise(v, [[8, 5], [18, 25], [30, 50], [45, 72], [60, 88], [80, 100]])
-const scoreWalk = (v: number) => piecewise(v, [[0.5, 5], [0.8, 25], [1.0, 50], [1.2, 70], [1.4, 88], [1.6, 100]])
-const scoreSteps = (v: number) => piecewise(v, [[1500, 5], [3500, 25], [6000, 55], [9000, 78], [11000, 92], [14000, 100]])
-
-function scoreSleep(minutes: number) {
-  const hrs = minutes / 60
-  if (hrs >= 7 && hrs <= 9) return 100
-  if (hrs >= 6.5 && hrs < 7) return lerp(75, 100, (hrs - 6.5) / 0.5)
-  if (hrs > 9 && hrs <= 9.5) return lerp(75, 100, (9.5 - hrs) / 0.5)
-  if (hrs >= 6 && hrs < 6.5) return lerp(50, 75, (hrs - 6) / 0.5)
-  if (hrs > 9.5 && hrs <= 10.5) return lerp(50, 75, (10.5 - hrs) / 1)
-  if (hrs >= 5 && hrs < 6) return lerp(20, 50, (hrs - 5))
-  if (hrs > 10.5 && hrs <= 12) return lerp(20, 50, (12 - hrs) / 1.5)
-  return 10
-}
-
-interface MetricScore {
-  key: string
-  label: string
-  value: number | null
-  score: number | null
-  weight: number
-  unit: string
-  format: (v: number) => string
-  scoreFn: (v: number) => number
-  refText: string
-  color: string
-}
-
-function computeMetricScores(metrics: Metrics): MetricScore[] {
-  return [
-    {
-      key: 'vo2',
-      label: 'VO₂ Max',
-      value: metrics.vo2Max,
-      score: metrics.vo2Max !== null ? scoreVO2(metrics.vo2Max) : null,
-      weight: 0.30,
-      unit: 'mL/kg/min',
-      format: (v) => v.toFixed(1),
-      scoreFn: scoreVO2,
-      refText: 'Elite ≥50',
-      color: '#f59e0b',
-    },
-    {
-      key: 'hrv',
-      label: 'HRV',
-      value: metrics.hrv,
-      score: metrics.hrv !== null ? scoreHRV(metrics.hrv) : null,
-      weight: 0.22,
-      unit: 'ms',
-      format: (v) => v.toFixed(0),
-      scoreFn: scoreHRV,
-      refText: 'Excellent ≥60ms',
-      color: '#8b5cf6',
-    },
-    {
-      key: 'rhr',
-      label: 'Resting HR',
-      value: metrics.rhr,
-      score: metrics.rhr !== null ? scoreRHR(metrics.rhr) : null,
-      weight: 0.20,
-      unit: 'bpm',
-      format: (v) => v.toFixed(0),
-      scoreFn: scoreRHR,
-      refText: 'Athletic ≤55',
-      color: '#ef4444',
-    },
-    {
-      key: 'walk',
-      label: 'Walking Speed',
-      value: metrics.walkingSpeed,
-      score: metrics.walkingSpeed !== null ? scoreWalk(metrics.walkingSpeed) : null,
-      weight: 0.13,
-      unit: 'm/s',
-      format: (v) => v.toFixed(2),
-      scoreFn: scoreWalk,
-      refText: 'Strong ≥1.3 m/s',
-      color: '#06b6d4',
-    },
-    {
-      key: 'steps',
-      label: 'Daily Steps',
-      value: metrics.dailySteps,
-      score: metrics.dailySteps !== null ? scoreSteps(metrics.dailySteps) : null,
-      weight: 0.10,
-      unit: 'steps/day',
-      format: (v) => Math.round(v).toLocaleString(),
-      scoreFn: scoreSteps,
-      refText: '≥10,000/day',
-      color: '#4ade80',
-    },
-    {
-      key: 'sleep',
-      label: 'Sleep',
-      value: metrics.sleepMinutes,
-      score: metrics.sleepMinutes !== null ? scoreSleep(metrics.sleepMinutes) : null,
-      weight: 0.05,
-      unit: 'hrs/night',
-      format: (v) => `${Math.floor(v / 60)}h ${Math.round(v % 60)}m`,
-      scoreFn: scoreSleep,
-      refText: '7–9 hours',
-      color: '#60a5fa',
-    },
-  ]
-}
-
-function computeVitality(scores: MetricScore[]) {
-  const available = scores.filter((s) => s.score !== null)
-  if (available.length === 0) return null
-  const totalWeight = available.reduce((s, m) => s + m.weight, 0)
-  const weighted = available.reduce((s, m) => s + m.score! * m.weight, 0)
-  return Math.round(weighted / totalWeight)
-}
-
-function vitalityZone(score: number) {
-  if (score >= 90) return { label: 'Elite', color: '#22c55e', desc: 'Top-tier cardiovascular and metabolic health. Keep pushing.' }
-  if (score >= 75) return { label: 'Excellent', color: '#4ade80', desc: 'Well above average across key health markers.' }
-  if (score >= 60) return { label: 'Good', color: '#facc15', desc: 'Solid health foundation with room to improve.' }
-  if (score >= 45) return { label: 'Average', color: '#fb923c', desc: 'Some metrics need attention. Focus on the weakest areas.' }
-  return { label: 'Below Average', color: '#f87171', desc: 'Significant opportunity to improve core health metrics.' }
-}
-
-function scoreBar(score: number | null, color: string) {
-  if (score === null) return null
+function ScoreGauge({ score, label, color }: { score: number; label: string; color: string }) {
+  const r = 52
+  const circ = 2 * Math.PI * r
   return (
-    <div className="w-full bg-surface-secondary rounded-full h-1.5 mt-2">
-      <div
-        className="h-1.5 rounded-full transition-all"
-        style={{ width: `${score}%`, backgroundColor: color }}
+    <svg width={136} height={136} viewBox="0 0 136 136">
+      <circle cx={68} cy={68} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={14} />
+      <circle
+        cx={68} cy={68} r={r}
+        fill="none"
+        stroke={color}
+        strokeWidth={14}
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={circ * (1 - score / 100)}
+        transform="rotate(-90 68 68)"
+        style={{ transition: 'stroke-dashoffset 0.9s ease' }}
+      />
+      <text x={68} y={62} textAnchor="middle" fontSize={30} fontWeight="bold" fill={color}>
+        {Math.round(score)}
+      </text>
+      <text x={68} y={80} textAnchor="middle" fontSize={11} fill="rgba(255,255,255,0.4)">
+        {label}
+      </text>
+    </svg>
+  )
+}
+
+// ── Pillar Slider ─────────────────────────────────────────────
+
+function PillarSlider({
+  pillar, value, onChange,
+}: {
+  pillar: typeof PILLARS[number]
+  value: number
+  onChange: (v: number) => void
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex justify-between items-center">
+        <span className="text-xs font-medium text-text-secondary">
+          {pillar.emoji} {pillar.label}
+        </span>
+        <span className="text-xs font-bold" style={{ color: pillar.color }}>{value}</span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={5}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-surface-secondary"
+        style={{ accentColor: pillar.color }}
       />
     </div>
   )
 }
 
-function fmtWeek(iso: string) {
-  return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
+// ── Main Component ────────────────────────────────────────────
 
-export function LongevityClient({ metrics, summaries, vo2Records, walkingRecords }: LongevityClientProps) {
-  const metricScores = computeMetricScores(metrics)
-  const vitalityScore = computeVitality(metricScores)
-  const hasAny = metricScores.some((m) => m.score !== null)
+export function LongevityClient({ checkins, latestVO2 }: Props) {
+  const [tab, setTab] = useState<'score' | 'interventions' | 'trends'>('score')
+  const [gradeFilter, setGradeFilter] = useState<EvidenceGrade | 'all'>('all')
+  const [logOpen, setLogOpen] = useState(false)
+  const [pillars, setPillars] = useState<PillarScores>(BLANK_PILLARS)
+  const [bpCompleted, setBpCompleted] = useState<string[]>([])
+  const [saving, setSaving] = useState(false)
+  const [localCheckins, setLocalCheckins] = useState<Checkin[]>(checkins)
 
-  if (!hasAny) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-        <span className="text-5xl">🧬</span>
-        <h2 className="text-lg font-semibold text-text-primary">No data yet</h2>
-        <p className="text-sm text-text-secondary max-w-xs">
-          Sync Apple Health data from the iOS app. Vitality Score needs at least one of: VO₂ Max, HRV, resting heart rate, walking speed, steps, or sleep.
-        </p>
-      </div>
-    )
-  }
+  const latest = localCheckins[0] ?? null
+  const today = new Date().toISOString().slice(0, 10)
+  const hasToday = latest?.date === today
 
-  const zone = vitalityScore !== null ? vitalityZone(vitalityScore) : null
+  const scoreColor = (s: number) =>
+    s >= 80 ? '#22c55e' : s >= 65 ? '#4ade80' : s >= 50 ? '#facc15' : s >= 35 ? '#fb923c' : '#ef4444'
 
-  // Build weekly trend: group summaries by ISO week, compute vitality for each week
-  const weeklyMap = new Map<string, { hrv: number[]; rhr: number[]; steps: number[]; sleep: number[] }>()
-  for (const s of summaries) {
-    const d = new Date(s.date + 'T00:00:00')
-    const day = d.getDay()
-    const diff = (day === 0 ? -6 : 1) - day
-    const mon = new Date(d)
-    mon.setDate(d.getDate() + diff)
-    const wk = mon.toISOString().slice(0, 10)
-    if (!weeklyMap.has(wk)) weeklyMap.set(wk, { hrv: [], rhr: [], steps: [], sleep: [] })
-    const b = weeklyMap.get(wk)!
-    if (s.avg_hrv && s.avg_hrv > 0) b.hrv.push(s.avg_hrv)
-    if (s.resting_heart_rate && s.resting_heart_rate > 0) b.rhr.push(s.resting_heart_rate)
-    if (s.steps && s.steps > 0) b.steps.push(s.steps)
-    if (s.sleep_duration_minutes && s.sleep_duration_minutes > 0) b.sleep.push(s.sleep_duration_minutes)
-  }
+  const scoreLabel = (s: number) =>
+    s >= 80 ? 'Elite' : s >= 65 ? 'Excellent' : s >= 50 ? 'Good' : s >= 35 ? 'Average' : 'Below Avg'
 
-  // Index VO2 and walking by week
-  function weekKey(iso: string) {
-    const d = new Date(iso)
-    const day = d.getDay()
-    const diff = (day === 0 ? -6 : 1) - day
-    const mon = new Date(d)
-    mon.setDate(d.getDate() + diff)
-    return mon.toISOString().slice(0, 10)
-  }
-  const vo2ByWeek = new Map<string, number[]>()
-  for (const r of vo2Records) {
-    const wk = weekKey(r.start_time)
-    vo2ByWeek.set(wk, [...(vo2ByWeek.get(wk) ?? []), r.value])
-  }
-  const walkByWeek = new Map<string, number[]>()
-  for (const r of walkingRecords) {
-    const wk = weekKey(r.start_time)
-    walkByWeek.set(wk, [...(walkByWeek.get(wk) ?? []), r.value])
-  }
-
-  function meanArr(arr: number[]) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null }
-
-  const trendData = Array.from(weeklyMap.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([wk, b]) => {
-      const weekMetrics: Metrics = {
-        hrv: meanArr(b.hrv),
-        rhr: meanArr(b.rhr),
-        dailySteps: meanArr(b.steps),
-        sleepMinutes: meanArr(b.sleep),
-        vo2Max: meanArr(vo2ByWeek.get(wk) ?? []),
-        walkingSpeed: meanArr(walkByWeek.get(wk) ?? []),
+  const handleSave = useCallback(async () => {
+    setSaving(true)
+    try {
+      const bpScore = calculateBlueprintScore(bpCompleted)
+      const overall = calculateLongevityScore(pillars)
+      const epigDelta = estimateEpigeneticAge(35, latestVO2, pillars.sleep, pillars.stress, null, pillars.nutrition)
+      const res = await fetch('/api/longevity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: today,
+          pillar_scores: pillars,
+          blueprint_items_completed: bpCompleted,
+          blueprint_score: bpScore,
+          overall_score: overall,
+          epigenetic_age_delta: epigDelta,
+        }),
+      })
+      if (res.ok) {
+        const { data } = await res.json()
+        setLocalCheckins(prev => {
+          const filtered = prev.filter(c => c.date !== today)
+          return [data, ...filtered].sort((a, b) => b.date.localeCompare(a.date))
+        })
+        setLogOpen(false)
       }
-      const wScores = computeMetricScores(weekMetrics)
-      const score = computeVitality(wScores)
-      return { week: fmtWeek(wk), score }
-    })
-    .filter((d) => d.score !== null)
+    } finally {
+      setSaving(false)
+    }
+  }, [pillars, bpCompleted, today, latestVO2])
 
-  const sorted = [...metricScores].filter((m) => m.score !== null).sort((a, b) => b.score! - a.score!)
-  const strengths = sorted.slice(0, 2)
-  const improvements = [...sorted].reverse().slice(0, 2)
+  const toggleBp = (id: string) =>
+    setBpCompleted(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
 
+  const filteredInterventions: LongevityIntervention[] =
+    gradeFilter === 'all' ? LONGEVITY_INTERVENTIONS : LONGEVITY_INTERVENTIONS.filter(i => i.evidence_grade === gradeFilter)
+
+  // ── Trend data ────────────────────────────────────────────
+  const last30 = localCheckins.filter(c => {
+    const d = new Date(c.date)
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - 30)
+    return d >= cutoff
+  }).slice().reverse()
+
+  const trendScore = last30.map(c => ({
+    date: new Date(c.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    score: c.overall_score,
+  }))
+
+  const trendEpig = last30.map(c => ({
+    date: new Date(c.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    delta: c.epigenetic_age_delta,
+  }))
+
+  const trendBlueprint = last30.slice(-7).map(c => ({
+    date: new Date(c.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    score: c.blueprint_score,
+  }))
+
+  const radarData = latest
+    ? PILLARS.map(p => ({ pillar: p.label, value: latest.pillar_scores[p.key] ?? 0 }))
+    : PILLARS.map(p => ({ pillar: p.label, value: 0 }))
+
+  const overallScore = latest?.overall_score ?? 0
+  const blueprintScore = latest?.blueprint_score ?? 0
+  const epigDelta = latest?.epigenetic_age_delta ?? 0
+  const healthspanGain = projectedHealthspanGain(overallScore)
+
+  // ── Render ─────────────────────────────────────────────────
   return (
-    <div className="space-y-6">
-      {/* Main score */}
-      <div className="bg-surface rounded-2xl border border-border p-6">
-        <div className="flex items-center gap-6">
-          {/* Radial indicator */}
-          <div className="relative shrink-0">
-            <svg width={120} height={120} viewBox="0 0 120 120">
-              <circle cx={60} cy={60} r={50} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={12} />
-              {vitalityScore !== null && (
-                <circle
-                  cx={60} cy={60} r={50}
-                  fill="none"
-                  stroke={zone?.color ?? '#888'}
-                  strokeWidth={12}
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 50}`}
-                  strokeDashoffset={`${2 * Math.PI * 50 * (1 - vitalityScore / 100)}`}
-                  transform="rotate(-90 60 60)"
-                  style={{ transition: 'stroke-dashoffset 0.8s ease' }}
-                />
-              )}
-              <text x={60} y={56} textAnchor="middle" fontSize={28} fontWeight="bold" fill={zone?.color ?? '#888'}>
-                {vitalityScore ?? '—'}
-              </text>
-              <text x={60} y={74} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.45)">
-                / 100
-              </text>
-            </svg>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            {zone && (
-              <>
-                <p className="text-2xl font-bold" style={{ color: zone.color }}>{zone.label}</p>
-                <p className="text-sm text-text-secondary mt-1 leading-snug">{zone.desc}</p>
-              </>
-            )}
-            <p className="text-xs text-text-secondary opacity-50 mt-3">
-              Based on {metricScores.filter((m) => m.score !== null).length} of 6 metrics · 30-day average
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Metric breakdown */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {metricScores.map((m) => (
-          <div key={m.key} className="bg-surface rounded-xl border border-border p-4">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-text-secondary">{m.label}</span>
-              {m.score !== null ? (
-                <span className="text-xs font-bold" style={{ color: m.color }}>{Math.round(m.score)}</span>
-              ) : (
-                <span className="text-xs text-text-secondary opacity-40">—</span>
-              )}
-            </div>
-            {m.value !== null ? (
-              <p className="text-xl font-bold text-text-primary">{m.format(m.value)}</p>
-            ) : (
-              <p className="text-xl font-bold text-text-secondary opacity-30">No data</p>
-            )}
-            <p className="text-xs text-text-secondary opacity-50 mt-0.5">{m.unit} · {m.refText}</p>
-            {scoreBar(m.score, m.color)}
-          </div>
+    <div className="space-y-4">
+      {/* Tab bar */}
+      <div className="flex gap-1 bg-surface rounded-2xl border border-border p-1">
+        {(['score', 'interventions', 'trends'] as const).map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-colors capitalize ${
+              tab === t
+                ? 'bg-primary text-white'
+                : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            {t === 'score' ? '🧬 Score' : t === 'interventions' ? '🔬 Interventions' : '📈 Trends'}
+          </button>
         ))}
       </div>
 
-      {/* Strengths / improvements */}
-      {(strengths.length > 0 || improvements.length > 0) && (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-surface rounded-xl border border-border p-4">
-            <p className="text-xs font-semibold text-green-400 mb-2">Top Strengths</p>
-            <ul className="space-y-1">
-              {strengths.map((m) => (
-                <li key={m.key} className="text-xs text-text-secondary flex justify-between">
-                  <span>{m.label}</span>
-                  <span className="font-medium text-green-400">{Math.round(m.score!)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-surface rounded-xl border border-border p-4">
-            <p className="text-xs font-semibold text-orange-400 mb-2">To Improve</p>
-            <ul className="space-y-1">
-              {improvements.map((m) => (
-                <li key={m.key} className="text-xs text-text-secondary flex justify-between">
-                  <span>{m.label}</span>
-                  <span className="font-medium text-orange-400">{Math.round(m.score!)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-
-      {/* Trend chart */}
-      {trendData.length >= 3 && (
-        <div className="bg-surface rounded-xl border border-border p-4">
-          <h3 className="text-sm font-medium text-text-secondary mb-3">Vitality Trend</h3>
-          <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={trendData} margin={{ top: 8, right: 4, left: -8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis
-                dataKey="week"
-                tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                axisLine={false}
-                tickLine={false}
-                interval="preserveStartEnd"
+      {/* ── SCORE TAB ─────────────────────────────────────────── */}
+      {tab === 'score' && (
+        <div className="space-y-4">
+          {/* Main score + epigenetic + blueprint */}
+          <div className="grid grid-cols-3 gap-3">
+            {/* Longevity score gauge */}
+            <div className="col-span-1 bg-surface rounded-2xl border border-border p-4 flex flex-col items-center justify-center">
+              <ScoreGauge
+                score={overallScore}
+                label={scoreLabel(overallScore)}
+                color={scoreColor(overallScore)}
               />
-              <YAxis
-                domain={[0, 100]}
-                tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                width={28}
-              />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [Math.round(v), 'Vitality']} />
-              <Line
-                type="monotone"
-                dataKey="score"
-                stroke="#a78bfa"
-                strokeWidth={2}
-                dot={{ r: 3, fill: '#a78bfa' }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Info */}
-      <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-3">
-        <p className="font-medium text-text-primary text-sm">How Vitality Score is calculated</p>
-        <div className="space-y-2">
-          {[
-            { name: 'VO₂ Max (30%)', detail: 'The strongest single predictor of cardiovascular longevity. Elite athletes score ≥50 mL/kg/min.' },
-            { name: 'HRV (22%)', detail: 'Heart rate variability reflects autonomic nervous system health. Higher is better — it indicates the body handles stress well.' },
-            { name: 'Resting HR (20%)', detail: 'A lower resting heart rate indicates greater cardiovascular efficiency. Athletic hearts beat fewer times per minute.' },
-            { name: 'Walking Speed (13%)', detail: 'One of the most cited longevity predictors — walking speed above 1.3 m/s correlates with better outcomes in research.' },
-            { name: 'Daily Steps (10%)', detail: 'Total daily movement is independently associated with reduced all-cause mortality.' },
-            { name: 'Sleep (5%)', detail: '7–9 hours of quality sleep per night supports recovery, hormones, and metabolic health.' },
-          ].map(({ name, detail }) => (
-            <div key={name}>
-              <p className="font-medium text-text-primary">{name}</p>
-              <p className="opacity-70 mt-0.5">{detail}</p>
             </div>
-          ))}
+
+            {/* Epigenetic age delta */}
+            <div className="bg-surface rounded-2xl border border-border p-4 flex flex-col justify-center">
+              <p className="text-xs text-text-secondary mb-1">Epigenetic Age</p>
+              <p
+                className="text-2xl font-bold"
+                style={{ color: epigDelta <= 0 ? '#22c55e' : '#ef4444' }}
+              >
+                {epigDelta < 0
+                  ? `${Math.abs(epigDelta)}y younger`
+                  : epigDelta > 0
+                  ? `${epigDelta}y older`
+                  : 'On track'}
+              </p>
+              <p className="text-xs text-text-secondary mt-1 opacity-60">vs chronological age</p>
+            </div>
+
+            {/* Blueprint */}
+            <div className="bg-surface rounded-2xl border border-border p-4 flex flex-col justify-center">
+              <p className="text-xs text-text-secondary mb-1">Blueprint Score</p>
+              <p className="text-2xl font-bold text-primary">{blueprintScore}</p>
+              <div className="w-full bg-surface-secondary rounded-full h-1.5 mt-2">
+                <div
+                  className="h-1.5 rounded-full transition-all bg-primary"
+                  style={{ width: `${blueprintScore}%` }}
+                />
+              </div>
+              <p className="text-xs text-text-secondary mt-1 opacity-60">Bryan Johnson protocol</p>
+            </div>
+          </div>
+
+          {/* Healthspan projection */}
+          {overallScore > 0 && (
+            <div className="bg-surface rounded-2xl border border-border p-4">
+              <p className="text-xs font-semibold text-text-secondary mb-2">Projected Healthspan Gain</p>
+              <div className="flex gap-4">
+                <div>
+                  <p className="text-xl font-bold text-green-400">+{healthspanGain.conservative}y</p>
+                  <p className="text-xs text-text-secondary opacity-60">Conservative</p>
+                </div>
+                <div className="w-px bg-border" />
+                <div>
+                  <p className="text-xl font-bold text-emerald-300">+{healthspanGain.optimistic}y</p>
+                  <p className="text-xs text-text-secondary opacity-60">Optimistic</p>
+                </div>
+                <p className="text-xs text-text-secondary opacity-40 self-end ml-auto text-right max-w-[140px]">
+                  vs sedentary baseline; CALERIE + Blue Zones data
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 8 Pillar breakdown */}
+          <div className="grid grid-cols-2 gap-2">
+            {PILLARS.map(p => {
+              const val = latest?.pillar_scores[p.key] ?? null
+              return (
+                <div key={p.key} className="bg-surface rounded-xl border border-border p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-text-secondary">{p.emoji} {p.label}</span>
+                    {val !== null
+                      ? <span className="text-xs font-bold" style={{ color: p.color }}>{val}</span>
+                      : <span className="text-xs text-text-secondary opacity-30">—</span>
+                    }
+                  </div>
+                  <div className="w-full bg-surface-secondary rounded-full h-1.5">
+                    <div
+                      className="h-1.5 rounded-full transition-all"
+                      style={{ width: `${val ?? 0}%`, backgroundColor: p.color }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Log Today button */}
+          <button
+            onClick={() => {
+              if (hasToday && latest) {
+                setPillars(latest.pillar_scores)
+                setBpCompleted(latest.blueprint_items_completed)
+              }
+              setLogOpen(o => !o)
+            }}
+            className="w-full py-3 rounded-2xl border border-primary text-primary font-semibold text-sm hover:bg-primary/10 transition-colors"
+          >
+            {logOpen ? '✕ Close' : hasToday ? '✏️ Edit Today\'s Log' : '+ Log Today'}
+          </button>
+
+          {/* Log form */}
+          {logOpen && (
+            <div className="bg-surface rounded-2xl border border-border p-5 space-y-5">
+              <p className="text-sm font-semibold text-text-primary">Rate each pillar for today (0–100)</p>
+
+              <div className="space-y-4">
+                {PILLARS.map(p => (
+                  <PillarSlider
+                    key={p.key}
+                    pillar={p}
+                    value={pillars[p.key]}
+                    onChange={v => setPillars(prev => ({ ...prev, [p.key]: v }))}
+                  />
+                ))}
+              </div>
+
+              {/* Blueprint checklist — daily items */}
+              <div>
+                <p className="text-xs font-semibold text-text-secondary mb-2">Blueprint daily checklist</p>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {BLUEPRINT_CHECKLIST.filter(i => i.frequency === 'daily').map(item => (
+                    <label
+                      key={item.id}
+                      className="flex items-center gap-2.5 cursor-pointer group"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={bpCompleted.includes(item.id)}
+                        onChange={() => toggleBp(item.id)}
+                        className="w-4 h-4 rounded accent-primary"
+                      />
+                      <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
+                        {item.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-text-secondary opacity-40 mt-2">
+                  Blueprint score preview: {calculateBlueprintScore(bpCompleted)}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <p className="text-xs text-text-secondary opacity-50">
+                  Overall score preview: <span className="font-bold text-text-primary">{calculateLongevityScore(pillars)}</span>
+                </p>
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="ml-auto px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/80 disabled:opacity-50 transition-colors"
+                >
+                  {saving ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!latest && !logOpen && (
+            <div className="text-center py-10 space-y-2">
+              <span className="text-4xl">🧬</span>
+              <p className="text-text-secondary text-sm">No longevity data yet. Log your first check-in above.</p>
+            </div>
+          )}
         </div>
-        <p className="opacity-50 pt-1">Scores use piecewise interpolation against published population reference ranges. This is for informational purposes — not medical advice.</p>
-      </div>
+      )}
+
+      {/* ── INTERVENTIONS TAB ─────────────────────────────────── */}
+      {tab === 'interventions' && (
+        <div className="space-y-4">
+          {/* Grade filter */}
+          <div className="flex gap-2 flex-wrap">
+            {(['all', 'A', 'B', 'C', 'D'] as const).map(g => (
+              <button
+                key={g}
+                onClick={() => setGradeFilter(g)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                  gradeFilter === g
+                    ? g === 'all'
+                      ? 'bg-text-primary text-background border-text-primary'
+                      : `border-[${GRADE_COLORS[g as EvidenceGrade]}]`
+                    : 'bg-surface border-border text-text-secondary hover:text-text-primary'
+                }`}
+                style={
+                  gradeFilter === g && g !== 'all'
+                    ? { background: GRADE_COLORS[g as EvidenceGrade] + '22', color: GRADE_COLORS[g as EvidenceGrade], borderColor: GRADE_COLORS[g as EvidenceGrade] + '66' }
+                    : undefined
+                }
+              >
+                {g === 'all' ? 'All' : `Grade ${g}`}
+                <span className="ml-1.5 opacity-60 text-[10px]">
+                  {g === 'all'
+                    ? LONGEVITY_INTERVENTIONS.length
+                    : LONGEVITY_INTERVENTIONS.filter(i => i.evidence_grade === g).length}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Intervention cards */}
+          <div className="space-y-3">
+            {filteredInterventions.map(item => (
+              <div key={item.name} className="bg-surface rounded-2xl border border-border p-4 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-semibold text-text-primary leading-snug">{item.name}</p>
+                  <span
+                    className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full border ${GRADE_BG[item.evidence_grade]}`}
+                  >
+                    {item.evidence_grade}
+                  </span>
+                </div>
+
+                <p className="text-xs text-text-secondary opacity-60">{item.category}</p>
+
+                <div>
+                  <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide mb-0.5">Mechanism</p>
+                  <p className="text-xs text-text-secondary">{item.mechanism}</p>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide mb-0.5">Dose / Protocol</p>
+                  <p className="text-xs text-text-primary">{item.dose}</p>
+                </div>
+
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {item.citations.map(c => (
+                    <span key={c} className="text-[10px] bg-surface-secondary text-text-secondary px-2 py-0.5 rounded-full border border-border">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── TRENDS TAB ────────────────────────────────────────── */}
+      {tab === 'trends' && (
+        <div className="space-y-4">
+          {localCheckins.length < 2 ? (
+            <div className="text-center py-16 space-y-2">
+              <span className="text-4xl">📈</span>
+              <p className="text-text-secondary text-sm">Log at least 2 days to see trends.</p>
+            </div>
+          ) : (
+            <>
+              {/* Overall score line */}
+              <div className="bg-surface rounded-2xl border border-border p-4">
+                <p className="text-sm font-medium text-text-secondary mb-3">30-Day Longevity Score</p>
+                <ResponsiveContainer width="100%" height={160}>
+                  <LineChart data={trendScore} margin={{ top: 8, right: 4, left: -8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} width={28} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [Math.round(v), 'Score']} />
+                    <Line type="monotone" dataKey="score" stroke="#a78bfa" strokeWidth={2} dot={{ r: 3, fill: '#a78bfa' }} activeDot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Epigenetic age delta line */}
+              <div className="bg-surface rounded-2xl border border-border p-4">
+                <p className="text-sm font-medium text-text-secondary mb-1">Epigenetic Age Delta</p>
+                <p className="text-xs text-text-secondary opacity-50 mb-3">Negative = biologically younger</p>
+                <ResponsiveContainer width="100%" height={140}>
+                  <LineChart data={trendEpig} margin={{ top: 8, right: 4, left: -8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} width={28} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v > 0 ? '+' : ''}${v}y`, 'Δ Age']} />
+                    <Line type="monotone" dataKey="delta" stroke="#22c55e" strokeWidth={2} dot={{ r: 3, fill: '#22c55e' }} activeDot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Pillar radar */}
+              <div className="bg-surface rounded-2xl border border-border p-4">
+                <p className="text-sm font-medium text-text-secondary mb-3">Pillar Radar (Latest)</p>
+                <ResponsiveContainer width="100%" height={220}>
+                  <RadarChart data={radarData}>
+                    <PolarGrid stroke="rgba(255,255,255,0.07)" />
+                    <PolarAngleAxis dataKey="pillar" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} />
+                    <Radar name="Pillars" dataKey="value" stroke="#a78bfa" fill="#a78bfa" fillOpacity={0.25} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Blueprint bar */}
+              {trendBlueprint.length > 0 && (
+                <div className="bg-surface rounded-2xl border border-border p-4">
+                  <p className="text-sm font-medium text-text-secondary mb-3">Blueprint Compliance (Last 7 days)</p>
+                  <ResponsiveContainer width="100%" height={140}>
+                    <BarChart data={trendBlueprint} margin={{ top: 4, right: 4, left: -8, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} axisLine={false} tickLine={false} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }} width={28} />
+                      <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [Math.round(v), 'Blueprint %']} />
+                      <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+                        {trendBlueprint.map((entry, i) => (
+                          <ReCell key={i} fill={entry.score >= 70 ? '#22c55e' : entry.score >= 50 ? '#facc15' : '#ef4444'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Scientific disclaimer */}
+      <p className="text-[10px] text-text-secondary opacity-30 text-center pb-2">
+        For informational purposes only · Not medical advice · Based on published research
+      </p>
     </div>
   )
 }
