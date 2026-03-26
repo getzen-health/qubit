@@ -11,6 +11,7 @@ import { DashboardDataSkeleton } from '@/components/skeletons'
 import { SleepSummaryCard } from '@/components/sleep-summary-card'
 import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
+import StreaksSummaryCard from '@/components/streaks-summary-card'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -37,11 +38,18 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  // Fetch streaks for summary card
+  const { data: streaks } = await supabase
+    .from('user_streaks')
+    .select('*')
+    .eq('user_id', user.id)
+
   return (
     <>
       <Suspense fallback={<DashboardDataSkeleton />}>
         <DashboardDataLoader user={user} />
       </Suspense>
+      <StreaksSummaryCard streaks={streaks ?? []} />
     </>
   )
 }
