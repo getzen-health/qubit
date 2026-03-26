@@ -20,7 +20,7 @@ struct Medication: Identifiable, Codable, Equatable {
     static func == (lhs: Medication, rhs: Medication) -> Bool { lhs.id == rhs.id }
 }
 
-struct MedicationLog: Identifiable, Codable {
+struct MedicationLog: Identifiable, Codable, Equatable {
     var id: String
     var user_id: String
     var medication_id: String
