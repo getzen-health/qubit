@@ -16,6 +16,9 @@ import {
   CartesianGrid,
   ReferenceLine,
   Cell,
+  PieChart,
+  Pie,
+  Legend,
 } from 'recharts'
 
 interface MealItem {
@@ -38,6 +41,17 @@ interface Meal {
   notes?: string
   meal_items: MealItem[]
 }
+
+interface PeriodizationData {
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  phase: 'high-carb' | 'low-carb' | 'moderate'
+  rationale: string
+}
+
+const MACRO_PIE_COLORS = { protein: '#6366f1', carbs: '#f59e0b', fat: '#10b981' }
 
 const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
 
@@ -484,6 +498,8 @@ export default function NutritionPage() {
   const [carbsGoal, setCarbsGoal] = useState(250)
   const [fatGoal, setFatGoal] = useState(65)
   const [readinessScore, setReadinessScore] = useState<number | null>(null)
+  const [periodization, setPeriodization] = useState<PeriodizationData | null>(null)
+  const [periodizationOverride, setPeriodizationOverride] = useState<'training' | 'rest' | null>(null)
 
   const today = new Date().toISOString().slice(0, 10)
   const [currentDate, setCurrentDate] = useState(today)
@@ -579,6 +595,14 @@ export default function NutritionPage() {
   useEffect(() => {
     loadWeekly()
   }, [loadWeekly])
+
+  useEffect(() => {
+    const params = periodizationOverride ? `?override=${periodizationOverride}` : ''
+    fetch(`/api/nutrition/periodization${params}`)
+      .then((r) => r.json())
+      .then((d) => setPeriodization(d))
+      .catch(() => {})
+  }, [periodizationOverride])
 
   const deleteMeal = async (id: string) => {
     await fetch(`/api/meals?id=${id}`, { method: 'DELETE' })
@@ -717,6 +741,90 @@ export default function NutritionPage() {
                 fatGoal={adaptedFatGoal}
               />
             )}
+          </div>
+        )}
+
+        {/* Macro Periodization Card */}
+        {periodization && (
+          <div className="bg-surface rounded-xl border border-border p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-text-primary">Today&apos;s Macro Targets</h2>
+                <span className={`inline-block mt-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  periodization.phase === 'high-carb'
+                    ? 'bg-blue-500/15 text-blue-400'
+                    : periodization.phase === 'low-carb'
+                    ? 'bg-orange-500/15 text-orange-400'
+                    : 'bg-green-500/15 text-green-400'
+                }`}>
+                  {periodization.phase}
+                </span>
+              </div>
+              {/* Training / Rest day toggle */}
+              <div className="flex gap-1 text-xs">
+                {(['training', 'rest'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setPeriodizationOverride(periodizationOverride === mode ? null : mode)}
+                    className={`px-2.5 py-1 rounded-full border transition-colors capitalize ${
+                      periodizationOverride === mode
+                        ? 'bg-accent text-white border-accent'
+                        : 'bg-surface-secondary text-text-secondary border-border hover:text-text-primary'
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <p className="text-xs text-text-secondary">{periodization.rationale}</p>
+
+            {/* Macro targets row */}
+            <div className="grid grid-cols-4 gap-2 text-center">
+              {[
+                { label: 'Calories', value: periodization.calories, unit: 'kcal', color: 'text-accent' },
+                { label: 'Protein', value: periodization.protein, unit: 'g', color: 'text-indigo-400' },
+                { label: 'Carbs', value: periodization.carbs, unit: 'g', color: 'text-yellow-400' },
+                { label: 'Fat', value: periodization.fat, unit: 'g', color: 'text-emerald-400' },
+              ].map(({ label, value, unit, color }) => (
+                <div key={label} className="bg-surface-secondary rounded-lg p-2">
+                  <p className={`text-lg font-bold ${color}`}>{value}</p>
+                  <p className="text-[10px] text-text-secondary">{unit}</p>
+                  <p className="text-[10px] text-text-secondary mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Pie chart */}
+            <div className="h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Protein', value: periodization.protein * 4, fill: MACRO_PIE_COLORS.protein },
+                      { name: 'Carbs', value: periodization.carbs * 4, fill: MACRO_PIE_COLORS.carbs },
+                      { name: 'Fat', value: periodization.fat * 9, fill: MACRO_PIE_COLORS.fat },
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={30}
+                    outerRadius={55}
+                    paddingAngle={3}
+                    dataKey="value"
+                  />
+                  <Legend
+                    iconType="circle"
+                    iconSize={8}
+                    wrapperStyle={{ fontSize: 11 }}
+                  />
+                  <Tooltip
+                    formatter={(v: number) => [`${v} kcal`]}
+                    contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         )}
 
