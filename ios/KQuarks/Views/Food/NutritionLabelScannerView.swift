@@ -48,35 +48,47 @@ struct NutritionLabelScannerView: View {
                 Spacer()
 
                 VStack(spacing: 12) {
-                    Button {
-                        sourceType = .camera
-                        showImagePicker = true
-                    } label: {
-                        Label("Take Photo", systemImage: "camera.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                    }
-                    .disabled(isProcessing)
-                    .accessibilityLabel("Take photo of nutrition label")
+    Button {
+        sourceType = .camera
+        showImagePicker = true
+    } label: {
+        Label("Take Photo", systemImage: "camera.fill")
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.accentColor)
+            .foregroundStyle(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+    .disabled(isProcessing)
+    .accessibilityLabel("Take photo of nutrition label")
 
-                    Button {
-                        sourceType = .photoLibrary
-                        showImagePicker = true
-                    } label: {
-                        Label("Choose from Library", systemImage: "photo.on.rectangle")
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.secondarySystemBackground))
-                            .foregroundStyle(.primary)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
-                    }
-                    .disabled(isProcessing)
-                }
+    Button {
+        sourceType = .photoLibrary
+        showImagePicker = true
+    } label: {
+        Label("Choose from Library", systemImage: "photo.on.rectangle")
+            .font(.subheadline)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .foregroundStyle(.primary)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+    .disabled(isProcessing)
+
+    NavigationLink(destination: FoodScannerView()) {
+        Label("Scan Barcode", systemImage: "barcode.viewfinder")
+            .font(.headline)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .foregroundStyle(.primary)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+    .accessibilityLabel("Scan barcode on product")
+}
+
                 .padding(.horizontal, 32)
                 .padding(.bottom, 32)
             }
