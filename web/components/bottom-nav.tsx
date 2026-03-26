@@ -52,6 +52,7 @@ const navItems = [
   { href: '/goals', label: 'Goals', icon: '🎯' },
   { href: '/longevity', label: 'Longevity', icon: '🔬' },
   { href: '/biological-age', icon: Dna, label: 'Bio Age' },
+  { href: '/energy', icon: Zap, label: 'Energy' },
   { href: '/metabolic', icon: Flame, label: 'Metabolic' },
   { href: '/eye-health', icon: Eye, label: 'Eye Health' },
   { href: '/posture', label: 'Breaks', icon: '🪑' },
