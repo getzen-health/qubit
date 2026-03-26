@@ -12,6 +12,7 @@ import NutritionSummaryCard from '@/components/nutrition-summary-card'
 import { HabitsTodayCard } from '@/components/habits-today-card'
 import XpCard from '@/components/xp-card'
 import PrescriptionCard from './components/prescription-card'
+import { VoiceLogger } from '@/components/voice-logger'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -85,6 +86,7 @@ export default async function DashboardPage() {
       </Suspense>
       <HabitsTodayCard />
     <StreaksSummaryCard streaks={streaks ?? []} />
+      <VoiceLogger />
     </>
   )
 }
