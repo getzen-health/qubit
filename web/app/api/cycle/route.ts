@@ -43,8 +43,8 @@ export const GET = createSecureApiHandler(
       .from('menstrual_cycles')
       .select('*')
       .eq('user_id', user!.id)
-      .order('start_date', { ascending: false })
-      .limit(3)
+      .order('period_start', { ascending: false })
+      .limit(6)
 
     if (error) {
       console.error('Error fetching cycles:', error)
@@ -60,9 +60,7 @@ export const GET = createSecureApiHandler(
 
     // Days elapsed since last period start
     const msPerDay = 86_400_000
-    const dayOfCycle =
-      Math.floor((new Date(today).getTime() - new Date(latest.start_date).getTime()) / msPerDay) +
-      1
+    const dayInCycle = Math.floor((new Date(today).getTime() - new Date(latest.period_start).getTime()) / msPerDay) + 1
 
     // Average cycle length from history or default 28
     const avgLength =
@@ -79,24 +77,47 @@ export const GET = createSecureApiHandler(
           )
         : latest.cycle_length ?? 28
 
-    const nextPeriodDate = addDays(latest.start_date, avgLength)
+    // Phase calculation helper
+    function getCurrentPhase(lastPeriodStart, cycleLength = 28) {
+      const start = new Date(lastPeriodStart)
+      const today = new Date()
+      const dayInCycle = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+      const nextPeriod = new Date(start)
+      nextPeriod.setDate(start.getDate() + cycleLength)
+      const ovulationDay = cycleLength - 14
+      let phase
+      if (dayInCycle >= 1 && dayInCycle <= 5) phase = 'menstrual'
+      else if (dayInCycle <= ovulationDay - 2) phase = 'follicular'
+      else if (dayInCycle <= ovulationDay + 1) phase = 'ovulation'
+      else if (dayInCycle <= cycleLength) phase = 'luteal'
+      else phase = 'unknown'
+      return {
+        phase,
+        dayInCycle,
+        nextPeriod: nextPeriod.toISOString().split('T')[0],
+        ovulationWindow: `Day ${ovulationDay - 2}–${ovulationDay + 1}`,
+      }
+    }
+    const phaseInfo = getCurrentPhase(latest.period_start, avgLength)
 
     return secureJsonResponse({
       current_cycle: {
         id: latest.id,
-        start_date: latest.start_date,
-        end_date: latest.end_date,
-        day_of_cycle: dayOfCycle,
-        phase: computePhase(dayOfCycle),
+        period_start: latest.period_start,
+        period_end: latest.period_end,
+        day_in_cycle: phaseInfo.dayInCycle,
+        phase: phaseInfo.phase,
         flow_intensity: latest.flow_intensity,
         symptoms: latest.symptoms ?? [],
         notes: latest.notes,
         cycle_length: latest.cycle_length ?? avgLength,
+        ovulation_window: phaseInfo.ovulationWindow,
       },
       next_period: {
-        predicted_date: nextPeriodDate,
+        predicted_date: phaseInfo.nextPeriod,
         cycle_length_used: avgLength,
       },
+      cycles,
     })
   }
 )
@@ -111,26 +132,26 @@ export const POST = createSecureApiHandler(
     auditResource: 'health_data',
   },
   async (_request, { user, body, supabase }) => {
-    const { start_date, end_date, flow_intensity, symptoms, notes, cycle_length } =
-      body as z.infer<typeof logCycleSchema>
+    const { period_start, period_end, flow_intensity, symptoms, notes, cycle_length } =
+      body as any
 
-    if (end_date && end_date < start_date) {
+    if (period_end && period_end < period_start) {
       return secureErrorResponse('end_date must be on or after start_date', 400)
     }
 
     const { data: cycle, error } = await supabase
-      .from('menstrual_cycles')
+      .from('cycle_logs')
       .upsert(
         {
           user_id: user!.id,
-          start_date,
-          end_date: end_date ?? null,
+          period_start,
+          period_end: period_end ?? null,
           flow_intensity: flow_intensity ?? null,
           symptoms: symptoms ?? [],
           notes: notes ?? null,
           cycle_length: cycle_length ?? null,
         },
-        { onConflict: 'user_id,start_date' }
+        { onConflict: 'user_id,period_start' }
       )
       .select()
       .single()

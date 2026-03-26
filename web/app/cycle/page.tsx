@@ -18,20 +18,20 @@ export default async function CyclePage() {
 
   // Fetch one extra cycle to compute the length of the oldest visible cycle
   const { data: rawCycles, error } = await supabase
-    .from('menstrual_cycles')
-    .select('id, start_date, end_date, cycle_length, flow_intensity, symptoms, notes, created_at')
+    .from('cycle_logs')
+    .select('*')
     .eq('user_id', user.id)
-    .order('start_date', { ascending: false })
-    .limit(13)
+    .order('period_start', { ascending: false })
+    .limit(6)
 
   const allCycles = error ? [] : (rawCycles ?? [])
 
-  // Enrich with computed cycle lengths (distance between consecutive start_dates)
-  const enrichedCycles = allCycles.slice(0, 12).map((cycle, i) => {
+  // Enrich with computed cycle lengths (distance between consecutive period_start)
+  const enrichedCycles = allCycles.slice(0, 5).map((cycle, i) => {
     const nextCycle = allCycles[i + 1]
     const computedLength = nextCycle
       ? Math.round(
-          (new Date(cycle.start_date).getTime() - new Date(nextCycle.start_date).getTime()) /
+          (new Date(cycle.period_start).getTime() - new Date(nextCycle.period_start).getTime()) /
             MS_PER_DAY,
         )
       : (cycle.cycle_length ?? null)
