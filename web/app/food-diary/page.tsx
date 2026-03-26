@@ -99,5 +99,8 @@ export default function FoodDiaryPage() {
         </div>
       ))}
     </div>
+    <div className="text-center mt-8 text-sm text-gray-500">
+      <a href="/calorie-balance" className="text-blue-600 underline">View calorie balance &rarr;</a>
+    </div>
   )
 }
