@@ -524,6 +524,14 @@ export default function FoodScannerPage() {
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
+{/* Yuka breakdown pills */}
+{product.score_components && (
+  <div className="flex gap-1 mt-1">
+    <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs font-medium">Nutrition {product.score_components.nutrition}/60</span>
+    <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">Additives {product.score_components.additives}/30</span>
+    <span className="px-2 py-0.5 rounded-full bg-lime-100 text-lime-800 text-xs font-medium">Organic {product.score_components.organic}/10</span>
+  </div>
+)}
                   {product.barcode && (
                     <button
                       onClick={toggleFavorite}

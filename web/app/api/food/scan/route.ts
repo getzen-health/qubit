@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { calculateProductScore } from '@/lib/product-scoring'
+import { scoreFoodProduct } from '@/lib/food-scoring'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -112,17 +112,7 @@ export const GET = createSecureApiHandler(
       (l) => l.includes('organic') || l.includes('bio')
     )
 
-    const healthScore = calculateProductScore({
-      nutriscoreGrade: product.nutriscore_grade,
-      additivesTags: product.additives_tags ?? [],
-      isOrganic,
-      allergensTags: product.allergens_tags ?? [],
-      fiberPer100g: nutriments.fiber_100g ?? null,
-      calories: nutriments['energy-kcal_100g'] ?? null,
-      protein: nutriments.proteins_100g ?? null,
-      carbs: nutriments.carbohydrates_100g ?? null,
-      fat: nutriments.fat_100g ?? null,
-    })
+    const { score, grade, components } = scoreFoodProduct(product)
 
     const food = {
       name: product.product_name || 'Unknown Product',
@@ -152,7 +142,9 @@ export const GET = createSecureApiHandler(
       servingSize: product.serving_size || '100g',
       barcode: product.code ?? barcode,
       imageUrl: product.image_url,
-      healthScore,
+      score,
+      grade,
+      score_components: components,
       ingredients: product.ingredients_text || null,
       categories: product.categories_tags?.slice(0, 5) ?? [],
       novaGroup: product.nova_group ?? null,
@@ -199,7 +191,8 @@ export const GET = createSecureApiHandler(
           barcode: food.barcode,
           product_name: food.name,
           brand: food.brand ?? null,
-          score: healthScore.score ?? null,
+          score: score ?? null,
+          score_components: components,
           image_url: food.imageUrl ?? null,
         }, { onConflict: 'user_id,barcode' })
       ).catch(() => {
@@ -207,6 +200,6 @@ export const GET = createSecureApiHandler(
       })
     }
 
-    return NextResponse.json({ food, allergenWarnings, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
+    return NextResponse.json({ food, allergenWarnings, score, grade, score_components: components, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
   }) as unknown as Parameters<typeof createSecureApiHandler>[1]
 )
