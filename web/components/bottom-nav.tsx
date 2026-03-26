@@ -29,6 +29,7 @@ const navItems = [
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
   { href: '/thermal', label: 'Thermal', icon: '🌡️' },
+  { href: '/environment', label: 'Air', icon: '🌬️' },
   { href: '/sun-exposure', label: 'Sun', icon: '☀️' },
   { href: '/circadian', label: 'Circadian', icon: '🦁' },
   { href: '/lab-results', label: 'Labs', icon: '🧪' },
