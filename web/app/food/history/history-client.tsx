@@ -133,6 +133,9 @@ export function HistoryClient({
                   <Clock className="w-3 h-3" />
                   {formatDate(scan.scanned_at)}
                 </p>
+                {scan.barcode && (
+                  <Link href={`/food/product/${scan.barcode}`} className="text-primary text-xs font-medium underline mt-1 block">View full details →</Link>
+                )}
               </div>
 
               {scan.health_score != null && (

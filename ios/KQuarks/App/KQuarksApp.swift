@@ -37,6 +37,9 @@ struct KQuarksApp: App {
         CrashReportingService.shared.start()
         BackgroundSyncService.shared.registerBackgroundTask()
         BackgroundSyncService.shared.scheduleNextSync()
+        if #available(iOS 16.4, *) {
+            KQuarksShortcuts.updateAppShortcutParameters()
+        }
         #endif
     }
 

@@ -137,6 +137,17 @@ struct SettingsView: View {
                     }
                 }
 
+                // Siri Shortcuts
+                Section("Siri & Shortcuts") {
+                    if #available(iOS 16.0, *) {
+                        NavigationLink("Manage Shortcuts") {
+                            // Opens system shortcuts
+                            Text("Open the Shortcuts app to add KQuarks shortcuts to Siri.")
+                                .padding()
+                        }
+                    }
+                }
+
                 // Achievements
                 Section("Progress") {
                     NavigationLink {
