@@ -35,6 +35,13 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  // Check onboarding status
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('onboarding_completed')
+    .eq('user_id', user.id)
+    .single()
+
   // Fetch streaks for summary card
   const { data: streaks } = await supabase
     .from('user_streaks')
@@ -43,6 +50,12 @@ export default async function DashboardPage() {
 
   return (
     <>
+      {!profile?.onboarding_completed && (
+        <div className="bg-primary/10 border border-primary text-primary px-4 py-3 rounded-xl mb-4 flex items-center justify-between">
+          <span>Complete your profile for personalized insights.</span>
+          <a href="/onboarding" className="ml-4 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary/90 transition">Get Started</a>
+        </div>
+      )}
       <Suspense fallback={<DashboardDataSkeleton />}>
         <DashboardDataLoader user={user} />
       </Suspense>
