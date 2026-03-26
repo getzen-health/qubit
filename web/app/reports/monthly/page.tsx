@@ -150,15 +150,26 @@ export default function MonthlyReportPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link
-            href="/dashboard"
-            className="p-2 -ml-2 rounded-lg hover:bg-surface-secondary transition-colors"
-            aria-label="Back to dashboard"
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="p-2 -ml-2 rounded-lg hover:bg-surface-secondary transition-colors"
+              aria-label="Back to dashboard"
+            >
+              <ArrowLeft className="w-5 h-5 text-text-secondary" />
+            </Link>
+            <h1 className="text-2xl font-bold text-text-primary">Monthly Report</h1>
+          </div>
+          <button
+            onClick={handleDownloadPdf}
+            disabled={exportingPdf}
+            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 transition-colors"
+            aria-label="Download as PDF"
           >
-            <ArrowLeft className="w-5 h-5 text-text-secondary" />
-          </Link>
-          <h1 className="text-2xl font-bold text-text-primary">Monthly Report</h1>
+            <Download className="w-4 h-4" />
+            {exportingPdf ? 'Generating...' : 'Download PDF'}
+          </button>
         </div>
       </header>
 
@@ -169,23 +180,44 @@ export default function MonthlyReportPage() {
           </div>
         )}
 
-        {/* Year Selector */}
-        <div className="flex gap-4 items-center">
-          <button
-            onClick={() => setYear(year - 1)}
-            className="px-3 py-2 bg-surface rounded-lg border border-border hover:bg-surface-secondary transition-colors"
-          >
-            ←
-          </button>
-          <div className="text-center">
-            <h2 className="text-xl font-semibold text-text-primary">{year}</h2>
+        {/* Year Selector and Export Schedule */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={() => setYear(year - 1)}
+              className="px-3 py-2 bg-surface rounded-lg border border-border hover:bg-surface-secondary transition-colors"
+            >
+              ←
+            </button>
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-text-primary">{year}</h2>
+            </div>
+            <button
+              onClick={() => setYear(year + 1)}
+              className="px-3 py-2 bg-surface rounded-lg border border-border hover:bg-surface-secondary transition-colors"
+            >
+              →
+            </button>
           </div>
-          <button
-            onClick={() => setYear(year + 1)}
-            className="px-3 py-2 bg-surface rounded-lg border border-border hover:bg-surface-secondary transition-colors"
-          >
-            →
-          </button>
+
+          {/* Export Schedule Selector */}
+          <div className="bg-surface rounded-lg border border-border p-3">
+            <label className="text-sm font-medium text-text-secondary block mb-2">
+              📧 Auto-Export Schedule
+            </label>
+            <select
+              value={exportSchedule}
+              onChange={(e) => handleExportSchedule(e.target.value as 'none' | 'weekly' | 'monthly')}
+              className="w-full bg-surface-secondary rounded-lg px-3 py-2 text-sm text-text-primary border border-border focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="none">Disabled</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+            <p className="text-xs text-text-secondary mt-1">
+              {exportSchedule === 'none' ? 'No automatic exports' : `Reports emailed ${exportSchedule}ly`}
+            </p>
+          </div>
         </div>
 
         {/* Yearly Summary Cards */}
