@@ -12,7 +12,8 @@ export async function GET() {
   if (!clientId) return NextResponse.json({ error: 'Oura not configured' }, { status: 503 })
 
   const state = crypto.randomUUID()
-  cookies().set('oura_state', state, { httpOnly: true, secure: true, maxAge: 600 })
+  const cookieStore = await cookies();
+cookieStore.set('oura_state', state, { httpOnly: true, secure: true, maxAge: 600 })
 
   const params = new URLSearchParams({
     client_id: clientId,

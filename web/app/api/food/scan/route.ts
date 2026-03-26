@@ -79,7 +79,7 @@ export const GET = createSecureApiHandler(
     auditAction: 'READ',
     auditResource: 'food_product',
   },
-  async ({ query, supabase, user }: SecureApiContext<unknown, unknown>, request: NextRequest) => {
+  async (request: NextRequest, { query, supabase, user }: { query: unknown; supabase: import('@supabase/supabase-js').SupabaseClient; user: import('@supabase/supabase-js').User }) : Promise<NextResponse> => {
     const { barcode } = query as z.infer<typeof querySchema>
 
     // Fetch product from Open Food Facts
@@ -206,15 +206,6 @@ export const GET = createSecureApiHandler(
       })
     }
 
-    return new Response(
-      JSON.stringify({ food, allergenWarnings, dataSource: 'off' }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
-        },
-      }
-    )
+    return NextResponse.json({ food, allergenWarnings, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
   }
 )

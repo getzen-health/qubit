@@ -12,7 +12,7 @@ function getHypertensionStage(systolic: number, diastolic: number): { label: str
 import BPForm from './bp-form'
 
 export default async function BloodPressurePage() {
-  const supabase = createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
@@ -25,14 +25,14 @@ export default async function BloodPressurePage() {
     .gte('recorded_at', d30)
     .order('recorded_at', { ascending: true })
 
-  const readings = (records ?? []).map(r => {
+  const readings = (records ?? []).map((r: Record<string, any>) => {
     const parts = String(r.value).split('/')
     return {
       date: r.recorded_at.split('T')[0],
       systolic: Number(parts[0]),
       diastolic: Number(parts[1] ?? 80),
     }
-  }).filter(r => r.systolic > 0)
+  }).filter((r: { systolic: number }) => r.systolic > 0)
 
   const avgSystolic = readings.length ? Math.round(readings.reduce((s, r) => s + r.systolic, 0) / readings.length) : null
   const avgDiastolic = readings.length ? Math.round(readings.reduce((s, r) => s + r.diastolic, 0) / readings.length) : null
@@ -69,7 +69,7 @@ export default async function BloodPressurePage() {
         <div className="rounded-xl border border-border p-4">
           <p className="font-semibold mb-3">Recent Readings</p>
           <div className="space-y-2">
-            {readings.slice(-10).reverse().map((r, i) => {
+            {readings.slice(-10).reverse().map((r: { systolic: number; diastolic: number; date: string }, i: number) => {
               const s = getHypertensionStage(r.systolic, r.diastolic)
               return (
                 <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-border last:border-0">

@@ -94,7 +94,10 @@ export const GET = createSecureApiHandler(
 
 // POST /api/stress/log — log a manual stress entry
 
-export async function DELETE(request: Request) {
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export async function DELETE(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

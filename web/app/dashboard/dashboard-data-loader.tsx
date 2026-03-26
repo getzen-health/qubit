@@ -232,7 +232,11 @@ export async function DashboardDataLoader({ user }: { user: User }) {
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <SleepSummaryCard hours={sleepHours} quality={sleepQuality} />
+        import SleepSummaryCard from '@/components/sleep-summary-card'
+import WorkoutSummaryCard from '@/components/workout-summary-card'
+import MoodSummaryCard from '@/components/mood-summary-card'
+
+<SleepSummaryCard hours={sleepHours} quality={sleepQuality} />
         <WorkoutSummaryCard count={workoutCount} totalMinutes={workoutMinutes} />
         <MoodSummaryCard todayScore={todayMood} />
       </div>

@@ -41,7 +41,7 @@ const TRAINING_PLANS = [
 ]
 
 export default async function TrainingPage() {
-  const supabase = createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

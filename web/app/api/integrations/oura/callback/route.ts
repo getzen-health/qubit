@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const state = searchParams.get('state')
-  const savedState = cookies().get('oura_state')?.value
+  const cookieStore = await cookies();
+const savedState = cookieStore.get('oura_state')?.value
 
   if (!code || state !== savedState) {
     return NextResponse.redirect('/integrations?error=oura_auth_failed')

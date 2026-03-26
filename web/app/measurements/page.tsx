@@ -19,7 +19,7 @@ function getBodyFatCategory(pct: number, sex: string): { label: string; color: s
 import MeasurementsForm from './measurements-form'
 
 export default async function MeasurementsPage() {
-  const supabase = createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

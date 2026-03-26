@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function rotateSessionIfNeeded(): Promise<boolean> {
   try {
-    const supabase = createServerClient()
+    const supabase = await createClient()
     const { data: { session }, error } = await supabase.auth.getSession()
     if (error || !session) return false
 

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy } from 'lucide-react'
 // 'Run' icon does not exist in lucide-react, remove from navItems
 import { cn } from '@/lib/utils'
 
@@ -24,6 +24,7 @@ const navItems = [
 ]
 
 const moreItems = [
+  { href: '/bmi', icon: BarChart2, label: 'BMI' },
   { href: '/social', icon: Users, label: 'Social' },
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { href: '/pace-zones', icon: BarChart2, label: 'Pace Zones' },

@@ -46,6 +46,8 @@ function AddFoodForm({ mealType, onAdded }: { mealType: string, onAdded: () => v
   )
 }
 
+import NutritionWeeklyChart from '@/components/nutrition-weekly-chart'
+
 export default function FoodDiaryPage() {
   const [data, setData] = useState<any>({ grouped: {}, totals: {} })
   const [showForm, setShowForm] = useState<{ [key: string]: boolean }>({})

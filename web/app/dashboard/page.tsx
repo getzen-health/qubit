@@ -8,6 +8,7 @@ import { SleepSummaryCard } from '@/components/sleep-summary-card'
 import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
 import StreaksSummaryCard from '@/components/streaks-summary-card'
+import NutritionSummaryCard from '@/components/nutrition-summary-card'
 
 export const metadata: Metadata = {
   title: 'Dashboard',

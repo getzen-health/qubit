@@ -1,5 +1,5 @@
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
 const PLANS = [
@@ -9,7 +9,7 @@ const PLANS = [
 ]
 
 export default async function UpgradePage() {
-  const supabase = createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 

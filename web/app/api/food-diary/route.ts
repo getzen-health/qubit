@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Group by meal_type
-  const grouped = { breakfast: [], lunch: [], dinner: [], snack: [] }
+  const grouped: Record<string, typeof data> = { breakfast: [], lunch: [], dinner: [], snack: [] }
   let totals = { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
   for (const entry of data) {
     grouped[entry.meal_type].push(entry)

@@ -12,7 +12,8 @@ export async function GET() {
   if (!clientId) return NextResponse.json({ error: 'Google Fit not configured' }, { status: 503 })
 
   const state = crypto.randomUUID()
-  cookies().set('google_fit_state', state, { httpOnly: true, secure: true, maxAge: 600 })
+  const cookieStore = await cookies();
+cookieStore.set('google_fit_state', state, { httpOnly: true, secure: true, maxAge: 600 })
 
   const params = new URLSearchParams({
     client_id: clientId,

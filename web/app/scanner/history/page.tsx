@@ -3,7 +3,7 @@ import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import Link from 'next/link'
 
 export default async function ScanHistoryPage() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
   let scans: any[] = []

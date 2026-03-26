@@ -4,8 +4,6 @@ import { redirect } from "next/navigation"
 
 export const metadata = { title: "Supplements" }
 
-import { SupplementsClient } from "./supplements-client"
-
 export default async function SupplementsPage() {
   // Fetch today's taken supplements for quick log UI
   let takenNames: string[] = []
