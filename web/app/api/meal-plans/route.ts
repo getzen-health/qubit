@@ -1,116 +1,47 @@
-import { NextRequest } from 'next/server'
-import { z } from 'zod'
-import {
-  createSecureApiHandler,
-  secureJsonResponse,
-  secureErrorResponse,
-  dateSchema,
-} from '@/lib/security'
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
-const getMealPlansQuerySchema = z.object({
-  startDate: dateSchema,
-})
+export async function GET(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-const createMealPlanSchema = z.object({
-  plan_date: dateSchema,
-  meal_type: z.enum(['breakfast', 'lunch', 'dinner', 'snack']),
-  food_name: z.string().min(1).max(200),
-  calories: z.number().int().min(0).max(10000).nullable().optional(),
-  protein_g: z.number().min(0).max(1000).nullable().optional(),
-  carbs_g: z.number().min(0).max(1000).nullable().optional(),
-  fat_g: z.number().min(0).max(1000).nullable().optional(),
-  notes: z.string().max(500).nullable().optional(),
-})
+  const weekStart = request.nextUrl.searchParams.get('week') ?? getMonday(new Date())
+  
+  const [{ data: plans }, { data: recipes }] = await Promise.all([
+    supabase.from('meal_plans').select('*, recipe:meal_recipes(*)').eq('user_id', user.id).eq('week_start', weekStart),
+    supabase.from('meal_recipes').select('*').eq('is_public', true).order('name'),
+  ])
 
-const deleteMealPlanQuerySchema = z.object({
-  id: z.string().uuid(),
-})
+  return NextResponse.json({ plans: plans ?? [], recipes: recipes ?? [], week_start: weekStart })
+}
 
-// GET /api/meal-plans?startDate=YYYY-MM-DD — fetch one week of plans
-export const GET = createSecureApiHandler(
-  {
-    rateLimit: 'healthData',
-    requireAuth: true,
-    querySchema: getMealPlansQuerySchema,
-    auditAction: 'READ',
-    auditResource: 'meal',
-  },
-  async (_req: NextRequest, { user, query, supabase }) => {
-    const { startDate } = query as { startDate: string }
-    const end = new Date(startDate)
-    end.setDate(end.getDate() + 7)
-    const endDate = end.toISOString().split('T')[0]
+export async function POST(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const body = await request.json()
+  const weekStart = body.week_start ?? getMonday(new Date())
+  const { data, error } = await supabase.from('meal_plans').upsert({
+    ...body, user_id: user.id, week_start: weekStart,
+  }, { onConflict: 'user_id,week_start,day_of_week,meal_slot' }).select('*, recipe:meal_recipes(*)').single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ plan: data })
+}
 
-    const { data, error } = await supabase
-      .from('meal_plans')
-      .select('*')
-      .eq('user_id', user!.id)
-      .gte('plan_date', startDate)
-      .lt('plan_date', endDate)
-      .order('plan_date', { ascending: true })
-      .order('meal_type', { ascending: true })
+export async function DELETE(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { id } = await request.json()
+  await supabase.from('meal_plans').delete().eq('id', id).eq('user_id', user.id)
+  return NextResponse.json({ success: true })
+}
 
-    if (error) return secureErrorResponse('Failed to fetch meal plans', 500)
-    return secureJsonResponse({ plans: data ?? [] })
-  }
-)
-
-// POST /api/meal-plans — add a meal to the plan
-export const POST = createSecureApiHandler(
-  {
-    rateLimit: 'healthData',
-    requireAuth: true,
-    bodySchema: createMealPlanSchema,
-    auditAction: 'CREATE',
-    auditResource: 'meal',
-  },
-  async (_req, { user, body, supabase }) => {
-    const { plan_date, meal_type, food_name, calories, protein_g, carbs_g, fat_g, notes } =
-      body as z.infer<typeof createMealPlanSchema>
-
-    const { data, error } = await supabase
-      .from('meal_plans')
-      .insert({
-        user_id: user!.id,
-        plan_date,
-        meal_type,
-        food_name,
-        calories: calories ?? null,
-        protein_g: protein_g ?? null,
-        carbs_g: carbs_g ?? null,
-        fat_g: fat_g ?? null,
-        notes: notes ?? null,
-      })
-      .select()
-      .single()
-
-    if (error) {
-      if (error.code === '23505') return secureErrorResponse('Meal already planned', 409)
-      return secureErrorResponse('Failed to save meal plan', 500)
-    }
-    return secureJsonResponse({ plan: data }, 201)
-  }
-)
-
-// DELETE /api/meal-plans?id=<uuid> — remove a planned meal
-export const DELETE = createSecureApiHandler(
-  {
-    rateLimit: 'healthData',
-    requireAuth: true,
-    querySchema: deleteMealPlanQuerySchema,
-    auditAction: 'DELETE',
-    auditResource: 'meal',
-  },
-  async (_req, { user, query, supabase }) => {
-    const { id } = query as { id: string }
-
-    const { error } = await supabase
-      .from('meal_plans')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user!.id)
-
-    if (error) return secureErrorResponse('Failed to delete meal plan', 500)
-    return secureJsonResponse({ ok: true })
-  }
-)
+function getMonday(d: Date): string {
+  const date = new Date(d)
+  const day = date.getDay()
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1)
+  date.setDate(diff)
+  return date.toISOString().slice(0, 10)
+}
