@@ -14,6 +14,11 @@ const navItems = [
   { href: '/allergens', icon: ShieldAlert, label: 'Allergens' },
   { href: '/mood', icon: Smile, label: 'Mood' },
   { href: '/workouts', icon: Run, label: 'Workouts' },
+  { href: '/stress', icon: Activity, label: 'Stress' },
+  { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
+  { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
+  { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
 const moreItems = [
@@ -30,6 +35,7 @@ const moreItems = [
   { href: '/food/planner', icon: CalendarRange, label: 'Meal Planner' },
   { href: '/injury-risk', icon: ShieldAlert, label: 'Injury Risk' },
   { href: '/compare', icon: BarChart2, label: 'Compare' },
+  { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
 export function BottomNav() {
