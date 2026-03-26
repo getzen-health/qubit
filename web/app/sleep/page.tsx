@@ -8,6 +8,8 @@ import { BottomNav } from '@/components/bottom-nav'
 import { SleepForm } from './sleep-form'
 
 export default async function SleepPage() {
+  // Add link to sleep hygiene
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -61,6 +63,14 @@ export default async function SleepPage() {
             aria-label="Back to dashboard"
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
+          </Link>
+          <Link
+            href="/sleep/hygiene"
+            className="ml-2 px-3 py-1 rounded-xl bg-surface-secondary text-text-secondary text-xs font-semibold hover:bg-primary/10 border border-border transition-colors"
+            aria-label="Sleep Hygiene"
+            title="Sleep Hygiene"
+          >
+            😴 Sleep Hygiene
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Sleep</h1>
