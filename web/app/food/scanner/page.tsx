@@ -72,11 +72,19 @@ interface Alternative {
 // ---------------------------------------------------------------------------
 
 function ScoreBadge({ score, grade, size = 'lg' }: { score: number; grade: string; size?: 'sm' | 'lg' }) {
+  // QuarkScore™ grade color map (A+ through F)
   const colorMap: Record<string, string> = {
-    excellent: 'bg-green-500',
-    good: 'bg-lime-500',
-    mediocre: 'bg-orange-500',
-    poor: 'bg-red-500',
+    'A+': 'bg-emerald-500',
+    'A':  'bg-green-500',
+    'B':  'bg-lime-500',
+    'C':  'bg-orange-400',
+    'D':  'bg-red-500',
+    'F':  'bg-gray-700',
+    // legacy compat
+    excellent: 'bg-emerald-500',
+    good:      'bg-green-500',
+    mediocre:  'bg-orange-400',
+    poor:      'bg-red-500',
   }
   const bg = colorMap[grade] ?? 'bg-gray-400'
   if (size === 'sm') {
@@ -89,7 +97,7 @@ function ScoreBadge({ score, grade, size = 'lg' }: { score: number; grade: strin
   return (
     <div className={`flex flex-col items-center justify-center rounded-2xl ${bg} text-white w-24 h-24 shrink-0`}>
       <span className="text-3xl font-black">{score}</span>
-      <span className="text-xs font-semibold capitalize mt-0.5">{grade}</span>
+      <span className="text-xs font-semibold mt-0.5">{grade}</span>
     </div>
   )
 }
@@ -524,12 +532,14 @@ export default function FoodScannerPage() {
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
-{/* Yuka breakdown pills */}
+{/* QuarkScore™ 5-pillar breakdown */}
 {product.score_components && (
-  <div className="flex gap-1 mt-1">
-    <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs font-medium">Nutrition {product.score_components.nutrition}/60</span>
-    <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-medium">Additives {product.score_components.additives}/30</span>
-    <span className="px-2 py-0.5 rounded-full bg-lime-100 text-lime-800 text-xs font-medium">Organic {product.score_components.organic}/10</span>
+  <div className="flex gap-1 mt-1 flex-wrap justify-end max-w-[200px]">
+    <span title="Nutrient Balance (35 pts max)" className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium">🥦 {product.score_components.nutrientBalance ?? product.score_components.nutrition}/{35}</span>
+    <span title="Processing Level (25 pts max)" className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium">🏭 {product.score_components.processingIntegrity ?? 0}/{25}</span>
+    <span title="Additive Safety (20 pts max)" className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium">🧪 {product.score_components.additiveSafety ?? product.score_components.additives}/{20}</span>
+    <span title="Ingredient Quality (15 pts max)" className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-xs font-medium">🌾 {product.score_components.ingredientQuality ?? 0}/{15}</span>
+    <span title="Fits Your Goals (5 pts max)" className="px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300 text-xs font-medium">🎯 {product.score_components.contextFit ?? 0}/{5}</span>
   </div>
 )}
                   {product.barcode && (
@@ -743,33 +753,44 @@ export default function FoodScannerPage() {
               </div>
             )}
 
-            {/* Score breakdown */}
+            {/* QuarkScore™ breakdown */}
             <div className="bg-surface rounded-2xl border border-border p-4">
-              <h3 className="font-semibold text-text-primary mb-3">Score Breakdown</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-text-secondary">Nutritional quality (60%)</span>
-                  <span className="text-sm font-semibold text-text-primary">
-                    {product.healthScore.nutriScore ? `Nutri-Score ${product.healthScore.nutriScore.toUpperCase()}` : 'Unknown'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-text-secondary">Additive penalty (30%)</span>
-                  <span className={`text-sm font-semibold ${product.healthScore.additivesPenalty > 0 ? 'text-red-500' : 'text-green-500'}`}>
-                    -{product.healthScore.additivesPenalty} pts
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-text-secondary">Organic bonus (10%)</span>
-                  <span className={`text-sm font-semibold ${product.healthScore.organicBonus > 0 ? 'text-green-500' : 'text-text-secondary'}`}>
-                    {product.healthScore.organicBonus > 0 ? '+10 pts ✓' : 'No'}
-                  </span>
-                </div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-text-primary">QuarkScore™ Breakdown</h3>
+                <span className="text-xs text-text-secondary">Research-based · 5 pillars</span>
+              </div>
+              <div className="space-y-2.5">
+                {[
+                  { icon: '🥦', label: 'Nutrient Balance', key: 'nutrientBalance', fallback: 'nutrition', max: 35, color: 'bg-green-500' },
+                  { icon: '🏭', label: 'Processing Level', key: 'processingIntegrity', fallback: 'processingIntegrity', max: 25, color: 'bg-blue-500' },
+                  { icon: '🧪', label: 'Additive Safety',  key: 'additiveSafety', fallback: 'additives', max: 20, color: 'bg-purple-500' },
+                  { icon: '🌾', label: 'Ingredient Quality', key: 'ingredientQuality', fallback: 'ingredientQuality', max: 15, color: 'bg-amber-500' },
+                  { icon: '🎯', label: 'Fits Your Goals',  key: 'contextFit', fallback: 'contextFit', max: 5, color: 'bg-pink-500' },
+                ].map(({ icon, label, key, fallback, max, color }) => {
+                  const val = product.score_components
+                    ? ((product.score_components as Record<string, number>)[key] ?? (product.score_components as Record<string, number>)[fallback] ?? 0)
+                    : 0
+                  const pct = Math.round((val / max) * 100)
+                  return (
+                    <div key={key}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs text-text-secondary">{icon} {label}</span>
+                        <span className="text-xs font-semibold text-text-primary">{val}/{max}</span>
+                      </div>
+                      <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
+                        <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  )
+                })}
                 <div className="border-t border-border pt-2 flex justify-between items-center">
-                  <span className="text-sm font-semibold text-text-primary">Final score</span>
+                  <span className="text-sm font-semibold text-text-primary">Total QuarkScore™</span>
                   <span className="text-lg font-black text-text-primary">{product.healthScore.score}/100</span>
                 </div>
               </div>
+              <p className="text-xs text-text-secondary mt-3 leading-relaxed">
+                Powered by Food Compass 2.0 (Tufts/Nature Food 2024), NOVA processing classification, and IARC/EFSA additive safety tiers.
+              </p>
             </div>
 
             {/* Nutrient traffic lights */}

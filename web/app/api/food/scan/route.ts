@@ -108,11 +108,18 @@ export const GET = createSecureApiHandler(
     const nutriments = product.nutriments || {}
     const hasServing = nutriments['energy-kcal_serving'] !== undefined
 
-    const isOrganic = (product.labels_tags ?? []).some(
-      (l) => l.includes('organic') || l.includes('bio')
-    )
+    // Fetch user health profile for personalised QuarkScore™ Context Fit pillar
+    let userProfile: { primary_goal?: string; health_conditions?: string[]; dietary_preferences?: string[] } | undefined
+    if (user) {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('primary_goal, health_conditions, dietary_preferences')
+        .eq('user_id', user.id)
+        .single()
+      if (profile) userProfile = profile
+    }
 
-    const { score, grade, components } = scoreFoodProduct(product)
+    const { score, grade, components, pillars, flags } = scoreFoodProduct(product, userProfile)
 
     const food = {
       name: product.product_name || 'Unknown Product',
@@ -175,7 +182,7 @@ export const GET = createSecureApiHandler(
           barcode: food.barcode,
           product_name: food.name,
           brand: food.brand ?? null,
-          health_score: healthScore.score,
+          health_score: score,
           nova_group: food.novaGroup ?? null,
           nutriscore: product.nutriscore_grade ?? null,
           thumbnail_url: food.imageUrl ?? null,
@@ -200,6 +207,6 @@ export const GET = createSecureApiHandler(
       })
     }
 
-    return NextResponse.json({ food, allergenWarnings, score, grade, score_components: components, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
+    return NextResponse.json({ food, allergenWarnings, score, grade, score_components: components, pillars, flags, dataSource: 'off' }, { status: 200, headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' } })
   }) as unknown as Parameters<typeof createSecureApiHandler>[1]
 )
