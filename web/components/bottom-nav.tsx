@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -46,6 +46,7 @@ const navItems = [
   { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
   { href: '/insights/correlations', label: 'Patterns', icon: '📊' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
+  { href: '/immune', icon: Shield, label: 'Immune' },
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
   { href: '/reports', label: 'Reports', icon: '📋' },
   { href: '/goals', label: 'Goals', icon: '🎯' },
