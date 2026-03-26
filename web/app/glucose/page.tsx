@@ -1,13 +1,34 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
-import { GlucoseClient } from './glucose-client'
-import { BottomNav } from '@/components/bottom-nav'
+'use client'
+import { useState, useEffect, useCallback } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts'
+import { Activity, Trash2, Plus } from 'lucide-react'
 
-export const metadata = { title: 'Blood Glucose' }
+// WHO/ADA reference ranges (mmol/L)
+const RANGES = {
+  fasting: { low: 3.9, normal_low: 3.9, normal_high: 5.6, high: 7.0 },
+  post_meal: { low: 3.9, normal_low: 3.9, normal_high: 7.8, high: 11.0 },
+  default: { low: 3.9, normal_low: 3.9, normal_high: 7.8, high: 11.0 },
+}
 
-export default async function GlucosePage() {
+const CONTEXT_LABELS: Record<string, string> = {
+  fasting: 'Fasting', post_meal: 'Post-meal', pre_meal: 'Pre-meal',
+  random: 'Random', bedtime: 'Bedtime'
+}
+
+interface GlucoseEntry {
+  id: string; value_mmol: number; value_mgdl: number
+  context: string; notes: string | null; logged_at: string
+}
+
+function getStatus(value: number, context: string): { label: string; color: string } {
+  const range = RANGES[context as keyof typeof RANGES] ?? RANGES.default
+  if (value < range.low) return { label: 'Low', color: 'text-red-400' }
+  if (value <= range.normal_high) return { label: 'Normal', color: 'text-green-400' }
+  if (value <= range.high) return { label: 'Elevated', color: 'text-yellow-400' }
+  return { label: 'High', color: 'text-red-400' }
+}
+
+export default function GlucosePage() {
   const supabase = await createClient()
   const {
     data: { user },

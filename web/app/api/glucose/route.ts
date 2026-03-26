@@ -1,65 +1,55 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
-import { getServerCache } from '@/lib/server-cache'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const days = parseInt(new URL(request.url).searchParams.get('days') ?? '30')
+  const since = new Date()
+  since.setDate(since.getDate() - days)
 
-  const { searchParams } = new URL(request.url)
-  const rangeParam = searchParams.get('range') ?? '24h'
-
-  let rangeMs = 86400000 // default 24h
-  if (rangeParam === '7d') rangeMs = 7 * 86400000
-  if (rangeParam === '30d') rangeMs = 30 * 86400000
-
-  // Check cache first
-  const cache = getServerCache()
-  const cacheKey = `glucose:${user.id}:${rangeParam}`
-  const cached = cache.get(cacheKey)
-  if (cached) {
-    return NextResponse.json(cached, {
-      headers: { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=300, s-maxage=300' },
-    })
-  }
-
-  const startTime = new Date(Date.now() - rangeMs).toISOString()
-
-  const { data: records, error } = await supabase
-    .from('health_records')
-    .select('value, start_time')
+  const { data, error } = await supabase
+    .from('blood_glucose_entries')
+    .select('id, value_mmol, value_mgdl, context, notes, logged_at')
     .eq('user_id', user.id)
-    .eq('type', 'blood_glucose')
-    .gte('start_time', startTime)
-    .gt('value', 0)
-    .order('start_time', { ascending: true })
-    .limit(288)
+    .gte('logged_at', since.toISOString())
+    .order('logged_at', { ascending: true })
 
-  if (error) {
-    return NextResponse.json({ error: 'Failed to fetch glucose data' }, { status: 500 })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data: data ?? [] })
+}
+
+export async function POST(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await request.json()
+  const { value_mmol, context, notes } = body
+
+  if (!value_mmol || value_mmol <= 0 || value_mmol > 30) {
+    return NextResponse.json({ error: 'Invalid glucose value (must be 0.1–30 mmol/L)' }, { status: 400 })
   }
 
-  const readings = (records ?? [])
-    .filter((r) => r.value > 30 && r.value < 600)
-    .map((r) => ({
-      timestamp: r.start_time,
-      mgdl: Math.round(r.value),
-      mmol: +(r.value / 18.0).toFixed(1),
-      hour: new Date(r.start_time).getHours(),
-    }))
+  const { data, error } = await supabase
+    .from('blood_glucose_entries')
+    .insert({ user_id: user.id, value_mmol, context: context ?? 'random', notes })
+    .select()
+    .single()
 
-  const result = { readings }
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data })
+}
 
-  // Cache for 5 minutes
-  cache.set(cacheKey, result, 300)
+export async function DELETE(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  return NextResponse.json(result, {
-    headers: { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=300, s-maxage=300' },
-  })
+  const { id } = await request.json()
+  const { error } = await supabase.from('blood_glucose_entries').delete().eq('id', id).eq('user_id', user.id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
 }
