@@ -136,6 +136,10 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Mood", systemImage: "face.smiling") }
                 .tag(6)
 
+            CycleView()
+                .tabItem { Label("Cycle", systemImage: "calendar") }
+                .tag(11)
+
             StressView()
                 .tabItem { Label("Stress", systemImage: "waveform.path.ecg") }
                 .tag(10)

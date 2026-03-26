@@ -10,6 +10,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
     case bodyMeasurements = "Measurements"
     case supplements = "Supplements"
     case mood = "Mood"
+    case cycle = "Cycle"
     case profile = "Profile"
     case sleep = "Sleep"
     case stress = "Stress"
@@ -28,6 +29,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
         case .bodyMeasurements: "ruler"
         case .supplements: "pills.fill"
         case .mood: "face.smiling"
+        case .cycle: "calendar"
         case .profile: "person.crop.circle"
         case .sleep: "moon.fill"
         case .stress: "brain.head.profile"
@@ -38,7 +40,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
 
     var section: SidebarSection {
         switch self {
-        case .dashboard, .health, .insights, .water, .bodyMeasurements, .supplements, .mood, .profile: .main
+        case .dashboard, .health, .insights, .water, .bodyMeasurements, .supplements, .mood, .cycle, .profile: .main
         case .workouts, .sleep, .stress, .weeklyBalance: .data
         case .settings: .other
         }
@@ -99,6 +101,8 @@ struct SidebarContentView: View {
             SupplementsView()
         case .mood:
             MoodView()
+        case .cycle:
+            CycleView()
         case .profile:
             ProfileView()
         case .sleep:
