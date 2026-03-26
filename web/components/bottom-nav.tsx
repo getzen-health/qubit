@@ -27,6 +27,7 @@ const navItems = [
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/thermal', label: 'Thermal', icon: '🌡️' },
   { href: '/sun-exposure', label: 'Sun', icon: '☀️' },
   { href: '/circadian', label: 'Circadian', icon: '🦁' },
   { href: '/lab-results', label: 'Labs', icon: '🧪' },
