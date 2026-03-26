@@ -45,6 +45,12 @@ export default async function SettingsPage() {
   }
 
   const settingsSections = [
+  {
+    title: 'Dashboard Layout',
+    description: 'Show, hide, and reorder dashboard cards',
+    href: '/settings/dashboard',
+    icon: Palette,
+  },
     {
       title: 'Subscription',
       description: 'Manage your plan and features',
@@ -74,6 +80,12 @@ export default async function SettingsPage() {
       description: 'Set daily steps, sleep, water, weight, and calorie targets',
       href: '/settings/goals',
       icon: Target,
+    },
+    {
+      title: 'Reminders',
+      description: 'Hydration reminders and schedules',
+      href: '/settings/reminders',
+      icon: BellRing,
     },
     {
       title: 'Notifications',
