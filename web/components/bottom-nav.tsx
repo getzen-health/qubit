@@ -10,6 +10,7 @@ import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, 
 import { cn } from '@/lib/utils'
 
 const navItems = [
+  { href: '/share', label: 'Share', icon: '📤' },
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
   { href: '/coach/chat', icon: Bot, label: 'Coach' },
   { href: '/coach', icon: Sparkles, label: 'AI Coach' },
