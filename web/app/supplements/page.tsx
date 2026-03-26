@@ -17,6 +17,11 @@ export default async function SupplementsPage() {
   return (
     <main className="container mx-auto max-w-2xl px-4 py-8">
       <h1 className="text-2xl font-bold text-white mb-6">Supplements</h1>
+      <div className="mb-4 flex justify-end">
+        <a href="/supplements/interactions" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-border text-text-primary hover:bg-surface/80 text-sm font-medium transition">
+          Check Interactions <span aria-hidden>→</span>
+        </a>
+      </div>
       <SupplementsClient initialSupplements={supplements ?? []} userId={user.id} />
     </main>
   )
