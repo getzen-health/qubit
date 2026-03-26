@@ -40,6 +40,7 @@ const navItems = [
   { href: '/alcohol', label: 'Alcohol', icon: '🍷' },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
+  { href: '/insights/correlations', label: 'Patterns', icon: '📊' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
   { href: '/reports', label: 'Reports', icon: '📋' },
