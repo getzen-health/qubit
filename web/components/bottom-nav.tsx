@@ -8,18 +8,20 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { href: '/steps', icon: Activity, label: 'Activity' },
-  { href: '/sleep', icon: Moon, label: 'Sleep' },
-  { href: '/workouts', icon: Dumbbell, label: 'Workouts' },
-  { href: '/trends', icon: TrendingUp, label: 'Trends' },
+  { href: '/coach', icon: Sparkles, label: 'AI Coach' },
+  { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
+  { href: '/training', icon: CalendarRange, label: 'Training' },
+  { href: '/allergens', icon: ShieldAlert, label: 'Allergens' },
 ]
 
 const moreItems = [
-  { href: '/predictions', icon: Sparkles, label: 'Predictions' },
   { href: '/social', icon: Users, label: 'Social' },
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
-  { href: '/supplements', icon: Pill, label: 'Supplements' },
+  { href: '/pace-zones', icon: BarChart2, label: 'Pace Zones' },
+  { href: '/upgrade', icon: Sparkles, label: 'Upgrade' },
   { href: '/water', icon: Droplets, label: 'Water' },
+  { href: '/measurements', icon: BookOpen, label: 'Measurements' },
+  { href: '/supplements', icon: Pill, label: 'Supplements' },
   { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scan' },
   { href: '/food/diary', icon: BookOpen, label: 'Food Diary' },
   { href: '/food/planner', icon: CalendarRange, label: 'Meal Planner' },
