@@ -83,9 +83,7 @@ struct BodyMeasurementsView: View {
                 }
                 Section {
                     Button("Save Measurements") {
-                        HapticService.notification(.success)
-                        saved = true
-                        // In production: POST to Supabase body_measurements table
+                        Task { await saveMeasurement() }
                     }
                     .frame(maxWidth: .infinity)
                     .foregroundColor(.white)
@@ -96,6 +94,28 @@ struct BodyMeasurementsView: View {
             }
             .navigationTitle("Body Measurements")
             .alert("Saved!", isPresented: $saved) { Button("OK") {} }
+        }
+    }
+    
+    func saveMeasurement() async {
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/measurements") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var body: [String: Any] = [:]
+        if let n = Double(neck) { body["neck_cm"] = n }
+        if let w = Double(waist) { body["waist_cm"] = w }
+        if let h = Double(height) { body["height_cm"] = h }
+        if sex == "female", let hp = Double(hips) { body["hips_cm"] = hp }
+        if let bf = bodyFat { body["body_fat"] = bf }
+        body["sex"] = sex
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        guard let (_, response) = try? await URLSession.shared.data(for: request),
+              (response as? HTTPURLResponse)?.statusCode == 201 else { return }
+        await MainActor.run {
+            saved = true
+            HapticService.notification(.success)
         }
     }
 }
