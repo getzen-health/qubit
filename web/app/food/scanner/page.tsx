@@ -729,15 +729,6 @@ export default function FoodScannerPage() {
             <div className="bg-surface rounded-2xl border border-border p-4">
               <h3 className="font-semibold text-text-primary mb-3">Score Breakdown</h3>
               <div className="space-y-2">
-              </div>
-            </div>
-
-            {/* Nutrient traffic lights */}
-            <div className="bg-surface rounded-2xl border border-border p-4">
-              <NutrientTrafficLights nutriments={product as any} />
-            </div>
-
-
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-text-secondary">Nutritional quality (60%)</span>
                   <span className="text-sm font-semibold text-text-primary">
@@ -762,6 +753,12 @@ export default function FoodScannerPage() {
                 </div>
               </div>
             </div>
+
+            {/* Nutrient traffic lights */}
+            <div className="bg-surface rounded-2xl border border-border p-4">
+              <NutrientTrafficLights nutriments={product as any} />
+            </div>
+
 
             {/* Healthier alternatives */}
             {alternatives.length > 0 && (

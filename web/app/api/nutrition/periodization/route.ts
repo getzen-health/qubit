@@ -24,7 +24,6 @@ interface PeriodizationResult {
  */
 export async function GET(request: Request) {
   try {
-  try {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -110,7 +109,7 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(result)
-  } catch (err) {
+} catch (err) {
     return NextResponse.json({ error: 'Failed to generate periodization' }, { status: 500 })
   }
 }

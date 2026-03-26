@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security/api-security'
+import { checkRateLimit } from '@/lib/security'
 
 export async function POST(request: NextRequest) {
   try {
