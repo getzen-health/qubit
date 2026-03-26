@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2 } from 'lucide-react'
+// ⏱️ icon for fasting nav item
+
 // 'Run' icon does not exist in lucide-react, remove from navItems
 import { cn } from '@/lib/utils'
 
@@ -23,6 +25,7 @@ const navItems = [
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/fasting', label: 'Fast', icon: undefined /* ⏱️ */ },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
