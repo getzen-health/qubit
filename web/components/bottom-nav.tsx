@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -59,6 +59,7 @@ const moreItems = [
   { href: '/micronutrients', icon: Leaf, label: 'Nutrients' },
   { href: '/nutrition/insights', label: 'Diet Report', icon: '🍽️' },
   { href: '/pace-zones', icon: BarChart2, label: 'Pace Zones' },
+  { href: '/endurance', icon: Zap, label: 'Endurance' },
   { href: '/upgrade', icon: Sparkles, label: 'Upgrade' },
   { href: '/water', icon: Droplets, label: 'Water' },
   { href: '/measurements', icon: BookOpen, label: 'Measurements' },
