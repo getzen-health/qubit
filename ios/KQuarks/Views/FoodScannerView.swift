@@ -114,6 +114,11 @@ struct FoodScannerView: View {
                     .accessibilityLabel(isScanning ? "Switch to search" : "Scan barcode")
                     .disabled(cameraPermissionDenied)
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: HistoryView()) {
+                        Label("History", systemImage: "clock.arrow.circlepath")
+                    }
+                }
             }
             .sheet(item: $scannedProduct) { product in
                 ProductDetailView(product: product)
@@ -317,6 +322,8 @@ struct FoodScannerView: View {
         do {
             let product = try await OpenFoodFactsService.lookupBarcode(barcode)
             scannedProduct = product
+            // Save scan history
+            await SupabaseService.shared.saveScanHistory(barcode: barcode, productName: product.name, brand: product.brand, score: product.healthScore.score, imageURL: product.imageURL?.absoluteString)
             #if os(iOS)
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             #endif

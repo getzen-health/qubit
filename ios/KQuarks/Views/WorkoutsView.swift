@@ -112,7 +112,7 @@ struct WorkoutsView: View {
             .sheet(isPresented: $showLogWorkout, onDismiss: {
                 Task { await loadWorkouts() }
             }) {
-                LogWorkoutView()
+                WorkoutLogView()
             }
             .task(id: selectedPeriod) {
                 await loadWorkouts()

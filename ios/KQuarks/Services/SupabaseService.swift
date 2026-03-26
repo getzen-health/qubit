@@ -462,6 +462,28 @@ class SupabaseService {
         }
     }
 
+    // MARK: - Scanner History
+    /// Save scan history to API
+    @MainActor
+    func saveScanHistory(barcode: String?, productName: String, brand: String?, score: Int?, imageURL: String?) async {
+        guard let url = URL(string: "\(ProcessInfo.processInfo.environment["SUPABASE_API_BASE_URL"] ?? "https://kquarks.app")/api/scanner/history") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = currentSession?.accessToken {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let body: [String: Any?] = [
+            "barcode": barcode,
+            "product_name": productName,
+            "brand": brand,
+            "score": score,
+            "image_url": imageURL
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body.compactMapValues { $0 })
+        _ = try? await URLSession.shared.data(for: request)
+    }
+
     // MARK: - Health Data Sync
 
     func uploadHealthRecords(_ records: [HealthRecordUpload]) async throws {
