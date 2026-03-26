@@ -1,89 +1,101 @@
-// Replaced with new smart habits API implementation
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/security'
-import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
+import { calculateStreak, calculateLevel } from '@/lib/habits'
 
-const HabitSchema = z.object({
-  name: z.string().min(1),
-  icon: z.string().default('⭐'),
-  category: z.enum(['health', 'fitness', 'nutrition', 'sleep', 'mental', 'custom']).default('health'),
-  target_value: z.number().optional(),
-  target_unit: z.string().optional(),
-  frequency: z.enum(['daily', 'weekdays', 'weekends', 'custom']).default('daily'),
-  reminder_time: z.string().optional(),
-  reminder_enabled: z.boolean().optional(),
-})
-
+// GET: today's habits + completion status + streaks + user level + recent achievements
 export async function GET(req: NextRequest) {
-  await checkRateLimit(req, 'healthData')
+  await checkRateLimit(req)
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Get all active habits
-  const { data: habits } = await supabase
-    .from('user_habits')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('is_active', true)
-    .order('created_at', { ascending: true })
-
-  // Get completions for last 90 days
-  const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10)
-  const { data: completions } = await supabase
-    .from('habit_completions')
-    .select('*')
-    .eq('user_id', user.id)
-    .gte('completed_date', since)
-
-  // Compute streaks and today's status
   const today = new Date().toISOString().slice(0, 10)
-  const result = (habits ?? []).map((habit) => {
-    const habitCompletions = (completions ?? []).filter((c) => c.habit_id === habit.id)
-    // Compute streak
-    let streak = 0, best_streak = 0, current = 0
-    let prev = null
-    for (let i = 0; i < 90; i++) {
-      const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10)
-      if (habitCompletions.some((c) => c.completed_date === d)) {
-        current++
-        if (current > best_streak) best_streak = current
-        if (i === 0) streak = current
-      } else {
-        if (i === 0) streak = 0
-        current = 0
-      }
-    }
-    const is_done_today = habitCompletions.some((c) => c.completed_date === today)
-    return {
-      ...habit,
-      is_done_today,
-      current_streak: streak,
-      best_streak,
-    }
+  const since90 = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10)
+
+  const [
+    { data: habits },
+    { data: todayLogs },
+    { data: allLogs },
+    { data: userAchievements },
+    { data: xpRows },
+  ] = await Promise.all([
+    supabase.from('habits').select('*').eq('user_id', user.id).eq('is_active', true).order('created_at'),
+    supabase.from('habit_logs').select('*').eq('user_id', user.id).eq('completed_at', today),
+    supabase.from('habit_logs').select('habit_id,completed_at,skipped,xp_earned').eq('user_id', user.id).gte('completed_at', since90).order('completed_at', { ascending: false }),
+    supabase.from('user_achievements').select('*').eq('user_id', user.id),
+    supabase.from('habit_logs').select('xp_earned').eq('user_id', user.id).eq('skipped', false),
+  ])
+
+  const totalXp = (xpRows ?? []).reduce((s, r) => s + (r.xp_earned ?? 0), 0)
+  const level = calculateLevel(totalXp)
+
+  const streaks: Record<string, ReturnType<typeof calculateStreak>> = {}
+  for (const habit of habits ?? []) {
+    const habitLogs = (allLogs ?? []).filter(l => l.habit_id === habit.id)
+    streaks[habit.id] = calculateStreak(habitLogs, habit.frequency, habit.custom_days)
+  }
+
+  return NextResponse.json({
+    habits: habits ?? [],
+    todayLogs: todayLogs ?? [],
+    streaks,
+    level,
+    achievements: userAchievements ?? [],
   })
-  return NextResponse.json(result)
 }
 
+// POST: create a new habit
 export async function POST(req: NextRequest) {
-  await checkRateLimit(req, 'healthData')
+  await checkRateLimit(req)
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   const body = await req.json()
-  const parsed = HabitSchema.safeParse(body)
-  if (!parsed.success) return NextResponse.json({ error: parsed.error }, { status: 400 })
-  const habit = parsed.data
+  const { name, emoji, category, frequency, custom_days, time_of_day, anchor, tiny_version, target_streak, xp_per_completion } = body
+
+  if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+
   const { data, error } = await supabase
-    .from('user_habits')
-    .insert({ ...habit, user_id: user.id })
+    .from('habits')
+    .insert({
+      user_id: user.id,
+      name: name.trim(),
+      emoji: emoji ?? '✅',
+      category: category ?? 'custom',
+      frequency: frequency ?? 'daily',
+      custom_days: custom_days ?? null,
+      time_of_day: time_of_day ?? 'anytime',
+      anchor: anchor ?? null,
+      tiny_version: tiny_version ?? null,
+      target_streak: target_streak ?? 66,
+      xp_per_completion: xp_per_completion ?? 10,
+      is_active: true,
+    })
     .select()
     .single()
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data, { status: 201 })
+  return NextResponse.json({ habit: data }, { status: 201 })
+}
+
+// DELETE: soft-delete a habit
+export async function DELETE(req: NextRequest) {
+  await checkRateLimit(req)
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { id } = await req.json()
+  if (!id) return NextResponse.json({ error: 'Habit id required' }, { status: 400 })
+
+  const { error } = await supabase
+    .from('habits')
+    .update({ is_active: false })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ success: true })
 }
