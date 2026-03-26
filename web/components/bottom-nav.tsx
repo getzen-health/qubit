@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer, FlameKindling, Crosshair, Wine, Plane, Flower2 } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer, FlameKindling, Crosshair, Wine, Plane, Flower2, UtensilsCrossed } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -92,11 +92,13 @@ const moreItems = [
   { href: '/body-measurements', icon: Ruler, label: 'Body Size' },
   { href: '/supplements', icon: Pill, label: 'Supplements' },
   { href: '/medications', icon: Pill, label: 'Medications' },
+  { href: '/medication-adherence', icon: Pill, label: 'Med Adherence' },
   { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scan' },
   { href: '/cosmetics/scanner', icon: FlaskConical, label: 'Cosmetics Scan' },
   { href: '/scanner/history', icon: Package, label: 'Scan History' },
   { href: '/food-diary', icon: BookOpen, label: 'Food Diary' },
   { href: '/journal', icon: BookOpen, label: 'Journal' },
+  { href: '/meal-planner', icon: UtensilsCrossed, label: 'Meal Planner' },
   { href: '/food/planner', icon: CalendarRange, label: 'Meal Planner' },
   { href: '/mobility', icon: Activity, label: 'Mobility' },
   { href: '/injury-risk', icon: ShieldAlert, label: 'Injury Risk' },
