@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getServerCache } from '@/lib/server-cache'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,6 +37,16 @@ export async function GET(request: Request) {
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Check cache first
+    const cache = getServerCache()
+    const cacheKey = `monthly_report:${user.id}:${year}`
+    const cached = cache.get(cacheKey)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=300, s-maxage=300' },
+      })
     }
 
     const startDate = `${year}-01-01`
