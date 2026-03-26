@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
+  { href: '/cognitive', icon: Brain, label: 'Cognitive' },
   { href: '/gut-health', label: 'Gut', icon: '🦠' },
   { href: '/mental-health', label: 'Wellbeing', icon: '🧠' },
   { href: '/share', label: 'Share', icon: '📤' },
@@ -69,6 +70,7 @@ const moreItems = [
   { href: '/food-diary', icon: BookOpen, label: 'Food Diary' },
   { href: '/journal', icon: BookOpen, label: 'Journal' },
   { href: '/food/planner', icon: CalendarRange, label: 'Meal Planner' },
+  { href: '/mobility', icon: Activity, label: 'Mobility' },
   { href: '/injury-risk', icon: ShieldAlert, label: 'Injury Risk' },
   { href: '/compare', icon: BarChart2, label: 'Compare' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
