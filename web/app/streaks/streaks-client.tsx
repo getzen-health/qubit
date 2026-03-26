@@ -26,8 +26,12 @@ interface StreaksClientProps {
 }
 
 function computeStreak(dates: string[], isGoalMet: (date: string) => boolean): { current: number; best: number } {
-  // dates should be sorted newest-first
-  const sorted = [...dates].sort((a, b) => b.localeCompare(a))
+  // dates should be sorted newest-first from query
+  // Avoid re-sorting to reduce O(n log n) complexity
+  const sorted = dates.length > 0 && dates[0] > dates[dates.length - 1] 
+    ? dates 
+    : [...dates].sort((a, b) => b.localeCompare(a))
+  
   const today = new Date().toISOString().slice(0, 10)
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
 
@@ -37,9 +41,13 @@ function computeStreak(dates: string[], isGoalMet: (date: string) => boolean): {
   let prev: string | null = null
   let countingCurrent = true
 
-  const allDates = sorted.filter((d) => d <= today)
-
-  for (const date of allDates) {
+  // Limit to last 365 days max to avoid O(n²) on huge datasets
+  const maxDays = Math.min(sorted.length, 365)
+  for (let i = 0; i < maxDays; i++) {
+    const date = sorted[i]
+    // Skip dates beyond today
+    if (date > today) continue
+    
     if (isGoalMet(date)) {
       if (prev === null) {
         streak = 1
@@ -61,7 +69,7 @@ function computeStreak(dates: string[], isGoalMet: (date: string) => boolean): {
     }
   }
 
-  // If streak is still running
+  // If streak is still running, verify it includes today or yesterday
   if (countingCurrent && sorted.length > 0) {
     const mostRecent = sorted[0]
     if (mostRecent === today || mostRecent === yesterday) {

@@ -77,23 +77,34 @@ function calculateStreaks(
   if (!summaries) summaries = []
   if (!workouts) workouts = []
 
-  // Calculate steps streak
+  // Calculate steps streak - only continue if most recent date is today or yesterday
   let stepsCount = 0
-  for (const summary of summaries) {
-    if (summary.steps >= 8000) {
-      stepsCount++
-    } else {
-      break
+  const today = new Date().toISOString().slice(0, 10)
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+  
+  // Check if streak is continuing (most recent entry is today or yesterday)
+  const mostRecentSummary = summaries[0]
+  const continueStreak = mostRecentSummary && (mostRecentSummary.date === today || mostRecentSummary.date === yesterday)
+  
+  if (continueStreak) {
+    for (const summary of summaries) {
+      if (summary.steps >= 8000) {
+        stepsCount++
+      } else {
+        break
+      }
     }
   }
 
-  // Calculate sleep streak
+  // Calculate sleep streak with same logic
   let sleepCount = 0
-  for (const summary of summaries) {
-    if (summary.sleep_duration_minutes >= 420) { // 7 hours
-      sleepCount++
-    } else {
-      break
+  if (continueStreak) {
+    for (const summary of summaries) {
+      if (summary.sleep_duration_minutes >= 420) { // 7 hours
+        sleepCount++
+      } else {
+        break
+      }
     }
   }
 

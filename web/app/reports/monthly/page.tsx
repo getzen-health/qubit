@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import Link from 'next/link'
 
 interface MonthlySummary {
@@ -35,6 +35,8 @@ export default function MonthlyReportPage() {
   const [yearlySummary, setYearlySummary] = useState<YearlySummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [exportingPdf, setExportingPdf] = useState(false)
+  const [exportSchedule, setExportSchedule] = useState<'none' | 'weekly' | 'monthly'>('none')
 
   const supabase = createClient()
 
@@ -89,6 +91,52 @@ export default function MonthlyReportPage() {
 
     fetchMonthlyData()
   }, [year])
+
+  const handleDownloadPdf = async () => {
+    setExportingPdf(true)
+    try {
+      const response = await fetch('/api/reports/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ year }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF')
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `health-report-${year}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to download PDF')
+    } finally {
+      setExportingPdf(false)
+    }
+  }
+
+  const handleExportSchedule = async (schedule: 'none' | 'weekly' | 'monthly') => {
+    setExportSchedule(schedule)
+    try {
+      const response = await fetch('/api/profile/export-schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ export_schedule: schedule }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update export schedule')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update schedule')
+    }
+  }
 
   if (loading) {
     return (

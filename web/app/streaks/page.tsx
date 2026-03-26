@@ -14,11 +14,25 @@ export default async function StreaksPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Date boundaries computed once before parallel queries
-  const ninetyDaysAgo = new Date()
+  // Fetch user's timezone preference for accurate streak calculations
+  const { data: userPrefs } = await supabase
+    .from('users')
+    .select('timezone')
+    .eq('id', user.id)
+    .single()
+
+  const userTimezone = userPrefs?.timezone || 'UTC'
+  
+  // Calculate date boundaries in user's timezone for accurate streak detection
+  const now = new Date()
+  const localDate = new Date(now.toLocaleString('en-US', { timeZone: userTimezone }))
+  const ninetyDaysAgo = new Date(localDate)
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
-  const thirtyDaysAgo = new Date()
+  const thirtyDaysAgo = new Date(localDate)
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().slice(0, 10)
+  const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().slice(0, 10)
 
   const [
     { data: profile },
@@ -39,7 +53,7 @@ export default async function StreaksPage() {
       .from('daily_summaries')
       .select('date, steps, sleep_duration_minutes, active_calories, avg_hrv, recovery_score')
       .eq('user_id', user.id)
-      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10))
+      .gte('date', ninetyDaysAgoStr)
       .order('date', { ascending: false }),
     // 90 days of workout records for workout streak
     supabase
@@ -59,7 +73,7 @@ export default async function StreaksPage() {
       .from('daily_water')
       .select('date, total_ml')
       .eq('user_id', user.id)
-      .gte('date', ninetyDaysAgo.toISOString().slice(0, 10)),
+      .gte('date', ninetyDaysAgoStr),
     // Nutrition settings for water goal
     supabase
       .from('user_nutrition_settings')
