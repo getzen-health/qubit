@@ -27,6 +27,7 @@ const navItems = [
   { href: '/habits', icon: CheckSquare, label: 'Habits' },
   { href: '/streaks', icon: Trophy, label: 'Streaks' },
   { href: '/progress', icon: Camera, label: 'Photos' },
+  { href: '/functional-fitness', icon: Activity, label: 'Func. Age' },
   { href: '/vo2max', icon: Wind, label: 'VO2max' },
   { href: '/stress', icon: Wind, label: 'Stress' },
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
