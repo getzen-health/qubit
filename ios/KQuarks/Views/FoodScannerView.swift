@@ -115,8 +115,11 @@ struct FoodScannerView: View {
                     .disabled(cameraPermissionDenied)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ScanHistoryView()) {
+                        Label("Scan History", systemImage: "clock.arrow.circlepath")
+                    }
                     NavigationLink(destination: HistoryView()) {
-                        Label("History", systemImage: "clock.arrow.circlepath")
+                        Label("History", systemImage: "calendar")
                     }
                 }
             }
