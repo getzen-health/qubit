@@ -373,3 +373,177 @@ export async function GET(request: Request) {
     headers: responseHeaders,
   })
 }
+
+// ─── POST: aggregate export data for FHIR / CSV / PDF ────────────────────────
+
+interface ExportRequestOptions {
+  date_range?: { start?: string; end?: string }
+  include_metrics?: boolean
+  include_sleep?: boolean
+  include_food_scans?: boolean
+  include_workouts?: boolean
+  include_lab_results?: boolean
+  include_medications?: boolean
+}
+
+interface ExportRequestBody {
+  format: 'fhir' | 'csv' | 'pdf'
+  options?: ExportRequestOptions
+}
+
+export async function POST(request: Request) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const rl = await checkRateLimit(user.id, 'export')
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Maximum 3 exports per hour.' },
+      { status: 429, headers: { 'Retry-After': '3600' } }
+    )
+  }
+
+  let body: ExportRequestBody
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const { format, options = {} } = body
+  const dateStart = options.date_range?.start ?? null
+  const dateEnd = options.date_range?.end ?? null
+
+  const {
+    include_metrics = true,
+    include_sleep = true,
+    include_food_scans = true,
+    include_workouts = true,
+    include_lab_results = true,
+    include_medications = true,
+  } = options
+
+  // Fetch profile
+  const { data: profile } = await supabase
+    .from('users')
+    .select('id, email, display_name, timezone')
+    .eq('id', user.id)
+    .single()
+
+  // Fetch each requested data type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = { profile }
+
+  if (include_metrics) {
+    let q = supabase
+      .from('daily_summaries')
+      .select('date, steps, active_calories, distance_meters, resting_heart_rate, avg_hrv, sleep_duration_minutes, weight_kg, recovery_score, strain_score')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false })
+      .limit(3650)
+    if (dateStart) q = q.gte('date', dateStart)
+    if (dateEnd) q = q.lte('date', dateEnd)
+    const { data: rows } = await q
+    data.metrics = rows ?? []
+  }
+
+  if (include_sleep) {
+    let q = supabase
+      .from('sleep_records')
+      .select('start_time, end_time, duration_minutes, deep_minutes, rem_minutes, core_minutes, awake_minutes')
+      .eq('user_id', user.id)
+      .order('start_time', { ascending: false })
+      .limit(1000)
+    if (dateStart) q = q.gte('start_time', dateStart)
+    if (dateEnd) q = q.lte('start_time', dateEnd + 'T23:59:59Z')
+    const { data: rows } = await q
+    data.sleep = rows ?? []
+  }
+
+  if (include_food_scans) {
+    let q = supabase
+      .from('product_scans')
+      .select('product_name, brand, barcode, health_score, nova_group, nutriscore, scanned_at')
+      .eq('user_id', user.id)
+      .order('scanned_at', { ascending: false })
+      .limit(2000)
+    if (dateStart) q = q.gte('scanned_at', dateStart)
+    if (dateEnd) q = q.lte('scanned_at', dateEnd + 'T23:59:59Z')
+    const { data: rows } = await q
+    data.food_scans = rows ?? []
+  }
+
+  if (include_workouts) {
+    let q = supabase
+      .from('workout_logs')
+      .select('type, duration_minutes, calories, workout_date, notes')
+      .eq('user_id', user.id)
+      .order('workout_date', { ascending: false })
+      .limit(1000)
+    if (dateStart) q = q.gte('workout_date', dateStart)
+    if (dateEnd) q = q.lte('workout_date', dateEnd + 'T23:59:59Z')
+    const { data: rows } = await q
+    data.workouts = rows ?? []
+  }
+
+  if (include_lab_results) {
+    let q = supabase
+      .from('lab_results')
+      .select('biomarker_key, value, unit, lab_date, lab_name, notes')
+      .eq('user_id', user.id)
+      .order('lab_date', { ascending: false })
+      .limit(1000)
+    if (dateStart) q = q.gte('lab_date', dateStart)
+    if (dateEnd) q = q.lte('lab_date', dateEnd)
+    const { data: rows } = await q
+    data.lab_results = rows ?? []
+  }
+
+  if (include_medications) {
+    const { data: rows } = await supabase
+      .from('user_medications')
+      .select('id, medication_name, generic_name, dosage, frequency, start_date, end_date, is_active')
+      .eq('user_id', user.id)
+      .order('medication_name')
+    data.medications = rows ?? []
+  }
+
+  // Count total records
+  const recordCount =
+    (data.metrics?.length ?? 0) +
+    (data.sleep?.length ?? 0) +
+    (data.food_scans?.length ?? 0) +
+    (data.workouts?.length ?? 0) +
+    (data.lab_results?.length ?? 0) +
+    (data.medications?.length ?? 0)
+
+  // Log the export (fire-and-forget via admin client to bypass RLS)
+  try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (url && key) {
+      const admin = createAdminClient(url, key, { auth: { persistSession: false } })
+      await admin.from('export_logs').insert({
+        user_id: user.id,
+        format,
+        date_range_start: dateStart ?? null,
+        date_range_end: dateEnd ?? null,
+        record_count: recordCount,
+        filename: `kquarks-export-${new Date().toISOString().split('T')[0]}.${format === 'fhir' ? 'json' : format}`,
+      })
+    }
+  } catch {
+    // Non-fatal — don't fail the export if logging fails
+  }
+
+  return NextResponse.json(
+    { data },
+    { headers: { 'X-API-Version': API_VERSION } }
+  )
+}
