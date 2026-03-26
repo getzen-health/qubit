@@ -1,21 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { encryptToken, isLegacyToken, migrateToken } from '@/lib/encryption'
+import { checkRateLimit } from '@/lib/security/rate-limit'
 
 const STRAVA_CLIENT_ID = process.env.STRAVA_CLIENT_ID
 const STRAVA_CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET
 const STRAVA_REDIRECT_URI = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/strava/callback`
-
-// Simple encryption helper (in production, use a proper encryption library)
-function encryptToken(token: string): string {
-  // TODO: Implement proper encryption using a library like tweetnacl or crypto-js
-  // For now, base64 encode (NOT SECURE - for development only)
-  return Buffer.from(token).toString('base64')
-}
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
 
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting on callback endpoint
+    const clientId = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const rateLimit = await checkRateLimit(clientId, 'integrations')
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      )
+    }
+
     // Validate environment variables
-    if (!STRAVA_CLIENT_ID || !STRAVA_CLIENT_SECRET) {
+    if (!STRAVA_CLIENT_ID || !STRAVA_CLIENT_SECRET || !ENCRYPTION_KEY) {
+      console.error('Strava integration not properly configured')
       return NextResponse.json(
         { error: 'Strava integration not configured' },
         { status: 500 }
@@ -24,13 +31,33 @@ export async function GET(request: NextRequest) {
 
     // Get authorization code and state from query params
     const code = request.nextUrl.searchParams.get('code')
-    const state = request.nextUrl.searchParams.get('state')
+    const stateFromUrl = request.nextUrl.searchParams.get('state')
+    const error = request.nextUrl.searchParams.get('error')
+
+    // Check for OAuth errors
+    if (error) {
+      const redirectTo = stateFromUrl ? new URL(stateFromUrl).pathname : '/settings/integrations'
+      return NextResponse.redirect(`${redirectTo}?error=oauth_denied&error_description=${error}`)
+    }
 
     if (!code) {
-      return NextResponse.redirect(
-        `${state || '/settings/integrations'}?error=authorization_failed`
-      )
+      return NextResponse.redirect('/settings/integrations?error=no_authorization_code')
     }
+
+    if (!stateFromUrl) {
+      return NextResponse.redirect('/settings/integrations?error=missing_state_parameter')
+    }
+
+    // Verify state matches stored cookie (CSRF protection)
+    const storedState = request.cookies.get('strava_oauth_state')?.value
+    if (!storedState || storedState !== stateFromUrl) {
+      console.error('CSRF validation failed: state mismatch')
+      return NextResponse.redirect('/settings/integrations?error=csrf_validation_failed')
+    }
+
+    // Clear the state cookie after verification
+    const response = new NextResponse()
+    response.cookies.delete('strava_oauth_state')
 
     // Exchange authorization code for access token
     const tokenResponse = await fetch('https://www.strava.com/oauth/token', {
@@ -47,12 +74,17 @@ export async function GET(request: NextRequest) {
     if (!tokenResponse.ok) {
       console.error('Strava token exchange failed:', await tokenResponse.text())
       return NextResponse.redirect(
-        `${state || '/settings/integrations'}?error=token_exchange_failed`
+        `/settings/integrations?error=token_exchange_failed&code=${tokenResponse.status}`
       )
     }
 
     const tokenData = await tokenResponse.json()
     const { access_token, refresh_token, expires_at } = tokenData
+
+    if (!access_token) {
+      console.error('No access token in Strava response')
+      return NextResponse.redirect('/settings/integrations?error=invalid_token_response')
+    }
 
     // Get user from Supabase auth
     const supabase = await createClient()
@@ -61,15 +93,25 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.redirect('/login')
+      return NextResponse.redirect('/login?error=session_expired')
+    }
+
+    // Encrypt tokens with AES-256-GCM before storing
+    let encryptedAccessToken: string
+    let encryptedRefreshToken: string | null = null
+
+    try {
+      encryptedAccessToken = encryptToken(access_token, ENCRYPTION_KEY)
+      if (refresh_token) {
+        encryptedRefreshToken = encryptToken(refresh_token, ENCRYPTION_KEY)
+      }
+    } catch (encryptError) {
+      console.error('Token encryption failed:', encryptError)
+      return NextResponse.redirect('/settings/integrations?error=encryption_failed')
     }
 
     // Store integration in database
-    // TODO: Implement proper token encryption before storing
-    const encryptedAccessToken = encryptToken(access_token)
-    const encryptedRefreshToken = refresh_token ? encryptToken(refresh_token) : null
-
-    const { error } = await supabase
+    const { error: dbError } = await supabase
       .from('user_integrations')
       .upsert(
         {
@@ -84,19 +126,20 @@ export async function GET(request: NextRequest) {
         { onConflict: 'user_id,provider' }
       )
 
-    if (error) {
-      console.error('Failed to store integration:', error)
-      return NextResponse.redirect(
-        `${state || '/settings/integrations'}?error=storage_failed`
-      )
+    if (dbError) {
+      console.error('Failed to store integration:', dbError)
+      return NextResponse.redirect('/settings/integrations?error=storage_failed')
     }
 
-    // TODO: Trigger initial sync of Strava activities
-    // await triggerStravaSync(user.id)
+    // Create redirect response
+    const redirectUrl = new URL('/settings/integrations', process.env.NEXT_PUBLIC_APP_URL)
+    redirectUrl.searchParams.set('success', 'strava_connected')
 
-    return NextResponse.redirect(
-      `${state || '/settings/integrations'}?success=strava_connected`
-    )
+    const redirectResponse = NextResponse.redirect(redirectUrl)
+    // Clear state cookie in redirect response
+    redirectResponse.cookies.delete('strava_oauth_state')
+
+    return redirectResponse
   } catch (error) {
     console.error('Strava callback error:', error)
     return NextResponse.json(
