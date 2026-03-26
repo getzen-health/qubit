@@ -180,6 +180,14 @@ export default function InsightsPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Insights</h1>
+<div className="mb-4">
+  <Link href="/insights/correlations" className="block bg-surface border border-primary/30 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+    <div className="flex items-center gap-3">
+      <span className="text-primary font-bold text-lg">Mood Correlations &rarr;</span>
+      <span className="text-xs text-text-secondary">See how your mood relates to sleep and steps</span>
+    </div>
+  </Link>
+</div>
             <p className="text-sm text-text-secondary">
               {loading ? '…' : `${insights.length} AI-generated insights`}
             </p>

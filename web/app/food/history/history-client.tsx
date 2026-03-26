@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Clock, Trash2 } from 'lucide-react'
+import { Clock, Trash2, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 interface ScanRecord {
@@ -14,6 +14,7 @@ interface ScanRecord {
   nutriscore: string | null
   thumbnail_url: string | null
   scanned_at: string
+  is_favorite?: boolean // Added for favorites
 }
 
 function gradeFromScore(score: number | null): { grade: string; color: string } {

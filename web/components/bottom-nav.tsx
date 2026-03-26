@@ -21,6 +21,7 @@ const navItems = [
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
