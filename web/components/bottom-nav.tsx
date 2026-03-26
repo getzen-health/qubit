@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera } from 'lucide-react'
 // 'Run' icon does not exist in lucide-react, remove from navItems
 import { cn } from '@/lib/utils'
 
@@ -17,6 +17,7 @@ const navItems = [
   { href: '/mood', icon: Smile, label: 'Mood' },
   // { href: '/workouts', icon: Run, label: 'Workouts' },
   { href: '/streaks', icon: Trophy, label: 'Streaks' },
+  { href: '/progress', icon: Camera, label: 'Photos' },
   { href: '/stress', icon: Activity, label: 'Stress' },
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
