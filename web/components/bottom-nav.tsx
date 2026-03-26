@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -24,7 +24,7 @@ const navItems = [
   { href: '/habits', icon: CheckSquare, label: 'Habits' },
   { href: '/streaks', icon: Trophy, label: 'Streaks' },
   { href: '/progress', icon: Camera, label: 'Photos' },
-  { href: '/stress', icon: Activity, label: 'Stress' },
+  { href: '/stress', icon: Wind, label: 'Stress' },
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
