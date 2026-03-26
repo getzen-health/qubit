@@ -36,9 +36,11 @@ struct SupplementsView: View {
                             .foregroundColor(.green)
                     } else {
                         Button("Log") {
-                            takenToday.insert(supplement.name)
-                            HapticService.impact(.medium)
-                            // In production: POST to Supabase supplement_logs
+                            Task {
+                                await logSupplement(name: supplement.name)
+                                takenToday.insert(supplement.name)
+                                HapticService.impact(.medium)
+                            }
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
@@ -48,5 +50,15 @@ struct SupplementsView: View {
             }
             .navigationTitle("Supplements")
         }
+    }
+    
+    func logSupplement(name: String) async {
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/supplements") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["name": name])
+        _ = try? await URLSession.shared.data(for: request)
     }
 }
