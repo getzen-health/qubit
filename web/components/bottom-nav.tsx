@@ -55,6 +55,7 @@ const moreItems = [
   { href: '/social', icon: Users, label: 'Social' },
   { href: '/nutrition/targets', icon: () => <span className="text-xl">🍎</span>, label: 'Macros' },
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
+  { href: '/nutrition/insights', label: 'Diet Report', icon: '🍽️' },
   { href: '/pace-zones', icon: BarChart2, label: 'Pace Zones' },
   { href: '/upgrade', icon: Sparkles, label: 'Upgrade' },
   { href: '/water', icon: Droplets, label: 'Water' },
