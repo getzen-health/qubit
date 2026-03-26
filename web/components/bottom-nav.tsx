@@ -47,6 +47,7 @@ const navItems = [
   { href: '/reports', label: 'Reports', icon: '📋' },
   { href: '/goals', label: 'Goals', icon: '🎯' },
   { href: '/longevity', label: 'Longevity', icon: '🔬' },
+  { href: '/posture', label: 'Breaks', icon: '🪑' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
