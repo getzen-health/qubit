@@ -20,7 +20,7 @@ export default function SupplementInteractionsPage() {
     fetch('/api/supplements')
       .then(r => r.json())
       .then(({ data }) => {
-        const names = (data ?? []).map((s: { name: string }) => s.name)
+        const names = (data ?? []).map((s: { name: string }) => s.name) // already typed
         setSuppCount(names.length)
         setInteractions(findInteractions(names))
         setLoading(false)
@@ -36,7 +36,7 @@ export default function SupplementInteractionsPage() {
       <h1 className="text-2xl font-bold text-text-primary mb-2">Interaction Checker</h1>
       <p className="text-text-secondary text-sm mb-6">Analyzing {suppCount} supplement{suppCount !== 1 ? 's' : ''} in your stack</p>
 
-      {loading && <div className="animate-pulse space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 bg-surface rounded-xl" />)}</div>}
+      {loading && <div className="animate-pulse space-y-3">{[1,2,3].map((i: number) => <div key={i} className="h-20 bg-surface rounded-xl" />)}</div>}
 
       {!loading && interactions.length === 0 && (
         <div className="flex flex-col items-center py-12 gap-3">
@@ -46,7 +46,7 @@ export default function SupplementInteractionsPage() {
         </div>
       )}
 
-      {!loading && ['avoid', 'caution', 'beneficial', 'neutral'].map(sev => {
+      {!loading && (['avoid', 'caution', 'beneficial', 'neutral'] as InteractionSeverity[]).map(sev => {
         const items = interactions.filter(i => i.severity === sev)
         if (items.length === 0) return null
         const cfg = SEVERITY_CONFIG[sev as InteractionSeverity]
@@ -54,7 +54,7 @@ export default function SupplementInteractionsPage() {
           <div key={sev} className="mb-4">
             <h2 className={`text-sm font-semibold uppercase tracking-wide mb-2 ${cfg.text}`}>{cfg.label}</h2>
             <div className="space-y-2">
-              {items.map((i, idx) => (
+              {items.map((i: Interaction, idx: number) => (
                 <div key={idx} className={`rounded-xl border p-4 ${cfg.bg}`}>
                   <div className="flex items-center gap-2 mb-1">
                     {cfg.icon}

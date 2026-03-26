@@ -27,7 +27,7 @@ export const INTERACTIONS: Interaction[] = [
 
 export function findInteractions(supplements: string[]): Interaction[] {
   const results: Interaction[] = []
-  const normalized = supplements.map(s => s.toLowerCase().trim())
+  const normalized = supplements.map((s: string) => s.toLowerCase().trim())
   
   for (const interaction of INTERACTIONS) {
     const s1 = interaction.supp1.toLowerCase()

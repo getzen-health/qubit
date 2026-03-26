@@ -27,7 +27,7 @@ export function MeasurementsTrendChart() {
       .catch(() => setLoading(false))
   }, [days])
 
-  const formatted = data.map(d => ({
+  const formatted = data.map((d: MeasurementPoint) => ({
     ...d,
     date: new Date(d.measured_at).toLocaleDateString('en', { month: 'short', day: 'numeric' })
   }))

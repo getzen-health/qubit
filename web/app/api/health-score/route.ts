@@ -26,6 +26,7 @@ function grade(score: number) {
 }
 
 export async function GET() {
+  try {
   const supabase = await createClient();
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -99,5 +100,9 @@ export async function GET() {
     stress: { value: stress, points: Math.round(stressPoints), max: WEIGHTS.stress },
   };
   const score = Object.values(components).reduce((sum, c) => sum + c.points, 0);
-  return NextResponse.json({ score, components, grade: grade(score) });
+      return NextResponse.json({ score, components, grade: grade(score) });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

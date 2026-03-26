@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
+  try {
   const supabase = await createClient()
   const {
     data: { user },
@@ -26,10 +27,15 @@ export async function GET() {
     target_weight_kg: null,
     calorie_budget: 2000
   }
-  return NextResponse.json(data ? data : { ...defaults, user_id: user.id })
+      return NextResponse.json(data ? data : { ...defaults, user_id: user.id })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: NextRequest) {
+  try {
   const supabase = await createClient()
   const {
     data: { user },
@@ -54,5 +60,9 @@ export async function PATCH(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-  return NextResponse.json({ success: true })
+      return NextResponse.json({ success: true })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
