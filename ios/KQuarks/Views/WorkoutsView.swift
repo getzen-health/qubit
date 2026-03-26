@@ -82,6 +82,9 @@ struct WorkoutsView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     HStack(spacing: 4) {
+                        NavigationLink(destination: ExerciseLibraryView()) {
+                            Image(systemName: "books.vertical")
+                        }
                         NavigationLink(destination: WorkoutCalendarView()) {
                             Image(systemName: "calendar.badge.clock")
                         }
