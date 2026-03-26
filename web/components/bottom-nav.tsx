@@ -55,6 +55,7 @@ const navItems = [
   { href: '/energy', icon: Zap, label: 'Energy' },
   { href: '/metabolic', icon: Flame, label: 'Metabolic' },
   { href: '/eye-health', icon: Eye, label: 'Eye Health' },
+  { href: '/skin', icon: Sparkles, label: 'Skin' },
   { href: '/posture', label: 'Breaks', icon: '🪑' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
