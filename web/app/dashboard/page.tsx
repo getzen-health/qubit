@@ -9,6 +9,7 @@ import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
 import StreaksSummaryCard from '@/components/streaks-summary-card'
 import NutritionSummaryCard from '@/components/nutrition-summary-card'
+import { HabitsTodayCard } from '@/components/habits-today-card'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -59,7 +60,8 @@ export default async function DashboardPage() {
       <Suspense fallback={<DashboardDataSkeleton />}>
         <DashboardDataLoader user={user} />
       </Suspense>
-      <StreaksSummaryCard streaks={streaks ?? []} />
+      <HabitsTodayCard />
+    <StreaksSummaryCard streaks={streaks ?? []} />
     </>
   )
 }

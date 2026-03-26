@@ -39,6 +39,7 @@ import {
   LifetimeStatsCard,
   ComparisonCards,
 } from './components/infographics'
+import { QuickLinks } from './components/quick-links'
 
 interface NutritionData {
   calories: { consumed: number; target: number; burned: number }
@@ -111,6 +112,17 @@ export function DashboardContent({
   defaultFastingProtocol = '16:8',
   defaultFastingHours = 16,
 }: DashboardContentProps) {
+  // --- Quick Links ---
+  // Place this at the top of the dashboard or in a quick-links grid
+  // Add more links as needed
+  // ---
+  // Example: <QuickLinks />
+
+  // Quick links section
+  // Place this at the top of the dashboard or in a prominent quick-links area
+  // Add more links as needed
+  // ---
+
   const router = useRouter()
   const supabase = createClient()
 
