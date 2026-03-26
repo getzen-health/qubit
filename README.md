@@ -4,11 +4,48 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 
 ## Features
 
-- **Apple Health Sync**: Automatically sync all your health data from Apple Health
-- **Comprehensive Tracking**: Sleep, workouts, heart rate, activity, body metrics, and more
-- **AI-Powered Insights**: Get personalized health insights powered by Claude AI
-- **Web Dashboard**: Access your health data from any browser
-- **Privacy First**: Your data is encrypted and you control access
+### Health Tracking
+- 📊 Apple Health sync (steps, HR, HRV, sleep, workouts, blood pressure)
+- 💊 Medication tracking with reminders
+- 🩸 Menstrual cycle tracking with HealthKit sync
+- 🧘 Stress & cortisol tracking (HRV-derived)
+- 💧 Water intake tracking with daily goal
+- 📏 Body measurements & body fat % (US Navy method)
+- ❤️ Blood pressure trends with hypertension staging
+
+### Nutrition (Yuka-style)
+- 🔍 Food barcode scanner with health scoring (0-100)
+- 🧪 Ingredient deep-dive analysis with risk ratings
+- 🌿 Eco-score sustainability ratings
+- ⚠️ Personal allergen warnings
+- 🥗 Macro periodization based on training load
+- 🎯 Personalized calorie targets (Mifflin-St Jeor BMR)
+- 💊 Supplement & vitamin tracking
+
+### AI & Insights
+- 🤖 Daily AI health insights (Claude/OpenAI)
+- 🏋️ Injury risk scoring (ACWR + HRV + sleep)
+- 🎯 AI health coach with daily recommendations
+- 📈 VO2max trend tracking & fitness age
+
+### Integrations
+- 🏃 Strava activity sync
+- ⌚ Fitbit OAuth & health sync
+- 🏅 Garmin Connect OAuth
+- 🌐 Google Fit OAuth
+- 💍 Oura Ring sleep sync
+
+### Community (Bevel-style)
+- 🏆 Community challenges & leaderboards
+- 👥 Friends activity feed
+- 🔐 Privacy controls
+
+### Web Dashboard
+- 📱 Progressive Web App (PWA)
+- 🌍 Internationalization (English, Spanish, French)
+- ⌨️ Keyboard shortcuts
+- 📤 CSV/JSON data export
+- 🎨 Dark mode
 
 ## Tech Stack
 
