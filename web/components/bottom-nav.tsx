@@ -41,7 +41,7 @@ const navItems = [
   { href: '/sun-exposure', label: 'Sun', icon: '☀️' },
   { href: '/circadian', label: 'Circadian', icon: '🦁' },
   { href: '/lab-results', label: 'Labs', icon: '🧪' },
-  { href: '/breathing', label: 'Breathe', icon: '🫁' },
+  { href: '/breathing', label: 'Breathe', icon: Wind },
   { href: '/body', label: 'Body', icon: '⚖️' },
   { href: '/pain-science', label: 'Pain Science', icon: Brain },
   { href: '/injuries', label: 'Injuries', icon: '🩹' },
