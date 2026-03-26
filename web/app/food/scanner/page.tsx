@@ -551,6 +551,9 @@ export default function FoodScannerPage() {
                 <div className="px-4 pb-3">
                   <p className="text-xs text-text-secondary mb-1.5">Nutri-Score</p>
                   <NutriScoreBar grade={product.healthScore.nutriScore} />
+                  {product.barcode && (
+                    <Link href={`/food/product/${product.barcode}`} className="text-primary text-xs font-medium underline ml-2">View full details →</Link>
+                  )}
                 </div>
               )}
 
