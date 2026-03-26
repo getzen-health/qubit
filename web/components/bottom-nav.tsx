@@ -32,6 +32,7 @@ const navItems = [
   { href: '/injuries', label: 'Injuries', icon: '🩹' },
   { href: '/fasting', label: 'Fast', icon: undefined /* ⏱️ */ },
   { href: '/supplements', label: 'Supplements', icon: '💊' },
+  { href: '/alcohol', label: 'Alcohol', icon: '🍷' },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
