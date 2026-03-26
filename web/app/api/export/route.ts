@@ -241,39 +241,51 @@ async function buildExport(supabase: any, userId: string, type: string): Promise
   }
 
   // Default: daily summaries
-  const { data, error } = await supabase
+  let query = supabase
     .from('daily_summaries')
     .select('date, steps, active_calories, distance_meters, floors_climbed, resting_heart_rate, avg_hrv, sleep_duration_minutes, weight_kg, recovery_score, strain_score')
     .eq('user_id', userId)
-    .order('date', { ascending: false })
 
-  if (error) return null
+  if (from) query = query.gte('date', from)
+  if (to) query = query.lte('date', to)
 
-  const rows = data ?? []
+  query = query.order('date', { ascending: false })
+
   const headers = [
     'date', 'steps', 'active_calories', 'distance_meters',
     'resting_heart_rate', 'avg_hrv', 'sleep_duration_minutes',
     'weight_kg', 'recovery_score', 'strain_score',
   ]
-  const csv = [
-    headers.join(','),
-    ...rows.map((r: { date: string; steps: number; active_calories: number; distance_meters: number; resting_heart_rate: number; avg_hrv: number; sleep_duration_minutes: number; weight_kg: number; recovery_score: number; strain_score: number }) =>
-      [
-        r.date ?? '',
-        r.steps ?? '',
-        r.active_calories ?? '',
-        r.distance_meters ?? '',
-        r.resting_heart_rate ?? '',
-        r.avg_hrv ?? '',
-        r.sleep_duration_minutes ?? '',
-        r.weight_kg ?? '',
-        r.recovery_score ?? '',
-        r.strain_score ?? '',
-      ].join(',')
-    ),
-  ].join('\n')
+  const csvRows: string[] = [headers.join(',')]
+  let rowCount = 0
+  let truncated = false
 
-  return { csv, filename: 'kquarks_daily.csv', rowCount: rows.length }
+  for await (const batch of fetchBatches(query, BATCH_SIZE, MAX_ROWS)) {
+    for (const r of batch) {
+      if (rowCount >= MAX_ROWS) {
+        truncated = true
+        break
+      }
+      csvRows.push(
+        [
+          r.date ?? '',
+          r.steps ?? '',
+          r.active_calories ?? '',
+          r.distance_meters ?? '',
+          r.resting_heart_rate ?? '',
+          r.avg_hrv ?? '',
+          r.sleep_duration_minutes ?? '',
+          r.weight_kg ?? '',
+          r.recovery_score ?? '',
+          r.strain_score ?? '',
+        ].join(',')
+      )
+      rowCount++
+    }
+    if (truncated) break
+  }
+
+  return { csv: csvRows.join('\n'), filename: 'kquarks_daily.csv', rowCount, truncated }
 }
 
 export async function GET(request: Request) {
@@ -289,6 +301,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const type = searchParams.get('type') ?? 'daily'
   const format = searchParams.get('format') ?? 'csv'
+  const from = searchParams.get('from')
+  const to = searchParams.get('to')
 
   // Rate limiting: max 3 exports per hour per user
   const rl = await checkRateLimit(user.id, 'export')
@@ -299,7 +313,7 @@ export async function GET(request: Request) {
     )
   }
 
-  const result = await buildExport(supabase, user.id, type)
+  const result = await buildExport(supabase, user.id, type, from ?? undefined, to ?? undefined)
   if (!result) {
     return NextResponse.json({ error: 'Export failed' }, { status: 500 })
   }
@@ -321,20 +335,26 @@ export async function GET(request: Request) {
     })
     
     const filename = result.filename.replace('.csv', '.json')
+    const responseHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'X-API-Version': API_VERSION,
+    }
+    if (result.truncated) responseHeaders['X-Truncated'] = 'true'
+
     return new Response(JSON.stringify({ data, exportedAt: new Date().toISOString() }, null, 2), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-        'X-API-Version': API_VERSION,
-      },
+      headers: responseHeaders,
     })
   }
 
+  const responseHeaders: Record<string, string> = {
+    'Content-Type': 'text/csv',
+    'Content-Disposition': `attachment; filename="${result.filename}"`,
+    'X-API-Version': API_VERSION,
+  }
+  if (result.truncated) responseHeaders['X-Truncated'] = 'true'
+
   return new Response(result.csv, {
-    headers: {
-      'Content-Type': 'text/csv',
-      'Content-Disposition': `attachment; filename="${result.filename}"`,
-      'X-API-Version': API_VERSION,
-    },
+    headers: responseHeaders,
   })
 }

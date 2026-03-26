@@ -124,6 +124,33 @@ export default function IntegrationsClient({
     }
   }
 
+  const handleSyncNow = async (provider: string) => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch(
+        `/api/integrations/${provider}/sync`,
+        {
+          method: 'POST',
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Sync failed')
+      }
+
+      const result = await response.json()
+      setSuccess(`${result.message} (${result.syncedCount} synced, ${result.skippedCount} skipped)`)
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to sync')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
       <div className="mx-auto max-w-2xl p-4">
@@ -195,17 +222,30 @@ export default function IntegrationsClient({
 
                   {provider.status === 'active' ? (
                     isConnected ? (
-                      <button
-                        onClick={() => handleDisconnect(provider.id)}
-                        disabled={isLoading}
-                        className="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 disabled:opacity-50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
-                      >
-                        {isLoading ? (
-                          <Loader className="h-4 w-4 animate-spin" />
-                        ) : (
-                          'Disconnect'
-                        )}
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleSyncNow(provider.id)}
+                          disabled={isLoading}
+                          className="rounded-lg bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200 disabled:opacity-50 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                        >
+                          {isLoading ? (
+                            <Loader className="h-4 w-4 animate-spin" />
+                          ) : (
+                            'Sync Now'
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleDisconnect(provider.id)}
+                          disabled={isLoading}
+                          className="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 disabled:opacity-50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                        >
+                          {isLoading ? (
+                            <Loader className="h-4 w-4 animate-spin" />
+                          ) : (
+                            'Disconnect'
+                          )}
+                        </button>
+                      </div>
                     ) : (
                       <button
                         onClick={() =>
