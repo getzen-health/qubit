@@ -72,6 +72,8 @@ const navItems = [
 ]
 
 const moreItems = [
+  { href: '/labs', icon: FlaskConical, label: 'Lab Results' },
+  { href: '/longevity', icon: Dna, label: 'Longevity' },
   { href: '/mindfulness', icon: Leaf, label: 'Mindfulness' },
   { href: '/import', icon: Upload, label: 'Import' },
   { href: '/export', icon: Download, label: 'Export' },
