@@ -76,7 +76,8 @@ export default function AllergensPage() {
   const existingNames = allergens.map((a) => a.allergen.toLowerCase())
 
   return (
-    <div className="min-h-screen bg-background">
+    <main role="main" aria-label="Allergen Settings" id="main-content">
+      <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
           <Link href="/dashboard" className="p-2 -ml-2 rounded-lg hover:bg-surface-secondary transition-colors">
@@ -184,5 +185,6 @@ export default function AllergensPage() {
 
       <BottomNav />
     </div>
+    </main>
   )
 }

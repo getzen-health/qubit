@@ -13,7 +13,8 @@ export default async function UpgradePage() {
   if (!user) redirect('/login')
 
   return (
-    <div className="container mx-auto py-12 max-w-4xl">
+    <main role="main" aria-label="Upgrade Plan" id="main-content">
+      <div className="container mx-auto py-12 max-w-4xl">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold mb-2">Choose Your Plan</h1>
         <p className="text-muted-foreground">Unlock the full power of your health data</p>
@@ -36,5 +37,6 @@ export default async function UpgradePage() {
         ))}
       </div>
     </div>
+    </main>
   )
 }

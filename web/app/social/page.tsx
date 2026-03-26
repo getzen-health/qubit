@@ -74,7 +74,8 @@ export default async function SocialPage() {
   }>
 
   return (
-    <div className="min-h-screen bg-background">
+    <main role="main" aria-label="Friends" id="main-content">
+      <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
           <Link
@@ -97,5 +98,6 @@ export default async function SocialPage() {
       </main>
       <BottomNav />
     </div>
+    </main>
   )
 }

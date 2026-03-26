@@ -13,7 +13,8 @@ export default async function ChallengesPage() {
   if (!user) redirect('/login')
 
   return (
-    <div className="container mx-auto py-8">
+    <main role="main" aria-label="Community Challenges" id="main-content">
+      <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-2">Community Challenges</h1>
       <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -37,5 +38,6 @@ export default async function ChallengesPage() {
         ))}
       </div>
     </div>
+    </main>
   )
 }

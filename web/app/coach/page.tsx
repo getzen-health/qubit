@@ -7,7 +7,8 @@ export default async function CoachPage() {
   if (!user) redirect('/login')
 
   return (
-    <div className="container mx-auto py-8 max-w-3xl">
+    <main role="main" aria-label="AI Health Coach" id="main-content">
+      <div className="container mx-auto py-8 max-w-3xl">
       <h1 className="text-2xl font-bold mb-2">AI Health Coach</h1>
       <p className="text-muted-foreground mb-8">Personalized guidance based on your health data.</p>
       <div className="grid gap-4">
@@ -56,5 +57,6 @@ export default async function CoachPage() {
         </div>
       </div>
     </div>
+    </main>
   )
 }

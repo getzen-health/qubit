@@ -46,7 +46,8 @@ export default async function TrainingPage() {
   if (!user) redirect('/login')
 
   return (
-    <div className="container mx-auto py-8">
+    <main role="main" aria-label="Training Plans" id="main-content">
+      <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-2">Training Plans</h1>
       <p className="text-muted-foreground mb-8">Structured workout programs to help you reach your goals.</p>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
@@ -71,5 +72,6 @@ export default async function TrainingPage() {
         ))}
       </div>
     </div>
+    </main>
   )
 }
