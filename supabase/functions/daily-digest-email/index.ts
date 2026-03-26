@@ -31,7 +31,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
-const MAX_USERS_PER_RUN = 50
+const MAX_USERS_PER_RUN = 1000
 const DELAY_MS_BETWEEN_USERS = 300
 
 interface DailySummary {
@@ -187,31 +187,19 @@ async function generateDailyDigestForUser(
   userId: string,
   userEmail: string,
   userName: string,
-  anthropicKey: string
+  anthropicKey: string,
+  userSummaryCache: Map<string, DailySummary | null>
 ): Promise<boolean> {
   try {
-    // Get yesterday's date
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = yesterday.toISOString().split("T")[0]
-
-    // Fetch yesterday's health summary
-    const { data: dailySummary } = await supabase
-      .from("daily_summaries")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("date", yesterdayStr)
-      .single()
-
+    const dailySummary = userSummaryCache.get(userId)
     if (!dailySummary) {
-      console.log(`No health data for user ${userId} on ${yesterdayStr}`)
       return false
     }
 
     // Build context for AI insight generation
     const context = `
 Today is ${new Date().toISOString().split("T")[0]}.
-User ${userName} had this health data yesterday (${yesterdayStr}):
+User ${userName} had this health data yesterday:
 - Steps: ${dailySummary.steps ?? 0}
 - Distance: ${dailySummary.distance_meters ? (dailySummary.distance_meters / 1000).toFixed(1) : "N/A"} km
 - Active Calories: ${dailySummary.active_calories ?? 0}
@@ -248,6 +236,7 @@ Generate a brief, 1-2 sentence health insight or recommendation based on this da
 
     // Build and send email
     const emailHtml = buildEmailHtml(userName, dailySummary as DailySummary, insight)
+    const yesterdayStr = new Date(Date.now() - 24 * 3600 * 1000).toISOString().split("T")[0]
     const subject = `${yesterdayStr} - Your Daily Health Snapshot 📊`
 
     const sent = await sendEmail(userEmail, subject, emailHtml)

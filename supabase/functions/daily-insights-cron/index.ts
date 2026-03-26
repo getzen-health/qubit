@@ -30,7 +30,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
-const MAX_USERS_PER_RUN = 50
+const MAX_USERS_PER_RUN = 1000
 const DELAY_MS_BETWEEN_USERS = 200
 
 interface DailySummary {
@@ -145,49 +145,19 @@ Return ONLY a valid JSON array (no markdown, no explanation):
 async function generateInsightsForUser(
   supabase: ReturnType<typeof createClient>,
   userId: string,
-  anthropicKey: string
+  anthropicKey: string,
+  userDataCache: Map<string, { summaries: DailySummary[]; workouts: WorkoutRecord[]; sleep: SleepRecord[]; checkins: CheckinRecord[] }>
 ): Promise<number> {
-  const since14d = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString()
-  const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10)
+  const cached = userDataCache.get(userId)
+  if (!cached) return 0
 
-  const [{ data: summaries }, { data: workouts }, { data: sleep }, { data: checkins }] = await Promise.all([
-    supabase
-      .from("daily_summaries")
-      .select("date,steps,active_calories,distance_meters,resting_heart_rate,avg_hrv,sleep_duration_minutes,recovery_score")
-      .eq("user_id", userId)
-      .gte("date", since7d)
-      .order("date", { ascending: false })
-      .limit(8),
-    supabase
-      .from("workout_records")
-      .select("workout_type,duration_minutes,active_calories,avg_heart_rate")
-      .eq("user_id", userId)
-      .gte("start_time", since14d)
-      .gt("duration_minutes", 10)
-      .order("start_time", { ascending: false })
-      .limit(5),
-    supabase
-      .from("sleep_records")
-      .select("duration_minutes,deep_minutes,rem_minutes,core_minutes,awake_minutes")
-      .eq("user_id", userId)
-      .gte("start_time", since14d)
-      .gt("duration_minutes", 60)
-      .order("start_time", { ascending: false })
-      .limit(3),
-    supabase
-      .from("daily_checkins")
-      .select("date,energy,mood,stress,notes")
-      .eq("user_id", userId)
-      .gte("date", since7d)
-      .order("date", { ascending: false })
-      .limit(7),
-  ])
+  const { summaries, workouts, sleep, checkins } = cached
 
   if (!summaries || summaries.length === 0) return 0
 
   const today = summaries[0]
   const history = summaries.slice(1)
-  const prompt = buildPrompt(today, history, workouts ?? [], sleep ?? [], checkins ?? [])
+  const prompt = buildPrompt(today, history, workouts, sleep, checkins)
 
   const aiRes = await fetch("https://api.anthropic.com/v1/messages", {
       signal: AbortSignal.timeout(25000),
@@ -214,7 +184,6 @@ async function generateInsightsForUser(
     const match = text.match(/\[[\s\S]*?\]/)
     if (match) insights = JSON.parse(match[0])
   } catch {
-    // Could not parse JSON — skip this user
     return 0
   }
 
@@ -307,13 +276,63 @@ Deno.serve(async (req: Request) => {
     .filter((id) => !alreadyProcessed.has(id))
     .slice(0, MAX_USERS_PER_RUN)
 
+  // Batch-fetch all health data for users to process (avoid N+1 queries)
+  const since14d = new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString()
+  const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10)
+
+  const [
+    { data: allSummaries },
+    { data: allWorkouts },
+    { data: allSleep },
+    { data: allCheckins }
+  ] = await Promise.all([
+    supabaseAdmin
+      .from("daily_summaries")
+      .select("user_id,date,steps,active_calories,distance_meters,resting_heart_rate,avg_hrv,sleep_duration_minutes,recovery_score")
+      .in("user_id", toProcess)
+      .gte("date", since7d)
+      .order("date", { ascending: false }),
+    supabaseAdmin
+      .from("workout_records")
+      .select("user_id,workout_type,duration_minutes,active_calories,avg_heart_rate,start_time")
+      .in("user_id", toProcess)
+      .gte("start_time", since14d)
+      .gt("duration_minutes", 10)
+      .order("start_time", { ascending: false }),
+    supabaseAdmin
+      .from("sleep_records")
+      .select("user_id,duration_minutes,deep_minutes,rem_minutes,core_minutes,awake_minutes,start_time")
+      .in("user_id", toProcess)
+      .gte("start_time", since14d)
+      .gt("duration_minutes", 60)
+      .order("start_time", { ascending: false }),
+    supabaseAdmin
+      .from("daily_checkins")
+      .select("user_id,date,energy,mood,stress,notes")
+      .in("user_id", toProcess)
+      .gte("date", since7d)
+      .order("date", { ascending: false }),
+  ])
+
+  // Index data by user_id for fast lookup
+  const userDataCache = new Map<string, { summaries: DailySummary[]; workouts: WorkoutRecord[]; sleep: SleepRecord[]; checkins: CheckinRecord[] }>()
+  
+  for (const userId of toProcess) {
+    userDataCache.set(userId, {
+      summaries: (allSummaries ?? []).filter((s: any) => s.user_id === userId).slice(0, 8),
+      workouts: (allWorkouts ?? []).filter((w: any) => w.user_id === userId).slice(0, 5),
+      sleep: (allSleep ?? []).filter((s: any) => s.user_id === userId).slice(0, 3),
+      checkins: (allCheckins ?? []).filter((c: any) => c.user_id === userId).slice(0, 7),
+    })
+  }
+
   let totalInsights = 0
   let usersProcessed = 0
   let errors = 0
 
   for (const userId of toProcess) {
     try {
-      const count = await generateInsightsForUser(supabaseAdmin, userId, anthropicKey)
+      const count = await generateInsightsForUser(supabaseAdmin, userId, anthropicKey, userDataCache)
       if (count > 0) {
         totalInsights += count
         usersProcessed++

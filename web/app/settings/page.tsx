@@ -15,6 +15,7 @@ import {
   Upload,
   Lock,
   Plug,
+  Crown,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -44,6 +45,12 @@ export default async function SettingsPage() {
   }
 
   const settingsSections = [
+    {
+      title: 'Subscription',
+      description: 'Manage your plan and features',
+      href: '/settings/subscription',
+      icon: Crown,
+    },
     {
       title: 'Appearance',
       description: 'Theme, colors, and display preferences',

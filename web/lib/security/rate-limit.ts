@@ -18,6 +18,9 @@ export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   // Auth endpoints - strict limits
   auth: { maxRequests: 5, windowMs: 60_000 }, // 5 requests per minute
 
+  // Integration auth flows (OAuth, etc) - very strict
+  integrations: { maxRequests: 10, windowMs: 60_000 }, // 10 requests per minute
+
   // Health data APIs - moderate limits
   healthData: { maxRequests: 60, windowMs: 60_000 }, // 60 requests per minute
 

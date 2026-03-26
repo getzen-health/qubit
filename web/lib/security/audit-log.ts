@@ -37,6 +37,7 @@ export type AuditResource =
   | 'friendship'
   | 'challenge'
   | 'user_data'
+  | 'medication'
 
 interface AuditLogEntry {
   user_id: string
