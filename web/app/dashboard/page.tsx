@@ -10,6 +10,7 @@ import { MoodSummaryCard } from '@/components/mood-summary-card'
 import StreaksSummaryCard from '@/components/streaks-summary-card'
 import NutritionSummaryCard from '@/components/nutrition-summary-card'
 import { HabitsTodayCard } from '@/components/habits-today-card'
+import XpCard from '@/components/xp-card'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -49,8 +50,18 @@ export default async function DashboardPage() {
     .select('*')
     .eq('user_id', user.id)
 
+  // Fetch XP and streak for XP card
+  const { data: stats } = await supabase
+    .from('user_stats')
+    .select('total_xp, current_streak')
+    .eq('user_id', user.id)
+    .single()
+
   return (
     <>
+      <div className="mb-4">
+        <XpCard totalXP={stats?.total_xp ?? 0} currentStreak={stats?.current_streak ?? 0} />
+      </div>
       {!profile?.onboarding_completed && (
         <div className="bg-primary/10 border border-primary text-primary px-4 py-3 rounded-xl mb-4 flex items-center justify-between">
           <span>Complete your profile for personalized insights.</span>

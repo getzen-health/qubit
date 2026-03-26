@@ -22,7 +22,8 @@ export interface Achievement {
   progressLabel: string
 }
 
-export default async function AchievementsPage() {
+// Gamification achievements page
+export default function AchievementsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
