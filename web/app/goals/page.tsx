@@ -5,51 +5,17 @@ import { ArrowLeft, Target } from 'lucide-react'
 import { GoalsClient } from './goals-client'
 import { BottomNav } from '@/components/bottom-nav'
 
+export const metadata = {
+  title: 'Health Goals — KQuarks',
+  description: 'Set SMART goals with the WOOP framework. Vision board, progress tracking, and weekly check-ins.',
+}
+
 export default async function GoalsPage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-
-  const ninetyDaysAgo = new Date()
-  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 89)
-  const since = ninetyDaysAgo.toISOString().slice(0, 10)
-
-  const [
-    { data: profile },
-    { data: nutrition },
-    { data: summaries },
-    { data: waterData },
-  ] = await Promise.all([
-    supabase
-      .from('users')
-      .select('step_goal, calorie_goal, sleep_goal_minutes')
-      .eq('id', user.id)
-      .single(),
-    supabase
-      .from('user_nutrition_settings')
-      .select('water_target_ml, calorie_target')
-      .eq('user_id', user.id)
-      .single(),
-    supabase
-      .from('daily_summaries')
-      .select('date, steps, active_calories, sleep_duration_minutes')
-      .eq('user_id', user.id)
-      .gte('date', since)
-      .order('date', { ascending: true }),
-    supabase
-      .from('daily_water')
-      .select('date, total_ml')
-      .eq('user_id', user.id)
-      .gte('date', since)
-      .order('date', { ascending: true }),
-  ])
-
-  const stepGoal = profile?.step_goal ?? 10000
-  const calGoal = profile?.calorie_goal ?? 500
-  const sleepGoalMinutes = profile?.sleep_goal_minutes ?? 480
-  const waterGoalMl = nutrition?.water_target_ml ?? 2500
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,20 +30,12 @@ export default async function GoalsPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-accent" />
-            <h1 className="text-xl font-bold text-text-primary">Goals</h1>
+            <h1 className="text-xl font-bold text-text-primary">Health Goals</h1>
           </div>
         </div>
       </header>
-
       <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
-        <GoalsClient
-          stepGoal={stepGoal}
-          calGoal={calGoal}
-          sleepGoalMinutes={sleepGoalMinutes}
-          waterGoalMl={waterGoalMl}
-          summaries={summaries ?? []}
-          waterData={waterData ?? []}
-        />
+        <GoalsClient />
       </main>
       <BottomNav />
     </div>
