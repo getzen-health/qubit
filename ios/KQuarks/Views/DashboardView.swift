@@ -76,7 +76,6 @@ struct DashboardView: View {
                         ProgressView()
                             .padding(.top, 50)
                     } else if let summary = viewModel.todaySummary {
-                        // Activity ring placeholder
                         ActivityRingsView(summary: summary)
                             .padding(.horizontal)
 
