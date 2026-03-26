@@ -17,6 +17,7 @@ function getBodyFatCategory(pct: number, sex: string): { label: string; color: s
 }
 
 import MeasurementsForm from './measurements-form'
+import { MeasurementsTrendChart } from '@/components/measurements-trend-chart'
 
 export default async function MeasurementsPage() {
   const supabase = await createClient()
@@ -54,6 +55,8 @@ export default async function MeasurementsPage() {
           ))}
         </div>
       )}
+      <MeasurementsForm />
+      <MeasurementsTrendChart />
     </div>
   )
 }

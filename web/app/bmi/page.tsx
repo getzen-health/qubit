@@ -97,6 +97,9 @@ export default function BMICalculatorPage() {
       <div className="mt-4 text-xs text-gray-500">
         <p>BMI = weight (kg) / [height (m)]². Navy body fat % is an estimate and may not be accurate for all body types.</p>
       </div>
+      <div className="mt-6 text-center">
+        <a href="/measurements" className="inline-block text-primary underline font-medium text-sm">Track your measurements &rarr;</a>
+      </div>
     </div>
   );
 }
