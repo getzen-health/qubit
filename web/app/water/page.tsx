@@ -68,6 +68,9 @@ export default function WaterPage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-text-primary mb-6">Water Tracker</h1>
+      <div className="mb-4">
+        <a href="/hydration" className="inline-block text-primary underline text-sm">Try the new Hydration Tracker →</a>
+      </div>
 
       {loading ? <div className="h-48 animate-pulse bg-surface rounded-2xl" /> : (
         <>

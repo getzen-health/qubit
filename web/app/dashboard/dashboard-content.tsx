@@ -23,6 +23,8 @@ import { InsightsCarousel } from './components/insights-carousel'
 import { RecentWorkouts, WorkoutStats, WorkoutDistribution } from './components/workout-summary'
 import { StrainGauge, RecoveryScore, StrainTrend, TrainingLoad } from './components/strain-recovery'
 import { NutritionOverview, MealLog, WaterTracker, MacroDistribution, FastingTimer } from './components/nutrition'
+import { HydrationMiniBar } from './components/hydration-mini-bar'
+import Link from 'next/link'
 import { BodyBattery, BodyBatteryTrend, StressLevel, Readiness, SleepDebt } from './components/body-battery'
 import { RespiratoryRate, BloodOxygen, SkinTemperature, WellnessRadar, MenstrualCycle, Leaderboard, QuickActions, DailyTip } from './components/advanced-metrics'
 import { CurrentGlucose, GlucoseChart, TimeInRange, MealGlucoseImpact, GlucoseInsights, DailyGlucosePattern } from './components/glucose-monitor'
@@ -554,11 +556,14 @@ export function DashboardContent({
               onMealSaved={refreshNutrition}
             />
           </div>
-          <WaterTracker
-            consumed={waterConsumed}
-            target={actualNutritionData.water.target}
-            onWaterAdded={(newTotal) => setWaterConsumed(newTotal)}
-          />
+          <div className="mb-4">
+  <div className="flex items-center gap-2 mb-1">
+    <span className="text-blue-400 text-lg">💧</span>
+    <span className="font-semibold text-text-primary">Hydration</span>
+  </div>
+  <HydrationMiniBar />
+  <Link href="/hydration" className="text-xs text-primary underline mt-1">Smart hydration tracker →</Link>
+</div>
         </div>
 
         {/* Meals + Macros */}
