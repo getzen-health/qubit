@@ -19,6 +19,7 @@ const navItems = [
   { href: '/challenges', icon: TrendingUp, label: 'Challenges' },
   { href: '/training', icon: CalendarRange, label: 'Training' },
   { href: '/water', icon: Droplets, label: 'Water' },
+  { href: '/hydration-science', icon: FlaskConical, label: 'Hydration' },
   { href: '/dental', icon: Smile, label: 'Dental' },
   { href: '/mood', icon: Smile, label: 'Mood' },
   { href: '/journal', icon: BookOpen, label: 'Journal' },
