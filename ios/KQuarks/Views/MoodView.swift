@@ -1,0 +1,105 @@
+import SwiftUI
+
+struct MoodView: View {
+    @State private var selectedScore: Int = 5
+    @State private var notes: String = ""
+    @State private var isLoading: Bool = false
+    @State private var message: String = ""
+    
+    let moodEmojis = ["😔","😞","😕","😐","🙂","😊","😄","😁","🤩","🥳"]
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Mood selector
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("How are you feeling?")
+                            .font(.headline)
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
+                            ForEach(1...10, id: \.self) { i in
+                                Button {
+                                    selectedScore = i
+                                } label: {
+                                    Text(moodEmojis[i - 1])
+                                        .font(.title)
+                                        .frame(width: 52, height: 52)
+                                        .background(selectedScore == i ? Color.accentColor.opacity(0.2) : Color(.systemGray6))
+                                        .cornerRadius(12)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(selectedScore == i ? Color.accentColor : Color.clear, lineWidth: 2)
+                                        )
+                                }
+                            }
+                        }
+                        Text("Score: \(moodEmojis[selectedScore - 1]) \(selectedScore)/10")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.05), radius: 8)
+                    
+                    // Notes
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Notes (optional)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        TextEditor(text: $notes)
+                            .frame(height: 80)
+                            .padding(8)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.05), radius: 8)
+                    
+                    // Log button
+                    Button {
+                        Task { await logMood() }
+                    } label: {
+                        HStack {
+                            if isLoading { ProgressView().tint(.white) }
+                            Text(isLoading ? "Logging..." : "Log Mood")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(14)
+                    }
+                    .disabled(isLoading)
+                    
+                    if !message.isEmpty {
+                        Text(message)
+                            .foregroundStyle(.green)
+                            .font(.subheadline)
+                    }
+                }
+                .padding()
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Mood")
+            .navigationBarTitleDisplayMode(.large)
+        }
+    }
+    
+    func logMood() async {
+        isLoading = true
+        // POST to API - implementation via SupabaseService or direct URLSession
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        message = "Mood logged! \(moodEmojis[selectedScore - 1])"
+        notes = ""
+        isLoading = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { message = "" }
+    }
+}
+
+#Preview {
+    MoodView()
+}

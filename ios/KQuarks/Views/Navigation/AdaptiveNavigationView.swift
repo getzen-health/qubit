@@ -120,13 +120,33 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Workouts", systemImage: "figure.run") }
                 .tag(2)
 
+            WaterIntakeView()
+                .tabItem { Label("Water", systemImage: "drop.fill") }
+                .tag(3)
+
+            BodyMeasurementsView()
+                .tabItem { Label("Measurements", systemImage: "ruler") }
+                .tag(4)
+
+            SupplementsView()
+                .tabItem { Label("Supplements", systemImage: "pills.fill") }
+                .tag(5)
+
+            MoodView()
+                .tabItem { Label("Mood", systemImage: "face.smiling") }
+                .tag(6)
+
+            ProfileView()
+                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+                .tag(7)
+
             InsightsView()
                 .tabItem { Label("Insights", systemImage: "sparkles") }
-                .tag(3)
+                .tag(8)
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(4)
+                .tag(9)
         }
         .sheet(isPresented: $showCheckinSheet) {
             CheckinView()
