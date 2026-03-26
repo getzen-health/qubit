@@ -38,6 +38,7 @@ const navItems = [
   { href: '/breathing', label: 'Breathe', icon: '🫁' },
   { href: '/body', label: 'Body', icon: '⚖️' },
   { href: '/injuries', label: 'Injuries', icon: '🩹' },
+  { href: '/injury', icon: ShieldAlert, label: 'Injury' },
   { href: '/fasting', label: 'Fast', icon: Clock },
   { href: '/supplements', label: 'Supplements', icon: '💊' },
   { href: '/alcohol', label: 'Alcohol', icon: '🍷' },
