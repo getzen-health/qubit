@@ -42,6 +42,9 @@ export default async function WorkoutsPage() {
   return (
     <>
       <WorkoutForm />
+      <div className="flex items-center justify-between mb-4">
+        <Link href="/workouts/history" className="text-sm text-primary hover:underline">View History →</Link>
+      </div>
       <WorkoutsList
         workouts={workouts ?? []}
         weeklyKm={weeklyKm}
