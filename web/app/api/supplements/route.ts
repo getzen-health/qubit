@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { checkRateLimit } from '@/lib/security/api-security'
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
+    const rateLimitResult = await checkRateLimit(user.id, 'healthData')
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+    }
     const body = await request.json()
     const { name, brand, category, dosage_amount, dosage_unit, frequency, notes } = body
 

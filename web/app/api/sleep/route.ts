@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import { checkRateLimit } from '@/lib/security/api-security'
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const rateLimitResult = await checkRateLimit(user.id, 'healthData')
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  }
   const { bedtime, wake_time, quality } = await request.json()
   if (!bedtime || !wake_time) return NextResponse.json({ error: 'bedtime and wake_time required' }, { status: 400 })
   const duration_minutes = Math.round((new Date(wake_time).getTime() - new Date(bedtime).getTime()) / 60000)

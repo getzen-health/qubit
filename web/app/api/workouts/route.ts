@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import { checkRateLimit } from '@/lib/security/api-security'
 
 export async function GET() {
   const supabase = await createServerClient()
@@ -16,6 +17,22 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const rateLimitResult = await checkRateLimit(user.id, 'healthData')
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  }
+  const body = await request.json()
+  const { type, duration_minutes, calories, notes } = body
+  if (!type || !duration_minutes) return NextResponse.json({ error: 'type and duration_minutes required' }, { status: 400 })
+  const { data, error } = await supabase
+    .from('workout_logs')
+    .insert({ user_id: user.id, type, duration_minutes: Number(duration_minutes), calories: calories ? Number(calories) : null, notes: notes || null, workout_date: new Date().toISOString() })
+    .select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ data }, { status: 201 })
 }
 
 export async function DELETE(request: NextRequest) {
