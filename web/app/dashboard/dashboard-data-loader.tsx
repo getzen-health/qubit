@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardStream } from './dashboard-stream'
 import { WeeklyActivityChart } from '@/components/weekly-activity-chart'
+import { ReadinessCard } from '@/components/readiness-card'
 import { ReadinessBanner } from '@/components/ReadinessBanner'
 import { ReadinessBannerSkeleton } from '@/components/skeletons'
 import Link from 'next/link'
@@ -253,6 +254,10 @@ export async function DashboardDataLoader({ user }: { user: User }) {
 
   return (
     <>
+      {/* Readiness headline card */}
+      <div className="mb-6">
+        <ReadinessCard />
+      </div>
       {hasNoData && (
         <div className="fixed bottom-20 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
           <Link
