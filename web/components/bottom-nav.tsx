@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -51,6 +51,7 @@ const navItems = [
   { href: '/goals', label: 'Goals', icon: '🎯' },
   { href: '/longevity', label: 'Longevity', icon: '🔬' },
   { href: '/biological-age', icon: Dna, label: 'Bio Age' },
+  { href: '/metabolic', icon: Flame, label: 'Metabolic' },
   { href: '/eye-health', icon: Eye, label: 'Eye Health' },
   { href: '/posture', label: 'Breaks', icon: '🪑' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
