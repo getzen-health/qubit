@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { DiaryClient } from './diary-client'
 import { DiaryMealsClient } from './diary-meals-client'
+import { FoodPhotoTab } from './food-photo-tab'
 
 // ── constants ──────────────────────────────────────────────────────────────────
 

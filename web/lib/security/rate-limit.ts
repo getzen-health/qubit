@@ -15,6 +15,7 @@ interface RateLimitConfig {
  * Default rate limit configurations for different endpoints
  */
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
+  foodPhotoAnalyze: { maxRequests: 10, windowMs: 60 * 60 * 1000 },
   // Auth endpoints - strict limits
   auth: { maxRequests: 5, windowMs: 60_000 }, // 5 requests per minute
 

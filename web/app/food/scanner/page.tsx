@@ -13,6 +13,7 @@ import { ShareButton } from '@/components/share-button'
 
 // Dynamically import the scanner (client-only, uses browser APIs)
 const BarcodeScanner = dynamic(() => import('./barcode-scanner'), { ssr: false })
+import { FoodPhotoAnalyzer } from '@/components/food-photo-analyzer'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -138,6 +139,25 @@ function NutriScoreBar({ grade }: { grade: string | null }) {
 // ---------------------------------------------------------------------------
 // Main page
 // ---------------------------------------------------------------------------
+
+function FoodPhotoTabScanner({ onAdd }: { onAdd: (foods: any[]) => void }) {
+  const [result, setResult] = useState<any>(null)
+  return (
+    <div>
+      <FoodPhotoAnalyzer onResult={(res) => setResult(res)} />
+      {result?.foods?.length > 0 && (
+        <div className="mt-4 flex justify-end">
+          <button
+            className="px-4 py-2 rounded-xl bg-accent text-accent-foreground font-medium hover:bg-accent/90"
+            onClick={() => onAdd(result.foods)}
+          >
+            Add to diary
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function FoodScannerPage() {
   const [scanning, setScanning] = useState(false)
