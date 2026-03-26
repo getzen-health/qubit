@@ -188,6 +188,14 @@ export default function InsightsPage() {
     </div>
   </Link>
 </div>
+<div className="mb-4">
+  <Link href="/insights/benchmarks" className="block bg-surface border border-primary/30 rounded-xl p-4 hover:bg-primary/10 transition-colors">
+    <div className="flex items-center gap-3">
+      <span className="text-primary font-bold text-lg">📊 Benchmarks &rarr;</span>
+      <span className="text-xs text-text-secondary">Compare your stats to your age group</span>
+    </div>
+  </Link>
+</div>
             <p className="text-sm text-text-secondary">
               {loading ? '…' : `${insights.length} AI-generated insights`}
             </p>

@@ -28,6 +28,7 @@ const navItems = [
   { href: '/body', label: 'Body', icon: '⚖️' },
   { href: '/fasting', label: 'Fast', icon: undefined /* ⏱️ */ },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
+  { href: '/insights/benchmarks', icon: BarChart2, label: 'Benchmarks' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
   { href: '/meal-plan', icon: ChefHat, label: 'Meal Plan' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
