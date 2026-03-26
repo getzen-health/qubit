@@ -76,6 +76,12 @@ export default async function SettingsPage() {
       icon: Shield,
     },
     {
+      title: 'Macros',
+      description: 'Set daily macro and calorie targets',
+      href: '/nutrition/targets',
+      icon: () => <span className="text-xl">🍎</span>,
+    },
+    {
       title: 'Health Goals',
       description: 'Set daily steps, sleep, water, weight, and calorie targets',
       href: '/settings/goals',

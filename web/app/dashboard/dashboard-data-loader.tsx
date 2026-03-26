@@ -246,10 +246,11 @@ export async function DashboardDataLoader({ user }: { user: User }) {
     'mood': typeof MoodSummaryCard !== 'undefined' ? <MoodSummaryCard key="mood" todayScore={todayMood} /> : null,
     'streaks': null, // handled separately
     'nutrition': <NutritionSummaryCard key="nutrition" />,
+    'macro-progress': <MacroRingsCard key="macro-progress" />,
   }
 
   const cardOrder = preferences?.dashboard_card_order || [
-    'health-score','steps','sleep','water','workout','mood','streaks','nutrition']
+    'health-score','steps','sleep','water','workout','mood','streaks','macro-progress','nutrition']
   const hiddenCards = preferences?.dashboard_hidden_cards || []
 
   return (

@@ -38,6 +38,7 @@ const navItems = [
 const moreItems = [
   { href: '/bmi', icon: BarChart2, label: 'BMI' },
   { href: '/social', icon: Users, label: 'Social' },
+  { href: '/nutrition/targets', icon: () => <span className="text-xl">🍎</span>, label: 'Macros' },
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { href: '/pace-zones', icon: BarChart2, label: 'Pace Zones' },
   { href: '/upgrade', icon: Sparkles, label: 'Upgrade' },
