@@ -4,6 +4,7 @@ import SwiftData
 #if os(iOS)
 import BackgroundTasks
 #endif
+import KQuarks.Services.BackgroundSyncService
 
 @main
 struct KQuarksApp: App {
@@ -34,6 +35,8 @@ struct KQuarksApp: App {
         }
         AIBriefingService.shared.registerBackgroundTask()
         CrashReportingService.shared.start()
+        BackgroundSyncService.shared.registerBackgroundTask()
+        BackgroundSyncService.shared.scheduleNextSync()
         #endif
     }
 

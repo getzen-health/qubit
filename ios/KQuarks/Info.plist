@@ -27,6 +27,7 @@
 		<string>com.kquarks.morning-briefing</string>
 		<string>com.kquarks.health-sync</string>
 		<string>com.kquarks.fasting-update</string>
+		<string>com.kquarks.healthsync</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>

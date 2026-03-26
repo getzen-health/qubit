@@ -34,6 +34,15 @@ struct ProfileView: View {
                         Text("Open Settings to manage HealthKit access")
                             .foregroundStyle(.secondary)
                     }
+                    HStack {
+                        Text("Last Sync")
+                        Spacer()
+                        Text(BackgroundSyncService.shared.lastSyncFormatted)
+                            .foregroundStyle(.secondary)
+                    }
+                    Button("Sync Now") {
+                        Task { try? await BackgroundSyncService.shared.syncHealthData() }
+                    }
                 }
                 
                 Section("App") {
