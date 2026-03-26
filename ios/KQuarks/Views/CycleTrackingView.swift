@@ -2,380 +2,757 @@ import SwiftUI
 import Charts
 import HealthKit
 
-// MARK: - CycleTrackingView
+// MARK: - Models
 
-/// Menstrual cycle analysis using HealthKit cycle tracking data.
-/// Shows cycle length trends, phase tracking, and correlations between
-/// cycle phase and HRV/sleep quality for training optimization.
-///
-/// Relevant HK types:
-/// - HKCategoryType(.menstrualFlow) — logged flow days
-/// - HKCategoryType(.ovulationTestResult) — ovulation detection
-/// - HKCategoryType(.intermenstrualBleeding) — spotting
-struct CycleTrackingView: View {
+struct CycleEntry: Identifiable, Codable {
+    let id: String
+    var startDate: Date
+    var endDate: Date?
+    var cycleLength: Int?
+    var flowIntensity: FlowIntensity?
+    var symptoms: [String]
+    var notes: String
 
-    // MARK: - Models
-
-    struct CycleRecord: Identifiable {
-        let id: UUID
-        let startDate: Date
-        let endDate: Date
-        let cycleLength: Int  // days
-        var phase: CyclePhase { CyclePhase.from(startDate: startDate, cycleLength: cycleLength) }
+    enum CodingKeys: String, CodingKey {
+        case id, symptoms, notes
+        case startDate     = "start_date"
+        case endDate       = "end_date"
+        case cycleLength   = "cycle_length"
+        case flowIntensity = "flow_intensity"
     }
 
-    enum CyclePhase: String, CaseIterable {
-        case menstrual = "Menstrual"
-        case follicular = "Follicular"
-        case ovulatory = "Ovulatory"
-        case luteal = "Luteal"
+    var duration: Int? {
+        guard let end = endDate else { return nil }
+        return (Calendar.current.dateComponents([.day], from: startDate, to: end).day ?? 0) + 1
+    }
 
-        var color: Color {
-            switch self {
-            case .menstrual:  return .red
-            case .follicular: return .green
-            case .ovulatory:  return .yellow
-            case .luteal:     return .purple
-            }
-        }
+    var isOngoing: Bool { endDate == nil }
+}
 
-        var description: String {
-            switch self {
-            case .menstrual:
-                return "Days 1–5. Lower estrogen and progesterone. Best for low-intensity recovery workouts. Energy and HRV may be lower."
-            case .follicular:
-                return "Days 6–13. Rising estrogen. Energy and strength increase. Ideal for progressive training and setting PRs."
-            case .ovulatory:
-                return "Days 14–16. Peak estrogen. Highest performance window. Great for races, max efforts, and high-intensity intervals."
-            case .luteal:
-                return "Days 17–28. Progesterone rises. Slight performance decline, higher effort perception. Focus on technique and Zone 2."
-            }
-        }
+enum FlowIntensity: String, Codable, CaseIterable {
+    case light    = "light"
+    case moderate = "moderate"
+    case heavy    = "heavy"
 
-        static func from(startDate: Date, cycleLength: Int) -> CyclePhase {
-            let dayOfCycle = Calendar.current.dateComponents([.day], from: startDate, to: Date()).day ?? 0
-            if dayOfCycle <= 5                         { return .menstrual }
-            if dayOfCycle <= cycleLength / 2 - 1      { return .follicular }
-            if dayOfCycle <= cycleLength / 2 + 1      { return .ovulatory }
-            return .luteal
+    var label: String {
+        switch self {
+        case .light:    return "Light"
+        case .moderate: return "Moderate"
+        case .heavy:    return "Heavy"
         }
     }
 
-    // MARK: - State
-
-    @State private var cycles: [CycleRecord] = []
-    @State private var currentPhase: CyclePhase = .follicular
-
-    private var cycleLengthDomain: ClosedRange<Int> {
-        let lengths = cycleLengthPoints.map { $0.0 }
-        let lo = lengths.min().map { max(20, $0 - 2) } ?? 20
-        let hi = lengths.max().map { max(40, $0 + 2) } ?? 40
-        return lo...hi
+    var color: Color {
+        switch self {
+        case .light:    return .pink.opacity(0.7)
+        case .moderate: return Color(red: 0.85, green: 0.2, blue: 0.3)
+        case .heavy:    return .red
+        }
     }
-    @State private var currentDayOfCycle: Int = 0
-    @State private var avgCycleLength: Double = 0
-    @State private var cycleLengthPoints: [(Int, Date)] = []  // (length, period start)
-    @State private var isLoading = true
-    @State private var hasNoData = false
+
+    var icon: String {
+        switch self {
+        case .light:    return "drop"
+        case .moderate: return "drop.fill"
+        case .heavy:    return "drop.fill"
+        }
+    }
+
+    static func from(hkValue: Int) -> FlowIntensity? {
+        // HKCategoryValueMenstrualFlow: unspecified=1, light=2, medium=3, heavy=4, none=5
+        switch hkValue {
+        case 2: return .light
+        case 3: return .moderate
+        case 4: return .heavy
+        default: return nil
+        }
+    }
+}
+
+enum MenstrualPhase: String {
+    case menstrual  = "Menstrual"
+    case follicular = "Follicular"
+    case ovulation  = "Ovulation"
+    case luteal     = "Luteal"
+
+    var color: Color {
+        switch self {
+        case .menstrual:  return .red
+        case .follicular: return .orange
+        case .ovulation:  return .pink
+        case .luteal:     return Color(red: 0.6, green: 0.5, blue: 0.85)
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .menstrual:  return "drop.fill"
+        case .follicular: return "leaf.fill"
+        case .ovulation:  return "sparkles"
+        case .luteal:     return "moon.stars.fill"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .menstrual:  return "Period in progress"
+        case .follicular: return "Building up to ovulation"
+        case .ovulation:  return "Peak fertility window"
+        case .luteal:     return "Post-ovulation phase"
+        }
+    }
+}
+
+private let allCycleSymptoms: [String] = [
+    "cramps", "mood_changes", "energy_low", "bloating",
+    "headache", "breast_tenderness", "acne", "fatigue",
+    "spotting", "back_pain"
+]
+
+private func cycleSymptomLabel(_ key: String) -> String {
+    switch key {
+    case "cramps":            return "Cramps"
+    case "mood_changes":      return "Mood Changes"
+    case "energy_low":        return "Low Energy"
+    case "bloating":          return "Bloating"
+    case "headache":          return "Headache"
+    case "breast_tenderness": return "Breast Tenderness"
+    case "acne":              return "Acne"
+    case "fatigue":           return "Fatigue"
+    case "spotting":          return "Spotting"
+    case "back_pain":         return "Back Pain"
+    default:                  return key.replacingOccurrences(of: "_", with: " ").capitalized
+    }
+}
+
+// MARK: - ViewModel
+
+@Observable
+class CycleTrackingViewModel {
+    var cycles: [CycleEntry] = []
+    var isLoading = true
+    var errorMessage: String?
 
     private let healthStore = HKHealthStore()
+    private let supabase = SupabaseService.shared
 
-    // MARK: - Body
+    // MARK: Computed properties
 
-    var body: some View {
-        ScrollView {
-            if isLoading {
-                ProgressView().frame(maxWidth: .infinity, minHeight: 300)
-            } else if hasNoData {
-                noDataState
-            } else {
-                VStack(spacing: 16) {
-                    currentPhaseCard
-                    cycleLengthChart
-                    phaseGuideCard
-                    trainingTipsCard
-                }
-                .padding()
-            }
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("Cycle Tracking")
-        .toolbarTitleDisplayMode(.inline)
-        .task { await load() }
-        .refreshable { await load() }
+    var currentPhase: MenstrualPhase? {
+        guard let latest = cycles.first else { return nil }
+        let today = Calendar.current.startOfDay(for: Date())
+        let start = Calendar.current.startOfDay(for: latest.startDate)
+        let dayInCycle = (Calendar.current.dateComponents([.day], from: start, to: today).day ?? 0)
+        let periodDur = latest.duration ?? 5
+        let avgLen = averageCycleLength
+        if dayInCycle < periodDur          { return .menstrual }
+        let ovDay = avgLen - 14
+        if dayInCycle < ovDay - 1          { return .follicular }
+        if dayInCycle <= ovDay + 1         { return .ovulation }
+        return .luteal
     }
 
-    // MARK: - Current Phase Card
-
-    private var currentPhaseCard: some View {
-        VStack(spacing: 12) {
-            HStack {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Current Phase")
-                        .font(.caption).foregroundStyle(.secondary)
-                    Text(currentPhase.rawValue)
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(currentPhase.color)
-                    Text("Day \(currentDayOfCycle) of cycle")
-                        .font(.subheadline).foregroundStyle(.secondary)
-                }
-                Spacer()
-                ZStack {
-                    Circle()
-                        .stroke(currentPhase.color.opacity(0.2), lineWidth: 10)
-                        .frame(width: 70, height: 70)
-                    Circle()
-                        .trim(from: 0, to: avgCycleLength > 0 ? CGFloat(currentDayOfCycle) / CGFloat(avgCycleLength) : 0)
-                        .stroke(currentPhase.color, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .frame(width: 70, height: 70)
-                    Text("\(currentDayOfCycle)")
-                        .font(.headline.bold())
-                        .foregroundStyle(currentPhase.color)
-                }
-            }
-
-            Divider()
-
-            Text(currentPhase.description)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Divider()
-
-            HStack(spacing: 0) {
-                statCell(label: "Avg Cycle", value: String(format: "%.0f days", avgCycleLength), color: .pink)
-                Divider().frame(height: 36)
-                statCell(label: "Cycles Tracked", value: "\(cycles.count)", color: .purple)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+    var averageCycleLength: Int {
+        let lengths = cycles.compactMap(\.cycleLength)
+        guard !lengths.isEmpty else { return 28 }
+        return lengths.reduce(0, +) / lengths.count
     }
 
-    private func statCell(label: String, value: String, color: Color) -> some View {
-        VStack(spacing: 2) {
-            Text(value).font(.subheadline.bold()).foregroundStyle(color)
-            Text(label).font(.caption2).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity).padding(.vertical, 8)
+    var daysUntilNextPeriod: Int? {
+        guard let latest = cycles.first else { return nil }
+        let today = Calendar.current.startOfDay(for: Date())
+        let start = Calendar.current.startOfDay(for: latest.startDate)
+        let dayInCycle = Calendar.current.dateComponents([.day], from: start, to: today).day ?? 0
+        return max(0, averageCycleLength - dayInCycle)
     }
 
-    // MARK: - Cycle Length Chart
-
-    private var cycleLengthChart: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Cycle Length History")
-                .font(.headline)
-
-            if cycleLengthPoints.count < 2 {
-                Text("Log at least 2 cycles to see length trends")
-                    .font(.caption).foregroundStyle(.secondary).frame(height: 100)
-            } else {
-                Chart {
-                    ForEach(cycleLengthPoints.indices, id: \.self) { i in
-                        let point = cycleLengthPoints[i]
-                        LineMark(
-                            x: .value("Cycle", point.1, unit: .month),
-                            y: .value("Days", point.0)
-                        )
-                        .foregroundStyle(Color.pink.opacity(0.7))
-                        .interpolationMethod(.monotone)
-
-                        PointMark(
-                            x: .value("Cycle", point.1, unit: .month),
-                            y: .value("Days", point.0)
-                        )
-                        .foregroundStyle(Color.pink)
-                        .symbolSize(48)
-                    }
-
-                    if avgCycleLength > 0 {
-                        RuleMark(y: .value("Avg", Int(avgCycleLength)))
-                            .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [5, 3]))
-                            .foregroundStyle(Color.purple.opacity(0.6))
-                            .annotation(position: .topTrailing) {
-                                Text("avg \(Int(avgCycleLength))d")
-                                    .font(.caption2).foregroundStyle(.purple.opacity(0.7))
-                            }
-                    }
-                }
-                .chartXAxis {
-                    AxisMarks(values: .stride(by: .month)) { _ in
-                        AxisValueLabel(format: .dateTime.month(.abbreviated))
-                    }
-                }
-                .chartYAxisLabel("Days")
-                .chartYScale(domain: cycleLengthDomain)
-                .frame(height: 150)
-
-                Text("Normal range: 21–35 days. Short < 21 or long > 35 days may indicate hormonal changes.")
-                    .font(.caption2).foregroundStyle(.tertiary)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+    var nextPeriodDate: Date? {
+        guard let days = daysUntilNextPeriod else { return nil }
+        return Calendar.current.date(byAdding: .day, value: days, to: Date())
     }
 
-    // MARK: - Phase Guide
-
-    private var phaseGuideCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Phase Guide")
-                .font(.headline)
-
-            ForEach(CyclePhase.allCases, id: \.rawValue) { phase in
-                HStack(alignment: .top, spacing: 12) {
-                    Circle()
-                        .fill(phase.color)
-                        .frame(width: 10, height: 10)
-                        .padding(.top, 4)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(phase.rawValue)
-                            .font(.subheadline.bold())
-                            .foregroundStyle(phase.color)
-                        Text(phase.description)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.vertical, 4)
-                if phase != .luteal { Divider() }
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-
-    // MARK: - Training Tips
-
-    private var trainingTipsCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Training by Cycle Phase", systemImage: "figure.run.circle.fill")
-                .font(.headline)
-                .foregroundStyle(.pink)
-
-            Text("Your menstrual cycle influences energy, strength, endurance, and recovery through fluctuating estrogen and progesterone levels. Syncing training intensity with your cycle can improve performance and reduce injury risk.")
-                .font(.caption).foregroundStyle(.secondary)
-
-            VStack(alignment: .leading, spacing: 6) {
-                tipRow("🔴", "Menstrual", "Low-intensity yoga, walking, recovery")
-                tipRow("🟢", "Follicular", "Build strength, try new personal bests")
-                tipRow("🟡", "Ovulatory", "Race efforts, peak intervals, competitions")
-                tipRow("🟣", "Luteal", "Zone 2 cardio, technique work, longer rest")
-            }
-        }
-        .padding()
-        .background(Color.pink.opacity(0.05))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    private func tipRow(_ emoji: String, _ phase: String, _ tip: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text(emoji).font(.caption)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(phase).font(.caption.bold())
-                Text(tip).font(.caption).foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    // MARK: - No Data State
-
-    private var noDataState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "calendar.circle")
-                .font(.system(size: 52)).foregroundStyle(.secondary)
-            Text("No Cycle Data")
-                .font(.title3.bold())
-            Text("Log your menstrual cycle in the Apple Health app or cycle tracking app to see phase analysis and training recommendations.")
-                .font(.subheadline).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center).padding(.horizontal, 32)
-            Text("Data is private and stored only on your device.")
-                .font(.caption).foregroundStyle(.tertiary)
-                .padding(.top, 4)
-        }
-        .padding(.top, 60)
+    var currentPeriodDays: Int? {
+        guard let latest = cycles.first, latest.isOngoing else { return nil }
+        let today = Calendar.current.startOfDay(for: Date())
+        let start = Calendar.current.startOfDay(for: latest.startDate)
+        return (Calendar.current.dateComponents([.day], from: start, to: today).day ?? 0) + 1
     }
 
     // MARK: - Load
 
-    private func load() async {
+    func load() async {
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
 
-        guard HKHealthStore.isHealthDataAvailable() else { hasNoData = true; return }
+        await requestHealthKitPermission()
 
-        let flowType = HKCategoryType(.menstrualFlow)
-
-        guard (try? await healthStore.requestAuthorization(toShare: [], read: [flowType])) != nil else {
-            hasNoData = true; return
+        struct Row: Decodable {
+            let id: String
+            let start_date: String
+            let end_date: String?
+            let cycle_length: Int?
+            let flow_intensity: String?
+            let symptoms: [String]?
+            let notes: String?
         }
 
-        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
+        do {
+            guard let userId = try? await supabase.client.auth.session.user.id else { return }
+            let rows: [Row] = try await supabase.client
+                .from("menstrual_cycles")
+                .select()
+                .eq("user_id", value: userId.uuidString)
+                .order("start_date", ascending: false)
+                .limit(12)
+                .execute()
+                .value
+
+            let df = ISO8601DateFormatter()
+            df.formatOptions = [.withFullDate]
+
+            var loaded: [CycleEntry] = rows.compactMap { row in
+                guard let start = df.date(from: row.start_date) else { return nil }
+                return CycleEntry(
+                    id: row.id,
+                    startDate: start,
+                    endDate: row.end_date.flatMap { df.date(from: $0) },
+                    cycleLength: row.cycle_length,
+                    flowIntensity: row.flow_intensity.flatMap { FlowIntensity(rawValue: $0) },
+                    symptoms: row.symptoms ?? [],
+                    notes: row.notes ?? ""
+                )
+            }
+
+            let hkEntries = await fetchFromHealthKit()
+            mergeHealthKitEntries(hkEntries, into: &loaded)
+            cycles = loaded
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Log Period Start
+
+    func logPeriodStart() async {
+        let today = Calendar.current.startOfDay(for: Date())
+        struct Insert: Encodable {
+            let user_id: String
+            let start_date: String
+            let flow_intensity: String
+            let symptoms: [String]
+            let notes: String
+        }
+        do {
+            guard let userId = try? await supabase.client.auth.session.user.id else { return }
+            let df = ISO8601DateFormatter()
+            df.formatOptions = [.withFullDate]
+            try await supabase.client
+                .from("menstrual_cycles")
+                .upsert(Insert(
+                    user_id: userId.uuidString,
+                    start_date: df.string(from: today),
+                    flow_intensity: FlowIntensity.moderate.rawValue,
+                    symptoms: [],
+                    notes: ""
+                ), onConflict: "user_id,start_date")
+                .execute()
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Log Period End
+
+    func logPeriodEnd() async {
+        guard let latest = cycles.first, latest.isOngoing else { return }
+        let today = Calendar.current.startOfDay(for: Date())
+        let prevLength = cycles.count > 1
+            ? Calendar.current.dateComponents([.day], from: cycles[1].startDate, to: latest.startDate).day
+            : nil
+        struct Update: Encodable {
+            let end_date: String
+            let cycle_length: Int
+        }
+        do {
+            let df = ISO8601DateFormatter()
+            df.formatOptions = [.withFullDate]
+            let days = (Calendar.current.dateComponents([.day], from: latest.startDate, to: today).day ?? 4) + 1
+            try await supabase.client
+                .from("menstrual_cycles")
+                .update(Update(end_date: df.string(from: today), cycle_length: prevLength ?? days))
+                .eq("id", value: latest.id)
+                .execute()
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - Save cycle edits
+
+    func saveCycle(_ cycle: CycleEntry) async {
+        struct Payload: Encodable {
+            let start_date: String
+            let end_date: String?
+            let cycle_length: Int?
+            let flow_intensity: String?
+            let symptoms: [String]
+            let notes: String
+        }
+        do {
+            let df = ISO8601DateFormatter()
+            df.formatOptions = [.withFullDate]
+            try await supabase.client
+                .from("menstrual_cycles")
+                .update(Payload(
+                    start_date: df.string(from: cycle.startDate),
+                    end_date: cycle.endDate.map { df.string(from: $0) },
+                    cycle_length: cycle.cycleLength,
+                    flow_intensity: cycle.flowIntensity?.rawValue,
+                    symptoms: cycle.symptoms,
+                    notes: cycle.notes
+                ))
+                .eq("id", value: cycle.id)
+                .execute()
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: - HealthKit
+
+    func requestHealthKitPermission() async {
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        let t = HKCategoryType(.menstrualFlow)
+        _ = try? await healthStore.requestAuthorization(toShare: [t], read: [t])
+    }
+
+    func fetchFromHealthKit() async -> [(start: Date, end: Date?, flow: FlowIntensity?)] {
+        guard HKHealthStore.isHealthDataAvailable() else { return [] }
+        let catType = HKCategoryType(.menstrualFlow)
+        let sixMonthsAgo = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
+        let pred = HKQuery.predicateForSamples(withStart: sixMonthsAgo, end: Date())
+        let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
 
         let samples: [HKCategorySample] = await withCheckedContinuation { cont in
-            let pred = HKQuery.predicateForSamples(withStart: oneYearAgo, end: Date())
-            let q = HKSampleQuery(
-                sampleType: flowType, predicate: pred,
-                limit: HKObjectQueryNoLimit,
-                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
-            ) { _, s, _ in cont.resume(returning: (s as? [HKCategorySample]) ?? []) }
+            let q = HKSampleQuery(sampleType: catType, predicate: pred,
+                                  limit: HKObjectQueryNoLimit, sortDescriptors: [sort]) { _, s, _ in
+                cont.resume(returning: (s as? [HKCategorySample]) ?? [])
+            }
             healthStore.execute(q)
         }
 
-        guard !samples.isEmpty else { hasNoData = true; return }
-
-        // Group flow samples by cycle — find gaps > 20 days = new cycle
-        var cycleDates: [Date] = []
-        var lastDate: Date? = nil
-        let cal = Calendar.current
-
+        // Group by calendar day to deduplicate multiple samples per day
+        var dayMap: [Date: (end: Date, flow: Int?)] = [:]
         for s in samples {
-            if let last = lastDate {
-                let dayGap = cal.dateComponents([.day], from: last, to: s.startDate).day ?? 0
-                if dayGap > 20 {
-                    cycleDates.append(s.startDate)
-                }
-            } else {
-                cycleDates.append(s.startDate)
-            }
-            lastDate = s.startDate
+            let day = Calendar.current.startOfDay(for: s.startDate)
+            let existing = dayMap[day]
+            let latestEnd = existing.map { max($0.end, s.endDate) } ?? s.endDate
+            let flow = s.value != 5 ? s.value : nil
+            dayMap[day] = (end: latestEnd, flow: flow ?? existing?.flow)
         }
 
-        // Build cycle records from period start dates
-        var rawCycles: [CycleRecord] = []
-        for i in 0 ..< cycleDates.count - 1 {
-            let length = cal.dateComponents([.day], from: cycleDates[i], to: cycleDates[i + 1]).day ?? 28
-            rawCycles.append(CycleRecord(
-                id: UUID(),
-                startDate: cycleDates[i],
-                endDate: cycleDates[i + 1],
-                cycleLength: max(18, min(45, length))
+        return dayMap.map { (day, val) in
+            (start: day, end: val.end, flow: val.flow.flatMap { FlowIntensity.from(hkValue: $0) })
+        }.sorted { $0.start > $1.start }
+    }
+
+    private func mergeHealthKitEntries(
+        _ hkEntries: [(start: Date, end: Date?, flow: FlowIntensity?)],
+        into cycles: inout [CycleEntry]
+    ) {
+        let existingStarts = Set(cycles.map { Calendar.current.startOfDay(for: $0.startDate) })
+        for entry in hkEntries {
+            let day = Calendar.current.startOfDay(for: entry.start)
+            guard !existingStarts.contains(day) else { continue }
+            cycles.append(CycleEntry(
+                id: "hk-\(Int(day.timeIntervalSince1970))",
+                startDate: entry.start,
+                endDate: entry.end,
+                cycleLength: nil,
+                flowIntensity: entry.flow,
+                symptoms: [],
+                notes: ""
             ))
         }
+        cycles.sort { $0.startDate > $1.startDate }
+    }
+}
 
-        cycles = rawCycles
-        cycleLengthPoints = rawCycles.map { ($0.cycleLength, $0.startDate) }
-        avgCycleLength = rawCycles.isEmpty ? 28 : Double(rawCycles.map(\.cycleLength).reduce(0, +)) / Double(rawCycles.count)
+// MARK: - Main View
 
-        // Current cycle state
-        if let lastStart = cycleDates.last {
-            let daysSince = cal.dateComponents([.day], from: lastStart, to: Date()).day ?? 0
-            currentDayOfCycle = daysSince + 1
-            let avgLen = Int(avgCycleLength)
-            if currentDayOfCycle <= 5            { currentPhase = .menstrual }
-            else if currentDayOfCycle <= avgLen / 2 - 1 { currentPhase = .follicular }
-            else if currentDayOfCycle <= avgLen / 2 + 1 { currentPhase = .ovulatory }
-            else                                 { currentPhase = .luteal }
+struct CycleTrackingView: View {
+    @State private var vm = CycleTrackingViewModel()
+    @State private var editingCycle: CycleEntry?
+    @State private var showingEdit = false
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if vm.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if vm.cycles.isEmpty {
+                    ContentUnavailableView(
+                        "No Cycle Data",
+                        systemImage: "calendar.badge.clock",
+                        description: Text("Log your first period or sync with Apple Health to get started.")
+                    )
+                } else {
+                    cycleList
+                }
+            }
+            .navigationTitle("Menstrual Cycle")
+            .toolbarTitleDisplayMode(.inline)
+            .task { await vm.load() }
+            .refreshable { await vm.load() }
+            .sheet(isPresented: $showingEdit) {
+                if let cycle = editingCycle {
+                    CycleEditSheet(cycle: cycle) { updated in
+                        Task { await vm.saveCycle(updated) }
+                    }
+                }
+            }
+        }
+    }
+
+    private var cycleList: some View {
+        List {
+            if let phase = vm.currentPhase {
+                Section {
+                    CyclePredictionCard(
+                        phase: phase,
+                        daysUntilNext: vm.daysUntilNextPeriod ?? 0,
+                        nextDate: vm.nextPeriodDate,
+                        avgLength: vm.averageCycleLength
+                    )
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            }
+
+            Section {
+                CycleQuickLogSection(
+                    currentPeriodDays: vm.currentPeriodDays,
+                    hasOngoing: vm.cycles.first?.isOngoing == true,
+                    onLogStart: {
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        Task { await vm.logPeriodStart() }
+                    },
+                    onLogEnd: {
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        Task { await vm.logPeriodEnd() }
+                    }
+                )
+            }
+
+            Section("Recent Cycles") {
+                ForEach(vm.cycles.prefix(6)) { cycle in
+                    CycleRowView(cycle: cycle)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            // Only allow editing DB-backed entries (not synthetic HK entries)
+                            guard !cycle.id.hasPrefix("hk-") else { return }
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            editingCycle = cycle
+                            showingEdit = true
+                        }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .animation(.easeInOut(duration: 0.25), value: vm.cycles.map(\.id))
+    }
+}
+
+// MARK: - Prediction Card
+
+struct CyclePredictionCard: View {
+    let phase: MenstrualPhase
+    let daysUntilNext: Int
+    let nextDate: Date?
+    let avgLength: Int
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(phase.color.opacity(0.15))
+                        .frame(width: 52, height: 52)
+                    Image(systemName: phase.icon)
+                        .font(.title2)
+                        .foregroundStyle(phase.color)
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(phase.rawValue + " Phase")
+                        .font(.headline)
+                    Text(phase.description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .padding()
+            .background(phase.color.opacity(0.07))
+
+            Divider()
+
+            HStack(spacing: 0) {
+                CyclePhaseStat(
+                    label: "Next Period",
+                    value: daysUntilNext == 0 ? "Today" : "in \(daysUntilNext)d",
+                    color: phase.color
+                )
+                Divider().frame(height: 44)
+                CyclePhaseStat(
+                    label: "Expected",
+                    value: nextDate.map { $0.formatted(.dateTime.month(.abbreviated).day()) } ?? "—",
+                    color: .secondary
+                )
+                Divider().frame(height: 44)
+                CyclePhaseStat(
+                    label: "Avg Cycle",
+                    value: "\(avgLength) days",
+                    color: .secondary
+                )
+            }
+            .padding(.vertical, 4)
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.06), radius: 6, y: 2)
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+    }
+}
+
+struct CyclePhaseStat: View {
+    let label: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        VStack(spacing: 3) {
+            Text(value)
+                .font(.subheadline.bold().monospacedDigit())
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+    }
+}
+
+// MARK: - Quick Log Section
+
+struct CycleQuickLogSection: View {
+    let currentPeriodDays: Int?
+    let hasOngoing: Bool
+    let onLogStart: () -> Void
+    let onLogEnd: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            if let days = currentPeriodDays {
+                HStack(spacing: 8) {
+                    Image(systemName: "drop.fill")
+                        .foregroundStyle(.red)
+                    Text("Current Period: Day \(days)")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.red)
+                    Spacer()
+                }
+                .padding(.horizontal, 4)
+            }
+
+            HStack(spacing: 12) {
+                Button(action: onLogStart) {
+                    Label("Log Period Start", systemImage: "plus.circle.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
+                .disabled(hasOngoing)
+
+                if hasOngoing {
+                    Button(action: onLogEnd) {
+                        Label("Log Period End", systemImage: "checkmark.circle.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.pink)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+// MARK: - Cycle Row
+
+struct CycleRowView: View {
+    let cycle: CycleEntry
+
+    var body: some View {
+        HStack(spacing: 14) {
+            VStack(spacing: 2) {
+                Text(cycle.startDate.formatted(.dateTime.month(.abbreviated).day()))
+                    .font(.caption2.bold())
+                    .foregroundStyle(.secondary)
+                Text(cycle.startDate.formatted(.dateTime.year()))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(width: 44)
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    if cycle.isOngoing {
+                        Text("Ongoing")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.red)
+                        Text("· Day \((Calendar.current.dateComponents([.day], from: cycle.startDate, to: Date()).day ?? 0) + 1)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if let dur = cycle.duration {
+                        Text("\(dur) day period")
+                            .font(.subheadline.bold())
+                    }
+                    Spacer()
+                    if let flow = cycle.flowIntensity {
+                        cycleFlowBadge(flow)
+                    }
+                    if cycle.id.hasPrefix("hk-") {
+                        Image(systemName: "heart.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.pink.opacity(0.6))
+                    }
+                }
+
+                if !cycle.symptoms.isEmpty {
+                    Text(cycle.symptoms.prefix(3).map { cycleSymptomLabel($0) }.joined(separator: " · "))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+
+            if !cycle.id.hasPrefix("hk-") {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func cycleFlowBadge(_ flow: FlowIntensity) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: flow.icon)
+                .font(.caption2)
+            Text(flow.label)
+                .font(.caption2.bold())
+        }
+        .foregroundStyle(flow.color)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 3)
+        .background(flow.color.opacity(0.12))
+        .clipShape(Capsule())
+    }
+}
+
+// MARK: - Edit Sheet
+
+struct CycleEditSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var cycle: CycleEntry
+    @State private var hasEndDate: Bool
+    private let onSave: (CycleEntry) -> Void
+
+    init(cycle: CycleEntry, onSave: @escaping (CycleEntry) -> Void) {
+        _cycle = State(initialValue: cycle)
+        _hasEndDate = State(initialValue: cycle.endDate != nil)
+        self.onSave = onSave
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Dates") {
+                    DatePicker("Period Start", selection: $cycle.startDate, displayedComponents: .date)
+                    Toggle("Period Ended", isOn: $hasEndDate)
+                    if hasEndDate {
+                        DatePicker(
+                            "Period End",
+                            selection: Binding(
+                                get: { cycle.endDate ?? cycle.startDate },
+                                set: { cycle.endDate = $0 }
+                            ),
+                            in: cycle.startDate...,
+                            displayedComponents: .date
+                        )
+                    }
+                }
+
+                Section("Flow Intensity") {
+                    Picker("Intensity", selection: $cycle.flowIntensity) {
+                        Text("Not set").tag(FlowIntensity?.none)
+                        ForEach(FlowIntensity.allCases, id: \.self) { intensity in
+                            HStack {
+                                Image(systemName: intensity.icon).foregroundStyle(intensity.color)
+                                Text(intensity.label)
+                            }
+                            .tag(FlowIntensity?.some(intensity))
+                        }
+                    }
+                    .pickerStyle(.inline)
+                    .labelsHidden()
+                }
+
+                Section("Symptoms") {
+                    ForEach(allCycleSymptoms, id: \.self) { sym in
+                        Toggle(cycleSymptomLabel(sym), isOn: Binding(
+                            get: { cycle.symptoms.contains(sym) },
+                            set: { on in
+                                if on { if !cycle.symptoms.contains(sym) { cycle.symptoms.append(sym) } }
+                                else  { cycle.symptoms.removeAll { $0 == sym } }
+                            }
+                        ))
+                    }
+                }
+
+                Section("Notes") {
+                    TextField("Add notes…", text: $cycle.notes, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+            }
+            .navigationTitle("Edit Cycle")
+            .toolbarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        if !hasEndDate { cycle.endDate = nil }
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        onSave(cycle)
+                        dismiss()
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
         }
     }
 }
 
 #Preview {
-    NavigationStack { CycleTrackingView() }
+    CycleTrackingView()
 }
