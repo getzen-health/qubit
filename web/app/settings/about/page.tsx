@@ -1,6 +1,13 @@
+import { useEffect, useState } from 'react'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 
 export default function AboutPage() {
+  const [scanCount, setScanCount] = useState<number | null>(null)
+  useEffect(() => {
+    fetch('/api/scanner/history')
+      .then(r => r.json())
+      .then(res => setScanCount(Array.isArray(res.data) ? res.data.length : null))
+  }, [])
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Settings', href: '/settings' }, { label: 'About' }]} />
@@ -11,6 +18,9 @@ export default function AboutPage() {
           <h2 className="font-bold text-lg">KQuarks</h2>
           <p className="text-sm text-muted-foreground">Version 1.0.0</p>
           <p className="text-sm text-muted-foreground mt-2">Your personal health intelligence platform</p>
+          {scanCount !== null && (
+            <p className="text-sm text-muted-foreground mt-2">Total product scans: <span className="font-bold text-primary">{scanCount}</span></p>
+          )}
         </div>
         <div className="rounded-xl border border-border overflow-hidden divide-y divide-border">
           {[

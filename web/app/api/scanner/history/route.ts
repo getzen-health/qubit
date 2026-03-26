@@ -1,18 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit } from '@/lib/security'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data, error } = await supabase
+  const { searchParams } = new URL(request.url)
+  const q = searchParams.get('q')
+  const grade = searchParams.get('grade')
+  const exportCsv = searchParams.get('export') === 'csv'
+
+  let query = supabase
     .from('scan_history')
     .select('*')
     .eq('user_id', user.id)
     .order('scanned_at', { ascending: false })
-    .limit(50)
+    .limit(100)
+
+  if (q) query = query.ilike('product_name', `%${q}%`)
+  if (grade === 'green') query = query.gte('health_score', 70)
+  else if (grade === 'yellow') query = query.gte('health_score', 40).lt('health_score', 70)
+  else if (grade === 'red') query = query.lt('health_score', 40)
+
+  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  if (exportCsv) {
+    const csv = ['Product,Brand,Score,Date',
+      ...(data ?? []).map(r => `"${r.product_name}","${r.brand ?? ''}",${r.health_score},"${r.scanned_at}"`)
+    ].join('\n')
+    return new NextResponse(csv, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="scan-history.csv"'
+      }
+    })
+  }
+
   return NextResponse.json({ data })
 }
 

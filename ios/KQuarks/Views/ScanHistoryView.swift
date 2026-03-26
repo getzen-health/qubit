@@ -74,6 +74,13 @@ struct ScanHistoryView: View {
                                 }
                             }
                             Spacer()
+                            Button(action: {
+                                let shareText = "I just checked \(item.product_name) on KQuarks — it scored \(item.score ?? 0)/100 for health! Try it:"
+                                ShareHelper.share(items: [shareText])
+                            }) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(.accentColor)
+                            }
                         }
                         .padding(.vertical, 4)
                     }

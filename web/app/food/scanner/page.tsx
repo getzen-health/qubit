@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic'
 import { getReadinessContext, getFoodReadinessWarning } from '@/lib/readiness'
 import { NutrientTrafficLights } from '@/components/nutrient-traffic-lights'
 import { createClient } from '@/lib/supabase/client'
+import { ShareButton } from '@/components/share-button'
 
 // Dynamically import the scanner (client-only, uses browser APIs)
 const BarcodeScanner = dynamic(() => import('./barcode-scanner'), { ssr: false })
@@ -493,11 +494,17 @@ export default function FoodScannerPage() {
 
         {product && !loading && (
           <div className="space-y-4">
+            {/* Share button */}
+            <div className="flex justify-end">
+              <ShareButton
+                title={`I just checked ${product.name} on KQuarks`}
+                text={`I just checked ${product.name} on KQuarks — it scored ${product.healthScore.score}/100 for health! Try it:`}
+              />
+            </div>
             {/* Hero card */}
             <div className="bg-surface rounded-2xl border border-border overflow-hidden">
               <div className="p-4 flex gap-4 items-start">
                 {product.imageUrl && (
-                  <Image 
                     src={product.imageUrl} 
                     alt={product.name} 
                     width={80}

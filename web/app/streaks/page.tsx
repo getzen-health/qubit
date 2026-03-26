@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import StreaksSummaryCard from '@/components/streaks-summary-card'
+import { ShareButton } from '@/components/share-button'
 
 export default async function StreaksPage() {
   const supabase = await createClient()
@@ -37,11 +38,20 @@ export default async function StreaksPage() {
         <h2 className="font-semibold mb-2">Current Streaks</h2>
         <div className="flex flex-wrap gap-4">
           {(streaks ?? []).map(s => (
-            <div key={s.streak_type} className="flex items-center gap-2 bg-orange-50 rounded-lg px-4 py-2 shadow">
+            <div key={s.streak_type} className="flex flex-col items-start gap-2 bg-orange-50 rounded-lg px-4 py-2 shadow">
+  <div className="flex items-center gap-2">
               <span className="text-2xl">🔥</span>
               <span className="font-bold text-lg">{s.current_streak}</span>
               <span className="capitalize text-gray-700">{s.streak_type.replace('_', ' ')}</span>
-            </div>
+  </div>
+  {s.current_streak >= 7 && (
+    <ShareButton
+      title={`I'm on a ${s.current_streak}-day health streak on KQuarks!`}
+      text={`🔥 I'm on a ${s.current_streak}-day health streak on KQuarks! Building better habits every day.`}
+      className="mt-1"
+    />
+  )}
+</div>
           ))}
         </div>
       </div>
