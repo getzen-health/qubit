@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -21,6 +21,7 @@ const navItems = [
   { href: '/mood', icon: Smile, label: 'Mood' },
   { href: '/journal', icon: BookOpen, label: 'Journal' },
   // { href: '/workouts', icon: Run, label: 'Workouts' },
+  { href: '/habits', icon: CheckSquare, label: 'Habits' },
   { href: '/streaks', icon: Trophy, label: 'Streaks' },
   { href: '/progress', icon: Camera, label: 'Photos' },
   { href: '/stress', icon: Activity, label: 'Stress' },
