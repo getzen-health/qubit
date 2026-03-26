@@ -23,9 +23,7 @@ const medicationCreateSchema = z.object({
   dosage: z.number().positive('Dosage must be greater than 0'),
   unit: z.string().min(1, 'Unit is required').max(20),
   frequency: z.enum(VALID_FREQUENCIES, {
-    errorMap: () => ({
-      message: `Frequency must be one of: ${VALID_FREQUENCIES.join(', ')}`,
-    }),
+    error: `Frequency must be one of: ${VALID_FREQUENCIES.join(', ')}`,
   }),
   time_of_day: z
     .array(z.enum(VALID_TIMES_OF_DAY))
