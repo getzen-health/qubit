@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from "jsr:@supabase/supabase-js@2"
+import { retryWithBackoff } from "../_shared/retry.ts"
 
 /**
  * Weekly Digest Edge Function
@@ -193,20 +194,23 @@ function buildEmailHtml(
 
 async function sendEmail(to: string, subject: string, html: string, resendKey: string): Promise<boolean> {
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${resendKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "KQuarks <digest@kquarks.app>",
-        to,
-        subject,
-        html,
-      }),
-      signal: AbortSignal.timeout(15000), // 15s timeout for email sending
-    })
+    const res = await retryWithBackoff(async () => {
+      return await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "KQuarks <digest@kquarks.app>",
+          to,
+          subject,
+          html,
+        }),
+        signal: AbortSignal.timeout(15000),
+      })
+    }, { maxRetries: 3, baseDelay: 1000 })
+    
     if (!res.ok) {
       const err = await res.text()
       console.error("Resend API error:", err)
@@ -218,7 +222,8 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
       console.error("Resend API timed out")
       return false
     }
-    throw e
+    console.error("Failed to send email:", e instanceof Error ? e.message : String(e))
+    return false
   }
 }
 
