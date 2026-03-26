@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -27,6 +27,7 @@ const navItems = [
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
+  { href: '/sleep-analytics', icon: BedDouble, label: 'Sleep+' },
   { href: '/sleep-apnea-screener', icon: Moon, label: 'Sleep Screen' },
   { href: '/thermal', label: 'Thermal', icon: '🌡️' },
   { href: '/environment', label: 'Air', icon: '🌬️' },
