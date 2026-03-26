@@ -1,3 +1,15 @@
+/**
+ * push-reminders Edge Function
+ *
+ * Sends push notifications to users for hydration and medication reminders.
+ *
+ * @param {Request} req - HTTP request
+ * @returns {Response} JSON response
+ *
+ * Environment variables required:
+ * - SUPABASE_URL
+ * - SUPABASE_SERVICE_ROLE_KEY
+ */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(

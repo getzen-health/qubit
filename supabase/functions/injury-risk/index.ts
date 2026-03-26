@@ -1,3 +1,15 @@
+/**
+ * injury-risk Edge Function
+ *
+ * Calculates injury risk score and recommendations based on user workout, HRV, and sleep data.
+ *
+ * @param {Request} req - HTTP request
+ * @returns {Response} JSON response
+ *
+ * Environment variables required:
+ * - SUPABASE_URL
+ * - SUPABASE_SERVICE_ROLE_KEY
+ */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(

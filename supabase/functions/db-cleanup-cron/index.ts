@@ -1,3 +1,16 @@
+/**
+ * db-cleanup-cron Edge Function
+ *
+ * Cleans up old rate limit, metrics, and crash report records from the database.
+ *
+ * @param {Request} req - HTTP request
+ * @returns {Response} JSON response
+ *
+ * Environment variables required:
+ * - SUPABASE_URL
+ * - SUPABASE_SERVICE_ROLE_KEY
+ * - CRON_SECRET
+ */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const supabase = createClient(

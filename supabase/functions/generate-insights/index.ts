@@ -1,3 +1,16 @@
+/**
+ * generate-insights Edge Function
+ *
+ * Generates AI-powered health insights for a user based on their health data.
+ *
+ * @param {Request} req - HTTP request
+ * @returns {Response} JSON response
+ *
+ * Environment variables required:
+ * - SUPABASE_URL
+ * - SUPABASE_SERVICE_ROLE_KEY
+ * - ANTHROPIC_API_KEY (or user-provided)
+ */
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from "jsr:@supabase/supabase-js@2"
 

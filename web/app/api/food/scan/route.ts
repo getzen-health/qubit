@@ -175,7 +175,7 @@ export const GET = createSecureApiHandler(
         )
       }
 
-      // Record scan history
+      // Record scan history (legacy)
       void Promise.resolve(
         supabase.from('product_scans').insert({
           user_id: user.id,
@@ -187,6 +187,20 @@ export const GET = createSecureApiHandler(
           nutriscore: product.nutriscore_grade ?? null,
           thumbnail_url: food.imageUrl ?? null,
         })
+      ).catch(() => {
+        // Non-critical: scan history failure should not block the response
+      })
+
+      // Also save to scan_history (fire-and-forget, don't block response)
+      void Promise.resolve(
+        supabase.from('scan_history').upsert({
+          user_id: user.id,
+          barcode: food.barcode,
+          product_name: food.name,
+          brand: food.brand ?? null,
+          score: healthScore.score ?? null,
+          image_url: food.imageUrl ?? null,
+        }, { onConflict: 'user_id,barcode' })
       ).catch(() => {
         // Non-critical: scan history failure should not block the response
       })
