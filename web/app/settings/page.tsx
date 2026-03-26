@@ -14,6 +14,7 @@ import {
   Bell,
   Upload,
   Lock,
+  Plug,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -78,6 +79,12 @@ export default async function SettingsPage() {
       description: 'Claude API key for generating insights',
       href: '/settings/ai',
       icon: Sparkles,
+    },
+    {
+      title: 'Integrations',
+      description: 'Connect Strava, Garmin, and other services',
+      href: '/settings/integrations',
+      icon: Plug,
     },
     {
       title: 'Sync Status',
