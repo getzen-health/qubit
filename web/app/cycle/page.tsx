@@ -41,6 +41,9 @@ export default async function CyclePage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-lg mx-auto mt-4">
+          <CycleForm />
+        </div>
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
           <Link
             href="/dashboard"
