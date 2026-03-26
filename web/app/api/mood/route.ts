@@ -16,7 +16,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-}
+  // Rate limit: max 60 req/min per user
+  await checkRateLimit(request, 60)
+
 
 export async function DELETE(request: NextRequest) {
   const supabase = await createServerClient()

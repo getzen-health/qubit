@@ -105,7 +105,15 @@ export async function DELETE(request: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 
-export const POST = createSecureApiHandler(
+export const POST = createSecureApiHandler({
+  rateLimit: 'healthData',
+  requireAuth: true,
+  bodySchema: logStressBodySchema,
+  auditAction: 'CREATE',
+  auditResource: 'health_data',
+  rateLimitPerUser: 60,
+},
+
   {
     rateLimit: 'healthData',
     requireAuth: true,
