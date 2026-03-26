@@ -153,7 +153,7 @@ struct PredictiveInsightsView: View {
     private var emptyState: some View {
         VStack(spacing: 20) {
             Image(systemName: "chart.line.uptrend.xyaxis.circle")
-                .font(.system(size: 56))
+                .font(.appLargeTitle)
                 .foregroundStyle(.purple.opacity(0.6))
             Text("No prediction yet")
                 .font(.title3.weight(.semibold))
