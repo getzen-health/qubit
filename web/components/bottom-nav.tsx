@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer } from 'lucide-react'
+import { LayoutDashboard, Activity, Moon, Dumbbell, TrendingUp, MoreHorizontal, Utensils, Droplets, ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange, Sparkles, Pill, Smile, Package, Trophy, Bot, ChefHat, FlaskConical, Camera, CheckCircle2, AlertTriangle, Clock, Stethoscope, Ruler, Brain, Leaf, Zap, Dna, Upload, Heart, BedDouble, Download, CheckSquare, Wind, Eye, Flame, Shield, PersonStanding, Thermometer, FlameKindling } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -96,6 +96,7 @@ const moreItems = [
   { href: '/mobility', icon: Activity, label: 'Mobility' },
   { href: '/injury-risk', icon: ShieldAlert, label: 'Injury Risk' },
   { href: '/compare', icon: BarChart2, label: 'Compare' },
+  { href: '/inflammation', icon: FlameKindling, label: 'Inflammation' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
