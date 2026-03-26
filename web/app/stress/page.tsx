@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { StressClient } from './stress-client'
+import { StressForm } from './stress-form'
 
 export const metadata = { title: 'Stress & Cortisol' }
 
@@ -219,6 +220,7 @@ export default async function StressPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+        <StressForm />
         <StressClient data={data} />
       </main>
       <BottomNav />
