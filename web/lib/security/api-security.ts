@@ -52,6 +52,7 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
     const startTime = Date.now()
+    let user: { id: string; email?: string } | null = null
 
     try {
       // 1. Rate limiting
@@ -78,7 +79,6 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
 
       // 2. Authentication
       const supabase = await createClient()
-      let user: { id: string; email?: string } | null = null
 
       if (config.requireAuth !== false) {
         const {

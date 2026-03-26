@@ -9,11 +9,12 @@ const intlMiddleware = createMiddleware({
 })
 
 export async function middleware(request: NextRequest) {
-  // Apply i18n middleware first
+  // Apply i18n middleware first (returns locale-prefixed response)
   const intlResponse = intlMiddleware(request)
-  
+  if (intlResponse && intlResponse.status !== 200) return intlResponse
+
   // Then apply Supabase session middleware
-  const sessionResponse = await updateSession(intlResponse)
+  const sessionResponse = await updateSession(request)
   return sessionResponse
 }
 

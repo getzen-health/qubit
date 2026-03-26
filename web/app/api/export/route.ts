@@ -38,10 +38,25 @@ async function logExportAudit(userId: string, exportType: string, rowCount: numb
   })
 }
 
-type ExportResult = { csv: string; filename: string; rowCount: number }
+const BATCH_SIZE = 1000
+const MAX_ROWS = 10000
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function buildExport(supabase: any, userId: string, type: string): Promise<ExportResult | null> {
+async function* fetchBatches(query: any, batchSize: number, maxRows: number): AsyncGenerator<any[]> {
+  let offset = 0
+  while (offset < maxRows) {
+    const { data, error } = await query.range(offset, offset + batchSize - 1)
+    if (error || !data || data.length === 0) break
+    yield data
+    if (data.length < batchSize) break
+    offset += batchSize
+  }
+}
+
+type ExportResult = { csv: string; filename: string; rowCount: number; truncated?: boolean }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function buildExport(supabase: any, userId: string, type: string, from?: string, to?: string): Promise<ExportResult | null> {
   if (type === 'workouts') {
     const { data, error } = await supabase
       .from('workout_records')

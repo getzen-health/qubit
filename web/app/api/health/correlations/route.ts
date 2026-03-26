@@ -31,7 +31,7 @@ function calculateCorrelation(x: number[], y: number[]): number {
 export async function GET(request: Request) {
   const startTime = Date.now()
   let statusCode = 200
-  const user_id = (await createClient()).auth.getUser().then(r => r.data.user?.id)
+  const user_id = await (await createClient()).auth.getUser().then(r => r.data.user?.id)
 
   try {
     const { searchParams } = new URL(request.url)

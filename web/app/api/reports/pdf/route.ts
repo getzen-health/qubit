@@ -15,8 +15,8 @@ export async function POST(request: Request) {
     }
 
     // Rate limit PDF exports to 5 per hour per user
-    const limited = await checkRateLimit(`pdf-export-${user.id}`, 5, 3600)
-    if (limited) {
+    const limited = await checkRateLimit(user.id, 'export')
+    if (limited.remaining === 0 && !limited.allowed) {
       return NextResponse.json(
         { error: 'Too many PDF exports. Please try again later.' },
         { status: 429 }
