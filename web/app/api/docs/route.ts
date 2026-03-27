@@ -1,4 +1,7 @@
-import { NextResponse } from 'next/server'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+} from '@/lib/security'
 
 const API_DOCS = {
   version: '1.0.0',
@@ -30,12 +33,11 @@ const API_DOCS = {
     },
     export: {
       'GET /api/export?format=csv|json&from=YYYY-MM-DD&to=YYYY-MM-DD': 'Export health data (max 10K rows, paginated)',
-    }
-  }
+    },
+  },
 }
 
-export async function GET() {
-  return NextResponse.json(API_DOCS, {
-    headers: { 'Cache-Control': 'public, max-age=3600' }
-  })
-}
+export const GET = createSecureApiHandler(
+  { requireAuth: false, skipRateLimit: true },
+  async () => secureJsonResponse(API_DOCS)
+)

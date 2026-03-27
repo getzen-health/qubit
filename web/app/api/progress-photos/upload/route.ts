@@ -1,16 +1,26 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
-export async function POST(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  await checkRateLimit(user.id, 'progress-photos-upload-url')
-  const { category = 'front' } = await req.json()
-  const filename = `${user.id}/${Date.now()}-${category}.jpg`
-  const { data, error } = await supabase.storage.from('progress-photos')
-    .createSignedUploadUrl(filename)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ signedUrl: data.signedUrl, path: data.path })
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    let category = 'front'
+    try {
+      const body = await req.json()
+      category = body.category ?? 'front'
+    } catch {
+      // use default category
+    }
+
+    const filename = `${user!.id}/${Date.now()}-${category}.jpg`
+    const { data, error } = await supabase.storage
+      .from('progress-photos')
+      .createSignedUploadUrl(filename)
+
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ signedUrl: data.signedUrl, path: data.path })
+  }
+)
