@@ -32,7 +32,7 @@ const savedState = cookieStore.get('google_fit_state')?.value
   if (!tokenRes.ok) return NextResponse.redirect('/integrations?error=google_fit_token_failed')
   const tokens = await tokenRes.json()
 
-  await supabase.from('integrations').upsert({
+  const { error: intErr } = await supabase.from('integrations').upsert({
     user_id: user.id,
     provider: 'google_fit',
     access_token: tokens.access_token,

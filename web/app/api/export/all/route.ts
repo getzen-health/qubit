@@ -20,7 +20,7 @@ export async function GET() {
 
   await Promise.all(
     TABLES.map(async (table) => {
-      const { data } = await supabase.from(table).select('*').eq('user_id', user.id)
+      const { data, error: tableErr } = await supabase.from(table).select('*').eq('user_id', user.id)
       exportData[table] = data ?? []
     })
   )

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Store placeholder - real implementation exchanges for access token
-  await supabase.from('integrations').upsert({
+  const { error: intErr } = await supabase.from('integrations').upsert({
     user_id: user.id,
     provider: 'garmin',
     metadata: { oauth_token: oauthToken, connected_at: new Date().toISOString() }

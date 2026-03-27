@@ -33,7 +33,7 @@ const savedState = cookieStore.get('oura_state')?.value
   if (!tokenRes.ok) return NextResponse.redirect('/integrations?error=oura_token_failed')
   const tokens = await tokenRes.json()
 
-  await supabase.from('integrations').upsert({
+  const { error: intErr } = await supabase.from('integrations').upsert({
     user_id: user.id,
     provider: 'oura',
     access_token: tokens.access_token,

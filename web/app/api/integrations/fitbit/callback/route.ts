@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   if (!tokenRes.ok) return NextResponse.redirect('/integrations?error=fitbit_token_failed')
   const tokens = await tokenRes.json()
 
-  await supabase.from('integrations').upsert({
+  const { error: intErr } = await supabase.from('integrations').upsert({
     user_id: user.id,
     provider: 'fitbit',
     access_token: tokens.access_token,

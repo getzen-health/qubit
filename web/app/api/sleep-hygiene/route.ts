@@ -28,7 +28,7 @@ export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data } = await supabase.from('sleep_hygiene_logs').select('*').eq('user_id', user.id).order('logged_date', { ascending: false }).limit(30)
+  const { data, error: hygErr } = await supabase.from('sleep_hygiene_logs').select('*').eq('user_id', user.id).order('logged_date', { ascending: false }).limit(30)
   const today = new Date().toISOString().slice(0, 10)
   const todayLog = data?.find(l => l.logged_date === today) ?? null
   return NextResponse.json({ logs: data ?? [], today: todayLog })

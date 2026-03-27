@@ -63,13 +63,13 @@ export async function POST(req: NextRequest) {
       })
       .eq("user_id", user.id)
 
-    // Log the event
-    await supabase.from("streak_events").insert({
+    const { error: eventErr } = await supabase.from("streak_events").insert({
       user_id: user.id,
       streak_type: streakType,
       event_type: "frozen",
       event_date: today,
     })
+    if (eventErr) console.error("streak_events insert error", eventErr)
 
     return NextResponse.json({
       success: true,

@@ -38,7 +38,8 @@ export async function POST() {
   }))
 
   if (records.length > 0) {
-    await supabase.from('sleep_records').upsert(records, { onConflict: 'user_id,date' })
+    const { error: sleepUpsertErr } = await supabase.from('sleep_records').upsert(records, { onConflict: 'user_id,date' })
+    if (sleepUpsertErr) console.error('sleep_records upsert error', sleepUpsertErr)
   }
 
   return NextResponse.json({ synced: records.length })

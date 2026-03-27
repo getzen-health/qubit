@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid subscription: endpoint must be a valid URL" }, { status: 400 })
     }
 
-    await supabase.from("web_push_subscriptions").upsert(
+    const { error: pushErr } = await supabase.from("web_push_subscriptions").upsert(
       {
         user_id: user.id,
         endpoint: subscription.endpoint,
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
       },
       { onConflict: "user_id,endpoint" }
     )
+    if (pushErr) console.error("push subscription upsert error", pushErr)
 
     return NextResponse.json({ success: true })
   } catch (error) {

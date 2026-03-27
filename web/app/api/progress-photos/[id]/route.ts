@@ -21,6 +21,7 @@ export async function DELETE(
   // Delete from storage
   await supabase.storage.from('progress-photos').remove([data.storage_path])
   // Delete from DB
-  await supabase.from('progress_photos').delete().eq('id', params.id)
+  const { error: photoDelErr } = await supabase.from('progress_photos').delete().eq('id', params.id)
+  if (photoDelErr) console.error('progress_photos delete error', photoDelErr)
   return NextResponse.json({ success: true })
 }

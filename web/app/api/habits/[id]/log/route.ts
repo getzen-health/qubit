@@ -66,12 +66,12 @@ export async function POST(
     (existingAchievements ?? []).map(a => ACHIEVEMENTS.find(t => t.id === a.achievement_id) ?? { id: a.achievement_id, name: '', emoji: '', description: '' })
   )
 
-  // Persist new achievements
   if (newAchievements.length > 0) {
-    await supabase.from('user_achievements').upsert(
+    const { error: achErr } = await supabase.from('user_achievements').upsert(
       newAchievements.map(a => ({ user_id: user.id, achievement_id: a.id })),
       { onConflict: 'user_id,achievement_id' }
     )
+    if (achErr) console.error('user_achievements upsert error', achErr)
   }
 
   return NextResponse.json({ log, xp_earned: xpEarned, streak, new_achievements: newAchievements })
