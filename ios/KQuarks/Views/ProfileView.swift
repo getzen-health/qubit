@@ -22,6 +22,12 @@ struct ProfileView: View {
                     .padding(.vertical, 4)
                 }
                 
+                Section("Profile") {
+                    NavigationLink("Edit Profile") {
+                        EditProfileView()
+                    }
+                }
+
                 Section("Health Settings") {
                 // Widget info
                 HStack {
