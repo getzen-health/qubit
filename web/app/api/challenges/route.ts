@@ -6,7 +6,7 @@ import { checkRateLimit } from '@/lib/security'
 export async function GET(req: NextRequest) {
   await checkRateLimit(req)
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   const userId = user?.id
 
   // Get all public challenges
@@ -28,12 +28,14 @@ export async function GET(req: NextRequest) {
     participation = parts || []
   }
 
-  // Get participant counts
+  // Get participant counts via raw aggregate query
   const { data: counts } = await supabase
     .from('challenge_participants')
-    .select('challenge_id, count:id')
-    .group('challenge_id')
-  const countMap = Object.fromEntries((counts||[]).map(c => [c.challenge_id, c.count]))
+    .select('challenge_id')
+  const countMap: Record<string, number> = {}
+  for (const row of counts ?? []) {
+    countMap[row.challenge_id] = (countMap[row.challenge_id] ?? 0) + 1
+  }
 
   return NextResponse.json({
     challenges: (challenges||[]).map(ch => ({
@@ -49,7 +51,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   await checkRateLimit(req)
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   const body = await req.json()
   const { title, description, type, target_value, duration_days, is_public } = body

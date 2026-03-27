@@ -30,14 +30,14 @@ import {
   type MarkerSeverity,
 } from '@/lib/lab-results'
 
-const ResponsiveContainer = dynamic(() => import('recharts').then((m) => m.ResponsiveContainer), { ssr: false })
-const LineChart = dynamic(() => import('recharts').then((m) => m.LineChart), { ssr: false })
-const Line = dynamic(() => import('recharts').then((m) => m.Line), { ssr: false })
-const XAxis = dynamic(() => import('recharts').then((m) => m.XAxis), { ssr: false })
-const YAxis = dynamic(() => import('recharts').then((m) => m.YAxis), { ssr: false })
-const Tooltip = dynamic(() => import('recharts').then((m) => m.Tooltip), { ssr: false })
-const ReferenceLine = dynamic(() => import('recharts').then((m) => m.ReferenceLine), { ssr: false })
-const ReferenceArea = dynamic(() => import('recharts').then((m) => m.ReferenceArea), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then((m) => ({ default: m.ResponsiveContainer })), { ssr: false })
+const LineChart = dynamic(() => import('recharts').then((m) => ({ default: m.LineChart })), { ssr: false })
+const Line = dynamic(() => import('recharts').then((m) => ({ default: m.Line })), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then((m) => ({ default: m.XAxis })), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then((m) => ({ default: m.YAxis })), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then((m) => ({ default: m.Tooltip })), { ssr: false })
+const ReferenceLine = dynamic(() => import('recharts').then((m) => ({ default: m.ReferenceLine })), { ssr: false })
+const ReferenceArea = dynamic(() => import('recharts').then((m) => ({ default: m.ReferenceArea })), { ssr: false })
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

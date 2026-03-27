@@ -37,8 +37,8 @@ export async function GET(request: NextRequest) {
 
     const { score, grade, concerns, highlights } = scoreCosmeticsProduct(product, userProfile ?? undefined)
 
-    // Save to cosmetics_scan_history
-    void supabase.from('cosmetics_scan_history').upsert({
+    // Save to cosmetics_scan_history (fire-and-forget)
+    supabase.from('cosmetics_scan_history').upsert({
       user_id: user.id,
       barcode,
       product_name: product.product_name ?? 'Unknown',
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       score,
       grade,
       image_url: product.image_url ?? null,
-    }, { onConflict: 'user_id,barcode' }).catch(() => {})
+    }, { onConflict: 'user_id,barcode' }).then(() => {}).catch(() => {})
 
     return NextResponse.json({
       product: {

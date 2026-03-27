@@ -1,7 +1,9 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts'
-import { Activity, Trash2, Plus } from 'lucide-react'
+import { Activity, Trash2, Plus, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { BottomNav } from '@/components/bottom-nav'
 
 // WHO/ADA reference ranges (mmol/L)
 const RANGES = {
@@ -29,32 +31,16 @@ function getStatus(value: number, context: string): { label: string; color: stri
 }
 
 export default function GlucosePage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const [readings, setReadings] = useState<GlucoseEntry[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const oneDayAgo = new Date(Date.now() - 86400000).toISOString()
-
-  const { data: records } = await supabase
-    .from('health_records')
-    .select('value, start_time')
-    .eq('user_id', user.id)
-    .eq('type', 'blood_glucose')
-    .gte('start_time', oneDayAgo)
-    .gt('value', 0)
-    .order('start_time', { ascending: true })
-    .limit(288)
-
-  const readings = (records ?? [])
-    .filter((r) => r.value > 30 && r.value < 600)
-    .map((r) => ({
-      timestamp: r.start_time,
-      mgdl: Math.round(r.value),
-      mmol: +(r.value / 18.0).toFixed(1),
-      hour: new Date(r.start_time).getHours(),
-    }))
+  useEffect(() => {
+    fetch('/api/glucose')
+      .then(r => r.json())
+      .then(d => { setReadings(d.records ?? []); setLoading(false) })
+      .catch(() => { setError('Failed to load glucose data'); setLoading(false) })
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,7 +61,27 @@ export default function GlucosePage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <GlucoseClient readings={readings} />
+        {loading && <p className="text-text-secondary text-center py-8">Loading glucose data…</p>}
+        {error && <p className="text-red-400 text-center py-8">{error}</p>}
+        {!loading && !error && readings.length === 0 && (
+          <p className="text-text-secondary text-center py-8">No glucose readings found. Sync your data or log manually.</p>
+        )}
+        {readings.length > 0 && (
+          <ul className="space-y-3">
+            {readings.map(r => {
+              const status = getStatus(r.value_mmol, r.context)
+              return (
+                <li key={r.id} className="bg-surface rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-text-primary">{r.value_mmol} mmol/L <span className="text-text-secondary text-sm">({r.value_mgdl} mg/dL)</span></p>
+                    <p className="text-sm text-text-secondary">{CONTEXT_LABELS[r.context] ?? r.context} · {new Date(r.logged_at).toLocaleString()}</p>
+                  </div>
+                  <span className={`text-sm font-medium ${status.color}`}>{status.label}</span>
+                </li>
+              )
+            })}
+          </ul>
+        )}
       </main>
       <BottomNav />
     </div>
