@@ -146,7 +146,7 @@ export default function ProgressPhotosPage() {
       {showCompare && compare.length === 2 && (
         <CompareSlider before={compare[0]} after={compare[1]} onClose={() => setShowCompare(false)} />
       )}
-      {loading ? <div>Loading...</div> : (
+      {loading ? <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div> : (
         Object.entries(grouped).map(([month, group]) => (
           <div key={month} className="mb-6">
             <h2 className="text-lg font-semibold mb-2">{month}</h2>

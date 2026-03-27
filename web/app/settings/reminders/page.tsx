@@ -76,7 +76,7 @@ export default function HydrationRemindersPage() {
   return (
     <div className="max-w-md mx-auto py-8">
       <h1 className="text-2xl font-bold mb-4">Hydration Reminders</h1>
-      {loading ? <div>Loading...</div> : (
+      {loading ? <div className="flex justify-center py-8"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div> : (
         <>
           <div className="flex items-center mb-4">
             <Switch checked={enabled} onCheckedChange={setEnabled} id="enabled" />

@@ -83,9 +83,9 @@ export default function RootLayout({
           >
             Skip to main content
           </a>
-          <nav className="flex gap-4 items-center px-4 py-2 border-b border-border bg-surface">
-  <a href="/dashboard" className="text-primary font-bold">Dashboard</a>
-  <a href="/challenges" className="ml-auto text-xl" title="Challenges">🏆 Challenges</a>
+          <nav className="flex gap-4 items-center px-4 py-2 border-b border-border bg-surface/80 backdrop-blur-md sticky top-0 z-40">
+  <a href="/dashboard" className="text-primary font-bold hover:text-primary/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">Dashboard</a>
+  <a href="/challenges" className="ml-auto px-3 py-1.5 rounded-lg hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm font-medium" title="Challenges">🏆 Challenges</a>
 </nav>
 <div id="main-content">{children}</div>
         </WidgetProvider>

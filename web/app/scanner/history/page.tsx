@@ -67,7 +67,7 @@ export default function ScanHistoryPage() {
         ))}
       </div>
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground">Loading...</div>
+        <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div>
       ) : scans.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-4xl mb-3">📦</p>

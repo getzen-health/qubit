@@ -77,6 +77,7 @@ const moreItems = [
   { href: '/import', icon: Upload, label: 'Import' },
   { href: '/export', icon: Download, label: 'Export' },
   { href: '/social', icon: Users, label: 'Social' },
+  { href: '/profile', icon: '👤', label: 'Profile' },
   { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
 ]
 
@@ -111,7 +112,7 @@ export function BottomNav() {
               <X className="w-4 h-4 text-text-secondary" />
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 max-h-[60vh] overflow-y-auto">
             {moreItems.map(({ href, icon: Icon, label }) => {
               const active = pathname === href || pathname.startsWith(href)
               return (

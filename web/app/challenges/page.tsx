@@ -63,7 +63,7 @@ export default function ChallengesPage() {
         <h1 className="text-2xl font-bold mb-2">Community Challenges <span className="ml-2">🏆</span></h1>
         <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          {loading ? <div>Loading...</div> : challenges.map((c, i) => (
+          {loading ? <div className="flex justify-center py-8"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div> : challenges.map((c, i) => (
             <div key={c.id} className="rounded-2xl border border-border bg-surface p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{ICONS[c.type] || '🏆'}</span>

@@ -45,7 +45,7 @@ export default function HydrationPage() {
     setLogging(false)
   }
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen text-text-secondary">Loading...</div>
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div>
 
   const pct = data?.percentage ?? 0
   // Water fill height for the bottle visual (0-100%)

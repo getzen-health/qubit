@@ -68,7 +68,7 @@ export default function DashboardSettingsPage() {
     setSaving(false)
   }
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>
+  if (loading) return <div className="p-8 flex justify-center"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div>
 
   return (
     <div className="max-w-xl mx-auto py-8 px-4">
