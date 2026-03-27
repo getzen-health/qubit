@@ -7,8 +7,8 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Get user profile for age/sex
-  const { data: profile } = await supabase.from('user_profiles').select('date_of_birth, biological_sex').eq('user_id', user.id).single()
+  const { data: profile, error: profileErr } = await supabase.from('user_profiles').select('date_of_birth, biological_sex').eq('user_id', user.id).single()
+  if (profileErr && profileErr.code !== 'PGRST116') console.error('user_profiles fetch error', profileErr)
 
   const age = profile?.date_of_birth
     ? Math.floor((Date.now() - new Date(profile.date_of_birth).getTime()) / (365.25 * 24 * 3600 * 1000))
@@ -17,10 +17,11 @@ export async function GET() {
 
   // Get user's 7-day averages for each metric
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: metrics } = await supabase.from('health_metrics')
+  const { data: metrics, error: metricsErr } = await supabase.from('health_metrics')
     .select('metric_type, value')
     .eq('user_id', user.id)
     .gte('recorded_at', since7d)
+  if (metricsErr) console.error('health_metrics fetch error', metricsErr)
 
   // Average per metric
   const metricAvgs: Record<string, number> = {}
