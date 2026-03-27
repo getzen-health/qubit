@@ -18,8 +18,28 @@ let COMMON_SUPPLEMENTS: [Supplement] = [
     Supplement(name: "Vitamin C", dose: "500", unit: "mg"),
 ]
 
+@Observable
+class SupplementsViewModel {
+    var takenToday: Set<String> = []
+    var errorMessage: String?
+
+    func logSupplement(name: String) async {
+        let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/supplements") else {
+            takenToday.insert(name)
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["name": name])
+        _ = try? await URLSession.shared.data(for: request)
+        takenToday.insert(name)
+    }
+}
+
 struct SupplementsView: View {
-    @State private var takenToday: Set<String> = []
+    @State private var viewModel = SupplementsViewModel()
 
     var body: some View {
         NavigationView {
@@ -30,15 +50,14 @@ struct SupplementsView: View {
                         Text("\(supplement.dose) \(supplement.unit)").font(.caption).foregroundColor(.secondary)
                     }
                     Spacer()
-                    if takenToday.contains(supplement.name) {
+                    if viewModel.takenToday.contains(supplement.name) {
                         Label("Taken", systemImage: "checkmark.circle.fill")
                             .font(.subheadline)
                             .foregroundColor(.green)
                     } else {
                         Button("Log") {
                             Task {
-                                await logSupplement(name: supplement.name)
-                                takenToday.insert(supplement.name)
+                                await viewModel.logSupplement(name: supplement.name)
                                 HapticService.impact(.medium)
                             }
                         }
@@ -50,15 +69,5 @@ struct SupplementsView: View {
             }
             .navigationTitle("Supplements")
         }
-    }
-    
-    func logSupplement(name: String) async {
-        let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
-        guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/supplements") else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: ["name": name])
-        _ = try? await URLSession.shared.data(for: request)
     }
 }

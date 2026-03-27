@@ -1,15 +1,17 @@
 import SwiftUI
 
-struct BodyMeasurementsView: View {
-    @State private var neck = ""
-    @State private var waist = ""
-    @State private var hips = ""
-    @State private var height = ""
-    @State private var sex = "male"
-    @State private var bodyFat: Double? = nil
-    @State private var saved = false
+@Observable
+class BodyMeasurementsViewModel {
+    var neck = ""
+    var waist = ""
+    var hips = ""
+    var height = ""
+    var sex = "male"
+    var bodyFat: Double? = nil
+    var saved = false
+    var errorMessage: String?
 
-    private var category: (String, Color)? {
+    var category: (String, Color)? {
         guard let bf = bodyFat else { return nil }
         if sex == "male" {
             if bf < 6 { return ("Essential Fat", .blue) }
@@ -26,7 +28,7 @@ struct BodyMeasurementsView: View {
         }
     }
 
-    private func calculateBodyFat() {
+    func calculateBodyFat() {
         guard let n = Double(neck), let w = Double(waist), let h = Double(height), n > 0, w > n, h > 0 else {
             bodyFat = nil; return
         }
@@ -39,64 +41,6 @@ struct BodyMeasurementsView: View {
         bodyFat = bodyFat.map { max(0, round($0 * 10) / 10) }
     }
 
-    var body: some View {
-        NavigationView {
-            Form {
-                Section("Measurements (cm)") {
-                    TextField("Neck circumference", text: $neck)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: neck) { calculateBodyFat() }
-                    TextField("Waist circumference", text: $waist)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: waist) { calculateBodyFat() }
-                    if sex == "female" {
-                        TextField("Hips circumference", text: $hips)
-                            .keyboardType(.decimalPad)
-                            .onChange(of: hips) { calculateBodyFat() }
-                    }
-                    TextField("Height", text: $height)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: height) { calculateBodyFat() }
-                }
-                Section("Sex") {
-                    Picker("Sex", selection: $sex) {
-                        Text("Male").tag("male")
-                        Text("Female").tag("female")
-                    }
-                    .pickerStyle(.segmented)
-                    .onChange(of: sex) { calculateBodyFat() }
-                }
-                if let bf = bodyFat, let (label, color) = category {
-                    Section("Body Fat Estimate") {
-                        HStack {
-                            Text("Body Fat %")
-                            Spacer()
-                            Text("\(bf, specifier: "%.1f")%")
-                                .bold()
-                        }
-                        HStack {
-                            Text("Category")
-                            Spacer()
-                            Text(label).foregroundColor(color).bold()
-                        }
-                    }
-                }
-                Section {
-                    Button("Save Measurements") {
-                        Task { await saveMeasurement() }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.primary)
-                    .cornerRadius(10)
-                }
-            }
-            .navigationTitle("Body Measurements")
-            .alert("Saved!", isPresented: $saved) { Button("OK") {} }
-        }
-    }
-    
     func saveMeasurement() async {
         let urlString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
         guard !urlString.isEmpty, let url = URL(string: "\(urlString)/api/measurements") else { return }
@@ -113,9 +57,70 @@ struct BodyMeasurementsView: View {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         guard let (_, response) = try? await URLSession.shared.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 201 else { return }
-        await MainActor.run {
-            saved = true
-            HapticService.notification(.success)
+        saved = true
+        HapticService.notification(.success)
+    }
+}
+
+struct BodyMeasurementsView: View {
+    @State private var viewModel = BodyMeasurementsViewModel()
+
+    var body: some View {
+        @Bindable var vm = viewModel
+        NavigationView {
+            Form {
+                Section("Measurements (cm)") {
+                    TextField("Neck circumference", text: $vm.neck)
+                        .keyboardType(.decimalPad)
+                        .onChange(of: vm.neck) { viewModel.calculateBodyFat() }
+                    TextField("Waist circumference", text: $vm.waist)
+                        .keyboardType(.decimalPad)
+                        .onChange(of: vm.waist) { viewModel.calculateBodyFat() }
+                    if vm.sex == "female" {
+                        TextField("Hips circumference", text: $vm.hips)
+                            .keyboardType(.decimalPad)
+                            .onChange(of: vm.hips) { viewModel.calculateBodyFat() }
+                    }
+                    TextField("Height", text: $vm.height)
+                        .keyboardType(.decimalPad)
+                        .onChange(of: vm.height) { viewModel.calculateBodyFat() }
+                }
+                Section("Sex") {
+                    Picker("Sex", selection: $vm.sex) {
+                        Text("Male").tag("male")
+                        Text("Female").tag("female")
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: vm.sex) { viewModel.calculateBodyFat() }
+                }
+                if let bf = viewModel.bodyFat, let (label, color) = viewModel.category {
+                    Section("Body Fat Estimate") {
+                        HStack {
+                            Text("Body Fat %")
+                            Spacer()
+                            Text("\(bf, specifier: "%.1f")%")
+                                .bold()
+                        }
+                        HStack {
+                            Text("Category")
+                            Spacer()
+                            Text(label).foregroundColor(color).bold()
+                        }
+                    }
+                }
+                Section {
+                    Button("Save Measurements") {
+                        Task { await viewModel.saveMeasurement() }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.primary)
+                    .cornerRadius(10)
+                }
+            }
+            .navigationTitle("Body Measurements")
+            .alert("Saved!", isPresented: $vm.saved) { Button("OK") {} }
         }
     }
 }
