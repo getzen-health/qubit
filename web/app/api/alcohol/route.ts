@@ -1,39 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit, getClientIdentifier } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data } = await supabase
+      .from('alcohol_logs')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('date', { ascending: false })
+      .limit(90)
 
-  const { data } = await supabase
-    .from('alcohol_logs')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: false })
-    .limit(90)
-
-  return NextResponse.json({ logs: data || [] })
-}
-
-export async function POST(request: NextRequest) {
-  const rateLimitResult = await checkRateLimit(getClientIdentifier(request))
-  if (!rateLimitResult.allowed) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+    return secureJsonResponse({ logs: data || [] })
   }
+)
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const body = await req.json()
+    const { data, error } = await supabase
+      .from('alcohol_logs')
+      .upsert({ ...body, user_id: user!.id, updated_at: new Date().toISOString() })
+      .select()
+      .single()
 
-  const body = await request.json()
-  const { data, error } = await supabase
-    .from('alcohol_logs')
-    .upsert({ ...body, user_id: user.id, updated_at: new Date().toISOString() })
-    .select()
-    .single()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json({ log: data })
-}
+    if (error) return secureErrorResponse('Failed to save log', 400)
+    return secureJsonResponse({ log: data })
+  }
+)
