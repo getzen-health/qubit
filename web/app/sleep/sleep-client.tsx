@@ -90,12 +90,28 @@ export function SleepPageClient({ records, sleepGoalHours = 8, elevatedBreathing
 
   if (records.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <span className="text-5xl mb-4">🌙</span>
-        <h2 className="text-lg font-semibold text-text-primary mb-2">No sleep data yet</h2>
-        <p className="text-sm text-text-secondary">
-          Sync your iPhone to import sleep data from Apple Health.
+      <div className="flex flex-col items-center justify-center py-20 text-center px-6">
+        <div className="w-20 h-20 rounded-full bg-[hsl(var(--color-sleep)/0.12)] flex items-center justify-center mb-5">
+          <span className="text-4xl">🌙</span>
+        </div>
+        <h2 className="text-xl font-bold text-text-primary mb-2">No sleep data yet</h2>
+        <p className="text-sm text-text-secondary max-w-xs mb-6">
+          Sync your iPhone to import sleep data from Apple Health, or log a sleep session manually.
         </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href="/import"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[hsl(var(--color-sleep))] text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            📱 Sync from Apple Health
+          </a>
+          <a
+            href="/sleep/log"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-surface border border-border rounded-xl text-sm font-medium text-text-primary hover:bg-surface-secondary transition-colors"
+          >
+            ✏️ Log manually
+          </a>
+        </div>
       </div>
     )
   }

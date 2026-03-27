@@ -678,9 +678,14 @@ export default function StressPage() {
             )}
 
             {!loading && !al && (
-              <div className="text-center py-12 text-text-secondary">
-                <Wind className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">Log a check-in to see your insights</p>
+              <div className="flex flex-col items-center justify-center py-14 text-center px-6">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+                  <Wind className="w-8 h-8 text-amber-500/60" />
+                </div>
+                <h3 className="text-base font-semibold text-text-primary mb-1">No check-ins yet</h3>
+                <p className="text-sm text-text-secondary max-w-xs">
+                  Log how you&apos;re feeling above to track your stress patterns and get personalised insights.
+                </p>
               </div>
             )}
           </div>
