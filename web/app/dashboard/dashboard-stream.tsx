@@ -495,9 +495,10 @@ export function DashboardStream({
   // Most recent body weight (may not be today's)
   const latestWeight = summaries.find((s) => s.weight_kg != null)?.weight_kg ?? null
 
-  // Format sleep duration
+  // Format sleep duration (show em-dash when no sleep data)
   const sleepHours = Math.floor(metrics.sleep.duration / 60)
   const sleepMins = metrics.sleep.duration % 60
+  const sleepDisplay = metrics.sleep.duration > 0 ? `${sleepHours}h ${sleepMins}m` : '—'
 
   // Latest sleep stage breakdown
   const lastSleepRecord = recentSleepRecords[0]
@@ -775,7 +776,7 @@ export function DashboardStream({
           />
           <QuickStat
             label="Sleep"
-            value={`${sleepHours}h ${sleepMins}m`}
+            value={sleepDisplay}
             color="sleep"
           />
           <QuickStat
@@ -1002,7 +1003,7 @@ export function DashboardStream({
             <MetricRow
               icon={<Moon className="w-5 h-5" />}
               label="Sleep"
-              value={`${sleepHours}h ${sleepMins}m`}
+              value={sleepDisplay}
               color="sleep"
               expandContent={
                 <div className="space-y-3">

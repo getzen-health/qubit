@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { estimateVitaminD, getSeasonFromMonth, getUVIRisk, SKIN_TYPES, BODY_EXPOSURE, SkinType } from '@/lib/vitamin-d'
 
 const SPF_OPTIONS = [0, 8, 15, 30, 50]
@@ -161,6 +163,12 @@ export default function SunExposurePage() {
 
   return (
     <div className="max-w-xl mx-auto p-4 space-y-6">
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border -mx-4 px-4 py-3 mb-2 flex items-center gap-3">
+        <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+          <ArrowLeft className="w-5 h-5 text-text-primary" />
+        </Link>
+        <h1 className="text-xl font-bold text-text-primary">Sun Exposure</h1>
+      </div>
       {/* UV Index Card */}
       <div className="bg-surface rounded-2xl p-4 border border-border flex flex-col gap-2">
         <div className="flex items-center justify-between">

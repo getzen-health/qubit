@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { PHQ9_QUESTIONS, GAD7_QUESTIONS, PSS4_QUESTIONS, PHQ9_INTERPRETATION, GAD7_INTERPRETATION, PSS4_INTERPRETATION } from '@/lib/mental-health-screeners'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -214,9 +216,15 @@ function ScreenerFlow({ screener }: { screener: typeof SCREENERS[0] }) {
 export default function MentalHealthPage() {
   const [tab, setTab] = useState(0)
   return (
-    <div className="max-w-xl mx-auto px-4 py-8">
+    <div className="max-w-xl mx-auto px-4 py-4">
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border -mx-4 px-4 py-3 mb-6 flex items-center gap-3">
+        <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+          <ArrowLeft className="w-5 h-5 text-text-primary" />
+        </Link>
+        <h1 className="text-xl font-bold text-text-primary">Check In</h1>
+      </div>
       <Disclaimer />
-      <h1 className="text-2xl font-bold mb-1 text-text-primary">Check In With Yourself</h1>
+      <h2 className="text-2xl font-bold mb-1 text-text-primary">Check In With Yourself</h2>
       <div className="text-text-secondary mb-6">These brief questionnaires help you notice patterns over time. They are not a diagnosis.</div>
       <div className="flex gap-2 mb-4">
         {SCREENERS.map((s, i) => (
