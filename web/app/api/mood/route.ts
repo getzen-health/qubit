@@ -19,17 +19,27 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { valence, emotions, notes } = await request.json()
-  if (valence === undefined || valence < -5 || valence > 5) {
-    return NextResponse.json({ error: 'valence must be -5 to 5' }, { status: 400 })
+  const body = await request.json()
+
+  // Accept valence (-5..5) or legacy score (1..10) from iOS app
+  let valence: number
+  if (body.valence !== undefined) {
+    valence = Math.round(Number(body.valence))
+  } else if (body.score !== undefined) {
+    // Map 1-10 → -5..5 linearly: score 1 → -5, score 10 → +5
+    valence = Math.round((Number(body.score) - 1) * 10 / 9 - 5)
+  } else {
+    return NextResponse.json({ error: 'valence (-5 to 5) or score (1-10) required' }, { status: 400 })
   }
+  valence = Math.max(-5, Math.min(5, valence))
+
   const { data, error } = await supabase
     .from('mood_logs')
     .insert({
       user_id: user.id,
-      valence: Math.round(valence),
-      emotions: Array.isArray(emotions) ? emotions : [],
-      notes: notes || null,
+      valence,
+      emotions: Array.isArray(body.emotions) ? body.emotions : [],
+      notes: body.notes || null,
     })
     .select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

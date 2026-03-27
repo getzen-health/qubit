@@ -6,13 +6,12 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data } = await supabase
-    .from('user_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
+  const [{ data: profile }, { data: userRow }] = await Promise.all([
+    supabase.from('user_profiles').select('*').eq('user_id', user.id).single(),
+    supabase.from('users').select('display_name, full_name, avatar_url, height_cm, weight_kg, step_goal, calorie_goal, sleep_goal_minutes, biological_sex, age, date_of_birth, fitness_goal').eq('id', user.id).single(),
+  ])
 
-  return NextResponse.json({ data: data ?? null })
+  return NextResponse.json({ data: { ...(userRow ?? {}), ...(profile ?? {}) } })
 }
 
 export async function PUT(request: NextRequest) {
@@ -21,10 +20,23 @@ export async function PUT(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { error } = await supabase
+
+  // Write the full payload to user_profiles (onboarding/health data)
+  const { error: profileErr } = await supabase
     .from('user_profiles')
     .upsert({ user_id: user.id, ...body, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+  if (profileErr) return NextResponse.json({ error: profileErr.message }, { status: 500 })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  // Mirror subset of key fields to users table so pages querying users work
+  const userFields: Record<string, unknown> = {}
+  const mirror = ['full_name', 'age', 'date_of_birth', 'biological_sex', 'fitness_goal', 'height_cm', 'weight_kg'] as const
+  for (const key of mirror) {
+    if (key in body) userFields[key] = (body as Record<string, unknown>)[key]
+  }
+  if (Object.keys(userFields).length > 0) {
+    const { error: userErr } = await supabase.from('users').update(userFields).eq('id', user.id)
+    if (userErr) return NextResponse.json({ error: userErr.message }, { status: 500 })
+  }
+
   return NextResponse.json({ success: true })
 }
