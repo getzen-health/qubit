@@ -36,24 +36,36 @@ export default async function StreaksPage() {
       <h1 className="text-2xl font-bold mb-4">Streaks & Achievements</h1>
       <div className="mb-8">
         <h2 className="font-semibold mb-2">Current Streaks</h2>
-        <div className="flex flex-wrap gap-4">
-          {(streaks ?? []).map(s => (
-            <div key={s.streak_type} className="flex flex-col items-start gap-2 bg-orange-50 rounded-lg px-4 py-2 shadow">
-  <div className="flex items-center gap-2">
-              <span className="text-2xl">🔥</span>
-              <span className="font-bold text-lg">{s.current_streak}</span>
-              <span className="capitalize text-gray-700">{s.streak_type.replace('_', ' ')}</span>
-  </div>
-  {s.current_streak >= 7 && (
-    <ShareButton
-      title={`I'm on a ${s.current_streak}-day health streak on KQuarks!`}
-      text={`🔥 I'm on a ${s.current_streak}-day health streak on KQuarks! Building better habits every day.`}
-      className="mt-1"
-    />
-  )}
-</div>
-          ))}
-        </div>
+        {(streaks ?? []).length === 0 ? (
+          <div className="text-center py-12 bg-orange-50 rounded-xl border border-orange-100">
+            <div className="text-4xl mb-3">🔥</div>
+            <p className="text-lg font-semibold text-gray-800 mb-1">No active streaks yet</p>
+            <p className="text-sm text-gray-500">Start logging your health data daily to build a streak!</p>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-4">
+            {(streaks ?? []).map(s => (
+              <div key={s.streak_type} className="flex flex-col items-start gap-2 bg-orange-50 rounded-lg px-4 py-3 shadow min-w-[140px]">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🔥</span>
+                  <span className="capitalize text-gray-700 font-medium">{s.streak_type.replace('_', ' ')}</span>
+                </div>
+                <p className="text-4xl font-bold text-orange-500 leading-none">{s.current_streak}</p>
+                <p className="text-xs text-gray-400">days current</p>
+                {(s.longest_streak ?? s.best_streak) > 0 && (
+                  <p className="text-xs text-gray-500">Best streak: {s.longest_streak ?? s.best_streak} days</p>
+                )}
+                {s.current_streak >= 7 && (
+                  <ShareButton
+                    title={`I'm on a ${s.current_streak}-day health streak on KQuarks!`}
+                    text={`🔥 I'm on a ${s.current_streak}-day health streak on KQuarks! Building better habits every day.`}
+                    className="mt-1"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <div>
         <h2 className="font-semibold mb-2">Achievements</h2>
