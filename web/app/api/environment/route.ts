@@ -13,17 +13,35 @@ export async function GET(request: NextRequest) {
   let outdoorAQI = null
   let pm25 = null
   let pm10 = null
+  let uvIndex = null
+  let uvCategory: string | null = null
   
   if (lat && lon) {
     try {
-      const res = await fetch(
-        `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,european_aqi,us_aqi&timezone=auto`,
-        { next: { revalidate: 1800 } }
-      )
-      const data = await res.json()
-      outdoorAQI = data?.current?.us_aqi ?? null
-      pm25 = data?.current?.pm2_5 ?? null
-      pm10 = data?.current?.pm10 ?? null
+      // Fetch air quality + UV index in parallel
+      const [aqRes, uvRes] = await Promise.all([
+        fetch(
+          `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,european_aqi,us_aqi&timezone=auto`,
+          { next: { revalidate: 1800 } }
+        ),
+        fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=uv_index&timezone=auto`,
+          { next: { revalidate: 1800 } }
+        ),
+      ])
+      const aqData = await aqRes.json()
+      const uvData = await uvRes.json()
+      outdoorAQI = aqData?.current?.us_aqi ?? null
+      pm25 = aqData?.current?.pm2_5 ?? null
+      pm10 = aqData?.current?.pm10 ?? null
+      uvIndex = uvData?.current?.uv_index ?? null
+      if (uvIndex !== null) {
+        if (uvIndex < 3) uvCategory = 'Low'
+        else if (uvIndex < 6) uvCategory = 'Moderate'
+        else if (uvIndex < 8) uvCategory = 'High'
+        else if (uvIndex < 11) uvCategory = 'Very High'
+        else uvCategory = 'Extreme'
+      }
     } catch { /* ignore fetch errors */ }
   }
 
@@ -35,7 +53,7 @@ export async function GET(request: NextRequest) {
     .gte('logged_at', sevenDaysAgo.toISOString())
     .order('logged_at', { ascending: false })
 
-  return NextResponse.json({ outdoorAQI, pm25, pm10, indoorLogs: indoorLogs ?? [] })
+  return NextResponse.json({ outdoorAQI, pm25, pm10, uvIndex, uvCategory, indoorLogs: indoorLogs ?? [] })
 }
 
 export async function POST(request: NextRequest) {

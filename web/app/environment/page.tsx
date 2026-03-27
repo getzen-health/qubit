@@ -20,7 +20,7 @@ function useGeolocation() {
 }
 
 export default function EnvironmentPage() {
-  const [outdoor, setOutdoor] = useState<{ aqi: number | null; pm25: number | null; pm10: number | null } | null>(null)
+  const [outdoor, setOutdoor] = useState<{ aqi: number | null; pm25: number | null; pm10: number | null; uvIndex: number | null; uvCategory: string | null } | null>(null)
   const [indoorLogs, setIndoorLogs] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [geoError, setGeoError] = useState<string | null>(null)
@@ -43,7 +43,7 @@ export default function EnvironmentPage() {
       if (coords) url += `?lat=${coords.lat}&lon=${coords.lon}`
       const res = await fetch(url)
       const data = await res.json()
-      setOutdoor({ aqi: data.outdoorAQI, pm25: data.pm25, pm10: data.pm10 })
+      setOutdoor({ aqi: data.outdoorAQI, pm25: data.pm25, pm10: data.pm10, uvIndex: data.uvIndex ?? null, uvCategory: data.uvCategory ?? null })
       setIndoorLogs(data.indoorLogs)
       setLoading(false)
     }
@@ -143,6 +143,21 @@ export default function EnvironmentPage() {
               <span className="text-text-secondary text-xs mt-2">{getAQILevel(outdoor.aqi).exerciseAdvice}</span>
             )}
           </div>
+          {outdoor?.uvIndex != null && (
+            <div className="flex flex-col items-center justify-center bg-surface-secondary rounded-2xl px-5 py-3 min-w-[110px]">
+              <span className="text-xs text-text-secondary mb-1">UV Index</span>
+              <span className={`text-3xl font-bold ${
+                (outdoor.uvIndex ?? 0) < 3 ? 'text-green-400' :
+                (outdoor.uvIndex ?? 0) < 6 ? 'text-yellow-400' :
+                (outdoor.uvIndex ?? 0) < 8 ? 'text-orange-400' :
+                'text-red-400'
+              }`}>{outdoor.uvIndex}</span>
+              <span className="text-xs font-medium mt-1">{outdoor.uvCategory}</span>
+              <span className="text-xs text-text-secondary text-center mt-1">
+                {(outdoor.uvIndex ?? 0) >= 6 ? '🧴 SPF 30+ recommended' : (outdoor.uvIndex ?? 0) >= 3 ? '🕶️ Sunglasses advised' : '✅ Low UV risk'}
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
