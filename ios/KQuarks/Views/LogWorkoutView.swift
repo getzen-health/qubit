@@ -139,15 +139,15 @@ struct LogWorkoutView: View {
     @ViewBuilder
     private var strengthSection: some View {
         Section {
-            ForEach($exercises) { $exercise in
+            ForEach(exercises.indices, id: \.self) { i in
                 DisclosureGroup {
-                    ForEach($exercise.sets) { $set in
-                        StrengthSetRow(set: $set)
+                    ForEach(exercises[i].sets.indices, id: \.self) { j in
+                        StrengthSetRow(set: $exercises[i].sets[j])
                     }
-                    .onDelete { exercise.sets.remove(atOffsets: $0) }
+                    .onDelete { exercises[i].sets.remove(atOffsets: $0) }
 
                     Button {
-                        exercise.sets.append(StrengthSet())
+                        exercises[i].sets.append(StrengthSet())
                     } label: {
                         Label("Add Set", systemImage: "plus")
                             .font(.caption)
@@ -157,8 +157,8 @@ struct LogWorkoutView: View {
                         Image(systemName: "dumbbell.fill")
                             .foregroundStyle(.purple)
                         VStack(alignment: .leading) {
-                            Text(exercise.name).font(.body)
-                            Text("\(exercise.sets.count) set\(exercise.sets.count == 1 ? "" : "s")")
+                            Text(exercises[i].name).font(.body)
+                            Text("\(exercises[i].sets.count) set\(exercises[i].sets.count == 1 ? "" : "s")")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

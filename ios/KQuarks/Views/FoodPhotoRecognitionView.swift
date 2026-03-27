@@ -201,8 +201,8 @@ struct FoodPhotoRecognitionView: View {
                 }
 
                 Section("Detected Foods") {
-                    ForEach($recognizedFoods) { $food in
-                        FoodResultRow(food: $food)
+                    ForEach(recognizedFoods.indices, id: \.self) { i in
+                        FoodResultRow(food: $recognizedFoods[i])
                     }
                 }
 
