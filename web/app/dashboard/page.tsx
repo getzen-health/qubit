@@ -65,17 +65,31 @@ export default async function DashboardPage() {
         <PrescriptionCard />
       </div>
       <div className="mb-4">
-        <a href="/insights/benchmarks" className="block bg-surface border border-primary/30 rounded-xl p-4 hover:bg-primary/10 transition-colors">
-          <div className="flex items-center gap-3">
-            <span className="text-primary font-bold text-lg">📊 Benchmarks &rarr;</span>
-            <span className="text-xs text-text-secondary">Compare your stats to your age group</span>
+        <a
+          href="/insights/benchmarks"
+          className="block bg-surface border border-border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">📊</span>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">Benchmarks</p>
+                <p className="text-xs text-text-secondary">Compare your stats to your age group</p>
+              </div>
+            </div>
+            <span className="text-text-tertiary text-lg">→</span>
           </div>
         </a>
       </div>
       {!profile?.onboarding_completed && (
-        <div className="bg-primary/10 border border-primary text-primary px-4 py-3 rounded-xl mb-4 flex items-center justify-between">
-          <span>Complete your profile for personalized insights.</span>
-          <a href="/onboarding" className="ml-4 px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary/90 transition">Get Started</a>
+        <div className="bg-accent/8 border border-accent/30 px-4 py-3 rounded-2xl mb-4 flex items-center justify-between">
+          <span className="text-sm text-text-primary">Complete your profile for personalized insights.</span>
+          <a
+            href="/onboarding"
+            className="ml-4 px-3 py-1.5 bg-accent text-accent-foreground rounded-xl text-xs font-semibold hover:opacity-90 transition-opacity"
+          >
+            Get Started
+          </a>
         </div>
       )}
       <Suspense fallback={<DashboardDataSkeleton />}>

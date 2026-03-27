@@ -1,29 +1,47 @@
 import Link from 'next/link'
+import { Zap, Flame } from 'lucide-react'
 import { getLevelInfo } from '@/lib/achievements'
 
 export default function XpCard({ totalXP = 0, currentStreak = 0 }: { totalXP: number, currentStreak: number }) {
   const levelInfo = getLevelInfo(totalXP)
   return (
-    <Link href="/achievements" className="block bg-surface border border-border rounded-2xl p-4 shadow hover:shadow-lg transition">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg font-bold">{levelInfo.current.name}</span>
-        <span className="ml-2 px-2 py-1 rounded bg-primary text-white text-xs">Level {levelInfo.current.level}</span>
+    <Link
+      href="/achievements"
+      className="block bg-surface border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Zap className="w-4 h-4 text-[hsl(var(--color-glucose))]" />
+          <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">Progress</span>
+        </div>
+        <span className="px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-semibold">
+          Level {levelInfo.current.level}
+        </span>
       </div>
-      <div className="w-full bg-border rounded-2xl h-3 overflow-hidden mb-1">
+
+      <div className="flex items-baseline gap-2 mb-3">
+        <span className="text-2xl font-bold text-text-primary">{levelInfo.current.name}</span>
+      </div>
+
+      {/* XP progress bar */}
+      <div className="w-full bg-surface-secondary rounded-full h-2 overflow-hidden mb-1">
         <div
-          className="bg-primary h-3 rounded-2xl transition-all"
+          className="bg-accent h-2 rounded-full transition-all duration-500"
           style={{ width: `${levelInfo.progressToNext}%` }}
         />
       </div>
-      <div className="text-xs text-text-secondary mb-1">
+      <p className="text-xs text-text-secondary">
         {levelInfo.next
-          ? `${levelInfo.totalXP} / ${levelInfo.next.minXP} XP to Level ${levelInfo.next.level}`
-          : 'Max level reached!'}
-      </div>
-      <div className="flex items-center gap-2 mt-2">
-        <span className="text-2xl">🔥</span>
-        <span className="font-semibold text-primary">{currentStreak} day streak</span>
-      </div>
+          ? `${levelInfo.totalXP.toLocaleString()} / ${levelInfo.next.minXP.toLocaleString()} XP`
+          : 'Max level reached! 🎉'}
+      </p>
+
+      {currentStreak > 0 && (
+        <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-border">
+          <Flame className="w-4 h-4 text-orange-500" />
+          <span className="text-sm font-semibold text-text-primary">{currentStreak} day streak</span>
+        </div>
+      )}
     </Link>
   )
 }
