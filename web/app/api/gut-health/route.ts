@@ -26,7 +26,7 @@ function avgSymptomSeverity(logs: any[]): number {
 }
 
 export const GET = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: false },
+  { rateLimit: 'healthData', requireAuth: true },
   async (_req, { supabase }) => {
     const {
       data: logs,
@@ -76,7 +76,7 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: false },
+  { rateLimit: 'healthData', requireAuth: true },
   async (req, { supabase }) => {
     const body = await req.json()
     const { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at } = body
@@ -89,7 +89,7 @@ export const POST = createSecureApiHandler(
 )
 
 export const DELETE = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: false },
+  { rateLimit: 'healthData', requireAuth: true },
   async (req, { supabase }) => {
     const { id } = await req.json()
     const { error } = await supabase.from('gut_health_logs').delete().eq('id', id)
