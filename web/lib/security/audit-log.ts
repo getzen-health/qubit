@@ -38,6 +38,13 @@ export type AuditResource =
   | 'challenge'
   | 'user_data'
   | 'medication'
+  | 'eye_health'
+  | 'financial_wellness'
+  | 'annotation'
+  | 'achievement'
+  | 'anomaly'
+  | 'blood_pressure'
+  | 'calorie_balance'
 
 interface AuditLogEntry {
   user_id: string

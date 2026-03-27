@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 const DEFAULT_ORDER = [
   'health-score',
@@ -12,49 +11,53 @@ const DEFAULT_ORDER = [
   'nutrition',
 ]
 
-export async function GET(req: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'READ',
+    auditResource: 'user_preferences',
+  },
+  async (_request, { user, supabase }) => {
+    const { data } = await supabase
+      .from('user_preferences')
+      .select('dashboard_card_order, dashboard_hidden_cards')
+      .eq('user_id', user!.id)
+      .single()
 
-  const { data } = await supabase
-    .from('user_preferences')
-    .select('dashboard_card_order, dashboard_hidden_cards')
-    .eq('user_id', user.id)
-    .single()
-
-  if (!data) {
-    return NextResponse.json({
-      dashboard_card_order: DEFAULT_ORDER,
-      dashboard_hidden_cards: [],
-    })
+    if (!data) {
+      return secureJsonResponse({
+        dashboard_card_order: DEFAULT_ORDER,
+        dashboard_hidden_cards: [],
+      })
+    }
+    return secureJsonResponse(data)
   }
-  return NextResponse.json(data)
-}
+)
 
-export async function PATCH(req: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+export const PATCH = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'UPDATE',
+    auditResource: 'user_preferences',
+  },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const { dashboard_card_order, dashboard_hidden_cards } = body
 
-  const body = await req.json()
-  const { dashboard_card_order, dashboard_hidden_cards } = body
+    const { error } = await supabase
+      .from('user_preferences')
+      .upsert({
+        user_id: user!.id,
+        dashboard_card_order,
+        dashboard_hidden_cards,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' })
 
-  const { error } = await supabase
-    .from('user_preferences')
-    .upsert({
-      user_id: user.id,
-      dashboard_card_order,
-      dashboard_hidden_cards,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id' })
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    if (error) {
+      return secureErrorResponse(error.message, 400)
+    }
+    return secureJsonResponse({ success: true })
   }
-  return NextResponse.json({ success: true })
-}
+)

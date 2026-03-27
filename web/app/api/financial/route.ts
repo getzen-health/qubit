@@ -1,132 +1,136 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { calculateFinancialWellness, pearsonCorrelation } from '@/lib/financial-wellness'
 import type { FinancialWellnessLog } from '@/lib/financial-wellness'
 
 // GET /api/financial — last 30 logs + composite score + health correlations
-export async function GET(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'READ',
+    auditResource: 'financial_wellness',
+  },
+  async (_request, { user, supabase }) => {
+    const since30 = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10)
 
-  const since30 = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10)
+    const [{ data: logs, error: logsError }, { data: summaries }] = await Promise.all([
+      supabase
+        .from('financial_wellness_logs')
+        .select('*')
+        .eq('user_id', user!.id)
+        .gte('date', since30)
+        .order('date', { ascending: false })
+        .limit(30),
+      supabase
+        .from('daily_summaries')
+        .select('date, avg_mood, sleep_quality, avg_stress')
+        .eq('user_id', user!.id)
+        .gte('date', since30)
+        .order('date', { ascending: false })
+        .limit(30),
+    ])
 
-  const [{ data: logs, error: logsError }, { data: summaries }] = await Promise.all([
-    supabase
-      .from('financial_wellness_logs')
-      .select('*')
-      .eq('user_id', user.id)
-      .gte('date', since30)
-      .order('date', { ascending: false })
-      .limit(30),
-    supabase
-      .from('daily_summaries')
-      .select('date, avg_mood, sleep_quality, avg_stress')
-      .eq('user_id', user.id)
-      .gte('date', since30)
-      .order('date', { ascending: false })
-      .limit(30),
-  ])
+    if (logsError) return secureErrorResponse('Failed to fetch financial logs', 500)
 
-  if (logsError) return NextResponse.json({ error: logsError.message }, { status: 500 })
+    const typedLogs = (logs ?? []) as FinancialWellnessLog[]
 
-  const typedLogs = (logs ?? []) as FinancialWellnessLog[]
+    // Latest score
+    const latestScore = typedLogs.length > 0 ? calculateFinancialWellness(typedLogs[0]) : null
 
-  // Latest score
-  const latestScore = typedLogs.length > 0 ? calculateFinancialWellness(typedLogs[0]) : null
+    // 30-day trend: [{date, total, cfpbScore, financial_stress}]
+    const trend = [...typedLogs]
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((l) => {
+        const s = calculateFinancialWellness(l)
+        return {
+          date: l.date,
+          total: s.total,
+          cfpbScore: s.cfpbScore,
+          financial_stress: l.financial_stress,
+          positive_money_thoughts: l.positive_money_thoughts,
+        }
+      })
 
-  // 30-day trend: [{date, total, cfpbScore, financial_stress}]
-  const trend = [...typedLogs]
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .map((l) => {
-      const s = calculateFinancialWellness(l)
-      return {
-        date: l.date,
-        total: s.total,
-        cfpbScore: s.cfpbScore,
-        financial_stress: l.financial_stress,
-        positive_money_thoughts: l.positive_money_thoughts,
+    // Worry topic frequency over last 30 days
+    const worryFreq: Record<string, number> = {}
+    for (const log of typedLogs) {
+      for (const topic of log.financial_worry_topics ?? []) {
+        worryFreq[topic] = (worryFreq[topic] ?? 0) + 1
       }
-    })
-
-  // Worry topic frequency over last 30 days
-  const worryFreq: Record<string, number> = {}
-  for (const log of typedLogs) {
-    for (const topic of log.financial_worry_topics ?? []) {
-      worryFreq[topic] = (worryFreq[topic] ?? 0) + 1
     }
+
+    // Correlate financial wellness score with health metrics
+    const correlations = computeCorrelations(typedLogs, summaries ?? [])
+
+    return secureJsonResponse({ logs: typedLogs, latestScore, trend, worryFreq, correlations })
   }
-
-  // Correlate financial wellness score with health metrics
-  const correlations = computeCorrelations(typedLogs, summaries ?? [])
-
-  return NextResponse.json({ logs: typedLogs, latestScore, trend, worryFreq, correlations })
-}
+)
 
 // POST /api/financial — upsert one daily log
-export async function POST(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'CREATE',
+    auditResource: 'financial_wellness',
+  },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const {
+      date,
+      cfpb_q1, cfpb_q2, cfpb_q3, cfpb_q4, cfpb_q5,
+      financial_stress,
+      emergency_fund_months,
+      positive_money_thoughts,
+      financial_worry_topics,
+      coping_techniques_used,
+      notes,
+    } = body
 
-  const body = await req.json()
-  const {
-    date,
-    cfpb_q1, cfpb_q2, cfpb_q3, cfpb_q4, cfpb_q5,
-    financial_stress,
-    emergency_fund_months,
-    positive_money_thoughts,
-    financial_worry_topics,
-    coping_techniques_used,
-    notes,
-  } = body
-
-  // Validate required CFPB fields
-  for (const [key, val] of Object.entries({ cfpb_q1, cfpb_q2, cfpb_q3, cfpb_q4, cfpb_q5 })) {
-    if (!val || (val as number) < 1 || (val as number) > 5) {
-      return NextResponse.json({ error: `${key} must be 1-5` }, { status: 400 })
+    // Validate required CFPB fields
+    for (const [key, val] of Object.entries({ cfpb_q1, cfpb_q2, cfpb_q3, cfpb_q4, cfpb_q5 })) {
+      if (!val || (val as number) < 1 || (val as number) > 5) {
+        return secureErrorResponse(`${key} must be 1-5`, 400)
+      }
     }
+    if (!financial_stress || financial_stress < 1 || financial_stress > 10) {
+      return secureErrorResponse('financial_stress must be 1-10', 400)
+    }
+    if (!positive_money_thoughts || positive_money_thoughts < 1 || positive_money_thoughts > 10) {
+      return secureErrorResponse('positive_money_thoughts must be 1-10', 400)
+    }
+
+    const logDate: string = date || new Date().toISOString().slice(0, 10)
+
+    const { data, error } = await supabase
+      .from('financial_wellness_logs')
+      .upsert(
+        {
+          user_id: user!.id,
+          date: logDate,
+          cfpb_q1: Number(cfpb_q1),
+          cfpb_q2: Number(cfpb_q2),
+          cfpb_q3: Number(cfpb_q3),
+          cfpb_q4: Number(cfpb_q4),
+          cfpb_q5: Number(cfpb_q5),
+          financial_stress: Number(financial_stress),
+          emergency_fund_months: Number(emergency_fund_months ?? 0),
+          positive_money_thoughts: Number(positive_money_thoughts),
+          financial_worry_topics: Array.isArray(financial_worry_topics) ? financial_worry_topics : [],
+          coping_techniques_used: Array.isArray(coping_techniques_used) ? coping_techniques_used : [],
+          notes: notes ?? null,
+        },
+        { onConflict: 'user_id,date', ignoreDuplicates: false }
+      )
+      .select()
+      .single()
+
+    if (error) return secureErrorResponse('Failed to save financial log', 500)
+
+    const score = calculateFinancialWellness(data as FinancialWellnessLog)
+    return secureJsonResponse({ data, score }, 201)
   }
-  if (!financial_stress || financial_stress < 1 || financial_stress > 10) {
-    return NextResponse.json({ error: 'financial_stress must be 1-10' }, { status: 400 })
-  }
-  if (!positive_money_thoughts || positive_money_thoughts < 1 || positive_money_thoughts > 10) {
-    return NextResponse.json({ error: 'positive_money_thoughts must be 1-10' }, { status: 400 })
-  }
-
-  const logDate: string = date || new Date().toISOString().slice(0, 10)
-
-  const { data, error } = await supabase
-    .from('financial_wellness_logs')
-    .upsert(
-      {
-        user_id: user.id,
-        date: logDate,
-        cfpb_q1: Number(cfpb_q1),
-        cfpb_q2: Number(cfpb_q2),
-        cfpb_q3: Number(cfpb_q3),
-        cfpb_q4: Number(cfpb_q4),
-        cfpb_q5: Number(cfpb_q5),
-        financial_stress: Number(financial_stress),
-        emergency_fund_months: Number(emergency_fund_months ?? 0),
-        positive_money_thoughts: Number(positive_money_thoughts),
-        financial_worry_topics: Array.isArray(financial_worry_topics) ? financial_worry_topics : [],
-        coping_techniques_used: Array.isArray(coping_techniques_used) ? coping_techniques_used : [],
-        notes: notes ?? null,
-      },
-      { onConflict: 'user_id,date', ignoreDuplicates: false }
-    )
-    .select()
-    .single()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-  const score = calculateFinancialWellness(data as FinancialWellnessLog)
-  return NextResponse.json({ data, score }, { status: 201 })
-}
+)
 
 type SummaryRow = { date: string; avg_mood?: number | null; sleep_quality?: number | null; avg_stress?: number | null }
 

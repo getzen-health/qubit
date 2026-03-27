@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,20 +30,19 @@ interface BadgeProgress {
   nextMilestone: number
 }
 
-export async function GET(request: Request) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+    auditAction: 'READ',
+    auditResource: 'achievement',
+  },
+  async (_request, { user, supabase }) => {
     // Calculate streaks from daily_summaries
     const { data: dailySummaries } = await supabase
       .from('daily_summaries')
       .select('date, steps, sleep_duration_minutes')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .order('date', { ascending: false })
       .limit(365)
 
@@ -52,23 +50,17 @@ export async function GET(request: Request) {
     const { data: workouts } = await supabase
       .from('workout_records')
       .select('start_time')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .gte('start_time', new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString())
 
     const streaks = calculateStreaks(dailySummaries, workouts)
 
-    return NextResponse.json({
+    return secureJsonResponse({
       streaks,
       earnedCount: 0,
     })
-  } catch (error) {
-    console.error('Achievement fetch error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch achievements' },
-      { status: 500 }
-    )
   }
-}
+)
 
 function calculateStreaks(
   summaries: any[] | null,
