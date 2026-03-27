@@ -20,10 +20,10 @@ struct RingsComplicationProvider: TimelineProvider {
         let entry = RingsEntry(
             date: Date(),
             steps: defaults?.integer(forKey: "todaySteps") ?? 0,
-            stepGoal: defaults?.integer(forKey: "stepGoal") == 0 ? 10000 : defaults!.integer(forKey: "stepGoal"),
+            stepGoal: (defaults?.integer(forKey: "stepGoal") ?? 0) == 0 ? 10000 : (defaults?.integer(forKey: "stepGoal") ?? 10000),
             readinessScore: defaults?.integer(forKey: "readinessScore") ?? 0,
             activeCalories: defaults?.integer(forKey: "activeCalories") ?? 0,
-            calorieGoal: defaults?.integer(forKey: "calorieGoal") == 0 ? 500 : defaults!.integer(forKey: "calorieGoal")
+            calorieGoal: (defaults?.integer(forKey: "calorieGoal") ?? 0) == 0 ? 500 : (defaults?.integer(forKey: "calorieGoal") ?? 500)
         )
         completion(entry)
     }

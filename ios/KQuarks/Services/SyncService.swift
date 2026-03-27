@@ -53,7 +53,7 @@ class SyncService {
                 }
             }
         }
-        throw lastError!
+        throw lastError ?? NSError(domain: "SyncService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown sync error"])
     }
 
     // MARK: - Full Sync

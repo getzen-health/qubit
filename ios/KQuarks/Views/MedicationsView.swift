@@ -572,8 +572,8 @@ private struct TodayMedicationRow: View {
     let onSkipped: () async -> Void
     let onUndo: () async -> Void
 
-    private var isTaken: Bool  { log != nil && !log!.skipped }
-    private var isSkipped: Bool { log != nil && log!.skipped }
+    private var isTaken: Bool  { log.map { !$0.skipped } ?? false }
+    private var isSkipped: Bool { log?.skipped ?? false }
     private var isLogged: Bool  { log != nil }
 
     var body: some View {

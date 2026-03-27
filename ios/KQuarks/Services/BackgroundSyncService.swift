@@ -17,7 +17,11 @@ class BackgroundSyncService {
             forTaskWithIdentifier: Self.taskIdentifier,
             using: nil
         ) { task in
-            self.handleBackgroundSync(task: task as! BGAppRefreshTask)
+            guard let bgTask = task as? BGAppRefreshTask else {
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self.handleBackgroundSync(task: bgTask)
         }
     }
     
@@ -62,8 +66,9 @@ class BackgroundSyncService {
         
         // Post steps to Supabase API
         guard let baseURL = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String else { return }
-        
-        let (data, _) = try await URLSession.shared.data(from: URL(string: "\(baseURL)/api/health/steps?since=\(ISO8601DateFormatter().string(from: startDate))")!)
+        guard let url = URL(string: "\(baseURL)/api/health/steps?since=\(ISO8601DateFormatter().string(from: startDate))") else { return }
+
+        let (data, _) = try await URLSession.shared.data(from: url)
         _ = data
         
         lastSyncDate = now

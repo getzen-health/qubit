@@ -232,8 +232,9 @@ struct LifetimeStatsView: View {
             if swimKm > 0 {
                 factLine(String(format: "Swimming: %.0f km", swimKm))
             }
-            if bestYear != nil {
-                factLine("Best year: \(bestYear!) with \(bestYearSessions) sessions")
+            if let year = bestYear {
+                factLine("Best year: \(year) with \(bestYearSessions) sessions")
+            }
             }
         }
         .padding()

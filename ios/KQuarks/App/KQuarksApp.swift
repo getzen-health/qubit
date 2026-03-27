@@ -41,10 +41,18 @@ struct KQuarksApp: App {
 
         #if os(iOS)
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.refresh", using: nil) { task in
-            Task { await SyncService.shared.handleRefreshTask(task as! BGAppRefreshTask) }
+            if let refreshTask = task as? BGAppRefreshTask {
+                Task { await SyncService.shared.handleRefreshTask(refreshTask) }
+            } else {
+                task.setTaskCompleted(success: false)
+            }
         }
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.full", using: nil) { task in
-            Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
+            if let processingTask = task as? BGProcessingTask {
+                Task { await SyncService.shared.handleFullSyncTask(processingTask) }
+            } else {
+                task.setTaskCompleted(success: false)
+            }
         }
         AIBriefingService.shared.registerBackgroundTask()
         CrashReportingService.shared.start()
