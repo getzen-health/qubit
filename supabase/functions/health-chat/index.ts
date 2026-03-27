@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { createClient } from "jsr:@supabase/supabase-js@2"
+import { fetchWithRetry } from "../_shared/retry.ts"
 
 /**
  * Health Chat Edge Function
@@ -199,8 +200,7 @@ Deno.serve(async (req: Request) => {
 
   let responseText: string
   try {
-    const claudeRes = await fetch("https://api.anthropic.com/v1/messages", {
-      signal: AbortSignal.timeout(30000),
+    const claudeRes = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "x-api-key": anthropicKey,
@@ -213,6 +213,8 @@ Deno.serve(async (req: Request) => {
         system: systemPrompt,
         messages: claudeMessages,
       }),
+      timeout: 30000,
+      retries: { maxRetries: 3, baseDelay: 1000 },
     })
 
     if (!claudeRes.ok) {

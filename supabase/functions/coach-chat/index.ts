@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.20.1'
+import { retryWithBackoff } from '../_shared/retry.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,14 +58,17 @@ Goals: ${JSON.stringify(goalsRes.data ?? {})}
       { role: 'user' as const, content: message },
     ]
 
-    const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5',
-      max_tokens: 500,
-      system: `You are KQuarks Health Coach, a friendly and knowledgeable AI health assistant. You provide personalized, evidence-based health guidance. Be concise (2-3 sentences max unless the user asks for detail). Always encourage sustainable habits. Never diagnose medical conditions — suggest consulting a doctor for medical issues.
+    const response = await retryWithBackoff(
+      () => anthropic.messages.create({
+        model: 'claude-haiku-4-5',
+        max_tokens: 500,
+        system: `You are KQuarks Health Coach, a friendly and knowledgeable AI health assistant. You provide personalized, evidence-based health guidance. Be concise (2-3 sentences max unless the user asks for detail). Always encourage sustainable habits. Never diagnose medical conditions — suggest consulting a doctor for medical issues.
 
 ${healthContext}`,
-      messages,
-    })
+        messages,
+      }),
+      { maxRetries: 3, baseDelay: 1000 }
+    )
 
     const assistantMessage = response.content[0].type === 'text' ? response.content[0].text : ''
 

@@ -27,15 +27,25 @@ export default function CorrelationsPage() {
   const [data, setData] = useState<CorrelationData | null>(null)
   const [tab, setTab] = useState<'sleep' | 'steps'>('sleep')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/insights/correlations')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Server error ${r.status}`)
+        return r.json()
+      })
       .then(d => { setData(d); setLoading(false) })
-      .catch(() => setLoading(false))
+      .catch((e) => { setError(e.message ?? 'Failed to load correlations'); setLoading(false) })
   }, [])
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-8"><div className="h-64 animate-pulse bg-surface rounded-2xl" /></div>
+
+  if (error) return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl p-4">{error}</p>
+    </div>
+  )
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
