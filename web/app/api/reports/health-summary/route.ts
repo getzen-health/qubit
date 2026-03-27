@@ -36,14 +36,14 @@ export async function GET(request: NextRequest) {
     period: { start: thirtyDaysAgo.toISOString(), end: new Date().toISOString() },
     stats: {
       steps: { avg: avg(steps.map(s => s.value)), total: steps.reduce((a, s) => a + s.value, 0), days: steps.length },
-      sleep: { avg_hours: sleep.length ? Math.round(avg(sleep.map(s => s.value)) / 6) / 10 : null, days: sleep.length },
+      sleep: { avg_hours: sleep.length ? Math.round((avg(sleep.map(s => s.value)) ?? 0) / 6) / 10 : null, days: sleep.length },
       resting_hr: { avg: avg(hr.map(h => h.value)) },
       weight: {
         start: weight[0]?.value ?? null,
         end: weight[weight.length - 1]?.value ?? null,
         change: weight.length >= 2 ? Math.round((weight[weight.length-1].value - weight[0].value) * 10) / 10 : null,
       },
-      mood: { avg: mood.length ? Math.round(avg(mood.map(m => m.score)) * 10) / 10 : null, logs: mood.length },
+      mood: { avg: mood.length ? Math.round((avg(mood.map(m => m.score)) ?? 0) * 10) / 10 : null, logs: mood.length },
       workouts: { count: workouts.length, total_minutes: workouts.reduce((a, w) => a + (w.duration_minutes ?? 0), 0) },
     },
     labs,

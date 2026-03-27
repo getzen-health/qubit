@@ -5,7 +5,7 @@ import { checkRateLimit } from '@/lib/security'
 // GET: weekly aggregates for last 8 weeks
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Get logs for last 8 weeks

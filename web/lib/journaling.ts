@@ -68,8 +68,8 @@ export const AFINN_WORDS: Record<string, number> = {
   courage: 2, creative: 2, energetic: 2, focused: 2, grounded: 2,
   healing: 2, honest: 2, humility: 2, integrity: 2, nurturing: 2,
   open: 1, patient: 2, present: 1, purposeful: 2, rested: 2,
-  shine: 2, stable: 1, thankgiving: 3, thriving: 3, tranquil: 2,
-  treasured: 2, victorious: 3, welcome: 2, wholesome: 2, wonder: 3,
+  shine: 2, stable: 1, thankgiving: 3, tranquil: 2,
+  treasured: 2, victorious: 3, wholesome: 2, wonder: 3,
   // Very Negative (-4/-5)
   horrible: -4, disgusting: -4, despicable: -4, atrocious: -4,
   catastrophic: -4, devastating: -4, horrifying: -4, nightmarish: -4,

@@ -295,7 +295,7 @@ export default function SunExposurePage() {
               <li key={log.id} className="py-2 flex items-center justify-between">
                 <div>
                   <div className="text-sm">
-                    {log.duration_min} min, {BODY_EXPOSURE_OPTIONS.find(o => o.key === log.body_exposure)?.label || log.body_exposure}, SPF {log.spf}, {SKIN_TYPES[log.skin_type]?.label}
+                    {log.duration_min} min, {BODY_EXPOSURE_OPTIONS.find(o => o.key === log.body_exposure)?.label || log.body_exposure}, SPF {log.spf}, {SKIN_TYPES[log.skin_type as keyof typeof SKIN_TYPES]?.label}
                   </div>
                   <div className="text-xs text-text-secondary">
                     {log.estimated_iu} IU, {new Date(log.logged_at).toLocaleString()}

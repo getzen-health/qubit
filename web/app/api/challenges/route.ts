@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   // Get participation for user
-  let participation = []
+  let participation: { challenge_id: string; current_value: number }[] = []
   if (userId) {
     const { data: parts } = await supabase
       .from('challenge_participants')

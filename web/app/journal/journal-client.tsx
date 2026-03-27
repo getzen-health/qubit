@@ -339,8 +339,8 @@ function WriteTab() {
       const texts = [
         content,
         ...gratitudeItems.map(g => `${g.event} ${g.why} ${g.feeling}`),
-        (cbtRecord as Record<string, string>).situation || '',
-        (cbtRecord as Record<string, string>).balanced_thought || '',
+        (cbtRecord as unknown as Record<string, string>).situation || '',
+        (cbtRecord as unknown as Record<string, string>).balanced_thought || '',
       ].join(' ').trim()
       if (texts.length > 3) {
         const result = analyzeSentiment(texts)
@@ -700,7 +700,7 @@ function HistoryTab({ entries }: { entries: JournalEntry[] }) {
                 )}
                 {entry.cbt_record && (
                   <div className="text-xs text-text-secondary space-y-1">
-                    {Object.entries(entry.cbt_record as Record<string, string | number>).map(([k, v]) => v ? (
+                    {Object.entries(entry.cbt_record as unknown as Record<string, string | number>).map(([k, v]) => v ? (
                       <p key={k}><span className="text-text-primary capitalize">{k.replace(/_/g, ' ')}:</span> {v}</p>
                     ) : null)}
                   </div>

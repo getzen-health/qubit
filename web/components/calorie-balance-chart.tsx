@@ -29,8 +29,8 @@ export default function CalorieBalanceChart() {
           <Legend />
           <Bar dataKey="consumed" name="Consumed" fill="#8884d8" />
           <Bar dataKey="burnedBMR" name="Burned+BMR" data={data.map(d => d.bmr + d.burned)} fill="#82ca9d" />
-          <Bar dataKey="balance" name="Balance" data={data.map(d => d.balance)}
-            fill={d => d.surplus ? '#ef4444' : '#22c55e'}
+          <Bar dataKey="balance" name="Balance"
+            fill="#22c55e"
             isAnimationActive={false}
             barSize={20}
           />

@@ -16,6 +16,8 @@ import {
   Lock,
   Plug,
   Crown,
+  Shield,
+  BellRing,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 

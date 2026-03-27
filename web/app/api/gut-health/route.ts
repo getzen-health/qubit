@@ -43,10 +43,17 @@ export async function GET(req: NextRequest) {
   const fermentedFoodDays = logsSorted.filter(l => l.fermented_food).length
 
   const gutLog: Partial<GutLog> = {
-    bristol: avgBristolType,
-    frequency: avgDailyFrequency,
-    symptoms: avgSymptom > 0 ? { general: avgSymptom } : {},
-    plantVarietyCount: fermentedFoodDays,
+    bristol_type: Math.round(avgBristolType),
+    bowel_movement_count: Math.round(avgDailyFrequency),
+    bloating: avgSymptom > 0 ? Math.round(avgSymptom) : 0,
+    gas: 0, pain: 0, nausea: 0,
+    plant_species_count: fermentedFoodDays,
+    fermented_food_servings: fermentedFoodDays,
+    ultra_processed_servings: 0,
+    fiber_g: fiberIntakeDays * 25,
+    probiotic_strain: '', prebiotic_taken: false,
+    nsaid_use: false, alcohol_drinks: 0, gluten_sensitivity: false,
+    stress_level: 5, antibiotic_recent: false, water_l: 2, notes: '',
     date: new Date().toISOString().split('T')[0],
   }
   const weeklyScore = calculateGutScore(gutLog as GutLog, fiberIntakeDays)

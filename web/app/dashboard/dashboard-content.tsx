@@ -746,7 +746,6 @@ export function DashboardContent({
 
         {/* AI Insights */}
         <div className="mb-8">
-          <AlertBanner />
           <InsightsCarousel insights={displayInsights} />
         </div>
       </main>

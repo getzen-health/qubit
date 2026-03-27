@@ -23,8 +23,17 @@ import {
   AlertTriangle,
   Activity,
 } from 'lucide-react'
-import type { StressPageData, TrendPoint, CorrelationData } from './page'
 import { cn } from '@/lib/utils'
+
+export interface TrendPoint { date: string; score: number; label?: string }
+export interface CorrelationData { factor: string; correlation: number; description: string }
+export interface StressPageData {
+  recent: TrendPoint[]
+  monthly: TrendPoint[]
+  correlations: CorrelationData[]
+  avgScore: number
+  trend: 'improving' | 'stable' | 'worsening'
+}
 
 const ComposedChart = dynamic(
   () => import('recharts').then((m) => ({ default: m.ComposedChart })),

@@ -64,6 +64,7 @@ interface Product {
   nutriscore_grade: string
   nutriments: Record<string, number>
   ingredients_text: string
+  labels_tags?: string[]
 }
 
 export default function ProductDetailPage() {

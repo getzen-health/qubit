@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { FoodPhotoAnalyzer } from '@/components/food-photo-analyzer'
 
 export function FoodPhotoScannerTab({ onAdd }: { onAdd: (foods: any[]) => void }) {

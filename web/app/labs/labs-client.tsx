@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import dynamic from 'next/dynamic'
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, ReferenceArea,
+} from 'recharts'
 import {
   FlaskConical,
   TrendingUp,
@@ -26,18 +28,10 @@ import {
   calculateLabHealthScore,
   biomarkerTrend,
   getMarkerInterpretation,
+  type LabMarker,
   type LabCategory,
   type MarkerSeverity,
 } from '@/lib/lab-results'
-
-const ResponsiveContainer = dynamic(() => import('recharts').then((m) => ({ default: m.ResponsiveContainer })), { ssr: false })
-const LineChart = dynamic(() => import('recharts').then((m) => ({ default: m.LineChart })), { ssr: false })
-const Line = dynamic(() => import('recharts').then((m) => ({ default: m.Line })), { ssr: false })
-const XAxis = dynamic(() => import('recharts').then((m) => ({ default: m.XAxis })), { ssr: false })
-const YAxis = dynamic(() => import('recharts').then((m) => ({ default: m.YAxis })), { ssr: false })
-const Tooltip = dynamic(() => import('recharts').then((m) => ({ default: m.Tooltip })), { ssr: false })
-const ReferenceLine = dynamic(() => import('recharts').then((m) => ({ default: m.ReferenceLine })), { ssr: false })
-const ReferenceArea = dynamic(() => import('recharts').then((m) => ({ default: m.ReferenceArea })), { ssr: false })
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -377,7 +371,7 @@ function MarkerCard({
   flag,
   trend,
 }: {
-  marker: ReturnType<typeof LAB_MARKERS>[0]
+  marker: LabMarker
   value: number | undefined
   flag: ReturnType<typeof flagMarkers>[0] | undefined
   trend: ReturnType<typeof biomarkerTrend> | null

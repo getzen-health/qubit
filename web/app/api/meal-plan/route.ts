@@ -20,7 +20,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const rateLimit = await checkRateLimit(request)
-  if (!rateLimit.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  if (!rateLimit.allowed) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -100,12 +100,12 @@ function BreathingGuide({ exercise }: { exercise: BreathingExercise }) {
   const [scale, setScale] = useState(1)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const phases: Array<{ key: 'inhale' | 'hold1' | 'exhale' | 'hold2'; label: string; dur: number }> = [
-    { key: 'inhale', label: 'Inhale', dur: exercise.pattern.inhale },
-    { key: 'hold1', label: 'Hold', dur: exercise.pattern.hold1 },
-    { key: 'exhale', label: 'Exhale', dur: exercise.pattern.exhale },
-    { key: 'hold2', label: 'Hold', dur: exercise.pattern.hold2 },
-  ].filter((p) => p.dur > 0)
+  const phases = ([
+    { key: 'inhale' as const, label: 'Inhale', dur: exercise.pattern.inhale },
+    { key: 'hold1' as const, label: 'Hold', dur: exercise.pattern.hold1 },
+    { key: 'exhale' as const, label: 'Exhale', dur: exercise.pattern.exhale },
+    { key: 'hold2' as const, label: 'Hold', dur: exercise.pattern.hold2 },
+  ] as Array<{ key: 'inhale' | 'hold1' | 'exhale' | 'hold2'; label: string; dur: number }>).filter((p) => p.dur > 0)
 
   const phaseIdx = useRef(0)
   const remaining = useRef(exercise.pattern.inhale)

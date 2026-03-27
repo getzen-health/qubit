@@ -788,7 +788,7 @@ export function BiometricsClient({ initialLogs, initialSettings }: Props) {
                 <label className="block text-xs text-text-secondary mb-1">Ethnicity (for waist thresholds)</label>
                 <select
                   value={sEthnicity}
-                  onChange={e => setSEthnicity(e.target.value)}
+                  onChange={e => setSEthnicity(e.target.value as 'european' | 'asian' | 'other')}
                   className="w-full bg-background border border-border rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary"
                 >
                   <option value="european">European</option>
@@ -801,7 +801,7 @@ export function BiometricsClient({ initialLogs, initialSettings }: Props) {
                   <label className="block text-xs text-text-secondary mb-1">Goal</label>
                   <select
                     value={sGoalType}
-                    onChange={e => setSGoalType(e.target.value)}
+                    onChange={e => setSGoalType(e.target.value as 'lose' | 'maintain' | 'gain')}
                     className="w-full bg-background border border-border rounded-xl px-2 py-2 text-sm text-text-primary focus:outline-none focus:border-primary"
                   >
                     <option value="lose">Lose</option>

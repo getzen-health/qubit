@@ -14,8 +14,17 @@ const CATEGORIES = [
   { value: 'other', label: 'Other' },
 ]
 
-function groupByMonth(photos) {
-  return photos.reduce((acc, photo) => {
+interface Photo {
+  id: string
+  photo_url: string
+  category: string
+  taken_at: string
+  weight_kg?: number | null
+  notes?: string | null
+}
+
+function groupByMonth(photos: Photo[]): Record<string, Photo[]> {
+  return photos.reduce((acc: Record<string, Photo[]>, photo: Photo) => {
     const month = new Date(photo.taken_at).toLocaleString('default', { month: 'long', year: 'numeric' })
     acc[month] = acc[month] || []
     acc[month].push(photo)
@@ -24,16 +33,16 @@ function groupByMonth(photos) {
 }
 
 export default function ProgressPhotosPage() {
-  const [photos, setPhotos] = useState([])
+  const [photos, setPhotos] = useState<Photo[]>([])
   const [loading, setLoading] = useState(true)
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState<File | null>(null)
   const [category, setCategory] = useState('front')
   const [weight, setWeight] = useState('')
   const [notes, setNotes] = useState('')
-  const [compare, setCompare] = useState([])
+  const [compare, setCompare] = useState<Photo[]>([])
   const [showCompare, setShowCompare] = useState(false)
   const router = useRouter()
-  const inputRef = useRef()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetch('/api/progress-photos')
@@ -42,7 +51,7 @@ export default function ProgressPhotosPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  async function handleUpload(e) {
+  async function handleUpload(e: React.FormEvent) {
     e.preventDefault()
     if (!file) return
     // 1. Get signed upload URL
@@ -74,18 +83,18 @@ export default function ProgressPhotosPage() {
     setFile(null)
     setWeight('')
     setNotes('')
-    inputRef.current.value = ''
+    if (inputRef.current) inputRef.current.value = ''
     router.refresh()
     fetch('/api/progress-photos').then(r => r.json()).then(d => setPhotos(d.photos || []))
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(id: string) {
     if (!confirm('Delete this photo?')) return
     await fetch(`/api/progress-photos/${id}`, { method: 'DELETE' })
     setPhotos(photos.filter(p => p.id !== id))
   }
 
-  function handleCompare(photo) {
+  function handleCompare(photo: Photo) {
     if (compare.length === 2) setCompare([photo])
     else if (compare.some(p => p.id === photo.id)) setCompare(compare.filter(p => p.id !== photo.id))
     else setCompare([...compare, photo].slice(-2))
@@ -104,7 +113,7 @@ export default function ProgressPhotosPage() {
           type="file"
           accept="image/*"
           capture="environment"
-          onChange={e => setFile(e.target.files[0])}
+          onChange={e => setFile(e.target.files?.[0] ?? null)}
           required
         />
         <div className="flex gap-2">
@@ -164,7 +173,7 @@ export default function ProgressPhotosPage() {
   )
 }
 
-function CompareSlider({ before, after, onClose }) {
+function CompareSlider({ before, after, onClose }: { before: Photo; after: Photo; onClose: () => void }) {
   const [pos, setPos] = useState(50)
   return (
     <div className="relative bg-surface border border-border rounded-2xl p-4 mb-6 flex flex-col items-center">

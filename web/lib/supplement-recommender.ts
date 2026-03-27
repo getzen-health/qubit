@@ -562,7 +562,7 @@ export function getRecommendations(
     if (key) {
       for (const item of MEDICATION_INTERACTIONS[key]) {
         if (!avoidList.find(a => a.name === item.supplement)) {
-          avoidList.push(item)
+          avoidList.push({ name: item.supplement, reason: item.reason })
         }
       }
     }

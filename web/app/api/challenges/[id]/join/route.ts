@@ -6,7 +6,7 @@ import { checkRateLimit } from '@/lib/security'
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req)
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   const { id: challenge_id } = await params
   const { error } = await supabase.from('challenge_participants').insert({

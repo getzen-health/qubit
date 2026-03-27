@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Clock, Trash2, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 

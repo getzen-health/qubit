@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       score,
       grade,
       image_url: product.image_url ?? null,
-    }, { onConflict: 'user_id,barcode' }).then(() => {}).catch(() => {})
+    }, { onConflict: 'user_id,barcode' }).then(null, () => {})
 
     return NextResponse.json({
       product: {

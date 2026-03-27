@@ -78,7 +78,7 @@ export const GET = createSecureApiHandler(
         : latest.cycle_length ?? 28
 
     // Phase calculation helper
-    function getCurrentPhase(lastPeriodStart, cycleLength = 28) {
+    function getCurrentPhase(lastPeriodStart: string, cycleLength = 28) {
       const start = new Date(lastPeriodStart)
       const today = new Date()
       const dayInCycle = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1

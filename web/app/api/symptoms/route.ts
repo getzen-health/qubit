@@ -5,7 +5,7 @@ import { checkRateLimit } from '@/lib/security'
 // GET: last 30 days of logs, grouped by date with aggregate severity
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Get logs for last 30 days
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   await checkRateLimit(req)
   const supabase = await createClient()
-  const { data: user } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const body = await req.json()
   const { body_region, symptom_type, intensity, pain_quality, triggers, duration_minutes, notes } = body

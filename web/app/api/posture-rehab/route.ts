@@ -59,8 +59,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
-  const rateLimitOk = await checkRateLimit(`posture-rehab:${ip}`, 30, 60)
-  if (!rateLimitOk) {
+  const rateLimitResult = await checkRateLimit(`posture-rehab:${ip}`)
+  if (!rateLimitResult.allowed) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
