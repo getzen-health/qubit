@@ -118,6 +118,7 @@ interface QuickStatProps {
   value: string | number
   unit?: string
   trend?: number
+  sublabel?: string
   color?: 'recovery' | 'strain' | 'sleep' | 'heart' | 'activity' | 'default'
 }
 
@@ -126,6 +127,7 @@ export function QuickStat({
   value,
   unit,
   trend,
+  sublabel,
   color = 'default',
 }: QuickStatProps) {
   const colorClasses = {
@@ -157,6 +159,9 @@ export function QuickStat({
           </span>
         )}
       </div>
+      {sublabel && (
+        <p className="text-xs text-text-tertiary mt-0.5">{sublabel}</p>
+      )}
     </div>
   )
 }

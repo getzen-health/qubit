@@ -13,10 +13,10 @@ interface BodyBatteryData {
 
 function BodyBatteryComponent({ data }: { data: BodyBatteryData }) {
   const getBatteryColor = useMemo(() => (level: number) => {
-    if (level >= 75) return { color: '#22C55E', label: 'High', gradient: 'from-green-400 to-green-600' }
-    if (level >= 50) return { color: '#3B82F6', label: 'Medium', gradient: 'from-blue-400 to-blue-600' }
-    if (level >= 25) return { color: '#F59E0B', label: 'Low', gradient: 'from-yellow-400 to-orange-500' }
-    return { color: '#EF4444', label: 'Critical', gradient: 'from-red-400 to-red-600' }
+    if (level >= 75) return { color: '#22C55E', label: 'High', gradient: 'from-green-400 to-green-600', textClass: 'text-green-400' }
+    if (level >= 50) return { color: '#EAB308', label: 'Moderate', gradient: 'from-yellow-400 to-yellow-600', textClass: 'text-yellow-400' }
+    if (level >= 25) return { color: '#F97316', label: 'Low', gradient: 'from-orange-400 to-orange-600', textClass: 'text-orange-400' }
+    return { color: '#EF4444', label: 'Critical', gradient: 'from-red-400 to-red-600', textClass: 'text-red-400' }
   }, [])
 
   const battery = useMemo(() => getBatteryColor(data.current), [getBatteryColor, data.current])
@@ -51,8 +51,9 @@ function BodyBatteryComponent({ data }: { data: BodyBatteryData }) {
             ))}
           </div>
           <div className="text-center mt-2">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white">{data.current}</span>
+            <span className={`text-3xl font-bold ${battery.textClass}`}>{data.current}</span>
             <span className="text-gray-500">%</span>
+            <div className={`text-xs font-medium mt-0.5 ${battery.textClass}`}>{battery.label}</div>
           </div>
         </div>
 

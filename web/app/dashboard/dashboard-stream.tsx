@@ -500,6 +500,9 @@ export function DashboardStream({
   const sleepMins = metrics.sleep.duration % 60
   const sleepDisplay = metrics.sleep.duration > 0 ? `${sleepHours}h ${sleepMins}m` : '—'
 
+  // Zero-state: true when all main metrics have no synced data yet
+  const allMetricsEmpty = metrics.steps === 0 && sleepDisplay === '—' && todayHrv === null && metrics.restingHR === null
+
   // Latest sleep stage breakdown
   const lastSleepRecord = recentSleepRecords[0]
   const totalSleepTracked = lastSleepRecord
@@ -767,6 +770,7 @@ export function DashboardStream({
             value={metrics.steps.toLocaleString()}
             trend={stepsTrend}
             color="activity"
+            sublabel={stepGoalVal > 0 && metrics.steps > 0 ? `${Math.round((metrics.steps / stepGoalVal) * 100)}% of goal` : undefined}
           />
           <QuickStat
             label="Calories"
@@ -787,6 +791,17 @@ export function DashboardStream({
             color="heart"
           />
         </QuickStatsGrid>
+
+        {/* Zero-state banner — shown only when all metrics are empty */}
+        {allMetricsEmpty && (
+          <div className="mx-4 mb-4 p-3 rounded-xl bg-surface border border-border flex items-center gap-3">
+            <span className="text-xl">📱</span>
+            <div>
+              <p className="text-sm font-medium text-text-primary">No data yet</p>
+              <p className="text-xs text-text-secondary">Sync from the iOS app to see your health metrics here.</p>
+            </div>
+          </div>
+        )}
 
         {/* Hydration */}
         {waterTargetMl > 0 && (
