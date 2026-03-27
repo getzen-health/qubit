@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -8,6 +9,17 @@ import {
   getProgressSummary,
   type BodyMeasurement,
 } from '@/lib/body-measurements'
+
+const measurementSchema = z.object({
+  measured_at: z.string().datetime().optional(),
+  weight_kg: z.number().positive().max(500).optional(),
+  height_cm: z.number().positive().max(300).optional(),
+  body_fat_pct: z.number().min(0).max(100).optional(),
+  muscle_mass_kg: z.number().positive().max(200).optional(),
+  waist_cm: z.number().positive().max(300).optional(),
+  hip_cm: z.number().positive().max(300).optional(),
+  chest_cm: z.number().positive().max(300).optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -60,44 +72,31 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: measurementSchema },
+  async (_req, { user, supabase, body }) => {
     const {
       measured_at,
       weight_kg,
       height_cm,
+      body_fat_pct,
+      muscle_mass_kg,
       waist_cm,
-      hips_cm,
+      hip_cm,
       chest_cm,
-      neck_cm,
-      left_arm_cm,
-      right_arm_cm,
-      left_thigh_cm,
-      right_thigh_cm,
-      left_calf_cm,
-      right_calf_cm,
-      notes,
-    } = body
+    } = body as z.infer<typeof measurementSchema>
 
     const { data, error } = await supabase
       .from('body_measurements')
       .insert({
         user_id: user!.id,
         measured_at: measured_at ?? new Date().toISOString().split('T')[0],
-        weight_kg: weight_kg || null,
-        height_cm: height_cm || null,
-        waist_cm: waist_cm || null,
-        hips_cm: hips_cm || null,
-        chest_cm: chest_cm || null,
-        neck_cm: neck_cm || null,
-        left_arm_cm: left_arm_cm || null,
-        right_arm_cm: right_arm_cm || null,
-        left_thigh_cm: left_thigh_cm || null,
-        right_thigh_cm: right_thigh_cm || null,
-        left_calf_cm: left_calf_cm || null,
-        right_calf_cm: right_calf_cm || null,
-        notes: notes || null,
+        weight_kg: weight_kg ?? null,
+        height_cm: height_cm ?? null,
+        body_fat_pct: body_fat_pct ?? null,
+        muscle_mass_kg: muscle_mass_kg ?? null,
+        waist_cm: waist_cm ?? null,
+        hips_cm: hip_cm ?? null,
+        chest_cm: chest_cm ?? null,
       })
       .select()
       .single()

@@ -1,9 +1,19 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
 import { calculateStreak, calculateLevel } from '@/lib/habits'
+
+const habitSchema = z.object({
+  name: z.string().min(1).max(200),
+  description: z.string().max(500).optional(),
+  frequency: z.enum(['daily', 'weekly', 'monthly']).default('daily'),
+  target_count: z.number().int().positive().max(100).default(1),
+  icon: z.string().max(10).optional(),
+  color: z.string().max(20).optional(),
+})
 
 // GET: today's habits + completion status + streaks + user level + recent achievements
 export const GET = createSecureApiHandler(
@@ -52,27 +62,20 @@ export const GET = createSecureApiHandler(
 
 // POST: create a new habit
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
-    const { name, emoji, category, frequency, custom_days, time_of_day, anchor, tiny_version, target_streak, xp_per_completion } = body
-
-    if (!name?.trim()) return secureErrorResponse('Name is required', 400)
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: habitSchema },
+  async (_req, { user, supabase, body }) => {
+    const { name, description, frequency, target_count, icon, color } = body as z.infer<typeof habitSchema>
 
     const { data, error } = await supabase
       .from('habits')
       .insert({
         user_id: user!.id,
         name: name.trim(),
-        emoji: emoji ?? '✅',
-        category: category ?? 'custom',
-        frequency: frequency ?? 'daily',
-        custom_days: custom_days ?? null,
-        time_of_day: time_of_day ?? 'anytime',
-        anchor: anchor ?? null,
-        tiny_version: tiny_version ?? null,
-        target_streak: target_streak ?? 66,
-        xp_per_completion: xp_per_completion ?? 10,
+        description: description ?? null,
+        frequency,
+        target_count,
+        icon: icon ?? '✅',
+        color: color ?? null,
         is_active: true,
       })
       .select()

@@ -1,8 +1,17 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
+
+const cognitiveLogSchema = z.object({
+  session_type: z.string().min(1).max(50),
+  duration_minutes: z.number().int().positive().max(480),
+  focus_score: z.number().int().min(1).max(10).optional(),
+  notes: z.string().max(500).optional(),
+  logged_at: z.string().datetime().optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -43,21 +52,19 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: cognitiveLogSchema },
+  async (_req, { user, supabase, body }) => {
+    const { session_type, duration_minutes, focus_score, notes, logged_at } = body as z.infer<typeof cognitiveLogSchema>
 
     const { data, error } = await supabase
       .from('cognitive_assessments')
       .insert({
         user_id: user!.id,
-        assessed_at: new Date().toISOString(),
-        total_score: body.total_score ?? null,
-        reaction_time_ms: body.reaction_time_ms ?? null,
-        go_no_go_score: body.go_no_go_score ?? null,
-        digit_span: body.digit_span ?? null,
-        time_of_day: body.time_of_day ?? null,
-        results: body.results ?? null,
+        assessed_at: logged_at ?? new Date().toISOString(),
+        session_type,
+        duration_minutes,
+        focus_score: focus_score ?? null,
+        notes: notes ?? null,
       })
       .select()
       .single()

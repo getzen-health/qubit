@@ -1,8 +1,16 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
+
+const biometricSchema = z.object({
+  type: z.enum(['weight', 'height', 'body_fat', 'muscle_mass', 'bmi', 'waist', 'hip', 'neck', 'chest', 'thigh', 'arm']),
+  value: z.number().positive().max(1000),
+  unit: z.string().max(10).optional(),
+  measured_at: z.string().datetime().optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -31,56 +39,34 @@ export const GET = createSecureApiHandler(
   }
 )
 
+const BIOMETRIC_COLUMN_MAP: Record<string, string> = {
+  weight: 'weight_kg',
+  height: 'height_cm',
+  body_fat: 'body_fat_pct',
+  muscle_mass: 'muscle_mass_kg',
+  bmi: 'bmi',
+  waist: 'waist_cm',
+  hip: 'hip_cm',
+  neck: 'neck_cm',
+  chest: 'chest_cm',
+  thigh: 'thigh_cm',
+  arm: 'arm_cm',
+}
+
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: biometricSchema },
+  async (_req, { user, supabase, body }) => {
+    const { type, value, measured_at } = body as z.infer<typeof biometricSchema>
 
-    if (body.type === 'settings') {
-      const { type: _t, ...fields } = body
-      const { data, error } = await supabase
-        .from('biometric_settings')
-        .upsert({ user_id: user!.id, ...fields, updated_at: new Date().toISOString() })
-        .select()
-        .single()
-      if (error) return secureErrorResponse(error.message, 500)
-      return secureJsonResponse({ settings: data })
-    }
+    const date = measured_at
+      ? measured_at.split('T')[0]
+      : new Date().toISOString().split('T')[0]
 
-    // Default: upsert a biometric log entry
-    const {
-      date,
-      weight_kg,
-      body_fat_pct,
-      waist_cm,
-      hip_cm,
-      neck_cm,
-      chest_cm,
-      arm_cm,
-      thigh_cm,
-      calf_cm,
-      notes,
-    } = body
-
-    if (!date) return secureErrorResponse('date is required', 400)
-
+    const col = BIOMETRIC_COLUMN_MAP[type]
     const { data, error } = await supabase
       .from('biometric_logs')
       .upsert(
-        {
-          user_id: user!.id,
-          date,
-          weight_kg: weight_kg ?? null,
-          body_fat_pct: body_fat_pct ?? null,
-          waist_cm: waist_cm ?? null,
-          hip_cm: hip_cm ?? null,
-          neck_cm: neck_cm ?? null,
-          chest_cm: chest_cm ?? null,
-          arm_cm: arm_cm ?? null,
-          thigh_cm: thigh_cm ?? null,
-          calf_cm: calf_cm ?? null,
-          notes: notes ?? null,
-        },
+        { user_id: user!.id, date, [col]: value },
         { onConflict: 'user_id,date' }
       )
       .select()

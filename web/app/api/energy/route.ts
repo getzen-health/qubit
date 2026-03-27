@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -5,6 +6,12 @@ import {
 } from '@/lib/security'
 import { analyzeEnergy } from '@/lib/energy-management'
 import type { EnergyLog } from '@/lib/energy-management'
+
+const energyLogSchema = z.object({
+  level: z.number().int().min(1).max(10),
+  notes: z.string().max(500).optional(),
+  logged_at: z.string().datetime().optional(),
+})
 
 // GET /api/energy — last 30 logs + energy analysis + 7-day trend
 export const GET = createSecureApiHandler(
@@ -54,44 +61,22 @@ export const GET = createSecureApiHandler(
 
 // POST /api/energy — upsert today's energy log
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
-    const {
-      date,
-      wake_time,
-      chronotype,
-      sleep_hours,
-      sleep_quality,
-      steps,
-      meal_quality_avg,
-      caffeine_mg,
-      caffeine_time,
-      ultradian_cycles,
-      energy_ratings,
-    } = body
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: energyLogSchema },
+  async (_req, { user, supabase, body }) => {
+    const { level, notes, logged_at } = body as z.infer<typeof energyLogSchema>
 
-    const today = (date as string) || new Date().toISOString().slice(0, 10)
-
-    if (sleep_quality && (sleep_quality < 1 || sleep_quality > 5))
-      return secureErrorResponse('sleep_quality must be 1–5', 400)
+    const date = logged_at
+      ? logged_at.split('T')[0]
+      : new Date().toISOString().slice(0, 10)
 
     const { data, error } = await supabase
       .from('energy_logs')
       .upsert(
         {
           user_id: user!.id,
-          date: today,
-          wake_time: wake_time || '07:00',
-          chronotype: chronotype || 'intermediate',
-          sleep_hours: sleep_hours != null ? Number(sleep_hours) : 7,
-          sleep_quality: sleep_quality != null ? Number(sleep_quality) : 3,
-          steps: steps != null ? Number(steps) : 0,
-          meal_quality_avg: meal_quality_avg != null ? Number(meal_quality_avg) : 3,
-          caffeine_mg: caffeine_mg != null ? Number(caffeine_mg) : 0,
-          caffeine_time: caffeine_time || '08:00',
-          ultradian_cycles: ultradian_cycles || [],
-          energy_ratings: energy_ratings || [],
+          date,
+          level,
+          notes: notes ?? null,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id,date', ignoreDuplicates: false },

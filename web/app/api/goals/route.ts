@@ -1,8 +1,18 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
+
+const goalUpdateSchema = z.object({
+  goal_type: z.string().min(1).max(50).optional(),
+  target_value: z.number().positive().optional(),
+  current_value: z.number().min(0).optional(),
+  unit: z.string().max(20).optional(),
+  deadline: z.string().datetime().optional(),
+  is_active: z.boolean().optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -28,19 +38,19 @@ export const GET = createSecureApiHandler(
 )
 
 export const PATCH = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
-    const { daily_steps, sleep_hours, water_liters, target_weight_kg, calorie_budget } = body
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: goalUpdateSchema },
+  async (_req, { user, supabase, body }) => {
+    const { goal_type, target_value, current_value, unit, deadline, is_active } = body as z.infer<typeof goalUpdateSchema>
     const { error } = await supabase
       .from('user_goals')
       .upsert({
         user_id: user!.id,
-        daily_steps,
-        sleep_hours,
-        water_liters,
-        target_weight_kg,
-        calorie_budget,
+        goal_type,
+        target_value,
+        current_value,
+        unit,
+        deadline,
+        is_active,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' })
     if (error) {
