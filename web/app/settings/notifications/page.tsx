@@ -54,12 +54,22 @@ const SEVERITY_LEVELS = [
   { value: 'high', label: 'High' },
 ]
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)))
+}
+
 export default function NotificationsSettingsPage() {
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULTS)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pushStatus, setPushStatus] = useState<'unknown' | 'granted' | 'denied' | 'unsupported'>('unknown')
+  const [pushEnabled, setPushEnabled] = useState(false)
+  const [pushLoading, setPushLoading] = useState(false)
   const supabase = createClient()
 
   const loadPrefs = useCallback(async () => {
@@ -98,6 +108,60 @@ export default function NotificationsSettingsPage() {
   }, [supabase])
 
   useEffect(() => { loadPrefs() }, [loadPrefs])
+
+  // Check push notification status on mount
+  useEffect(() => {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+      setPushStatus('unsupported')
+      return
+    }
+    const perm = Notification.permission
+    if (perm === 'granted' || perm === 'denied') setPushStatus(perm)
+    if (perm === 'granted') {
+      navigator.serviceWorker.ready.then(async (reg) => {
+        const sub = await reg.pushManager.getSubscription()
+        setPushEnabled(!!sub)
+      })
+    }
+  }, [])
+
+  const handlePushToggle = async () => {
+    setPushLoading(true)
+    try {
+      const reg = await navigator.serviceWorker.ready
+
+      if (pushEnabled) {
+        const sub = await reg.pushManager.getSubscription()
+        if (sub) {
+          await fetch('/api/notifications/subscribe', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endpoint: sub.endpoint }),
+          })
+          await sub.unsubscribe()
+        }
+        setPushEnabled(false)
+      } else {
+        const permission = await Notification.requestPermission()
+        setPushStatus(permission as 'granted' | 'denied')
+        if (permission !== 'granted') { setPushLoading(false); return }
+
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+        })
+        await fetch('/api/notifications/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub.toJSON()),
+        })
+        setPushEnabled(true)
+      }
+    } catch {
+      setError('Could not update push notification settings.')
+    }
+    setPushLoading(false)
+  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -190,6 +254,34 @@ export default function NotificationsSettingsPage() {
             {error}
           </div>
         )}
+
+        {/* Push Notifications */}
+        <div className="bg-surface rounded-xl border border-border p-4">
+          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Push Notifications</h2>
+          {pushStatus === 'unsupported' ? (
+            <p className="text-sm text-text-secondary">Push notifications are not supported in this browser.</p>
+          ) : pushStatus === 'denied' ? (
+            <p className="text-sm text-red-400">Push notifications are blocked. Enable them in your browser settings, then refresh.</p>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Enable push notifications</p>
+                <p className="text-xs text-text-secondary mt-0.5">Get reminders for hydration, medications, and habits even when the app is closed</p>
+              </div>
+              <button
+                onClick={handlePushToggle}
+                disabled={pushLoading}
+                role="switch"
+                aria-checked={pushEnabled}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors disabled:opacity-50 ${
+                  pushEnabled ? 'bg-accent' : 'bg-surface-secondary'
+                }`}
+              >
+                <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${pushEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Alert Categories */}
         <div className="bg-surface rounded-xl border border-border p-4">
