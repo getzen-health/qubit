@@ -8,14 +8,14 @@ const CompleteSchema = z.object({
   notes: z.string().optional(),
 })
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req, 'healthData')
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const habit_id = params.id
+  const { id: habit_id } = await params
   const body = await req.json()
   const parsed = CompleteSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error }, { status: 400 })
@@ -33,14 +33,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   return NextResponse.json({ ok: true })
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req, 'healthData')
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const habit_id = params.id
+  const { id: habit_id } = await params
   const today = new Date().toISOString().slice(0, 10)
   const { error } = await supabase
     .from('habit_completions')

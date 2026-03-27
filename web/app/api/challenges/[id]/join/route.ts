@@ -3,12 +3,12 @@ import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/security'
 
 // POST: Join a challenge
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req)
   const supabase = await createClient()
   const { data: user } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
-  const challenge_id = params.id
+  const { id: challenge_id } = await params
   const { error } = await supabase.from('challenge_participants').insert({
     challenge_id,
     user_id: user.id

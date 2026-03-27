@@ -15,14 +15,14 @@ const UpdateSchema = z.object({
   is_active: z.boolean().optional(),
 })
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req, 'healthData')
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const habit_id = params.id
+  const { id: habit_id } = await params
   const body = await req.json()
   const parsed = UpdateSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: parsed.error }, { status: 400 })
@@ -35,14 +35,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ ok: true })
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req, 'healthData')
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const habit_id = params.id
+  const { id: habit_id } = await params
   const { error } = await supabase
     .from('user_habits')
     .update({ is_active: false })

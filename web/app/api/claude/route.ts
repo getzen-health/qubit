@@ -6,7 +6,7 @@ import {
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
-import { getUserApiKey } from '@/app/api/user/ai-key/route'
+import { getUserApiKey } from '@/lib/get-user-api-key'
 import { API_VERSION } from '@/lib/api-version'
 
 const bodySchema = z.object({

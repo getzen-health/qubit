@@ -3,10 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/security'
 
 // GET: Top 20 participants for a challenge
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req)
   const supabase = await createClient()
-  const challenge_id = params.id
+  const { id: challenge_id } = await params
   // Join with profiles if available, else anonymize
   const { data: participants, error } = await supabase
     .from('challenge_participants')

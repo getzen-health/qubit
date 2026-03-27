@@ -3,12 +3,12 @@ import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit } from '@/lib/security'
 
 // PUT: Update user's current_value for a challenge
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await checkRateLimit(req)
   const supabase = await createClient()
   const { data: user } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
-  const challenge_id = params.id
+  const { id: challenge_id } = await params
   const { data: challenge, error: challengeErr } = await supabase.from('challenges').select('*').eq('id', challenge_id).single()
   if (challengeErr) console.error('challenges fetch error', challengeErr)
   let value = 0
