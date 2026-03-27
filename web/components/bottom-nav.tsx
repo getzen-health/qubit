@@ -64,6 +64,7 @@ const moreItems = [
   { href: '/mindfulness', icon: Leaf, label: 'Mindfulness' },
   { href: '/cognitive', icon: Brain, label: 'Cognitive' },
   { href: '/sun-exposure', icon: '☀️', label: 'Sun' },
+  { href: '/environment', icon: Wind, label: 'Air & UV' },
   // Longevity & analytics
   { href: '/longevity', icon: Dna, label: 'Longevity' },
   { href: '/biological-age', icon: Dna, label: 'Bio Age' },
