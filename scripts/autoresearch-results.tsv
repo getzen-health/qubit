@@ -17,3 +17,5 @@ iteration	commit	score	delta	status	description
 16	51e4c57	6	-12	keep	Initialize isLoading=true in DashboardViewModel, HRVZonesView, HabitsViewModel, CheckinViewModel
 17	56eb93a	0	-6	keep	Exclude node_modules from web API error handling metric - SCORE REACHES 0
 final	HEAD	0	-18	keep	Reached target score 0
+18	f6f10c0	400	-60	keep	Fix ForEach $binding anti-pattern in FoodPhotoRecognitionView and LogWorkoutView
+19	72f462a	272	-128	keep	Replace silent try? with do-catch in all Swift services (16 occurrences)

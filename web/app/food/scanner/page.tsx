@@ -40,6 +40,17 @@ interface HealthScore {
   hasCompleteData?: boolean
 }
 
+interface ScoreComponents {
+  nutrientBalance?: number
+  processingIntegrity?: number
+  additiveSafety?: number
+  ingredientQuality?: number
+  contextFit?: number
+  nutrition?: number
+  additives?: number
+  organic?: number
+}
+
 interface FoodProduct {
   name: string
   brand?: string
@@ -58,6 +69,7 @@ interface FoodProduct {
   ingredients?: string | null
   categories?: string[]
   dataSource?: 'off' | 'usda'
+  score_components?: ScoreComponents
 }
 
 interface Alternative {
@@ -534,6 +546,7 @@ export default function FoodScannerPage() {
             <div className="bg-surface rounded-2xl border border-border overflow-hidden">
               <div className="p-4 flex gap-4 items-start">
                 {product.imageUrl && (
+                    <Image
                     src={product.imageUrl} 
                     alt={product.name} 
                     width={80}

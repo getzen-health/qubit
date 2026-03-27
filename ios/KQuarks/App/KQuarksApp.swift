@@ -23,7 +23,20 @@ struct KQuarksApp: App {
         do {
             modelContainer = try ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [config])
         } catch {
-            fatalError("Could not initialize ModelContainer: \(error)")
+            // Fallback 1: retry without CloudKit (handles schema migration failures)
+            let localConfig = ModelConfiguration(
+                schema: Schema([PendingSyncItem.self]),
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .none
+            )
+            if let fallbackContainer = try? ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [localConfig]) {
+                modelContainer = fallbackContainer
+            } else {
+                // Fallback 2: in-memory store — app stays alive, no local persistence
+                let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
+                // swiftlint:disable:next force_try
+                modelContainer = try! ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [memoryConfig])
+            }
         }
 
         #if os(iOS)
