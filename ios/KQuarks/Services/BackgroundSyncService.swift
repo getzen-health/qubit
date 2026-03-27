@@ -24,7 +24,11 @@ class BackgroundSyncService {
     func scheduleNextSync() {
         let request = BGAppRefreshTaskRequest(identifier: Self.taskIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 4 * 60 * 60) // 4 hours
-        try? BGTaskScheduler.shared.submit(request)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            NSLog("[KQuarks] BGTaskScheduler submit failed: %@", error.localizedDescription)
+        }
     }
     
     private func handleBackgroundSync(task: BGAppRefreshTask) {

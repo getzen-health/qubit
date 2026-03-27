@@ -6,8 +6,13 @@ class HydrationReminderService {
     
     func requestPermission() async -> Bool {
         let center = UNUserNotificationCenter.current()
-        let granted = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
-        return granted ?? false
+        do {
+            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
+            return granted
+        } catch {
+            NSLog("[KQuarks] Notification authorization failed: %@", error.localizedDescription)
+            return false
+        }
     }
     
     func scheduleReminders(startHour: Int = 8, endHour: Int = 20, intervalHours: Int = 2) {

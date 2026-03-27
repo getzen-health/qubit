@@ -480,8 +480,12 @@ class SupabaseService {
             "score": score,
             "image_url": imageURL
         ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body.compactMapValues { $0 })
-        _ = try? await URLSession.shared.data(for: request)
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body.compactMapValues { $0 })
+            _ = try await URLSession.shared.data(for: request)
+        } catch {
+            NSLog("[KQuarks] Product scan log failed: %@", error.localizedDescription)
+        }
     }
 
     // MARK: - Health Data Sync
@@ -1448,14 +1452,25 @@ class SupabaseService {
         async let sleepTask = fetchSleepRecords(days: 365)
         async let mealsTask = fetchMealsForExport()
 
-        let summaries: [DailySummary]? = selection.healthRecords || selection.bodyMeasurements
-            ? (try? await summariesTask) : nil
-        let workoutList: [WorkoutRecord]? = selection.workouts
-            ? (try? await workoutsTask) : nil
-        let sleepList: [SleepRecord]? = selection.sleep
-            ? (try? await sleepTask) : nil
-        let mealList: [ExportMealEntry]? = selection.foodDiary
-            ? (try? await mealsTask) : nil
+        let summaries: [DailySummary]?
+        if selection.healthRecords || selection.bodyMeasurements {
+            do { summaries = try await summariesTask } catch { NSLog("[KQuarks] exportAllUserData summaries failed: %@", error.localizedDescription); summaries = nil }
+        } else { summaries = nil }
+
+        let workoutList: [WorkoutRecord]?
+        if selection.workouts {
+            do { workoutList = try await workoutsTask } catch { NSLog("[KQuarks] exportAllUserData workouts failed: %@", error.localizedDescription); workoutList = nil }
+        } else { workoutList = nil }
+
+        let sleepList: [SleepRecord]?
+        if selection.sleep {
+            do { sleepList = try await sleepTask } catch { NSLog("[KQuarks] exportAllUserData sleep failed: %@", error.localizedDescription); sleepList = nil }
+        } else { sleepList = nil }
+
+        let mealList: [ExportMealEntry]?
+        if selection.foodDiary {
+            do { mealList = try await mealsTask } catch { NSLog("[KQuarks] exportAllUserData meals failed: %@", error.localizedDescription); mealList = nil }
+        } else { mealList = nil }
 
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"

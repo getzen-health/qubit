@@ -49,7 +49,7 @@ class SyncService {
                 lastError = error
                 if attempt < maxAttempts - 1 {
                     let delay = initialDelay * pow(2.0, Double(attempt))
-                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
                 }
             }
         }
@@ -156,7 +156,11 @@ class SyncService {
         // Cache recovery score for morning brief notification
         // Using Keychain (not UserDefaults) to prevent exposure via iCloud backup
         if let rec = AIInsightsService.shared.latestRecoveryScore {
-            try? KeychainHelper.save(key: "cached_recovery_score", value: String(rec))
+            do {
+                try KeychainHelper.save(key: "cached_recovery_score", value: String(rec))
+            } catch {
+                NSLog("[KQuarks] KeychainHelper save failed: %@", error.localizedDescription)
+            }
             // Also write to shared App Group suite so the widget extension can read it
             UserDefaults(suiteName: "group.com.qxlsz.kquarks")?.set(rec, forKey: "cached_recovery_score")
         }
@@ -789,7 +793,11 @@ class SyncService {
             )
         }
         guard !records.isEmpty else { return }
-        try? await withRetry { try await self.supabase.uploadECGRecords(records) }
+        do {
+            try await withRetry { try await self.supabase.uploadECGRecords(records) }
+        } catch {
+            NSLog("[KQuarks] uploadECGRecords failed: %@", error.localizedDescription)
+        }
     }
 
     // MARK: - Historical Backfill

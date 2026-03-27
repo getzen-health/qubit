@@ -55,7 +55,11 @@ final class CrashReportingService: NSObject, MXMetricManagerSubscriber {
             "timestamp": ISO8601DateFormatter().string(from: timestamp),
             "call_stack": crash.callStackTree.jsonRepresentation().prefix(10000)
         ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-        _ = try? await URLSession.shared.data(for: request)
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            _ = try await URLSession.shared.data(for: request)
+        } catch {
+            NSLog("[KQuarks] Crash report send failed: %@", error.localizedDescription)
+        }
     }
 }

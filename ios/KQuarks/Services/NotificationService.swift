@@ -93,7 +93,13 @@ final class NotificationService {
 
             // Update morning brief with fresh data; fall back to Keychain cache if network unavailable
             let cachedScore = KeychainHelper.load(key: "cached_recovery_score").flatMap { Int($0) } ?? 0
-            let freshScore = try? await SupabaseService.shared.fetchTodayReadinessScore()
+            let freshScore: Int?
+            do {
+                freshScore = try await SupabaseService.shared.fetchTodayReadinessScore()
+            } catch {
+                NSLog("[KQuarks] fetchTodayReadinessScore failed: %@", error.localizedDescription)
+                freshScore = nil
+            }
             let recoveryScore = freshScore ?? (cachedScore > 0 ? cachedScore : nil)
             scheduleMorningBrief(
                 recoveryScore: recoveryScore,
@@ -412,7 +418,7 @@ final class NotificationService {
             content: content,
             trigger: trigger
         )
-        try? await UNUserNotificationCenter.current().add(request)
+        do { try await UNUserNotificationCenter.current().add(request) } catch { NSLog("[KQuarks] Notification schedule failed: %@", error.localizedDescription) }
     }
 
     /// Fires immediately if this week's active calories are ≥50% above last week (Foster 2001 ACWR threshold).
@@ -432,7 +438,7 @@ final class NotificationService {
             content: content,
             trigger: trigger
         )
-        try? await UNUserNotificationCenter.current().add(request)
+        do { try await UNUserNotificationCenter.current().add(request) } catch { NSLog("[KQuarks] Notification schedule failed: %@", error.localizedDescription) }
     }
 
     // MARK: - Achievement Unlocked
