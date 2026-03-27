@@ -156,6 +156,19 @@
   .animate-slide-down {
     animation: slideDown 0.2s ease-out;
   }
+
+  /* Shimmer skeleton — replaces plain animate-pulse for cards/blocks */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--surface-secondary)) 25%,
+      hsl(var(--surface-tertiary)) 50%,
+      hsl(var(--surface-secondary)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite linear;
+    border-radius: var(--radius-lg);
+  }
 }
 
 @keyframes fadeIn {
@@ -183,4 +196,9 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }

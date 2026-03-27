@@ -1,25 +1,43 @@
+/** Single shimmer block — use as the building brick for all skeleton layouts */
+function Bone({ className }: { className?: string }) {
+  return <div className={`skeleton ${className ?? ''}`} />
+}
+
 export function ReadinessBannerSkeleton() {
   return (
-    <div className="animate-pulse mb-4 rounded-2xl bg-surface border border-border p-4 h-20" />
+    <div className="mb-4 rounded-2xl border border-border p-4 h-20 overflow-hidden">
+      <Bone className="h-full w-full rounded-2xl" />
+    </div>
   )
 }
 
 export function DashboardDataSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-4 animate-pulse">
-      <div className="flex flex-col items-center gap-3 py-6">
-        <div className="h-40 w-40 bg-surface rounded-full" />
-        <div className="h-5 bg-surface rounded w-32" />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
+    <div className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-5">
+      {/* Readiness card skeleton */}
+      <Bone className="h-32 w-full rounded-2xl" />
+
+      {/* Metric card grid skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-surface rounded-2xl p-4 h-24" />
+          <div key={i} className="rounded-2xl border border-border p-5 space-y-3 bg-surface">
+            <div className="flex items-center justify-between">
+              <Bone className="h-3 w-16 rounded" />
+              <Bone className="h-4 w-4 rounded-md" />
+            </div>
+            <Bone className="h-8 w-24 rounded" />
+            <Bone className="h-3 w-20 rounded" />
+          </div>
         ))}
       </div>
-      <div className="bg-surface rounded-2xl p-4 h-48" />
+
+      {/* Chart skeleton */}
+      <Bone className="h-52 w-full rounded-2xl" />
+
+      {/* List skeletons */}
       <div className="space-y-2">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-surface rounded-xl h-14" />
+          <Bone key={i} className="h-16 w-full rounded-2xl" />
         ))}
       </div>
     </div>
@@ -28,30 +46,26 @@ export function DashboardDataSkeleton() {
 
 export function ReadyPageSkeleton() {
   return (
-    <div className="animate-pulse space-y-4">
-      <div className="flex flex-col items-center gap-3 py-6">
-        <div className="h-36 w-36 bg-surface rounded-full" />
-        <div className="h-5 bg-surface rounded w-28" />
-      </div>
+    <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-surface rounded-2xl p-4 h-20" />
+          <Bone key={i} className="h-24 w-full rounded-2xl" />
         ))}
       </div>
-      <div className="bg-surface rounded-2xl p-4 h-48" />
+      <Bone className="h-52 w-full rounded-2xl" />
     </div>
   )
 }
 
 export function TrendsPageSkeleton() {
   return (
-    <div className="animate-pulse space-y-4">
+    <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-surface rounded-2xl p-4 h-32" />
+          <Bone key={i} className="h-36 w-full rounded-2xl" />
         ))}
       </div>
-      <div className="bg-surface rounded-2xl p-4 h-48" />
+      <Bone className="h-52 w-full rounded-2xl" />
     </div>
   )
 }
