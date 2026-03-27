@@ -874,7 +874,7 @@ export function BiometricsClient({ initialLogs, initialSettings }: Props) {
                   <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 10 }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
                   <Tooltip content={<ChartTooltip />} />
                   <Line type="monotone" dataKey="projected" name="Projected (kg)" stroke="var(--accent)" strokeWidth={2} dot={false} />
-                  <ReferenceLine y={settings.target_weight_kg} stroke="#4ade80" strokeDasharray="4 2" label={{ value: 'Target', fill: '#4ade80', fontSize: 10 }} />
+                  <ReferenceLine y={settings.target_weight_kg ?? undefined} stroke="#4ade80" strokeDasharray="4 2" label="Target" />
                 </LineChart>
               </ResponsiveContainer>
             </div>

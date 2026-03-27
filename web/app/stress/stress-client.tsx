@@ -26,13 +26,23 @@ import {
 import { cn } from '@/lib/utils'
 
 export interface TrendPoint { date: string; score: number; label?: string }
-export interface CorrelationData { factor: string; correlation: number; description: string }
+export interface CorrelationData {
+  r: number
+  strength: string
+  interpretation: string
+  n: number
+}
 export interface StressPageData {
-  recent: TrendPoint[]
-  monthly: TrendPoint[]
-  correlations: CorrelationData[]
+  today: {
+    logCount: number
+    latestManual: { stress_level: number } | null
+    hrvDerived: { stress_level: number; hrv_input: number } | null
+    dailyAverage: number | null
+  }
+  trend: TrendPoint[]
+  correlation: CorrelationData | null
+  contextFrequencies: Record<string, number>
   avgScore: number
-  trend: 'improving' | 'stable' | 'worsening'
 }
 
 const ComposedChart = dynamic(
@@ -649,7 +659,7 @@ export function StressClient({ data }: { data: StressPageData }) {
 
         {/* ── Bottom row: Correlation + Context Tags ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <CorrelationCard correlation={correlation} />
+          {correlation && <CorrelationCard correlation={correlation} />}
 
           <div className="bg-surface-secondary rounded-2xl p-4 space-y-3">
             <div className="flex items-center gap-2">

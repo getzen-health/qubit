@@ -39,7 +39,7 @@ export async function GET() {
     const d = m.logged_at.split('T')[0]
     moodByDate[d] = (moodByDate[d] ?? 0 + m.mood_score) / (moodByDate[d] ? 2 : 1)
   }
-  const stepsByDate: Record<string, number> = Object.fromEntries(steps.map((s: DailySummary) => [s.date, s.steps]))
+  const stepsByDate: Record<string, number> = Object.fromEntries(steps.map((s: { date: string; steps: number }) => [s.date, s.steps]))
   const sleepByDate: Record<string, number> = Object.fromEntries(sleep.map((s: SleepRecord) => [s.sleep_date, s.total_sleep_minutes / 60]))
 
   // Paired arrays for correlation
