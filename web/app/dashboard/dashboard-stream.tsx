@@ -49,6 +49,14 @@ import { AnomalyAlertBanner } from '@/components/AnomalyAlertBanner'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { ShareCard } from '@/components/ShareCard'
 
+function getTimeOfDayGreeting(): { text: string; emoji: string } {
+  const h = new Date().getHours()
+  if (h < 12) return { text: 'Good morning', emoji: '🌅' }
+  if (h < 17) return { text: 'Good afternoon', emoji: '☀️' }
+  if (h < 21) return { text: 'Good evening', emoji: '🌆' }
+  return { text: 'Good night', emoji: '🌙' }
+}
+
 // Tiny sparkline for 7-day recovery trend
 function RecoverySparkline({ history, current }: { history: number[], current: number }) {
   const data = [...history].reverse().concat(current).map((v, i) => ({ i, v }))
@@ -598,9 +606,11 @@ export function DashboardStream({
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-text-primary">
-              {profile?.display_name
-                ? `Hi, ${profile.display_name.split(' ')[0]}`
-                : 'Dashboard'}
+              {(() => {
+                const { text, emoji } = getTimeOfDayGreeting()
+                const firstName = profile?.display_name?.split(' ')[0]
+                return firstName ? `${emoji} ${text}, ${firstName}` : `${emoji} ${text}`
+              })()}
             </h1>
             <p className="text-sm text-text-secondary">
               {new Date().toLocaleDateString('en-US', {
