@@ -1,7 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { checkRateLimit } from '@/lib/security/rate-limit'
+import { createSecureApiHandler, secureErrorResponse } from '@/lib/security'
 import { API_VERSION } from '@/lib/api-version'
 
 const BATCH_SIZE = 1000
@@ -113,63 +112,48 @@ async function buildHealthDataExport(supabase: any, userId: string, days: number
   return { csv, json, filename, rowCount, truncated }
 }
 
-export async function GET(request: Request) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export const GET = createSecureApiHandler(
+  { rateLimit: 'export', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { searchParams } = new URL(request.url)
+    const days = parseInt(searchParams.get('days') ?? '30', 10)
+    const format = searchParams.get('format') ?? 'csv'
+    const from = searchParams.get('from')
+    const to = searchParams.get('to')
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+    if (![30, 90, 365].includes(days)) {
+      return secureErrorResponse('Days must be 30, 90, or 365', 400)
+    }
 
-  const { searchParams } = new URL(request.url)
-  const days = parseInt(searchParams.get('days') ?? '30', 10)
-  const format = searchParams.get('format') ?? 'csv'
-  const from = searchParams.get('from')
-  const to = searchParams.get('to')
+    const result = await buildHealthDataExport(supabase, user!.id, days, from ?? undefined, to ?? undefined)
+    if (!result) {
+      return secureErrorResponse('Export failed', 500)
+    }
 
-  if (![30, 90, 365].includes(days)) {
-    return NextResponse.json({ error: 'Days must be 30, 90, or 365' }, { status: 400 })
-  }
+    void logExportAudit(user!.id, days, result.rowCount)
 
-  // Rate limiting: max 3 exports per hour per user
-  const rl = await checkRateLimit(user.id, 'export')
-  if (!rl.allowed) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded. Maximum 3 exports per hour.' },
-      { status: 429, headers: { 'Retry-After': '3600' } }
-    )
-  }
+    if (format === 'json') {
+      const responseHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Content-Disposition': `attachment; filename="${result.filename}.json"`,
+        'X-API-Version': API_VERSION,
+      }
+      if (result.truncated) responseHeaders['X-Truncated'] = 'true'
 
-  const result = await buildHealthDataExport(supabase, user.id, days, from ?? undefined, to ?? undefined)
-  if (!result) {
-    return NextResponse.json({ error: 'Export failed' }, { status: 500 })
-  }
+      return new NextResponse(result.json, {
+        headers: responseHeaders,
+      })
+    }
 
-  void logExportAudit(user.id, days, result.rowCount)
-
-  if (format === 'json') {
     const responseHeaders: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Content-Disposition': `attachment; filename="${result.filename}.json"`,
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="${result.filename}.csv"`,
       'X-API-Version': API_VERSION,
     }
     if (result.truncated) responseHeaders['X-Truncated'] = 'true'
 
-    return new Response(result.json, {
+    return new NextResponse(result.csv, {
       headers: responseHeaders,
     })
   }
-
-  const responseHeaders: Record<string, string> = {
-    'Content-Type': 'text/csv',
-    'Content-Disposition': `attachment; filename="${result.filename}.csv"`,
-    'X-API-Version': API_VERSION,
-  }
-  if (result.truncated) responseHeaders['X-Truncated'] = 'true'
-
-  return new Response(result.csv, {
-    headers: responseHeaders,
-  })
-}
+)

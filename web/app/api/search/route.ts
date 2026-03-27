@@ -1,64 +1,51 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET(request: Request) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('q')?.trim()
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+    if (!query || query.length < 2) {
+      return secureJsonResponse({ food: [], workouts: [], health_metrics: [] })
+    }
 
-  const { searchParams } = new URL(request.url)
-  const query = searchParams.get('q')?.trim()
+    const searchPattern = `%${query}%`
 
-  if (!query || query.length < 2) {
-    return NextResponse.json({
-      food: [],
-      workouts: [],
-      health_metrics: [],
-    })
-  }
-
-  const searchPattern = `%${query}%`
-
-  try {
     // Search food logs
     const { data: foodLogs, error: foodError } = await supabase
       .from('meal_items')
       .select('id, food_name, created_at, meal_id')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .ilike('food_name', searchPattern)
       .order('created_at', { ascending: false })
       .limit(5)
 
-    if (foodError) throw foodError
+    if (foodError) return secureErrorResponse('Search failed', 500)
 
     // Search workouts
     const { data: workouts, error: workoutError } = await supabase
       .from('workouts')
       .select('id, activity_type, duration_minutes, distance_km, calories_burned, created_at')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .ilike('activity_type', searchPattern)
       .order('created_at', { ascending: false })
       .limit(5)
 
-    if (workoutError) throw workoutError
+    if (workoutError) return secureErrorResponse('Search failed', 500)
 
     // Search health metrics/notes
     const { data: metrics, error: metricsError } = await supabase
       .from('health_records')
       .select('id, type, value, start_time')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .ilike('type', searchPattern)
       .order('start_time', { ascending: false })
       .limit(5)
 
-    if (metricsError) throw metricsError
+    if (metricsError) return secureErrorResponse('Search failed', 500)
 
-    return NextResponse.json({
+    return secureJsonResponse({
       food: (foodLogs ?? []).map((item) => ({
         id: item.id,
         name: item.food_name,
@@ -83,11 +70,5 @@ export async function GET(request: Request) {
         date: m.start_time,
       })),
     })
-  } catch (error) {
-    console.error('Search error:', error)
-    return NextResponse.json(
-      { error: 'Search failed' },
-      { status: 500 }
-    )
   }
-}
+)

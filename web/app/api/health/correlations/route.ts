@@ -1,7 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
-import { apiResponse } from '@/lib/api-response'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { getServerCache } from '@/lib/server-cache'
-import { trackApiCall } from '@/lib/monitoring'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,41 +26,25 @@ function calculateCorrelation(x: number[], y: number[]): number {
   return numerator / (denomX * denomY)
 }
 
-export async function GET(request: Request) {
-  const startTime = Date.now()
-  let statusCode = 200
-  const user_id = await (await createClient()).auth.getUser().then(r => r.data.user?.id)
-
-  try {
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
     const { searchParams } = new URL(request.url)
     const days = parseInt(searchParams.get('days') || '90', 10)
 
     if (![30, 90, 180, 365].includes(days)) {
-      statusCode = 400
-      return apiResponse({ error: 'Days must be 30, 90, 180, or 365' }, 400)
-    }
-
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-      statusCode = 401
-      return apiResponse({ error: 'Unauthorized' }, 401)
+      return secureErrorResponse('Days must be 30, 90, 180, or 365', 400)
     }
 
     // Check cache first
     const cache = getServerCache()
-    const cacheKey = `correlations:${user.id}:${days}`
+    const cacheKey = `correlations:${user!.id}:${days}`
     const cached = cache.get(cacheKey)
     if (cached) {
-      const duration = Date.now() - startTime
-      void trackApiCall({
-        endpoint: '/api/health/correlations',
-        duration_ms: duration,
-        status_code: 200,
-        user_id: user.id,
-      })
-      return apiResponse(cached, 200, undefined, { 'X-Cache': 'HIT', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
+      const response = secureJsonResponse(cached as CorrelationMatrix)
+      response.headers.set('X-Cache', 'HIT')
+      response.headers.set('Cache-Control', 'max-age=3600, s-maxage=3600')
+      return response
     }
 
     const endDate = new Date()
@@ -76,21 +58,13 @@ export async function GET(request: Request) {
       .select(
         'date,steps,active_calories,distance_meters,resting_heart_rate,avg_hrv,sleep_duration_minutes,recovery_score'
       )
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .gte('date', startDateStr)
       .lte('date', endDateStr)
       .order('date', { ascending: true })
 
     if (error || !dailyData || dailyData.length < 10) {
-      const duration = Date.now() - startTime
-      statusCode = 200 // Still valid response with empty data
-      void trackApiCall({
-        endpoint: '/api/health/correlations',
-        duration_ms: duration,
-        status_code: statusCode,
-        user_id: user.id,
-      })
-      return apiResponse({
+      return secureJsonResponse({
         metrics: ['steps', 'sleep', 'hrv', 'resting_hr', 'calories'],
         values: [[], [], [], [], []],
         data_points: 0,
@@ -98,21 +72,8 @@ export async function GET(request: Request) {
       })
     }
 
-    // Extract metric arrays (filtering out nulls)
-    const metrics = {
-      steps: dailyData.map(d => d.steps).filter(Boolean) as number[],
-      sleep: dailyData.map(d => d.sleep_duration_minutes).filter(Boolean) as number[],
-      hrv: dailyData.map(d => d.avg_hrv).filter(Boolean) as number[],
-      resting_hr: dailyData.map(d => d.resting_heart_rate).filter(Boolean) as number[],
-      calories: dailyData.map(d => d.active_calories).filter(Boolean) as number[],
-      recovery_score: dailyData.map(d => d.recovery_score).filter(Boolean) as number[],
-    }
-
     const metricNames = ['steps', 'sleep', 'hrv', 'resting_hr', 'calories', 'recovery_score']
-    const metricValues = Object.values(metrics)
 
-    // Calculate correlation matrix
-    // All metrics need to be aligned for correlation calculation
     const metricArrays = metricNames.map(name => ({
       name,
       values: dailyData
@@ -136,7 +97,6 @@ export async function GET(request: Request) {
         if (i === j) {
           correlationMatrix[i][j] = 1
         } else {
-          // Align arrays to only include entries where both have values
           const aligned = { x: [] as number[], y: [] as number[] }
           for (let k = 0; k < dailyData.length; k++) {
             const xVal = metricArrays[i].values[k]
@@ -146,7 +106,6 @@ export async function GET(request: Request) {
               aligned.y.push(yVal)
             }
           }
-
           correlationMatrix[i][j] = aligned.x.length > 0 ? calculateCorrelation(aligned.x, aligned.y) : 0
         }
       }
@@ -159,30 +118,11 @@ export async function GET(request: Request) {
       date_range: { start: startDateStr, end: endDateStr },
     }
 
-    // Cache for 1 hour for correlations
     cache.set(cacheKey, result, 3600)
 
-    const duration = Date.now() - startTime
-    void trackApiCall({
-      endpoint: '/api/health/correlations',
-      duration_ms: duration,
-      status_code: 200,
-      user_id: user.id,
-    })
-
-    return apiResponse(result, 200, undefined, { 'X-Cache': 'MISS', 'Cache-Control': 'max-age=3600, s-maxage=3600' })
-  } catch (error) {
-    const duration = Date.now() - startTime
-    console.error('Correlation calculation error:', error)
-    void trackApiCall({
-      endpoint: '/api/health/correlations',
-      duration_ms: duration,
-      status_code: 500,
-      user_id: user_id,
-    })
-    return apiResponse(
-      { error: 'Failed to calculate correlations' },
-      500
-    )
+    const response = secureJsonResponse(result)
+    response.headers.set('X-Cache', 'MISS')
+    response.headers.set('Cache-Control', 'max-age=3600, s-maxage=3600')
+    return response
   }
-}
+)

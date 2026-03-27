@@ -1,16 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  // Save onboarding data to user profile (assume a user_profiles table with jsonb column 'onboarding')
-  const { error } = await supabase
-    .from('user_profiles')
-    .update({ onboarding: body })
-    .eq('user_id', user.id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    // Save onboarding data to user profile (user_profiles table with jsonb column 'onboarding')
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ onboarding: body })
+      .eq('user_id', user!.id)
+    if (error) return secureErrorResponse('Failed to save onboarding data', 500)
+    return secureJsonResponse({ success: true })
+  }
+)
