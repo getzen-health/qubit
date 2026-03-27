@@ -1,5 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 import { BRISTOL_TYPES, calculateGutScore, GutLog } from '@/lib/gut-health'
 
 const GUT_TIPS: Record<string, string[]> = {
@@ -22,69 +25,75 @@ function avgSymptomSeverity(logs: any[]): number {
   return count ? total / count : 0
 }
 
-export async function GET(req: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: logs,
-    error
-  } = await supabase
-    .from('gut_health_logs')
-    .select('*')
-    .order('logged_at', { ascending: false })
-    .limit(7)
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { supabase }) => {
+    const {
+      data: logs,
+      error
+    } = await supabase
+      .from('gut_health_logs')
+      .select('*')
+      .order('logged_at', { ascending: false })
+      .limit(7)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) return secureErrorResponse(error.message, 500)
 
-  const logsSorted = logs.sort((a, b) => new Date(a.logged_at).getTime() - new Date(b.logged_at).getTime())
-  const avgBristolType = logsSorted.length ? logsSorted.reduce((a, b) => a + (b.bristol_type || 0), 0) / logsSorted.length : 0
-  const avgDailyFrequency = logsSorted.length ? logsSorted.reduce((a, b) => a + (b.frequency_today || 1), 0) / logsSorted.length : 0
-  const avgSymptom = avgSymptomSeverity(logsSorted)
-  const fiberIntakeDays = logsSorted.filter(l => (l.fiber_intake_g || 0) >= 25).length
-  const fermentedFoodDays = logsSorted.filter(l => l.fermented_food).length
+    const logsSorted = logs.sort((a, b) => new Date(a.logged_at).getTime() - new Date(b.logged_at).getTime())
+    const avgBristolType = logsSorted.length ? logsSorted.reduce((a, b) => a + (b.bristol_type || 0), 0) / logsSorted.length : 0
+    const avgDailyFrequency = logsSorted.length ? logsSorted.reduce((a, b) => a + (b.frequency_today || 1), 0) / logsSorted.length : 0
+    const avgSymptom = avgSymptomSeverity(logsSorted)
+    const fiberIntakeDays = logsSorted.filter(l => (l.fiber_intake_g || 0) >= 25).length
+    const fermentedFoodDays = logsSorted.filter(l => l.fermented_food).length
 
-  const gutLog: Partial<GutLog> = {
-    bristol_type: Math.round(avgBristolType),
-    bowel_movement_count: Math.round(avgDailyFrequency),
-    bloating: avgSymptom > 0 ? Math.round(avgSymptom) : 0,
-    gas: 0, pain: 0, nausea: 0,
-    plant_species_count: fermentedFoodDays,
-    fermented_food_servings: fermentedFoodDays,
-    ultra_processed_servings: 0,
-    fiber_g: fiberIntakeDays * 25,
-    probiotic_strain: '', prebiotic_taken: false,
-    nsaid_use: false, alcohol_drinks: 0, gluten_sensitivity: false,
-    stress_level: 5, antibiotic_recent: false, water_l: 2, notes: '',
-    date: new Date().toISOString().split('T')[0],
+    const gutLog: Partial<GutLog> = {
+      bristol_type: Math.round(avgBristolType),
+      bowel_movement_count: Math.round(avgDailyFrequency),
+      bloating: avgSymptom > 0 ? Math.round(avgSymptom) : 0,
+      gas: 0, pain: 0, nausea: 0,
+      plant_species_count: fermentedFoodDays,
+      fermented_food_servings: fermentedFoodDays,
+      ultra_processed_servings: 0,
+      fiber_g: fiberIntakeDays * 25,
+      probiotic_strain: '', prebiotic_taken: false,
+      nsaid_use: false, alcohol_drinks: 0, gluten_sensitivity: false,
+      stress_level: 5, antibiotic_recent: false, water_l: 2, notes: '',
+      date: new Date().toISOString().split('T')[0],
+    }
+    const weeklyScore = calculateGutScore(gutLog as GutLog, fiberIntakeDays)
+
+    // Determine tendency for tips
+    let tendency: 'constipation' | 'ideal' | 'diarrhea' = 'ideal'
+    if (avgBristolType < 3) tendency = 'constipation'
+    else if (avgBristolType > 5) tendency = 'diarrhea'
+
+    return secureJsonResponse({
+      logs: logsSorted,
+      weeklyScore,
+      tips: GUT_TIPS[tendency]
+    })
   }
-  const weeklyScore = calculateGutScore(gutLog as GutLog, fiberIntakeDays)
+)
 
-  // Determine tendency for tips
-  let tendency: 'constipation' | 'ideal' | 'diarrhea' = 'ideal'
-  if (avgBristolType < 3) tendency = 'constipation'
-  else if (avgBristolType > 5) tendency = 'diarrhea'
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { supabase }) => {
+    const body = await req.json()
+    const { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at } = body
+    const { data, error } = await supabase.from('gut_health_logs').insert([
+      { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at }
+    ]).select()
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ data })
+  }
+)
 
-  return NextResponse.json({
-    logs: logsSorted,
-    weeklyScore,
-    tips: GUT_TIPS[tendency]
-  })
-}
-
-export async function POST(req: NextRequest) {
-  const supabase = await createClient()
-  const body = await req.json()
-  const { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at } = body
-  const { data, error } = await supabase.from('gut_health_logs').insert([
-    { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at }
-  ]).select()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
-}
-
-export async function DELETE(req: NextRequest) {
-  const supabase = await createClient()
-  const { id } = await req.json()
-  const { error } = await supabase.from('gut_health_logs').delete().eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { supabase }) => {
+    const { id } = await req.json()
+    const { error } = await supabase.from('gut_health_logs').delete().eq('id', id)
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ success: true })
+  }
+)
