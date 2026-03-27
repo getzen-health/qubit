@@ -48,6 +48,7 @@ const moreItems = [
   // Body & health
   { href: '/body', icon: '⚖️', label: 'Body' },
   { href: '/body-measurements', icon: Ruler, label: 'Measurements' },
+  { href: '/oral-hygiene', icon: '🦷', label: 'Oral Care' },
   { href: '/medications', icon: Pill, label: 'Medications' },
   { href: '/labs', icon: '🧪', label: 'Labs' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
