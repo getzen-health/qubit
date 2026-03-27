@@ -87,10 +87,10 @@ export default function ChallengesPage() {
             ? <div className="col-span-full flex justify-center py-8"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div>
             : challenges.length === 0
               ? (
-                <div className="col-span-full flex flex-col items-center gap-3 py-16 text-center">
-                  <span className="text-5xl">🏆</span>
-                  <p className="text-lg font-semibold text-text-primary">No challenges yet</p>
-                  <p className="text-sm text-text-secondary max-w-xs">Create the first challenge below and invite the community to compete!</p>
+                <div className="col-span-full text-center py-12">
+                  <div className="text-4xl mb-4">🏆</div>
+                  <h3 className="text-lg font-semibold text-text-primary mb-2">No challenges yet</h3>
+                  <p className="text-sm text-text-secondary mb-4">Create your first challenge to start building healthy habits with friends.</p>
                 </div>
               )
               : challenges.map((c, i) => (
