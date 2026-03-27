@@ -13,6 +13,24 @@ class WatchSessionManager: NSObject, WCSessionDelegate {
         WCSession.default.activate()
     }
 
+    // MARK: - Quick Log (Watch → iPhone)
+
+    /// Send a quick log entry to the paired iPhone.
+    /// Uses transferUserInfo so delivery is guaranteed even if iPhone is not reachable.
+    func sendQuickLog(type: String, value: Double) {
+        guard WCSession.default.activationState == .activated else {
+            print("[WatchSession] Session not activated — cannot send quick log")
+            return
+        }
+        let payload: [String: Any] = [
+            "type": "quick_log",
+            "log_type": type,
+            "value": value,
+            "timestamp": Date().timeIntervalSince1970,
+        ]
+        WCSession.default.transferUserInfo(payload)
+    }
+
     // MARK: - WCSessionDelegate
 
     func session(

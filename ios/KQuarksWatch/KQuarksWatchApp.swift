@@ -6,8 +6,16 @@ struct KQuarksWatchApp: App {
 
     var body: some Scene {
         WindowGroup {
-            WatchContentView()
-                .environmentObject(session)
+            TabView {
+                WatchContentView()
+                    .tag(0)
+                NavigationStack {
+                    QuickLogWatchView()
+                }
+                .tag(1)
+            }
+            .tabViewStyle(.page)
+            .environmentObject(session)
         }
     }
 }
