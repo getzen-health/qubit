@@ -1,0 +1,124 @@
+name: UI Tests
+
+# Runs daily at 6 AM UTC + on any push touching web/e2e or iOS UI test files
+on:
+  schedule:
+    - cron: '0 6 * * *'   # daily 6 AM UTC
+  push:
+    paths:
+      - 'web/e2e/**'
+      - 'ios/KQuarksUITests/**'
+      - 'web/playwright.config.ts'
+      - '.github/workflows/ui-tests.yml'
+  workflow_dispatch:       # allow manual trigger from GitHub Actions UI
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Web E2E (Playwright)
+  # ──────────────────────────────────────────────
+  web-e2e:
+    name: Web E2E (Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run unit tests first
+        run: npm test
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder
+
+      - name: Build app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test --project=chromium --project=mobile-chrome
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+          # Skip visual regression on CI unless baselines are committed
+          PLAYWRIGHT_UPDATE_SNAPSHOTS: ${{ github.event_name == 'workflow_dispatch' && 'true' || '' }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: web/playwright-report/
+          retention-days: 14
+
+      - name: Upload test screenshots (on failure)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-screenshots-${{ github.run_number }}
+          path: web/test-results/
+          retention-days: 7
+
+  # ──────────────────────────────────────────────
+  # iOS UI Tests (XCUITest via xcodebuild)
+  # Note: requires KQuarksUITests target added in Xcode.
+  # See ios/KQuarksUITests/README.md for setup instructions.
+  # ──────────────────────────────────────────────
+  ios-ui-tests:
+    name: iOS UI Tests (XCUITest)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
+      - name: Check if UITest target exists
+        id: check_target
+        run: |
+          if xcodebuild -project ios/KQuarks.xcodeproj -list 2>/dev/null | grep -q "KQuarksUITests"; then
+            echo "target_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "target_exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️  KQuarksUITests target not found in Xcode project."
+            echo "   Add it via Xcode: File > New > Target > UI Testing Bundle."
+            echo "   See ios/KQuarksUITests/README.md for instructions."
+          fi
+
+      - name: Run iOS UI tests
+        if: steps.check_target.outputs.target_exists == 'true'
+        run: |
+          xcodebuild test \
+            -project ios/KQuarks.xcodeproj \
+            -scheme KQuarks \
+            -testPlan KQuarksUITests \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --report junit --output test-results/ios-ui-tests.xml \
+            || true
+
+      - name: Upload iOS test results
+        uses: actions/upload-artifact@v4
+        if: steps.check_target.outputs.target_exists == 'true' && always()
+        with:
+          name: ios-ui-test-results-${{ github.run_number }}
+          path: |
+            TestResults.xcresult
+            test-results/
+          retention-days: 14

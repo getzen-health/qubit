@@ -222,7 +222,7 @@ export function analyzeGoal(goal: HealthGoal, checkins: GoalCheckin[]): GoalAnal
     recommendations.push('Motivation is low. Revisit your WOOP obstacle and if-then plan.')
   }
   if (checkInStreak === 0) {
-    recommendations.push('No recent check-ins detected. Log today's progress to stay accountable.')
+    recommendations.push("No recent check-ins detected. Log today's progress to stay accountable.")
   }
   if (daysRemaining < 7 && progressPct < 80) {
     recommendations.push('Deadline approaching! Focus on your highest-leverage actions this week.')

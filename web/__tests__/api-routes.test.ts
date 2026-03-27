@@ -8,30 +8,35 @@ vi.mock('@/lib/supabase/server', () => ({
 import { createClient } from '@/lib/supabase/server'
 
 function mockSupabase(userData: any, dbData: any = [], dbError: any = null) {
-  const mockChain = {
-    from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    gte: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    limit: vi.fn().mockReturnThis(),
-    single: vi.fn().mockResolvedValue({ data: dbData[0] || null, error: dbError }),
-    then: vi.fn(),
+  const terminal = vi.fn().mockResolvedValue({ data: dbData[0] || null, error: dbError })
+  const mockChain: Record<string, any> = {
+    from: vi.fn(),
+    select: vi.fn(),
+    insert: vi.fn(),
+    upsert: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    eq: vi.fn(),
+    gte: vi.fn(),
+    lte: vi.fn(),
+    in: vi.fn(),
+    order: vi.fn(),
+    limit: vi.fn(),
+    single: terminal,
   }
+  // Make all chaining methods return the chain (except terminal single)
   Object.keys(mockChain).forEach(key => {
     if (key !== 'single') {
-      (mockChain as any)[key] = vi.fn().mockImplementation(() => ({
+      mockChain[key] = vi.fn().mockImplementation(() => ({
         ...mockChain,
         data: dbData,
         error: dbError,
-        [Symbol.asyncIterator]: undefined,
       }))
     }
   })
   ;(createClient as any).mockResolvedValue({
     auth: { getUser: vi.fn().mockResolvedValue({ data: { user: userData } }) },
-    ...mockChain,
+    from: mockChain.from,
   })
 }
 
