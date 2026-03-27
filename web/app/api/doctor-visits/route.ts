@@ -1,47 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
-export async function GET(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data, error } = await supabase
+      .from('doctor_visits')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('visit_date', { ascending: false })
+      .limit(20)
 
-  const { data, error } = await supabase
-    .from('doctor_visits')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('visit_date', { ascending: false })
-    .limit(20)
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ visits: data ?? [] })
+  }
+)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ visits: data ?? [] })
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const body = await req.json()
+    const { data, error } = await supabase
+      .from('doctor_visits')
+      .insert({
+        user_id: user!.id,
+        visit_date: body.visit_date,
+        provider_name: body.provider_name ?? null,
+        visit_type: body.visit_type ?? null,
+        chief_complaint: body.chief_complaint ?? null,
+        diagnoses: body.diagnoses ?? [],
+        medications_changed: body.medications_changed ?? [],
+        follow_up_date: body.follow_up_date ?? null,
+        notes: body.notes ?? null,
+      })
+      .select()
+      .single()
 
-export async function POST(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const body = await req.json()
-  const { data, error } = await supabase
-    .from('doctor_visits')
-    .insert({
-      user_id: user.id,
-      visit_date: body.visit_date,
-      provider_name: body.provider_name ?? null,
-      visit_type: body.visit_type ?? null,
-      chief_complaint: body.chief_complaint ?? null,
-      diagnoses: body.diagnoses ?? [],
-      medications_changed: body.medications_changed ?? [],
-      follow_up_date: body.follow_up_date ?? null,
-      notes: body.notes ?? null,
-    })
-    .select()
-    .single()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ visit: data })
-}
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ visit: data })
+  }
+)
