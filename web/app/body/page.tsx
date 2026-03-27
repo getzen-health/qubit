@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 type BodyEntry = {
   id: string
@@ -157,6 +158,29 @@ export default function BodyPage() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Weight trend chart */}
+        {entries.length >= 2 && (
+          <div className="bg-white rounded-2xl border border-border p-4">
+            <h3 className="font-semibold text-text-primary mb-3">Weight Trend</h3>
+            <ResponsiveContainer width="100%" height={160}>
+              <LineChart data={[...entries].reverse().map(e => ({
+                date: new Date(e.recorded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                weight: e.weight_kg,
+                fat: e.body_fat_pct,
+              }))}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickLine={false} />
+                <YAxis tick={{ fontSize: 10 }} tickLine={false} domain={['auto', 'auto']} />
+                <Tooltip
+                  contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 8, fontSize: 12 }}
+                  formatter={(v: number) => [`${v} kg`, 'Weight']}
+                />
+                <Line type="monotone" dataKey="weight" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         )}
 
