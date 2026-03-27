@@ -97,11 +97,12 @@ export async function checkRateLimit(
   }
 
   // Record this request
-  await supabase.from('rate_limit_events').insert({
+  const { error: rlErr } = await supabase.from('rate_limit_events').insert({
     key,
     endpoint: String(endpoint),
     identifier,
   })
+  if (rlErr) console.error('rate_limit_events insert error', rlErr)
 
   return {
     allowed: true,
