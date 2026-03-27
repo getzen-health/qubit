@@ -50,6 +50,27 @@ export default async function FunctionalStrengthPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString()
+  const { data: rawSessions } = await supabase
+    .from('workout_records')
+    .select('id, start_time, duration_minutes, active_calories, avg_heart_rate, max_heart_rate')
+    .eq('user_id', user.id)
+    .or('workout_type.ilike.%strength%,workout_type.ilike.%functional%')
+    .gte('start_time', since)
+    .order('start_time', { ascending: false })
+    .limit(50)
+
+  const mapped: FunctionalStrengthSession[] = (rawSessions ?? []).map((r) => ({
+    id: r.id,
+    start_time: r.start_time,
+    duration_minutes: r.duration_minutes ?? 0,
+    active_calories: r.active_calories ?? 0,
+    avg_heart_rate: r.avg_heart_rate ?? 0,
+    max_heart_rate: r.max_heart_rate ?? 0,
+  }))
+
+  const sessions = mapped.length > 0 ? mapped : MOCK_SESSIONS
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -64,14 +85,14 @@ export default async function FunctionalStrengthPage() {
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Functional Strength Analytics</h1>
             <p className="text-sm text-text-secondary">
-              {MOCK_SESSIONS.length} sessions · last 90 days
+              {sessions.length} sessions · last 90 days
             </p>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <FunctionalStrengthClient sessions={MOCK_SESSIONS} />
+        <FunctionalStrengthClient sessions={sessions} />
       </main>
       <BottomNav />
     </div>

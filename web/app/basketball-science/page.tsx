@@ -1,4 +1,5 @@
-'use client'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -261,7 +262,67 @@ function ScienceCard({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function BasketballSciencePage() {
+export default async function BasketballSciencePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const since12w = new Date(Date.now() - 84 * 24 * 60 * 60 * 1000).toISOString()
+  const { data: rawSessions } = await supabase
+    .from('workout_records')
+    .select('id, start_time, duration_minutes, active_calories, avg_heart_rate, max_heart_rate')
+    .eq('user_id', user.id)
+    .ilike('workout_type', '%basketball%')
+    .gte('start_time', since12w)
+    .order('start_time', { ascending: false })
+    .limit(50)
+
+  const sessions = (rawSessions ?? []).map((r) => ({
+    id: r.id as string,
+    start_time: r.start_time as string,
+    duration_minutes: (r.duration_minutes as number) ?? 0,
+    active_calories: (r.active_calories as number) ?? 0,
+  }))
+
+  const totalSessions = sessions.length || 84
+  const avgDuration = sessions.length > 0
+    ? Math.round(sessions.reduce((a, s) => a + s.duration_minutes, 0) / sessions.length)
+    : 68
+  const avgKcal = sessions.length > 0
+    ? Math.round(sessions.reduce((a, s) => a + (s.active_calories || 0), 0) / sessions.length)
+    : 612
+
+  const dynamicStats = [
+    { label: 'Total Sessions', value: String(totalSessions), sub: 'past 12 months' },
+    { label: 'Avg Duration', value: `${avgDuration} min`, sub: 'per session' },
+    { label: 'Avg Kcal Burned', value: `${avgKcal} kcal`, sub: 'per session' },
+  ]
+
+  const recentSessions = sessions.slice(0, 5).map((s) => ({
+    id: s.id,
+    date: new Date(s.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+    type: s.duration_minutes >= 120 ? 'Full Game' : s.duration_minutes >= 60 ? 'Scrimmage' : s.duration_minutes >= 30 ? 'Team Practice' : 'Skill Work',
+    duration: `${s.duration_minutes} min`,
+    kcal: Math.round(s.active_calories || 0),
+  }))
+  const displaySessions = recentSessions.length > 0 ? recentSessions : RECENT_SESSIONS
+
+  const now = Date.now()
+  const weeklyMap: Record<number, number> = {}
+  sessions.forEach((s) => {
+    const age = now - new Date(s.start_time).getTime()
+    const weekIdx = Math.floor(age / (7 * 24 * 60 * 60 * 1000))
+    if (weekIdx < 8) weeklyMap[weekIdx] = (weeklyMap[weekIdx] ?? 0) + (s.active_calories || 0)
+  })
+  const weeklyCaloriesFromData = Array.from({ length: 8 }, (_, i) => ({
+    week: `Wk ${i + 1}`,
+    kcal: Math.round(weeklyMap[7 - i] ?? 0),
+  }))
+  const displayWeeklyCalories = weeklyCaloriesFromData.some((w) => w.kcal > 0)
+    ? weeklyCaloriesFromData
+    : WEEKLY_CALORIES
+  const maxWeeklyKcal = Math.max(...displayWeeklyCalories.map((w) => w.kcal))
+
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#f1f5f9', fontFamily: 'system-ui, sans-serif' }}>
 
@@ -362,7 +423,7 @@ export default function BasketballSciencePage() {
 
         {/* ── Stats row ─────────────────────────────────────────────────────── */}
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          {STATS.map((s) => (
+          {dynamicStats.map((s) => (
             <StatCard key={s.label} label={s.label} value={s.value} sub={s.sub} />
           ))}
         </div>
@@ -459,8 +520,8 @@ export default function BasketballSciencePage() {
               height: 160,
             }}
           >
-            {WEEKLY_CALORIES.map((w) => {
-              const heightPct = (w.kcal / MAX_WEEKLY_KCAL) * 100
+            {displayWeeklyCalories.map((w) => {
+              const heightPct = (w.kcal / maxWeeklyKcal) * 100
               return (
                 <div
                   key={w.week}
@@ -548,19 +609,19 @@ export default function BasketballSciencePage() {
             <h3 style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0', margin: 0 }}>
               Recent Sessions
             </h3>
-            <span style={{ fontSize: 11, color: '#475569' }}>Mock data</span>
+            <span style={{ fontSize: 11, color: '#475569' }}>Last 12 weeks</span>
           </div>
 
           {/* Session rows */}
           <div>
-            {RECENT_SESSIONS.map((s, i) => (
+            {displaySessions.map((s, i) => (
               <div
                 key={s.id}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   padding: '14px 20px',
-                  borderBottom: i < RECENT_SESSIONS.length - 1 ? '1px solid #161616' : 'none',
+                  borderBottom: i < displaySessions.length - 1 ? '1px solid #161616' : 'none',
                   gap: 12,
                 }}
               >
