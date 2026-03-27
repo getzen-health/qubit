@@ -19,11 +19,18 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { score, notes } = await request.json()
-  if (!score || score < 1 || score > 10) return NextResponse.json({ error: 'score must be 1-10' }, { status: 400 })
+  const { valence, emotions, notes } = await request.json()
+  if (valence === undefined || valence < -5 || valence > 5) {
+    return NextResponse.json({ error: 'valence must be -5 to 5' }, { status: 400 })
+  }
   const { data, error } = await supabase
     .from('mood_logs')
-    .insert({ user_id: user.id, score: Number(score), notes: notes || null })
+    .insert({
+      user_id: user.id,
+      valence: Math.round(valence),
+      emotions: Array.isArray(emotions) ? emotions : [],
+      notes: notes || null,
+    })
     .select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ data }, { status: 201 })

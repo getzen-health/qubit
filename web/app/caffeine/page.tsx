@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Coffee, Moon, Clock, AlertTriangle, TrendingUp, BookOpen, ChevronDown, ChevronUp } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
@@ -40,10 +40,8 @@ function activeAtHour(
   }, 0)
 }
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-// Seed a realistic 30-day caffeine log
-// Each entry: date, list of { hourDecimal, mg, label }
 interface DoseEntry {
   hourDecimal: number
   mg: number
@@ -51,82 +49,28 @@ interface DoseEntry {
 }
 
 interface DayRecord {
-  date: string // YYYY-MM-DD
+  date: string
   doses: DoseEntry[]
 }
 
-function buildMockData(): DayRecord[] {
-  // Base date: 30 days ending today (2026-03-19)
-  const base = new Date()
-  const records: DayRecord[] = []
+// ─── Demo doses for the half-life explainer section ───────────────────────────
 
-  // Patterns: most days have morning coffee + midday, some late afternoon
-  const patterns: DoseEntry[][] = [
-    // Light day
-    [{ hourDecimal: 7.0, mg: 95, label: 'Coffee (7am)' }],
-    // Standard day
-    [
-      { hourDecimal: 7.5, mg: 95, label: 'Coffee (7:30am)' },
-      { hourDecimal: 12.0, mg: 95, label: 'Coffee (noon)' },
-    ],
-    // Double morning
-    [
-      { hourDecimal: 7.0, mg: 95, label: 'Coffee (7am)' },
-      { hourDecimal: 9.0, mg: 40, label: 'Espresso (9am)' },
-      { hourDecimal: 13.0, mg: 95, label: 'Coffee (1pm)' },
-    ],
-    // Late dose
-    [
-      { hourDecimal: 7.0, mg: 95, label: 'Coffee (7am)' },
-      { hourDecimal: 12.5, mg: 95, label: 'Coffee (12:30pm)' },
-      { hourDecimal: 15.0, mg: 80, label: 'Pre-workout (3pm)' },
-    ],
-    // Heavy day (>400mg)
-    [
-      { hourDecimal: 6.5, mg: 95, label: 'Coffee (6:30am)' },
-      { hourDecimal: 9.5, mg: 150, label: 'Energy drink (9:30am)' },
-      { hourDecimal: 13.0, mg: 95, label: 'Coffee (1pm)' },
-      { hourDecimal: 15.5, mg: 80, label: 'Pre-workout (3:30pm)' },
-    ],
-    // Rest day / no caffeine
-    [],
-    // Minimal
-    [{ hourDecimal: 8.0, mg: 80, label: 'Green tea (8am)' }],
-  ]
+const DEMO_DOSES: DoseEntry[] = [
+  { hourDecimal: 7.0, mg: 200, label: '200mg @ 7am' },
+  { hourDecimal: 11.0, mg: 150, label: '150mg @ 11am' },
+  { hourDecimal: 15.0, mg: 80, label: '80mg @ 3pm' },
+]
 
-  // Map day index to pattern
-  const patternMap = [
-    1, 1, 2, 2, 3, 1, 0, // week 1
-    1, 2, 3, 3, 4, 1, 6, // week 2
-    2, 1, 3, 2, 4, 0, 1, // week 3
-    2, 3, 1, 3, 2, 1, 4, // week 4 + 2
-    3, 1,
-  ]
+// ─── Per-day summary ─────────────────────────────────────────────────────────
 
-  for (let i = 0; i < 30; i++) {
-    const d = new Date(base)
-    d.setDate(base.getDate() + i)
-    const dateStr = d.toISOString().split('T')[0]
-    records.push({
-      date: dateStr,
-      doses: patterns[patternMap[i] ?? 1],
-    })
-  }
-
-  return records
-}
-
-const MOCK_DATA = buildMockData()
-
-// Pre-compute per-day totals and bedtime active
-const BEDTIME_HOUR = 22 // 10pm
+const BEDTIME_HOUR = 22
 
 interface DaySummary {
   date: string
-  label: string // e.g. "Feb 18"
+  label: string
   total: number
   activeAtBedtime: number
-  lateDoses: number // doses after 2pm
+  lateDoses: number
   color: string
 }
 
@@ -136,29 +80,17 @@ function computeDaySummaries(records: DayRecord[]): DaySummary[] {
     const active = Math.round(activeAtHour(r.doses, BEDTIME_HOUR))
     const late = r.doses.filter((d) => d.hourDecimal >= 14).length
     const color = total === 0
-      ? '#6b7280' // gray for no caffeine
+      ? '#6b7280'
       : total < 300
-        ? '#22c55e'   // green
+        ? '#22c55e'
         : total < 400
-          ? '#f59e0b' // orange
-          : '#ef4444' // red
-
+          ? '#f59e0b'
+          : '#ef4444'
     const d = new Date(r.date)
     const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-
     return { date: r.date, label, total, activeAtBedtime: active, lateDoses: late, color }
   })
 }
-
-const DAY_SUMMARIES = computeDaySummaries(MOCK_DATA)
-
-// ─── Half-life demo day (section 4) ──────────────────────────────────────────
-
-const DEMO_DOSES: DoseEntry[] = [
-  { hourDecimal: 7.0, mg: 200, label: '200mg @ 7am' },
-  { hourDecimal: 11.0, mg: 150, label: '150mg @ 11am' },
-  { hourDecimal: 15.0, mg: 80, label: '80mg @ 3pm' },
-]
 
 function buildDecayCurve(
   doses: DoseEntry[],
@@ -187,17 +119,11 @@ const DECAY_CURVE = buildDecayCurve(DEMO_DOSES)
 // ─── Time-of-day histogram ────────────────────────────────────────────────────
 
 function buildTODHistogram(records: DayRecord[]) {
-  // Bins: 6am to 10pm in 1h slots
   const bins: { hour: string; count: number; isLate: boolean; hourNum: number }[] = []
   for (let h = 6; h <= 21; h++) {
     const ampm = h >= 12 ? 'pm' : 'am'
     const displayH = h > 12 ? h - 12 : h === 0 ? 12 : h
-    bins.push({
-      hour: `${displayH}${ampm}`,
-      count: 0,
-      isLate: h >= 14,
-      hourNum: h,
-    })
+    bins.push({ hour: `${displayH}${ampm}`, count: 0, isLate: h >= 14, hourNum: h })
   }
   for (const r of records) {
     for (const d of r.doses) {
@@ -209,26 +135,10 @@ function buildTODHistogram(records: DayRecord[]) {
   return bins
 }
 
-const TOD_HISTOGRAM = buildTODHistogram(MOCK_DATA)
+// ─── Sleep correlation (static reference values) ─────────────────────────────
 
-// ─── Sleep correlation ────────────────────────────────────────────────────────
-
-// Pre-computed stats (would normally come from joined sleep data)
 const LOW_ACTIVE_STATS = { sleep: 7.8, hrv: 8.2, count: 18 }
 const HIGH_ACTIVE_STATS = { sleep: 6.9, hrv: 7.1, count: 8 }
-
-// ─── Aggregate stats ──────────────────────────────────────────────────────────
-
-const daysWithData = DAY_SUMMARIES.filter((d) => d.total > 0)
-const dailyAvg = Math.round(daysWithData.reduce((s, d) => s + d.total, 0) / (daysWithData.length || 1))
-const daysOver400 = DAY_SUMMARIES.filter((d) => d.total > 400).length
-const avgActiveAtBedtime = Math.round(
-  daysWithData.reduce((s, d) => s + d.activeAtBedtime, 0) / (daysWithData.length || 1)
-)
-const totalLateDoses = DAY_SUMMARIES.reduce((s, d) => s + d.lateDoses, 0)
-
-// Active caffeine on the demo day at 10pm
-const demoActiveAtBedtime = Math.round(activeAtHour(DEMO_DOSES, BEDTIME_HOUR))
 
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 
@@ -364,6 +274,41 @@ function ScienceAccordion() {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function CaffeinePage() {
+  const [dayRecords, setDayRecords] = useState<DayRecord[]>([])
+  const [loadingData, setLoadingData] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/energy')
+      .then((r) => r.json())
+      .then((json) => {
+        const logs: { date: string; caffeine_mg: number; caffeine_time: string }[] = json.logs ?? []
+        const records: DayRecord[] = logs.map((log) => {
+          const timeStr = log.caffeine_time ?? '08:00'
+          const [hStr, mStr] = timeStr.split(':')
+          const hourDecimal = parseInt(hStr ?? '8') + parseInt(mStr ?? '0') / 60
+          return {
+            date: log.date,
+            doses: log.caffeine_mg > 0 ? [{ hourDecimal, mg: log.caffeine_mg, label: 'Caffeine' }] : [],
+          }
+        })
+        setDayRecords(records)
+      })
+      .catch(() => {})
+      .finally(() => setLoadingData(false))
+  }, [])
+
+  const daySummaries = useMemo(() => computeDaySummaries(dayRecords), [dayRecords])
+  const todHistogram = useMemo(() => buildTODHistogram(dayRecords), [dayRecords])
+
+  const daysWithData = daySummaries.filter((d) => d.total > 0)
+  const dailyAvg = Math.round(daysWithData.reduce((s, d) => s + d.total, 0) / (daysWithData.length || 1))
+  const daysOver400 = daySummaries.filter((d) => d.total > 400).length
+  const avgActiveAtBedtime = Math.round(
+    daysWithData.reduce((s, d) => s + d.activeAtBedtime, 0) / (daysWithData.length || 1)
+  )
+  const totalLateDoses = daySummaries.reduce((s, d) => s + d.lateDoses, 0)
+  const demoActiveAtBedtime = Math.round(activeAtHour(DEMO_DOSES, BEDTIME_HOUR))
+
   const [selectedDemoDay, setSelectedDemoDay] = useState<{
     label: string
     doses: DoseEntry[]
@@ -379,7 +324,7 @@ export default function CaffeinePage() {
   // Allow user to click a bar to preview that day's curve
   const handleBarClick = (data: { date: string; label: string; total: number } | null) => {
     if (!data) return
-    const record = MOCK_DATA.find((r) => r.date === data.date)
+    const record = dayRecords.find((r) => r.date === data.date)
     if (!record || record.doses.length === 0) return
     const curve = buildDecayCurve(record.doses)
     const activeAtBedtime = Math.round(activeAtHour(record.doses, BEDTIME_HOUR))
@@ -466,7 +411,7 @@ export default function CaffeinePage() {
             <p className="text-xs text-text-secondary mb-3">Tap a bar to explore that day's half-life curve below</p>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart
-                data={DAY_SUMMARIES}
+                data={daySummaries}
                 margin={{ top: 4, right: 4, left: -28, bottom: 0 }}
                 onClick={(e) => {
                   if (e?.activePayload?.[0]?.payload) {
@@ -497,7 +442,7 @@ export default function CaffeinePage() {
                   label={{ value: '400mg FDA', position: 'right', fontSize: 9, fill: 'rgba(239,68,68,0.6)' }}
                 />
                 <Bar dataKey="total" radius={[3, 3, 0, 0]} maxBarSize={16}>
-                  {DAY_SUMMARIES.map((entry, i) => (
+                  {daySummaries.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Bar>
@@ -663,7 +608,7 @@ export default function CaffeinePage() {
           <div className="bg-surface rounded-xl border border-border p-4">
             <ResponsiveContainer width="100%" height={140}>
               <BarChart
-                data={TOD_HISTOGRAM}
+                data={todHistogram}
                 margin={{ top: 4, right: 4, left: -28, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -688,7 +633,7 @@ export default function CaffeinePage() {
                   label={{ value: 'Cutoff', position: 'top', fontSize: 9, fill: 'rgba(249,115,22,0.7)' }}
                 />
                 <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={18}>
-                  {TOD_HISTOGRAM.map((entry, i) => (
+                  {todHistogram.map((entry, i) => (
                     <Cell key={i} fill={entry.isLate ? '#f97316' : '#60a5fa'} />
                   ))}
                 </Bar>

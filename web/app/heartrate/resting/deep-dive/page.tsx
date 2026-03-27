@@ -17,42 +17,6 @@ function ahaClass(rhr: number): { label: string; color: string } {
   return { label: 'Poor', color: '#ef4444' }
 }
 
-// ─── Generate 365 days of realistic mock RHR data ─────────────────────────────
-function generateMockData() {
-  const today = new Date()
-  const points: { date: string; rhr: number }[] = []
-
-  for (let i = 364; i >= 0; i--) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    const dateStr = d.toISOString().slice(0, 10)
-    const dow = d.getDay() // 0=Sun
-
-    // Base ~57 bpm
-    let base = 57
-
-    // Seasonal: summer (Jun–Aug) slightly higher fatigue, winter lower
-    const month = d.getMonth() // 0-based
-    if (month >= 5 && month <= 7) base += 2.5   // summer
-    if (month >= 11 || month <= 1) base -= 1.5  // winter
-
-    // Weekly pattern: Mon high (post-weekend), Wed–Thu low, Sat moderate
-    const dowOffset = [1.5, 2.5, 0.5, -1.5, -2, 0.5, 1][dow]
-    base += dowOffset
-
-    // Gradual improvement arc over the year (fitness improving ~5 bpm)
-    base -= (364 - i) / 364 * 5
-
-    // Random noise ±3 bpm
-    const noise = (Math.random() - 0.5) * 6
-
-    const rhr = Math.round(Math.max(44, Math.min(80, base + noise)))
-    points.push({ date: dateStr, rhr })
-  }
-
-  return points
-}
-
 // ─── 14-day rolling average ───────────────────────────────────────────────────
 function withRolling(points: { date: string; rhr: number }[]) {
   return points.map((p, i) => {
@@ -64,22 +28,48 @@ function withRolling(points: { date: string; rhr: number }[]) {
 
 export default async function RestingHRDeepDivePage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Mock data (no real DB query for this page)
-  const raw = generateMockData()
+  // Fetch real resting HR from daily_summaries (last 365 days)
+  const since = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10)
+  const { data: summaries } = await supabase
+    .from('daily_summaries')
+    .select('date, resting_heart_rate')
+    .eq('user_id', user.id)
+    .gte('date', since)
+    .not('resting_heart_rate', 'is', null)
+    .order('date', { ascending: true })
+
+  // Build full 365-day array (null gaps for missing days)
+  const dataMap = new Map((summaries ?? []).map((s) => [s.date, s.resting_heart_rate as number]))
+  const raw: { date: string; rhr: number }[] = []
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000)
+    const dateStr = d.toISOString().slice(0, 10)
+    const rhr = dataMap.get(dateStr)
+    if (rhr !== undefined) raw.push({ date: dateStr, rhr })
+  }
+
   const trendData = withRolling(raw)
 
-  // Summary stats
+  // Summary stats from real data
   const allRhr = raw.map((p) => p.rhr)
-  const latestRhr = 54
-  const avg90 = 57
-  const lowest12mo = Math.min(...allRhr)
-  const highest12mo = Math.max(...allRhr)
-  const trend30 = -3
+  const latestRhr = allRhr.length > 0 ? allRhr[allRhr.length - 1] : 0
+  const recent90 = allRhr.slice(-90)
+  const avg90 = recent90.length > 0
+    ? Math.round(recent90.reduce((a, b) => a + b, 0) / recent90.length)
+    : 0
+  const lowest12mo = allRhr.length > 0 ? Math.min(...allRhr) : 0
+  const highest12mo = allRhr.length > 0 ? Math.max(...allRhr) : 0
+  const last30 = allRhr.slice(-30)
+  const first30 = allRhr.slice(0, 30)
+  const trend30 = last30.length > 0 && first30.length > 0
+    ? Math.round(
+        last30.reduce((a, b) => a + b, 0) / last30.length -
+        first30.reduce((a, b) => a + b, 0) / first30.length
+      )
+    : 0
 
   // Monthly averages (12 months)
   const monthMap = new Map<string, number[]>()

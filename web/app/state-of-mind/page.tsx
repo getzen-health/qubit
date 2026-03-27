@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Brain } from 'lucide-react'
 import {
@@ -64,91 +64,50 @@ const TOOLTIP_STYLE = {
   fontSize: 12,
 }
 
-// ─── Seed-based PRNG (deterministic mock data) ────────────────────────────────
-
-function seededRandom(seed: number) {
-  let s = seed
-  return () => {
-    s = (s * 1664525 + 1013904223) & 0xffffffff
-    return (s >>> 0) / 0xffffffff
-  }
-}
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface MindEntry {
   date: string
-  dayIndex: number     // 0 = oldest
-  valence: number      // -1 to +1
+  dayIndex: number
+  valence: number  // -1 to +1
   kind: 'momentary' | 'daily'
   label: string
   association: string
 }
 
-// ─── Mock data generator ──────────────────────────────────────────────────────
+interface MoodLog {
+  id: string
+  logged_at: string
+  valence: number   // -5 to 5 from DB
+  emotions: string[]
+  notes: string | null
+}
 
-const EMOTION_POOL: { label: string; valence: [number, number] }[] = [
-  { label: 'Calm',        valence: [0.3, 0.7]  },
-  { label: 'Grateful',    valence: [0.5, 0.9]  },
-  { label: 'Joyful',      valence: [0.6, 0.9]  },
-  { label: 'Content',     valence: [0.2, 0.6]  },
-  { label: 'Hopeful',     valence: [0.3, 0.7]  },
-  { label: 'Proud',       valence: [0.4, 0.8]  },
-  { label: 'Peaceful',    valence: [0.3, 0.65] },
-  { label: 'Stressed',    valence: [-0.8, -0.3] },
-  { label: 'Anxious',     valence: [-0.75, -0.25] },
-  { label: 'Sad',         valence: [-0.7, -0.2] },
-  { label: 'Irritated',   valence: [-0.6, -0.1] },
-  { label: 'Overwhelmed', valence: [-0.8, -0.35] },
-]
+function moodLogsToEntries(logs: MoodLog[]): MindEntry[] {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return logs
+    .filter((l) => l.valence !== null && l.valence !== undefined)
+    .map((log) => {
+      const date = log.logged_at.slice(0, 10)
+      const logDate = new Date(date)
+      logDate.setHours(0, 0, 0, 0)
+      const msAgo = today.getTime() - logDate.getTime()
+      const daysAgo = Math.floor(msAgo / 86400000)
+      const dayIndex = Math.max(0, 29 - daysAgo)
+      return {
+        date,
+        dayIndex,
+        valence: +(log.valence / 5).toFixed(2), // scale -5..5 → -1..1
+        kind: 'daily' as const,
+        label: log.emotions?.[0] ?? 'Neutral',
+        association: 'Other',
+      }
+    })
+    .filter((e) => e.dayIndex >= 0)
+}
 
 const ASSOCIATIONS = ['Work', 'Family', 'Fitness', 'Health', 'Hobbies', 'Other']
-
-function generateMockData(): MindEntry[] {
-  const rand = seededRandom(20260319)
-  const entries: MindEntry[] = []
-  const today = new Date()
-
-  for (let dayIdx = 0; dayIdx < 30; dayIdx++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() - (29 - dayIdx))
-    const dateStr = d.toISOString().split('T')[0]
-
-    // 1–2 entries per day; some days have only a daily check-in, others also a momentary
-    const numEntries = rand() < 0.4 ? 1 : 2
-
-    for (let e = 0; e < numEntries; e++) {
-      const kind: 'momentary' | 'daily' = e === 0 ? 'daily' : 'momentary'
-
-      // Pick emotion
-      const emotionIdx = Math.floor(rand() * EMOTION_POOL.length)
-      const emotion = EMOTION_POOL[emotionIdx]
-
-      const [vMin, vMax] = emotion.valence
-      const valence = +(vMin + rand() * (vMax - vMin)).toFixed(2)
-
-      // Association — weighted
-      const assocWeights = [0.28, 0.20, 0.18, 0.15, 0.12, 0.07]
-      let assocR = rand()
-      let assocIdx = 0
-      for (let i = 0; i < assocWeights.length; i++) {
-        assocR -= assocWeights[i]
-        if (assocR <= 0) { assocIdx = i; break }
-      }
-
-      entries.push({
-        date: dateStr,
-        dayIndex: dayIdx,
-        valence,
-        kind,
-        label: emotion.label,
-        association: ASSOCIATIONS[assocIdx],
-      })
-    }
-  }
-
-  return entries
-}
 
 // ─── Rolling average ──────────────────────────────────────────────────────────
 
@@ -236,10 +195,22 @@ function renderPieLabel({ cx, cy, midAngle, outerRadius, percent, name }: PieLab
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function StateOfMindPage() {
-  const entries = useMemo(() => generateMockData(), [])
+  const [entries, setEntries] = useState<MindEntry[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/mood')
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.data) setEntries(moodLogsToEntries(json.data))
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   // ── Summary stats ────────────────────────────────────────────────────────────
   const avgValence = useMemo(() => {
+    if (entries.length === 0) return 0
     const sum = entries.reduce((s, e) => s + e.valence, 0)
     return +(sum / entries.length).toFixed(2)
   }, [entries])
@@ -303,6 +274,18 @@ export default function StateOfMindPage() {
         </div>
       </header>
 
+      {loading && (
+        <div className="flex items-center justify-center py-20 text-text-secondary">Loading…</div>
+      )}
+
+      {!loading && entries.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 gap-2">
+          <Brain className="w-10 h-10 text-text-secondary/40" />
+          <p className="text-text-secondary">No mood logs yet. Log your first check-in from the iPhone Health app.</p>
+        </div>
+      )}
+
+      {!loading && entries.length > 0 && (
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24 space-y-6">
 
         {/* ── Summary cards ── */}
@@ -649,6 +632,7 @@ export default function StateOfMindPage() {
         </div>
 
       </main>
+      )}
     </div>
   )
 }
