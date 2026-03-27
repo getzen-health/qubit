@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+} from '@/lib/security'
 
 type Intensity = 'rest' | 'easy' | 'moderate' | 'hard' | 'peak'
 
@@ -121,95 +123,94 @@ const WORKOUT_SUGGESTIONS: Record<Intensity, { type: string; workouts: string[];
   },
 }
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const today = new Date().toISOString().slice(0, 10)
 
-  const today = new Date().toISOString().slice(0, 10)
+    // Check for cached prescription today
+    const { data: existing } = await supabase
+      .from('workout_prescriptions')
+      .select('*')
+      .eq('user_id', user!.id)
+      .eq('date', today)
+      .single()
 
-  // Check for cached prescription today
-  const { data: existing } = await supabase
-    .from('workout_prescriptions')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', today)
-    .single()
+    // Fetch recent metrics
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { data: metrics } = await supabase
+      .from('health_metrics')
+      .select('metric_type, value, recorded_at')
+      .eq('user_id', user!.id)
+      .gte('recorded_at', since24h)
+      .order('recorded_at', { ascending: false })
 
-  // Fetch recent metrics
-  const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  const { data: metrics } = await supabase
-    .from('health_metrics')
-    .select('metric_type, value, recorded_at')
-    .eq('user_id', user.id)
-    .gte('recorded_at', since24h)
-    .order('recorded_at', { ascending: false })
+    // Extract latest values
+    const get = (type: string) => metrics?.find(m => m.metric_type === type)?.value ?? null
 
-  // Extract latest values
-  const get = (type: string) => metrics?.find(m => m.metric_type === type)?.value ?? null
+    const hrv = get('hrv')
+    const sleepMin = get('sleep_duration_minutes')
+    const sleepHours = sleepMin ? sleepMin / 60 : null
+    const readiness = get('readiness_score')
 
-  const hrv = get('hrv')
-  const sleepMin = get('sleep_duration_minutes')
-  const sleepHours = sleepMin ? sleepMin / 60 : null
-  const readiness = get('readiness_score')
+    // Calculate ACWR (acute 7d / chronic 28d steps ratio)
+    const since28d = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
+    const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+    const { data: steps28, error: steps28Err } = await supabase.from('health_metrics').select('value').eq('user_id', user!.id).eq('metric_type', 'steps').gte('recorded_at', since28d)
+    const { data: steps7, error: steps7Err } = await supabase.from('health_metrics').select('value').eq('user_id', user!.id).eq('metric_type', 'steps').gte('recorded_at', since7d)
+    if (steps28Err || steps7Err) console.error('steps fetch error', steps28Err ?? steps7Err)
 
-  // Calculate ACWR (acute 7d / chronic 28d steps ratio)
-  const since28d = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
-  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: steps28, error: steps28Err } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since28d)
-  const { data: steps7, error: steps7Err } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since7d)
-  if (steps28Err || steps7Err) console.error('steps fetch error', steps28Err ?? steps7Err)
+    let acwr: number | null = null
+    if (steps28 && steps28.length >= 7 && steps7 && steps7.length >= 3) {
+      const acute = steps7.reduce((s, r) => s + r.value, 0) / 7
+      const chronic = steps28.reduce((s, r) => s + r.value, 0) / 28
+      if (chronic > 0) acwr = Math.round((acute / chronic) * 100) / 100
+    }
 
-  let acwr: number | null = null
-  if (steps28 && steps28.length >= 7 && steps7 && steps7.length >= 3) {
-    const acute = steps7.reduce((s, r) => s + r.value, 0) / 7
-    const chronic = steps28.reduce((s, r) => s + r.value, 0) / 28
-    if (chronic > 0) acwr = Math.round((acute / chronic) * 100) / 100
-  }
+    const { intensity, points } = calcIntensity(hrv, sleepHours, readiness, acwr)
+    const suggestion = WORKOUT_SUGGESTIONS[intensity]
 
-  const { intensity, points } = calcIntensity(hrv, sleepHours, readiness, acwr)
-  const suggestion = WORKOUT_SUGGESTIONS[intensity]
-
-  const result: PrescriptionResult = {
-    intensity,
-    intensity_label: suggestion.label,
-    intensity_emoji: suggestion.emoji,
-    recommended_workout_type: suggestion.type,
-    rationale: points.join('. '),
-    rationale_points: points,
-    suggested_workouts: suggestion.workouts,
-    duration_range: suggestion.duration,
-    heart_rate_zone: suggestion.hrZone,
-    recovery_tip: suggestion.tip,
-    scores: { hrv, sleep_hours: sleepHours, readiness, acwr },
-  }
-
-  // Save/update today's prescription
-  if (!existing) {
-    const { error: upsertErr } = await supabase.from('workout_prescriptions').upsert({
-      user_id: user.id,
-      date: today,
+    const result: PrescriptionResult = {
       intensity,
+      intensity_label: suggestion.label,
+      intensity_emoji: suggestion.emoji,
       recommended_workout_type: suggestion.type,
-      rationale: result.rationale,
-      hrv_score: hrv,
-      sleep_quality: sleepHours,
-      readiness_score: readiness,
-      acwr,
-    })
-    if (upsertErr) console.error('prescription upsert error', upsertErr)
+      rationale: points.join('. '),
+      rationale_points: points,
+      suggested_workouts: suggestion.workouts,
+      duration_range: suggestion.duration,
+      heart_rate_zone: suggestion.hrZone,
+      recovery_tip: suggestion.tip,
+      scores: { hrv, sleep_hours: sleepHours, readiness, acwr },
+    }
+
+    // Save/update today's prescription
+    if (!existing) {
+      const { error: upsertErr } = await supabase.from('workout_prescriptions').upsert({
+        user_id: user!.id,
+        date: today,
+        intensity,
+        recommended_workout_type: suggestion.type,
+        rationale: result.rationale,
+        hrv_score: hrv,
+        sleep_quality: sleepHours,
+        readiness_score: readiness,
+        acwr,
+      })
+      if (upsertErr) console.error('prescription upsert error', upsertErr)
+    }
+
+    return secureJsonResponse({ prescription: result, cached: !!existing })
   }
+)
 
-  return NextResponse.json({ prescription: result, cached: !!existing })
-}
-
-export async function PATCH(request: NextRequest) {
-  // Mark prescription as followed/not followed
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { date, followed } = await request.json()
-  const { error: updateErr } = await supabase.from('workout_prescriptions').update({ followed }).eq('user_id', user.id).eq('date', date ?? new Date().toISOString().slice(0, 10))
-  if (updateErr) console.error('prescription update error', updateErr)
-  return NextResponse.json({ success: true })
-}
+export const PATCH = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    // Mark prescription as followed/not followed
+    const { date, followed } = await request.json()
+    const { error: updateErr } = await supabase.from('workout_prescriptions').update({ followed }).eq('user_id', user!.id).eq('date', date ?? new Date().toISOString().slice(0, 10))
+    if (updateErr) console.error('prescription update error', updateErr)
+    return secureJsonResponse({ success: true })
+  }
+)

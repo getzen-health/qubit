@@ -1,82 +1,80 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 import { calculateSleepEnvironmentScore, type SleepEnvironmentLog } from '@/lib/sleep-environment'
 
-export async function GET(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data: logs, error } = await supabase
+      .from('sleep_environment_logs')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('date', { ascending: false })
+      .limit(30)
 
-  const { data: logs, error } = await supabase
-    .from('sleep_environment_logs')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: false })
-    .limit(30)
+    if (error) return secureErrorResponse('Failed to fetch sleep environment logs', 500)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    const scoredLogs = (logs ?? []).map((log: SleepEnvironmentLog) => ({
+      ...log,
+      score: calculateSleepEnvironmentScore(log),
+    }))
 
-  const scoredLogs = (logs ?? []).map((log: SleepEnvironmentLog) => ({
-    ...log,
-    score: calculateSleepEnvironmentScore(log),
-  }))
+    // 7-day score trend (ascending for chart)
+    const trend = scoredLogs
+      .slice(0, 7)
+      .reverse()
+      .map(l => ({ date: l.date, score: l.score.total, grade: l.score.grade }))
 
-  // 7-day score trend (ascending for chart)
-  const trend = scoredLogs
-    .slice(0, 7)
-    .reverse()
-    .map(l => ({ date: l.date, score: l.score.total, grade: l.score.grade }))
+    // Sleep onset correlation: group by score bucket
+    const onsetCorrelation = scoredLogs
+      .filter((l): l is typeof l & { sleep_onset_min: number } => l.sleep_onset_min != null)
+      .map(l => ({ score: l.score.total, onset: l.sleep_onset_min, date: l.date }))
 
-  // Sleep onset correlation: group by score bucket
-  const onsetCorrelation = scoredLogs
-    .filter((l): l is typeof l & { sleep_onset_min: number } => l.sleep_onset_min != null)
-    .map(l => ({ score: l.score.total, onset: l.sleep_onset_min, date: l.date }))
+    // Quality correlation
+    const qualityCorrelation = scoredLogs
+      .filter(l => l.perceived_sleep_quality != null)
+      .map(l => ({ score: l.score.total, quality: l.perceived_sleep_quality, date: l.date }))
 
-  // Quality correlation
-  const qualityCorrelation = scoredLogs
-    .filter(l => l.perceived_sleep_quality != null)
-    .map(l => ({ score: l.score.total, quality: l.perceived_sleep_quality, date: l.date }))
+    // Average sleep onset by score tier
+    const avgOnsetByTier = computeAvgOnsetByTier(onsetCorrelation)
 
-  // Average sleep onset by score tier
-  const avgOnsetByTier = computeAvgOnsetByTier(onsetCorrelation)
-
-  return NextResponse.json({
-    logs: scoredLogs,
-    trend,
-    onsetCorrelation,
-    qualityCorrelation,
-    avgOnsetByTier,
-  })
-}
-
-export async function POST(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-
-  let body: Partial<SleepEnvironmentLog>
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'invalid json' }, { status: 400 })
+    return secureJsonResponse({
+      logs: scoredLogs,
+      trend,
+      onsetCorrelation,
+      qualityCorrelation,
+      avgOnsetByTier,
+    })
   }
+)
 
-  const { id: _id, user_id: _uid, created_at: _ca, ...fields } = body
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    let body: Partial<SleepEnvironmentLog>
+    try {
+      body = await req.json()
+    } catch {
+      return secureErrorResponse('invalid json', 400)
+    }
 
-  const { data, error } = await supabase
-    .from('sleep_environment_logs')
-    .upsert({ ...fields, user_id: user.id }, { onConflict: 'user_id,date' })
-    .select()
-    .single()
+    const { id: _id, user_id: _uid, created_at: _ca, ...fields } = body
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    const { data, error } = await supabase
+      .from('sleep_environment_logs')
+      .upsert({ ...fields, user_id: user!.id }, { onConflict: 'user_id,date' })
+      .select()
+      .single()
 
-  const score = calculateSleepEnvironmentScore(data as SleepEnvironmentLog)
-  return NextResponse.json({ log: data, score })
-}
+    if (error) return secureErrorResponse('Failed to save sleep environment log', 500)
+
+    const score = calculateSleepEnvironmentScore(data as SleepEnvironmentLog)
+    return secureJsonResponse({ log: data, score })
+  }
+)
 
 function computeAvgOnsetByTier(
   data: { score: number; onset: number }[]

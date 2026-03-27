@@ -1,54 +1,30 @@
-import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { z } from 'zod'
+import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
-export async function POST(req: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+const pushSubscribeBodySchema = z.object({
+  endpoint: z.string().url(),
+  keys: z.object({
+    p256dh: z.string().min(1),
+    auth: z.string().min(1),
+  }),
+})
 
-    const subscription = await req.json()
-    
-    // Validate required fields
-    if (!subscription?.endpoint) {
-      return NextResponse.json({ error: "Invalid subscription: missing endpoint" }, { status: 400 })
-    }
+export const POST = createSecureApiHandler(
+  { rateLimit: 'default', requireAuth: true, bodySchema: pushSubscribeBodySchema },
+  async (_req, { user, body, supabase }) => {
+    const { endpoint, keys } = body as z.infer<typeof pushSubscribeBodySchema>
 
-    if (!subscription?.keys?.p256dh) {
-      return NextResponse.json({ error: "Invalid subscription: missing keys.p256dh" }, { status: 400 })
-    }
-
-    if (!subscription?.keys?.auth) {
-      return NextResponse.json({ error: "Invalid subscription: missing keys.auth" }, { status: 400 })
-    }
-
-    // Validate endpoint is a valid URL
-    try {
-      new URL(subscription.endpoint)
-    } catch {
-      return NextResponse.json({ error: "Invalid subscription: endpoint must be a valid URL" }, { status: 400 })
-    }
-
-    const { error: pushErr } = await supabase.from("web_push_subscriptions").upsert(
+    const { error: pushErr } = await supabase.from('web_push_subscriptions').upsert(
       {
-        user_id: user.id,
-        endpoint: subscription.endpoint,
-        p256dh: subscription.keys.p256dh,
-        auth: subscription.keys.auth,
+        user_id: user!.id,
+        endpoint,
+        p256dh: keys.p256dh,
+        auth: keys.auth,
       },
-      { onConflict: "user_id,endpoint" }
+      { onConflict: 'user_id,endpoint' }
     )
-    if (pushErr) console.error("push subscription upsert error", pushErr)
+    if (pushErr) console.error('push subscription upsert error', pushErr)
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Push subscription error:", error)
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to subscribe" },
-      { status: 500 }
-    )
+    return secureJsonResponse({ success: true })
   }
-}
+)

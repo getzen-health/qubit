@@ -1,25 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
     const body = await request.json()
     const { medication_id, taken_at, skipped, notes } = body
 
     if (!medication_id) {
-      return NextResponse.json({ error: 'Medication ID is required' }, { status: 400 })
+      return secureErrorResponse('Medication ID is required', 400)
     }
 
     const { data, error } = await supabase
       .from('medication_logs')
       .insert({
-        user_id: user.id,
+        user_id: user!.id,
         medication_id,
         taken_at: taken_at || new Date().toISOString(),
         skipped: skipped || false,
@@ -28,36 +26,25 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error('Error creating medication log:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    if (error) return secureErrorResponse('Failed to create medication log', 400)
+    return secureJsonResponse(data)
   }
-}
+)
 
-export async function DELETE(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { searchParams } = new URL(request.url)
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { searchParams } = request.nextUrl
     const id = searchParams.get('id')
-    if (!id) return NextResponse.json({ error: 'Log ID is required' }, { status: 400 })
+    if (!id) return secureErrorResponse('Log ID is required', 400)
 
     const { error } = await supabase
       .from('medication_logs')
       .delete()
       .eq('id', id)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Error deleting medication log:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    if (error) return secureErrorResponse('Failed to delete medication log', 400)
+    return secureJsonResponse({ success: true })
   }
-}
+)

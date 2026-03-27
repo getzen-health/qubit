@@ -1,8 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
-import webpush from 'web-push'
 import { z } from 'zod'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+import webpush from 'web-push'
 
 webpush.setVapidDetails(
   process.env.VAPID_SUBJECT!,
@@ -10,7 +8,7 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY!,
 )
 
-const SubscribeSchema = z.object({
+const subscribeBodySchema = z.object({
   endpoint: z.string().url(),
   keys: z.object({
     p256dh: z.string(),
@@ -19,46 +17,41 @@ const SubscribeSchema = z.object({
   userAgent: z.string().optional(),
 })
 
-export async function POST(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+const unsubscribeBodySchema = z.object({
+  endpoint: z.string().min(1),
+})
 
-  const body = await req.json()
-  const parsed = SubscribeSchema.safeParse(body)
-  if (!parsed.success) return NextResponse.json({ error: 'Invalid subscription' }, { status: 400 })
+export const POST = createSecureApiHandler(
+  { rateLimit: 'default', requireAuth: true, bodySchema: subscribeBodySchema },
+  async (req, { user, body, supabase }) => {
+    const { endpoint, keys, userAgent } = body as z.infer<typeof subscribeBodySchema>
 
-  const { endpoint, keys, userAgent } = parsed.data
+    const { error } = await supabase
+      .from('push_subscriptions')
+      .upsert({
+        user_id: user!.id,
+        endpoint,
+        p256dh: keys.p256dh,
+        auth: keys.auth,
+        user_agent: userAgent ?? req.headers.get('user-agent') ?? null,
+      }, { onConflict: 'user_id,endpoint' })
 
-  const { error } = await supabase
-    .from('push_subscriptions')
-    .upsert({
-      user_id: user.id,
-      endpoint,
-      p256dh: keys.p256dh,
-      auth: keys.auth,
-      user_agent: userAgent ?? req.headers.get('user-agent') ?? null,
-    }, { onConflict: 'user_id,endpoint' })
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ success: true })
+  }
+)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'default', requireAuth: true, bodySchema: unsubscribeBodySchema },
+  async (_req, { user, body, supabase }) => {
+    const { endpoint } = body as z.infer<typeof unsubscribeBodySchema>
 
-export async function DELETE(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    await supabase
+      .from('push_subscriptions')
+      .delete()
+      .eq('user_id', user!.id)
+      .eq('endpoint', endpoint)
 
-  const { endpoint } = await req.json()
-  if (!endpoint) return NextResponse.json({ error: 'endpoint required' }, { status: 400 })
-
-  await supabase
-    .from('push_subscriptions')
-    .delete()
-    .eq('user_id', user.id)
-    .eq('endpoint', endpoint)
-
-  return NextResponse.json({ success: true })
-}
+    return secureJsonResponse({ success: true })
+  }
+)

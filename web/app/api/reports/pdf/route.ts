@@ -1,31 +1,19 @@
-import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
 import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureErrorResponse } from '@/lib/security'
 import jsPDF from 'jspdf'
-import { checkRateLimit } from '@/lib/security/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+const pdfBodySchema = z.object({
+  year: z.number().optional(),
+})
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+export const POST = createSecureApiHandler(
+  { rateLimit: 'export', requireAuth: true, bodySchema: pdfBodySchema },
+  async (request, { body }) => {
+    const { year = new Date().getFullYear() } = body as z.infer<typeof pdfBodySchema>
 
-    // Rate limit PDF exports to 5 per hour per user
-    const limited = await checkRateLimit(user.id, 'export')
-    if (limited.remaining === 0 && !limited.allowed) {
-      return NextResponse.json(
-        { error: 'Too many PDF exports. Please try again later.' },
-        { status: 429 }
-      )
-    }
-
-    const { year = new Date().getFullYear() } = await request.json()
-
-    // Fetch monthly data
     const monthlyRes = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/health/monthly?year=${year}`,
       {
@@ -36,12 +24,11 @@ export async function POST(request: Request) {
     )
 
     if (!monthlyRes.ok) {
-      throw new Error('Failed to fetch monthly data')
+      return secureErrorResponse('Failed to fetch monthly data', 500)
     }
 
     const { monthly_data, yearly_summary } = await monthlyRes.json()
 
-    // Generate PDF
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -52,14 +39,12 @@ export async function POST(request: Request) {
     const pageHeight = pdf.internal.pageSize.getHeight()
     let yPosition = 15
 
-    // Title
     pdf.setFontSize(24)
     pdf.setTextColor(51, 51, 51)
     pdf.text(`Health Report ${year}`, pageWidth / 2, yPosition, { align: 'center' })
 
     yPosition += 15
 
-    // Yearly Summary Section
     pdf.setFontSize(14)
     pdf.setTextColor(80, 80, 80)
     pdf.text('Yearly Summary', 15, yPosition)
@@ -83,18 +68,15 @@ export async function POST(request: Request) {
 
     yPosition += 5
 
-    // Monthly Data Section
     pdf.setFontSize(14)
     pdf.setTextColor(80, 80, 80)
     pdf.text('Monthly Breakdown', 15, yPosition)
 
     yPosition += 10
 
-    // Create table of monthly data
     pdf.setFontSize(9)
     pdf.setTextColor(0, 0, 0)
 
-    // Table headers
     const colWidths = [30, 30, 30, 40, 30]
     const headers = ['Month', 'Avg Steps', 'Total Steps', 'Sleep (hrs)', 'Days']
     let xPos = 15
@@ -108,7 +90,6 @@ export async function POST(request: Request) {
 
     yPosition += 8
 
-    // Table data
     pdf.setTextColor(0, 0, 0)
     for (const month of monthly_data) {
       if (yPosition > pageHeight - 20) {
@@ -133,7 +114,6 @@ export async function POST(request: Request) {
       yPosition += 7
     }
 
-    // Footer
     yPosition = pageHeight - 10
     pdf.setFontSize(8)
     pdf.setTextColor(150, 150, 150)
@@ -144,7 +124,6 @@ export async function POST(request: Request) {
       { align: 'center' }
     )
 
-    // Return PDF as file
     const pdfBuffer = Buffer.from(pdf.output('arraybuffer'))
 
     return new NextResponse(pdfBuffer, {
@@ -153,11 +132,5 @@ export async function POST(request: Request) {
         'Content-Disposition': `attachment; filename="health-report-${year}.pdf"`,
       },
     })
-  } catch (error) {
-    console.error('PDF export error:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate PDF' },
-      { status: 500 }
-    )
   }
-}
+)
