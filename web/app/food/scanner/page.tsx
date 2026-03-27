@@ -832,40 +832,58 @@ export default function FoodScannerPage() {
             <div className="bg-surface rounded-2xl border border-border p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-text-primary">QuarkScore™ Breakdown</h3>
-                <span className="text-xs text-text-secondary">Research-based · 5 pillars</span>
+                <button
+                  onClick={() => setShowBreakdown(v => !v)}
+                  className="flex items-center gap-1 text-xs text-accent"
+                >
+                  {showBreakdown ? <><ChevronUp className="w-3 h-3" />Hide details</> : <><ChevronDown className="w-3 h-3" />Show details</>}
+                </button>
               </div>
-              <div className="space-y-2.5">
-                {[
-                  { icon: '🥦', label: 'Nutrient Balance', key: 'nutrientBalance', fallback: 'nutrition', max: 35, color: 'bg-green-500' },
-                  { icon: '🏭', label: 'Processing Level', key: 'processingIntegrity', fallback: 'processingIntegrity', max: 25, color: 'bg-blue-500' },
-                  { icon: '🧪', label: 'Additive Safety',  key: 'additiveSafety', fallback: 'additives', max: 20, color: 'bg-purple-500' },
-                  { icon: '🌾', label: 'Ingredient Quality', key: 'ingredientQuality', fallback: 'ingredientQuality', max: 15, color: 'bg-amber-500' },
-                  { icon: '🎯', label: 'Fits Your Goals',  key: 'contextFit', fallback: 'contextFit', max: 5, color: 'bg-pink-500' },
-                ].map(({ icon, label, key, fallback, max, color }) => {
-                  const val = product.score_components
-                    ? ((product.score_components as Record<string, number>)[key] ?? (product.score_components as Record<string, number>)[fallback] ?? 0)
-                    : 0
-                  const pct = Math.round((val / max) * 100)
-                  return (
-                    <div key={key}>
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs text-text-secondary">{icon} {label}</span>
-                        <span className="text-xs font-semibold text-text-primary">{val}/{max}</span>
+              {showBreakdown && (
+                <div className="space-y-2.5 mb-3">
+                  {[
+                    { icon: '🥦', label: 'Nutrient Balance', key: 'nutrientBalance', fallback: 'nutrition', max: 35, color: 'bg-green-500' },
+                    { icon: '🏭', label: 'Processing Level', key: 'processingIntegrity', fallback: 'processingIntegrity', max: 25, color: 'bg-blue-500' },
+                    { icon: '🧪', label: 'Additive Safety',  key: 'additiveSafety', fallback: 'additives', max: 20, color: 'bg-purple-500' },
+                    { icon: '🌾', label: 'Ingredient Quality', key: 'ingredientQuality', fallback: 'ingredientQuality', max: 15, color: 'bg-amber-500' },
+                    { icon: '🎯', label: 'Fits Your Goals',  key: 'contextFit', fallback: 'contextFit', max: 5, color: 'bg-pink-500' },
+                  ].map(({ icon, label, key, fallback, max, color }) => {
+                    const val = product.score_components
+                      ? ((product.score_components as Record<string, number>)[key] ?? (product.score_components as Record<string, number>)[fallback] ?? 0)
+                      : 0
+                    const pct = Math.round((val / max) * 100)
+                    return (
+                      <div key={key}>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs text-text-secondary">{icon} {label}</span>
+                          <span className="text-xs font-semibold text-text-primary">{val}/{max}</span>
+                        </div>
+                        <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
+                          <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
+                        </div>
                       </div>
-                      <div className="h-2 bg-surface-secondary rounded-full overflow-hidden">
-                        <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  )
-                })}
-                <div className="border-t border-border pt-2 flex justify-between items-center">
-                  <span className="text-sm font-semibold text-text-primary">Total QuarkScore™</span>
-                  <span className="text-lg font-black text-text-primary">{product.healthScore.score}/100</span>
+                    )
+                  })}
                 </div>
+              )}
+              <div className="border-t border-border pt-2 flex justify-between items-center">
+                <span className="text-sm font-semibold text-text-primary">Total QuarkScore™</span>
+                <span className="flex items-center gap-2">
+                  <span className="text-lg font-black text-text-primary">{product.healthScore.score}/100</span>
+                  <GradeBadge grade={scoreToLetterGrade(product.healthScore.score)} />
+                  <span className="relative group cursor-help">
+                    <span className="text-text-secondary text-sm">ℹ️</span>
+                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-surface-elevated border border-border rounded-lg text-xs text-text-secondary w-52 hidden group-hover:block z-10 pointer-events-none">
+                      QuarkScore™ rates food quality 0–100 across nutrition balance, processing level, additives, ingredients, and context fit.
+                    </span>
+                  </span>
+                </span>
               </div>
-              <p className="text-xs text-text-secondary mt-3 leading-relaxed">
-                Powered by Food Compass 2.0 (Tufts/Nature Food 2024), NOVA processing classification, and IARC/EFSA additive safety tiers.
-              </p>
+              {showBreakdown && (
+                <p className="text-xs text-text-secondary mt-3 leading-relaxed">
+                  Powered by Food Compass 2.0 (Tufts/Nature Food 2024), NOVA processing classification, and IARC/EFSA additive safety tiers.
+                </p>
+              )}
             </div>
 
             {/* Nutrient traffic lights */}
