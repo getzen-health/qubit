@@ -27,13 +27,14 @@ function avgSymptomSeverity(logs: any[]): number {
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
-  async (_req, { supabase }) => {
+  async (_req, { user, supabase }) => {
     const {
       data: logs,
       error
     } = await supabase
       .from('gut_health_logs')
       .select('*')
+      .eq('user_id', user!.id)
       .order('logged_at', { ascending: false })
       .limit(7)
 
@@ -77,11 +78,11 @@ export const GET = createSecureApiHandler(
 
 export const POST = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
-  async (req, { supabase }) => {
+  async (req, { user, supabase }) => {
     const body = await req.json()
     const { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at } = body
     const { data, error } = await supabase.from('gut_health_logs').insert([
-      { bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at }
+      { user_id: user!.id, bristol_type, frequency_today, symptoms, fiber_intake_g, fermented_food, trigger_foods, notes, logged_at }
     ]).select()
     if (error) return secureErrorResponse(error.message, 500)
     return secureJsonResponse({ data })
@@ -90,9 +91,11 @@ export const POST = createSecureApiHandler(
 
 export const DELETE = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
-  async (req, { supabase }) => {
+  async (req, { user, supabase }) => {
     const { id } = await req.json()
-    const { error } = await supabase.from('gut_health_logs').delete().eq('id', id)
+    const { error } = await supabase.from('gut_health_logs').delete()
+      .eq('id', id)
+      .eq('user_id', user!.id)
     if (error) return secureErrorResponse(error.message, 500)
     return secureJsonResponse({ success: true })
   }
