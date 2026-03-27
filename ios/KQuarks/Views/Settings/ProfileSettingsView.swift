@@ -1,4 +1,5 @@
 import SwiftUI
+import HealthKit
 
 /// Lets users view and edit their physical profile (height, weight, max HR, resting HR)
 /// after onboarding. Changes are saved to both AppStorage and Supabase.
@@ -15,22 +16,28 @@ struct ProfileSettingsView: View {
     @State private var isSaving = false
     @State private var saveError: String?
     @State private var didSave = false
+    @State private var estimatedMaxHR: Int? = nil
 
     @FocusState private var focusedField: Field?
     private enum Field { case height, weight, maxHR, restingHR }
 
+    private var maxHRPlaceholder: String {
+        if let est = estimatedMaxHR { return "e.g. \(est) (220 − age)" }
+        return "e.g. 185"
+    }
+
     var body: some View {
         Form {
             Section {
-                row(label: "Height (cm)", placeholder: "100 – 250", text: $heightText, keyboard: .numberPad, field: .height)
-                row(label: "Weight (kg)", placeholder: "30 – 300", text: $weightText, keyboard: .decimalPad, field: .weight)
+                row(label: "Height (cm)", placeholder: "e.g. 175", text: $heightText, keyboard: .numberPad, field: .height)
+                row(label: "Weight (kg)", placeholder: "e.g. 70.5", text: $weightText, keyboard: .decimalPad, field: .weight)
             } header: {
                 Text("Body Measurements")
             }
 
             Section {
-                row(label: "Max HR (bpm)", placeholder: "120 – 220", text: $maxHRText, keyboard: .numberPad, field: .maxHR)
-                row(label: "Resting HR (bpm)", placeholder: "30 – 120", text: $restingHRText, keyboard: .numberPad, field: .restingHR)
+                row(label: "Max HR (bpm)", placeholder: maxHRPlaceholder, text: $maxHRText, keyboard: .numberPad, field: .maxHR)
+                row(label: "Resting HR (bpm)", placeholder: "e.g. 60", text: $restingHRText, keyboard: .numberPad, field: .restingHR)
             } header: {
                 Text("Heart Rate")
             } footer: {
@@ -65,6 +72,7 @@ struct ProfileSettingsView: View {
         .navigationTitle("Physical Profile")
         .toolbarTitleDisplayMode(.inline)
         .onAppear(perform: loadStoredValues)
+        .task { await loadAgeEstimate() }
     }
 
     // MARK: - Private
@@ -153,6 +161,17 @@ struct ProfileSettingsView: View {
         value.truncatingRemainder(dividingBy: 1) == 0
             ? String(Int(value))
             : String(format: "%.1f", value)
+    }
+
+    private func loadAgeEstimate() async {
+        let healthStore = HKHealthStore()
+        guard HKHealthStore.isHealthDataAvailable(),
+              let dateOfBirth = try? healthStore.dateOfBirthComponents(),
+              let year = dateOfBirth.year else { return }
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let age = currentYear - year
+        guard age > 0 && age < 120 else { return }
+        await MainActor.run { estimatedMaxHR = 220 - age }
     }
 }
 
