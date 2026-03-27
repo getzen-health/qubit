@@ -7,12 +7,14 @@ export async function GET(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const today = new Date(); today.setHours(0, 0, 0, 0)
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('break_sessions')
     .select('*')
     .eq('user_id', user.id)
     .gte('logged_at', today.toISOString())
     .order('logged_at', { ascending: false })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   const completed = (data ?? []).filter(b => b.completed)
   const totalSittingMin = (data ?? []).reduce((sum, b) => sum + (b.sitting_minutes_before ?? 0), 0)

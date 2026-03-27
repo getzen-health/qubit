@@ -402,13 +402,14 @@ export function DashboardStream({
   const today = summaries[0]
 
   // Calculate trends
-  const yesterdaySteps = summaries[1]?.steps ?? today?.steps
-  const stepsTrend = today ? Math.round(((today.steps - yesterdaySteps) / yesterdaySteps) * 100) : 0
+  const yesterdaySteps = summaries[1]?.steps ?? 0
+  const stepsTrend = today && yesterdaySteps > 0 ? Math.round(((today.steps - yesterdaySteps) / yesterdaySteps) * 100) : 0
 
   // Compute step goal streak (summaries are newest-first, skip today which may be partial)
+  const stepGoalVal = stepGoal ?? DEFAULT_STEP_GOAL
   let stepStreak = 0
   for (const day of summaries.slice(1)) { // skip today — still accumulating
-    if (day.steps >= stepGoal) {
+    if (day.steps >= stepGoalVal) {
       stepStreak++
     } else {
       break
@@ -426,12 +427,12 @@ export function DashboardStream({
     }
   }
 
-  // Mock metrics (will be replaced with real data)
+  // Derived metrics for today's display
   const metrics = {
     sleep: {
-      duration: today?.sleep_duration_minutes ?? 462,
+      duration: today?.sleep_duration_minutes ?? 0,
     },
-    restingHR: today?.resting_heart_rate ?? 58,
+    restingHR: today?.resting_heart_rate ?? null,
     steps: today?.steps ?? 0,
     calories: Math.round(today?.active_calories ?? 0),
   }
@@ -441,8 +442,9 @@ export function DashboardStream({
 
   // HRV trend: today vs average of past 6 days (skip today)
   const hrvHistory = summaries.slice(1, 7).map((d) => d.avg_hrv).filter((v): v is number => typeof v === 'number' && v > 0)
-  const hrvTrend = todayHrv && hrvHistory.length > 0
-    ? Math.round(((todayHrv - hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length) / (hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length)) * 100)
+  const hrvAvg = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : 0
+  const hrvTrend = todayHrv && hrvAvg > 0
+    ? Math.round(((todayHrv - hrvAvg) / hrvAvg) * 100)
     : undefined
 
   // Real recovery and strain from AI-synced scores
@@ -451,14 +453,16 @@ export function DashboardStream({
 
   // Recovery trend: today vs average of past 6 days
   const recoveryHistory = summaries.slice(1, 7).map((d) => d.recovery_score).filter((v): v is number => typeof v === 'number' && v > 0)
-  const recoveryTrend = (today?.recovery_score != null) && recoveryHistory.length > 0
-    ? Math.round(((today.recovery_score - recoveryHistory.reduce((a, b) => a + b, 0) / recoveryHistory.length) / (recoveryHistory.reduce((a, b) => a + b, 0) / recoveryHistory.length)) * 100)
+  const recoveryAvg = recoveryHistory.length > 0 ? recoveryHistory.reduce((a, b) => a + b, 0) / recoveryHistory.length : 0
+  const recoveryTrend = (today?.recovery_score != null) && recoveryAvg > 0
+    ? Math.round(((today.recovery_score - recoveryAvg) / recoveryAvg) * 100)
     : undefined
 
   // Strain trend: today vs past 6 days
   const strainHistory = summaries.slice(1, 7).map((d) => d.strain_score).filter((v): v is number => typeof v === 'number' && v > 0)
-  const strainTrend = (today?.strain_score != null) && strainHistory.length > 0
-    ? Math.round(((today.strain_score - strainHistory.reduce((a, b) => a + b, 0) / strainHistory.length) / (strainHistory.reduce((a, b) => a + b, 0) / strainHistory.length)) * 100)
+  const strainAvg = strainHistory.length > 0 ? strainHistory.reduce((a, b) => a + b, 0) / strainHistory.length : 0
+  const strainTrend = (today?.strain_score != null) && strainAvg > 0
+    ? Math.round(((today.strain_score - strainAvg) / strainAvg) * 100)
     : undefined
 
   const distanceKm = ((today?.distance_meters ?? 0) / 1000).toFixed(1)
@@ -1061,7 +1065,7 @@ export function DashboardStream({
             <MetricRow
               icon={<Heart className="w-5 h-5" />}
               label="Resting Heart Rate"
-              value={metrics.restingHR}
+              value={metrics.restingHR ?? '—'}
               unit="bpm"
               color="heart"
               expandContent={

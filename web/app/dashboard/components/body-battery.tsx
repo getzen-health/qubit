@@ -134,7 +134,7 @@ function StressLevelComponent({ data }: { data: StressData }) {
   }
 
   const status = getStressStatus(data.current)
-  const totalTime = data.restTime + data.stressTime
+  const totalTime = Math.max(data.restTime + data.stressTime, 1) // guard against div-by-zero
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
