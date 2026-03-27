@@ -1,21 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { id } = await params
-    const body = await request.json()
+export const PUT = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const id = req.nextUrl.pathname.split('/').at(-1)
+    const body = await req.json()
     const { name, brand, category, dosage_amount, dosage_unit, frequency, notes } = body
 
     if (!name) {
-      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+      return secureErrorResponse('Name is required', 400)
     }
 
     const { data, error } = await supabase
@@ -31,45 +24,33 @@ export async function PUT(
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .select()
       .single()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return secureErrorResponse('Failed to update supplement', 400)
     }
 
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error('Error updating supplement:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return secureJsonResponse(data)
   }
-}
+)
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { id } = await params
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const id = req.nextUrl.pathname.split('/').at(-1)
 
     const { error } = await supabase
       .from('supplements')
       .update({ is_active: false })
       .eq('id', id)
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return secureErrorResponse('Failed to delete supplement', 400)
     }
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Error deleting supplement:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return secureJsonResponse({ success: true })
   }
-}
+)

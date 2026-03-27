@@ -1,37 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ date: string }> }) {
-  await checkRateLimit(req)
-  const { date } = await params
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const { data, error } = await supabase
-    .from('journal_entries')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('entry_date', date)
-    .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 404 })
-  return NextResponse.json({ entry: data })
-}
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const date = req.nextUrl.pathname.split('/').at(-1)
+    const { data, error } = await supabase
+      .from('journal_entries')
+      .select('*')
+      .eq('user_id', user!.id)
+      .eq('entry_date', date)
+      .single()
+    if (error) return secureErrorResponse('Journal entry not found', 404)
+    return secureJsonResponse({ entry: data })
+  }
+)
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ date: string }> }) {
-  await checkRateLimit(req)
-  const { date } = await params
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const body = await req.json()
-  const { error, data } = await supabase
-    .from('journal_entries')
-    .update(body)
-    .eq('user_id', user.id)
-    .eq('entry_date', date)
-    .select()
-    .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ entry: data })
-}
+export const PUT = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const date = req.nextUrl.pathname.split('/').at(-1)
+    const body = await req.json()
+    const { error, data } = await supabase
+      .from('journal_entries')
+      .update(body)
+      .eq('user_id', user!.id)
+      .eq('entry_date', date)
+      .select()
+      .single()
+    if (error) return secureErrorResponse('Failed to update journal entry', 500)
+    return secureJsonResponse({ entry: data })
+  }
+)

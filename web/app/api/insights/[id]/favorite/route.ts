@@ -1,25 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const id = req.nextUrl.pathname.split('/').at(-2)
+    const { favorited } = await req.json()
 
-  const { id } = await params
-  const { favorited } = await req.json()
+    const { error } = await supabase
+      .from('health_insights')
+      .update({ is_favorited: favorited })
+      .eq('id', id)
+      .eq('user_id', user!.id)
 
-  const { error } = await supabase
-    .from('health_insights')
-    .update({ is_favorited: favorited })
-    .eq('id', id)
-    .eq('user_id', user.id)
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true, is_favorited: favorited })
-}
+    if (error) return secureErrorResponse('Failed to update favorite', 500)
+    return secureJsonResponse({ success: true, is_favorited: favorited })
+  }
+)

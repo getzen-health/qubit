@@ -1,44 +1,37 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const { id } = await req.json()
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!id) {
+      return secureErrorResponse('Anomaly ID required', 400)
+    }
+
+    // Verify the anomaly belongs to the user before updating
+    const { data: anomaly, error: fetchError } = await supabase
+      .from('anomalies')
+      .select('id')
+      .eq('id', id)
+      .eq('user_id', user!.id)
+      .single()
+
+    if (fetchError || !anomaly) {
+      return secureErrorResponse('Anomaly not found', 404)
+    }
+
+    // Mark as dismissed
+    const { error: updateError } = await supabase
+      .from('anomalies')
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user!.id)
+
+    if (updateError) {
+      return secureErrorResponse('Failed to acknowledge anomaly', 500)
+    }
+
+    return secureJsonResponse({ success: true })
   }
-
-  const { id } = await request.json()
-
-  if (!id) {
-    return NextResponse.json({ error: 'Anomaly ID required' }, { status: 400 })
-  }
-
-  // Verify the anomaly belongs to the user before updating
-  const { data: anomaly, error: fetchError } = await supabase
-    .from('anomalies')
-    .select('id')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
-
-  if (fetchError || !anomaly) {
-    return NextResponse.json({ error: 'Anomaly not found' }, { status: 404 })
-  }
-
-  // Mark as dismissed
-  const { error: updateError } = await supabase
-    .from('anomalies')
-    .update({ dismissed_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('user_id', user.id)
-
-  if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 })
-  }
-
-  return NextResponse.json({ success: true })
-}
+)

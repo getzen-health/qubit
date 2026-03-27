@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
 const METRIC_LABELS: Record<string, string> = {
   heart_rate: 'Heart Rate (bpm)',
@@ -13,6 +12,7 @@ const METRIC_LABELS: Record<string, string> = {
   stress_level: 'Stress Level (1-10)',
   readiness_score: 'Readiness Score',
 }
+void METRIC_LABELS
 
 function evaluateCondition(condition: { metric: string; operator: string; value: number }, metricValue: number | null): boolean {
   if (metricValue === null) return false
@@ -26,63 +26,62 @@ function evaluateCondition(condition: { metric: string; operator: string; value:
   }
 }
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    // Fetch user's enabled rules
+    const { data: rules, error: rulesErr } = await supabase.from('alert_rules').select('*').eq('user_id', user!.id).eq('enabled', true)
+    if (rulesErr) console.error('alert_rules fetch error', rulesErr)
+    if (!rules || rules.length === 0) return secureJsonResponse({ triggered: [] })
 
-  // Fetch user's enabled rules
-  const { data: rules, error: rulesErr } = await supabase.from('alert_rules').select('*').eq('user_id', user.id).eq('enabled', true)
-  if (rulesErr) console.error('alert_rules fetch error', rulesErr)
-  if (!rules || rules.length === 0) return NextResponse.json({ triggered: [] })
+    // Fetch recent metrics (last 24h)
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { data: metrics, error: metricsErr } = await supabase.from('health_metrics')
+      .select('metric_type, value')
+      .eq('user_id', user!.id)
+      .gte('recorded_at', since)
+    if (metricsErr) console.error('metrics fetch error', metricsErr)
 
-  // Fetch recent metrics (last 24h)
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  const { data: metrics, error: metricsErr } = await supabase.from('health_metrics')
-    .select('metric_type, value')
-    .eq('user_id', user.id)
-    .gte('recorded_at', since)
-  if (metricsErr) console.error('metrics fetch error', metricsErr)
-
-  // Get latest value per metric type
-  const latestMetrics: Record<string, number> = {}
-  if (metrics) {
-    for (const m of metrics) {
-      latestMetrics[m.metric_type] = m.value
-    }
-  }
-
-  const triggered = []
-  for (const rule of rules) {
-    const conditions = rule.conditions as Array<{ metric: string; operator: string; value: number }>
-    const results = conditions.map(c => evaluateCondition(c, latestMetrics[c.metric] ?? null))
-    const fired = rule.logic === 'AND' ? results.every(Boolean) : results.some(Boolean)
-    if (!fired) continue
-
-    // Don't fire same rule twice within 6 hours
-    if (rule.last_triggered_at) {
-      const lastFired = new Date(rule.last_triggered_at).getTime()
-      if (Date.now() - lastFired < 6 * 60 * 60 * 1000) continue
+    // Get latest value per metric type
+    const latestMetrics: Record<string, number> = {}
+    if (metrics) {
+      for (const m of metrics) {
+        latestMetrics[m.metric_type] = m.value
+      }
     }
 
-    // Record in history
-    const { error: historyErr } = await supabase.from('alert_history').insert({
-      user_id: user.id,
-      rule_id: rule.id,
-      rule_name: rule.name,
-      message: rule.message,
-      severity: rule.severity,
-    })
-    if (historyErr) console.error('alert_history insert error', historyErr)
+    const triggered = []
+    for (const rule of rules) {
+      const conditions = rule.conditions as Array<{ metric: string; operator: string; value: number }>
+      const results = conditions.map(c => evaluateCondition(c, latestMetrics[c.metric] ?? null))
+      const fired = rule.logic === 'AND' ? results.every(Boolean) : results.some(Boolean)
+      if (!fired) continue
 
-    const { error: updateErr } = await supabase.from('alert_rules').update({
-      last_triggered_at: new Date().toISOString(),
-      trigger_count: (rule.trigger_count ?? 0) + 1,
-    }).eq('id', rule.id)
-    if (updateErr) console.error('alert_rules update error', updateErr)
+      // Don't fire same rule twice within 6 hours
+      if (rule.last_triggered_at) {
+        const lastFired = new Date(rule.last_triggered_at).getTime()
+        if (Date.now() - lastFired < 6 * 60 * 60 * 1000) continue
+      }
 
-    triggered.push({ rule_id: rule.id, name: rule.name, message: rule.message, severity: rule.severity })
+      // Record in history
+      const { error: historyErr } = await supabase.from('alert_history').insert({
+        user_id: user!.id,
+        rule_id: rule.id,
+        rule_name: rule.name,
+        message: rule.message,
+        severity: rule.severity,
+      })
+      if (historyErr) console.error('alert_history insert error', historyErr)
+
+      const { error: updateErr } = await supabase.from('alert_rules').update({
+        last_triggered_at: new Date().toISOString(),
+        trigger_count: (rule.trigger_count ?? 0) + 1,
+      }).eq('id', rule.id)
+      if (updateErr) console.error('alert_rules update error', updateErr)
+
+      triggered.push({ rule_id: rule.id, name: rule.name, message: rule.message, severity: rule.severity })
+    }
+
+    return secureJsonResponse({ triggered })
   }
-
-  return NextResponse.json({ triggered })
-}
+)

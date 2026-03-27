@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data, error } = await supabase.from('alert_rules').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ rules: data ?? [] })
-}
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data, error } = await supabase.from('alert_rules').select('*').eq('user_id', user!.id).order('created_at', { ascending: false })
+    if (error) return secureErrorResponse('Failed to fetch alert rules', 500)
+    return secureJsonResponse({ rules: data ?? [] })
+  }
+)
