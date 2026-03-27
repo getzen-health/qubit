@@ -156,8 +156,9 @@ export async function GET() {
   // Calculate ACWR (acute 7d / chronic 28d steps ratio)
   const since28d = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: steps28 } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since28d)
-  const { data: steps7 } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since7d)
+  const { data: steps28, error: steps28Err } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since28d)
+  const { data: steps7, error: steps7Err } = await supabase.from('health_metrics').select('value').eq('user_id', user.id).eq('metric_type', 'steps').gte('recorded_at', since7d)
+  if (steps28Err || steps7Err) console.error('steps fetch error', steps28Err ?? steps7Err)
 
   let acwr: number | null = null
   if (steps28 && steps28.length >= 7 && steps7 && steps7.length >= 3) {
@@ -185,7 +186,7 @@ export async function GET() {
 
   // Save/update today's prescription
   if (!existing) {
-    await supabase.from('workout_prescriptions').upsert({
+    const { error: upsertErr } = await supabase.from('workout_prescriptions').upsert({
       user_id: user.id,
       date: today,
       intensity,
@@ -196,6 +197,7 @@ export async function GET() {
       readiness_score: readiness,
       acwr,
     })
+    if (upsertErr) console.error('prescription upsert error', upsertErr)
   }
 
   return NextResponse.json({ prescription: result, cached: !!existing })
@@ -207,6 +209,7 @@ export async function PATCH(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { date, followed } = await request.json()
-  await supabase.from('workout_prescriptions').update({ followed }).eq('user_id', user.id).eq('date', date ?? new Date().toISOString().slice(0, 10))
+  const { error: updateErr } = await supabase.from('workout_prescriptions').update({ followed }).eq('user_id', user.id).eq('date', date ?? new Date().toISOString().slice(0, 10))
+  if (updateErr) console.error('prescription update error', updateErr)
   return NextResponse.json({ success: true })
 }
