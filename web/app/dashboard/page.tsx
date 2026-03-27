@@ -95,8 +95,11 @@ export default async function DashboardPage() {
       <Suspense fallback={<DashboardDataSkeleton />}>
         <DashboardDataLoader user={user} />
       </Suspense>
-      <HabitsTodayCard />
-    <StreaksSummaryCard streaks={streaks ?? []} />
+      <div className="mt-4 space-y-4">
+        <NutritionSummaryCard />
+        <HabitsTodayCard />
+        <StreaksSummaryCard streaks={streaks ?? []} />
+      </div>
       <VoiceLogger />
     </>
   )
