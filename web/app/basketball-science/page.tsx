@@ -1,4 +1,6 @@
 'use client'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -262,6 +264,13 @@ function ScienceCard({
 export default function BasketballSciencePage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#f1f5f9', fontFamily: 'system-ui, sans-serif' }}>
+
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
+        <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+          <ArrowLeft className="w-5 h-5 text-text-primary" />
+        </Link>
+        <h1 className="text-xl font-bold text-text-primary">Basketball Science</h1>
+      </div>
 
       {/* ── Hero Header ───────────────────────────────────────────────────────── */}
       <div

@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   ReferenceArea, BarChart, Bar, Cell, Legend,
 } from 'recharts'
-import { Wind, Play, Pause, Square, ChevronLeft, BookOpen, TrendingUp, Activity } from 'lucide-react'
+import { Wind, Play, Pause, Square, ChevronLeft, BookOpen, TrendingUp, Activity, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   BREATHING_EXERCISES,
@@ -431,6 +432,12 @@ export function BreathingClient() {
 
   return (
     <div className="min-h-screen bg-surface pb-32">
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border -mx-4 px-4 py-3 mb-4 flex items-center gap-3">
+        <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+          <ArrowLeft className="w-5 h-5 text-text-primary" />
+        </Link>
+        <h1 className="text-xl font-bold text-text-primary">Breathing</h1>
+      </div>
       {activeGuide && (
         <BreathingGuide
           exercise={activeGuide}

@@ -1,5 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { createClient } from '@/lib/supabase/client'
 import { redirect } from 'next/navigation'
@@ -59,6 +61,12 @@ export default function ChallengesPage() {
   return (
     <main role="main" aria-label="Community Challenges" id="main-content">
       <div className="container mx-auto py-8">
+        <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border -mx-4 px-4 py-3 mb-4 flex items-center gap-3">
+          <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+            <ArrowLeft className="w-5 h-5 text-text-primary" />
+          </Link>
+          <h1 className="text-xl font-bold text-text-primary">Challenges</h1>
+        </div>
         <Breadcrumbs items={[{label:'Dashboard',href:'/dashboard'},{label:'Challenges'}]} />
         <h1 className="text-2xl font-bold mb-2">Community Challenges <span className="ml-2">🏆</span></h1>
         <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>

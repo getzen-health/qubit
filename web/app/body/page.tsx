@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 type BodyEntry = {
@@ -71,6 +73,12 @@ export default function BodyPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-24">
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border -mx-4 px-4 py-3 mb-4 flex items-center gap-3">
+        <Link href="/dashboard" className="p-2 rounded-lg hover:bg-surface transition-colors">
+          <ArrowLeft className="w-5 h-5 text-text-primary" />
+        </Link>
+        <h1 className="text-xl font-bold text-text-primary">Body Composition</h1>
+      </div>
       <div className="max-w-lg mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
