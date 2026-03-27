@@ -5,7 +5,6 @@ import { SleepSummaryCard } from '@/components/sleep-summary-card'
 import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
 import { MacroRingsCard } from '@/components/macro-rings-card'
-import NutritionSummaryCard from '@/components/nutrition-summary-card'
 
 interface Props {
   workoutCount: number
@@ -15,9 +14,7 @@ interface Props {
   todayMood?: number
 }
 
-const DEFAULT_CARD_ORDER = [
-  'health-score', 'steps', 'sleep', 'water', 'workout', 'mood', 'macro-progress', 'nutrition',
-]
+const DEFAULT_CARD_ORDER = ['sleep', 'workout', 'mood', 'macro-progress']
 
 export function DashboardCardGrid({ workoutCount, workoutMinutes, sleepHours, sleepQuality, todayMood }: Props) {
   const [preferences, setPreferences] = useState<{
@@ -35,23 +32,24 @@ export function DashboardCardGrid({ workoutCount, workoutMinutes, sleepHours, sl
   const cardOrder = preferences?.dashboard_card_order ?? DEFAULT_CARD_ORDER
   const hiddenCards = preferences?.dashboard_hidden_cards ?? []
 
+  // Only client-renderable cards live here.
+  // Async server components (e.g. NutritionSummaryCard) are rendered in the parent server component.
   const CARD_COMPONENTS: Record<string, React.ReactNode> = {
-    'health-score': <div key="health-score" />,
-    'steps': <div key="steps" />,
     'sleep': <SleepSummaryCard key="sleep" hours={sleepHours} quality={sleepQuality} />,
-    'water': <div key="water" />,
     'workout': <WorkoutSummaryCard key="workout" count={workoutCount} totalMinutes={workoutMinutes} />,
     'mood': <MoodSummaryCard key="mood" todayScore={todayMood} />,
-    'nutrition': <NutritionSummaryCard key="nutrition" />,
     'macro-progress': <MacroRingsCard key="macro-progress" />,
   }
 
+  const visibleCards = cardOrder
+    .filter(key => !hiddenCards.includes(key) && key in CARD_COMPONENTS)
+    .map(key => CARD_COMPONENTS[key])
+
+  if (visibleCards.length === 0) return null
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-      {cardOrder.map((key: string) => {
-        if (hiddenCards.includes(key)) return null
-        return CARD_COMPONENTS[key] ?? null
-      })}
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+      {visibleCards}
     </div>
   )
 }
