@@ -1,33 +1,35 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const { data, error } = await supabase
+      .from('break_sessions')
+      .select('*')
+      .eq('user_id', user!.id)
+      .gte('logged_at', today.toISOString())
+      .order('logged_at', { ascending: false })
 
-  const today = new Date(); today.setHours(0, 0, 0, 0)
-  const { data, error } = await supabase
-    .from('break_sessions')
-    .select('*')
-    .eq('user_id', user.id)
-    .gte('logged_at', today.toISOString())
-    .order('logged_at', { ascending: false })
+    if (error) return secureErrorResponse('Failed to fetch break sessions', 500)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    const completed = (data ?? []).filter(b => b.completed)
+    const totalSittingMin = (data ?? []).reduce((sum, b) => sum + (b.sitting_minutes_before ?? 0), 0)
 
-  const completed = (data ?? []).filter(b => b.completed)
-  const totalSittingMin = (data ?? []).reduce((sum, b) => sum + (b.sitting_minutes_before ?? 0), 0)
+    return secureJsonResponse({ breaks: data ?? [], completedToday: completed.length, totalSittingMin })
+  }
+)
 
-  return NextResponse.json({ breaks: data ?? [], completedToday: completed.length, totalSittingMin })
-}
-
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  const { data, error } = await supabase.from('break_sessions').insert({ ...body, user_id: user.id }).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json(data)
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const { data, error } = await supabase
+      .from('break_sessions')
+      .insert({ ...body, user_id: user!.id })
+      .select()
+      .single()
+    if (error) return secureErrorResponse('Failed to create break session', 400)
+    return secureJsonResponse(data)
+  }
+)
