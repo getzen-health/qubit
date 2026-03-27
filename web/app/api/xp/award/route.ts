@@ -13,20 +13,21 @@ export async function POST(request: NextRequest) {
   const { action } = await request.json()
   const xp = XP_ACTIONS[action] ?? 5
 
-  // Log XP
-  await supabase.from('user_xp_log').insert({ user_id: user.id, action, xp_earned: xp })
+  const { error: xpLogErr } = await supabase.from('user_xp_log').insert({ user_id: user.id, action, xp_earned: xp })
+  if (xpLogErr) console.error('xp_log insert error', xpLogErr)
 
-  // Update user_stats total XP and level
-  const { data: stats } = await supabase.from('user_stats').select('total_xp').eq('user_id', user.id).single()
+  const { data: stats, error: statsErr } = await supabase.from('user_stats').select('total_xp').eq('user_id', user.id).single()
+  if (statsErr && statsErr.code !== 'PGRST116') console.error('user_stats fetch error', statsErr)
   const newXP = (stats?.total_xp ?? 0) + xp
   const newLevel = LEVELS.filter(l => newXP >= l.minXP).length
 
-  await supabase.from('user_stats').upsert({
+  const { error: upsertErr } = await supabase.from('user_stats').upsert({
     user_id: user.id,
     total_xp: newXP,
     level: newLevel,
     updated_at: new Date().toISOString(),
   }, { onConflict: 'user_id' })
+  if (upsertErr) console.error('user_stats upsert error', upsertErr)
 
   return NextResponse.json({ xp_earned: xp, total_xp: newXP, level: newLevel })
 }
