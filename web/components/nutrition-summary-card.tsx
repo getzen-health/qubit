@@ -13,11 +13,18 @@ export default async function NutritionSummaryCard() {
   const today = new Date()
   today.setHours(0,0,0,0)
   const iso = today.toISOString()
-  const { data, error } = await supabase
-    .from('food_diary_entries')
-    .select('calories,protein_g,carbs_g,fat_g')
-    .eq('user_id', user.id)
-    .gte('logged_at', iso)
+  const [{ data, error }, { data: profile }] = await Promise.all([
+    supabase
+      .from('food_diary_entries')
+      .select('calories,protein_g,carbs_g,fat_g')
+      .eq('user_id', user.id)
+      .gte('logged_at', iso),
+    supabase
+      .from('users')
+      .select('calorie_goal')
+      .eq('id', user.id)
+      .maybeSingle(),
+  ])
   if (error) return null
   let totals = { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
   for (const entry of data) {
@@ -26,8 +33,7 @@ export default async function NutritionSummaryCard() {
     totals.carbs_g += Number(entry.carbs_g) || 0
     totals.fat_g += Number(entry.fat_g) || 0
   }
-  // TODO: Replace with user-specific budget if available
-  const calorieBudget = 2000
+  const calorieBudget = profile?.calorie_goal ?? 2000
   const pct = Math.min(100, Math.round((totals.calories / calorieBudget) * 100))
   return (
     <div className="rounded-xl border border-border p-4">
