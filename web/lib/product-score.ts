@@ -18,7 +18,7 @@ function scoreAdditives(additives: string[]): { score: number; details: string[]
   let score = 30
   const details: string[] = []
   for (const a of additives) {
-    const code = a.toLowerCase().replace(/[^e0-9]/g, '')
+    const code = a.toLowerCase().replace(/^[a-z-]+:/, '').replace(/[^e0-9]/g, '')
     if (HIGH_RISK.includes(code)) { score -= 15; details.push(`${a}: high concern`) }
     else if (MODERATE_RISK.includes(code)) { score -= 5; details.push(`${a}: moderate concern`) }
   }

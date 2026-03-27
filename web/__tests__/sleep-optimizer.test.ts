@@ -12,7 +12,7 @@ import {
   CHRONOTYPE_PROFILES,
   MEQ_QUESTIONS,
   SLEEP_HYGIENE_TIPS,
-} from '../../lib/sleep-optimizer'
+} from '../lib/sleep-optimizer'
 
 describe('scoreToChronotype', () => {
   it('score ≥ 22 → definite_morning', () => {

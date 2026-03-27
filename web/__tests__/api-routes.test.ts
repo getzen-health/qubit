@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Mock the Supabase server client
 vi.mock('@/lib/supabase/server', () => ({
-  createServerClient: vi.fn(),
+  createClient: vi.fn(),
 }))
 
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 function mockSupabase(userData: any, dbData: any = [], dbError: any = null) {
   const mockChain = {
@@ -19,7 +19,6 @@ function mockSupabase(userData: any, dbData: any = [], dbError: any = null) {
     single: vi.fn().mockResolvedValue({ data: dbData[0] || null, error: dbError }),
     then: vi.fn(),
   }
-  // Make the chain resolve at any point
   Object.keys(mockChain).forEach(key => {
     if (key !== 'single') {
       (mockChain as any)[key] = vi.fn().mockImplementation(() => ({
@@ -30,7 +29,7 @@ function mockSupabase(userData: any, dbData: any = [], dbError: any = null) {
       }))
     }
   })
-  ;(createServerClient as any).mockResolvedValue({
+  ;(createClient as any).mockResolvedValue({
     auth: { getUser: vi.fn().mockResolvedValue({ data: { user: userData } }) },
     ...mockChain,
   })

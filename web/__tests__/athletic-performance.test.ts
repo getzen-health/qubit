@@ -8,7 +8,7 @@ import {
   MESOCYCLE_TEMPLATES,
   RPE_LABELS,
   type TrainingSession,
-} from '../../lib/athletic-performance'
+} from '../lib/athletic-performance'
 
 describe('calculateSessionLoad', () => {
   it('load = duration × RPE', () => {

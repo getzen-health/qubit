@@ -4,7 +4,7 @@ import {
   getAdditiveDetails,
   type FoodProduct,
   type UserProfile,
-} from '../../lib/food-scoring'
+} from '../lib/food-scoring'
 
 describe('scoreFoodProduct', () => {
   it('returns a score between 0 and 100', () => {

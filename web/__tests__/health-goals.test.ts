@@ -8,7 +8,7 @@ import {
   GOAL_CATEGORY_CONFIG,
   type HealthGoal,
   type GoalCheckin,
-} from '../../lib/health-goals'
+} from '../lib/health-goals'
 
 function makeGoal(overrides: Partial<HealthGoal> = {}): HealthGoal {
   const today = new Date()

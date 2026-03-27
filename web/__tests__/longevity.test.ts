@@ -10,7 +10,7 @@ import {
   LONGEVITY_INTERVENTIONS,
   VO2_MAX_NORMS,
   type PillarScores,
-} from '../../lib/longevity'
+} from '../lib/longevity'
 
 describe('getAgeGroup', () => {
   it('age < 30 → 20-29', () => {

@@ -14,7 +14,7 @@ import {
   bodyFatCategory,
   IDEAL_WEIGHT_FORMULAS,
   type BiometricLog,
-} from '../../lib/biometrics'
+} from '../lib/biometrics'
 
 describe('calculateBMI', () => {
   it('70kg / 170cm = ~24.2', () => {
