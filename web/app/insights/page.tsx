@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw, Smile } from 'lucide-react'
+import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw, Smile, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { BottomNav } from '@/components/bottom-nav'
 
@@ -16,6 +16,7 @@ interface Insight {
   created_at: string
   date: string
   read_at: string | null
+  is_favorited: boolean
 }
 
 const CATEGORY_CONFIG: Record<string, { label: string; icon: typeof Activity; color: string }> = {
@@ -164,8 +165,20 @@ export default function InsightsPage() {
     }
   }
 
+  const toggleFavorite = async (id: string, current: boolean) => {
+    setInsights((prev) => prev.map((i) => i.id === id ? { ...i, is_favorited: !current } : i))
+    await fetch(`/api/insights/${id}/favorite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ favorited: !current }),
+    })
+  }
+
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const categories = Array.from(new Set(insights.map((i) => i.category).filter(Boolean)))
-  const filtered = activeCategory ? insights.filter((i) => i.category === activeCategory) : insights
+  const filtered = insights
+    .filter((i) => !activeCategory || i.category === activeCategory)
+    .filter((i) => !showFavoritesOnly || i.is_favorited)
 
   return (
     <div className="min-h-screen bg-background">
@@ -236,6 +249,17 @@ export default function InsightsPage() {
         {/* Category filter chips */}
         {categories.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button
+              onClick={() => setShowFavoritesOnly((v) => !v)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1 ${
+                showFavoritesOnly
+                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-secondary'
+              }`}
+            >
+              <Star className="w-3.5 h-3.5" />
+              Saved
+            </button>
             <button
               onClick={() => setActiveCategory(null)}
               className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -317,6 +341,17 @@ export default function InsightsPage() {
                         })}
                       </p>
                     </div>
+                    <button
+                      onClick={() => toggleFavorite(insight.id, insight.is_favorited)}
+                      className="shrink-0 p-1 rounded-lg hover:bg-surface-secondary transition-colors"
+                      aria-label={insight.is_favorited ? 'Remove from saved' : 'Save insight'}
+                    >
+                      <Star
+                        className={`w-4 h-4 transition-colors ${
+                          insight.is_favorited ? 'fill-yellow-400 text-yellow-400' : 'text-text-secondary'
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
               )

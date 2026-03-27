@@ -483,18 +483,29 @@ function MacroCard({
   barColor,
 }: MacroCardProps) {
   const pct = Math.min(100, target > 0 ? Math.round((consumed / target) * 100) : 0)
+  const isOver = target > 0 && consumed > target * 1.05
+  const isLow = target > 0 && consumed < target * 0.2 && label !== 'Fat'
   return (
-    <div className={`bg-surface rounded-xl p-3 border-t-2 ${borderColor} flex flex-col gap-1`}>
+    <div className={`bg-surface rounded-xl p-3 border-t-2 ${isOver ? 'border-red-500' : borderColor} flex flex-col gap-1 ${isOver ? 'ring-1 ring-red-500/30' : ''}`}>
       <p className="text-[10px] font-medium text-text-secondary uppercase tracking-wide truncate">
         {label}
       </p>
-      <p className={`text-base font-bold ${textColor} leading-none`}>{consumed}</p>
+      <div className="flex items-center gap-1">
+        <p className={`text-base font-bold ${isOver ? 'text-red-500' : textColor} leading-none`}>{consumed}</p>
+        {isOver && <span className="text-[9px] font-bold text-red-500 leading-none">↑</span>}
+      </div>
       <p className="text-[10px] text-text-tertiary">
         / {target} {unit}
       </p>
       <div className="w-full h-1 bg-surface-secondary rounded-full overflow-hidden mt-1">
-        <div className={`h-full rounded-full ${barColor}`} style={{ width: `${pct}%` }} />
+        <div
+          className={`h-full rounded-full ${isOver ? 'bg-red-400' : barColor}`}
+          style={{ width: `${isOver ? 100 : pct}%` }}
+        />
       </div>
+      {isLow && (
+        <p className="text-[9px] text-amber-500 font-medium mt-0.5">Low</p>
+      )}
     </div>
   )
 }

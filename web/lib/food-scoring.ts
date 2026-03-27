@@ -179,7 +179,7 @@ const UPF_MARKERS = [
 ]
 
 function inferNovaGroup(ingredientsText?: string): number {
-  if (!ingredientsText) return 3
+  if (!ingredientsText) return 4 // Conservative: unknown ingredients assumed ultra-processed
   const text = ingredientsText.toLowerCase()
   const matchCount = UPF_MARKERS.filter(m => text.includes(m)).length
   if (matchCount >= 3) return 4
