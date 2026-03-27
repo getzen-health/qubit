@@ -1,25 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
+import { createSecureApiHandler } from '@/lib/security'
 
-/**
- * POST /api/integrations/fitbit/disconnect
- * Remove the user's Fitbit integration record.
- */
-export async function POST(_request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+export const POST = createSecureApiHandler(
+  { requireAuth: true },
+  async (_request, context) => {
+    const { user, supabase } = context
 
     const { error } = await supabase
       .from('user_integrations')
       .delete()
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .eq('provider', 'fitbit')
 
     if (error) {
@@ -28,8 +18,5 @@ export async function POST(_request: NextRequest) {
     }
 
     return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Fitbit disconnect error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
+)

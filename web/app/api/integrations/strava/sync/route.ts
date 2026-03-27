@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler } from '@/lib/security'
 
 // Strava activity type mapping to KQuarks workout types
 const STRAVA_TO_KQUARKS_MAPPING: Record<string, string> = {
@@ -118,26 +118,16 @@ async function fetchStravaActivities(
   return response.json()
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    // Get authenticated user
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+export const POST = createSecureApiHandler(
+  { requireAuth: true },
+  async (_request, context) => {
+    const { user, supabase } = context
 
     // Get Strava integration from database
     const { data: integration, error: integrationError } = await supabase
       .from('user_integrations')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .eq('provider', 'strava')
       .single()
 
@@ -231,7 +221,7 @@ export async function POST(request: NextRequest) {
         .from('workout_records')
         .upsert(
           {
-            user_id: user.id,
+            user_id: user!.id,
             strava_activity_id: activity.id,
             workout_type: workoutType,
             start_time: startTime.toISOString(),
@@ -277,13 +267,5 @@ export async function POST(request: NextRequest) {
       totalProcessed: activities.length,
       message: `Synced ${syncedCount} activities from Strava`,
     })
-  } catch (error) {
-    console.error('Strava sync error:', error)
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-      },
-      { status: 500 }
-    )
   }
-}
+)

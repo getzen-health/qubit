@@ -10,6 +10,15 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
 
 export async function GET(request: NextRequest) {
   try {
+    // Auth check at top of callback
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.redirect('/login?error=session_expired')
+    }
+
     // Rate limiting on callback endpoint
     const clientId = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const rateLimit = await checkRateLimit(clientId, 'integrations')
@@ -55,10 +64,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect('/settings/integrations?error=csrf_validation_failed')
     }
 
-    // Clear the state cookie after verification
-    const response = new NextResponse()
-    response.cookies.delete('strava_oauth_state')
-
     // Exchange authorization code for access token
     const tokenResponse = await fetch('https://www.strava.com/oauth/token', {
       method: 'POST',
@@ -84,16 +89,6 @@ export async function GET(request: NextRequest) {
     if (!access_token) {
       console.error('No access token in Strava response')
       return NextResponse.redirect('/settings/integrations?error=invalid_token_response')
-    }
-
-    // Get user from Supabase auth
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.redirect('/login?error=session_expired')
     }
 
     // Encrypt tokens with AES-256-GCM before storing
@@ -136,7 +131,6 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set('success', 'strava_connected')
 
     const redirectResponse = NextResponse.redirect(redirectUrl)
-    // Clear state cookie in redirect response
     redirectResponse.cookies.delete('strava_oauth_state')
 
     return redirectResponse
