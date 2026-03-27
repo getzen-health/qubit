@@ -27,12 +27,19 @@ export async function PUT(request: NextRequest) {
     .upsert({ user_id: user.id, ...body, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
   if (profileErr) return NextResponse.json({ error: profileErr.message }, { status: 500 })
 
-  // Mirror subset of key fields to users table so pages querying users work
+  // Mirror subset of key fields to users table so pages querying users work.
+  // Also map onboarding's `sex` → `biological_sex` and `primary_goal` → `fitness_goal`.
+  const bodyMap = body as Record<string, unknown>
   const userFields: Record<string, unknown> = {}
   const mirror = ['full_name', 'age', 'date_of_birth', 'biological_sex', 'fitness_goal', 'height_cm', 'weight_kg'] as const
   for (const key of mirror) {
-    if (key in body) userFields[key] = (body as Record<string, unknown>)[key]
+    if (key in bodyMap) userFields[key] = bodyMap[key]
   }
+  // Onboarding sends `sex` (not `biological_sex`) — normalize
+  if ('sex' in bodyMap && !('biological_sex' in bodyMap)) userFields['biological_sex'] = bodyMap['sex']
+  // Onboarding sends `primary_goal` (not `fitness_goal`) — normalize
+  if ('primary_goal' in bodyMap && !('fitness_goal' in bodyMap)) userFields['fitness_goal'] = bodyMap['primary_goal']
+
   if (Object.keys(userFields).length > 0) {
     const { error: userErr } = await supabase.from('users').update(userFields).eq('id', user.id)
     if (userErr) return NextResponse.json({ error: userErr.message }, { status: 500 })

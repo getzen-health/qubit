@@ -12,11 +12,32 @@ interface AccountFormProps {
   displayName: string
   avatarUrl: string | null
   userId: string
+  biologicalSex: string
+  age: string
+  fitnessGoal: string
+  heightCm: string
+  weightKg: string
 }
 
-export function AccountForm({ email, displayName, avatarUrl, userId }: AccountFormProps) {
+const FITNESS_GOALS = [
+  { value: 'lose_weight', label: 'Lose Weight' },
+  { value: 'build_muscle', label: 'Build Muscle' },
+  { value: 'improve_sleep', label: 'Improve Sleep' },
+  { value: 'reduce_stress', label: 'Reduce Stress' },
+  { value: 'eat_healthier', label: 'Eat Healthier' },
+  { value: 'improve_fitness', label: 'Improve Fitness' },
+  { value: 'manage_condition', label: 'Manage Condition' },
+  { value: 'general_wellness', label: 'General Wellness' },
+]
+
+export function AccountForm({ email, displayName, avatarUrl, userId, biologicalSex, age, fitnessGoal, heightCm, weightKg }: AccountFormProps) {
   const [name, setName] = useState(displayName)
   const [avatar, setAvatar] = useState(avatarUrl)
+  const [sex, setSex] = useState(biologicalSex)
+  const [ageVal, setAgeVal] = useState(age)
+  const [goal, setGoal] = useState(fitnessGoal)
+  const [height, setHeight] = useState(heightCm)
+  const [weight, setWeight] = useState(weightKg)
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
@@ -29,7 +50,15 @@ export function AccountForm({ email, displayName, avatarUrl, userId }: AccountFo
     setStatus('saving')
     const { error } = await supabase
       .from('users')
-      .update({ display_name: name.trim() || null, updated_at: new Date().toISOString() })
+      .update({
+        display_name: name.trim() || null,
+        biological_sex: sex || null,
+        age: ageVal ? parseInt(ageVal) : null,
+        fitness_goal: goal || null,
+        height_cm: height ? parseFloat(height) : null,
+        weight_kg: weight ? parseFloat(weight) : null,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', userId)
 
     setStatus(error ? 'error' : 'saved')
@@ -118,6 +147,58 @@ export function AccountForm({ email, displayName, avatarUrl, userId }: AccountFo
           <p className="text-xs text-text-secondary">
             Shown as a greeting on your dashboard.
           </p>
+        </section>
+
+        {/* Biological Sex */}
+        <section className="space-y-2">
+          <label className="text-sm font-medium text-text-primary">Biological Sex</label>
+          <p className="text-xs text-text-secondary">Used for health calculations (VO2max norms, alcohol metabolism, HR zones).</p>
+          <div className="grid grid-cols-3 gap-2">
+            {[['male','Male'],['female','Female'],['other','Other']].map(([v, l]) => (
+              <button key={v} type="button" onClick={() => setSex(v)}
+                className={`py-2.5 rounded-xl border text-sm font-medium transition-colors ${sex === v ? 'bg-accent/20 border-accent text-accent' : 'border-border text-text-secondary hover:bg-surface-secondary'}`}>
+                {l}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Age, Height, Weight */}
+        <section className="grid grid-cols-3 gap-3">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-primary">Age</label>
+            <input type="number" min="13" max="120" value={ageVal}
+              onChange={(e) => setAgeVal(e.target.value)}
+              placeholder="—"
+              className="w-full px-3 py-2.5 bg-surface rounded-lg border border-border text-text-primary focus:outline-none focus:border-accent transition-colors" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-primary">Height (cm)</label>
+            <input type="number" min="100" max="250" value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              placeholder="—"
+              className="w-full px-3 py-2.5 bg-surface rounded-lg border border-border text-text-primary focus:outline-none focus:border-accent transition-colors" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-primary">Weight (kg)</label>
+            <input type="number" min="20" max="500" value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="—"
+              className="w-full px-3 py-2.5 bg-surface rounded-lg border border-border text-text-primary focus:outline-none focus:border-accent transition-colors" />
+          </div>
+        </section>
+
+        {/* Fitness Goal */}
+        <section className="space-y-2">
+          <label className="text-sm font-medium text-text-primary">Fitness Goal</label>
+          <div className="grid grid-cols-2 gap-2">
+            {FITNESS_GOALS.map(({ value, label }) => (
+              <button key={value} type="button" onClick={() => setGoal(value)}
+                className={`py-2.5 px-3 rounded-xl border text-sm font-medium text-left transition-colors ${goal === value ? 'bg-accent/20 border-accent text-accent' : 'border-border text-text-secondary hover:bg-surface-secondary'}`}>
+                {label}
+              </button>
+            ))}
+          </div>
         </section>
 
         <button

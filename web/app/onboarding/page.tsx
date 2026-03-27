@@ -25,7 +25,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
     age: '',
-    sex: '',
+    biological_sex: '',
     height_cm: '',
     weight_kg: '',
     primary_goal: '',
@@ -127,8 +127,8 @@ export default function OnboardingPage() {
                   <label className="block text-sm text-text-secondary mb-1">Sex</label>
                   <div className="grid grid-cols-2 gap-2">
                     {[['male','Male 👨'],['female','Female 👩'],['other','Other'],['prefer_not_to_say','Prefer not to say']].map(([v, l]) => (
-                      <button key={v} onClick={() => setForm(f => ({ ...f, sex: v }))}
-                        className={`py-2.5 rounded-xl border text-sm font-medium transition-colors ${form.sex === v ? 'bg-primary/20 border-primary text-primary' : 'border-border text-text-secondary'}`}>
+                      <button key={v} onClick={() => setForm(f => ({ ...f, biological_sex: v }))}
+                        className={`py-2.5 rounded-xl border text-sm font-medium transition-colors ${form.biological_sex === v ? 'bg-primary/20 border-primary text-primary' : 'border-border text-text-secondary'}`}>
                         {l}
                       </button>
                     ))}

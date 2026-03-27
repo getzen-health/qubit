@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, BookOpen, Info, TrendingDown, TrendingUp, Minus } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
@@ -84,83 +85,23 @@ const ZONE_META: Record<SpeedZone, {
   },
 }
 
-// ─── Demo data: 90-day daily readings ─────────────────────────────────────────
-// Simulates a healthy adult with speed generally around 1.05–1.15 m/s.
-// A minor dip to ~0.9–1.0 m/s around days 55–65 (illness / cold weather)
-// followed by a full recovery to prior baseline.
-
-function makeDate(daysAgo: number): string {
-  const d = new Date()
-  d.setDate(d.getDate() - daysAgo)
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-const RAW_90: DailyReading[] = (() => {
-  const base = [
-    1.12, 1.08, 1.15, 1.10, 1.13, 1.07, 1.14,  // days 89-83
-    1.11, 1.09, 1.16, 1.12, 1.08, 1.14, 1.10,  // days 82-76
-    1.13, 1.06, 1.15, 1.11, 1.09, 1.13, 1.08,  // days 75-69
-    1.10, 1.05, 1.07, 1.03, 1.01, 0.98, 0.95,  // days 68-62 (start of dip)
-    0.92, 0.89, 0.93, 0.91, 0.95, 0.97, 0.94,  // days 61-55 (illness trough)
-    0.99, 1.02, 1.04, 1.06, 1.05, 1.08, 1.07,  // days 54-48 (recovering)
-    1.10, 1.09, 1.12, 1.08, 1.11, 1.13, 1.10,  // days 47-41
-    1.07, 1.12, 1.09, 1.14, 1.11, 1.08, 1.13,  // days 40-34
-    1.10, 1.15, 1.12, 1.09, 1.13, 1.11, 1.08,  // days 33-27
-    1.12, 1.14, 1.10, 1.13, 1.09, 1.15, 1.11,  // days 26-20
-    1.10, 1.13, 1.08, 1.14, 1.11, 1.09, 1.12,  // days 19-13
-    1.13, 1.10, 1.15, 1.08, 1.12, 1.14, 1.10,  // days 12-6
-    1.11, 1.13, 1.12,                            // days 5-3 (most recent)
-  ]
-
-  return base.map((speed, i) => ({
-    date: makeDate(base.length - 1 - i),
-    speed: Math.round(speed * 1000) / 1000,
-  }))
-})()
-
-// ─── Derived stats ─────────────────────────────────────────────────────────
-
-const current = RAW_90[RAW_90.length - 1].speed
-
-const avg30 = (() => {
-  const last30 = RAW_90.slice(-30)
-  return Math.round((last30.reduce((s, r) => s + r.speed, 0) / last30.length) * 1000) / 1000
-})()
-
-const prior30avg = (() => {
-  const prior = RAW_90.slice(-60, -30)
-  return Math.round((prior.reduce((s, r) => s + r.speed, 0) / prior.length) * 1000) / 1000
-})()
-
-const trendDelta = Math.round((avg30 - prior30avg) * 1000) / 1000
+// ─── Zone helpers ──────────────────────────────────────────────────────────
 
 function classifyZone(speed: number): SpeedZone {
-  if (speed < 0.6)  return 'very-low'
-  if (speed < 0.8)  return 'low'
-  if (speed < 1.0)  return 'fair'
-  if (speed < 1.2)  return 'good'
+  if (speed < 0.6) return 'very-low'
+  if (speed < 0.8) return 'low'
+  if (speed < 1.0) return 'fair'
+  if (speed < 1.2) return 'good'
   return 'excellent'
 }
 
-const currentZone = classifyZone(current)
-
-// Histogram bins
 const BINS: { label: string; min: number; max: number; zone: SpeedZone }[] = [
-  { label: '< 0.6',     min: 0,    max: 0.6,  zone: 'very-low'  },
-  { label: '0.6–0.8',  min: 0.6,  max: 0.8,  zone: 'low'       },
-  { label: '0.8–1.0',  min: 0.8,  max: 1.0,  zone: 'fair'      },
-  { label: '1.0–1.2',  min: 1.0,  max: 1.2,  zone: 'good'      },
-  { label: '≥ 1.2',    min: 1.2,  max: 999,  zone: 'excellent' },
+  { label: '< 0.6',    min: 0,   max: 0.6, zone: 'very-low' },
+  { label: '0.6–0.8', min: 0.6, max: 0.8, zone: 'low'      },
+  { label: '0.8–1.0', min: 0.8, max: 1.0, zone: 'fair'     },
+  { label: '1.0–1.2', min: 1.0, max: 1.2, zone: 'good'     },
+  { label: '≥ 1.2',   min: 1.2, max: 999, zone: 'excellent'},
 ]
-
-const HIST_DATA: HistBin[] = BINS.map((bin) => ({
-  label: bin.label,
-  count: RAW_90.filter((r) => r.speed >= bin.min && r.speed < bin.max).length,
-  zone: bin.zone,
-}))
-
-// Subsample for chart legibility (every 3 days → ~30 points)
-const CHART_DATA = RAW_90.filter((_, i) => i % 3 === 0 || i === RAW_90.length - 1)
 
 // ─── Tooltip style ─────────────────────────────────────────────────────────
 
@@ -232,7 +173,41 @@ function TrendIcon({ delta }: { delta: number }) {
 // ─── Main client component ─────────────────────────────────────────────────
 
 export function WalkingSpeedClient() {
+  const [rawData, setRawData] = useState<DailyReading[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/walking-speed')
+      .then((r) => r.json())
+      .then((json) => setRawData(json.data ?? []))
+      .catch(() => setRawData([]))
+      .finally(() => setIsLoading(false))
+  }, [])
+
+  const hasData = rawData.length > 0
+
+  const current = hasData ? rawData[rawData.length - 1].speed : 0
+  const avg30 = hasData ? (() => {
+    const last30 = rawData.slice(-30)
+    return Math.round((last30.reduce((s, r) => s + r.speed, 0) / last30.length) * 1000) / 1000
+  })() : 0
+  const prior30avg = hasData ? (() => {
+    const prior = rawData.slice(-60, -30)
+    if (!prior.length) return avg30
+    return Math.round((prior.reduce((s, r) => s + r.speed, 0) / prior.length) * 1000) / 1000
+  })() : 0
+  const trendDelta = Math.round((avg30 - prior30avg) * 1000) / 1000
+  const currentZone: SpeedZone = hasData ? classifyZone(current) : 'good'
   const zoneMeta = ZONE_META[currentZone]
+
+  const histData: HistBin[] = BINS.map((bin) => ({
+    label: bin.label,
+    count: rawData.filter((r) => r.speed >= bin.min && r.speed < bin.max).length,
+    zone: bin.zone,
+  }))
+
+  // Subsample for chart legibility (~30 points max)
+  const chartData = rawData.filter((_, i) => i % 3 === 0 || i === rawData.length - 1)
 
   return (
     <>
@@ -266,7 +241,7 @@ export function WalkingSpeedClient() {
                 <p className="text-xs text-text-secondary">The sixth vital sign · 90-day analysis</p>
               </div>
             </div>
-            <ZoneBadge zone={currentZone} />
+            {hasData && <ZoneBadge zone={currentZone} />}
           </div>
         </header>
 
@@ -300,63 +275,87 @@ export function WalkingSpeedClient() {
             <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-3">
               Key Metrics
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <MetricCard
-                label="Current Speed"
-                value={current.toFixed(2)}
-                unit="m/s"
-                sub={`Zone: ${zoneMeta.label}`}
-                accent={zoneMeta.color}
-              />
-              <MetricCard
-                label="30-Day Average"
-                value={avg30.toFixed(2)}
-                unit="m/s"
-                sub="Rolling mean"
-                accent="#14b8a6"
-              />
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="rounded-2xl border border-border p-4 flex flex-col gap-2 animate-pulse">
+                    <div className="h-3 w-20 bg-surface-secondary rounded" />
+                    <div className="h-8 w-16 bg-surface-secondary rounded" />
+                    <div className="h-3 w-24 bg-surface-secondary rounded opacity-50" />
+                  </div>
+                ))}
+              </div>
+            ) : !hasData ? (
               <div
-                className="rounded-2xl border p-4 flex flex-col gap-1"
-                style={{
-                  background: trendDelta > 0.02
-                    ? 'linear-gradient(135deg, rgba(52,211,153,0.10) 0%, rgba(15,15,15,0) 60%)'
-                    : trendDelta < -0.02
-                    ? 'linear-gradient(135deg, rgba(251,146,60,0.10) 0%, rgba(15,15,15,0) 60%)'
-                    : 'linear-gradient(135deg, rgba(20,184,166,0.08) 0%, rgba(15,15,15,0) 60%)',
-                  borderColor: trendDelta > 0.02
-                    ? 'rgba(52,211,153,0.30)'
-                    : trendDelta < -0.02
-                    ? 'rgba(251,146,60,0.30)'
-                    : 'rgba(20,184,166,0.22)',
-                }}
+                className="rounded-2xl border px-5 py-14 flex flex-col items-center justify-center gap-3 text-center"
+                style={{ borderColor: 'rgba(20,184,166,0.18)', background: 'rgba(20,184,166,0.03)' }}
               >
-                <p className="text-xs font-medium text-text-secondary tracking-wide uppercase">Trend</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <TrendIcon delta={trendDelta} />
-                  <span
-                    className="text-3xl font-black tabular-nums"
-                    style={{
-                      letterSpacing: '-0.03em',
-                      color: trendDelta > 0.02
-                        ? '#34d399'
-                        : trendDelta < -0.02
-                        ? '#fb923c'
-                        : '#14b8a6',
-                    }}
-                  >
-                    {trendDelta > 0 ? '+' : ''}{trendDelta.toFixed(2)}
-                  </span>
-                  <span className="text-sm font-semibold text-text-secondary">m/s</span>
-                </div>
-                <p className="text-xs text-text-secondary opacity-70 mt-0.5">
-                  {trendDelta > 0.02
-                    ? 'Improving vs prior 30d'
-                    : trendDelta < -0.02
-                    ? 'Declining vs prior 30d'
-                    : 'Stable vs prior 30d'}
+                <div className="text-5xl" aria-hidden>🚶</div>
+                <p className="text-base font-semibold text-text-primary">No walking speed data yet</p>
+                <p className="text-sm text-text-secondary max-w-xs leading-relaxed">
+                  Start tracking workouts in Apple Health to see your pace here. Walking workouts synced
+                  to KQuarks will appear automatically.
                 </p>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <MetricCard
+                  label="Current Speed"
+                  value={current.toFixed(2)}
+                  unit="m/s"
+                  sub={`Zone: ${zoneMeta.label}`}
+                  accent={zoneMeta.color}
+                />
+                <MetricCard
+                  label="30-Day Average"
+                  value={avg30.toFixed(2)}
+                  unit="m/s"
+                  sub="Rolling mean"
+                  accent="#14b8a6"
+                />
+                <div
+                  className="rounded-2xl border p-4 flex flex-col gap-1"
+                  style={{
+                    background: trendDelta > 0.02
+                      ? 'linear-gradient(135deg, rgba(52,211,153,0.10) 0%, rgba(15,15,15,0) 60%)'
+                      : trendDelta < -0.02
+                      ? 'linear-gradient(135deg, rgba(251,146,60,0.10) 0%, rgba(15,15,15,0) 60%)'
+                      : 'linear-gradient(135deg, rgba(20,184,166,0.08) 0%, rgba(15,15,15,0) 60%)',
+                    borderColor: trendDelta > 0.02
+                      ? 'rgba(52,211,153,0.30)'
+                      : trendDelta < -0.02
+                      ? 'rgba(251,146,60,0.30)'
+                      : 'rgba(20,184,166,0.22)',
+                  }}
+                >
+                  <p className="text-xs font-medium text-text-secondary tracking-wide uppercase">Trend</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <TrendIcon delta={trendDelta} />
+                    <span
+                      className="text-3xl font-black tabular-nums"
+                      style={{
+                        letterSpacing: '-0.03em',
+                        color: trendDelta > 0.02
+                          ? '#34d399'
+                          : trendDelta < -0.02
+                          ? '#fb923c'
+                          : '#14b8a6',
+                      }}
+                    >
+                      {trendDelta > 0 ? '+' : ''}{trendDelta.toFixed(2)}
+                    </span>
+                    <span className="text-sm font-semibold text-text-secondary">m/s</span>
+                  </div>
+                  <p className="text-xs text-text-secondary opacity-70 mt-0.5">
+                    {trendDelta > 0.02
+                      ? 'Improving vs prior 30d'
+                      : trendDelta < -0.02
+                      ? 'Declining vs prior 30d'
+                      : 'Stable vs prior 30d'}
+                  </p>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* ── 90-day line chart ── */}
@@ -373,87 +372,94 @@ export function WalkingSpeedClient() {
               Dashed lines mark the 0.8, 1.0, and 1.2 m/s clinical thresholds from Studenski 2011 and Fritz &amp; Lusardi 2009.
             </p>
 
-            {/* Legend */}
-            <div className="flex flex-wrap items-center gap-4 mb-3 text-xs text-text-secondary">
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-0.5 rounded" style={{ background: '#14b8a6' }} />
-                Daily speed
+            {isLoading ? (
+              <div className="h-[230px] rounded-xl bg-surface-secondary animate-pulse" />
+            ) : !hasData ? (
+              <div className="h-[230px] flex items-center justify-center text-sm text-text-secondary opacity-50">
+                No data to display
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #fb923c' }} />
-                0.8 m/s
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #22d3ee' }} />
-                1.0 m/s
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #34d399' }} />
-                1.2 m/s
-              </div>
-            </div>
+            ) : (
+              <>
+                {/* Legend */}
+                <div className="flex flex-wrap items-center gap-4 mb-3 text-xs text-text-secondary">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-0.5 rounded" style={{ background: '#14b8a6' }} />
+                    Daily speed
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #fb923c' }} />
+                    0.8 m/s
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #22d3ee' }} />
+                    1.0 m/s
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-0" style={{ borderTop: '1.5px dashed #34d399' }} />
+                    1.2 m/s
+                  </div>
+                </div>
 
-            <ResponsiveContainer width="100%" height={230}>
-              <LineChart data={CHART_DATA} margin={{ top: 6, right: 20, left: -16, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                  axisLine={false}
-                  tickLine={false}
-                  interval={Math.floor(CHART_DATA.length / 5)}
-                />
-                <YAxis
-                  domain={[0.7, 1.35]}
-                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                  width={34}
-                  tickFormatter={(v) => `${v.toFixed(1)}`}
-                />
-                <Tooltip
-                  contentStyle={tooltipStyle}
-                  formatter={(v: number) => [`${v.toFixed(2)} m/s`, 'Speed']}
-                  cursor={{ stroke: 'rgba(255,255,255,0.10)', strokeWidth: 1 }}
-                />
-                {/* 0.8 m/s — poor prognosis cut-point */}
-                <ReferenceLine
-                  y={0.8}
-                  stroke="#fb923c"
-                  strokeDasharray="5 4"
-                  strokeOpacity={0.70}
-                  strokeWidth={1.5}
-                  label={{ value: '0.8', position: 'right', fontSize: 9, fill: '#fb923c', opacity: 0.85 }}
-                />
-                {/* 1.0 m/s — full community independence */}
-                <ReferenceLine
-                  y={1.0}
-                  stroke="#22d3ee"
-                  strokeDasharray="5 4"
-                  strokeOpacity={0.70}
-                  strokeWidth={1.5}
-                  label={{ value: '1.0', position: 'right', fontSize: 9, fill: '#22d3ee', opacity: 0.85 }}
-                />
-                {/* 1.2 m/s — optimal longevity */}
-                <ReferenceLine
-                  y={1.2}
-                  stroke="#34d399"
-                  strokeDasharray="5 4"
-                  strokeOpacity={0.70}
-                  strokeWidth={1.5}
-                  label={{ value: '1.2', position: 'right', fontSize: 9, fill: '#34d399', opacity: 0.85 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="speed"
-                  stroke="#14b8a6"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 5, fill: '#14b8a6', strokeWidth: 0 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-            <p className="text-xs text-text-secondary mt-2 opacity-55 text-center font-mono-jb">
-              Sampled every 3 days · Raw daily readings used for all averages
-            </p>
+                <ResponsiveContainer width="100%" height={230}>
+                  <LineChart data={chartData} margin={{ top: 6, right: 20, left: -16, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      axisLine={false}
+                      tickLine={false}
+                      interval={Math.floor(chartData.length / 5)}
+                    />
+                    <YAxis
+                      domain={[0.7, 1.35]}
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      width={34}
+                      tickFormatter={(v) => `${v.toFixed(1)}`}
+                    />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      formatter={(v: number) => [`${v.toFixed(2)} m/s`, 'Speed']}
+                      cursor={{ stroke: 'rgba(255,255,255,0.10)', strokeWidth: 1 }}
+                    />
+                    <ReferenceLine
+                      y={0.8}
+                      stroke="#fb923c"
+                      strokeDasharray="5 4"
+                      strokeOpacity={0.70}
+                      strokeWidth={1.5}
+                      label={{ value: '0.8', position: 'right', fontSize: 9, fill: '#fb923c', opacity: 0.85 }}
+                    />
+                    <ReferenceLine
+                      y={1.0}
+                      stroke="#22d3ee"
+                      strokeDasharray="5 4"
+                      strokeOpacity={0.70}
+                      strokeWidth={1.5}
+                      label={{ value: '1.0', position: 'right', fontSize: 9, fill: '#22d3ee', opacity: 0.85 }}
+                    />
+                    <ReferenceLine
+                      y={1.2}
+                      stroke="#34d399"
+                      strokeDasharray="5 4"
+                      strokeOpacity={0.70}
+                      strokeWidth={1.5}
+                      label={{ value: '1.2', position: 'right', fontSize: 9, fill: '#34d399', opacity: 0.85 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="speed"
+                      stroke="#14b8a6"
+                      strokeWidth={2}
+                      dot={false}
+                      activeDot={{ r: 5, fill: '#14b8a6', strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="text-xs text-text-secondary mt-2 opacity-55 text-center font-mono-jb">
+                  Sampled every 3 readings · Raw readings used for all averages
+                </p>
+              </>
+            )}
           </section>
 
           {/* ── Distribution histogram ── */}
@@ -464,62 +470,73 @@ export function WalkingSpeedClient() {
             <div className="flex items-center gap-2 mb-1">
               <span className="text-base" aria-hidden>📊</span>
               <h2 className="text-sm font-semibold text-text-primary">Speed Distribution — Last 90 Days</h2>
-              <span className="ml-auto text-xs text-text-secondary font-mono-jb">days per bin</span>
+              <span className="ml-auto text-xs text-text-secondary font-mono-jb">readings per bin</span>
             </div>
             <p className="text-xs text-text-secondary mb-4 opacity-70">
               How often your walking speed falls into each clinical zone.
             </p>
 
-            <ResponsiveContainer width="100%" height={185}>
-              <BarChart data={HIST_DATA} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis
-                  dataKey="label"
-                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
-                  width={28}
-                  allowDecimals={false}
-                  tickFormatter={(v) => `${v}d`}
-                />
-                <Tooltip
-                  contentStyle={tooltipStyle}
-                  formatter={(v: number, _: string, entry) => {
-                    const zone = (entry.payload as HistBin).zone
-                    return [`${v} day${v !== 1 ? 's' : ''} · ${ZONE_META[zone].label}`, 'Days in bin']
-                  }}
-                />
-                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                  {HIST_DATA.map((bin, i) => (
-                    <Cell key={i} fill={ZONE_META[bin.zone].color} fillOpacity={0.82} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {isLoading ? (
+              <div className="h-[185px] rounded-xl bg-surface-secondary animate-pulse" />
+            ) : !hasData ? (
+              <div className="h-[185px] flex items-center justify-center text-sm text-text-secondary opacity-50">
+                No data to display
+              </div>
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height={185}>
+                  <BarChart data={histData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: 'var(--color-text-secondary, #888)' }}
+                      width={28}
+                      allowDecimals={false}
+                      tickFormatter={(v) => `${v}x`}
+                    />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      formatter={(v: number, _: string, entry) => {
+                        const zone = (entry.payload as HistBin).zone
+                        return [`${v} reading${v !== 1 ? 's' : ''} · ${ZONE_META[zone].label}`, 'Count']
+                      }}
+                    />
+                    <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                      {histData.map((bin, i) => (
+                        <Cell key={i} fill={ZONE_META[bin.zone].color} fillOpacity={0.82} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
 
-            {/* Zone legend */}
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-              {(Object.entries(ZONE_META) as [SpeedZone, typeof ZONE_META['excellent']][]).map(([zone, meta]) => {
-                const days = HIST_DATA.find((b) => b.zone === zone)?.count ?? 0
-                const pct = Math.round((days / RAW_90.length) * 100)
-                return (
-                  <div key={zone} className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: meta.color }} />
-                    <span className="text-xs text-text-secondary font-mono-jb">
-                      {meta.label}{' '}
-                      <span className="text-text-primary font-medium">{pct}%</span>
-                      <span className="opacity-50"> ({days}d)</span>
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+                {/* Zone legend */}
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+                  {(Object.entries(ZONE_META) as [SpeedZone, typeof ZONE_META['excellent']][]).map(([zone, meta]) => {
+                    const count = histData.find((b) => b.zone === zone)?.count ?? 0
+                    const pct = rawData.length > 0 ? Math.round((count / rawData.length) * 100) : 0
+                    return (
+                      <div key={zone} className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: meta.color }} />
+                        <span className="text-xs text-text-secondary font-mono-jb">
+                          {meta.label}{' '}
+                          <span className="text-text-primary font-medium">{pct}%</span>
+                          <span className="opacity-50"> ({count}x)</span>
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
           </section>
 
           {/* ── Longevity Implication Card ── */}
+          {hasData && (
           <section>
             <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-3">
               Longevity Context
@@ -596,6 +613,7 @@ export function WalkingSpeedClient() {
               </div>
             </div>
           </section>
+          )}
 
           {/* ── How Apple Measures This ── */}
           <section

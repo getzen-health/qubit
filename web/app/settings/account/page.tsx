@@ -15,7 +15,7 @@ export default async function AccountPage() {
 
   const { data: profile } = await supabase
     .from('users')
-    .select('display_name, avatar_url')
+    .select('display_name, avatar_url, biological_sex, age, fitness_goal, height_cm, weight_kg')
     .eq('id', user.id)
     .single()
 
@@ -25,6 +25,11 @@ export default async function AccountPage() {
       displayName={profile?.display_name ?? ''}
       avatarUrl={profile?.avatar_url ?? null}
       userId={user.id}
+      biologicalSex={(profile?.biological_sex as string) ?? ''}
+      age={profile?.age ? String(profile.age) : ''}
+      fitnessGoal={(profile?.fitness_goal as string) ?? ''}
+      heightCm={profile?.height_cm ? String(profile.height_cm) : ''}
+      weightKg={profile?.weight_kg ? String(profile.weight_kg) : ''}
     />
   )
 }
