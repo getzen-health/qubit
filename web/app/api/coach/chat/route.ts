@@ -1,6 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 import Anthropic from '@anthropic-ai/sdk'
 import { compileHealthContext, formatContextForClaude } from '@/lib/health-context'
 
@@ -31,134 +33,129 @@ const MODE_TRIGGER_MESSAGES: Record<'morning_checkin' | 'weekly_review', string>
   weekly_review: 'Please give me my comprehensive 7-day health review with wins, areas to improve, and top recommendation.',
 }
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const POST = createSecureApiHandler(
+  { rateLimit: 'aiChat', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const {
+      message,
+      sessionId,
+      mode = 'chat' as CoachMode,
+      messages: clientMessages,
+    }: {
+      message?: string
+      sessionId?: string
+      mode?: CoachMode
+      messages?: { role: 'user' | 'assistant'; content: string }[]
+    } = body
 
-  const rateLimit = await checkRateLimit(user.id, 'aiChat')
-  if (!rateLimit.allowed) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+    const isAutoMode = mode === 'morning_checkin' || mode === 'weekly_review'
+    if (!isAutoMode && !message?.trim()) {
+      return secureErrorResponse('Message required', 400)
+    }
 
-  const body = await request.json()
-  const {
-    message,
-    sessionId,
-    mode = 'chat' as CoachMode,
-    messages: clientMessages,
-  }: {
-    message?: string
-    sessionId?: string
-    mode?: CoachMode
-    messages?: { role: 'user' | 'assistant'; content: string }[]
-  } = body
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) return secureErrorResponse('AI service not configured', 503)
 
-  const isAutoMode = mode === 'morning_checkin' || mode === 'weekly_review'
-  if (!isAutoMode && !message?.trim()) {
-    return NextResponse.json({ error: 'Message required' }, { status: 400 })
-  }
+    // Compile rich health context from all tracked dimensions
+    const ctx = await compileHealthContext(user!.id, supabase)
+    const formattedContext = formatContextForClaude(ctx)
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'AI service not configured' }, { status: 503 })
+    const modeAddition = MODE_SYSTEM_ADDITIONS[mode]
+    const systemPrompt = BASE_SYSTEM_PROMPT(formattedContext) +
+      (modeAddition ? `\n\n${modeAddition}` : '')
 
-  // Compile rich health context from all tracked dimensions
-  const ctx = await compileHealthContext(user.id, supabase)
-  const formattedContext = formatContextForClaude(ctx)
+    const anthropic = new Anthropic({ apiKey })
 
-  const modeAddition = MODE_SYSTEM_ADDITIONS[mode]
-  const systemPrompt = BASE_SYSTEM_PROMPT(formattedContext) +
-    (modeAddition ? `\n\n${modeAddition}` : '')
+    // Auto-generated modes: Claude responds to a synthetic trigger without history
+    if (isAutoMode) {
+      try {
+        const response = await anthropic.messages.create({
+          model: 'claude-haiku-4-5',
+          max_tokens: mode === 'weekly_review' ? 800 : 300,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: MODE_TRIGGER_MESSAGES[mode] }],
+        })
+        const text = response.content[0].type === 'text' ? response.content[0].text : ''
+        return secureJsonResponse({ message: text })
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'AI request failed'
+        return secureErrorResponse(msg, 500)
+      }
+    }
 
-  const anthropic = new Anthropic({ apiKey })
+    // Chat modes: build conversation history
+    let history: { role: 'user' | 'assistant'; content: string }[] = []
 
-  // Auto-generated modes: Claude responds to a synthetic trigger without history
-  if (isAutoMode) {
+    if (clientMessages && clientMessages.length > 0) {
+      // Use history provided by client (localStorage-based)
+      history = clientMessages.slice(-8)
+    } else if (sessionId) {
+      // Fallback: fetch session history from DB
+      const { data } = await supabase
+        .from('coach_conversations')
+        .select('role, content')
+        .eq('user_id', user!.id)
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: true })
+        .limit(8)
+      history = (data ?? []) as { role: 'user' | 'assistant'; content: string }[]
+    }
+
+    const claudeMessages = [
+      ...history,
+      { role: 'user' as const, content: message! },
+    ]
+
     try {
       const response = await anthropic.messages.create({
         model: 'claude-haiku-4-5',
-        max_tokens: mode === 'weekly_review' ? 800 : 300,
+        max_tokens: 600,
         system: systemPrompt,
-        messages: [{ role: 'user', content: MODE_TRIGGER_MESSAGES[mode] }],
+        messages: claudeMessages,
       })
-      const text = response.content[0].type === 'text' ? response.content[0].text : ''
-      return NextResponse.json({ message: text })
+      const assistantMessage = response.content[0].type === 'text' ? response.content[0].text : ''
+
+      // Persist for session-based continuity when sessionId provided
+      if (sessionId) {
+        await Promise.all([
+          supabase.from('coach_conversations').insert({
+            user_id: user!.id,
+            session_id: sessionId,
+            role: 'user',
+            content: message!,
+          }),
+          supabase.from('coach_conversations').insert({
+            user_id: user!.id,
+            session_id: sessionId,
+            role: 'assistant',
+            content: assistantMessage,
+          }),
+        ])
+      }
+
+      return secureJsonResponse({ message: assistantMessage })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'AI request failed'
-      return NextResponse.json({ error: msg }, { status: 500 })
+      return secureErrorResponse(msg, 500)
     }
   }
+)
 
-  // Chat modes: build conversation history
-  let history: { role: 'user' | 'assistant'; content: string }[] = []
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const sessionId = request.nextUrl.searchParams.get('sessionId')
+    if (!sessionId) return secureJsonResponse({ data: [] })
 
-  if (clientMessages && clientMessages.length > 0) {
-    // Use history provided by client (localStorage-based)
-    history = clientMessages.slice(-8)
-  } else if (sessionId) {
-    // Fallback: fetch session history from DB
     const { data } = await supabase
       .from('coach_conversations')
-      .select('role, content')
-      .eq('user_id', user.id)
+      .select('id, role, content, created_at')
+      .eq('user_id', user!.id)
       .eq('session_id', sessionId)
       .order('created_at', { ascending: true })
-      .limit(8)
-    history = (data ?? []) as { role: 'user' | 'assistant'; content: string }[]
+      .limit(20)
+
+    return secureJsonResponse({ data: data ?? [] })
   }
-
-  const claudeMessages = [
-    ...history,
-    { role: 'user' as const, content: message! },
-  ]
-
-  try {
-    const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5',
-      max_tokens: 600,
-      system: systemPrompt,
-      messages: claudeMessages,
-    })
-    const assistantMessage = response.content[0].type === 'text' ? response.content[0].text : ''
-
-    // Persist for session-based continuity when sessionId provided
-    if (sessionId) {
-      await Promise.all([
-        supabase.from('coach_conversations').insert({
-          user_id: user.id,
-          session_id: sessionId,
-          role: 'user',
-          content: message!,
-        }),
-        supabase.from('coach_conversations').insert({
-          user_id: user.id,
-          session_id: sessionId,
-          role: 'assistant',
-          content: assistantMessage,
-        }),
-      ])
-    }
-
-    return NextResponse.json({ message: assistantMessage })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'AI request failed'
-    return NextResponse.json({ error: msg }, { status: 500 })
-  }
-}
-
-export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const sessionId = new URL(request.url).searchParams.get('sessionId')
-  if (!sessionId) return NextResponse.json({ data: [] })
-
-  const { data } = await supabase
-    .from('coach_conversations')
-    .select('id, role, content, created_at')
-    .eq('user_id', user.id)
-    .eq('session_id', sessionId)
-    .order('created_at', { ascending: true })
-    .limit(20)
-
-  return NextResponse.json({ data: data ?? [] })
-}
+)

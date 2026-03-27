@@ -1,65 +1,42 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+const exportScheduleBodySchema = z.object({
+  export_schedule: z.enum(['none', 'weekly', 'monthly']),
+})
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+export const POST = createSecureApiHandler(
+  { rateLimit: 'default', requireAuth: true, bodySchema: exportScheduleBodySchema },
+  async (_req, { user, body, supabase }) => {
+    const { export_schedule } = body as z.infer<typeof exportScheduleBodySchema>
 
-    const { export_schedule } = await request.json()
-
-    if (!['none', 'weekly', 'monthly'].includes(export_schedule)) {
-      return NextResponse.json(
-        { error: 'Invalid export schedule' },
-        { status: 400 }
-      )
-    }
-
-    // Get user preferences
     const { data: existing } = await supabase
       .from('user_preferences')
       .select('id, export_schedule')
-      .eq('user_id', user.id)
+      .eq('user_id', user!.id)
       .single()
 
     if (existing) {
-      // Update existing
       const { error } = await supabase
         .from('user_preferences')
         .update({ export_schedule })
-        .eq('user_id', user.id)
-
-      if (error) throw error
+        .eq('user_id', user!.id)
+      if (error) return secureErrorResponse('Failed to update export schedule', 500)
     } else {
-      // Create new
       const { error } = await supabase
         .from('user_preferences')
-        .insert({
-          user_id: user.id,
-          export_schedule,
-        })
-
-      if (error) throw error
+        .insert({ user_id: user!.id, export_schedule })
+      if (error) return secureErrorResponse('Failed to update export schedule', 500)
     }
 
-    return NextResponse.json({
+    return secureJsonResponse({
       success: true,
       export_schedule,
       message: export_schedule === 'none'
         ? 'Auto-export disabled'
         : `Reports will be emailed ${export_schedule}ly`,
     })
-  } catch (error) {
-    console.error('Export schedule update error:', error)
-    return NextResponse.json(
-      { error: 'Failed to update export schedule' },
-      { status: 500 }
-    )
   }
-}
+)
