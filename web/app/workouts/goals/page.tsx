@@ -7,51 +7,82 @@ import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Workout Goals' }
 
-// ─── Mock data ───────────────────────────────────────────────────────────────
-
-// 13 weeks ending this week (week 13 = current, in progress)
-const WEEKLY_DATA = [
-  { week: 'Dec 23', sessions: 3, goalMet: false },
-  { week: 'Dec 30', sessions: 4, goalMet: true },
-  { week: 'Jan 6',  sessions: 2, goalMet: false },
-  { week: 'Jan 13', sessions: 5, goalMet: true },
-  { week: 'Jan 20', sessions: 4, goalMet: true },
-  { week: 'Jan 27', sessions: 1, goalMet: false },
-  { week: 'Feb 3',  sessions: 4, goalMet: true },
-  { week: 'Feb 10', sessions: 3, goalMet: false },
-  { week: 'Feb 17', sessions: 4, goalMet: true },
-  { week: 'Feb 24', sessions: 5, goalMet: true },
-  { week: 'Mar 3',  sessions: 4, goalMet: true },
-  { week: 'Mar 10', sessions: 4, goalMet: true },
-  { week: 'Mar 17', sessions: 3, goalMet: false }, // current week, in progress
-]
-
-const SPORT_BREAKDOWN = [
-  { sport: 'Running',   sessions: 24, color: '#22c55e' },
-  { sport: 'Cycling',   sessions: 18, color: '#3b82f6' },
-  { sport: 'Strength',  sessions: 12, color: '#a855f7' },
-  { sport: 'HIIT',      sessions: 8,  color: '#f97316' },
-  { sport: 'Yoga',      sessions: 6,  color: '#06b6d4' },
-  { sport: 'Hiking',    sessions: 5,  color: '#eab308' },
-]
-
-const MOCK_DATA = {
-  weeklyData: WEEKLY_DATA,
-  sportBreakdown: SPORT_BREAKDOWN,
-  weeklyGoal: 4,
-  currentWeekSessions: 3,
-  currentStreak: 4,
-  weeksHit: 10,
-  totalWeeks: 13,
-  totalSessionsQuarter: 52,
+const SPORT_COLORS: Record<string, string> = {
+  running: '#22c55e', cycling: '#3b82f6', strength: '#a855f7',
+  hiit: '#f97316', yoga: '#06b6d4', hiking: '#eab308',
+  swimming: '#0ea5e9', walking: '#84cc16', other: '#6b7280',
 }
 
 export default async function WorkoutGoalsPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  // Fetch last 91 days (13 weeks) of workouts
+  const since = new Date(Date.now() - 91 * 86400000).toISOString().slice(0, 10)
+  const { data: workouts } = await supabase
+    .from('workout_records')
+    .select('workout_type, start_time')
+    .eq('user_id', user.id)
+    .gte('start_time', since)
+    .order('start_time', { ascending: true })
+
+  const WEEKLY_GOAL = 4
+
+  // Build 13-week grid
+  const now = new Date()
+  // Start of current week (Monday)
+  const dayOfWeek = (now.getDay() + 6) % 7
+  const weekStart = new Date(now.getTime() - dayOfWeek * 86400000)
+  weekStart.setHours(0, 0, 0, 0)
+
+  const weeks: { label: string; start: Date; end: Date }[] = []
+  for (let i = 12; i >= 0; i--) {
+    const start = new Date(weekStart.getTime() - i * 7 * 86400000)
+    const end = new Date(start.getTime() + 7 * 86400000)
+    weeks.push({
+      label: start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      start,
+      end,
+    })
+  }
+
+  const weeklyData = weeks.map(({ label, start, end }) => {
+    const sessions = (workouts ?? []).filter((w) => {
+      const t = new Date(w.start_time).getTime()
+      return t >= start.getTime() && t < end.getTime()
+    }).length
+    return { week: label, sessions, goalMet: sessions >= WEEKLY_GOAL }
+  })
+
+  // Sport breakdown
+  const sportCounts: Record<string, number> = {}
+  for (const w of workouts ?? []) {
+    const key = (w.workout_type ?? 'other').toLowerCase()
+    sportCounts[key] = (sportCounts[key] ?? 0) + 1
+  }
+  const sportBreakdown = Object.entries(sportCounts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 8)
+    .map(([sport, sessions]) => ({
+      sport: sport.charAt(0).toUpperCase() + sport.slice(1),
+      sessions,
+      color: SPORT_COLORS[sport] ?? SPORT_COLORS.other,
+    }))
+
+  // Derived stats
+  const totalWeeks = 13
+  const currentWeekSessions = weeklyData[weeklyData.length - 1]?.sessions ?? 0
+  const weeksHit = weeklyData.filter((w) => w.goalMet).length
+  const totalSessionsQuarter = weeklyData.reduce((s, w) => s + w.sessions, 0)
+
+  let currentStreak = 0
+  for (let i = weeklyData.length - 2; i >= 0; i--) {
+    if (weeklyData[i].goalMet) currentStreak++
+    else break
+  }
+
+  const data = { weeklyData, sportBreakdown, weeklyGoal: WEEKLY_GOAL, currentWeekSessions, currentStreak, weeksHit, totalWeeks, totalSessionsQuarter }
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,16 +98,17 @@ export default async function WorkoutGoalsPage() {
           <div className="flex-1">
             <h1 className="text-xl font-bold text-text-primary">Workout Goals 🏆</h1>
             <p className="text-sm text-text-secondary">
-              {MOCK_DATA.weeksHit}/{MOCK_DATA.totalWeeks} weeks hit · last 13 weeks
+              {weeksHit}/{totalWeeks} weeks hit · last 13 weeks
             </p>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
-        <WorkoutGoalsClient data={MOCK_DATA} />
+        <WorkoutGoalsClient data={data} />
       </main>
       <BottomNav />
     </div>
   )
 }
+

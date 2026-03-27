@@ -479,11 +479,11 @@ export function YearClient({
                   return (
                     <Link
                       key={di}
-                      href={hasData ? `/day/${dateStr}` : '#'}
+                      href={hasData ? `/day/${dateStr}` : `/day/${dateStr}`}
                       className={cn(
                         'w-3 h-3 rounded-sm transition-opacity',
                         colorClass,
-                        hasData ? 'hover:opacity-75 cursor-pointer' : 'cursor-default pointer-events-none',
+                        hasData ? 'hover:opacity-75 cursor-pointer' : 'cursor-default pointer-events-none opacity-40',
                       )}
                       title={tooltip}
                     />

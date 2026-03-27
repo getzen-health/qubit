@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts'
 
 interface RespiratoryData {
@@ -332,14 +333,14 @@ function LeaderboardComponent({ data }: { data: SocialData }) {
 
 function QuickActionsComponent() {
   const actions = [
-    { icon: '🏃', label: 'Start Workout', color: 'from-green-500 to-emerald-600' },
-    { icon: '🍎', label: 'Log Food', color: 'from-red-500 to-rose-600' },
-    { icon: '💧', label: 'Add Water', color: 'from-blue-500 to-cyan-600' },
-    { icon: '😴', label: 'Log Sleep', color: 'from-indigo-500 to-purple-600' },
-    { icon: '💊', label: 'Medication', color: 'from-pink-500 to-rose-600' },
-    { icon: '🧘', label: 'Meditate', color: 'from-purple-500 to-violet-600' },
-    { icon: '📝', label: 'Journal', color: 'from-yellow-500 to-orange-600' },
-    { icon: '🎯', label: 'Set Goal', color: 'from-teal-500 to-green-600' },
+    { icon: '🏃', label: 'Start Workout', color: 'from-green-500 to-emerald-600', href: '/workouts' },
+    { icon: '🍎', label: 'Log Food', color: 'from-red-500 to-rose-600', href: '/food/diary' },
+    { icon: '💧', label: 'Add Water', color: 'from-blue-500 to-cyan-600', href: '/hydration' },
+    { icon: '😴', label: 'Log Sleep', color: 'from-indigo-500 to-purple-600', href: '/sleep' },
+    { icon: '💊', label: 'Medication', color: 'from-pink-500 to-rose-600', href: '/medications' },
+    { icon: '🧘', label: 'Meditate', color: 'from-purple-500 to-violet-600', href: '/mental-health' },
+    { icon: '📝', label: 'Journal', color: 'from-yellow-500 to-orange-600', href: '/journal' },
+    { icon: '🎯', label: 'Set Goal', color: 'from-teal-500 to-green-600', href: '/progress' },
   ]
 
   return (
@@ -347,13 +348,14 @@ function QuickActionsComponent() {
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
       <div className="grid grid-cols-4 gap-3">
         {actions.map((action) => (
-          <button
+          <Link
             key={action.label}
-            className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white hover:opacity-90 transition-all hover:scale-105 active:scale-95`}
+            href={action.href}
+            className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white hover:opacity-90 transition-all hover:scale-105 active:scale-95 text-center`}
           >
             <div className="text-2xl mb-1">{action.icon}</div>
             <div className="text-xs font-medium">{action.label}</div>
-          </button>
+          </Link>
         ))}
       </div>
     </div>

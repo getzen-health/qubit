@@ -112,7 +112,7 @@ function CalendarHeatmap({ summaries, stepGoal }: { summaries: Summary[]; stepGo
           return (
             <Link
               key={dateStr}
-              href={hasData ? `/day/${dateStr}` : '#'}
+              href={hasData ? `/day/${dateStr}` : `/day/${dateStr}`}
               className={cn(
                 'aspect-square rounded-md flex items-center justify-center text-xs font-medium transition-opacity',
                 stepColor(steps, stepGoal),
