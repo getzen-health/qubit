@@ -32,15 +32,17 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // Fetch user's enabled rules
-  const { data: rules } = await supabase.from('alert_rules').select('*').eq('user_id', user.id).eq('enabled', true)
+  const { data: rules, error: rulesErr } = await supabase.from('alert_rules').select('*').eq('user_id', user.id).eq('enabled', true)
+  if (rulesErr) console.error('alert_rules fetch error', rulesErr)
   if (!rules || rules.length === 0) return NextResponse.json({ triggered: [] })
 
   // Fetch recent metrics (last 24h)
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  const { data: metrics } = await supabase.from('health_metrics')
+  const { data: metrics, error: metricsErr } = await supabase.from('health_metrics')
     .select('metric_type, value')
     .eq('user_id', user.id)
     .gte('recorded_at', since)
+  if (metricsErr) console.error('metrics fetch error', metricsErr)
 
   // Get latest value per metric type
   const latestMetrics: Record<string, number> = {}
@@ -64,19 +66,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Record in history
-    await supabase.from('alert_history').insert({
+    const { error: historyErr } = await supabase.from('alert_history').insert({
       user_id: user.id,
       rule_id: rule.id,
       rule_name: rule.name,
       message: rule.message,
       severity: rule.severity,
     })
+    if (historyErr) console.error('alert_history insert error', historyErr)
 
-    // Update rule trigger count
-    await supabase.from('alert_rules').update({
+    const { error: updateErr } = await supabase.from('alert_rules').update({
       last_triggered_at: new Date().toISOString(),
       trigger_count: (rule.trigger_count ?? 0) + 1,
     }).eq('id', rule.id)
+    if (updateErr) console.error('alert_rules update error', updateErr)
 
     triggered.push({ rule_id: rule.id, name: rule.name, message: rule.message, severity: rule.severity })
   }
