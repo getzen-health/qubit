@@ -29,6 +29,7 @@ const TIME_LABELS: Record<string, string> = {
 interface ApiResponse {
   habits: Habit[]
   todayLogs: { habit_id: string; skipped: boolean; completed_at: string }[]
+  recentLogs: { habit_id: string; skipped: boolean; completed_at: string }[]
   streaks: Record<string, HabitStreak>
   level: UserLevel
   achievements: { achievement_id: string; unlocked_at: string }[]
@@ -223,13 +224,14 @@ export default function HabitsPage() {
     else grouped.anytime.push(h)
   }
 
-  // Weekly trend data for recharts
+  // Weekly trend data for recharts — use recentLogs (7-day history, not just today)
   const weeklyTrend = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(Date.now() - (6 - i) * 86400000)
     const ds = d.toISOString().slice(0, 10)
-    const dayLogs = data?.todayLogs ?? []
     const completed = (data?.habits ?? []).filter(h => {
-      const log = (data?.todayLogs ?? []).find(l => l.habit_id === h.id && (l as any).completed_at === ds)
+      const log = (data?.recentLogs ?? []).find(
+        l => l.habit_id === h.id && l.completed_at.slice(0, 10) === ds
+      )
       return log && !log.skipped
     }).length
     return {
@@ -463,7 +465,7 @@ export default function HabitsPage() {
                             {Array.from({ length: 7 }, (_, i) => {
                               const d = new Date(Date.now() - (6 - i) * 86400000)
                               const ds = d.toISOString().slice(0, 10)
-                              const log = (data?.todayLogs as any[])?.find((l: any) => l.habit_id === habit.id && l.completed_at === ds)
+                              const log = (data?.recentLogs as any[])?.find((l: any) => l.habit_id === habit.id && l.completed_at.slice(0, 10) === ds)
                               const done = log && !log.skipped
                               const skipped = log?.skipped
                               return (

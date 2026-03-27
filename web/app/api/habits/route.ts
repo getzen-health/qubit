@@ -36,9 +36,14 @@ export async function GET(req: NextRequest) {
     streaks[habit.id] = calculateStreak(habitLogs, habit.frequency, habit.custom_days)
   }
 
+  // Include last 7 days of logs for weekly trend chart
+  const since7 = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10)
+  const recentLogs = (allLogs ?? []).filter(l => l.completed_at >= since7)
+
   return NextResponse.json({
     habits: habits ?? [],
     todayLogs: todayLogs ?? [],
+    recentLogs,
     streaks,
     level,
     achievements: userAchievements ?? [],

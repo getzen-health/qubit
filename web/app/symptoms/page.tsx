@@ -1,7 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Stethoscope, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, Stethoscope, AlertTriangle, Plus, X } from 'lucide-react'
 import {
   BarChart,
   Bar,
@@ -25,32 +26,31 @@ interface SymptomEvent {
   emoji: string
 }
 
-// ─── Mock data — ~18 events over the last 30 days ─────────────────────────────
-// Reference date: 2026-03-19
+// ─── Symptom type mappings (DB → display) ─────────────────────────────────────
 
-const MOCK_EVENTS: SymptomEvent[] = [
-  { id: '1',  date: '2026-02-18', symptom: 'Fatigue',             severity: 'mild',     emoji: '😴' },
-  { id: '2',  date: '2026-02-20', symptom: 'Headache',            severity: 'mild',     emoji: '🤕' },
-  { id: '3',  date: '2026-02-21', symptom: 'Nausea',              severity: 'mild',     emoji: '🤢' },
-  { id: '4',  date: '2026-02-23', symptom: 'Fatigue',             severity: 'moderate', emoji: '😴' },
-  { id: '5',  date: '2026-02-24', symptom: 'Body Ache',           severity: 'moderate', emoji: '💪' },
-  { id: '6',  date: '2026-02-25', symptom: 'Headache',            severity: 'mild',     emoji: '🤕' },
-  { id: '7',  date: '2026-02-26', symptom: 'Fatigue',             severity: 'mild',     emoji: '😴' },
-  { id: '8',  date: '2026-02-28', symptom: 'Nausea',              severity: 'mild',     emoji: '🤢' },
-  { id: '9',  date: '2026-03-01', symptom: 'Body Ache',           severity: 'moderate', emoji: '💪' },
-  { id: '10', date: '2026-03-03', symptom: 'Fatigue',             severity: 'moderate', emoji: '😴' },
-  { id: '11', date: '2026-03-04', symptom: 'Headache',            severity: 'mild',     emoji: '🤕' },
-  { id: '12', date: '2026-03-05', symptom: 'Shortness of Breath', severity: 'mild',     emoji: '😮‍💨' },
-  { id: '13', date: '2026-03-07', symptom: 'Fatigue',             severity: 'mild',     emoji: '😴' },
-  { id: '14', date: '2026-03-09', symptom: 'Nausea',              severity: 'mild',     emoji: '🤢' },
-  { id: '15', date: '2026-03-10', symptom: 'Body Ache',           severity: 'moderate', emoji: '💪' },
-  { id: '16', date: '2026-03-12', symptom: 'Fatigue',             severity: 'mild',     emoji: '😴' },
-  { id: '17', date: '2026-03-14', symptom: 'Rapid Heartbeat',     severity: 'mild',     emoji: '💓' },
-  { id: '18', date: '2026-03-16', symptom: 'Headache',            severity: 'mild',     emoji: '🤕' },
-]
+const SYMPTOM_DISPLAY: Record<string, { label: string; emoji: string }> = {
+  pain:                { label: 'Pain',                emoji: '🤕' },
+  fatigue:             { label: 'Fatigue',             emoji: '😴' },
+  nausea:              { label: 'Nausea',              emoji: '🤢' },
+  dizziness:           { label: 'Dizziness',           emoji: '😵' },
+  shortness_of_breath: { label: 'Shortness of Breath', emoji: '😮‍💨' },
+  numbness:            { label: 'Numbness',            emoji: '🦶' },
+  headache:            { label: 'Headache',            emoji: '🤕' },
+  body_ache:           { label: 'Body Ache',           emoji: '💪' },
+  rapid_heartbeat:     { label: 'Rapid Heartbeat',     emoji: '💓' },
+  other:               { label: 'Other',               emoji: '🔴' },
+}
+
+const SYMPTOM_OPTIONS = Object.entries(SYMPTOM_DISPLAY).map(([value, { label }]) => ({ value, label }))
+
+function intensityToSeverity(intensity: number): Severity {
+  if (intensity <= 3) return 'mild'
+  if (intensity <= 6) return 'moderate'
+  return 'severe'
+}
 
 // Symptoms that warrant the urgent warning banner
-const URGENT_SYMPTOMS = new Set(['Shortness of Breath', 'Chest Pain/Tightness', 'Rapid Heartbeat'])
+const URGENT_SYMPTOMS = new Set(['shortness_of_breath', 'rapid_heartbeat', 'pain'])
 
 // Color palette per symptom type
 const SYMPTOM_COLORS: Record<string, string> = {
@@ -59,11 +59,11 @@ const SYMPTOM_COLORS: Record<string, string> = {
   'Body Ache':           '#3b82f6',
   'Shortness of Breath': '#ef4444',
   'Dizziness':           '#eab308',
-  'Chest Pain/Tightness':'#dc2626',
   'Rapid Heartbeat':     '#ec4899',
   'Nausea':              '#22c55e',
-  'Coughing':            '#14b8a6',
-  'Vomiting':            '#6366f1',
+  'Pain':                '#dc2626',
+  'Numbness':            '#14b8a6',
+  'Other':               '#6b7280',
 }
 
 // ─── Severity helpers ─────────────────────────────────────────────────────────
@@ -121,8 +121,8 @@ function buildStats(events: SymptomEvent[]) {
     color: SYMPTOM_COLORS[symptom] ?? '#6b7280',
   }))
 
-  // Urgent check
-  const hasUrgent = events.some((e) => URGENT_SYMPTOMS.has(e.symptom))
+  // Urgent check — using original symptom_type key
+  const hasUrgent = events.some((e) => URGENT_SYMPTOMS.has(e.symptom.toLowerCase().replace(/ /g, '_')))
 
   return {
     totalEvents,
@@ -136,8 +136,7 @@ function buildStats(events: SymptomEvent[]) {
   }
 }
 
-// Build 30-day calendar data
-// Reference: last 30 days ending 2026-03-19
+// Build 30-day calendar data (relative to today)
 function buildCalendarData(events: SymptomEvent[]): { date: string; color: string; severity: Severity | null }[] {
   // worst severity per day
   const worstByDay: Record<string, Severity> = {}
@@ -153,7 +152,7 @@ function buildCalendarData(events: SymptomEvent[]): { date: string; color: strin
     }
   }
 
-  const today = new Date('2026-03-19')
+  const today = new Date()
   const cells: { date: string; color: string; severity: Severity | null }[] = []
 
   // 30 days: 6 rows × 5 cols
@@ -259,11 +258,64 @@ function ScienceCard() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function SymptomsPage() {
-  const events = MOCK_EVENTS
+  const [events, setEvents] = useState<SymptomEvent[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [formType, setFormType] = useState('fatigue')
+  const [formIntensity, setFormIntensity] = useState(3)
+  const [formNotes, setFormNotes] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  async function loadEvents() {
+    try {
+      const res = await fetch('/api/symptoms')
+      if (res.ok) {
+        const json = await res.json()
+        // Map API logs to SymptomEvent display format
+        const mapped: SymptomEvent[] = (json.days ?? []).flatMap((day: any) =>
+          (day.logs ?? []).map((log: any) => {
+            const display = SYMPTOM_DISPLAY[log.symptom_type] ?? { label: log.symptom_type, emoji: '🔴' }
+            return {
+              id: log.id,
+              date: log.log_date,
+              symptom: display.label,
+              severity: intensityToSeverity(log.intensity),
+              emoji: display.emoji,
+            }
+          })
+        )
+        setEvents(mapped)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { loadEvents() }, [])
+
+  async function handleLog(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/symptoms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symptom_type: formType, intensity: formIntensity, notes: formNotes }),
+      })
+      if (res.ok) {
+        setShowForm(false)
+        setFormType('fatigue')
+        setFormIntensity(3)
+        setFormNotes('')
+        await loadEvents()
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const stats = buildStats(events)
   const calendarCells = buildCalendarData(events)
-
-  // Most recent 15 entries
   const recentLog = [...events].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 15)
 
   return (
@@ -280,15 +332,85 @@ export default function SymptomsPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Symptoms Log</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Last 30 days · Apple Health data</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Last 30 days</p>
           </div>
+          <button
+            onClick={() => setShowForm(v => !v)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
+          >
+            {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {showForm ? 'Cancel' : 'Log'}
+          </button>
           <Stethoscope className="w-5 h-5 text-gray-400 dark:text-gray-500" />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-5 pb-24">
 
+        {/* ── Log form (collapsible) ──────────────────────────────────────────── */}
+        {showForm && (
+          <form onSubmit={handleLog} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-5 space-y-4">
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">Log a Symptom</h2>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Symptom</label>
+              <select
+                value={formType}
+                onChange={e => setFormType(e.target.value)}
+                className="border border-gray-200 dark:border-gray-700 rounded-lg p-2 bg-white dark:bg-gray-800 text-sm"
+              >
+                {SYMPTOM_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Intensity: {formIntensity}/10 ({intensityToSeverity(formIntensity)})
+              </label>
+              <input
+                type="range" min={1} max={10} value={formIntensity}
+                onChange={e => setFormIntensity(Number(e.target.value))}
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Notes (optional)</label>
+              <textarea
+                value={formNotes}
+                onChange={e => setFormNotes(e.target.value)}
+                rows={2}
+                placeholder="Any additional context..."
+                className="border border-gray-200 dark:border-gray-700 rounded-lg p-2 bg-white dark:bg-gray-800 text-sm resize-none"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-red-500 text-white rounded-lg py-2 font-medium disabled:opacity-50 hover:bg-red-600 transition-colors"
+            >
+              {submitting ? 'Saving…' : 'Save Symptom'}
+            </button>
+          </form>
+        )}
+
+        {/* ── Loading state ──────────────────────────────────────────────────── */}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <div className="animate-spin w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full" />
+          </div>
+        )}
+
+        {/* ── Empty state ────────────────────────────────────────────────────── */}
+        {!loading && events.length === 0 && (
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-10 text-center">
+            <p className="text-4xl mb-3">🩺</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100 mb-1">No symptoms logged yet</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Tap the Log button above to record how you&apos;re feeling</p>
+          </div>
+        )}
+
         {/* ── 1. Hero summary card ────────────────────────────────────────────── */}
+        {!loading && events.length > 0 && (<>
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-5">
           <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-4">
             Summary · 30 days
@@ -542,6 +664,8 @@ export default function SymptomsPage() {
 
         {/* ── 7. Science card ──────────────────────────────────────────────────── */}
         <ScienceCard />
+
+        </>)} {/* end !loading && events.length > 0 */}
 
       </main>
     </div>
