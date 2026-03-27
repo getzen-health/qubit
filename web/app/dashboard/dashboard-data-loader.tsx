@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { SleepSummaryCard } from '@/components/sleep-summary-card'
 import { WorkoutSummaryCard } from '@/components/workout-summary-card'
 import { MoodSummaryCard } from '@/components/mood-summary-card'
-import { MacroRingsCard } from '@/components/macro-rings-card'
+import { DashboardCardGrid } from './dashboard-card-grid'
 
 export async function DashboardDataLoader({ user }: { user: User }) {
   const supabase = await createClient()
@@ -224,34 +224,7 @@ export async function DashboardDataLoader({ user }: { user: User }) {
   const todayMood: number | undefined = undefined // Not available in loader, placeholder
   const supplementsTaken = 0 // Not available in loader, placeholder
 
-  // --- Dashboard card customization ---
-  const [preferences, setPreferences] = useState<{
-    dashboard_card_order: string[]
-    dashboard_hidden_cards: string[]
-  } | null>(null)
-
-  useEffect(() => {
-    fetch('/api/preferences')
-      .then(r => r.json())
-      .then(setPreferences)
-      .catch(() => setPreferences(null))
-  }, [])
-
-  const CARD_COMPONENTS: Record<string, JSX.Element> = {
-    'health-score': <div key="health-score">{/* Health Score Card */}</div>,
-    'steps': <div key="steps">{/* Steps Card */}</div>,
-    'sleep': <SleepSummaryCard key="sleep" recentSleepRecords={recentSleepRecords ?? []} />,
-    'water': <div key="water">{/* Water Intake Card */}</div>,
-    'workout': typeof WorkoutSummaryCard !== 'undefined' ? <WorkoutSummaryCard key="workout" count={workoutCount} totalMinutes={workoutMinutes} /> : null,
-    'mood': typeof MoodSummaryCard !== 'undefined' ? <MoodSummaryCard key="mood" todayScore={todayMood} /> : null,
-    'streaks': null, // handled separately
-    'nutrition': <NutritionSummaryCard key="nutrition" />,
-    'macro-progress': <MacroRingsCard key="macro-progress" />,
-  }
-
-  const cardOrder = preferences?.dashboard_card_order || [
-    'health-score','steps','sleep','water','workout','mood','streaks','macro-progress','nutrition']
-  const hiddenCards = preferences?.dashboard_hidden_cards || []
+  // --- Dashboard card customization (handled by DashboardCardGrid client component) ---
 
   return (
     <>
@@ -269,14 +242,12 @@ export async function DashboardDataLoader({ user }: { user: User }) {
           </Link>
         </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        {cardOrder.map((key) => {
-          if (hiddenCards.includes(key)) return null
-          if (key === 'streaks') return null // handled in parent
-          return CARD_COMPONENTS[key] || null
-        })}
-      </div>
-      <DashboardStream
+      <DashboardCardGrid
+        workoutCount={workoutCount}
+        workoutMinutes={workoutMinutes ?? 0}
+        sleepHours={sleepHours}
+      />
+                <DashboardStream
         user={user}
         profile={profile}
         summaries={summaries ?? []}
