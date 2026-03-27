@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { HistoryClient } from './history-client'
+import { HistoryClient, type ScanRecord } from './history-client'
+
+export const metadata = { title: 'Scan History — KQuarks' }
 
 const PAGE_SIZE = 20
 
@@ -43,7 +45,7 @@ export default async function ScanHistoryPage({
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <HistoryClient scans={scans ?? []} initialOffset={offset} hasMore={hasMore} />
+        <HistoryClient scans={(scans ?? []) as ScanRecord[]} initialOffset={offset} hasMore={hasMore} />
       </div>
 
       <BottomNav />

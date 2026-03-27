@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Clock, Trash2, Star } from 'lucide-react'
+import { Clock, Trash2, Search, ScanLine } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-interface ScanRecord {
+export interface ScanRecord {
   id: string
   barcode: string | null
   product_name: string
@@ -15,24 +15,40 @@ interface ScanRecord {
   nutriscore: string | null
   thumbnail_url: string | null
   scanned_at: string
-  is_favorite?: boolean // Added for favorites
 }
 
-function gradeFromScore(score: number | null): { grade: string; color: string } {
-  if (score == null) return { grade: 'unknown', color: 'bg-gray-400' }
-  if (score >= 75) return { grade: 'excellent', color: 'bg-green-500' }
-  if (score >= 55) return { grade: 'good', color: 'bg-lime-500' }
-  if (score >= 35) return { grade: 'mediocre', color: 'bg-orange-500' }
-  return { grade: 'poor', color: 'bg-red-500' }
+// Thresholds from food-scoring.ts: A+(≥85) A(≥70) B(≥55) C(≥35) D(≥15) F(<15)
+function letterGrade(score: number | null): string {
+  if (score == null) return '?'
+  if (score >= 85) return 'A+'
+  if (score >= 70) return 'A'
+  if (score >= 55) return 'B'
+  if (score >= 35) return 'C'
+  if (score >= 15) return 'D'
+  return 'F'
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+function gradeColor(grade: string): string {
+  if (grade === 'A+' || grade === 'A') return 'bg-green-500/20 text-green-400 border-green-500/30'
+  if (grade === 'B') return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+  if (grade === 'C') return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+  if (grade === 'D') return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+  return 'bg-red-500/20 text-red-400 border-red-500/30'
+}
+
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+}
+
+function dateGroup(iso: string): 'Today' | 'Yesterday' | 'Earlier' {
+  const d = new Date(iso)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today.getTime() - 86400000)
+  const scanDay = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  if (scanDay.getTime() === today.getTime()) return 'Today'
+  if (scanDay.getTime() === yesterday.getTime()) return 'Yesterday'
+  return 'Earlier'
 }
 
 export function HistoryClient({
@@ -45,20 +61,37 @@ export function HistoryClient({
   hasMore?: boolean
 }) {
   const [scans, setScans] = useState<ScanRecord[]>(initial)
+  const [query, setQuery] = useState('')
   const [clearing, setClearing] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(initialHasMore)
   const [offset, setOffset] = useState(initialOffset + initial.length)
 
+  const filtered = useMemo(() => {
+    if (!query.trim()) return scans
+    const q = query.toLowerCase()
+    return scans.filter(
+      (s) =>
+        s.product_name.toLowerCase().includes(q) ||
+        (s.brand ?? '').toLowerCase().includes(q),
+    )
+  }, [scans, query])
+
+  const grouped = useMemo(() => {
+    const groups: Record<string, ScanRecord[]> = { Today: [], Yesterday: [], Earlier: [] }
+    for (const s of filtered) groups[dateGroup(s.scanned_at)].push(s)
+    return groups
+  }, [filtered])
+
   async function handleLoadMore() {
     setLoadingMore(true)
     try {
-      const res = await fetch(`/api/food/history?offset=${offset}&limit=20`)
+      const res = await fetch(`/api/scanner/history?offset=${offset}&limit=20`)
       if (!res.ok) return
       const json = await res.json()
-      setScans((prev) => [...prev, ...(json.scans ?? [])])
-      setOffset(offset + (json.scans?.length ?? 0))
-      setHasMore(json.hasMore ?? false)
+      setScans((prev) => [...prev, ...(json.data ?? [])])
+      setOffset(offset + (json.data?.length ?? 0))
+      setHasMore((json.data?.length ?? 0) === 20)
     } finally {
       setLoadingMore(false)
     }
@@ -82,18 +115,44 @@ export function HistoryClient({
 
   if (scans.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
-        <Clock className="w-14 h-14 text-text-secondary opacity-30" />
-        <p className="text-text-secondary font-medium">No scan history yet</p>
-        <p className="text-xs text-text-secondary">Products you scan will appear here</p>
+      <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
+        <div className="w-16 h-16 rounded-full bg-surface-secondary flex items-center justify-center">
+          <ScanLine className="w-8 h-8 text-text-secondary opacity-50" />
+        </div>
+        <div>
+          <p className="text-text-primary font-semibold">No scans yet</p>
+          <p className="text-xs text-text-secondary mt-1">Products you scan will appear here</p>
+        </div>
+        <Link
+          href="/food/scanner"
+          className="px-5 py-2.5 bg-accent text-white rounded-xl text-sm font-medium hover:bg-accent/90 transition-colors"
+        >
+          Scan a product
+        </Link>
       </div>
     )
   }
 
   return (
     <div className="space-y-4">
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none" />
+        <input
+          type="search"
+          placeholder="Search products…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/40"
+        />
+      </div>
+
+      {/* Header row */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-text-secondary">{scans.length} scans</p>
+        <p className="text-sm text-text-secondary">
+          {filtered.length} {filtered.length === 1 ? 'scan' : 'scans'}
+          {query && ` for "${query}"`}
+        </p>
         <button
           onClick={handleClearHistory}
           disabled={clearing}
@@ -104,53 +163,71 @@ export function HistoryClient({
         </button>
       </div>
 
-      <div className="space-y-2">
-        {scans.map((scan) => {
-          const { grade, color } = gradeFromScore(scan.health_score)
-          return (
-            <div
-              key={scan.id}
-              className="bg-surface rounded-2xl border border-border p-4 flex items-center gap-3"
-            >
-              {scan.thumbnail_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={scan.thumbnail_url}
-                  alt={scan.product_name}
-                  className="w-12 h-12 object-contain rounded-xl bg-surface-secondary shrink-0"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-xl bg-surface-secondary shrink-0 flex items-center justify-center text-xl">
-                  🍎
-                </div>
-              )}
+      {filtered.length === 0 && (
+        <p className="text-center text-sm text-text-secondary py-10">No results for &quot;{query}&quot;</p>
+      )}
 
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-text-primary truncate">{scan.product_name}</p>
-                {scan.brand && (
-                  <p className="text-xs text-text-secondary truncate">{scan.brand}</p>
-                )}
-                <p className="text-xs text-text-secondary mt-0.5 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {formatDate(scan.scanned_at)}
-                </p>
-                {scan.barcode && (
-                  <Link href={`/food/product/${scan.barcode}`} className="text-primary text-xs font-medium underline mt-1 block">View full details →</Link>
-                )}
-              </div>
-
-              {scan.health_score != null && (
+      {/* Date-grouped scans */}
+      {(['Today', 'Yesterday', 'Earlier'] as const).map((group) => {
+        const items = grouped[group]
+        if (!items.length) return null
+        return (
+          <section key={group} className="space-y-2">
+            <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-1">{group}</h2>
+            {items.map((scan) => {
+              const grade = letterGrade(scan.health_score)
+              const badgeClass = gradeColor(grade)
+              return (
                 <div
-                  className={`flex flex-col items-center justify-center rounded-full ${color} text-white w-11 h-11 shrink-0`}
+                  key={scan.id}
+                  className="bg-surface rounded-2xl border border-border p-4 flex items-center gap-3"
                 >
-                  <span className="text-sm font-black leading-none">{scan.health_score}</span>
-                  <span className="text-[9px] font-semibold capitalize leading-none mt-0.5">{grade}</span>
+                  {scan.thumbnail_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={scan.thumbnail_url}
+                      alt={scan.product_name}
+                      className="w-12 h-12 object-contain rounded-xl bg-surface-secondary shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-surface-secondary shrink-0 flex items-center justify-center text-xl">
+                      🍎
+                    </div>
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-text-primary truncate">{scan.product_name}</p>
+                    {scan.brand && (
+                      <p className="text-xs text-text-secondary truncate">{scan.brand}</p>
+                    )}
+                    <p className="text-xs text-text-secondary mt-0.5 flex items-center gap-1">
+                      <Clock className="w-3 h-3 shrink-0" />
+                      {formatTime(scan.scanned_at)}
+                    </p>
+                    {scan.barcode && (
+                      <Link
+                        href={`/food/scanner?barcode=${scan.barcode}`}
+                        className="text-accent text-xs font-medium mt-1 block hover:underline"
+                      >
+                        View details →
+                      </Link>
+                    )}
+                  </div>
+
+                  {scan.health_score != null && (
+                    <div
+                      className={`flex flex-col items-center justify-center rounded-xl border px-2.5 py-1.5 shrink-0 min-w-[44px] ${badgeClass}`}
+                    >
+                      <span className="text-sm font-black leading-none">{grade}</span>
+                      <span className="text-[10px] font-semibold leading-none mt-0.5">{scan.health_score}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+              )
+            })}
+          </section>
+        )
+      })}
 
       {hasMore && (
         <button
