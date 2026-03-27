@@ -25,7 +25,7 @@ const navItems = [
 // "More" sheet — secondary features grouped logically
 const moreItems = [
   // Daily tracking
-  { href: '/water', icon: Droplets, label: 'Water' },
+  { href: '/hydration', icon: Droplets, label: 'Hydration' },
   { href: '/mood', icon: '😊', label: 'Mood' },
   { href: '/stress', icon: Wind, label: 'Stress' },
   { href: '/habits', icon: CheckSquare, label: 'Habits' },
@@ -49,7 +49,7 @@ const moreItems = [
   { href: '/body', icon: '⚖️', label: 'Body' },
   { href: '/body-measurements', icon: Ruler, label: 'Measurements' },
   { href: '/medications', icon: Pill, label: 'Medications' },
-  { href: '/lab-results', icon: '🧪', label: 'Labs' },
+  { href: '/labs', icon: '🧪', label: 'Labs' },
   { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
   { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
   // Fitness

@@ -91,7 +91,7 @@ interface DashboardStreamProps {
     email?: string
   }
   profile: {
-    display_name?: string
+    full_name?: string
     avatar_url?: string
   } | null
   summaries: Array<{
@@ -608,7 +608,7 @@ export function DashboardStream({
             <h1 className="text-xl font-bold text-text-primary">
               {(() => {
                 const { text, emoji } = getTimeOfDayGreeting()
-                const firstName = profile?.display_name?.split(' ')[0]
+                const firstName = profile?.full_name?.split(' ')[0]
                 return firstName ? `${emoji} ${text}, ${firstName}` : `${emoji} ${text}`
               })()}
             </h1>

@@ -469,6 +469,14 @@ export default function FoodScannerPage() {
           </div>
         )}
 
+        {!loading && !error && !product && !barcode && (
+          <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+            <ScanLine className="w-14 h-14 text-text-muted" />
+            <p className="text-base font-medium text-text-secondary">Scan or search a product</p>
+            <p className="text-xs text-text-muted max-w-xs">Point your camera at a barcode, or type a product name above to see its health score</p>
+          </div>
+        )}
+
         {error && (
           <div className="flex flex-col gap-3 p-4 rounded-xl border" style={{
             backgroundColor: error.includes('Thank you') ? '#f0fdf4' : '#fef2f2',
