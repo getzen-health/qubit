@@ -257,7 +257,7 @@ export async function DashboardDataLoader({ user }: { user: User }) {
         dbSleepGoalMinutes={profile?.sleep_goal_minutes ?? null}
         lastSyncAt={lastSyncAt}
         todayWaterMl={todayWater?.total_ml ?? 0}
-        waterTargetMl={nutritionSettings?.water_target_ml ?? 2500}
+        waterTargetMl={nutritionSettings?.water_target_ml || 2500}
         activeFast={activeFast ?? null}
         todayCaloriesConsumed={Math.round(todayCaloriesConsumed)}
         calorieIntakeTarget={nutritionSettings?.calorie_target ?? 2000}
