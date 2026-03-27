@@ -60,11 +60,12 @@ function getServiceClient() {
  * @returns Object with allowed status and remaining requests
  */
 export async function checkRateLimit(
-  identifier: string,
+  identifier: string | Request,
   endpoint: keyof typeof RATE_LIMITS = 'default'
 ): Promise<{ allowed: boolean; remaining: number; resetIn: number }> {
+  const id = typeof identifier === 'string' ? identifier : getClientIdentifier(identifier)
   const config = RATE_LIMITS[endpoint]
-  const key = `${endpoint}:${identifier}`
+  const key = `${endpoint}:${id}`
   const windowStart = new Date(Date.now() - config.windowMs).toISOString()
 
   const supabase = getServiceClient()
@@ -100,7 +101,7 @@ export async function checkRateLimit(
   const { error: rlErr } = await supabase.from('rate_limit_events').insert({
     key,
     endpoint: String(endpoint),
-    identifier,
+    identifier: id,
   })
   if (rlErr) console.error('rate_limit_events insert error', rlErr)
 

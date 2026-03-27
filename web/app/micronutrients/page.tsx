@@ -91,7 +91,7 @@ function fmt(n: number, unit: string): string {
 // ─── Notable interactions ──────────────────────────────────────────────────────
 
 const NOTABLE_INTERACTIONS = [
-  { emoji: '⚠️', text: 'Zinc + Copper compete — don't over-supplement both at once' },
+  { emoji: '⚠️', text: "Zinc + Copper compete — don't over-supplement both at once" },
   { emoji: '✅', text: 'Vitamin D3 + K2 work together to direct calcium to bones' },
   { emoji: '✅', text: 'Vitamin C dramatically boosts non-heme iron absorption' },
   { emoji: '⚠️', text: 'Excess calcium reduces zinc and magnesium absorption' },

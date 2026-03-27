@@ -450,7 +450,7 @@ export const MICRONUTRIENT_DB: Micronutrient[] = [
     ],
     deficiencySymptoms: ['Muscle weakness and cramps', 'Fatigue and constipation', 'Abnormal heart rhythms'],
     topFoods: ['Avocado', 'Sweet potato', 'Banana', 'Spinach', 'Salmon'],
-    interactions: ['Counteracts sodium's blood pressure effect', 'Low potassium worsens magnesium loss'],
+    interactions: ["Counteracts sodium's blood pressure effect", 'Low potassium worsens magnesium loss'],
   },
   {
     id: 'sodium',

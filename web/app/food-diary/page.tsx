@@ -61,6 +61,7 @@ export default function FoodDiaryPage() {
     fetchData()
   }
   return (
+    <>
     <div className="max-w-xl mx-auto p-4">
       <h1 className="text-2xl font-bold flex items-center gap-2 mb-4"><BookOpen className="w-6 h-6" /> Food Diary</h1>
       <div className="bg-gray-100 rounded p-4 mb-6">
@@ -102,5 +103,6 @@ export default function FoodDiaryPage() {
     <div className="text-center mt-8 text-sm text-gray-500">
       <a href="/calorie-balance" className="text-blue-600 underline">View calorie balance &rarr;</a>
     </div>
+    </>
   )
 }

@@ -497,7 +497,7 @@ function DigitSpanTest({ onComplete }: { onComplete: (result: DigitSpanResult) =
 
       {phase === 'showing' && (
         <div className="flex flex-col items-center gap-4">
-          <p className="text-text-secondary text-xs">Remember these digits{mode === 'backward' ? ' (you'll type them backwards)' : ''}:</p>
+          <p className="text-text-secondary text-xs">Remember these digits{mode === 'backward' ? " (you'll type them backwards)" : ''}:</p>
           <div className="text-6xl font-mono font-bold text-accent">
             {showIndex >= 0 ? sequence[showIndex] : '·'}
           </div>
