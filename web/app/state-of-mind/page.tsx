@@ -107,7 +107,7 @@ const ASSOCIATIONS = ['Work', 'Family', 'Fitness', 'Health', 'Hobbies', 'Other']
 function generateMockData(): MindEntry[] {
   const rand = seededRandom(20260319)
   const entries: MindEntry[] = []
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   for (let dayIdx = 0; dayIdx < 30; dayIdx++) {
     const d = new Date(today)
@@ -197,7 +197,7 @@ function valenceColor(v: number): string {
 }
 
 function dayLabel(idx: number): string {
-  const d = new Date('2026-03-19')
+  const d = new Date()
   d.setDate(d.getDate() - (29 - idx))
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }

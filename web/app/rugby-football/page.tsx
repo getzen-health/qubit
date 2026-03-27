@@ -120,7 +120,7 @@ const WEEK_COUNT = 12
 const weekLabels: string[] = []
 const weeklyLoadData: { week: string; load: number; isHigh: boolean }[] = []
 
-const refDate = new Date('2026-03-15T12:00:00')
+const refDate = new Date()
 for (let w = WEEK_COUNT - 1; w >= 0; w--) {
   const weekEnd   = new Date(refDate.getTime() - w * 7 * 24 * 60 * 60 * 1000)
   const weekStart = new Date(weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000)

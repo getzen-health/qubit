@@ -54,7 +54,7 @@ function buildMockData(): TemperatureInsightsData {
     return 'normal'
   }
 
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   // Build daily array oldest→newest (left→right on chart)
   const daily: NightlyDeviation[] = rawValues

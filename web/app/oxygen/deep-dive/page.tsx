@@ -52,7 +52,7 @@ function buildMockData(): SpO2Data {
     return 'veryLow'
   }
 
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   const daily: DailySpO2Reading[] = rawValues
     .sort((a, b) => b.offset - a.offset)

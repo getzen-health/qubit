@@ -19,7 +19,7 @@ function ahaClass(rhr: number): { label: string; color: string } {
 
 // ─── Generate 365 days of realistic mock RHR data ─────────────────────────────
 function generateMockData() {
-  const today = new Date('2026-03-19')
+  const today = new Date()
   const points: { date: string; rhr: number }[] = []
 
   for (let i = 364; i >= 0; i--) {

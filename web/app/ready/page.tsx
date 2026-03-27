@@ -49,7 +49,7 @@ function buildMockData(): ReadinessData {
     { offset: 0,  score: 76, hrv: 53, rhr: 55, sleep: 7.5 },
   ]
 
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   // 30-day HRV baseline average
   const hrvBaseline = Math.round(rawScores.reduce((s, r) => s + r.hrv, 0) / rawScores.length)

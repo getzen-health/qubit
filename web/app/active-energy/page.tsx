@@ -15,7 +15,7 @@ export const metadata = { title: 'Active Energy' }
 
 function buildMockDays(): DayRecord[] {
   // Anchor to the page's "today" (2026-03-19)
-  const today = new Date('2026-03-19T00:00:00')
+  const today = new Date()
 
   // Pre-defined realistic values: index 0 = 29 days ago, index 29 = today
   const rawKcal = [

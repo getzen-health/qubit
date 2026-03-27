@@ -57,7 +57,7 @@ interface DayRecord {
 
 function buildMockData(): DayRecord[] {
   // Base date: 30 days ending today (2026-03-19)
-  const base = new Date('2026-02-18')
+  const base = new Date()
   const records: DayRecord[] = []
 
   // Patterns: most days have morning coffee + midday, some late afternoon

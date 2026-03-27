@@ -90,7 +90,7 @@ const ZONE_META: Record<SpeedZone, {
 // followed by a full recovery to prior baseline.
 
 function makeDate(daysAgo: number): string {
-  const d = new Date('2026-03-20')
+  const d = new Date()
   d.setDate(d.getDate() - daysAgo)
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }

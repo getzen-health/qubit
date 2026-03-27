@@ -56,7 +56,7 @@ function buildMockData(): BreathingRateData {
     return 'normal'
   }
 
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   const daily: DailyReading[] = rawValues
     .sort((a, b) => b.offset - a.offset)

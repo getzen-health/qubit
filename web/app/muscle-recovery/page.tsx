@@ -422,7 +422,7 @@ export default function MuscleRecoveryPage() {
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-green-400" />
             <span className="text-[10px] font-semibold text-green-500 uppercase tracking-[0.18em]">
-              Overall Readiness · {new Date('2026-03-20').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              Overall Readiness · {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
             </span>
           </div>
 

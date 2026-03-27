@@ -19,5 +19,13 @@ export default async function AlcoholPage() {
     .order('date', { ascending: false })
     .limit(90)
 
-  return <AlcoholClient initialLogs={logs ?? []} />
+  const { data: profile } = await supabase
+    .from('users')
+    .select('biological_sex')
+    .eq('id', user.id)
+    .single()
+
+  const sex = (profile?.biological_sex === 'female' ? 'female' : 'male') as 'male' | 'female'
+
+  return <AlcoholClient initialLogs={logs ?? []} sex={sex} />
 }

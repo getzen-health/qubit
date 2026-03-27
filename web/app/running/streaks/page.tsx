@@ -13,7 +13,7 @@ export const metadata = { title: 'Running Streaks' }
 
 function buildMockData() {
   // Anchor: today = 2026-03-19
-  const TODAY = new Date('2026-03-19')
+  const TODAY = new Date()
 
   // Seed for deterministic-looking mock data
   // Pattern: run on most days with realistic gaps (rest days, travel)

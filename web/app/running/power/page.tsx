@@ -120,7 +120,7 @@ interface RunRecord {
 
 function buildMockRuns(): RunRecord[] {
   // 28 sessions spread over last 90 days, latest first
-  const base = new Date('2026-03-19')
+  const base = new Date()
   const sessions: Array<{
     daysAgo: number
     avgWatts: number
@@ -217,12 +217,12 @@ const peakPower = Math.max(...RUNS.map((r) => r.peakWatts))
 // Trend: last-month avg vs first-month avg
 const lastMonthRuns = RUNS.filter((r) => {
   const d = new Date(r.date + 'T00:00:00')
-  const ref = new Date('2026-03-19')
+  const ref = new Date()
   return (ref.getTime() - d.getTime()) / 86400000 <= 30
 })
 const firstMonthRuns = RUNS.filter((r) => {
   const d = new Date(r.date + 'T00:00:00')
-  const ref = new Date('2026-03-19')
+  const ref = new Date()
   const daysAgo = (ref.getTime() - d.getTime()) / 86400000
   return daysAgo >= 60 && daysAgo <= 90
 })

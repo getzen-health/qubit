@@ -10,7 +10,7 @@ export const metadata = { title: 'Standing Hours Analysis' }
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
 function buildMockData(): StandingData {
-  const today = new Date('2026-03-19')
+  const today = new Date()
 
   // 30 days of stand hour counts (offset 0 = today, 29 = oldest)
   const rawValues: Array<{ offset: number; hours: number }> = [

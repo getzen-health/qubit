@@ -27,7 +27,7 @@ function buildMockData(): ExerciseMinutesData {
 
   // Build week labels — week 52 ends on the current Thursday (2026-03-19)
   // Week starts on Monday; current week started 2026-03-16
-  const thisWeekStart = new Date('2026-03-16')
+  const thisWeekStart = new Date()
 
   const weeks52: WeekData[] = weekMinutes.map((minutes, i) => {
     const offset = 51 - i          // weeks back from current week

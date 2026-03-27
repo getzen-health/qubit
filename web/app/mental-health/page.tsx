@@ -114,22 +114,32 @@ function ScreenerFlow({ screener }: { screener: typeof SCREENERS[0] }) {
     setSubmitting(true)
     const total_score = answers.reduce((a, b) => a + b, 0)
     const interpretation = screener.interpret(total_score)
+    try {
+      const res = await fetch('/api/mental-health', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          screener_type: screener.key,
+          answers,
+          total_score,
+          severity_label: interpretation.label,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        console.error('[mental-health] Save failed:', err)
+        // Still show result — data saved locally in state
+      }
+    } catch (e) {
+      console.error('[mental-health] Network error saving assessment:', e)
+    }
     setResult({ total_score, interpretation })
-    await fetch('/api/mental-health', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        screener_type: screener.key,
-        answers,
-        total_score,
-        severity_label: interpretation.label,
-      }),
-    })
     setSubmitting(false)
     // Refresh history
     fetch(`/api/mental-health`)
       .then(r => r.json())
       .then(data => setHistory((data || []).filter((d: any) => d.screener_type === screener.key)))
+      .catch(() => {})
   }
 
   if (result) {

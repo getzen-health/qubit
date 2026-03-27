@@ -82,7 +82,7 @@ const ZONE_META: Record<AsymmetryZone, {
 // toward the normal range.
 
 function makeDate(daysAgo: number): string {
-  const d = new Date('2026-03-20')
+  const d = new Date()
   d.setDate(d.getDate() - daysAgo)
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }

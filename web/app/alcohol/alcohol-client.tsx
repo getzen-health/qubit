@@ -76,6 +76,7 @@ interface AlcoholLog {
 
 interface Props {
   initialLogs: AlcoholLog[]
+  sex: 'male' | 'female'
 }
 
 // ─── Drink type presets ───────────────────────────────────────────────────────
@@ -158,11 +159,10 @@ function NIAAABar({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function AlcoholClient({ initialLogs }: Props) {
+export function AlcoholClient({ initialLogs, sex }: Props) {
   const [tab, setTab] = useState<'log' | 'trends' | 'liver'>('log')
   const [logs, setLogs] = useState<AlcoholLog[]>(initialLogs)
   const [saving, setSaving] = useState(false)
-  const [sex] = useState<BiologicalSex>('male') // TODO: pull from profile
 
   const today = new Date().toISOString().slice(0, 10)
 

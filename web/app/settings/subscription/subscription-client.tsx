@@ -26,12 +26,8 @@ export default function SubscriptionClient({
 
   const handleUpgrade = async (tier: SubscriptionTier) => {
     if (tier === currentTier) return
-
     setError(null)
-    setSuccess(null)
-
-    // TODO: Integrate with Stripe or payment provider
-    alert(`Upgrade to ${tier} feature coming soon!`)
+    setSuccess('Paid plans are coming soon! You\'ll be notified when they\'re available.')
   }
 
   return (
