@@ -50,6 +50,13 @@ struct DashboardListView: View {
                         dashboardContent(summary: summary)
                     } else if let error = viewModel.error {
                         errorView(error: error)
+                    } else {
+                        ContentUnavailableView(
+                            "No Health Data Yet",
+                            systemImage: "heart.text.square",
+                            description: Text("Open the app and sync your Apple Health data to get started.")
+                        )
+                        .padding(.top, 60)
                     }
                 }
             }

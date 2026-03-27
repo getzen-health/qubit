@@ -36,10 +36,9 @@ struct HealthScoreView: View {
 
     private var grade: (label: String, color: Color) {
         switch todayScore {
-        case 85...: return ("Excellent", .green)
-        case 70..<85: return ("Good", Color(red: 0.6, green: 0.9, blue: 0.2))
-        case 55..<70: return ("Fair", .yellow)
-        case 40..<55: return ("Low", .orange)
+        case 80...: return ("Excellent", .green)
+        case 60..<80: return ("Good", .yellow)
+        case 40..<60: return ("Fair", .orange)
         default: return ("Poor", .red)
         }
     }
@@ -275,10 +274,9 @@ struct HealthScoreView: View {
 
     private func scoreColor(_ score: Double) -> Color {
         switch score {
-        case 85...: return .green
-        case 70..<85: return Color(red: 0.6, green: 0.9, blue: 0.2)
-        case 55..<70: return .yellow
-        case 40..<55: return .orange
+        case 80...: return .green
+        case 60..<80: return .yellow
+        case 40..<60: return .orange
         default: return .red
         }
     }
@@ -405,10 +403,9 @@ private struct ScoreBar: View {
 
     private var grade: String {
         switch score {
-        case 85...: return "Excellent"
-        case 70..<85: return "Good"
-        case 55..<70: return "Fair"
-        case 40..<55: return "Low"
+        case 80...: return "Excellent"
+        case 60..<80: return "Good"
+        case 40..<60: return "Fair"
         default: return "Poor"
         }
     }
