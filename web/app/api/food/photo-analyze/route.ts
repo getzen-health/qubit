@@ -1,23 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const rateLimitOk = await checkRateLimit(user.id, 'foodPhotoAnalyze')
-    if (!rateLimitOk) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
-
+export const POST = createSecureApiHandler(
+  { rateLimit: 'foodPhotoAnalyze', requireAuth: true },
+  async (request, { supabase: _supabase }) => {
     const body = await request.json()
     const { imageBase64 } = body  // base64 encoded image
 
-    if (!imageBase64) return NextResponse.json({ error: 'No image provided' }, { status: 400 })
+    if (!imageBase64) return secureErrorResponse('No image provided', 400)
 
     const apiKey = process.env.OPENAI_API_KEY
-    if (!apiKey) return NextResponse.json({ error: 'AI service not configured' }, { status: 503 })
+    if (!apiKey) return secureErrorResponse('AI service not configured', 503)
 
     // Call OpenAI GPT-4o vision
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -68,9 +60,7 @@ If you cannot identify food in the image, return {"error": "No food detected"}.`
       })
     })
 
-    if (!response.ok) {
-      return NextResponse.json({ error: 'AI analysis failed' }, { status: 502 })
-    }
+    if (!response.ok) return secureErrorResponse('AI analysis failed', 502)
 
     const aiResponse = await response.json()
     const content = aiResponse.choices?.[0]?.message?.content ?? ''
@@ -81,15 +71,11 @@ If you cannot identify food in the image, return {"error": "No food detected"}.`
       const jsonMatch = content.match(/\{[\s\S]*\}/)
       parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { error: 'Could not parse response' }
     } catch {
-      return NextResponse.json({ error: 'Could not parse AI response' }, { status: 500 })
+      return secureErrorResponse('Could not parse AI response', 500)
     }
 
-    if (parsed.error) {
-      return NextResponse.json({ error: parsed.error }, { status: 422 })
-    }
+    if (parsed.error) return secureErrorResponse(parsed.error as string, 422)
 
-    return NextResponse.json({ result: parsed, source: 'ai_vision' })
-  } catch (error) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return secureJsonResponse({ result: parsed, source: 'ai_vision' })
   }
-}
+)

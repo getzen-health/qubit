@@ -1,12 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { id } = await params
-  const { error } = await supabase.from('user_allergens').delete().eq('id', id).eq('user_id', user.id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json({ success: true })
-}
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const id = req.nextUrl.pathname.split('/').at(-1)
+    const { error } = await supabase
+      .from('user_allergens')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user!.id)
+    if (error) return secureErrorResponse('Failed to delete allergen', 400)
+    return secureJsonResponse({ success: true })
+  }
+)

@@ -1,25 +1,20 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export const PATCH = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (req, { user, supabase }) => {
+    const id = req.nextUrl.pathname.split('/').at(-2)
+    const { is_favorite } = await req.json()
 
-  const { is_favorite } = await request.json()
-  const { id } = await params
+    const { data, error } = await supabase
+      .from('scan_history')
+      .update({ is_favorite })
+      .eq('id', id)
+      .eq('user_id', user!.id)
+      .select('id, is_favorite')
+      .single()
 
-  const { data, error } = await supabase
-    .from('scan_history')
-    .update({ is_favorite })
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .select('id, is_favorite')
-    .single()
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
-}
+    if (error) return secureErrorResponse('Failed to update favorite', 500)
+    return secureJsonResponse({ data })
+  }
+)

@@ -1,47 +1,46 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data, error } = await supabase
-    .from('user_allergens')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('allergen')
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ allergens: data })
-}
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data, error } = await supabase
+      .from('user_allergens')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('allergen')
+    if (error) return secureErrorResponse('Failed to fetch allergens', 500)
+    return secureJsonResponse({ allergens: data })
+  }
+)
 
-export async function POST(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  const allergen = typeof body.allergen === 'string' ? body.allergen.trim() : ''
-  const severity = body.severity ?? 'moderate'
-  if (!allergen) return NextResponse.json({ error: 'allergen is required' }, { status: 400 })
-  const { data, error } = await supabase
-    .from('user_allergens')
-    .insert({ user_id: user.id, allergen, severity })
-    .select()
-    .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json({ allergen: data }, { status: 201 })
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const allergen = typeof body.allergen === 'string' ? body.allergen.trim() : ''
+    const severity = body.severity ?? 'moderate'
+    if (!allergen) return secureErrorResponse('allergen is required', 400)
+    const { data, error } = await supabase
+      .from('user_allergens')
+      .insert({ user_id: user!.id, allergen, severity })
+      .select()
+      .single()
+    if (error) return secureErrorResponse('Failed to create allergen', 400)
+    return secureJsonResponse({ allergen: data }, 201)
+  }
+)
 
-export async function DELETE(request: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { id } = await request.json()
-  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
-  const { error } = await supabase
-    .from('user_allergens')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json({ success: true })
-}
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { id } = await request.json()
+    if (!id) return secureErrorResponse('id is required', 400)
+    const { error } = await supabase
+      .from('user_allergens')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user!.id)
+    if (error) return secureErrorResponse('Failed to delete allergen', 400)
+    return secureJsonResponse({ success: true })
+  }
+)
