@@ -3,7 +3,7 @@ import SwiftUI
 struct WorkoutHistoryView: View {
     @State private var workouts: [WorkoutRecord] = []
     @State private var selectedType: String = "All"
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     let types = ["All", "Running", "Cycling", "Swimming", "Walking", "Strength", "HIIT"]
 

@@ -51,7 +51,7 @@ private struct StressLogInsert: Encodable {
 class StressViewModel {
     var stressLogs: [StressLog] = []
     var dailySummaries: [DailySummary] = []
-    var isLoading = false
+    var isLoading = true
     var errorMessage: String?
 
     private let supabase = SupabaseService.shared

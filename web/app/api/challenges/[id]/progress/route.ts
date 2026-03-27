@@ -9,8 +9,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const { data: user } = await supabase.auth.getUser()
   if (!user?.id) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   const challenge_id = params.id
-  // Try to auto-calculate from health_metrics for steps
-  const { data: challenge } = await supabase.from('challenges').select('*').eq('id', challenge_id).single()
+  const { data: challenge, error: challengeErr } = await supabase.from('challenges').select('*').eq('id', challenge_id).single()
+  if (challengeErr) console.error('challenges fetch error', challengeErr)
   let value = 0
   if (challenge?.type === 'steps') {
     // Sum steps for challenge duration

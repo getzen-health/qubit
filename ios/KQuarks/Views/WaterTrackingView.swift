@@ -23,7 +23,7 @@ final class WaterTrackingViewModel {
 
     var logs: [WaterLog] = []
     var weeklyTotals: [DailyWaterTotal] = []
-    var isLoading = false
+    var isLoading = true
     var errorMessage: String?
     var customAmountText = ""
 

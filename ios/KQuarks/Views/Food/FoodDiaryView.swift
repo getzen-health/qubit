@@ -49,7 +49,7 @@ struct FoodDiaryEntry: Identifiable, Decodable, Hashable {
 struct FoodDiaryView: View {
     @State private var entries: [FoodDiaryEntry] = []
     @State private var selectedDate = Date()
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var editingEntry: FoodDiaryEntry?
     @State private var errorMessage: String?
     @State private var isDeleting = false

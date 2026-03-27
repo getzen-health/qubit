@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   const parsed = parseAuto(filename, content)
 
   if (parsed.format === 'unknown' || parsed.records.length === 0) {
-    await supabase.from('import_logs').insert({
+    const { error: logErr1 } = await supabase.from('import_logs').insert({
       user_id: user.id,
       source_format: parsed.format,
       filename,
@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
       status: 'failed',
       errors: parsed.errors.length ? parsed.errors : ['No records parsed'],
     })
+    if (logErr1) console.error('import_logs insert error', logErr1)
     return NextResponse.json({
       imported: 0,
       skipped: 0,
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
   }
 
   const status = imported === 0 ? 'failed' : rowErrors.length > 0 ? 'partial' : 'completed'
-  await supabase.from('import_logs').insert({
+  const { error: logErr2 } = await supabase.from('import_logs').insert({
     user_id: user.id,
     source_format: parsed.format,
     filename,
@@ -125,6 +126,7 @@ export async function POST(req: NextRequest) {
     status,
     errors: rowErrors.length ? rowErrors.slice(0, 20) : null,
   })
+  if (logErr2) console.error('import_logs final insert error', logErr2)
 
   return NextResponse.json({ imported, skipped, errors: rowErrors, date_range: parsed.date_range })
 }

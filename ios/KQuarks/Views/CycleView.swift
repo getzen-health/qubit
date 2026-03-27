@@ -6,7 +6,7 @@ struct CycleView: View {
     @State private var phase: String = "menstrual"
     @State private var symptoms: [String] = []
     @State private var notes: String = ""
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var successMessage: String?
     @State private var errorMessage: String?
 

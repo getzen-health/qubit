@@ -5,7 +5,7 @@ struct NutritionGoalsView: View {
     @State private var proteinGoal = 150
     @State private var carbsGoal = 250
     @State private var fatGoal = 65
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var isSaving = false
     @State private var errorMessage: String?
 

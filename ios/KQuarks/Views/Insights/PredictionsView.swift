@@ -9,7 +9,7 @@ import SwiftUI
 @Observable
 private class PredictionsViewModel {
     var predictions: [SupabaseService.PredictionRow] = []
-    var isLoading = false
+    var isLoading = true
     var error: String?
 
     func load() async {

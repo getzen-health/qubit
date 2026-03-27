@@ -4,7 +4,7 @@ struct WaterTrackerView: View {
     @State private var totalMl: Int = 0
     @State private var entries: [WaterEntry] = []
     @State private var customAmount: String = ""
-    @State private var isLoading = false
+    @State private var isLoading = true
     
     private let goalMl = 2500
     private let quickAmounts = [200, 300, 500, 750]

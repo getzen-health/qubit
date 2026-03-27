@@ -6,7 +6,7 @@ struct GlucoseView: View {
     @State private var showLogSheet = false
     @State private var logValue = ""
     @State private var logContext = "fasting"
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     let contexts = ["fasting", "post_meal", "pre_meal", "random", "bedtime"]
     let contextLabels = ["Fasting", "Post-meal", "Pre-meal", "Random", "Bedtime"]

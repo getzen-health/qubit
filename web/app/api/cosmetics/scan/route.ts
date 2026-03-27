@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     const product = data.product
     // Fetch user profile for personalisation
-    const { data: userProfile } = await supabase.from('user_profiles').select('health_conditions, dietary_preferences').eq('user_id', user.id).single()
+    const { data: userProfile, error: profileErr } = await supabase.from('user_profiles').select('health_conditions, dietary_preferences').eq('user_id', user.id).single()
 
     const { score, grade, concerns, highlights } = scoreCosmeticsProduct(product, userProfile ?? undefined)
 

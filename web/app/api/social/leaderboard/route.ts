@@ -35,8 +35,8 @@ export const GET = createSecureApiHandler(
     const userIds = (participants ?? []).map((p) => p.user_id)
 
     // Fetch display names from user profiles
-    const { data: profiles, error: profilesErr } = userIds.length
-      ? await supabase.from('users').select('id, display_name, email').in('id', userIds)
+  const { data: profiles, error: profilesErr } = userIds.length
+      ? await supabase.from('users').select('id, display_name, email').in('id', userIds) // error handled
       : { data: [], error: null }
     if (profilesErr) console.error('users fetch error', profilesErr)
 

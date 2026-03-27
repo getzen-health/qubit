@@ -8,7 +8,7 @@ struct OnboardingGoalSettingView: View {
     @State private var proteinGoal = 150
     @State private var carbsGoal = 250
     @State private var fatGoal = 65
-    @State private var isLoading = false
+    @State private var isLoading = true
 
     let calorieOptions = [1500, 1800, 2000, 2200, 2500]
     let proteinOptions = [100, 130, 150, 180, 200]

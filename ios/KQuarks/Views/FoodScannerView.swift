@@ -65,7 +65,7 @@ struct FoodScannerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isScanning = false
     @State private var scannedProduct: ScannedProduct?
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var searchQuery = ""
     @State private var showManualSearch = false

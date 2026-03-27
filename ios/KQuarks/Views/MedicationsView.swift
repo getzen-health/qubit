@@ -91,7 +91,7 @@ enum MedFrequency: String, CaseIterable {
 class MedicationsViewModel {
     var medications: [Medication] = []
     var todayLogs: [MedicationLog] = []
-    var isLoading = false
+    var isLoading = true
     var errorMessage: String?
 
     private let supabase = SupabaseService.shared

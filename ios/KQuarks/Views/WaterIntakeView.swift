@@ -10,7 +10,7 @@ struct WaterEntry: Identifiable, Codable {
 class WaterIntakeViewModel {
     var totalMl: Int = 0
     var logs: [WaterEntry] = []
-    var isLoading = false
+    var isLoading = true
     let goalMl = 2000
 
     var percentage: Double { min(1.0, Double(totalMl) / Double(goalMl)) }
