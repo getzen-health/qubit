@@ -1,85 +1,89 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 import { analyzeMindfulness, type MeditationSession } from '@/lib/mindfulness'
 
-export async function GET(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+  },
+  async (_request, { user, supabase }) => {
+    const { data: sessions, error } = await supabase
+      .from('meditation_sessions')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('date', { ascending: false })
+      .limit(200)
 
-  const { data: sessions, error } = await supabase
-    .from('meditation_sessions')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('date', { ascending: false })
-    .limit(200)
+    if (error) return secureErrorResponse(error.message, 500)
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    const analysis = analyzeMindfulness((sessions ?? []) as MeditationSession[])
 
-  const analysis = analyzeMindfulness((sessions ?? []) as MeditationSession[])
-
-  return NextResponse.json({ sessions: sessions ?? [], analysis })
-}
-
-export async function POST(req: NextRequest) {
-  await checkRateLimit(req)
-  const supabase = await createClient()
-  const user = (await supabase.auth.getUser()).data.user
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-
-  let body: Partial<MeditationSession>
-  try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'invalid json' }, { status: 400 })
+    return secureJsonResponse({ sessions: sessions ?? [], analysis })
   }
+)
 
-  const {
-    date,
-    type,
-    duration_min,
-    quality_rating,
-    distractions = 0,
-    mood_before,
-    mood_after,
-    stress_before,
-    stress_after,
-    insight,
-    mbsr_week,
-  } = body
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+  },
+  async (request, { user, supabase }) => {
+    let body: Partial<MeditationSession>
+    try {
+      body = await request.json()
+    } catch {
+      return secureErrorResponse('invalid json', 400)
+    }
 
-  if (!date || !type || !duration_min || !quality_rating) {
-    return NextResponse.json({ error: 'date, type, duration_min, quality_rating are required' }, { status: 400 })
-  }
-  if (duration_min < 1 || duration_min > 480) {
-    return NextResponse.json({ error: 'duration_min must be 1-480' }, { status: 400 })
-  }
-  if (quality_rating < 1 || quality_rating > 5) {
-    return NextResponse.json({ error: 'quality_rating must be 1-5' }, { status: 400 })
-  }
-
-  const { data, error } = await supabase
-    .from('meditation_sessions')
-    .insert({
-      user_id: user.id,
+    const {
       date,
       type,
       duration_min,
       quality_rating,
-      distractions,
-      mood_before: mood_before ?? null,
-      mood_after: mood_after ?? null,
-      stress_before: stress_before ?? null,
-      stress_after: stress_after ?? null,
-      insight: insight ?? null,
-      mbsr_week: mbsr_week ?? null,
-    })
-    .select()
-    .single()
+      distractions = 0,
+      mood_before,
+      mood_after,
+      stress_before,
+      stress_after,
+      insight,
+      mbsr_week,
+    } = body
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (!date || !type || !duration_min || !quality_rating) {
+      return secureErrorResponse('date, type, duration_min, quality_rating are required', 400)
+    }
+    if (duration_min < 1 || duration_min > 480) {
+      return secureErrorResponse('duration_min must be 1-480', 400)
+    }
+    if (quality_rating < 1 || quality_rating > 5) {
+      return secureErrorResponse('quality_rating must be 1-5', 400)
+    }
 
-  return NextResponse.json({ session: data }, { status: 201 })
-}
+    const { data, error } = await supabase
+      .from('meditation_sessions')
+      .insert({
+        user_id: user!.id,
+        date,
+        type,
+        duration_min,
+        quality_rating,
+        distractions,
+        mood_before: mood_before ?? null,
+        mood_after: mood_after ?? null,
+        stress_before: stress_before ?? null,
+        stress_after: stress_after ?? null,
+        insight: insight ?? null,
+        mbsr_week: mbsr_week ?? null,
+      })
+      .select()
+      .single()
+
+    if (error) return secureErrorResponse(error.message, 500)
+
+    return secureJsonResponse({ session: data }, 201)
+  }
+)

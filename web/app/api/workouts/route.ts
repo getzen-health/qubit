@@ -1,48 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { checkRateLimit } from '@/lib/security'
+import {
+  createSecureApiHandler,
+  secureJsonResponse,
+  secureErrorResponse,
+} from '@/lib/security'
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data, error } = await supabase
-    .from('workout_logs')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('workout_date', { ascending: false })
-    .limit(20)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
-}
-
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const rateLimitResult = await checkRateLimit(user.id, 'healthData')
-  if (!rateLimitResult.allowed) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+export const GET = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+  },
+  async (_request, { user, supabase }) => {
+    const { data, error } = await supabase
+      .from('workout_logs')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('workout_date', { ascending: false })
+      .limit(20)
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ data })
   }
-  const body = await request.json()
-  const { type, duration_minutes, calories, notes } = body
-  if (!type || !duration_minutes) return NextResponse.json({ error: 'type and duration_minutes required' }, { status: 400 })
-  const { data, error } = await supabase
-    .from('workout_logs')
-    .insert({ user_id: user.id, type, duration_minutes: Number(duration_minutes), calories: calories ? Number(calories) : null, notes: notes || null, workout_date: new Date().toISOString() })
-    .select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data }, { status: 201 })
-}
+)
 
-export async function DELETE(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { searchParams } = new URL(request.url)
-  const id = searchParams.get('id')
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
-  const { error } = await supabase.from('workout_logs').delete().eq('id', id).eq('user_id', user.id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+export const POST = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+  },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const { type, duration_minutes, calories, notes } = body
+    if (!type || !duration_minutes) return secureErrorResponse('type and duration_minutes required', 400)
+    const { data, error } = await supabase
+      .from('workout_logs')
+      .insert({ user_id: user!.id, type, duration_minutes: Number(duration_minutes), calories: calories ? Number(calories) : null, notes: notes || null, workout_date: new Date().toISOString() })
+      .select().single()
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ data }, 201)
+  }
+)
+
+export const DELETE = createSecureApiHandler(
+  {
+    rateLimit: 'healthData',
+    requireAuth: true,
+  },
+  async (request, { user, supabase }) => {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if (!id) return secureErrorResponse('id required', 400)
+    const { error } = await supabase.from('workout_logs').delete().eq('id', id).eq('user_id', user!.id)
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ success: true })
+  }
+)
