@@ -1,52 +1,52 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  
-  const { data, error } = await supabase
-    .from('water_entries')
-    .select('id, amount_ml, logged_at')
-    .eq('user_id', user.id)
-    .gte('logged_at', today.toISOString())
-    .order('logged_at', { ascending: false })
-  
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  
-  const total = (data ?? []).reduce((sum, e) => sum + e.amount_ml, 0)
-  return NextResponse.json({ data, total })
-}
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  
-  const { amount_ml } = await request.json()
-  if (!amount_ml || amount_ml <= 0) return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
-  
-  const { data, error } = await supabase
-    .from('water_entries')
-    .insert({ user_id: user.id, amount_ml })
-    .select()
-    .single()
-  
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
-}
+    const { data, error } = await supabase
+      .from('water_entries')
+      .select('id, amount_ml, logged_at')
+      .eq('user_id', user!.id)
+      .gte('logged_at', today.toISOString())
+      .order('logged_at', { ascending: false })
 
-export async function DELETE(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  
-  const { id } = await request.json()
-  const { error } = await supabase.from('water_entries').delete().eq('id', id).eq('user_id', user.id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+    if (error) return secureErrorResponse('Failed to fetch water entries', 500)
+
+    const total = (data ?? []).reduce((sum, e) => sum + e.amount_ml, 0)
+    return secureJsonResponse({ data, total })
+  }
+)
+
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { amount_ml } = await request.json()
+    if (!amount_ml || amount_ml <= 0) return secureErrorResponse('Invalid amount', 400)
+
+    const { data, error } = await supabase
+      .from('water_entries')
+      .insert({ user_id: user!.id, amount_ml })
+      .select()
+      .single()
+
+    if (error) return secureErrorResponse('Failed to create water entry', 500)
+    return secureJsonResponse({ data })
+  }
+)
+
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { id } = await request.json()
+    const { error } = await supabase
+      .from('water_entries')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user!.id)
+    if (error) return secureErrorResponse('Failed to delete water entry', 500)
+    return secureJsonResponse({ success: true })
+  }
+)

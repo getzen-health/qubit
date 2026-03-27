@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
 // Score weights
 const WEIGHTS = {
@@ -25,84 +24,87 @@ function grade(score: number) {
   return 'F';
 }
 
-export async function GET() {
-  try {
-  const supabase = await createClient();
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const iso = today.toISOString();
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const iso = today.toISOString();
 
-  // Steps
-  const { data: stepsData } = await supabase
-    .from('health_metrics')
-    .select('steps')
-    .eq('date', iso)
-    .single();
-  const steps = stepsData?.steps ?? 0;
-  // 10,000 steps = full points
-  const stepsPoints = clamp((steps / 10000) * WEIGHTS.steps, 0, WEIGHTS.steps);
+    // Steps
+    const { data: stepsData } = await supabase
+      .from('health_metrics')
+      .select('steps')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .single();
+    const steps = stepsData?.steps ?? 0;
+    // 10,000 steps = full points
+    const stepsPoints = clamp((steps / 10000) * WEIGHTS.steps, 0, WEIGHTS.steps);
 
-  // Sleep
-  const { data: sleepData } = await supabase
-    .from('sleep_records')
-    .select('hours')
-    .eq('date', iso)
-    .single();
-  const sleep = sleepData?.hours ?? 0;
-  // 8h = full points
-  const sleepPoints = clamp((sleep / 8) * WEIGHTS.sleep, 0, WEIGHTS.sleep);
+    // Sleep
+    const { data: sleepData } = await supabase
+      .from('sleep_records')
+      .select('hours')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .single();
+    const sleep = sleepData?.hours ?? 0;
+    // 8h = full points
+    const sleepPoints = clamp((sleep / 8) * WEIGHTS.sleep, 0, WEIGHTS.sleep);
 
-  // Water
-  const { data: waterData } = await supabase
-    .from('water_logs')
-    .select('amount')
-    .eq('date', iso)
-    .single();
-  const water = waterData?.amount ?? 0;
-  // 2.5L = full points
-  const waterPoints = clamp((water / 2.5) * WEIGHTS.water, 0, WEIGHTS.water);
+    // Water
+    const { data: waterData } = await supabase
+      .from('water_logs')
+      .select('amount')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .single();
+    const water = waterData?.amount ?? 0;
+    // 2.5L = full points
+    const waterPoints = clamp((water / 2.5) * WEIGHTS.water, 0, WEIGHTS.water);
 
-  // Workout
-  const { data: workoutData } = await supabase
-    .from('workout_logs')
-    .select('id')
-    .eq('date', iso)
-    .maybeSingle();
-  const workout = !!workoutData;
-  const workoutPoints = workout ? WEIGHTS.workout : 0;
+    // Workout
+    const { data: workoutData } = await supabase
+      .from('workout_logs')
+      .select('id')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .maybeSingle();
+    const workout = !!workoutData;
+    const workoutPoints = workout ? WEIGHTS.workout : 0;
 
-  // Mood
-  const { data: moodData } = await supabase
-    .from('mood_logs')
-    .select('score')
-    .eq('date', iso)
-    .single();
-  const mood = moodData?.score ?? 0;
-  // 10 = full points
-  const moodPoints = clamp((mood / 10) * WEIGHTS.mood, 0, WEIGHTS.mood);
+    // Mood
+    const { data: moodData } = await supabase
+      .from('mood_logs')
+      .select('score')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .single();
+    const mood = moodData?.score ?? 0;
+    // 10 = full points
+    const moodPoints = clamp((mood / 10) * WEIGHTS.mood, 0, WEIGHTS.mood);
 
-  // Stress (inverse)
-  const { data: stressData } = await supabase
-    .from('stress_logs')
-    .select('score')
-    .eq('date', iso)
-    .single();
-  const stress = stressData?.score ?? 10;
-  // 0 = full points, 10 = 0 points
-  const stressPoints = clamp(((10 - stress) / 10) * WEIGHTS.stress, 0, WEIGHTS.stress);
+    // Stress (inverse)
+    const { data: stressData } = await supabase
+      .from('stress_logs')
+      .select('score')
+      .eq('user_id', user!.id)
+      .eq('date', iso)
+      .single();
+    const stress = stressData?.score ?? 10;
+    // 0 = full points, 10 = 0 points
+    const stressPoints = clamp(((10 - stress) / 10) * WEIGHTS.stress, 0, WEIGHTS.stress);
 
-  const components = {
-    steps: { value: steps, points: Math.round(stepsPoints), max: WEIGHTS.steps },
-    sleep: { value: sleep, points: Math.round(sleepPoints), max: WEIGHTS.sleep },
-    water: { value: water, points: Math.round(waterPoints), max: WEIGHTS.water },
-    workout: { value: workout, points: Math.round(workoutPoints), max: WEIGHTS.workout },
-    mood: { value: mood, points: Math.round(moodPoints), max: WEIGHTS.mood },
-    stress: { value: stress, points: Math.round(stressPoints), max: WEIGHTS.stress },
-  };
-  const score = Object.values(components).reduce((sum, c) => sum + c.points, 0);
-      return NextResponse.json({ score, components, grade: grade(score) });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: message }, { status: 500 });
+    const components = {
+      steps: { value: steps, points: Math.round(stepsPoints), max: WEIGHTS.steps },
+      sleep: { value: sleep, points: Math.round(sleepPoints), max: WEIGHTS.sleep },
+      water: { value: water, points: Math.round(waterPoints), max: WEIGHTS.water },
+      workout: { value: workout, points: Math.round(workoutPoints), max: WEIGHTS.workout },
+      mood: { value: mood, points: Math.round(moodPoints), max: WEIGHTS.mood },
+      stress: { value: stress, points: Math.round(stressPoints), max: WEIGHTS.stress },
+    };
+    const score = Object.values(components).reduce((sum, c) => sum + c.points, 0);
+    return secureJsonResponse({ score, components, grade: grade(score) });
   }
-}
+)

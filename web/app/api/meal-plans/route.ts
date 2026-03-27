@@ -1,43 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-
-export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const weekStart = request.nextUrl.searchParams.get('week') ?? getMonday(new Date())
-  
-  const [{ data: plans }, { data: recipes }] = await Promise.all([
-    supabase.from('meal_plans').select('*, recipe:meal_recipes(*)').eq('user_id', user.id).eq('week_start', weekStart),
-    supabase.from('meal_recipes').select('*').eq('is_public', true).order('name'),
-  ])
-
-  return NextResponse.json({ plans: plans ?? [], recipes: recipes ?? [], week_start: weekStart })
-}
-
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  const weekStart = body.week_start ?? getMonday(new Date())
-  const { data, error } = await supabase.from('meal_plans').upsert({
-    ...body, user_id: user.id, week_start: weekStart,
-  }, { onConflict: 'user_id,week_start,day_of_week,meal_slot' }).select('*, recipe:meal_recipes(*)').single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ plan: data })
-}
-
-export async function DELETE(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { id } = await request.json()
-  const { error: deleteErr } = await supabase.from('meal_plans').delete().eq('id', id).eq('user_id', user.id)
-  if (deleteErr) return NextResponse.json({ error: deleteErr.message }, { status: 500 })
-  return NextResponse.json({ success: true })
-}
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 function getMonday(d: Date): string {
   const date = new Date(d)
@@ -46,3 +7,49 @@ function getMonday(d: Date): string {
   date.setDate(diff)
   return date.toISOString().slice(0, 10)
 }
+
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const weekStart = request.nextUrl.searchParams.get('week') ?? getMonday(new Date())
+
+    const [{ data: plans }, { data: recipes }] = await Promise.all([
+      supabase.from('meal_plans').select('*, recipe:meal_recipes(*)').eq('user_id', user!.id).eq('week_start', weekStart),
+      supabase.from('meal_recipes').select('*').eq('is_public', true).order('name'),
+    ])
+
+    return secureJsonResponse({ plans: plans ?? [], recipes: recipes ?? [], week_start: weekStart })
+  }
+)
+
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const weekStart = body.week_start ?? getMonday(new Date())
+    const { data, error } = await supabase
+      .from('meal_plans')
+      .upsert(
+        { ...body, user_id: user!.id, week_start: weekStart },
+        { onConflict: 'user_id,week_start,day_of_week,meal_slot' }
+      )
+      .select('*, recipe:meal_recipes(*)')
+      .single()
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ plan: data })
+  }
+)
+
+export const DELETE = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const { id } = await request.json()
+    const { error: deleteErr } = await supabase
+      .from('meal_plans')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user!.id)
+    if (deleteErr) return secureErrorResponse(deleteErr.message, 500)
+    return secureJsonResponse({ success: true })
+  }
+)

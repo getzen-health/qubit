@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 function calcHygieneScore(log: {
   consistent_schedule?: boolean
@@ -24,26 +23,36 @@ function calcHygieneScore(log: {
   return { score, grade }
 }
 
-export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { data, error: hygErr } = await supabase.from('sleep_hygiene_logs').select('*').eq('user_id', user.id).order('logged_date', { ascending: false }).limit(30)
-  const today = new Date().toISOString().slice(0, 10)
-  const todayLog = data?.find(l => l.logged_date === today) ?? null
-  return NextResponse.json({ logs: data ?? [], today: todayLog })
-}
+export const GET = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (_req, { user, supabase }) => {
+    const { data } = await supabase
+      .from('sleep_hygiene_logs')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('logged_date', { ascending: false })
+      .limit(30)
+    const today = new Date().toISOString().slice(0, 10)
+    const todayLog = data?.find(l => l.logged_date === today) ?? null
+    return secureJsonResponse({ logs: data ?? [], today: todayLog })
+  }
+)
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await request.json()
-  const { score, grade } = calcHygieneScore(body)
-  const today = new Date().toISOString().slice(0, 10)
-  const { data, error } = await supabase.from('sleep_hygiene_logs').upsert({
-    ...body, user_id: user.id, logged_date: body.logged_date ?? today, hygiene_score: score, hygiene_grade: grade
-  }, { onConflict: 'user_id,logged_date' }).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ log: data, score, grade })
-}
+export const POST = createSecureApiHandler(
+  { rateLimit: 'healthData', requireAuth: true },
+  async (request, { user, supabase }) => {
+    const body = await request.json()
+    const { score, grade } = calcHygieneScore(body)
+    const today = new Date().toISOString().slice(0, 10)
+    const { data, error } = await supabase
+      .from('sleep_hygiene_logs')
+      .upsert(
+        { ...body, user_id: user!.id, logged_date: body.logged_date ?? today, hygiene_score: score, hygiene_grade: grade },
+        { onConflict: 'user_id,logged_date' }
+      )
+      .select()
+      .single()
+    if (error) return secureErrorResponse(error.message, 500)
+    return secureJsonResponse({ log: data, score, grade })
+  }
+)
