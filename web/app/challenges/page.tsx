@@ -20,6 +20,7 @@ export default function ChallengesPage() {
   const [leaderboard, setLeaderboard] = useState<any[]>([])
   const [form, setForm] = useState({ title: '', description: '', type: 'steps', target_value: 10000, duration_days: 7, is_public: true })
   const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchChallenges()
@@ -48,14 +49,25 @@ export default function ChallengesPage() {
   async function createChallenge(e: any) {
     e.preventDefault()
     setCreating(true)
-    await fetch('/api/challenges', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    })
-    setCreating(false)
-    setForm({ title: '', description: '', type: 'steps', target_value: 10000, duration_days: 7, is_public: true })
-    fetchChallenges()
+    setCreateError(null)
+    try {
+      const res = await fetch('/api/challenges', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setCreateError(err.error || 'Failed to create challenge. Please try again.')
+        return
+      }
+      setForm({ title: '', description: '', type: 'steps', target_value: 10000, duration_days: 7, is_public: true })
+      fetchChallenges()
+    } catch {
+      setCreateError('Network error. Please check your connection.')
+    } finally {
+      setCreating(false)
+    }
   }
 
   return (
@@ -71,7 +83,17 @@ export default function ChallengesPage() {
         <h1 className="text-2xl font-bold mb-2">Community Challenges <span className="ml-2">🏆</span></h1>
         <p className="text-muted-foreground mb-8">Compete with the community and stay motivated.</p>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          {loading ? <div className="flex justify-center py-8"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div> : challenges.map((c, i) => (
+          {loading
+            ? <div className="col-span-full flex justify-center py-8"><div className="animate-spin w-6 h-6 border-2 border-accent border-t-transparent rounded-full" /></div>
+            : challenges.length === 0
+              ? (
+                <div className="col-span-full flex flex-col items-center gap-3 py-16 text-center">
+                  <span className="text-5xl">🏆</span>
+                  <p className="text-lg font-semibold text-text-primary">No challenges yet</p>
+                  <p className="text-sm text-text-secondary max-w-xs">Create the first challenge below and invite the community to compete!</p>
+                </div>
+              )
+              : challenges.map((c, i) => (
             <div key={c.id} className="rounded-2xl border border-border bg-surface p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{ICONS[c.type] || '🏆'}</span>
@@ -136,6 +158,9 @@ export default function ChallengesPage() {
               <input type="number" min={1} className="border border-border rounded-lg px-2 py-1 w-20" placeholder="Days" value={form.duration_days} onChange={e=>setForm(f=>({...f,duration_days:Number(e.target.value)}))} />
             </div>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_public} onChange={e=>setForm(f=>({...f,is_public:e.target.checked}))} /> Public</label>
+            {createError && (
+              <p className="text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">{createError}</p>
+            )}
             <button type="submit" className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium" disabled={creating}>{creating ? 'Creating...' : 'Create Challenge'}</button>
           </form>
         </div>

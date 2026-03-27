@@ -144,6 +144,8 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
+                aria-label={label}
+                aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors min-w-0',
                   active
@@ -152,7 +154,7 @@ export function BottomNav() {
                 )}
               >
                 <Icon className={cn('w-5 h-5', active && 'drop-shadow-[0_0_6px_var(--accent-shadow)]')} />
-                <span className="text-[10px] font-medium leading-none">{label}</span>
+                <span className="text-[10px] font-medium leading-none" aria-hidden="true">{label}</span>
               </Link>
             )
           })}

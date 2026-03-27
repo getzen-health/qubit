@@ -576,7 +576,7 @@ export default function FoodScannerPage() {
                   <ScoreBadge score={product.healthScore.score} grade={product.healthScore.grade} />
 {/* QuarkScore™ 5-pillar breakdown */}
 {product.score_components && (
-  <div className="flex gap-1 mt-1 flex-wrap justify-end max-w-[200px]">
+  <div className="flex gap-1 mt-1 flex-wrap justify-end max-w-full sm:max-w-[200px]">
     <span title="Nutrient Balance (35 pts max)" className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium">🥦 {product.score_components.nutrientBalance ?? product.score_components.nutrition}/{35}</span>
     <span title="Processing Level (25 pts max)" className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium">🏭 {product.score_components.processingIntegrity ?? 0}/{25}</span>
     <span title="Additive Safety (20 pts max)" className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium">🧪 {product.score_components.additiveSafety ?? product.score_components.additives}/{20}</span>

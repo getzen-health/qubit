@@ -135,7 +135,7 @@ function RecoveryScoreComponent({ data }: { data: RecoveryData }) {
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-5xl font-bold">{data.score}%</span>
             </div>
-            <p className="text-sm text-white/80 mt-2 max-w-[200px]">{status.advice}</p>
+            <p className="text-sm text-white/80 mt-2 max-w-full sm:max-w-[200px]">{status.advice}</p>
           </div>
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-full border-4 border-white/30 flex items-center justify-center">

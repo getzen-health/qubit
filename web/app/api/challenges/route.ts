@@ -28,10 +28,14 @@ export async function GET(req: NextRequest) {
     participation = parts || []
   }
 
-  // Get participant counts via raw aggregate query
-  const { data: counts } = await supabase
-    .from('challenge_participants')
-    .select('challenge_id')
+  // Get participant counts only for the public challenges being shown
+  const challengeIds = (challenges || []).map((c: { id: string }) => c.id)
+  const { data: counts } = challengeIds.length > 0
+    ? await supabase
+        .from('challenge_participants')
+        .select('challenge_id')
+        .in('challenge_id', challengeIds)
+    : { data: [] }
   const countMap: Record<string, number> = {}
   for (const row of counts ?? []) {
     countMap[row.challenge_id] = (countMap[row.challenge_id] ?? 0) + 1
