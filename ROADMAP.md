@@ -1,128 +1,223 @@
-# KQuarks - Development Roadmap
+# KQuarks — Roadmap to Launch
 
-## Goal
-Build KQuarks - an iOS app that reads Apple Health data and displays it on a web dashboard.
-
----
-
-## Phase 1: iOS App Foundation (Current)
-
-### 1.1 Project Setup
-- [x] Create project architecture docs
-- [x] Define database schema
-- [ ] Create Xcode project with SwiftUI
-- [ ] Configure app signing & capabilities
-- [ ] Add HealthKit entitlement
-- [ ] Set up Supabase Swift SDK
-
-### 1.2 HealthKit Integration
-- [ ] Request HealthKit permissions
-- [ ] Read health data types:
-  - [ ] Steps & distance
-  - [ ] Heart rate & HRV
-  - [ ] Sleep analysis
-  - [ ] Workouts
-  - [ ] Body measurements
-- [ ] Background delivery setup
-
-### 1.3 Core UI
-- [ ] Onboarding flow (permissions)
-- [ ] Dashboard with daily stats
-- [ ] Health data list views
-- [ ] Settings screen
-
-### 1.4 Supabase Sync
-- [ ] User authentication (Apple Sign-In)
-- [ ] Upload health data to Supabase
-- [ ] Sync status tracking
-- [ ] Offline support with SwiftData
-
-### 1.5 App Store Submission
-- [ ] App icons & launch screen
-- [ ] Privacy policy & terms
-- [ ] App Store screenshots
-- [ ] App Store Connect setup
-- [ ] TestFlight beta testing
-- [ ] Submit for review
+## What KQuarks Is
+A health tracking app combining **Bevel-style** dashboards with **Yuka-style** food scanning.
+- iOS (Swift/SwiftUI) reads Apple Health → syncs to cloud
+- Web dashboard (Next.js 14) visualises all metrics + AI insights
+- QuarkScore™ food health scoring (like Yuka, built from scratch)
 
 ---
 
-## Phase 2: Web Dashboard
-
-### 2.1 Next.js Setup
-- [ ] Create Next.js 14 project
-- [ ] Configure Supabase client
-- [ ] Set up Tailwind + shadcn/ui
-- [ ] Authentication (magic link / Apple)
-
-### 2.2 Dashboard Views
-- [ ] Daily summary cards
-- [ ] Sleep charts
-- [ ] Heart rate graphs
-- [ ] Workout history
-- [ ] Activity trends
-
-### 2.3 Deployment
-- [ ] Deploy to Vercel
-- [ ] Custom domain setup
-- [ ] SSL configuration
+## Current State (March 2026)
+| Area | Status |
+|------|--------|
+| iOS app | ✅ Builds, 440+ views, HealthKit sync, widget |
+| Web dashboard | ✅ 100+ pages, TypeScript strict, deployed on Vercel |
+| Backend | ✅ Supabase (Postgres + RLS + Edge Functions) |
+| API security | ✅ 204/209 routes use `createSecureApiHandler` |
+| Food scanner | ✅ Web (QuarkScore™), iOS in progress |
+| AI insights | ✅ Claude API edge function |
+| App Store | ❌ Not submitted |
+| Privacy policy | ❌ Missing |
+| Onboarding | ❌ Missing |
+| App icons | ❌ Missing real assets |
 
 ---
 
-## Phase 3: AI Insights
-
-### 3.1 Backend
-- [ ] Supabase Edge Function for AI
-- [ ] Claude API integration
-- [ ] Daily insight generation
-
-### 3.2 Frontend
-- [ ] Insights view in iOS app
-- [ ] Insights section on web
-- [ ] AI provider settings
+## 7-Day Plan to Customer Launch
+> Assumes 8–10 hours of autonomous engineering work per day, agents running in parallel.
 
 ---
 
-## Phase 4: Polish & Scale
+### Day 1 — Foundation & Security (in progress)
+**Goal: Zero known security gaps, clean builds on both platforms**
 
-### 4.1 iOS Enhancements
-- [ ] Widgets (Lock Screen, Home)
-- [ ] Apple Watch app
-- [ ] Push notifications
-- [ ] Shortcuts integration
-
-### 4.2 Android App
-- [ ] Kotlin + Jetpack Compose
-- [ ] Health Connect integration
-- [ ] Feature parity with iOS
+| Task | Est | Status |
+|------|-----|--------|
+| Food/workouts API auth + Zod validation | 1.5h | 🔄 agent running |
+| iOS food scanner — VisionKit + OpenFoodFacts + QuarkScore | 2.0h | 🔄 agent running |
+| Web cleanup — consolidate SummaryCard, N+1 fix, loading skeletons | 2.0h | 🔄 agent running |
+| Claude AI API route — add Zod validation | 0.5h | pending |
+| Suppress console.error stack traces in production | 0.5h | pending |
+| Standardise all API error shapes `{error, code?}` | 1.0h | pending |
+| iOS SyncService — add `@MainActor` (off-thread UI mutation fix) | 0.5h | pending |
+| iOS barcode format validation (8–14 digits) | 0.5h | pending |
+| **Total** | **~9h** | |
 
 ---
 
-## Current Focus: Phase 1
+### Day 2 — iOS Feature Parity + Stub Pages Pt.1
+**Goal: iOS matches web on new features; top 6 stub pages get real content**
 
-### Immediate Next Steps
+| Task | Est |
+|------|-----|
+| iOS `CaffeineView` — quick-add, daily total, sleep cutoff warning | 1.5h |
+| iOS `EnergyView` — 1–5 emoji tap check-in, 7-day sparkline | 1.0h |
+| iOS `HearingHealthView` — NIOSH dose %, dB log form (stub → real) | 1.0h |
+| iOS `DeskBreaksView` — break timer, suggestion cards | 1.0h |
+| Web `/vo2max` — VO2Max estimate, age-norm percentile, trend chart | 1.0h |
+| Web `/sleep-analytics` — sleep stages, debt tracker, circadian score | 1.0h |
+| Web `/running` — recent runs, pace trend, best efforts | 1.0h |
+| Web `/recovery` — readiness score (HRV + sleep + resting HR), chart | 1.0h |
+| **Total** | **~9.5h** | |
 
-1. **Create Xcode Project**
-   - New SwiftUI App
-   - Add HealthKit capability
-   - Configure bundle ID
+---
 
-2. **Build HealthKit Service**
-   - Permission requests
-   - Data queries
-   - Background sync
+### Day 3 — Stub Pages Pt.2 + Strength Training
+**Goal: All high-traffic pages show real data; strength logging live on web + iOS**
 
-3. **Create Basic UI**
-   - Permission onboarding
-   - Dashboard with stats
-   - Data sync indicator
+| Task | Est |
+|------|-----|
+| Web `/breathing` — guided 4-7-8, box, Wim Hof timer | 1.0h |
+| Web `/correlations` — scatter plots: sleep↔HRV, caffeine↔sleep, steps↔mood | 1.5h |
+| Web `/zones` — HR zones + time-in-zone from workouts | 1.0h |
+| Web `/trends` — long-term trend lines, streak detection | 1.0h |
+| iOS `VO2MaxView` — chart + age norms (stub → real) | 1.0h |
+| iOS `RunningView` — recent runs list, pace trend | 1.0h |
+| iOS `RecoveryView` — readiness score + factors | 1.0h |
+| Web + iOS: Strength training — sets×reps×weight, 60-exercise library, PRs, progressive overload | 2.5h |
+| **Total** | **~10h** | |
 
-4. **Supabase Integration**
-   - Auth with Apple Sign-In
-   - Data upload
-   - Real-time sync
+---
 
-5. **Prepare for App Store**
-   - Privacy manifest
-   - Health data usage descriptions
-   - App Store assets
+### Day 4 — Intelligence Layer
+**Goal: KQuarks connects the dots — surfaces insights users can't see themselves**
+
+| Task | Est |
+|------|-----|
+| Correlations engine (`web/lib/correlations.ts`) — Pearson correlation, top-3 auto-detect | 2.0h |
+| `/correlations` page — full implementation with Recharts scatter + regression | 1.5h |
+| Body battery real algorithm: `(HRV×0.4) + (sleep×0.35) + (restingHR⁻¹×0.25)` | 1.0h |
+| AI insights v2 — 14-day context window, weekly narrative, actionable suggestions | 2.0h |
+| HealthKit sync batching — 500-record chunks instead of 1 request/type | 1.0h |
+| `/predictions` page — 7-day health forecast based on trends | 1.0h |
+| **Total** | **~8.5h** | |
+
+---
+
+### Day 5 — App Store Prep Pt.1
+**Goal: App is legally compliant, has proper onboarding, icons ready**
+
+| Task | Est |
+|------|-----|
+| Privacy Policy page (`/privacy`) — GDPR/CCPA compliant, covers HealthKit + AI | 1.0h |
+| Terms of Service page (`/terms`) | 0.5h |
+| Support page (`/support`) with FAQ and contact form | 0.5h |
+| iOS onboarding flow — 3 screens: HealthKit permissions → set goals → first sync | 2.5h |
+| App icon — generate all required sizes (1024px master → all variants via script) | 1.0h |
+| Launch screen / splash screen polish | 0.5h |
+| In-app subscription setup (RevenueCat) — Free tier + Pro ($4.99/mo or $39.99/yr) | 2.0h |
+| Paywall screen — what's free vs Pro (AI insights, exports, correlations) | 1.0h |
+| **Total** | **~9h** | |
+
+---
+
+### Day 6 — App Store Prep Pt.2 + Web Production
+**Goal: App Store Connect ready; web domain live; TestFlight open**
+
+| Task | Est |
+|------|-----|
+| App Store screenshots — 6.9" + 13" (7 screenshots per spec in docs/) | 2.5h |
+| App Store Connect — create app, fill metadata from docs/app-store/metadata.md | 1.0h |
+| TestFlight build — archive, upload, add internal testers | 1.5h |
+| Custom domain (kquarks.app) — Vercel DNS, SSL, redirect www → root | 0.5h |
+| Marketing landing page (`/`) — hero, 3 feature blocks, App Store badge, screenshots | 2.5h |
+| Web `robots.txt`, `sitemap.xml`, OG meta tags for all pages | 0.5h |
+| Push notification setup (Supabase + APNs) — morning briefing at 7am | 1.0h |
+| **Total** | **~9.5h** | |
+
+---
+
+### Day 7 — Polish, Beta Fixes & Submit
+**Goal: Ship v1.0 to App Store; web dashboard publicly accessible**
+
+| Task | Est |
+|------|-----|
+| Address any TestFlight crash reports / beta feedback | 2.0h |
+| Final UI polish pass — spacing, dark mode parity, accessibility labels | 1.5h |
+| Shareable health cards — weekly stats card image (Vercel OG), share sheet | 1.5h |
+| Widget improvements — health score + body battery tile, interactive +water | 1.0h |
+| App Store submission — select build, answer review questions, submit | 0.5h |
+| Web public launch — remove any beta banners, enable sign-up | 0.5h |
+| Post-launch monitoring — Vercel analytics, Supabase dashboard, crash alerts | 0.5h |
+| **Total** | **~8h** | |
+
+---
+
+## Post-Launch Backlog (Week 2+)
+
+### Growth
+- [ ] Android app (Kotlin + Jetpack Compose + Health Connect)
+- [ ] Apple Watch companion app
+- [ ] Referral program ("Invite a friend, both get 1 month Pro")
+- [ ] Integration exports (Fitbit, Garmin, Oura data import)
+
+### Features
+- [ ] AI real-time coaching (streamed Claude responses)
+- [ ] Social challenges (step competitions with friends)
+- [ ] Doctor share report (clean PDF of health trends)
+- [ ] Streak leaderboard (anonymous opt-in)
+
+---
+
+## Quality Gates (enforced before every PR)
+```
+✅ npx tsc --noEmit          → 0 errors
+✅ xcodebuild (Catalyst)     → BUILD SUCCEEDED
+✅ All new API routes        → createSecureApiHandler + Zod + rateLimit
+✅ All new DB tables         → RLS + user_id filter on every query
+✅ No Co-authored-by         → commits by Rajashekarredde only
+✅ Branch protection         → feature branch → PR → merge (no direct push to main)
+```
+
+---
+
+## Architecture
+```
+/ios        Swift/SwiftUI — HealthKit → Supabase sync
+/web        Next.js 14 App Router — dashboard, food scanner, AI insights
+/supabase   Postgres migrations, RLS, Edge Functions
+/docs       App Store assets, API reference, architecture
+```
+
+---
+
+## Week 2 — Testing & Production Readiness (Days 8–14)
+> No new features. Only bug fixes, validation, and production hardening.
+
+| Day | Focus | GitHub Issue |
+|-----|-------|-------------|
+| **Day 8** | iOS full regression + HealthKit sync validation | #624 |
+| **Day 9** | Web E2E (Playwright) + API contract validation | #625 |
+| **Day 10** | Performance — Lighthouse ≥90, iOS Instruments, bundle size | #626 |
+| **Day 11** | Security audit — RLS isolation, OWASP scan, bundle secrets check | #627 |
+| **Day 12** | Accessibility (axe-core 0 violations) + cross-browser + dark mode | #628 |
+| **Day 13** | TestFlight beta UAT — 5-10 testers, triage P0/P1 | #629 |
+| **Day 14** | Production readiness checklist + go/no-go for launch | #630 |
+
+### Bug Priority During Testing Week
+| Priority | Definition | SLA |
+|----------|-----------|-----|
+| **P0** | Crash / data loss / auth bypass | Fix same day |
+| **P1** | Major flow broken / wrong data shown | Fix within 24h |
+| **P2** | Visual glitch / minor UX issue | Fix before Day 14 |
+| **P3** | Polish / nice-to-have | Defer to post-launch |
+
+### Go/No-Go Gate (Day 14)
+- [ ] 0 P0/P1 bugs open
+- [ ] Lighthouse ≥ 90 on /dashboard
+- [ ] iOS BUILD SUCCEEDED, 0 crashes in TestFlight
+- [ ] RLS verified — users cannot access each other's data
+- [ ] /privacy and /terms live at kquarks.app
+- [ ] App Store binary passes validation
+- [ ] Supabase production backups enabled
+- [ ] Error monitoring (Sentry) + uptime monitoring live
+
+---
+
+## Post-Launch (Week 3+)
+- [ ] Android app (Kotlin + Health Connect)
+- [ ] Apple Watch companion app
+- [ ] AI real-time coaching (streamed responses)
+- [ ] Social challenges + referral program
+- [ ] Doctor share report (PDF of health trends)

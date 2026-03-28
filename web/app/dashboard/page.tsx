@@ -37,7 +37,7 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch all dashboard data in parallel to avoid sequential N+1 queries
+  // Fetch dashboard data in parallel to avoid sequential N+1 queries
   const [
     { data: profile },
     { data: streaks },
