@@ -303,9 +303,11 @@ export function DashboardStream({
       const { data: { user: u } } = await supabase.auth.getUser()
       if (!u) return
       const todayDate = new Date().toISOString().slice(0, 10)
-      await supabase.from('water_logs').insert({ user_id: u.id, amount_ml: ml, logged_at: new Date().toISOString() })
       const newTotal = localWaterMl + ml
-      await supabase.from('daily_water').upsert({ user_id: u.id, date: todayDate, total_ml: newTotal }, { onConflict: 'user_id,date' })
+      await Promise.all([
+        supabase.from('water_logs').insert({ user_id: u.id, amount_ml: ml, logged_at: new Date().toISOString() }),
+        supabase.from('daily_water').upsert({ user_id: u.id, date: todayDate, total_ml: newTotal }, { onConflict: 'user_id,date' }),
+      ])
       setLocalWaterMl(newTotal)
       setShowWaterQuick(false)
     } finally {
