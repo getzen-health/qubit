@@ -81,6 +81,70 @@ function RecoverySparkline({ history, current }: { history: number[], current: n
   )
 }
 
+// 7-day HRV sparkline (history is most-recent-first; we reverse to oldest-first)
+function HRVSparkline({ history, current }: { history: number[], current: number }) {
+  const data = [...history].slice(0, 6).reverse().concat(current).map((v, i) => ({ i, v }))
+  if (data.length < 2) return null
+  const last = data[data.length - 1].v
+  const prev = data[data.length - 2].v
+  const up = last >= prev
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-text-tertiary w-14 flex-shrink-0">7d HRV</span>
+      <div className="flex-1 h-8">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <Line type="monotone" dataKey="v" dot={false} strokeWidth={1.5}
+              stroke={up ? '#8b5cf6' : '#f97316'} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <span className={`text-xs font-medium flex-shrink-0 ${up ? 'text-purple-400' : 'text-orange-500'}`}>
+        {up ? '▲' : '▼'}
+      </span>
+    </div>
+  )
+}
+
+// Compact sleep stage segmented bar
+function SleepStageBar({
+  deepMinutes, remMinutes, coreMinutes, awakeMinutes, totalMinutes,
+}: {
+  deepMinutes: number, remMinutes: number, coreMinutes: number, awakeMinutes: number, totalMinutes: number,
+}) {
+  if (totalMinutes < 30) return null
+  const stages = [
+    { label: 'Deep', mins: deepMinutes, color: '#6366f1' },
+    { label: 'REM', mins: remMinutes, color: '#8b5cf6' },
+    { label: 'Core', mins: coreMinutes, color: '#a78bfa' },
+    { label: 'Awake', mins: awakeMinutes, color: '#6b7280' },
+  ].filter(s => s.mins > 0)
+  return (
+    <div className="px-4 pb-3">
+      <div className="flex h-2 rounded-full overflow-hidden gap-[1px]">
+        {stages.map(({ label, mins, color }) => (
+          <div
+            key={label}
+            title={`${label}: ${Math.floor(mins / 60)}h ${mins % 60}m`}
+            className="h-full first:rounded-l-full last:rounded-r-full"
+            style={{ width: `${(mins / totalMinutes) * 100}%`, backgroundColor: color }}
+          />
+        ))}
+      </div>
+      <div className="flex gap-3 mt-1.5 flex-wrap">
+        {stages.map(({ label, mins, color }) => (
+          <div key={label} className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+            <span className="text-[10px] text-text-tertiary">
+              {label} {Math.floor(mins / 60)}h{mins % 60 > 0 ? ` ${mins % 60}m` : ''}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
 const DEFAULT_SLEEP_GOAL_MINUTES = 480 // 8 hours
@@ -499,6 +563,14 @@ export function DashboardStream({
   const sleepHours = Math.floor(metrics.sleep.duration / 60)
   const sleepMins = metrics.sleep.duration % 60
   const sleepDisplay = metrics.sleep.duration > 0 ? `${sleepHours}h ${sleepMins}m` : '—'
+  // Sleep quality label based on duration (Good ≥7h, Fair ≥6h, Poor <6h)
+  const sleepQualityLabel = metrics.sleep.duration >= 420
+    ? 'Good · ' + sleepDisplay
+    : metrics.sleep.duration >= 360
+    ? 'Fair · ' + sleepDisplay
+    : metrics.sleep.duration > 0
+    ? 'Poor · ' + sleepDisplay
+    : undefined
 
   // Zero-state: true when all main metrics have no synced data yet
   const allMetricsEmpty = metrics.steps === 0 && sleepDisplay === '—' && todayHrv === null && metrics.restingHR === null
@@ -1019,6 +1091,12 @@ export function DashboardStream({
               icon={<Moon className="w-5 h-5" />}
               label="Sleep"
               value={sleepDisplay}
+              sublabel={
+                metrics.sleep.duration >= 420 ? 'Good quality'
+                : metrics.sleep.duration >= 360 ? 'Fair quality'
+                : metrics.sleep.duration > 0 ? 'Poor — below goal'
+                : undefined
+              }
               color="sleep"
               expandContent={
                 <div className="space-y-3">
@@ -1038,7 +1116,7 @@ export function DashboardStream({
                       </span>
                     </div>
                   )}
-                  {/* Sleep stages */}
+                  {/* Sleep stages detail bars */}
                   {hasSleepStages && (
                     <div className="space-y-1.5 pt-1 border-t border-border">
                       {[
@@ -1068,6 +1146,16 @@ export function DashboardStream({
                 </div>
               }
             />
+            {/* Always-visible sleep stage segmented bar */}
+            {hasSleepStages && (
+              <SleepStageBar
+                deepMinutes={lastSleepRecord?.deep_minutes ?? 0}
+                remMinutes={lastSleepRecord?.rem_minutes ?? 0}
+                coreMinutes={lastSleepRecord?.core_minutes ?? 0}
+                awakeMinutes={lastSleepRecord?.awake_minutes ?? 0}
+                totalMinutes={totalSleepTracked}
+              />
+            )}
             {sleepStreak > 0 && (
               <MetricRow
                 icon={<Moon className="w-5 h-5" />}
@@ -1087,7 +1175,10 @@ export function DashboardStream({
               expandContent={
                 <div className="space-y-3">
                   <MetricDetail label="HRV" value={todayHrv != null ? `${Math.round(todayHrv)} ms` : '—'} />
-                  {avgRestingHR != null && <MetricDetail label="7-day Average" value={`${avgRestingHR} bpm`} />}
+                  {todayHrv != null && hrvHistory.length >= 2 && (
+                    <HRVSparkline history={hrvHistory} current={todayHrv} />
+                  )}
+                  {avgRestingHR != null && <MetricDetail label="7-day Avg RHR" value={`${avgRestingHR} bpm`} />}
                 </div>
               }
             />
