@@ -188,10 +188,20 @@ export function HealthScoreClient({
     return '→'
   }
 
-  // 30-day chart data
+  // 30-day chart data — include raw recovery_score from the database for comparison
   const chartData = scored
     .filter((d) => d.overall !== null)
-    .map((d) => ({ date: fmtDate(d.date), score: d.overall!, sleep: d.sleep, activity: d.activity, recovery: d.recovery }))
+    .map((d) => {
+      const summary = summaries.find((s) => s.date === d.date)
+      return {
+        date: fmtDate(d.date),
+        score: d.overall!,
+        sleep: d.sleep,
+        activity: d.activity,
+        recovery: d.recovery,
+        rawRecovery: (summary?.recovery_score != null && summary.recovery_score > 0) ? summary.recovery_score : null,
+      }
+    })
 
   const overallScore = currentOverall ?? 0
 
@@ -261,7 +271,7 @@ export function HealthScoreClient({
       {chartData.length >= 5 && (
         <div className="bg-surface rounded-xl border border-border p-4">
           <h3 className="text-sm font-medium text-text-secondary mb-3">30-Day Score History</h3>
-          <ResponsiveContainer width="100%" height={160}>
+          <ResponsiveContainer width="100%" height={180}>
             <LineChart data={chartData} margin={{ top: 4, right: 4, left: -8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
@@ -271,10 +281,17 @@ export function HealthScoreClient({
               <Line type="monotone" dataKey="sleep" name="sleep" stroke="#818cf8" strokeWidth={1} dot={false} strokeDasharray="3 2" />
               <Line type="monotone" dataKey="activity" name="activity" stroke="#4ade80" strokeWidth={1} dot={false} strokeDasharray="3 2" />
               <Line type="monotone" dataKey="recovery" name="recovery" stroke="#fb923c" strokeWidth={1} dot={false} strokeDasharray="3 2" />
+              <Line type="monotone" dataKey="rawRecovery" name="raw recovery" stroke="#f59e0b" strokeWidth={1.5} dot={false} connectNulls strokeDasharray="4 2" />
             </LineChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 mt-2 text-xs text-text-secondary">
-            {[{ color: '#60a5fa', label: 'Overall' }, { color: '#818cf8', label: 'Sleep' }, { color: '#4ade80', label: 'Activity' }, { color: '#fb923c', label: 'Recovery' }].map(({ color, label }) => (
+            {[
+              { color: '#60a5fa', label: 'Overall' },
+              { color: '#818cf8', label: 'Sleep' },
+              { color: '#4ade80', label: 'Activity' },
+              { color: '#fb923c', label: 'Recovery' },
+              { color: '#f59e0b', label: 'Raw Recovery' },
+            ].map(({ color, label }) => (
               <div key={label} className="flex items-center gap-1.5">
                 <div className="w-3 h-0.5" style={{ backgroundColor: color }} />
                 {label}
