@@ -89,7 +89,8 @@ class DeskBreaksViewModel {
             let dayBreaks = breakLogs.filter { calendar.isDate($0.timestamp, inSameDayAs: currentDay) }
             if dayBreaks.count >= 6 {
                 streakCount += 1
-                currentDay = calendar.date(byAdding: .day, value: -1, to: currentDay)!
+                guard let prevDay = calendar.date(byAdding: .day, value: -1, to: currentDay) else { break }
+                currentDay = prevDay
             } else {
                 break
             }

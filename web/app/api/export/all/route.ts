@@ -18,7 +18,8 @@ export const GET = createSecureApiHandler(
 
     await Promise.all(
       TABLES.map(async (table) => {
-        const { data } = await supabase.from(table).select('*').eq('user_id', user!.id)
+        const { data, error } = await supabase.from(table).select('*').eq('user_id', user!.id)
+        if (error) throw new Error(`Failed to export ${table}: ${error.message}`)
         exportData[table] = data ?? []
       })
     )
