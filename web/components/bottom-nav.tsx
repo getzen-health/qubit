@@ -15,12 +15,13 @@ import {
 import { cn } from '@/lib/utils'
 
 // Primary bottom bar — most-used daily features
-const navItems = [
+const navItems: MoreItem[] = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
   { href: '/sleep', icon: Moon, label: 'Sleep' },
   { href: '/workouts', icon: Dumbbell, label: 'Workouts' },
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
+  { href: '/predictions', icon: '🔮', label: 'Forecast' },
 ]
 
 type LucideIcon = React.ComponentType<{ className?: string }>
@@ -238,7 +239,7 @@ export function BottomNav() {
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-t border-border safe-bottom">
         <div className="flex items-center justify-around px-2 py-2 max-w-2xl mx-auto">
-          {navItems.map(({ href, icon: Icon, label }) => {
+          {navItems.map(({ href, icon, label }) => {
             const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
             return (
               <Link
@@ -247,11 +248,11 @@ export function BottomNav() {
                 aria-label={label}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors min-w-0 min-h-[44px] justify-center',
+                  'flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-colors min-w-0 min-h-[44px] justify-center',
                   active ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
                 )}
               >
-                <Icon className={cn('w-5 h-5', active && 'drop-shadow-[0_0_6px_var(--accent-shadow)]')} />
+                <NavIcon icon={icon} className={cn('w-5 h-5', active && 'drop-shadow-[0_0_6px_var(--accent-shadow)]')} />
                 <span className="text-[10px] font-medium leading-none" aria-hidden="true">{label}</span>
                 <span
                   className={cn('w-1 h-1 rounded-full mt-0.5 transition-colors', active ? 'bg-accent' : 'bg-transparent')}
