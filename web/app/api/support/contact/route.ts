@@ -14,9 +14,7 @@ export const POST = createSecureApiHandler(
     requireAuth: false,
     bodySchema,
   },
-  async (_req, { body }) => {
-    const { name, email, message } = body as z.infer<typeof bodySchema>
-    console.log('[support/contact]', { name, email, messageLength: message.length })
+  async () => {
     return NextResponse.json({ success: true })
   }
 )
