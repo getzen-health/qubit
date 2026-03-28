@@ -1,215 +1,183 @@
 'use client'
 
-import { useState } from 'react'
+const features = [
+  {
+    icon: '🍎',
+    title: 'Food Scanner',
+    description: 'Scan any barcode. Get a QuarkScore™ with ingredient analysis and nutritional breakdown.',
+  },
+  {
+    icon: '🤖',
+    title: 'AI Health Insights',
+    description: 'Claude-powered weekly narratives from your 14-day health trends. Your data, your AI key.',
+  },
+  {
+    icon: '💪',
+    title: 'Workout Tracker',
+    description: 'Log strength sessions with a 60-exercise library and progressive overload tracking.',
+  },
+  {
+    icon: '😴',
+    title: 'Sleep Analysis',
+    description: 'Deep, REM, and core sleep stages with HRV correlation and recovery scoring.',
+  },
+  {
+    icon: '🔮',
+    title: 'Health Forecast',
+    description: '7-day predictions using your personal trend data and machine learning models.',
+  },
+  {
+    icon: '🔒',
+    title: 'Your Data, Private',
+    description: 'HealthKit data never sold. GDPR/CCPA compliant. Export anytime in any format.',
+  },
+]
 
 export function LandingPage() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email) {
-      setSubmitted(true)
-    }
-  }
-
   return (
-    <>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+    <main className="min-h-screen bg-zinc-950 text-zinc-100">
 
-        html, body {
-          height: 100%;
-        }
-      `}</style>
-
-      <main className="min-h-screen bg-[#fafafa] text-zinc-900 font-[Inter]">
-
-        {/* Nav */}
-        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
-          <div className="max-w-5xl mx-auto flex justify-between items-center">
-            <span className="text-sm font-medium tracking-tight">KQuarks</span>
+      {/* Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-5 border-b border-zinc-800/60 backdrop-blur-md bg-zinc-950/80">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <span className="text-sm font-semibold tracking-tight">KQuarks</span>
+          <div className="flex items-center gap-6">
             <a
               href="https://github.com/qxlsz/kquarks"
-              className="text-xs text-zinc-500 hover:text-zinc-900 transition-colors"
+              className="text-xs text-zinc-400 hover:text-zinc-100 transition-colors hidden sm:block"
             >
               GitHub
             </a>
+            <a
+              href="/login"
+              className="text-xs px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-100 transition-colors"
+            >
+              Sign in
+            </a>
           </div>
-        </nav>
+        </div>
+      </nav>
 
-        {/* Hero */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
-          <div className="max-w-2xl mx-auto text-center">
+      {/* Hero */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-12">
+        <div className="max-w-4xl mx-auto text-center">
 
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-zinc-200 rounded-full text-xs text-zinc-600 mb-8 shadow-sm">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              Private Beta
+          {/* Headline */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight leading-[1.05] mb-6">
+            Your health,
+            <br />
+            <span className="text-zinc-400">beautifully understood.</span>
+          </h1>
+
+          {/* Subhead */}
+          <p className="text-lg text-zinc-400 max-w-md mx-auto mb-10 leading-relaxed">
+            Sync Apple Health, scan food, get AI insights. All in one place.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
+            <a
+              href="#"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-zinc-900 font-medium rounded-xl text-sm hover:bg-zinc-100 transition-colors"
+            >
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+              </svg>
+              Download on App Store
+            </a>
+            <a
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-zinc-800 text-zinc-100 font-medium rounded-xl text-sm hover:bg-zinc-700 transition-colors"
+            >
+              Open Web App →
+            </a>
+          </div>
+
+          {/* Health metrics mockup */}
+          <div className="max-w-sm mx-auto bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-left shadow-2xl shadow-zinc-950">
+            <div className="flex items-center justify-between mb-5">
+              <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Today&apos;s Summary</span>
+              <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">↑ Good</span>
             </div>
-
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight leading-[1.1] mb-6">
-              Your health data,
-              <br />
-              <span className="text-zinc-400">finally private.</span>
-            </h1>
-
-            {/* Subhead */}
-            <p className="text-lg text-zinc-500 font-light max-w-md mx-auto mb-12 leading-relaxed">
-              AI-powered health insights. Your own database.
-              Your own AI. Zero data sharing.
-            </p>
-
-            {/* Form */}
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="flex-1 px-4 py-3 bg-white border border-zinc-200 rounded-lg text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-shadow"
-                  />
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-zinc-900 text-white text-sm font-medium rounded-lg hover:bg-zinc-800 transition-colors"
-                  >
-                    Join
-                  </button>
-                </div>
-                <p className="text-xs text-zinc-400 mt-3">
-                  Early access. No spam.
-                </p>
-              </form>
-            ) : (
-              <div className="bg-white border border-zinc-200 rounded-lg px-6 py-4 inline-block">
-                <p className="text-sm text-zinc-600">
-                  You&apos;re on the list. We&apos;ll be in touch.
-                </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-zinc-800/60 rounded-xl p-4">
+                <div className="text-xs text-zinc-500 mb-1">Steps</div>
+                <div className="text-2xl font-semibold tabular-nums">8,432</div>
+                <div className="text-xs text-zinc-500 mt-1">+12% vs avg</div>
               </div>
-            )}
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="py-24 px-6 bg-white border-t border-zinc-100">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-12">
-
-              <div>
-                <div className="w-10 h-10 bg-zinc-100 rounded-lg flex items-center justify-center mb-4">
-                  <svg className="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <h3 className="font-medium mb-2">Privacy First</h3>
-                <p className="text-sm text-zinc-500 leading-relaxed">
-                  Connect your own Supabase. Your health data never touches our servers.
-                </p>
+              <div className="bg-zinc-800/60 rounded-xl p-4">
+                <div className="text-xs text-zinc-500 mb-1">Sleep</div>
+                <div className="text-2xl font-semibold tabular-nums">7.2h</div>
+                <div className="text-xs text-zinc-500 mt-1">84% quality</div>
               </div>
-
-              <div>
-                <div className="w-10 h-10 bg-zinc-100 rounded-lg flex items-center justify-center mb-4">
-                  <svg className="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-medium mb-2">Your AI</h3>
-                <p className="text-sm text-zinc-500 leading-relaxed">
-                  Use your own API key. Claude, GPT, or any provider. Your queries stay private.
-                </p>
+              <div className="bg-zinc-800/60 rounded-xl p-4">
+                <div className="text-xs text-zinc-500 mb-1">HRV</div>
+                <div className="text-2xl font-semibold tabular-nums">54ms</div>
+                <div className="text-xs text-emerald-400 mt-1">↑ High</div>
               </div>
-
-              <div>
-                <div className="w-10 h-10 bg-zinc-100 rounded-lg flex items-center justify-center mb-4">
-                  <svg className="w-5 h-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
+              <div className="bg-zinc-800/60 rounded-xl p-4">
+                <div className="text-xs text-zinc-500 mb-1">Recovery</div>
+                <div className="text-2xl font-semibold tabular-nums">
+                  78<span className="text-sm text-zinc-400">%</span>
                 </div>
-                <h3 className="font-medium mb-2">Health Insights</h3>
-                <p className="text-sm text-zinc-500 leading-relaxed">
-                  Sync Apple Health. Get personalized insights from AI that understands your data.
-                </p>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section className="py-24 px-6 border-t border-zinc-100">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl font-medium mb-4">How it works</h2>
-            <p className="text-zinc-500 mb-12">Three simple steps to private health tracking.</p>
-
-            <div className="space-y-8 text-left">
-              <div className="flex gap-4">
-                <div className="w-8 h-8 bg-zinc-900 text-white rounded-full flex items-center justify-center text-sm font-medium shrink-0">1</div>
-                <div>
-                  <h3 className="font-medium mb-1">Connect your database</h3>
-                  <p className="text-sm text-zinc-500">Set up a free Supabase instance. Your data, your control.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 bg-zinc-900 text-white rounded-full flex items-center justify-center text-sm font-medium shrink-0">2</div>
-                <div>
-                  <h3 className="font-medium mb-1">Add your AI key</h3>
-                  <p className="text-sm text-zinc-500">Bring your own Claude or OpenAI API key. We never see your queries.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 bg-zinc-900 text-white rounded-full flex items-center justify-center text-sm font-medium shrink-0">3</div>
-                <div>
-                  <h3 className="font-medium mb-1">Sync & explore</h3>
-                  <p className="text-sm text-zinc-500">Connect Apple Health. Get insights. Everything stays private.</p>
-                </div>
+                <div className="text-xs text-zinc-500 mt-1">Ready to train</div>
               </div>
             </div>
           </div>
-        </section>
 
-        {/* CTA */}
-        <section className="py-24 px-6 bg-zinc-900 text-white">
-          <div className="max-w-xl mx-auto text-center">
-            <h2 className="text-2xl font-medium mb-4">Ready to take control?</h2>
-            <p className="text-zinc-400 mb-8">Join the private beta. Open source. Self-hostable.</p>
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="flex-1 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-                  />
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-white text-zinc-900 text-sm font-medium rounded-lg hover:bg-zinc-100 transition-colors"
-                  >
-                    Join
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <p className="text-zinc-400 text-sm">You&apos;re on the list.</p>
-            )}
+        </div>
+      </section>
+
+      {/* Stats bar */}
+      <section className="py-5 border-y border-zinc-800 bg-zinc-900/40">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-2 text-sm text-zinc-400">
+            <span><span className="text-zinc-100 font-medium">100%</span> Open Source</span>
+            <span className="text-zinc-700 hidden sm:inline">·</span>
+            <span><span className="text-zinc-100 font-medium">HealthKit</span> Native</span>
+            <span className="text-zinc-700 hidden sm:inline">·</span>
+            <span><span className="text-zinc-100 font-medium">GDPR</span> Compliant</span>
+            <span className="text-zinc-700 hidden sm:inline">·</span>
+            <span><span className="text-zinc-100 font-medium">0 Ads,</span> Ever</span>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="py-8 px-6 bg-zinc-900 border-t border-zinc-800">
-          <div className="max-w-4xl mx-auto flex justify-between items-center text-xs text-zinc-500">
-            <span>KQuarks</span>
-            <span>Privacy-first health tracking</span>
+      {/* Features grid */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-semibold text-center mb-3">Everything your health needs</h2>
+          <p className="text-zinc-400 text-center mb-16 max-w-md mx-auto">
+            A complete health platform built on open standards and your own data.
+          </p>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-700 transition-colors"
+              >
+                <div className="text-3xl mb-4">{f.icon}</div>
+                <h3 className="font-semibold mb-2 text-zinc-100">{f.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{f.description}</p>
+              </div>
+            ))}
           </div>
-        </footer>
+        </div>
+      </section>
 
-      </main>
-    </>
+      {/* Footer */}
+      <footer className="py-10 px-6 border-t border-zinc-800">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+          <span className="text-sm font-medium text-zinc-100">KQuarks</span>
+          <div className="flex flex-wrap justify-center gap-6 text-xs text-zinc-500">
+            <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms</a>
+            <a href="/support" className="hover:text-zinc-300 transition-colors">Support</a>
+            <a href="https://github.com/qxlsz/kquarks" className="hover:text-zinc-300 transition-colors">GitHub</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
   )
 }
