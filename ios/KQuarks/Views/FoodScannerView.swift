@@ -59,307 +59,50 @@ struct ProductHealthScore {
     }
 }
 
-// MARK: - FoodScannerView
+// MARK: - FoodScannerView (Yuka-style, QuarkScore™)
 
 struct FoodScannerView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var isScanning = false
-    @State private var scannedProduct: ScannedProduct?
-    @State private var isLoading = true
-    @State private var errorMessage: String?
-    @State private var searchQuery = ""
-    @State private var showManualSearch = false
+    @State private var selectedTab = 0
+    @State private var service = FoodScannerService()
+    @State private var scannedProduct: FoodProduct?
     @State private var showProductSheet = false
-    @State private var cameraPermissionDenied = false
-    @State private var showNutritionScanner = false
-    @State private var ocrPrefill: ParsedNutritionLabel?
-    @State private var showOCRLogMeal = false
-    @State private var showManualBarcodeEntry = false
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                if isScanning && !cameraPermissionDenied {
-                    BarcodeScannerRepresentable { barcode in
-                        isScanning = false
-                        Task { await lookupBarcode(barcode) }
-                    }
-                    .ignoresSafeArea()
-
-                    VStack {
-                        Spacer()
-                        scanOverlay
-                    }
-                } else {
-                    searchView
+            TabView(selection: $selectedTab) {
+                BarcodeScannerTab(service: service) { product in
+                    scannedProduct = product
+                    showProductSheet = true
                 }
+                .tabItem { Label("Scan", systemImage: "barcode.viewfinder") }
+                .tag(0)
 
-                if isLoading {
-                    loadingOverlay
+                FoodSearchTab(service: service) { product in
+                    scannedProduct = product
+                    showProductSheet = true
                 }
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(1)
             }
             .navigationTitle("Food Scanner")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
-                    .accessibilityLabel("Close food scanner")
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        withAnimation { isScanning.toggle() }
-                    } label: {
-                        Image(systemName: isScanning ? "list.bullet" : "barcode.viewfinder")
-                    }
-                    .accessibilityLabel(isScanning ? "Switch to search" : "Scan barcode")
-                    .disabled(cameraPermissionDenied)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ScanHistoryView()) {
-                        Label("Scan History", systemImage: "clock.arrow.circlepath")
-                    }
-                    NavigationLink(destination: HistoryView()) {
-                        Label("History", systemImage: "calendar")
+                        Label("History", systemImage: "clock.arrow.circlepath")
                     }
                 }
             }
             .sheet(item: $scannedProduct) { product in
-                ProductDetailView(product: product)
-            }
-            .sheet(isPresented: $showNutritionScanner) {
-                NutritionLabelScannerView { parsed in
-                    ocrPrefill = parsed
-                    showOCRLogMeal = true
-                }
-            }
-            .sheet(isPresented: $showOCRLogMeal) {
-                LogMealView(initialMealType: .snack, prefill: ocrPrefill)
-            }
-            .sheet(isPresented: $showManualBarcodeEntry) {
-                ManualBarcodeEntryView { barcode in
-                    Task { await lookupBarcode(barcode) }
-                }
-            }
-            .alert("Camera Access Required", isPresented: $cameraPermissionDenied) {
-                Button("Open Settings") {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Allow camera access in Settings to scan barcodes.")
-            }
-            .alert("Error", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(errorMessage ?? "")
+                ProductDetailSheet(product: product, service: service)
             }
         }
     }
-
-    // MARK: - Search View
-
-    private var searchView: some View {
-        VStack(spacing: 0) {
-            searchBar
-
-            if cameraPermissionDenied {
-                cameraPermissionBanner
-            }
-
-            Spacer()
-
-            VStack(spacing: 16) {
-                Image(systemName: "barcode.viewfinder")
-                    .font(.system(size: 64))
-                    .foregroundStyle(.secondary)
-
-                Text("Scan a barcode")
-                    .font(.title2.bold())
-
-                Text("Point your camera at any food product barcode to get its health score.")
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 32)
-
-                Button {
-                    checkCameraAndStartScanning()
-                } label: {
-                    Label("Start Scanning", systemImage: "camera.fill")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                }
-                .accessibilityLabel("Scan barcode")
-                .accessibilityHint("Opens camera to scan a food product barcode")
-                .padding(.horizontal, 32)
-
-                Button {
-                    showNutritionScanner = true
-                } label: {
-                    Label("Scan Nutrition Label", systemImage: "text.viewfinder")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .foregroundStyle(.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                }
-                .accessibilityLabel("Scan nutrition label")
-                .accessibilityHint("OCR scan a nutrition facts label to pre-fill a food entry")
-                .padding(.horizontal, 32)
-            }
-
-            Spacer()
-        }
-    }
-
-    private var searchBar: some View {
-        HStack {
-            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-            TextField("Search product by name...", text: $searchQuery)
-                .submitLabel(.search)
-                .onSubmit {
-                    guard !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-                    Task { await searchByName() }
-                }
-        }
-        .padding(12)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .padding()
-    }
-
-    private var cameraPermissionBanner: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "camera.slash.fill")
-                .foregroundStyle(.orange)
-            Text("Camera access denied. Use search or enable in Settings.")
-                .font(.caption)
-            Spacer()
-        }
-        .padding()
-        .background(Color.orange.opacity(0.1))
-    }
-
-    // MARK: - Scanner Overlay
-
-    private var scanOverlay: some View {
-        VStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.white.opacity(0.8), lineWidth: 2)
-                .frame(width: 260, height: 120)
-                .overlay(
-                    Rectangle()
-                        .fill(Color.clear)
-                        .overlay(
-                            Rectangle()
-                                .frame(height: 2)
-                                .foregroundStyle(Color.green.opacity(0.8))
-                        )
-                )
-
-            Text("Center barcode in frame")
-                .font(.caption)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
-
-            Button("Enter barcode manually") {
-                showManualBarcodeEntry = true
-            }
-            .font(.footnote)
-            .foregroundStyle(.gray)
-            .padding(.top, 8)
-
-            searchBar
-                .padding(.bottom, 30)
-        }
-        .padding(.bottom, 16)
-    }
-
-    private var loadingOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.35).ignoresSafeArea()
-            VStack(spacing: 12) {
-                ProgressView()
-                    .scaleEffect(1.4)
-                    .tint(.white)
-                Text("Looking up product…")
-                    .foregroundStyle(.white)
-                    .font(.subheadline)
-            }
-            .padding(24)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-        }
-    }
-
-    // MARK: - Actions
-
-    private func checkCameraAndStartScanning() {
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            isScanning = true
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    if granted { isScanning = true } else { cameraPermissionDenied = true }
-                }
-            }
-        default:
-            cameraPermissionDenied = true
-        }
-    }
-
-    private func lookupBarcode(_ barcode: String) async {
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            let product = try await OpenFoodFactsService.lookupBarcode(barcode)
-            scannedProduct = product
-            // Save scan history
-            await SupabaseService.shared.saveScanHistory(barcode: barcode, productName: product.name, brand: product.brand, score: product.healthScore.score, imageURL: product.imageURL?.absoluteString)
-            #if os(iOS)
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            #endif
-        } catch OpenFoodFactsError.notFound {
-            errorMessage = "Product not found. Try searching by name."
-            #if os(iOS)
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            #endif
-        } catch {
-            errorMessage = "Failed to look up product. Check your connection."
-            #if os(iOS)
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            #endif
-        }
-    }
-
-    private func searchByName() async {
-        let query = searchQuery.trimmingCharacters(in: .whitespaces)
-        guard query.count >= 2 else { return }
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            let results = try await OpenFoodFactsService.search(query: query)
-            if let first = results.first {
-                scannedProduct = first
-            } else {
-                errorMessage = "No products found for \"\(query)\"."
-            }
-        } catch {
-            errorMessage = "Search failed. Check your connection."
-        }
-    }
+}
 }
 
 // MARK: - ProductDetailView
