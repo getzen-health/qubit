@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
@@ -91,7 +92,7 @@ export const GET = createSecureApiHandler(
     // Free keys available at https://fdc.nal.usda.gov/api-guide.html
     const usdaKey = process.env.USDA_API_KEY
     if (!usdaKey) {
-      console.warn('[food/search] USDA_API_KEY not set — skipping USDA lookup. Set USDA_API_KEY to enable it.')
+      apiLogger('[food/search] USDA_API_KEY not set — skipping USDA lookup. Set USDA_API_KEY to enable it.')
     }
     const usdaUrl = usdaKey
       ? `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(q)}&dataType=Branded&pageSize=5&api_key=${usdaKey}`

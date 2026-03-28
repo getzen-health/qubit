@@ -73,7 +73,7 @@ struct OnboardingView: View {
                     } label: {
                         Text("Continue Anyway")
                             .font(.headline)
-                            .foregroundStyle(.accentColor)
+                            .foregroundStyle(Color.accentColor)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.accentColor.opacity(0.12))

@@ -159,9 +159,7 @@ struct HistoryView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(workout.workoutType)
                                 .font(.subheadline.weight(.medium))
-                            Text("\(workout.durationMinutes)min" +
-                                (workout.activeCalories.map { " · \(Int($0)) kcal" } ?? "") +
-                                (workout.distanceMeters.flatMap { $0 > 0 ? String(format: " · %.1f km", $0 / 1000) : nil } ?? ""))
+                            workoutSubtitle(workout)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -212,6 +210,19 @@ struct HistoryView: View {
         summary = try? await s
         workouts = (try? await w) ?? []
         sleepRecords = (try? await sl) ?? []
+    }
+
+    @ViewBuilder
+    private func workoutSubtitle(_ workout: WorkoutRecord) -> some View {
+        let parts: [String] = {
+            var p = ["\(workout.durationMinutes)min"]
+            if let cal = workout.activeCalories { p.append("\(Int(cal)) kcal") }
+            if let dist = workout.distanceMeters, dist > 0 {
+                p.append(String(format: "%.1f km", dist / 1000))
+            }
+            return p
+        }()
+        Text(parts.joined(separator: " · "))
     }
 
     private func workoutIcon(_ type: String) -> String {

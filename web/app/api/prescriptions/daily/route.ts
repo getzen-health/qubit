@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -158,7 +159,7 @@ export const GET = createSecureApiHandler(
     const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
     const { data: steps28, error: steps28Err } = await supabase.from('health_metrics').select('value').eq('user_id', user!.id).eq('metric_type', 'steps').gte('recorded_at', since28d)
     const { data: steps7, error: steps7Err } = await supabase.from('health_metrics').select('value').eq('user_id', user!.id).eq('metric_type', 'steps').gte('recorded_at', since7d)
-    if (steps28Err || steps7Err) console.error('steps fetch error', steps28Err ?? steps7Err)
+    if (steps28Err || steps7Err) apiLogger('steps fetch error', steps28Err ?? steps7Err)
 
     let acwr: number | null = null
     if (steps28 && steps28.length >= 7 && steps7 && steps7.length >= 3) {
@@ -197,7 +198,7 @@ export const GET = createSecureApiHandler(
         readiness_score: readiness,
         acwr,
       })
-      if (upsertErr) console.error('prescription upsert error', upsertErr)
+      if (upsertErr) apiLogger('prescription upsert error', upsertErr)
     }
 
     return secureJsonResponse({ prescription: result, cached: !!existing })
@@ -210,7 +211,7 @@ export const PATCH = createSecureApiHandler(
     // Mark prescription as followed/not followed
     const { date, followed } = await request.json()
     const { error: updateErr } = await supabase.from('workout_prescriptions').update({ followed }).eq('user_id', user!.id).eq('date', date ?? new Date().toISOString().slice(0, 10))
-    if (updateErr) console.error('prescription update error', updateErr)
+    if (updateErr) apiLogger('prescription update error', updateErr)
     return secureJsonResponse({ success: true })
   }
 )

@@ -144,8 +144,6 @@ struct TennisAnalysisView: View {
     // MARK: - Session Table
 
     private var sessionTableCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)
@@ -163,7 +161,7 @@ struct TennisAnalysisView: View {
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date)).font(.caption).frame(width: 65, alignment: .leading)
+                        Text(s.date.kqFormat("MMM d")).font(.caption).frame(width: 65, alignment: .leading)
                         Text(s.typeName).font(.caption).foregroundStyle(s.typeColor).frame(minWidth: 60, alignment: .leading)
                         Spacer()
                         Text(String(format: "%.0f", s.durationMins)).font(.caption.monospacedDigit()).frame(width: 38, alignment: .trailing)
@@ -210,7 +208,6 @@ struct TennisAnalysisView: View {
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         var allSessions: [TennisSession] = []
         var monthMap: [String: (Date, Int, Int)] = [:]
@@ -228,7 +225,7 @@ struct TennisAnalysisView: View {
                 healthStore.execute(q)
             }
             for w in workouts {
-                let key = df.string(from: w.startDate)
+                let key = w.startDate.kqFormat("yyyy-MM")
                 let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
                 var m = monthMap[key] ?? (monthStart, 0, 0)
                 if actType == .tennis { m.1 += 1 } else { m.2 += 1 }

@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 import { getPercentile, getAgeGroup, getInsight, METRIC_CONFIG } from '@/lib/cohort-norms'
 
@@ -5,7 +6,7 @@ export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
   async (_req, { user, supabase }) => {
     const { data: profile, error: profileErr } = await supabase.from('user_profiles').select('date_of_birth, biological_sex').eq('user_id', user!.id).single()
-    if (profileErr && profileErr.code !== 'PGRST116') console.error('user_profiles fetch error', profileErr)
+    if (profileErr && profileErr.code !== 'PGRST116') apiLogger('user_profiles fetch error', profileErr)
 
     const age = profile?.date_of_birth
       ? Math.floor((Date.now() - new Date(profile.date_of_birth).getTime()) / (365.25 * 24 * 3600 * 1000))
@@ -17,7 +18,7 @@ export const GET = createSecureApiHandler(
       .select('metric_type, value')
       .eq('user_id', user!.id)
       .gte('recorded_at', since7d)
-    if (metricsErr) console.error('health_metrics fetch error', metricsErr)
+    if (metricsErr) apiLogger('health_metrics fetch error', metricsErr)
 
     const metricAvgs: Record<string, number> = {}
     if (metrics) {

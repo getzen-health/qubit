@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { calculateStreak, checkAchievements, ACHIEVEMENTS } from '@/lib/habits'
 
@@ -57,7 +58,7 @@ export const POST = createSecureApiHandler(
         newAchievements.map(a => ({ user_id: user!.id, achievement_id: a.id })),
         { onConflict: 'user_id,achievement_id' }
       )
-      if (achErr) console.error('user_achievements upsert error', achErr)
+      if (achErr) apiLogger('user_achievements upsert error', achErr)
     }
 
     return secureJsonResponse({ log, xp_earned: xpEarned, streak, new_achievements: newAchievements })

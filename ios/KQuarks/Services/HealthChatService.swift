@@ -77,7 +77,10 @@ class HealthChatService {
 
         do {
             // Resolve Supabase base URL from the client
-            let supabaseURLString = supabase.client.supabaseURL.absoluteString
+            let supabaseURLString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
+            guard !supabaseURLString.isEmpty else {
+                throw URLError(.badURL)
+            }
             let userId = supabase.currentSession?.user.id.uuidString ?? ""
 
             guard let functionURL = URL(string: "\(supabaseURLString)/functions/v1/health-chat") else {
@@ -86,7 +89,10 @@ class HealthChatService {
 
             // Build auth header using the current session token
             let accessToken = supabase.currentSession?.accessToken ?? ""
-            let anonKey = supabase.client.supabaseKey
+            let anonKey = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_ANON_KEY") as? String ?? ""
+            guard !anonKey.isEmpty else {
+                throw URLError(.userAuthenticationRequired)
+            }
 
             let requestBody = ChatRequest(
                 message: trimmed,

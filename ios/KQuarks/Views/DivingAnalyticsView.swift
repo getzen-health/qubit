@@ -202,8 +202,6 @@ struct DivingAnalyticsView: View {
     // MARK: - Dive Log
 
     private var diveLog: some View {
-        let df = DateFormatter()
-        df.dateStyle = .medium
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Dives").font(.headline)
             VStack(spacing: 0) {
@@ -212,7 +210,7 @@ struct DivingAnalyticsView: View {
                     HStack(spacing: 12) {
                         Circle().fill(dive.depthCategory.color).frame(width: 10, height: 10)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(df.string(from: dive.date)).font(.subheadline.bold())
+                            Text(dive.date.kqFormatted(dateStyle: .medium)).font(.subheadline.bold())
                             Text(dive.depthCategory.rawValue).font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()

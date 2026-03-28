@@ -2,6 +2,7 @@ import WidgetKit
 import SwiftUI
 import ActivityKit
 
+#if !targetEnvironment(macCatalyst)
 @available(iOS 16.1, *)
 struct WorkoutLiveActivity: Widget {
     var body: some WidgetConfiguration {
@@ -31,3 +32,4 @@ struct WorkoutLiveActivity: Widget {
         }
     }
 }
+#endif

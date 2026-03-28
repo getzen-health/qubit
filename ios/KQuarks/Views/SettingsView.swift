@@ -42,7 +42,7 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "person.circle.fill")
                                 .font(.largeTitle)
-                                .foregroundStyle(.accentColor)
+                                .foregroundStyle(Color.accentColor)
 
                             VStack(alignment: .leading) {
                                 Text(user.displayName ?? "User")

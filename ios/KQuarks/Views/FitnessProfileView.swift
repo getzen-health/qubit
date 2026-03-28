@@ -500,8 +500,7 @@ struct FitnessProfileView: View {
         // Cardiac (RHR) score — fetch from HealthKit since Supabase summary doesn't always include it
         let rhrSamples = (try? await HealthKitService.shared.fetchSamples(for: .restingHeartRate, from: sixtyDaysAgo, to: now)) ?? []
         let rhrByDate: [String: Double] = Dictionary(grouping: rhrSamples) { s in
-            let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-            return df.string(from: s.startDate)
+            return s.startDate.kqFormat("yyyy-MM-dd")
         }.mapValues { ss in
             let vals = ss.map { $0.quantity.doubleValue(for: HKUnit(from: "count/min")) }
             return vals.reduce(0, +) / Double(vals.count)

@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 // PUT: Update user's current_value for a challenge
@@ -10,7 +11,7 @@ export const PUT = createSecureApiHandler(
       .select('*')
       .eq('id', challenge_id)
       .single()
-    if (challengeErr) console.error('challenges fetch error', challengeErr)
+    if (challengeErr) apiLogger('challenges fetch error', challengeErr)
     let value = 0
     if (challenge?.type === 'steps') {
       const { data: metrics } = await supabase

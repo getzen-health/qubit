@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { calculateProductScore } from '@/lib/product-scoring'
@@ -104,7 +105,7 @@ export const GET = createSecureApiHandler(
       // Free keys available at https://fdc.nal.usda.gov/api-guide.html
       const usdaKey = process.env.USDA_API_KEY
       if (!usdaKey) {
-        console.warn('[food/barcode] USDA_API_KEY not set — skipping USDA fallback. Set USDA_API_KEY to enable it.')
+        apiLogger('[food/barcode] USDA_API_KEY not set — skipping USDA fallback. Set USDA_API_KEY to enable it.')
         return secureErrorResponse('Product not found in any database', 404)
       }
       const usdaUrl = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(barcode)}&dataType=Branded&pageSize=1&api_key=${usdaKey}`
@@ -184,7 +185,7 @@ export const GET = createSecureApiHandler(
           thumbnail_url: null,
         })).then(({ error }) => {
           if (error) {
-            console.error(JSON.stringify({
+            apiLogger(JSON.stringify({
               timestamp: new Date().toISOString(),
               error: 'Failed to save product scan',
               barcode,
@@ -194,7 +195,7 @@ export const GET = createSecureApiHandler(
             }))
           }
         }).catch((err: unknown) => {
-          console.error(JSON.stringify({
+          apiLogger(JSON.stringify({
             timestamp: new Date().toISOString(),
             error: 'Product scan insert failed',
             barcode,
@@ -275,7 +276,7 @@ export const GET = createSecureApiHandler(
         thumbnail_url: food.imageUrl ?? null,
       })).then(({ error }) => {
         if (error) {
-          console.error(JSON.stringify({
+          apiLogger(JSON.stringify({
             timestamp: new Date().toISOString(),
             error: 'Failed to save product scan',
             barcode: food.barcode ?? barcode,
@@ -285,7 +286,7 @@ export const GET = createSecureApiHandler(
           }))
         }
       }).catch((err: unknown) => {
-        console.error(JSON.stringify({
+        apiLogger(JSON.stringify({
           timestamp: new Date().toISOString(),
           error: 'Product scan insert failed',
           barcode: food.barcode ?? barcode,

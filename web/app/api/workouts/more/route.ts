@@ -1,4 +1,5 @@
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+import { logger } from '@/lib/logger'
 import { WORKOUT_API_CONFIG } from '@/lib/config'
 import { z } from 'zod'
 
@@ -24,7 +25,7 @@ export const GET = createSecureApiHandler(
       .range(offset, offset + limit - 1)
 
     if (error) {
-      console.error('Error fetching workouts:', error)
+      logger.error('Error fetching workouts:', error)
       return secureErrorResponse('Failed to fetch workouts', 500)
     }
 

@@ -195,12 +195,9 @@ struct BloodOxygenView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            let df = DateFormatter()
-            df.dateStyle = .short
-            df.timeStyle = .short
             ForEach(lowReadings.prefix(5), id: \.date) { r in
                 HStack {
-                    Text(df.string(from: r.date))
+                    Text(r.date.kqFormatted(dateStyle: .short, timeStyle: .short))
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                     Spacer()

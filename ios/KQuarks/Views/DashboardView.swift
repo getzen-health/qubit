@@ -264,7 +264,7 @@ struct ActivityRingsView: View {
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Calorie progress")
-            .accessibilityValue("\(Int(summary.activeCalories)) of \(Int(caloriesGoal.rounded(.up()))) calories")
+            .accessibilityValue("\(Int(summary.activeCalories)) of \(Int(caloriesGoal.rounded(.up))) calories")
 
             // Sleep ring
             RingView(

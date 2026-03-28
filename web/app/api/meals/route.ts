@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import {
@@ -45,7 +46,7 @@ export const GET = createSecureApiHandler(
     const { data: meals, error } = await dbQuery
 
     if (error) {
-      console.error('Error fetching meals:', error)
+      apiLogger('Error fetching meals:', error)
       return secureErrorResponse('Failed to fetch meals', 500)
     }
 
@@ -80,7 +81,7 @@ export const POST = createSecureApiHandler(
       .single()
 
     if (mealError) {
-      console.error('Error creating meal:', mealError)
+      apiLogger('Error creating meal:', mealError)
       return secureErrorResponse('Failed to create meal', 500)
     }
 
@@ -109,10 +110,10 @@ export const POST = createSecureApiHandler(
       .insert(mealItems)
 
     if (itemsError) {
-      console.error('Error creating meal items:', itemsError)
+      apiLogger('Error creating meal items:', itemsError)
       // Rollback meal creation
       const { error: rollbackError } = await supabase.from('meals').delete().eq('id', meal.id)
-      if (rollbackError) console.error('Failed to rollback meal creation:', rollbackError)
+      if (rollbackError) apiLogger('Failed to rollback meal creation:', rollbackError)
       return secureErrorResponse('Failed to create meal items', 500)
     }
 
@@ -175,7 +176,7 @@ export const DELETE = createSecureApiHandler(
       .eq('user_id', user!.id)
 
     if (error) {
-      console.error('Error deleting meal:', error)
+      apiLogger('Error deleting meal:', error)
       return secureErrorResponse('Failed to delete meal', 500)
     }
 

@@ -190,8 +190,6 @@ struct OpenWaterSwimmingView: View {
     // MARK: - Session Table
 
     private var sessionTableCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)
@@ -208,7 +206,7 @@ struct OpenWaterSwimmingView: View {
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date)).font(.caption).frame(width: 65, alignment: .leading)
+                        Text(s.date.kqFormat("MMM d")).font(.caption).frame(width: 65, alignment: .leading)
                         Text(String(format: "%.2f", s.distanceM / 1000)).font(.caption.monospacedDigit()).foregroundStyle(.cyan).frame(width: 40, alignment: .trailing)
                         Text(String(format: "%.0f", s.durationMins)).font(.caption.monospacedDigit()).frame(width: 38, alignment: .trailing)
                         Text(s.pace > 0 && s.pace < 10 ? paceString(s.pace) : "—").font(.caption.monospacedDigit()).foregroundStyle(.teal).frame(width: 60, alignment: .trailing)
@@ -256,7 +254,6 @@ struct OpenWaterSwimmingView: View {
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let mUnit = HKUnit.meter()
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [
             HKQuery.predicateForSamples(withStart: oneYearAgo, end: Date()),
@@ -293,7 +290,7 @@ struct OpenWaterSwimmingView: View {
             )
             allSessions.append(session)
 
-            let mk = df.string(from: w.startDate)
+            let mk = w.startDate.kqFormat("yyyy-MM")
             let ms = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
             var m = mMap[mk] ?? (ms, 0, 0)
             m.1 += 1; m.2 += dist / 1000

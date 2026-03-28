@@ -366,11 +366,10 @@ struct WalkingHeartRateView: View {
         // Group by day (average per day)
         let cal = Calendar.current
         var dayMap: [String: (Date, [Double])] = [:]
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
 
         for s in samples {
             let bpm = s.quantity.doubleValue(for: hrUnit)
-            let key = df.string(from: s.startDate)
+            let key = s.startDate.kqFormat("yyyy-MM-dd")
             let dayStart = cal.startOfDay(for: s.startDate)
             var cur = dayMap[key] ?? (dayStart, [])
             cur.1.append(bpm)

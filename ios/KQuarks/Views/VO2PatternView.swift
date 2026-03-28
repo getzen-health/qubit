@@ -239,7 +239,6 @@ struct VO2PatternView: View {
 
         let twoYearsAgo = Calendar.current.date(byAdding: .year, value: -2, to: Date()) ?? Date()
         let iso = ISO8601DateFormatter()
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
 
         struct Row: Decodable { let value: Double; let start_time: String }
         let rows: [Row] = (try? await SupabaseService.shared.client
@@ -273,7 +272,7 @@ struct VO2PatternView: View {
                 let key = "\(comps.yearForWeekOfYear ?? 0)-W\(comps.weekOfYear ?? 0)"
                 if let bucket = weekBuckets[key] {
                     let avg = bucket.reduce(0, +) / Double(bucket.count)
-                    weeklyReadings.append((value: avg, date: df.string(from: d)))
+                    weeklyReadings.append((value: avg, date: d.kqFormat("yyyy-MM-dd")))
                     weekBuckets.removeValue(forKey: key)
                 }
             }

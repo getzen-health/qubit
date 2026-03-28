@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextResponse } from 'next/server'
 import { createSecureApiHandler } from '@/lib/security'
 
@@ -39,7 +40,7 @@ export const POST = createSecureApiHandler(
 
     if (records.length > 0) {
       const { error: sleepUpsertErr } = await supabase.from('sleep_records').upsert(records, { onConflict: 'user_id,date' })
-      if (sleepUpsertErr) console.error('sleep_records upsert error', sleepUpsertErr)
+      if (sleepUpsertErr) apiLogger('sleep_records upsert error', sleepUpsertErr)
     }
 
     return NextResponse.json({ synced: records.length })

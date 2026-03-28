@@ -216,9 +216,6 @@ struct SymptomsLogView: View {
     private var recentLog: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Recent Entries").font(.headline)
-            let df = DateFormatter()
-            df.dateStyle = .medium
-            df.timeStyle = .short
             VStack(spacing: 0) {
                 ForEach(events.prefix(15)) { ev in
                     if ev.id != events.prefix(15).first?.id { Divider() }
@@ -232,7 +229,7 @@ struct SymptomsLogView: View {
                                         .font(.caption2).foregroundStyle(.red)
                                 }
                             }
-                            Text(df.string(from: ev.date)).font(.caption2).foregroundStyle(.secondary)
+                            Text(ev.date.kqFormatted(dateStyle: .medium, timeStyle: .short)).font(.caption2).foregroundStyle(.secondary)
                         }
                         Spacer()
                         Text(ev.severity.rawValue)

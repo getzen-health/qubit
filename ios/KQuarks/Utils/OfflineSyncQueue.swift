@@ -83,17 +83,23 @@ class OfflineSyncQueue: ObservableObject {
     }
 
     private func processSyncItem(_ item: PendingSyncItem, supabase: SupabaseService) async throws {
-        let payload = try JSONDecoder().decode([String: AnyCodable].self, from: item.payload)
-
+        let decoder = JSONDecoder()
         switch item.type {
-        case "food_log":
-            try await supabase.uploadFoodLog(payload)
-        case "water_log":
-            try await supabase.uploadWaterLog(payload)
-        case "manual_workout":
-            try await supabase.uploadManualWorkout(payload)
+        case "healthRecord":
+            let records = try decoder.decode([HealthRecordUpload].self, from: item.payload)
+            try await supabase.uploadHealthRecords(records)
+        case "dailySummary":
+            let summary = try decoder.decode(DailySummaryUpload.self, from: item.payload)
+            try await supabase.uploadDailySummary(summary)
+        case "sleepRecord":
+            let record = try decoder.decode(SleepRecordUpload.self, from: item.payload)
+            try await supabase.uploadSleepRecord(record)
+        case "workoutRecord":
+            let record = try decoder.decode(WorkoutRecordUpload.self, from: item.payload)
+            try await supabase.uploadWorkoutRecord(record)
         default:
-            throw NSError(domain: "OfflineSyncQueue", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown sync item type: \(item.type)"])
+            // Unknown type: discard without retrying so it doesn't block the queue
+            break
         }
     }
 
@@ -118,6 +124,10 @@ struct AnyEncodable: Encodable {
 
 struct AnyCodable: Codable {
     let value: Any
+
+    init(_ value: Any) {
+        self.value = value
+    }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()

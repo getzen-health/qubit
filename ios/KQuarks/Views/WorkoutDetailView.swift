@@ -361,56 +361,18 @@ struct WorkoutRouteMapView: View {
     private func loadRoute() async {
         isLoadingRoute = true
         defer { isLoadingRoute = false }
-
+        // Route loading via HealthKitService
         do {
-            let query = HKQuery.predicateForWorkout(with: workout.workoutActivityType)
-            let predicate = HKQuery.predicateForSamples(
-                withStart: workout.startDate,
-                end: workout.endDate,
-                options: .strictStartDate
-            )
-            let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [query, predicate])
-
-            let store = HKHealthStore()
-            let samples = try await store.samples(
-                matching: compound,
-                with: HKWorkoutRoute.self
-            )
-
-            if let workoutRoute = samples.first as? HKWorkoutRoute {
-                var coordinates: [CLLocationCoordinate2D] = []
-                var minLat = Double.infinity, maxLat = -Double.infinity
-                var minLon = Double.infinity, maxLon = -Double.infinity
-
-                try await workoutRoute.locations(between: workout.startDate, and: workout.endDate) { locations in
-                    if let locations = locations {
-                        for location in locations {
-                            let coord = location.coordinate
-                            coordinates.append(coord)
-                            minLat = min(minLat, coord.latitude)
-                            maxLat = max(maxLat, coord.latitude)
-                            minLon = min(minLon, coord.longitude)
-                            maxLon = max(maxLon, coord.longitude)
-                        }
-                    }
-                }
-
-                if !coordinates.isEmpty {
-                    route = coordinates
-
-                    let center = CLLocationCoordinate2D(
-                        latitude: (minLat + maxLat) / 2,
-                        longitude: (minLon + maxLon) / 2
-                    )
-                    let latSpan = maxLat - minLat + 0.01
-                    let lonSpan = maxLon - minLon + 0.01
-
-                    region = MKCoordinateRegion(
-                        center: center,
-                        span: MKCoordinateSpan(latitudeDelta: latSpan, longitudeDelta: lonSpan)
-                    )
-                }
-            }
+            let coordinates = try await HealthKitService.shared.fetchWorkoutRoute(for: workout)
+            guard !coordinates.isEmpty else { return }
+            route = coordinates
+            let lats = coordinates.map { $0.latitude }
+            let lons = coordinates.map { $0.longitude }
+            let minLat = lats.min() ?? 0, maxLat = lats.max() ?? 0
+            let minLon = lons.min() ?? 0, maxLon = lons.max() ?? 0
+            let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
+            region = MKCoordinateRegion(center: center,
+                span: MKCoordinateSpan(latitudeDelta: maxLat - minLat + 0.01, longitudeDelta: maxLon - minLon + 0.01))
         } catch {
             Logger.sync.error("Failed to load workout route: \(error.localizedDescription)")
         }

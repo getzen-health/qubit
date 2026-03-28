@@ -2,6 +2,7 @@ import ActivityKit
 import BackgroundTasks
 import Foundation
 
+#if !targetEnvironment(macCatalyst)
 @MainActor
 class LiveActivityManager: ObservableObject {
     static let shared = LiveActivityManager()
@@ -94,3 +95,4 @@ class LiveActivityManager: ObservableObject {
         }
     }
 }
+#endif

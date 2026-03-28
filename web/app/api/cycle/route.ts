@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 const VALID_FLOW_INTENSITIES = ['light', 'moderate', 'heavy'] as const
@@ -47,7 +48,7 @@ export const GET = createSecureApiHandler(
       .limit(6)
 
     if (error) {
-      console.error('Error fetching cycles:', error)
+      logger.error('Error fetching cycles:', error)
       return secureErrorResponse('Failed to fetch cycle data', 500)
     }
 
@@ -157,7 +158,7 @@ export const POST = createSecureApiHandler(
       .single()
 
     if (error) {
-      console.error('Error logging cycle:', error)
+      logger.error('Error logging cycle:', error)
       return secureErrorResponse('Failed to log cycle', 500)
     }
 

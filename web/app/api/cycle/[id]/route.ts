@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
@@ -71,7 +72,7 @@ export const PATCH = createSecureApiHandler(
       .single()
 
     if (error) {
-      console.error('Error updating cycle:', error)
+      apiLogger('Error updating cycle:', error)
       return secureErrorResponse('Failed to update cycle', 500)
     }
 

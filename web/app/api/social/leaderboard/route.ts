@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { z } from 'zod'
 
@@ -38,7 +39,7 @@ export const GET = createSecureApiHandler(
   const { data: profiles, error: profilesErr } = userIds.length
       ? await supabase.from('users').select('id, display_name, email').in('id', userIds) // error handled
       : { data: [], error: null }
-    if (profilesErr) console.error('users fetch error', profilesErr)
+    if (profilesErr) apiLogger('users fetch error', profilesErr)
 
     const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.id, p]))
 

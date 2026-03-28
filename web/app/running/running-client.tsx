@@ -187,7 +187,8 @@ export function RunningClient({ runs, vo2maxHistory }: RunningClientProps) {
   useEffect(() => {
     if (!latestVO2max) return
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    if (!supabase) return
+    supabase.auth.getUser().then(({ data: { user } }: Awaited<ReturnType<typeof supabase.auth.getUser>>) => {
       if (!user) return
       const today = new Date().toISOString().split('T')[0]
       supabase.from('vo2max_estimates').upsert(

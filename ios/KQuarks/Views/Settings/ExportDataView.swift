@@ -82,7 +82,7 @@ struct ExportDataView: View {
         .toolbarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingShareSheet, onDismiss: cleanupExportFile) {
             if let url = exportURL {
-                ShareSheet(url: url)
+                ShareSheet(items: [url])
             }
         }
     }
@@ -122,9 +122,7 @@ struct ExportDataView: View {
                 )
                 let jsonData = try await supabase.exportAllUserData(selection: selection)
 
-                let df = DateFormatter()
-                df.dateFormat = "yyyy-MM-dd"
-                let filename = "kquarks-export-\(df.string(from: Date())).json"
+                let filename = "kquarks-export-\(Date().kqFormat("yyyy-MM-dd")).json"
                 let fileURL = FileManager.default
                     .urls(for: .documentDirectory, in: .userDomainMask)[0]
                     .appendingPathComponent(filename)
@@ -149,18 +147,6 @@ struct ExportDataView: View {
         try? FileManager.default.removeItem(at: url)
         exportURL = nil
     }
-}
-
-// MARK: - Share Sheet
-
-struct ShareSheet: UIViewControllerRepresentable {
-    let url: URL
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {

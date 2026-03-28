@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 export const DELETE = createSecureApiHandler(
@@ -13,7 +14,7 @@ export const DELETE = createSecureApiHandler(
     if (error || !data) return secureErrorResponse('Not found', 404)
     await supabase.storage.from('progress-photos').remove([data.storage_path])
     const { error: photoDelErr } = await supabase.from('progress_photos').delete().eq('id', id)
-    if (photoDelErr) console.error('progress_photos delete error', photoDelErr)
+    if (photoDelErr) apiLogger('progress_photos delete error', photoDelErr)
     return secureJsonResponse({ success: true })
   }
 )

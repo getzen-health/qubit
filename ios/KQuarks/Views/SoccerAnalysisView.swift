@@ -200,8 +200,6 @@ struct SoccerAnalysisView: View {
     // MARK: - Session Table
 
     private var sessionTableCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)
@@ -219,7 +217,7 @@ struct SoccerAnalysisView: View {
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date)).font(.caption).frame(width: 60, alignment: .leading)
+                        Text(s.date.kqFormat("MMM d")).font(.caption).frame(width: 60, alignment: .leading)
                         Text(String(format: "%.0f", s.durationMins)).font(.caption.monospacedDigit()).frame(width: 38, alignment: .trailing)
                         Text(String(format: "%.0f", s.kcal)).font(.caption.monospacedDigit()).foregroundStyle(.orange).frame(width: 45, alignment: .trailing)
                         Text(s.distance.map { String(format: "%.1f", $0) } ?? "—").font(.caption.monospacedDigit()).foregroundStyle(.green).frame(width: 38, alignment: .trailing)
@@ -268,7 +266,6 @@ struct SoccerAnalysisView: View {
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let kmUnit = HKUnit.meterUnit(with: .kilo)
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [
             HKQuery.predicateForSamples(withStart: oneYearAgo, end: Date()),
@@ -289,7 +286,7 @@ struct SoccerAnalysisView: View {
         var mMap: [String: (Date, Int, Double)] = [:]
 
         for w in workouts {
-            let key = df.string(from: w.startDate)
+            let key = w.startDate.kqFormat("yyyy-MM")
             let ms = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
             var m = mMap[key] ?? (ms, 0, 0)
             m.1 += 1

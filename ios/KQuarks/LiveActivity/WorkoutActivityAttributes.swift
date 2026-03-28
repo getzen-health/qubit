@@ -1,6 +1,7 @@
 import ActivityKit
 import Foundation
 
+#if !targetEnvironment(macCatalyst)
 struct WorkoutActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         var elapsedSeconds: Int
@@ -12,3 +13,4 @@ struct WorkoutActivityAttributes: ActivityAttributes {
     var workoutType: String // e.g. "Running"
     var startTime: Date
 }
+#endif

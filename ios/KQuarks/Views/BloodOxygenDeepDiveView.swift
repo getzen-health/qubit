@@ -186,8 +186,6 @@ struct BloodOxygenDeepDiveView: View {
     // MARK: - Daily Log Card
 
     private var dailyLogCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Daily Summary").font(.headline)
@@ -205,7 +203,7 @@ struct BloodOxygenDeepDiveView: View {
                 ForEach(dailyData.suffix(14).reversed()) { d in
                     Divider()
                     HStack {
-                        Text(df.string(from: d.date)).font(.caption).frame(width: 65, alignment: .leading)
+                        Text(d.date.kqFormat("MMM d")).font(.caption).frame(width: 65, alignment: .leading)
                         Text(String(format: "%.0f%%", d.avgPct)).font(.caption.monospacedDigit()).foregroundStyle(d.status.color).frame(width: 50, alignment: .trailing)
                         Text(String(format: "%.0f%%", d.minPct)).font(.caption.monospacedDigit()).foregroundStyle(d.minPct < 92 ? .red : .secondary).frame(width: 50, alignment: .trailing)
                         Text("\(d.readingCount)").font(.caption.monospacedDigit()).foregroundStyle(.secondary).frame(width: 55, alignment: .trailing)

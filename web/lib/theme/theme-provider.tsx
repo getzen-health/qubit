@@ -22,6 +22,7 @@ import {
 } from './theme-config'
 import { createClient } from '@/lib/supabase/client'
 import { syncThemeFromServer, saveThemeToServer } from '@/lib/theme'
+import type { AuthChangeEvent, Session, UserResponse } from '@supabase/auth-js'
 
 interface ThemeContextValue {
   theme: ThemeConfig
@@ -74,10 +75,11 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
   // If the server value differs from localStorage, apply and persist it locally.
   useEffect(() => {
     const supabase = createClient()
+    if (!supabase) return
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event: AuthChangeEvent, session: Session | null) => {
       if (!session?.user) return
       try {
         const serverMode = await syncThemeFromServer(supabase, session.user.id)
@@ -136,7 +138,8 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
     setTheme((prev) => ({ ...prev, appearanceMode: mode }))
     // Fire-and-forget save to Supabase
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
+    if (!supabase) return
+    supabase.auth.getUser().then(({ data }: UserResponse) => {
       if (data.user) {
         saveThemeToServer(supabase, data.user.id, mode).catch(() => {})
       }

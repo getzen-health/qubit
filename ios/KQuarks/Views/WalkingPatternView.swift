@@ -219,13 +219,12 @@ struct WalkingPatternView: View {
         var dowMap: [Int: (Double, Int)] = [:]
         var hourMap: [Int: (Double, Int)] = [:]
         var monthMap: [String: (Date, Double, Int)] = [:]
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         for w in workouts {
             let km = w.statistics(for: distType)?.sumQuantity()?.doubleValue(for: kmUnit) ?? 0
             let dow = cal.component(.weekday, from: w.startDate)  // 1=Sun
             let hour = cal.component(.hour, from: w.startDate)
-            let monthKey = df.string(from: w.startDate)
+            let monthKey = w.startDate.kqFormat("yyyy-MM")
             let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
 
             var d = dowMap[dow] ?? (0, 0)

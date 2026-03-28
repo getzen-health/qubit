@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { createSecureApiHandler } from '@/lib/security'
 
@@ -111,7 +112,7 @@ async function fetchStravaActivities(
 
   if (!response.ok) {
     const error = await response.text()
-    console.error('Strava API error:', error)
+    apiLogger('Strava API error:', error)
     throw new Error(`Strava API error: ${response.status}`)
   }
 
@@ -143,7 +144,7 @@ export const POST = createSecureApiHandler(
     try {
       accessToken = decryptToken(integration.access_token)
     } catch (error) {
-      console.error('Token decryption failed:', error)
+      apiLogger('Token decryption failed:', error)
       return NextResponse.json(
         { error: 'Failed to decrypt Strava token' },
         { status: 500 }
@@ -168,7 +169,7 @@ export const POST = createSecureApiHandler(
 
         accessToken = refreshedToken.access_token
       } catch (error) {
-        console.error('Token refresh failed:', error)
+        apiLogger('Token refresh failed:', error)
         return NextResponse.json(
           { error: 'Failed to refresh Strava token' },
           { status: 401 }
@@ -250,7 +251,7 @@ export const POST = createSecureApiHandler(
       if (!upsertError) {
         syncedCount++
       } else {
-        console.error(`Failed to sync activity ${activity.id}:`, upsertError)
+        apiLogger(`Failed to sync activity ${activity.id}:`, upsertError)
       }
     }
 

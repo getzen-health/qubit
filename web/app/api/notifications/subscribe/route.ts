@@ -2,11 +2,17 @@ import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import webpush from 'web-push'
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-)
+export const dynamic = 'force-dynamic'
+
+// Guard all three VAPID env vars — any missing one would throw at runtime
+const vapidSubject = process.env.VAPID_SUBJECT
+const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
+
+const pushConfigured = !!(vapidSubject && vapidPublicKey && vapidPrivateKey)
+if (pushConfigured) {
+  webpush.setVapidDetails(vapidSubject!, vapidPublicKey!, vapidPrivateKey!)
+}
 
 const subscribeBodySchema = z.object({
   endpoint: z.string().url(),
@@ -24,6 +30,7 @@ const unsubscribeBodySchema = z.object({
 export const POST = createSecureApiHandler(
   { rateLimit: 'default', requireAuth: true, bodySchema: subscribeBodySchema },
   async (req, { user, body, supabase }) => {
+    if (!pushConfigured) return secureErrorResponse('Push notifications not configured', 503)
     const { endpoint, keys, userAgent } = body as z.infer<typeof subscribeBodySchema>
 
     const { error } = await supabase

@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
@@ -40,7 +41,7 @@ export const POST = createSecureApiHandler(
       event_type: 'frozen',
       event_date: today,
     })
-    if (eventErr) console.error('streak_events insert error', eventErr)
+    if (eventErr) apiLogger('streak_events insert error', eventErr)
 
     return secureJsonResponse({
       success: true,

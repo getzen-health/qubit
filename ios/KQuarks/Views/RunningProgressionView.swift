@@ -127,8 +127,6 @@ struct RunningProgressionView: View {
         let minPace = validRuns.map(\.paceSecsPerKm).min() ?? 200
         let maxPace = validRuns.map(\.paceSecsPerKm).max() ?? 500
 
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return AnyView(VStack(alignment: .leading, spacing: 8) {
             Text("Pace Progression").font(.headline).padding(.horizontal, 4)
@@ -441,9 +439,7 @@ struct RunningProgressionView: View {
     // MARK: - Helpers
 
     private func shortDate(_ date: Date) -> String {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
-        return df.string(from: date)
+        return date.kqFormat("MMM d")
     }
 }
 

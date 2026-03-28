@@ -333,10 +333,9 @@ struct VO2MaxTrendView: View {
 
         // Build monthly averages
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
         var mMap: [String: (Date, [Double])] = [:]
         for r in readings {
-            let key = df.string(from: r.date)
+            let key = r.date.kqFormat("yyyy-MM")
             let ms = cal.date(from: cal.dateComponents([.year, .month], from: r.date)) ?? r.date
             var cur = mMap[key] ?? (ms, [])
             cur.1.append(r.value)

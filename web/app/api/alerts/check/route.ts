@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
 const METRIC_LABELS: Record<string, string> = {
@@ -31,7 +32,7 @@ export const POST = createSecureApiHandler(
   async (_req, { user, supabase }) => {
     // Fetch user's enabled rules
     const { data: rules, error: rulesErr } = await supabase.from('alert_rules').select('*').eq('user_id', user!.id).eq('enabled', true)
-    if (rulesErr) console.error('alert_rules fetch error', rulesErr)
+    if (rulesErr) apiLogger('alert_rules fetch error', rulesErr)
     if (!rules || rules.length === 0) return secureJsonResponse({ triggered: [] })
 
     // Fetch recent metrics (last 24h)
@@ -40,7 +41,7 @@ export const POST = createSecureApiHandler(
       .select('metric_type, value')
       .eq('user_id', user!.id)
       .gte('recorded_at', since)
-    if (metricsErr) console.error('metrics fetch error', metricsErr)
+    if (metricsErr) apiLogger('metrics fetch error', metricsErr)
 
     // Get latest value per metric type
     const latestMetrics: Record<string, number> = {}
@@ -71,13 +72,13 @@ export const POST = createSecureApiHandler(
         message: rule.message,
         severity: rule.severity,
       })
-      if (historyErr) console.error('alert_history insert error', historyErr)
+      if (historyErr) apiLogger('alert_history insert error', historyErr)
 
       const { error: updateErr } = await supabase.from('alert_rules').update({
         last_triggered_at: new Date().toISOString(),
         trigger_count: (rule.trigger_count ?? 0) + 1,
       }).eq('id', rule.id)
-      if (updateErr) console.error('alert_rules update error', updateErr)
+      if (updateErr) apiLogger('alert_rules update error', updateErr)
 
       triggered.push({ rule_id: rule.id, name: rule.name, message: rule.message, severity: rule.severity })
     }

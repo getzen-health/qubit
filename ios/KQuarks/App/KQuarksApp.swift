@@ -114,7 +114,7 @@ class AppState {
             let user = try await supabaseService.fetchCurrentUser()
             self.user = user
             self.isAuthenticated = true
-            GoalService.shared.apply(from: user)
+            if let user { GoalService.shared.apply(from: user) }
         } catch {
         }
 
@@ -133,7 +133,7 @@ class AppState {
                 let user = try await supabaseService.fetchCurrentUser()
                 self.user = user
                 self.isAuthenticated = true
-                GoalService.shared.apply(from: user)
+                if let user { GoalService.shared.apply(from: user) }
             } catch {
             }
         case .signedOut:

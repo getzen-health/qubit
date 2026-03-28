@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -7,6 +8,21 @@ import Anthropic from '@anthropic-ai/sdk'
 import { compileHealthContext, formatContextForClaude } from '@/lib/health-context'
 
 type CoachMode = 'chat' | 'morning_checkin' | 'weekly_review' | 'goal_coach'
+
+const bodySchema = z.object({
+  message: z.string().max(2000).optional(),
+  sessionId: z.string().uuid().optional(),
+  mode: z.enum(['chat', 'morning_checkin', 'weekly_review', 'goal_coach']).default('chat'),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().min(1).max(5000),
+      })
+    )
+    .max(50)
+    .optional(),
+})
 
 const BASE_SYSTEM_PROMPT = (formattedContext: string) =>
   `You are a warm, science-literate personal health coach for KQuarks. You have access to the user's real health data shown below. Always reference specific numbers when giving advice. Distinguish between data-backed insights and general guidance. Flag when data suggests seeing a doctor.
@@ -34,20 +50,9 @@ const MODE_TRIGGER_MESSAGES: Record<'morning_checkin' | 'weekly_review', string>
 }
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'aiChat', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
-    const {
-      message,
-      sessionId,
-      mode = 'chat' as CoachMode,
-      messages: clientMessages,
-    }: {
-      message?: string
-      sessionId?: string
-      mode?: CoachMode
-      messages?: { role: 'user' | 'assistant'; content: string }[]
-    } = body
+  { rateLimit: 'aiChat', requireAuth: true, bodySchema },
+  async (_request, { user, body, supabase }) => {
+    const { message, sessionId, mode, messages: clientMessages } = body as z.infer<typeof bodySchema>
 
     const isAutoMode = mode === 'morning_checkin' || mode === 'weekly_review'
     if (!isAutoMode && !message?.trim()) {

@@ -37,8 +37,12 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Check onboarding status, streaks, and XP in parallel
-  const [{ data: profile }, { data: streaks }, { data: stats }] = await Promise.all([
+  // Fetch dashboard data in parallel to avoid sequential N+1 queries
+  const [
+    { data: profile },
+    { data: streaks },
+    { data: stats },
+  ] = await Promise.all([
     supabase
       .from('user_profiles')
       .select('onboarding_completed')

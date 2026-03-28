@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
@@ -62,14 +63,14 @@ export const DELETE = createSecureApiHandler(
     for (const table of USER_SCOPED_TABLES) {
       const { error } = await supabaseAdmin.from(table).delete().eq('user_id', userId)
       if (error) {
-        console.error(`Failed to delete from ${table}:`, error instanceof Error ? error.message : 'Unknown error')
+        apiLogger(`Failed to delete from ${table}:`, error instanceof Error ? error.message : 'Unknown error')
         // Continue — the auth.users cascade will clean up any remainder
       }
     }
 
     const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(userId)
     if (deleteUserError) {
-      console.error('Failed to delete auth user:', deleteUserError instanceof Error ? deleteUserError.message : 'Unknown error')
+      apiLogger('Failed to delete auth user:', deleteUserError instanceof Error ? deleteUserError.message : 'Unknown error')
       return secureErrorResponse('Failed to delete account', 500)
     }
 

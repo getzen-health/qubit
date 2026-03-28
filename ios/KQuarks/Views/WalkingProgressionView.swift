@@ -225,9 +225,7 @@ struct WalkingProgressionView: View {
     }
 
     private func monthName(_ date: Date) -> String {
-        let df = DateFormatter()
-        df.dateFormat = "MMMM"
-        return df.string(from: date)
+        return date.kqFormat("MMMM")
     }
 
     // MARK: - Load
@@ -260,14 +258,13 @@ struct WalkingProgressionView: View {
 
         let kmUnit = HKUnit.meterUnit(with: .kilo)
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         var monthMap: [String: (Date, Double, Double, Int)] = [:]  // key → (monthStart, totalKm, totalPaceSum, count)
 
         for w in workouts {
             let km = w.statistics(for: distType)?.sumQuantity()?.doubleValue(for: kmUnit) ?? 0
             let durationMins = w.duration / 60
-            let key = df.string(from: w.startDate)
+            let key = w.startDate.kqFormat("yyyy-MM")
             let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
             var cur = monthMap[key] ?? (monthStart, 0, 0, 0)
             cur.1 += km

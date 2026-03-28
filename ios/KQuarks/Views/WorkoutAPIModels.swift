@@ -12,3 +12,11 @@ struct WorkoutAPIEntry: Codable {
 struct WorkoutListResponse: Codable {
     let data: [WorkoutAPIEntry]
 }
+
+struct WorkoutEntry: Identifiable {
+    let id: UUID
+    let type: String
+    let durationMinutes: Int
+    let calories: Int?
+    let date: Date
+}

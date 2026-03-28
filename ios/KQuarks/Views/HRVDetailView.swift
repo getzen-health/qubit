@@ -134,8 +134,11 @@ struct HRVDetailView: View {
                 .font(.headline)
                 .padding(.horizontal, 4)
 
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd"
+            let df: DateFormatter = {
+                let f = DateFormatter()
+                f.dateFormat = "yyyy-MM-dd"
+                return f
+            }()
 
             Chart {
                 if let b = baseline {

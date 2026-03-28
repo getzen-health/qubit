@@ -179,8 +179,6 @@ struct DanceAnalysisView: View {
     }
 
     private var sessionTableCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)
@@ -198,7 +196,7 @@ struct DanceAnalysisView: View {
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date)).font(.caption).frame(width: 60, alignment: .leading)
+                        Text(s.date.kqFormat("MMM d")).font(.caption).frame(width: 60, alignment: .leading)
                         Text(s.typeName).font(.caption).foregroundStyle(s.typeColor).frame(minWidth: 55, alignment: .leading)
                         Spacer()
                         Text(String(format: "%.0f", s.durationMins)).font(.caption.monospacedDigit()).frame(width: 38, alignment: .trailing)
@@ -241,7 +239,6 @@ struct DanceAnalysisView: View {
         let kcalUnit = HKUnit.kilocalorie()
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         var allSessions: [DanceSession] = []
         var mMap: [String: (Date, Int, Double)] = [:]
@@ -259,7 +256,7 @@ struct DanceAnalysisView: View {
                 healthStore.execute(q)
             }
             for w in workouts {
-                let key = df.string(from: w.startDate)
+                let key = w.startDate.kqFormat("yyyy-MM")
                 let ms = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
                 var m = mMap[key] ?? (ms, 0, 0)
                 m.1 += 1; m.2 += w.duration / 60

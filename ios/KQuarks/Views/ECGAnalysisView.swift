@@ -281,9 +281,6 @@ struct ECGAnalysisView: View {
             Text("Recent Recordings")
                 .font(.headline)
 
-            let df = DateFormatter()
-            df.dateStyle = .medium
-            df.timeStyle = .short
 
             ForEach(records.prefix(10).reversed()) { r in
                 HStack(spacing: 12) {
@@ -295,7 +292,7 @@ struct ECGAnalysisView: View {
                         Text(r.classification.rawValue)
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(r.classification.color)
-                        Text(df.string(from: r.date))
+                        Text(r.date.kqFormat("yyyy-MM"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -441,10 +438,12 @@ struct ECGAnalysisView: View {
 
         // Build monthly buckets
         var monthMap: [String: (Int, Int, Int)] = [:]  // key: "YYYY-MM" → (sinus, afib, inconclusive)
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "yyyy-MM"
+        monthFormatter.locale = Locale(identifier: "en_US_POSIX")
 
         for r in ecgRecords {
-            let key = df.string(from: r.date)
+            let key = monthFormatter.string(from: r.date)
             var cur = monthMap[key] ?? (0, 0, 0)
             switch r.classification {
             case .sinusRhythm:   cur.0 += 1
@@ -454,9 +453,8 @@ struct ECGAnalysisView: View {
             monthMap[key] = cur
         }
 
-        let dfFull = DateFormatter(); dfFull.dateFormat = "yyyy-MM"
         monthBuckets = monthMap.compactMap { key, val in
-            guard let date = dfFull.date(from: key) else { return nil }
+            guard let date = monthFormatter.date(from: key) else { return nil }
             return MonthBucket(id: key, monthStart: date, sinusCount: val.0, afibCount: val.1, inconclusiveCount: val.2)
         }.sorted { $0.monthStart < $1.monthStart }
     }
