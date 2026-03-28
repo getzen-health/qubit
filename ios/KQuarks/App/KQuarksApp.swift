@@ -63,6 +63,8 @@ struct KQuarksApp: App {
         #endif
     }
 
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -89,6 +91,14 @@ struct KQuarksApp: App {
                 }
                 .onOpenURL { url in
                     DeepLinkHandler.shared.handleDeepLink(url)
+                }
+                .fullScreenCover(isPresented: Binding(
+                    get: { !hasCompletedOnboarding },
+                    set: { _ in }
+                )) {
+                    OnboardingView()
+                        .environment(appState)
+                        .environment(themeManager)
                 }
         }
     }
