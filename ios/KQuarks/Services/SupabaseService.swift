@@ -1773,7 +1773,7 @@ struct ExportMealEntry: Codable {
 
 // MARK: - Upload Models
 
-struct HealthRecordUpload: Encodable {
+struct HealthRecordUpload: Codable {
     let userId: UUID
     let type: String
     let value: Double
@@ -1809,7 +1809,7 @@ struct HealthRecordUpload: Encodable {
     }
 }
 
-struct DailySummaryUpload: Encodable {
+struct DailySummaryUpload: Codable {
     let userId: UUID
     let date: Date
     let steps: Int
@@ -1847,7 +1847,7 @@ struct DailySummaryUpload: Encodable {
     }
 }
 
-struct SleepRecordUpload: Encodable {
+struct SleepRecordUpload: Codable {
     let userId: UUID
     let startTime: Date
     let endTime: Date
@@ -1871,7 +1871,7 @@ struct SleepRecordUpload: Encodable {
     }
 }
 
-struct WorkoutRecordUpload: Encodable {
+struct WorkoutRecordUpload: Codable {
     let userId: UUID
     let workoutType: String
     let startTime: Date

@@ -1,7 +1,6 @@
 import Foundation
 import HealthKit
 import CoreLocation
-import CoreLocation
 
 /**
  HealthKit Integration Service
@@ -983,18 +982,29 @@ class HealthKitService {
         let predicate = HKQuery.predicateForObjects(from: workout)
 
         return try await withCheckedThrowingContinuation { continuation in
+            var didResume = false
             let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, error in
-                if let error = error { continuation.resume(throwing: error); return }
+                if let error = error {
+                    guard !didResume else { return }; didResume = true
+                    continuation.resume(throwing: error); return
+                }
                 guard let routes = samples as? [HKWorkoutRoute], let route = routes.first else {
+                    guard !didResume else { return }; didResume = true
                     continuation.resume(returning: []); return
                 }
                 var allCoordinates: [CLLocationCoordinate2D] = []
                 let routeQuery = HKWorkoutRouteQuery(route: route) { _, locations, done, error in
-                    if let error = error { return }
+                    if let error = error {
+                        guard !didResume else { return }; didResume = true
+                        continuation.resume(throwing: error); return
+                    }
                     if let locations = locations {
                         allCoordinates.append(contentsOf: locations.map { $0.coordinate })
                     }
-                    if done { continuation.resume(returning: allCoordinates) }
+                    if done {
+                        guard !didResume else { return }; didResume = true
+                        continuation.resume(returning: allCoordinates)
+                    }
                 }
                 self.healthStore.execute(routeQuery)
             }

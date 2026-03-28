@@ -83,9 +83,24 @@ class OfflineSyncQueue: ObservableObject {
     }
 
     private func processSyncItem(_ item: PendingSyncItem, supabase: SupabaseService) async throws {
-        // TODO: implement when SupabaseService adds these methods
-        throw NSError(domain: "OfflineSyncQueue", code: -1,
-            userInfo: [NSLocalizedDescriptionKey: "Sync method '\(item.type)' not yet implemented"])
+        let decoder = JSONDecoder()
+        switch item.type {
+        case "healthRecord":
+            let records = try decoder.decode([HealthRecordUpload].self, from: item.payload)
+            try await supabase.uploadHealthRecords(records)
+        case "dailySummary":
+            let summary = try decoder.decode(DailySummaryUpload.self, from: item.payload)
+            try await supabase.uploadDailySummary(summary)
+        case "sleepRecord":
+            let record = try decoder.decode(SleepRecordUpload.self, from: item.payload)
+            try await supabase.uploadSleepRecord(record)
+        case "workoutRecord":
+            let record = try decoder.decode(WorkoutRecordUpload.self, from: item.payload)
+            try await supabase.uploadWorkoutRecord(record)
+        default:
+            // Unknown type: discard without retrying so it doesn't block the queue
+            break
+        }
     }
 
     private func updatePendingCount() {
