@@ -88,6 +88,14 @@ export default function RootLayout({
   <a href="/challenges" className="ml-auto px-3 py-1.5 rounded-lg hover:bg-surface-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm font-medium" title="Challenges">🏆 Challenges</a>
 </nav>
 <div id="main-content">{children}</div>
+<footer className="border-t border-border mt-16 py-6 px-4">
+  <div className="max-w-3xl mx-auto flex flex-wrap gap-x-6 gap-y-2 justify-center text-sm text-muted-foreground">
+    <a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+    <a href="/terms" className="hover:text-foreground transition-colors">Terms of Service</a>
+    <a href="/support" className="hover:text-foreground transition-colors">Support</a>
+    <span className="hidden sm:inline">© {new Date().getFullYear()} KQuarks</span>
+  </div>
+</footer>
         </WidgetProvider>
         <Analytics />
       </body>
