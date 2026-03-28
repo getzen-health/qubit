@@ -6,9 +6,7 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if !appState.hasCompletedOnboarding {
-                OnboardingView()
-            } else if !appState.isAuthenticated {
+            if !appState.isAuthenticated {
                 AuthView()
             } else if biometric.isLocked {
                 BiometricLockView()
