@@ -1,4 +1,12 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postGlucoseSchema = z.object({
+  value_mmol: z.number().min(0.1).max(30),
+  context: z.string().max(50).optional(),
+  notes: z.string().max(1000).optional(),
+  logged_at: z.string().datetime({ offset: true }).optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -20,13 +28,9 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const { value_mmol, context, notes } = await request.json()
-
-    if (!value_mmol || value_mmol <= 0 || value_mmol > 30) {
-      return secureErrorResponse('Invalid glucose value (must be 0.1–30 mmol/L)', 400)
-    }
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postGlucoseSchema },
+  async (_request, { user, supabase, body }) => {
+    const { value_mmol, context, notes } = body as z.infer<typeof postGlucoseSchema>
 
     const { data, error } = await supabase
       .from('blood_glucose_entries')
