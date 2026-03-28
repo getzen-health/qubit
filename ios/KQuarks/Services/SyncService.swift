@@ -56,6 +56,18 @@ class SyncService {
         throw lastError ?? NSError(domain: "SyncService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown sync error"])
     }
 
+    // MARK: - Batch Upsert Helper
+
+    /// Uploads items to a Supabase table in chunks of 500 to avoid request-size timeouts.
+    private func batchUpsert<T: Encodable>(_ items: [T], table: String) async throws {
+        guard !items.isEmpty else { return }
+        let chunkSize = 500
+        for i in stride(from: 0, to: items.count, by: chunkSize) {
+            let chunk = Array(items[i..<min(i + chunkSize, items.count)])
+            try await supabase.client.from(table).upsert(chunk).execute()
+        }
+    }
+
     // MARK: - Full Sync
 
     func performFullSync() async {
@@ -600,26 +612,12 @@ class SyncService {
             }
         }
 
-        // Batch upload
+        // Batch upload in 500-record chunks
         if !records.isEmpty {
-            // Split into batches of 100
-            let batches = stride(from: 0, to: records.count, by: 100).map {
-                Array(records[$0..<min($0 + 100, records.count)])
-            }
-
-            var failedBatches = 0
-            for (index, batch) in batches.enumerated() {
-                do {
-                    try await withRetry { try await self.supabase.uploadHealthRecords(batch) }
-                } catch {
-                    // Log and skip failed batches rather than aborting entire sync
-                    // This prevents 1 bad record from losing all subsequent data
-                    failedBatches += 1
-                    NSLog("[SyncService] Batch %d/%d failed (skipping): %@", index + 1, batches.count, error.localizedDescription)
-                }
-            }
-            if failedBatches > 0 {
-                NSLog("[SyncService] Health records sync: %d/%d batches failed", failedBatches, batches.count)
+            do {
+                try await withRetry { try await self.batchUpsert(records, table: "health_records") }
+            } catch {
+                NSLog("[SyncService] Health records batch upload failed: %@", error.localizedDescription)
             }
         }
     }
@@ -792,7 +790,7 @@ class SyncService {
         }
         guard !records.isEmpty else { return }
         do {
-            try await withRetry { try await self.supabase.uploadECGRecords(records) }
+            try await withRetry { try await self.batchUpsert(records, table: "ecg_records") }
         } catch {
             NSLog("[KQuarks] uploadECGRecords failed: %@", error.localizedDescription)
         }
@@ -848,7 +846,7 @@ class SyncService {
                 d = calendar.date(byAdding: .day, value: 1, to: d) ?? Date()
             }
 
-            let total = Double(allDates.count)
+            var dailyUploads: [DailySummaryUpload] = []
             for (i, dayStart) in allDates.enumerated() {
                 // Skip days with no data (reduces unnecessary upserts)
                 let daySteps = Int(steps[dayStart] ?? 0)
@@ -862,7 +860,7 @@ class SyncService {
                 let dayRhr: Int? = rhr[dayStart].map { Int($0) }
                 let dayHrv: Double? = hrv[dayStart]
 
-                let upload = DailySummaryUpload(
+                dailyUploads.append(DailySummaryUpload(
                     userId: userId,
                     date: dayStart,
                     steps: daySteps,
@@ -879,14 +877,18 @@ class SyncService {
                     strainScore: nil,
                     weightKg: nil,
                     bodyFatPercent: nil
-                )
-                try await withRetry { try await self.supabase.uploadDailySummary(upload) }
-                let progress = 0.45 + 0.35 * Double(i + 1) / total
-                historicalSyncProgress = progress
+                ))
+                historicalSyncProgress = 0.45 + 0.20 * Double(i + 1) / Double(allDates.count)
             }
+
+            if !dailyUploads.isEmpty {
+                try await withRetry { try await self.batchUpsert(dailyUploads, table: "daily_summaries") }
+            }
+            historicalSyncProgress = 0.65
 
             // Sync historical workouts
             let workouts = try await healthKit.fetchWorkouts(from: startDate, to: endDate)
+            var workoutUploads: [WorkoutRecordUpload] = []
             for workout in workouts {
                 var avgHRValue: Double?
                 do { avgHRValue = try await healthKit.fetchAverageHeartRate(during: workout) } catch { avgHRValue = nil }
@@ -905,7 +907,7 @@ class SyncService {
                     guard let d = distMeters, d > 100, workout.duration > 0 else { return nil }
                     return (workout.duration / d) * 1000
                 }()
-                let upload = WorkoutRecordUpload(
+                workoutUploads.append(WorkoutRecordUpload(
                     userId: userId,
                     workoutType: workout.workoutActivityType.name,
                     startTime: workout.startDate,
@@ -919,16 +921,20 @@ class SyncService {
                     elevationGainMeters: elevationGain,
                     avgPacePerKm: avgPacePerKm,
                     source: workout.sourceRevision.source.name
-                )
+                ))
+            }
+            if !workoutUploads.isEmpty {
                 do {
-                    try await withRetry { try await self.supabase.uploadWorkoutRecord(upload) }
+                    try await withRetry { try await self.batchUpsert(workoutUploads, table: "workout_records") }
                 } catch {
-                    Logger.sync.error("Failed to upload historical workout record: \(error.localizedDescription)")
+                    Logger.sync.error("Failed to batch upload historical workout records: \(error.localizedDescription)")
                 }
             }
+            historicalSyncProgress = 0.85
 
             // Sync historical sleep sessions
             let sleepSessions = groupSleepSamples(sleepSamples)
+            var sleepUploads: [SleepRecordUpload] = []
             for session in sleepSessions {
                 guard let first = session.first, let last = session.last else { continue }
                 var awake = 0, rem = 0, core = 0, deep = 0
@@ -944,7 +950,7 @@ class SyncService {
                     }
                 }
                 let totalMin = Int(last.endDate.timeIntervalSince(first.startDate) / 60)
-                let upload = SleepRecordUpload(
+                sleepUploads.append(SleepRecordUpload(
                     userId: userId,
                     startTime: first.startDate,
                     endTime: last.endDate,
@@ -954,11 +960,13 @@ class SyncService {
                     coreMinutes: core,
                     deepMinutes: deep,
                     source: first.sourceRevision.source.name
-                )
+                ))
+            }
+            if !sleepUploads.isEmpty {
                 do {
-                    try await withRetry { try await self.supabase.uploadSleepRecord(upload) }
+                    try await withRetry { try await self.batchUpsert(sleepUploads, table: "sleep_records") }
                 } catch {
-                    Logger.sync.error("Failed to upload historical sleep record: \(error.localizedDescription)")
+                    Logger.sync.error("Failed to batch upload historical sleep records: \(error.localizedDescription)")
                 }
             }
 
