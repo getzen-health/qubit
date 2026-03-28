@@ -3,11 +3,15 @@ import SwiftUI
 struct InsightsView: View {
     @State private var insights: [InsightItem] = []
     @State private var isLoading = true
+    @State private var showPaywall = false
+    @State private var subscriptionService = SubscriptionService.shared
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                if isLoading {
+                if !subscriptionService.isPro {
+                    InsightsProTeaserView(showPaywall: $showPaywall)
+                } else if isLoading {
                     ProgressView()
                         .padding(.top, 100)
                 } else if insights.isEmpty {
@@ -54,8 +58,10 @@ struct InsightsView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        Task {
-                            await generateInsights()
+                        if subscriptionService.isPro {
+                            Task { await generateInsights() }
+                        } else {
+                            showPaywall = true
                         }
                     } label: {
                         Image(systemName: "sparkles")
@@ -63,10 +69,17 @@ struct InsightsView: View {
                 }
             }
             .task {
-                await loadInsights()
+                if subscriptionService.isPro {
+                    await loadInsights()
+                }
             }
             .refreshable {
-                await loadInsights()
+                if subscriptionService.isPro {
+                    await loadInsights()
+                }
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
             }
         }
     }
@@ -106,6 +119,49 @@ struct InsightsView: View {
             }
         }
         isLoading = false
+    }
+}
+
+// MARK: - Pro Teaser (non-Pro users)
+
+struct InsightsProTeaserView: View {
+    @Binding var showPaywall: Bool
+
+    var body: some View {
+        VStack(spacing: 24) {
+            // Blurred sample insight card
+            InsightCard(insight: InsightItem.samples[0])
+                .blur(radius: 6)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color(.systemBackground).opacity(0.4))
+                )
+                .allowsHitTesting(false)
+
+            VStack(spacing: 12) {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 40))
+                    .foregroundStyle(.yellow)
+
+                Text("AI Insights are a Pro feature")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+
+                Text("Upgrade to KQuarks Pro for daily AI-powered health insights, trend analysis, and more.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+
+                Button("Unlock with Pro") {
+                    showPaywall = true
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            }
+        }
+        .padding(.top, 32)
+        .padding(.horizontal)
     }
 }
 

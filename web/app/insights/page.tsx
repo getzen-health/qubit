@@ -6,6 +6,8 @@ import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw, Smil
 import { createClient } from '@/lib/supabase/client'
 import type { UserResponse } from '@supabase/auth-js'
 import { BottomNav } from '@/components/bottom-nav'
+import { useIsPro } from '@/lib/subscription'
+import { PaywallBanner } from '@/components/paywall-banner'
 
 interface Insight {
   id: string
@@ -43,6 +45,7 @@ export default function InsightsPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [cooldownSecs, setCooldownSecs] = useState(0)
   const supabase = createClient()
+  const isPro = useIsPro()
 
   const fetchInsights = useCallback(async (userId: string) => {
     if (!supabase) return
@@ -219,7 +222,7 @@ export default function InsightsPage() {
           </div>
           <button
             onClick={handleGenerate}
-            disabled={generating || loading || cooldownSecs > 0}
+            disabled={generating || loading || cooldownSecs > 0 || !isPro}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50"
           >
             {generating
@@ -231,6 +234,9 @@ export default function InsightsPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-4 pb-24">
+        {!isPro && (
+          <PaywallBanner feature="AI Insights generation" />
+        )}
         {/* Smart Nudges banner */}
         <Link
           href="/nudges"
