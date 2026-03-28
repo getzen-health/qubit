@@ -203,7 +203,7 @@ struct DivingAnalyticsView: View {
 
     private var diveLog: some View {
         let df = DateFormatter()
-        let _ = { df.dateStyle = .medium }()
+        df.dateStyle = .medium
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Dives").font(.headline)
             VStack(spacing: 0) {

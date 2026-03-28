@@ -257,7 +257,7 @@ struct WalkingAnalysisView: View {
                 .padding(.horizontal, 12).padding(.vertical, 8)
 
                 let df = DateFormatter()
-                let _ = { df.dateFormat = "MMM d" }()
+                df.dateFormat = "MMM d"
 
                 ForEach(sessions.suffix(15).reversed()) { s in
                     Divider()

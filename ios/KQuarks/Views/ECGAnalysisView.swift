@@ -282,7 +282,8 @@ struct ECGAnalysisView: View {
                 .font(.headline)
 
             let df = DateFormatter()
-            let _ = { df.dateStyle = .medium; df.timeStyle = .short }()
+            df.dateStyle = .medium
+            df.timeStyle = .short
 
             ForEach(records.prefix(10).reversed()) { r in
                 HStack(spacing: 12) {

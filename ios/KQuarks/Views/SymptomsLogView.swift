@@ -217,7 +217,8 @@ struct SymptomsLogView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Recent Entries").font(.headline)
             let df = DateFormatter()
-            let _ = { df.dateStyle = .medium; df.timeStyle = .short }()
+            df.dateStyle = .medium
+            df.timeStyle = .short
             VStack(spacing: 0) {
                 ForEach(events.prefix(15)) { ev in
                     if ev.id != events.prefix(15).first?.id { Divider() }

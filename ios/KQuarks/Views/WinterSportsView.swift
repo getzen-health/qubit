@@ -216,7 +216,7 @@ struct WinterSportsView: View {
 
     private var sessionTableCard: some View {
         let df = DateFormatter()
-        let _ = { df.dateFormat = "MMM d, yyyy" }()
+        df.dateFormat = "MMM d, yyyy"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)

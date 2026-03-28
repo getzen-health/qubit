@@ -187,7 +187,7 @@ struct BloodOxygenDeepDiveView: View {
 
     private var dailyLogCard: some View {
         let df = DateFormatter()
-        let _ = { df.dateFormat = "MMM d" }()
+        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Daily Summary").font(.headline)
