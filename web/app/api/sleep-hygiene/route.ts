@@ -1,4 +1,16 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postSleepHygieneSchema = z.object({
+  consistent_schedule: z.boolean().optional(),
+  no_alcohol: z.boolean().optional(),
+  no_caffeine_6h: z.boolean().optional(),
+  no_screens_1h: z.boolean().optional(),
+  room_temp_celsius: z.number().min(0).max(50).nullable().optional(),
+  room_dark: z.boolean().optional(),
+  room_quiet: z.boolean().optional(),
+  logged_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+})
 
 function calcHygieneScore(log: {
   consistent_schedule?: boolean
@@ -39,15 +51,15 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
-    const { score, grade } = calcHygieneScore(body)
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postSleepHygieneSchema },
+  async (_request, { user, supabase, body }) => {
+    const { score, grade } = calcHygieneScore(body as z.infer<typeof postSleepHygieneSchema>)
+    const b = body as z.infer<typeof postSleepHygieneSchema>
     const today = new Date().toISOString().slice(0, 10)
     const { data, error } = await supabase
       .from('sleep_hygiene_logs')
       .upsert(
-        { ...body, user_id: user!.id, logged_date: body.logged_date ?? today, hygiene_score: score, hygiene_grade: grade },
+        { ...b, user_id: user!.id, logged_date: b.logged_date ?? today, hygiene_score: score, hygiene_grade: grade },
         { onConflict: 'user_id,logged_date' }
       )
       .select()

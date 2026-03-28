@@ -1,6 +1,26 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { calculateSkinScore, defaultSkinLog } from '@/lib/skin-health'
 import type { SkinLog } from '@/lib/skin-health'
+
+const postSkinSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  spf_applied: z.boolean().optional(),
+  spf_value: z.number().min(0).max(100).optional(),
+  spf_reapplied: z.boolean().optional(),
+  sun_exposure_min: z.number().min(0).max(1440).optional(),
+  water_ml: z.number().min(0).max(10000).optional(),
+  vit_c_taken: z.boolean().optional(),
+  omega3_taken: z.boolean().optional(),
+  lycopene_taken: z.boolean().optional(),
+  green_tea_taken: z.boolean().optional(),
+  am_routine_done: z.boolean().optional(),
+  pm_routine_done: z.boolean().optional(),
+  conditions: z.record(z.string(), z.record(z.string(), z.number())).optional(),
+  skincare_products: z.array(z.unknown()).optional(),
+  uv_index: z.number().min(0).max(20).nullable().optional(),
+  notes: z.string().max(1000).optional(),
+})
 
 // GET /api/skin — last 30 logs + current score + 7-day trend
 // Optional query params: lat, lon for live UV index from Open-Meteo
@@ -79,10 +99,10 @@ export const GET = createSecureApiHandler(
 
 // POST /api/skin — upsert today's skin log
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
-    const today = (body.date as string) || new Date().toISOString().slice(0, 10)
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postSkinSchema },
+  async (_req, { user, supabase, body }) => {
+    const b = body as z.infer<typeof postSkinSchema>
+    const today = b.date || new Date().toISOString().slice(0, 10)
 
     const { data, error } = await supabase
       .from('skin_logs')
@@ -90,21 +110,21 @@ export const POST = createSecureApiHandler(
         {
           user_id: user!.id,
           date: today,
-          spf_applied: body.spf_applied ?? false,
-          spf_value: body.spf_value != null ? Number(body.spf_value) : 30,
-          spf_reapplied: body.spf_reapplied ?? false,
-          sun_exposure_min: body.sun_exposure_min != null ? Number(body.sun_exposure_min) : 0,
-          water_ml: body.water_ml != null ? Number(body.water_ml) : 0,
-          vit_c_taken: body.vit_c_taken ?? false,
-          omega3_taken: body.omega3_taken ?? false,
-          lycopene_taken: body.lycopene_taken ?? false,
-          green_tea_taken: body.green_tea_taken ?? false,
-          am_routine_done: body.am_routine_done ?? false,
-          pm_routine_done: body.pm_routine_done ?? false,
-          conditions: body.conditions ?? {},
-          skincare_products: body.skincare_products ?? [],
-          uv_index: body.uv_index != null ? Number(body.uv_index) : null,
-          notes: body.notes || null,
+          spf_applied: b.spf_applied ?? false,
+          spf_value: b.spf_value != null ? Number(b.spf_value) : 30,
+          spf_reapplied: b.spf_reapplied ?? false,
+          sun_exposure_min: b.sun_exposure_min != null ? Number(b.sun_exposure_min) : 0,
+          water_ml: b.water_ml != null ? Number(b.water_ml) : 0,
+          vit_c_taken: b.vit_c_taken ?? false,
+          omega3_taken: b.omega3_taken ?? false,
+          lycopene_taken: b.lycopene_taken ?? false,
+          green_tea_taken: b.green_tea_taken ?? false,
+          am_routine_done: b.am_routine_done ?? false,
+          pm_routine_done: b.pm_routine_done ?? false,
+          conditions: b.conditions ?? {},
+          skincare_products: b.skincare_products ?? [],
+          uv_index: b.uv_index != null ? Number(b.uv_index) : null,
+          notes: b.notes || null,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id,date', ignoreDuplicates: false }

@@ -1,6 +1,18 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import { calculateAllostaticLoad } from '@/lib/stress'
 import type { StressLog } from '@/lib/stress'
+
+const postStressSchema = z.object({
+  perceived_stress: z.number().int().min(1).max(10),
+  ans_state: z.enum(['calm', 'stressed', 'anxious', 'overwhelmed']).optional(),
+  stressors: z.array(z.string().max(100)).max(20).optional(),
+  stressor_intensity: z.number().min(1).max(10).optional(),
+  physical_symptoms: z.array(z.string().max(100)).max(20).optional(),
+  coping_used: z.array(z.string().max(100)).max(20).optional(),
+  notes: z.string().max(1000).optional(),
+  log_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+})
 
 // GET /api/stress — last 30 stress logs + allostatic load + trend
 export const GET = createSecureApiHandler(
@@ -61,9 +73,8 @@ export const GET = createSecureApiHandler(
 
 // POST /api/stress — upsert daily stress log
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postStressSchema },
+  async (_req, { user, supabase, body }) => {
     const {
       perceived_stress,
       ans_state,
@@ -73,13 +84,9 @@ export const POST = createSecureApiHandler(
       coping_used,
       notes,
       log_date,
-    } = body
+    } = body as z.infer<typeof postStressSchema>
 
-    if (!perceived_stress || perceived_stress < 1 || perceived_stress > 10) {
-      return secureErrorResponse('perceived_stress must be 1–10', 400)
-    }
-
-    const today = (log_date as string) || new Date().toISOString().slice(0, 10)
+    const today = log_date || new Date().toISOString().slice(0, 10)
 
     const { data, error } = await supabase
       .from('stress_logs')

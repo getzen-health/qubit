@@ -1,4 +1,15 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postMoodSchema = z.object({
+  valence: z.number().int().min(-5).max(5).optional(),
+  score: z.number().min(1).max(10).optional(),
+  emotions: z.array(z.string().max(100)).max(20).optional(),
+  notes: z.string().max(1000).optional(),
+}).refine(
+  (data) => data.valence !== undefined || data.score !== undefined,
+  { message: 'valence (-5 to 5) or score (1-10) required' }
+)
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -15,19 +26,17 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postMoodSchema },
+  async (_request, { user, supabase, body }) => {
+    const { valence: rawValence, score, emotions, notes } = body as z.infer<typeof postMoodSchema>
 
     // Accept valence (-5..5) or legacy score (1..10) from iOS app
     let valence: number
-    if (body.valence !== undefined) {
-      valence = Math.round(Number(body.valence))
-    } else if (body.score !== undefined) {
-      // Map 1-10 → -5..5 linearly: score 1 → -5, score 10 → +5
-      valence = Math.round((Number(body.score) - 1) * 10 / 9 - 5)
+    if (rawValence !== undefined) {
+      valence = Math.round(rawValence)
     } else {
-      return secureErrorResponse('valence (-5 to 5) or score (1-10) required', 400)
+      // Map 1-10 → -5..5 linearly: score 1 → -5, score 10 → +5
+      valence = Math.round((Number(score) - 1) * 10 / 9 - 5)
     }
     valence = Math.max(-5, Math.min(5, valence))
 
@@ -36,8 +45,8 @@ export const POST = createSecureApiHandler(
       .insert({
         user_id: user!.id,
         valence,
-        emotions: Array.isArray(body.emotions) ? body.emotions : [],
-        notes: body.notes || null,
+        emotions: Array.isArray(emotions) ? emotions : [],
+        notes: notes || null,
       })
       .select().single()
     if (error) return secureErrorResponse('Failed to create mood log', 500)

@@ -1,4 +1,10 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postWaterSchema = z.object({
+  amount_ml: z.number().positive().max(5000),
+  logged_at: z.string().datetime({ offset: true }).optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -21,14 +27,13 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const { amount_ml } = await request.json()
-    if (!amount_ml || amount_ml <= 0) return secureErrorResponse('Invalid amount', 400)
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postWaterSchema },
+  async (_request, { user, supabase, body }) => {
+    const { amount_ml, logged_at } = body as z.infer<typeof postWaterSchema>
 
     const { data, error } = await supabase
       .from('water_entries')
-      .insert({ user_id: user!.id, amount_ml })
+      .insert({ user_id: user!.id, amount_ml, ...(logged_at ? { logged_at } : {}) })
       .select()
       .single()
 

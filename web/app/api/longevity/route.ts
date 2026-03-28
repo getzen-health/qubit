@@ -1,4 +1,15 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postLongevitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  pillar_scores: z.record(z.string(), z.number().min(0).max(100)),
+  blueprint_items_completed: z.array(z.string().max(200)).max(100).optional(),
+  blueprint_score: z.number().min(0).max(100).optional(),
+  overall_score: z.number().min(0).max(100).optional(),
+  epigenetic_age_delta: z.number().min(-50).max(50).optional(),
+  notes: z.string().max(2000).nullable().optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -19,14 +30,17 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (req, { user, supabase }) => {
-    const body = await req.json()
-    const { date, pillar_scores, blueprint_items_completed, blueprint_score, overall_score, epigenetic_age_delta, notes } = body
-
-    if (!date || !pillar_scores) {
-      return secureErrorResponse('date and pillar_scores required', 400)
-    }
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postLongevitySchema },
+  async (_req, { user, supabase, body }) => {
+    const {
+      date,
+      pillar_scores,
+      blueprint_items_completed,
+      blueprint_score,
+      overall_score,
+      epigenetic_age_delta,
+      notes,
+    } = body as z.infer<typeof postLongevitySchema>
 
     const { data, error } = await supabase
       .from('longevity_checkins')
