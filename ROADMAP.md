@@ -126,3 +126,36 @@ Build KQuarks - an iOS app that reads Apple Health data and displays it on a web
    - Privacy manifest
    - Health data usage descriptions
    - App Store assets
+
+---
+
+## Week 2 — Testing & Production Readiness (Days 8–14)
+> Full testing week before App Store review. No new features — only bug fixes, validation, and hardening.
+
+| Day | Focus | GitHub Issue |
+|-----|-------|-------------|
+| **Day 8** | iOS full regression + HealthKit sync validation | #624 |
+| **Day 9** | Web E2E tests (Playwright) + API contract validation | #625 |
+| **Day 10** | Performance profiling — Lighthouse ≥90, iOS Instruments | #626 |
+| **Day 11** | Security audit — RLS verification, OWASP scan, bundle check | #627 |
+| **Day 12** | Accessibility (axe-core) + cross-browser + dark mode audit | #628 |
+| **Day 13** | TestFlight beta UAT — 5-10 testers, triage P0/P1 bugs | #629 |
+| **Day 14** | Production readiness checklist + go/no-go for launch | #630 |
+
+### Bug Fix Priority During Testing Week
+| Priority | Type | Action |
+|----------|------|--------|
+| **P0** | Crash / data loss / auth bypass | Fix same day, hotfix PR |
+| **P1** | Major UX broken / wrong data shown | Fix within 24h |
+| **P2** | Visual glitch / minor UX | Fix before Day 14 |
+| **P3** | Polish / nice-to-have | Defer to post-launch |
+
+### Production Readiness Criteria (Day 14 gate)
+- [ ] 0 P0 bugs from TestFlight + Playwright
+- [ ] Lighthouse score ≥ 90 on /dashboard
+- [ ] iOS BUILD SUCCEEDED on latest Xcode, 0 crash logs in TestFlight
+- [ ] RLS isolation verified — users cannot read each other's data
+- [ ] /privacy and /terms pages live at kquarks.app
+- [ ] App Store binary passes validation in App Store Connect
+- [ ] Supabase production backups enabled
+- [ ] Error monitoring (Sentry) + uptime monitoring configured
