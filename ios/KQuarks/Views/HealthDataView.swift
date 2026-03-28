@@ -2499,7 +2499,7 @@ struct HealthDataRow: View {
             HStack {
                 Image(systemName: dataType.icon)
                     .font(.title2)
-                    .foregroundColor(.accentColor)
+                    .foregroundStyle(.accentColor)
                     .frame(width: 44, height: 44)
                     .background(Color.accentColor.opacity(0.1))
                     .cornerRadius(10)
@@ -2514,11 +2514,11 @@ struct HealthDataRow: View {
                     } else if let value = latestValue {
                         Text(formatValue(value, for: dataType))
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     } else {
                         Text("No data")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 }
 

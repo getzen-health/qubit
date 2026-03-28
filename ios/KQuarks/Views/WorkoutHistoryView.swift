@@ -25,7 +25,7 @@ struct WorkoutHistoryView: View {
                             .font(.caption.weight(.medium))
                             .padding(.horizontal, 12).padding(.vertical, 6)
                             .background(selectedType == type ? Color.purple : Color(.systemGray6))
-                            .foregroundColor(selectedType == type ? .white : .secondary)
+                            .foregroundStyle(selectedType == type ? .white : .secondary)
                             .cornerRadius(20)
                     }
                 }
@@ -37,8 +37,8 @@ struct WorkoutHistoryView: View {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if workouts.isEmpty {
                 VStack(spacing: 12) {
-                    Image(systemName: "figure.run").font(.largeTitle).foregroundColor(.secondary)
-                    Text("No workouts yet").foregroundColor(.secondary)
+                    Image(systemName: "figure.run").font(.largeTitle).foregroundStyle(.secondary)
+                    Text("No workouts yet").foregroundStyle(.secondary)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List(filteredWorkouts) { workout in
@@ -80,7 +80,7 @@ struct WorkoutHistoryRow: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundColor(.purple)
+                .foregroundStyle(.purple)
                 .frame(width: 36, height: 36)
                 .background(Color.purple.opacity(0.1))
                 .cornerRadius(8)
@@ -92,7 +92,7 @@ struct WorkoutHistoryRow: View {
                     if let cal = workout.calories { Label("\(cal)", systemImage: "flame") }
                 }
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, 4)

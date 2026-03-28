@@ -425,6 +425,7 @@
 		6E2D81CA2E47461B9A8639E0 /* NutritionLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4713EF33D9BB4D0F92A8141F /* NutritionLabelParser.swift */; };
 		1B47E5B43AE84279BAEFE25D /* NutritionLabelScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09AB59331AF49DF883EDDE5 /* NutritionLabelScannerView.swift */; };
 		W01 /* KQuarksWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = W11 /* KQuarksWidget.swift */; };
+		W03 /* WatchComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = W14 /* WatchComplications.swift */; };
 		W02 /* KQuarksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = W10 /* KQuarksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -872,6 +873,7 @@
 		FFCD5D8AD16AF26456FD12AB /* PaddleSportsScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaddleSportsScienceView.swift; sourceTree = "<group>"; };
 		W10 /* KQuarksWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KQuarksWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		W11 /* KQuarksWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KQuarksWidget.swift; sourceTree = "<group>"; };
+		W14 /* WatchComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplications.swift; sourceTree = "<group>"; };
 		W12 /* KQuarksWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarksWidget.entitlements; sourceTree = "<group>"; };
 		W13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4713EF33D9BB4D0F92A8141F /* NutritionLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParser.swift; sourceTree = "<group>"; };
@@ -1441,6 +1443,7 @@
 			isa = PBXGroup;
 			children = (
 				W11 /* KQuarksWidget.swift */,
+				W14 /* WatchComplications.swift */,
 				W12 /* KQuarksWidget.entitlements */,
 				W13 /* Info.plist */,
 			);
@@ -1974,6 +1977,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				W01 /* KQuarksWidget.swift in Sources */,
+				W03 /* WatchComplications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

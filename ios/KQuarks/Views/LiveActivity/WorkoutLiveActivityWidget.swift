@@ -22,7 +22,7 @@ struct WorkoutLiveActivityDynamicIslandView: View {
             
             Label("\(context.state.heartRate)", systemImage: "heart.fill")
                 .font(.caption)
-                .foregroundColor(.red)
+                .foregroundStyle(.red)
         }
     }
 }
@@ -42,7 +42,7 @@ struct WorkoutLiveActivityCompactView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(context.attributes.workoutType)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 Text(durationString)
                     .font(.system(.headline, design: .monospaced))
                     .bold()
@@ -50,7 +50,7 @@ struct WorkoutLiveActivityCompactView: View {
             Spacer()
             Label("\(context.state.heartRate)", systemImage: "heart.fill")
                 .font(.subheadline)
-                .foregroundColor(.red)
+                .foregroundStyle(.red)
         }
         .padding(.horizontal)
     }
@@ -74,7 +74,7 @@ struct WorkoutLiveActivityMinimalView: View {
             
             Label("\(context.state.heartRate)", systemImage: "heart.fill")
                 .font(.caption2)
-                .foregroundColor(.red)
+                .foregroundStyle(.red)
         }
     }
 }
@@ -116,12 +116,12 @@ struct WorkoutLiveActivityExpandedView: View {
             HStack(spacing: 12) {
                 Image(systemName: workoutIcon)
                     .font(.system(size: 24, weight: .semibold))
-                    .foregroundColor(.blue)
+                    .foregroundStyle(.blue)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(context.attributes.workoutType)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     Text(durationString)
                         .font(.system(.title2, design: .monospaced))
                         .bold()
@@ -136,10 +136,10 @@ struct WorkoutLiveActivityExpandedView: View {
                 VStack(spacing: 4) {
                     Label("\(context.state.heartRate)", systemImage: "heart.fill")
                         .font(.headline)
-                        .foregroundColor(.red)
+                        .foregroundStyle(.red)
                     Text("bpm")
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(8)
@@ -150,10 +150,10 @@ struct WorkoutLiveActivityExpandedView: View {
                 VStack(spacing: 4) {
                     Label("\(context.state.calories)", systemImage: "flame.fill")
                         .font(.headline)
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                     Text("kcal")
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(8)
@@ -165,10 +165,10 @@ struct WorkoutLiveActivityExpandedView: View {
                     VStack(spacing: 4) {
                         Label(String(format: "%.1f", Double(context.state.distanceMeters) / 1000.0), systemImage: "location.fill")
                             .font(.headline)
-                            .foregroundColor(.green)
+                            .foregroundStyle(.green)
                         Text("km")
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(8)
@@ -181,14 +181,14 @@ struct WorkoutLiveActivityExpandedView: View {
             HStack(spacing: 8) {
                 Text("Zone:")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 Text(context.state.zone)
                     .font(.caption)
                     .bold()
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(Color(hex: context.state.zoneColor).opacity(0.2))
-                    .foregroundColor(Color(hex: context.state.zoneColor))
+                    .foregroundStyle(Color(hex: context.state.zoneColor))
                     .cornerRadius(4)
                 Spacer()
             }

@@ -40,7 +40,7 @@ struct WaterIntakeView: View {
     @State private var viewModel = WaterIntakeViewModel()
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
                     // Progress ring
@@ -57,10 +57,10 @@ struct WaterIntakeView: View {
                         VStack(spacing: 2) {
                             Text("\(viewModel.totalMl)")
                                 .font(.title.bold())
-                                .foregroundColor(.blue)
+                                .foregroundStyle(.blue)
                             Text("of \(viewModel.goalMl)ml")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .padding(.top)
@@ -76,7 +76,7 @@ struct WaterIntakeView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 14)
                                     .background(Color.blue.opacity(0.1))
-                                    .foregroundColor(.blue)
+                                    .foregroundStyle(.blue)
                                     .cornerRadius(12)
                             }
                         }
@@ -96,7 +96,7 @@ struct WaterIntakeView: View {
                                     Spacer()
                                     Text(log.logged_at.prefix(10))
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundStyle(.secondary)
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 4)

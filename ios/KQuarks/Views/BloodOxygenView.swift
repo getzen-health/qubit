@@ -196,7 +196,8 @@ struct BloodOxygenView: View {
                 .foregroundStyle(.secondary)
 
             let df = DateFormatter()
-            let _ = { df.dateStyle = .short; df.timeStyle = .short }()
+            df.dateStyle = .short
+            df.timeStyle = .short
             ForEach(lowReadings.prefix(5), id: \.date) { r in
                 HStack {
                     Text(df.string(from: r.date))

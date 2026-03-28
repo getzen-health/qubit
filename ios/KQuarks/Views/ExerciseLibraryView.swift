@@ -68,7 +68,7 @@ struct ExerciseLibraryView: View {
                                     .background(Color.blue.opacity(0.1))
                                     .cornerRadius(12)
                                 }
-                                .foregroundColor(.primary)
+                                .foregroundStyle(.primary)
                             }
                         }
                         .padding()

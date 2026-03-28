@@ -65,12 +65,12 @@ struct WaterTrackerView: View {
                         .animation(.easeInOut(duration: 0.5), value: viewModel.progress)
                     VStack(spacing: 4) {
                         Image(systemName: "drop.fill")
-                            .foregroundColor(.blue)
+                            .foregroundStyle(.blue)
                         Text(String(format: "%.1fL", Double(viewModel.totalMl)/1000))
                             .font(.title2.bold())
                         Text("of \(viewModel.goalMl/1000)L")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .frame(width: 160, height: 160)
@@ -84,7 +84,7 @@ struct WaterTrackerView: View {
                         } label: {
                             VStack(spacing: 4) {
                                 Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundStyle(.blue)
                                 Text("\(ml)ml")
                                     .font(.caption.bold())
                             }
@@ -105,20 +105,20 @@ struct WaterTrackerView: View {
 
                     if viewModel.entries.isEmpty {
                         Text("No entries yet")
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity)
                             .padding()
                     } else {
                         ForEach(viewModel.entries) { entry in
                             HStack {
                                 Image(systemName: "drop.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundStyle(.blue)
                                 Text("\(entry.amount_ml) ml")
                                     .font(.subheadline.bold())
                                 Spacer()
                                 Text(viewModel.formatTime(entry.logged_at))
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 8)

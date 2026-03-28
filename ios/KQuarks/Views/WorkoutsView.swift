@@ -200,7 +200,7 @@ struct WorkoutRow: View {
         HStack(spacing: 12) {
             Image(systemName: workout.workoutActivityType.icon)
                 .font(.title2)
-                .foregroundColor(workout.workoutActivityType.color)
+                .foregroundStyle(workout.workoutActivityType.color)
                 .frame(width: 44, height: 44)
                 .background(workout.workoutActivityType.color.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))

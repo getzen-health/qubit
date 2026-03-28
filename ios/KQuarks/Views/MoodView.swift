@@ -72,7 +72,7 @@ struct MoodView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.accentColor)
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .cornerRadius(14)
                     }
                     .disabled(isLoading)

@@ -177,7 +177,7 @@ struct CrossTrainingView: View {
 
     private var recentSessionsCard: some View {
         let df = DateFormatter()
-        let _ = { df.dateFormat = "MMM d" }()
+        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)

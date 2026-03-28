@@ -48,7 +48,7 @@ struct ScanHistoryView: View {
                                         .frame(width: 44, height: 44)
                                     Text("\(score)")
                                         .font(.system(size: 14, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundStyle(.white)
                                 }
                             } else {
                                 Circle()
@@ -79,7 +79,7 @@ struct ScanHistoryView: View {
                                 ShareHelper.share(items: [shareText])
                             }) {
                                 Image(systemName: "square.and.arrow.up")
-                                    .foregroundColor(.accentColor)
+                                    .foregroundStyle(.accentColor)
                             }
                         }
                         .padding(.vertical, 4)

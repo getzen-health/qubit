@@ -231,7 +231,7 @@ struct YogaAnalysisView: View {
                 .padding(.horizontal, 12).padding(.vertical, 8)
 
                 let df = DateFormatter()
-                let _ = { df.dateFormat = "MMM d" }()
+                df.dateFormat = "MMM d"
 
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()

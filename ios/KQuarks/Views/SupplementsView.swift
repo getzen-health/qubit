@@ -42,18 +42,18 @@ struct SupplementsView: View {
     @State private var viewModel = SupplementsViewModel()
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(COMMON_SUPPLEMENTS) { supplement in
                 HStack {
                     VStack(alignment: .leading) {
                         Text(supplement.name).font(.headline)
-                        Text("\(supplement.dose) \(supplement.unit)").font(.caption).foregroundColor(.secondary)
+                        Text("\(supplement.dose) \(supplement.unit)").font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
                     if viewModel.takenToday.contains(supplement.name) {
                         Label("Taken", systemImage: "checkmark.circle.fill")
                             .font(.subheadline)
-                            .foregroundColor(.green)
+                            .foregroundStyle(.green)
                     } else {
                         Button("Log") {
                             Task {

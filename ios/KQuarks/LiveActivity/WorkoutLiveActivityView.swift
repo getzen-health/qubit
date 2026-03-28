@@ -19,10 +19,10 @@ struct WorkoutLiveActivityView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(context.attributes.workoutType)
                     .font(.caption.weight(.semibold))
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 Text(elapsedTime)
                     .font(.title2.monospacedDigit().weight(.bold))
-                    .foregroundColor(.primary)
+                    .foregroundStyle(.primary)
             }
             
             Spacer()
@@ -30,36 +30,36 @@ struct WorkoutLiveActivityView: View {
             HStack(spacing: 12) {
                 VStack(spacing: 2) {
                     Image(systemName: "heart.fill")
-                        .foregroundColor(.red)
+                        .foregroundStyle(.red)
                         .font(.caption)
                     Text("\(Int(context.state.heartRate))")
                         .font(.caption.monospacedDigit().weight(.semibold))
                     Text("BPM")
                         .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 
                 VStack(spacing: 2) {
                     Image(systemName: "flame.fill")
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                         .font(.caption)
                     Text("\(Int(context.state.activeCalories))")
                         .font(.caption.monospacedDigit().weight(.semibold))
                     Text("CAL")
                         .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 
                 if let pace = context.state.currentPace {
                     VStack(spacing: 2) {
                         Image(systemName: "figure.run")
-                            .foregroundColor(.blue)
+                            .foregroundStyle(.blue)
                             .font(.caption)
                         Text(pace)
                             .font(.caption.monospacedDigit().weight(.semibold))
                         Text("PACE")
                             .font(.system(size: 9))
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -73,7 +73,7 @@ struct WorkoutCompactLeadingView: View {
     let context: ActivityViewContext<WorkoutActivityAttributes>
     var body: some View {
         Image(systemName: workoutIcon(for: context.attributes.workoutType))
-            .foregroundColor(.green)
+            .foregroundStyle(.green)
     }
     
     private func workoutIcon(for type: String) -> String {
@@ -99,6 +99,6 @@ struct WorkoutCompactTrailingView: View {
         Text(elapsedTime)
             .monospacedDigit()
             .font(.caption.weight(.bold))
-            .foregroundColor(.green)
+            .foregroundStyle(.green)
     }
 }

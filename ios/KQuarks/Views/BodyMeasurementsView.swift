@@ -67,7 +67,7 @@ struct BodyMeasurementsView: View {
 
     var body: some View {
         @Bindable var vm = viewModel
-        NavigationView {
+        NavigationStack {
             Form {
                 Section("Measurements (cm)") {
                     TextField("Neck circumference", text: $vm.neck)
@@ -104,7 +104,7 @@ struct BodyMeasurementsView: View {
                         HStack {
                             Text("Category")
                             Spacer()
-                            Text(label).foregroundColor(color).bold()
+                            Text(label).foregroundStyle(color).bold()
                         }
                     }
                 }
@@ -113,7 +113,7 @@ struct BodyMeasurementsView: View {
                         Task { await viewModel.saveMeasurement() }
                     }
                     .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .padding()
                     .background(Color.primary)
                     .cornerRadius(10)

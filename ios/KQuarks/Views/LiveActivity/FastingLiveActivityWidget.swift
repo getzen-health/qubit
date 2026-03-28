@@ -16,17 +16,17 @@ struct FastingLiveActivityLockScreenView: View {
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Fasting").font(.caption).foregroundColor(.secondary)
+                Text("Fasting").font(.caption).foregroundStyle(.secondary)
                 Text(context.state.phase)
                     .font(.headline).bold()
-                    .foregroundColor(.orange)
+                    .foregroundStyle(.orange)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 Text(formatDuration(context.state.elapsedSeconds))
                     .font(.system(.title3, design: .monospaced)).bold()
                 Text("/ \(context.attributes.goal)")
-                    .font(.caption).foregroundColor(.secondary)
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
         .padding(.horizontal)
@@ -48,17 +48,17 @@ struct WorkoutLiveActivityLockScreenView: View {
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(context.attributes.workoutType).font(.caption).foregroundColor(.secondary)
+                Text(context.attributes.workoutType).font(.caption).foregroundStyle(.secondary)
                 Text(context.state.zone)
                     .font(.headline).bold()
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
             }
             Spacer()
             HStack(spacing: 12) {
                 Label("\(context.state.heartRate)", systemImage: "heart.fill")
-                    .font(.subheadline).foregroundColor(.red)
+                    .font(.subheadline).foregroundStyle(.red)
                 Label("\(context.state.calories)", systemImage: "flame.fill")
-                    .font(.subheadline).foregroundColor(.orange)
+                    .font(.subheadline).foregroundStyle(.orange)
             }
         }
         .padding(.horizontal)

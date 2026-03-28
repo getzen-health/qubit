@@ -196,7 +196,7 @@ struct GolfAnalysisView: View {
 
     private var roundTableCard: some View {
         let df = DateFormatter()
-        let _ = { df.dateFormat = "MMM d" }()
+        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Rounds").font(.headline)

@@ -26,7 +26,7 @@ struct WorkoutLiveActivity: Widget {
                 WorkoutCompactTrailingView(context: context)
             } minimal: {
                 Image(systemName: "figure.run")
-                    .foregroundColor(.green)
+                    .foregroundStyle(.green)
             }
         }
     }

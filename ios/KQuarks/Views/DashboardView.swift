@@ -12,7 +12,7 @@ struct DashboardView: View {
                         VStack(alignment: .leading) {
                             Text(Date(), style: .date)
                                 .font(.headline)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                             Text("Today's Summary")
                                 .font(.largeTitle.bold())
                         }
@@ -165,10 +165,10 @@ struct DashboardView: View {
                         VStack(spacing: 16) {
                             Image(systemName: "exclamationmark.triangle")
                                 .font(.largeTitle)
-                                .foregroundColor(.orange)
+                                .foregroundStyle(.orange)
 
                             Text(error)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
 
                             Button("Try Again") {
@@ -240,7 +240,7 @@ struct ActivityRingsView: View {
                     Text("\(Int(Double(summary.steps) / Double(stepsGoal) * 100))%")
                         .font(.caption2.bold())
                 }
-                .foregroundColor(.green)
+                .foregroundStyle(.green)
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Step progress")
@@ -260,7 +260,7 @@ struct ActivityRingsView: View {
                     Text("\(Int(summary.activeCalories / caloriesGoal * 100))%")
                         .font(.caption2.bold())
                 }
-                .foregroundColor(.orange)
+                .foregroundStyle(.orange)
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Calorie progress")
@@ -280,7 +280,7 @@ struct ActivityRingsView: View {
                     Text("\(Int(sleepProgress * 100))%")
                         .font(.caption2.bold())
                 }
-                .foregroundColor(.indigo)
+                .foregroundStyle(.indigo)
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel("Sleep progress")
@@ -292,21 +292,21 @@ struct ActivityRingsView: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(summary.steps)")
                     .font(.headline.bold())
-                    .foregroundColor(.green)
+                    .foregroundStyle(.green)
                 Text("of \(stepsGoal.formatted()) steps")
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
 
                 Text("\(Int(summary.activeCalories)) kcal")
                     .font(.headline.bold())
-                    .foregroundColor(.orange)
+                    .foregroundStyle(.orange)
 
                 if sleepHours > 0 {
                     let h = Int(sleepHours)
                     let m = Int((sleepHours - Double(h)) * 60)
                     Text(m > 0 ? "\(h)h \(m)m sleep" : "\(h)h sleep")
                         .font(.headline.bold())
-                        .foregroundColor(.indigo)
+                        .foregroundStyle(.indigo)
                 }
             }
         }
@@ -349,9 +349,9 @@ struct StatCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 6) {
                     Image(systemName: icon)
-                        .foregroundColor(color)
+                        .foregroundStyle(color)
                     Text(title)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .font(.subheadline)
 
