@@ -124,7 +124,7 @@ class HealthKitService {
             types.insert(HKQuantityType(.runningGroundContactTime))
             types.insert(HKQuantityType(.runningPower))
             #if !targetEnvironment(macCatalyst)
-            types.insert(HKQuantityType(.runningCadence))
+            // runningCadence removed — not in all SDK versions
             #endif
         }
 

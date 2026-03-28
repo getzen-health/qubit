@@ -2,11 +2,16 @@ import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 import webpush from 'web-push'
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-)
+export const dynamic = 'force-dynamic'
+
+// Lazy-init so build-time prerender doesn't throw with missing env vars
+if (process.env.VAPID_SUBJECT) {
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!,
+  )
+}
 
 const subscribeBodySchema = z.object({
   endpoint: z.string().url(),
