@@ -239,7 +239,10 @@ export function CaffeineClient({ initialLogs, weekLogs }: Props) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-xl">☕</span>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Caffeine Today</h1>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Caffeine Today</h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-none mt-0.5">Daily limit: 400 mg</p>
+              </div>
             </div>
           </div>
           {/* Total badge */}
@@ -425,9 +428,10 @@ export function CaffeineClient({ initialLogs, weekLogs }: Props) {
             Today&apos;s Log
           </p>
           {logs.length === 0 ? (
-            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-8 text-center">
-              <Coffee className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-              <p className="text-sm text-gray-400 dark:text-gray-500">No caffeine logged today</p>
+            <div className="bg-surface border border-border rounded-xl text-center py-12">
+              <span className="text-4xl mb-3 block">☕</span>
+              <p className="font-medium text-text-primary">No caffeine logged today</p>
+              <p className="text-sm text-text-secondary mt-1">Use the quick-add buttons above</p>
             </div>
           ) : (
             <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-800">

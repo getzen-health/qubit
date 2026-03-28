@@ -139,9 +139,12 @@ export function EnergyClient() {
 
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Energy Journal</h1>
-            <p className="text-sm text-text-secondary mt-0.5">How&apos;s your energy right now?</p>
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">⚡</span>
+            <div>
+              <h1 className="text-2xl font-bold">Energy Journal</h1>
+              <p className="text-sm text-text-secondary mt-0.5">How&apos;s your energy right now?</p>
+            </div>
           </div>
           {avg !== null && (
             <div className="flex flex-col items-center bg-accent/10 border border-accent/20 rounded-2xl px-4 py-2">
@@ -230,7 +233,11 @@ export function EnergyClient() {
           {loading ? (
             <p className="text-sm text-text-secondary text-center py-4">Loading…</p>
           ) : recent.length === 0 ? (
-            <p className="text-sm text-text-secondary text-center py-4">No entries yet</p>
+            <div className="text-center py-12 text-muted-foreground">
+              <span className="text-4xl mb-3 block">⚡</span>
+              <p className="font-medium">No entries yet</p>
+              <p className="text-sm">Log your first energy check-in above</p>
+            </div>
           ) : (
             <ul className="space-y-2">
               {recent.map((log) => (

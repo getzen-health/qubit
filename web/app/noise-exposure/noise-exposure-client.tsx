@@ -165,13 +165,14 @@ export default function NoiseExposureClient() {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <span>👂</span> Hearing Health
-        </h1>
-        <p className="text-text-secondary text-sm mt-1">
-          Track noise exposure to protect your hearing over time.
-        </p>
+      <div className="flex items-center gap-3">
+        <span className="text-3xl">👂</span>
+        <div>
+          <h1 className="text-2xl font-bold">Hearing Health</h1>
+          <p className="text-text-secondary text-sm mt-1">
+            Track noise exposure to protect your hearing over time.
+          </p>
+        </div>
       </div>
 
       {/* Today's summary */}
@@ -291,7 +292,11 @@ export default function NoiseExposureClient() {
         {loading ? (
           <p className="text-text-secondary text-sm">Loading…</p>
         ) : recent7.length === 0 ? (
-          <p className="text-text-secondary text-sm">No entries yet.</p>
+          <div className="text-center py-12 text-muted-foreground">
+            <span className="text-4xl mb-3 block">👂</span>
+            <p className="font-medium">No entries yet</p>
+            <p className="text-sm">Log your first noise exposure below</p>
+          </div>
         ) : (
           <ul className="divide-y divide-border">
             {recent7.map((log) => (

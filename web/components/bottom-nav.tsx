@@ -241,7 +241,7 @@ export function BottomNav() {
                 aria-label={label}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors min-w-0',
+                  'flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors min-w-0 min-h-[44px] justify-center',
                   active ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
                 )}
               >
@@ -259,7 +259,7 @@ export function BottomNav() {
             aria-label="More navigation options"
             onClick={() => setMoreOpen((o) => !o)}
             className={cn(
-              'flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors min-w-0',
+              'flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors min-w-0 min-h-[44px] justify-center',
               (moreOpen || isMoreActive) ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
             )}
           >
