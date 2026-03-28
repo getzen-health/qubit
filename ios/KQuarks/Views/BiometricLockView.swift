@@ -52,7 +52,7 @@ struct BiometricLockView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(biometric.isInLockout ? Color.secondary.opacity(0.3) : Color.accentColor)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
                     .disabled(biometric.isInLockout)

@@ -14,7 +14,7 @@ struct CycleView: View {
     let symptomOptions = ["Cramps", "Headache", "Bloating", "Fatigue", "Mood swings", "Breast tenderness", "Back pain", "Nausea"]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section("Cycle Dates") {
                     DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
@@ -31,7 +31,7 @@ struct CycleView: View {
                             Button(action: { toggleSymptom(symptom) }) {
                                 HStack {
                                     Image(systemName: symptoms.contains(symptom) ? "checkmark.circle.fill" : "circle")
-                                        .foregroundColor(symptoms.contains(symptom) ? .pink : .secondary)
+                                        .foregroundStyle(symptoms.contains(symptom) ? .pink : .secondary)
                                     Text(symptom).font(.caption)
                                     Spacer()
                                 }
@@ -43,10 +43,10 @@ struct CycleView: View {
                     TextEditor(text: $notes).frame(minHeight: 60)
                 }
                 if let msg = successMessage {
-                    Text(msg).foregroundColor(.green)
+                    Text(msg).foregroundStyle(.green)
                 }
                 if let err = errorMessage {
-                    Text(err).foregroundColor(.red)
+                    Text(err).foregroundStyle(.red)
                 }
             }
             .navigationTitle("Cycle Tracking")

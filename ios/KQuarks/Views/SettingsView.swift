@@ -42,7 +42,7 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "person.circle.fill")
                                 .font(.largeTitle)
-                                .foregroundColor(.accentColor)
+                                .foregroundStyle(.accentColor)
 
                             VStack(alignment: .leading) {
                                 Text(user.displayName ?? "User")
@@ -50,7 +50,7 @@ struct SettingsView: View {
                                 if let email = user.email {
                                     Text(email)
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -75,10 +75,10 @@ struct SettingsView: View {
                         Spacer()
                         if let lastSync = syncService.lastSyncDate {
                             Text(lastSync, style: .relative)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         } else {
                             Text("Never")
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
 
@@ -270,7 +270,7 @@ struct SettingsView: View {
                         Text("Version")
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -399,14 +399,14 @@ struct AISettingsView: View {
                         ProgressView()
                         Text("Analyzing your health data...")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 }
 
                 if let error = AIInsightsService.shared.lastError {
                     Text(error)
                         .font(.caption)
-                        .foregroundColor(.red)
+                        .foregroundStyle(.red)
                 }
             }
         }
@@ -473,7 +473,7 @@ struct AboutView: View {
 
                     Text("Your personal health dashboard with AI-powered insights.")
                         .font(.body)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)

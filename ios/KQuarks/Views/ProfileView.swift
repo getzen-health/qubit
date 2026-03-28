@@ -31,7 +31,7 @@ struct ProfileView: View {
                 Section("Health Settings") {
                 // Widget info
                 HStack {
-                    Image(systemName: "rectangle.stack.fill.badge.plus").foregroundColor(.accentColor)
+                    Image(systemName: "rectangle.stack.fill.badge.plus").foregroundStyle(.accentColor)
                     Text("Add the KQuarks widget to your Home Screen for quick health stats.")
                         .font(.caption)
                         .foregroundStyle(.secondary)

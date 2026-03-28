@@ -41,8 +41,8 @@ struct RockClimbingScienceView: View {
 
     private func statCard(value: String, label: String, color: Color) -> some View {
         VStack(spacing: 4) {
-            Text(value).font(.title2).bold().foregroundColor(color)
-            Text(label).font(.caption).foregroundColor(.secondary)
+            Text(value).font(.title2).bold().foregroundStyle(color)
+            Text(label).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(12)
@@ -69,9 +69,9 @@ struct RockClimbingScienceView: View {
             HStack {
                 Text(label).font(.subheadline).bold()
                 Spacer()
-                Text("\(Int(fraction * 100))%").font(.caption).foregroundColor(.secondary)
+                Text("\(Int(fraction * 100))%").font(.caption).foregroundStyle(.secondary)
             }
-            Text(subtitle).font(.caption).foregroundColor(.secondary)
+            Text(subtitle).font(.caption).foregroundStyle(.secondary)
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Color(.systemGray5)).frame(height: 6)
@@ -92,12 +92,12 @@ struct RockClimbingScienceView: View {
                     let height = maxVal > 0 ? CGFloat(weeklyCals[i] / maxVal) * 80 : 4
                     VStack(spacing: 2) {
                         if weeklyCals[i] > 0 {
-                            Text("\(Int(weeklyCals[i]))").font(.system(size: 7)).foregroundColor(.secondary)
+                            Text("\(Int(weeklyCals[i]))").font(.system(size: 7)).foregroundStyle(.secondary)
                         }
                         RoundedRectangle(cornerRadius: 3)
                             .fill(Color.brown.opacity(0.8))
                             .frame(height: max(height, 4))
-                        Text("W\(8 - i)").font(.system(size: 8)).foregroundColor(.secondary)
+                        Text("W\(8 - i)").font(.system(size: 8)).foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -153,17 +153,17 @@ struct RockClimbingScienceView: View {
             ForEach(sessions.prefix(5), id: \.uuid) { session in
                 HStack {
                     Image(systemName: "figure.climbing")
-                        .foregroundColor(.brown)
+                        .foregroundStyle(.brown)
                         .frame(width: 30)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(sessionLabel(for: session)).font(.subheadline).bold()
-                        Text(session.startDate, style: .date).font(.caption).foregroundColor(.secondary)
+                        Text(session.startDate, style: .date).font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("\(Int(session.duration / 60))m").font(.subheadline)
                         if let kcal = session.totalEnergyBurned?.doubleValue(for: .kilocalorie()) {
-                            Text("\(Int(kcal)) kcal").font(.caption).foregroundColor(.secondary)
+                            Text("\(Int(kcal)) kcal").font(.caption).foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -172,7 +172,7 @@ struct RockClimbingScienceView: View {
                 .cornerRadius(8)
             }
             if sessions.isEmpty && !isLoading {
-                Text("No climbing sessions found").foregroundColor(.secondary).frame(maxWidth: .infinity)
+                Text("No climbing sessions found").foregroundStyle(.secondary).frame(maxWidth: .infinity)
             }
         }
     }
@@ -184,7 +184,7 @@ struct RockClimbingScienceView: View {
                 Text(icon)
                 Text(title).font(.headline).bold()
             }
-            .foregroundColor(color)
+            .foregroundStyle(color)
             content()
         }
         .padding()
@@ -194,7 +194,7 @@ struct RockClimbingScienceView: View {
 
     private func sciRow(stat: String, detail: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(stat).font(.caption).bold().foregroundColor(.secondary)
+            Text(stat).font(.caption).bold().foregroundStyle(.secondary)
             Text(detail).font(.caption).fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, 2)

@@ -209,7 +209,7 @@ struct WorkoutDetailView: View {
                         HStack {
                             Text("KM \(split.kilometer)")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                                 .frame(width: 50, alignment: .leading)
                             Text(split.pace)
                                 .font(.subheadline)
@@ -217,7 +217,7 @@ struct WorkoutDetailView: View {
                             Spacer()
                             if let hr = split.heartRate {
                                 Label("\(hr)", systemImage: "heart.fill")
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                                     .font(.caption)
                             }
                         }
@@ -328,7 +328,7 @@ struct WorkoutRouteMapView: View {
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     Text("No GPS route available")
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .font(.subheadline)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)

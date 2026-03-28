@@ -32,7 +32,7 @@ struct HRZonesView: View {
                     Slider(value: $age, in: 15...80, step: 1)
                     Text("Resting HR: \(Int(restingHR)) bpm").font(.caption)
                     Slider(value: $restingHR, in: 40...90, step: 1)
-                    Text("Max HR: \(maxHR) bpm").font(.headline).foregroundColor(.red)
+                    Text("Max HR: \(maxHR) bpm").font(.headline).foregroundStyle(.red)
                 }
                 .padding()
                 .background(Color(.systemGroupedBackground))
@@ -47,9 +47,9 @@ struct HRZonesView: View {
                             HStack {
                                 Text("Zone \(zone.id): \(zone.name)").fontWeight(.semibold)
                                 Spacer()
-                                Text("\(minBPM)–\(maxBPM) bpm").font(.caption).foregroundColor(.secondary)
+                                Text("\(minBPM)–\(maxBPM) bpm").font(.caption).foregroundStyle(.secondary)
                             }
-                            Text(zone.benefit).font(.caption).foregroundColor(.secondary)
+                            Text(zone.benefit).font(.caption).foregroundStyle(.secondary)
                         }
                     }
                     .padding()

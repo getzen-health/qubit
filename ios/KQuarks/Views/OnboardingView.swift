@@ -49,7 +49,7 @@ struct OnboardingView: View {
                     } label: {
                         Text("Continue")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.accentColor)
@@ -61,7 +61,7 @@ struct OnboardingView: View {
                     } label: {
                         Text("Get Started")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.green)
@@ -73,7 +73,7 @@ struct OnboardingView: View {
                     } label: {
                         Text("Continue Anyway")
                             .font(.headline)
-                            .foregroundColor(.accentColor)
+                            .foregroundStyle(.accentColor)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.accentColor.opacity(0.12))
@@ -125,7 +125,7 @@ struct WelcomePage: View {
 
             Text("Your health, down to the smallest detail. Track everything and get AI-powered insights.")
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
@@ -200,7 +200,7 @@ struct FeatureRow: View {
         HStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundColor(color)
+                .foregroundStyle(color)
                 .frame(width: 44, height: 44)
                 .background(color.opacity(0.15))
                 .cornerRadius(10)
@@ -211,7 +211,7 @@ struct FeatureRow: View {
 
                 Text(description)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -240,14 +240,14 @@ struct PermissionPage: View {
                  ? "Your health data will sync automatically."
                  : "We need access to your health data to show you insights and sync to the cloud.")
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
             if let error = error {
                 Text(error)
                     .font(.caption)
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
                     .padding(.horizontal)
             }
 
@@ -265,7 +265,7 @@ struct PermissionPage: View {
                         Text("Connect Health")
                     }
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .padding()
                     .padding(.horizontal, 24)
                     .background(Color.red)

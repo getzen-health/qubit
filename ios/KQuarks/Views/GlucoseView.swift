@@ -26,20 +26,20 @@ struct GlucoseView: View {
                     ProgressView()
                 } else if entries.isEmpty {
                     Text("No glucose readings yet. Tap + to log one.")
-                        .foregroundColor(.secondary).font(.subheadline)
+                        .foregroundStyle(.secondary).font(.subheadline)
                 } else {
                     ForEach(entries.prefix(20)) { entry in
                         HStack {
                             VStack(alignment: .leading, spacing: 3) {
                                 HStack {
                                     Text(String(format: "%.1f mmol/L", entry.value_mmol)).font(.subheadline.bold())
-                                    Text("(\(entry.value_mgdl) mg/dL)").font(.caption).foregroundColor(.secondary)
+                                    Text("(\(entry.value_mgdl) mg/dL)").font(.caption).foregroundStyle(.secondary)
                                     Text(statusLabel(entry.value_mmol, context: entry.context))
                                         .font(.caption.bold())
-                                        .foregroundColor(statusColor(entry.value_mmol, context: entry.context))
+                                        .foregroundStyle(statusColor(entry.value_mmol, context: entry.context))
                                 }
                                 Text(contextLabel(entry.context) + " · " + formatDate(entry.logged_at))
-                                    .font(.caption).foregroundColor(.secondary)
+                                    .font(.caption).foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -53,7 +53,7 @@ struct GlucoseView: View {
             }
         }
         .sheet(isPresented: $showLogSheet) {
-            NavigationView {
+            NavigationStack {
                 Form {
                     Section("Reading") {
                         TextField("Glucose (mmol/L)", text: $logValue).keyboardType(.decimalPad)

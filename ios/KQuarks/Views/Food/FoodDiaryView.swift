@@ -86,16 +86,16 @@ struct FoodDiaryView: View {
                         HStack {
                             Text("\(totalCalories) / \(calorieGoal) kcal")
                                 .font(.headline)
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                             Spacer()
                             if totalCalories > calorieGoal {
                                 Text("+\(totalCalories - calorieGoal) over")
                                     .font(.caption)
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                             } else {
                                 Text("\(calorieGoal - totalCalories) left")
                                     .font(.caption)
-                                    .foregroundColor(.green)
+                                    .foregroundStyle(.green)
                             }
                         }
                         ProgressView(value: Double(totalCalories), total: Double(calorieGoal))
@@ -120,9 +120,9 @@ struct FoodDiaryView: View {
                         VStack(spacing: 8) {
                             Image(systemName: "fork.knife")
                                 .font(.system(size: 40))
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                             Text("No entries for this day")
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                                 .font(.subheadline)
                         }
                         .frame(maxWidth: .infinity)
@@ -132,7 +132,7 @@ struct FoodDiaryView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(meal)
                                     .font(.headline)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                                     .padding(.horizontal)
                                 
                                 ForEach(mealEntries) { entry in
@@ -140,15 +140,15 @@ struct FoodDiaryView: View {
                                         VStack(alignment: .leading) {
                                             Text(entry.name)
                                                 .font(.subheadline)
-                                                .foregroundColor(.white)
+                                                .foregroundStyle(.white)
                                             Text("P:\(Int(entry.protein))g C:\(Int(entry.carbs))g F:\(Int(entry.fat))g")
                                                 .font(.caption)
-                                                .foregroundColor(.gray)
+                                                .foregroundStyle(.gray)
                                         }
                                         Spacer()
                                         Text("\(entry.calories) kcal")
                                             .font(.subheadline)
-                                            .foregroundColor(.orange)
+                                            .foregroundStyle(.orange)
                                     }
                                     .padding(.horizontal)
                                     .padding(.vertical, 6)
@@ -242,10 +242,10 @@ struct MacroChip: View {
             Text(String(format: "%.0f\(unit)", value))
                 .font(.headline)
                 .bold()
-                .foregroundColor(color)
+                .foregroundStyle(color)
             Text(label)
                 .font(.caption)
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
         }
         .frame(maxWidth: .infinity)
         .padding(8)

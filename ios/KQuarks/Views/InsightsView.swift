@@ -116,14 +116,14 @@ struct InsightsEmptyStateView: View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
                 .font(.system(size: 60))
-                .foregroundColor(.orange)
+                .foregroundStyle(.orange)
 
             Text("No Insights Yet")
                 .font(.title2.bold())
 
             Text("Once you have enough health data, AI-powered insights will appear here.")
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
         }
@@ -140,17 +140,17 @@ struct InsightCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: insight.category.icon)
-                    .foregroundColor(insight.category.color)
+                    .foregroundStyle(insight.category.color)
 
                 Text(insight.category.title)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
 
                 Spacer()
 
                 Text(insight.date, style: .date)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
 
             Text(insight.title)
@@ -158,15 +158,15 @@ struct InsightCard: View {
 
             Text(insight.content)
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
 
             if insight.priority == .high {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                     Text("Important")
                         .font(.caption.bold())
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                 }
             }
         }

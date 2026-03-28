@@ -23,7 +23,7 @@ struct AuthView: View {
 
                 Text("Create an account to sync your health data across devices and access it on the web.")
                     .font(.body)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -34,7 +34,7 @@ struct AuthView: View {
             if let error = error {
                 Text(error)
                     .font(.caption)
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
                     .padding(.horizontal)
             }
 
@@ -56,7 +56,7 @@ struct AuthView: View {
             } label: {
                 Text("Skip for now")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
             .padding(.bottom, 48)
         }

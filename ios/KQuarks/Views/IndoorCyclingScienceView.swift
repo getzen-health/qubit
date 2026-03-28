@@ -119,10 +119,10 @@ struct IndoorCyclingScienceView: View {
         VStack(spacing: 4) {
             Text(value)
                 .font(.system(.title2, design: .rounded, weight: .bold))
-                .foregroundColor(color)
+                .foregroundStyle(color)
             Text(label)
                 .font(.caption2)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -134,7 +134,7 @@ struct IndoorCyclingScienceView: View {
         VStack(alignment: .leading, spacing: 12) {
             Label(title, systemImage: icon)
                 .font(.headline)
-                .foregroundColor(color)
+                .foregroundStyle(color)
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in row }
         }
         .padding()
@@ -146,7 +146,7 @@ struct IndoorCyclingScienceView: View {
     private func sciRow(stat: String, detail: String) -> AnyView {
         AnyView(VStack(alignment: .leading, spacing: 3) {
             Text(stat).font(.subheadline).fontWeight(.semibold)
-            Text(detail).font(.caption).foregroundColor(.secondary).fixedSize(horizontal: false, vertical: true)
+            Text(detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
         })
     }
 }

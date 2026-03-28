@@ -16,21 +16,21 @@ struct HealthShareCardView: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Image(systemName: "k.circle.fill")
-                        .foregroundColor(.purple)
+                        .foregroundStyle(.purple)
                         .font(.title2)
                     Text("KQuarks")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text(Date(), style: .date)
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
                 cardContent
                 Spacer()
                 Text("kquarks.app")
                     .font(.caption2)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .padding(20)
@@ -46,44 +46,44 @@ struct HealthShareCardView: View {
             HStack(spacing: 24) {
                 VStack {
                     Text("\(duration / 60)m")
-                        .font(.title).bold().foregroundColor(.white)
-                    Text("Duration").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.white)
+                    Text("Duration").font(.caption).foregroundStyle(.gray)
                 }
                 VStack {
                     Text("\(calories)")
-                        .font(.title).bold().foregroundColor(.orange)
-                    Text("Cal").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.orange)
+                    Text("Cal").font(.caption).foregroundStyle(.gray)
                 }
                 VStack {
                     Text("\(avgHR)")
-                        .font(.title).bold().foregroundColor(.red)
-                    Text("Avg BPM").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.red)
+                    Text("Avg BPM").font(.caption).foregroundStyle(.gray)
                 }
                 Spacer()
-                Text(type).font(.headline).foregroundColor(.purple)
+                Text(type).font(.headline).foregroundStyle(.purple)
             }
         case .sleep(let hours, let efficiency, let deepMinutes):
             HStack(spacing: 24) {
                 VStack {
                     Text(String(format: "%.1fh", hours))
-                        .font(.title).bold().foregroundColor(.white)
-                    Text("Sleep").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.white)
+                    Text("Sleep").font(.caption).foregroundStyle(.gray)
                 }
                 VStack {
                     Text("\(efficiency)%")
-                        .font(.title).bold().foregroundColor(.blue)
-                    Text("Efficiency").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.blue)
+                    Text("Efficiency").font(.caption).foregroundStyle(.gray)
                 }
                 VStack {
                     Text("\(deepMinutes)m")
-                        .font(.title).bold().foregroundColor(.indigo)
-                    Text("Deep").font(.caption).foregroundColor(.gray)
+                        .font(.title).bold().foregroundStyle(.indigo)
+                    Text("Deep").font(.caption).foregroundStyle(.gray)
                 }
             }
         case .milestone(let title, let value, _):
             VStack(alignment: .leading, spacing: 8) {
-                Text("🏆 \(title)").font(.headline).foregroundColor(.yellow)
-                Text(value).font(.largeTitle).bold().foregroundColor(.white)
+                Text("🏆 \(title)").font(.headline).foregroundStyle(.yellow)
+                Text(value).font(.largeTitle).bold().foregroundStyle(.white)
             }
         }
     }

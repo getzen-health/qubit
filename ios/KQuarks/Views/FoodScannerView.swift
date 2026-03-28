@@ -275,7 +275,7 @@ struct FoodScannerView: View {
                 showManualBarcodeEntry = true
             }
             .font(.footnote)
-            .foregroundColor(.gray)
+            .foregroundStyle(.gray)
             .padding(.top, 8)
 
             searchBar

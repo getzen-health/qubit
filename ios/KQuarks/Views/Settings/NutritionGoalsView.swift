@@ -37,7 +37,7 @@ struct NutritionGoalsView: View {
                             }
                         }
                     }
-                    .foregroundColor(.primary)
+                    .foregroundStyle(.primary)
                 }
             } footer: {
                 Text("Quick presets to get you started. Customize below.")
