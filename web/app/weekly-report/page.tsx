@@ -95,9 +95,12 @@ export default async function WeeklyReportPage() {
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </Link>
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">Weekly Report</h1>
-            <p className="text-sm text-text-secondary">{weekRange}</p>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">📅</span>
+            <div>
+              <h1 className="text-xl font-bold text-text-primary">Weekly Report</h1>
+              <p className="text-sm text-text-secondary">{weekRange}</p>
+            </div>
           </div>
         </div>
       </header>

@@ -165,11 +165,12 @@ export function DeskBreaksClient() {
       <div className="max-w-lg mx-auto px-4 pt-6 space-y-5">
 
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <span>🪑</span> Desk Breaks
-          </h1>
-          <p className="text-sm text-text-secondary mt-0.5">Stand up, stretch, and stay healthy.</p>
+        <div className="flex items-center gap-3">
+          <span className="text-3xl">🪑</span>
+          <div>
+            <h1 className="text-2xl font-bold">Desk Breaks</h1>
+            <p className="text-sm text-text-secondary mt-0.5">Stand up, stretch, and stay healthy.</p>
+          </div>
         </div>
 
         {/* Timer card */}
