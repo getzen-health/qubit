@@ -39,7 +39,15 @@ interface HealthContext {
     sleepQualityScore: number | null
     activeMinutes: number
   }
-  weekHistory: Array<{
+  weekHistory?: Array<{
+    date: string
+    steps: number
+    activeCalories: number
+    restingHeartRate: number | null
+    avgHrv: number | null
+    sleepDurationMinutes: number | null
+  }>
+  trendHistory?: Array<{
     date: string
     steps: number
     activeCalories: number
@@ -158,11 +166,12 @@ Deno.serve(async (req: Request) => {
         model: "claude-sonnet-4-20250514",
         max_tokens: 2048,
         system: `You are a health data analyst embedded in a personal health tracking app called KQuarks.
-Your role is to analyze the user's health metrics and provide actionable, personalized insights.
+Your role is to analyze the user's 14-day health trends and provide actionable, personalized insights.
 
 Guidelines:
-- Be specific with numbers and comparisons (e.g., "Your HRV increased 15% from 42ms to 48ms")
-- Compare today's metrics against the user's own weekly averages, not population norms
+- Be specific with numbers and comparisons (e.g., "Your HRV increased 15% from 42ms to 48ms over the past 2 weeks")
+- Compare today's metrics against the user's own 14-day averages, not population norms
+- Identify week-over-week trends (e.g., "sleep improved in week 2 vs week 1")
 - Flag concerning trends early but don't be alarmist
 - Suggest concrete actions (e.g., "Consider a 20-minute walk after lunch" not "Be more active")
 - Acknowledge positive trends and progress
@@ -175,7 +184,8 @@ Return a JSON object with this exact structure:
   "strainScore": <0.0-21.0 float based on activity intensity + calories + workout load>,
   "insights": [
     {
-      "category": "sleep" | "activity" | "heart" | "recovery" | "general",
+      "insight_type": "daily" | "weekly_narrative",
+      "category": "sleep" | "activity" | "heart" | "recovery" | "nutrition" | "general",
       "title": "<short title, 5-8 words>",
       "content": "<2-3 sentence insight with specific numbers>",
       "priority": "low" | "normal" | "high"
@@ -183,7 +193,10 @@ Return a JSON object with this exact structure:
   ]
 }
 
-Generate 3-5 insights covering different categories. At least one should be actionable advice.`,
+Generate 4-6 insights:
+- At least 3 "daily" insights covering different categories (sleep, activity, heart, recovery)
+- Exactly 1 "weekly_narrative" insight: a 2-3 sentence narrative summarising the user's past 14 days — what improved, what declined, and one key recommendation. This should appear first in the array.
+- At least one insight must be concrete, actionable advice.`,
         messages: [
           {
             role: "user",
@@ -217,12 +230,14 @@ Generate 3-5 insights covering different categories. At least one should be acti
     }
 
     const insightsToStore = analysisResult.insights.map((insight: {
+      insight_type?: string
       category: string
       title: string
       content: string
       priority: string
     }) => ({
       user_id: user.id,
+      insight_type: insight.insight_type ?? 'daily',
       category: insight.category,
       title: insight.title,
       content: insight.content,
@@ -280,8 +295,10 @@ Generate 3-5 insights covering different categories. At least one should be acti
 
 function buildHealthPrompt(ctx: HealthContext): string {
   const today = ctx.dailySummary
-  const weekAvg = calculateWeekAverages(ctx.weekHistory)
+  const history = ctx.trendHistory ?? ctx.weekHistory ?? []
+  const trendAvg = calculateWeekAverages(history)
   const goals = ctx.userGoals
+  const historyDays = history.length
 
   // Goal progress helpers
   const stepPct = goals ? Math.round((today.steps / goals.stepGoal) * 100) : null
@@ -304,18 +321,18 @@ function buildHealthPrompt(ctx: HealthContext): string {
 
   prompt += `
 **Activity:**
-- Steps: ${today.steps.toLocaleString()}${stepPct !== null ? ` (${stepPct}% of ${goals!.stepGoal.toLocaleString()} goal)` : ` (weekly avg: ${weekAvg.steps.toLocaleString()})`}
-- Active Calories: ${today.activeCalories.toFixed(0)} kcal${calPct !== null ? ` (${calPct}% of ${goals!.calorieGoal} goal)` : ` (weekly avg: ${weekAvg.activeCalories.toFixed(0)})`}
+- Steps: ${today.steps.toLocaleString()}${stepPct !== null ? ` (${stepPct}% of ${goals!.stepGoal.toLocaleString()} goal)` : ` (${historyDays}-day avg: ${trendAvg.steps.toLocaleString()})`}
+- Active Calories: ${today.activeCalories.toFixed(0)} kcal${calPct !== null ? ` (${calPct}% of ${goals!.calorieGoal} goal)` : ` (${historyDays}-day avg: ${trendAvg.activeCalories.toFixed(0)})`}
 - Distance: ${(today.distanceMeters / 1000).toFixed(1)} km
 - Floors Climbed: ${today.floorsClimbed}
 - Active Minutes: ${today.activeMinutes}
 
 **Heart:**
-- Resting Heart Rate: ${today.restingHeartRate ?? "N/A"} bpm (weekly avg: ${weekAvg.restingHeartRate?.toFixed(0) ?? "N/A"})
-- HRV: ${today.avgHrv?.toFixed(0) ?? "N/A"} ms (weekly avg: ${weekAvg.avgHrv?.toFixed(0) ?? "N/A"})
+- Resting Heart Rate: ${today.restingHeartRate ?? "N/A"} bpm (${historyDays}-day avg: ${trendAvg.restingHeartRate?.toFixed(0) ?? "N/A"})
+- HRV: ${today.avgHrv?.toFixed(0) ?? "N/A"} ms (${historyDays}-day avg: ${trendAvg.avgHrv?.toFixed(0) ?? "N/A"})
 
 **Sleep:**
-- Duration: ${today.sleepDurationMinutes ? (today.sleepDurationMinutes / 60).toFixed(1) + " hours" : "N/A"}${sleepPct !== null ? ` (${sleepPct}% of ${(goals!.sleepGoalMinutes / 60).toFixed(1)}h goal)` : weekAvg.sleepDurationMinutes ? ` (weekly avg: ${(weekAvg.sleepDurationMinutes / 60).toFixed(1)} hours)` : ""}
+- Duration: ${today.sleepDurationMinutes ? (today.sleepDurationMinutes / 60).toFixed(1) + " hours" : "N/A"}${sleepPct !== null ? ` (${sleepPct}% of ${(goals!.sleepGoalMinutes / 60).toFixed(1)}h goal)` : trendAvg.sleepDurationMinutes ? ` (${historyDays}-day avg: ${(trendAvg.sleepDurationMinutes / 60).toFixed(1)} hours)` : ""}
 `
 
   if (ctx.recentSleep.length > 0) {
@@ -334,8 +351,8 @@ function buildHealthPrompt(ctx: HealthContext): string {
     }
   }
 
-  prompt += `\n**7-Day Trend Data:**\n`
-  for (const day of ctx.weekHistory) {
+  prompt += `\n**${historyDays}-Day Trend Data:**\n`
+  for (const day of history) {
     prompt += `- ${day.date}: ${day.steps} steps, ${day.activeCalories.toFixed(0)} cal, RHR ${day.restingHeartRate ?? "?"}, HRV ${day.avgHrv?.toFixed(0) ?? "?"}, Sleep ${day.sleepDurationMinutes ? (day.sleepDurationMinutes / 60).toFixed(1) + "h" : "?"}\n`
   }
 
@@ -365,12 +382,19 @@ function buildHealthPrompt(ctx: HealthContext): string {
     }
   }
 
-  prompt += `\nAnalyze this health data and provide personalized insights with recovery and strain scores.`
+  prompt += `\nAnalyze this 14-day health data and provide personalized insights with recovery and strain scores. Include a weekly_narrative insight summarising the 14-day trends.`
 
   return prompt
 }
 
-function calculateWeekAverages(history: HealthContext["weekHistory"]): {
+function calculateWeekAverages(history: Array<{
+  date: string
+  steps: number
+  activeCalories: number
+  restingHeartRate: number | null
+  avgHrv: number | null
+  sleepDurationMinutes: number | null
+}>): {
   steps: number
   activeCalories: number
   restingHeartRate: number | null
