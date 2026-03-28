@@ -1,5 +1,7 @@
 'use client'
 
+import { SummaryCard } from '@/components/ui/summary-card'
+
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
 const STATS = [
@@ -158,28 +160,6 @@ const SCIENCE_CARDS = [
 ]
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-
-function StatCard({ label, value, sub }: { label: string; value: string; sub: string }) {
-  return (
-    <div
-      style={{
-        background: '#111111',
-        border: '1px solid #1f1f1f',
-        borderRadius: 16,
-        padding: '20px 16px',
-        textAlign: 'center',
-        flex: '1 1 0',
-        minWidth: 0,
-      }}
-    >
-      <p style={{ fontSize: 26, fontWeight: 800, color: '#2563eb', margin: 0, letterSpacing: '-0.5px' }}>
-        {value}
-      </p>
-      <p style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0', margin: '4px 0 2px' }}>{label}</p>
-      <p style={{ fontSize: 11, color: '#475569', margin: 0 }}>{sub}</p>
-    </div>
-  )
-}
 
 function ScienceCard({
   emoji,
@@ -383,7 +363,7 @@ export default function RowingSciencePage() {
         {/* ── Stats row ─────────────────────────────────────────────────────── */}
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           {STATS.map((s) => (
-            <StatCard key={s.label} label={s.label} value={s.value} sub={s.sub} />
+            <SummaryCard key={s.label} title={s.label} value={s.value} subtitle={s.sub} />
           ))}
         </div>
 
