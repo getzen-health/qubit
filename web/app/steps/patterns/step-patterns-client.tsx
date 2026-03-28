@@ -120,7 +120,7 @@ export function StepPatternsClient({ data }: { data: PatternData }) {
           colorClass={consistency.color}
         />
         <SummaryCard
-          label={weekdayHigher ? 'More Active On' : 'More Active On'}
+          title={weekdayHigher ? 'More Active On' : 'More Active On'}
           value={weekdayHigher ? 'Weekdays' : 'Weekends'}
           subtitle={weekdayHigher
             ? `${fmtK(data.weekdayAvg)} vs ${fmtK(data.weekendAvg)} avg`
