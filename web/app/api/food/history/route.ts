@@ -1,16 +1,22 @@
 import { NextRequest } from 'next/server'
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
 
+const historyQuerySchema = z.object({
+  offset: z.coerce.number().int().min(0).optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+})
+
 export const GET = createSecureApiHandler(
-  { rateLimit: 'default', requireAuth: true, auditAction: 'READ', auditResource: 'food_product' },
-  async (req: NextRequest, { supabase, user }) => {
-    const { searchParams } = new URL(req.url)
-    const offset = Math.max(0, parseInt(searchParams.get('offset') ?? '0', 10))
-    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)))
+  { rateLimit: 'default', requireAuth: true, auditAction: 'READ', auditResource: 'food_product', querySchema: historyQuerySchema },
+  async (req: NextRequest, { supabase, user, query }) => {
+    const { offset: rawOffset, limit: rawLimit } = query as z.infer<typeof historyQuerySchema>
+    const offset = rawOffset ?? 0
+    const limit = Math.min(rawLimit ?? 20, 50)
 
     const { data, error } = await supabase
       .from('product_scans')
