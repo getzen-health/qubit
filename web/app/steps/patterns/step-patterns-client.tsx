@@ -1,5 +1,6 @@
 'use client'
 
+import { SummaryCard } from '@/components/ui/summary-card'
 import {
   BarChart,
   Bar,
@@ -69,22 +70,6 @@ function consistencyScore(cv: number) {
   return Math.max(0, Math.min(100, Math.round((1 - cv) * 100)))
 }
 
-interface StatCardProps {
-  label: string
-  value: string
-  sub?: string
-  color?: string
-}
-
-function StatCard({ label, value, sub, color = 'text-green-400' }: StatCardProps) {
-  return (
-    <div className="bg-surface rounded-xl border border-border p-4">
-      <p className="text-xs text-text-secondary font-medium mb-1">{label}</p>
-      <p className={`text-xl font-bold ${color}`}>{value}</p>
-      {sub && <p className="text-xs text-text-secondary mt-0.5 opacity-70">{sub}</p>}
-    </div>
-  )
-}
 
 export function StepPatternsClient({ data }: { data: PatternData }) {
   if (data.totalDays < 7) {
@@ -116,31 +101,31 @@ export function StepPatternsClient({ data }: { data: PatternData }) {
     <div className="space-y-6">
       {/* Summary stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard
-          label="Daily Average"
+        <SummaryCard
+          title="Daily Average"
           value={fmtK(data.mean)}
-          sub="steps · last 12 months"
-          color="text-green-400"
+          subtitle="steps · last 12 months"
+          colorClass="text-green-400"
         />
-        <StatCard
-          label="Goal Hit Rate"
+        <SummaryCard
+          title="Goal Hit Rate"
           value={`${data.goalHitRate}%`}
-          sub={`${data.goalHitDays} of ${data.totalDays} days ≥ ${fmtK(data.stepGoal)}`}
-          color={data.goalHitRate >= 70 ? 'text-green-400' : data.goalHitRate >= 50 ? 'text-yellow-400' : 'text-red-400'}
+          subtitle={`${data.goalHitDays} of ${data.totalDays} days ≥ ${fmtK(data.stepGoal)}`}
+          colorClass={data.goalHitRate >= 70 ? 'text-green-400' : data.goalHitRate >= 50 ? 'text-yellow-400' : 'text-red-400'}
         />
-        <StatCard
-          label="Consistency"
+        <SummaryCard
+          title="Consistency"
           value={`${consScore}/100`}
-          sub={consistency.label}
-          color={consistency.color}
+          subtitle={consistency.label}
+          colorClass={consistency.color}
         />
-        <StatCard
+        <SummaryCard
           label={weekdayHigher ? 'More Active On' : 'More Active On'}
           value={weekdayHigher ? 'Weekdays' : 'Weekends'}
-          sub={weekdayHigher
+          subtitle={weekdayHigher
             ? `${fmtK(data.weekdayAvg)} vs ${fmtK(data.weekendAvg)} avg`
             : `${fmtK(data.weekendAvg)} vs ${fmtK(data.weekdayAvg)} avg`}
-          color="text-blue-400"
+          colorClass="text-blue-400"
         />
       </div>
 
