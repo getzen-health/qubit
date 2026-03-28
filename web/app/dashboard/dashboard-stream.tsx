@@ -366,7 +366,7 @@ export function DashboardStream({
     try {
       const userApiKey = localStorage.getItem('kquarks_claude_api_key') ?? undefined
       const todaySummary = summaries[0]
-      const weekHistory = summaries.slice(1, 8)
+      const trendHistory = summaries.slice(1, 15)
       const healthContext = {
         dailySummary: {
           date: todaySummary?.date ?? '',
@@ -381,7 +381,7 @@ export function DashboardStream({
           sleepQualityScore: null,
           activeMinutes: todaySummary?.active_minutes ?? 0,
         },
-        weekHistory: weekHistory.map((s) => ({
+        trendHistory: trendHistory.map((s) => ({
           date: s.date,
           steps: s.steps,
           activeCalories: s.active_calories,
