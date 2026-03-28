@@ -203,13 +203,19 @@ export function createSecureApiHandler<TBody = unknown, TQuery = unknown>(
 }
 
 /**
- * Helper to create error response with security headers
+ * Helper to create error response with security headers.
+ * @param message Human-readable error description
+ * @param status  HTTP status code (default 400)
+ * @param code    Optional machine-readable error code (e.g. "RATE_LIMITED", "NOT_FOUND")
  */
 export function secureErrorResponse(
   message: string,
-  status: number = 400
+  status: number = 400,
+  code?: string
 ): NextResponse {
-  const response = NextResponse.json({ error: message }, { status })
+  const body: { error: string; code?: string } = { error: message }
+  if (code) body.code = code
+  const response = NextResponse.json(body, { status })
   applySecurityHeaders(response.headers)
   return response
 }

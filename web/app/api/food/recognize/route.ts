@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
@@ -100,7 +101,7 @@ Return ONLY the JSON, no other text.`,
     try {
       result = JSON.parse(jsonText)
     } catch (parseErr) {
-      console.error('[recognize] JSON parse error:', parseErr, 'Raw text:', jsonText.slice(0, 200))
+      apiLogger('[recognize] JSON parse error:', parseErr, 'Raw text:', jsonText.slice(0, 200))
       return secureErrorResponse('AI returned invalid response format', 500)
     }
 

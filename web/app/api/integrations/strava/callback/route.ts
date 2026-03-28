@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { encryptToken, isLegacyToken, migrateToken } from '@/lib/encryption'
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     // Validate environment variables
     if (!STRAVA_CLIENT_ID || !STRAVA_CLIENT_SECRET || !ENCRYPTION_KEY) {
-      console.error('Strava integration not properly configured')
+      apiLogger('Strava integration not properly configured')
       return NextResponse.json(
         { error: 'Strava integration not configured' },
         { status: 500 }
@@ -60,7 +61,7 @@ export async function GET(request: NextRequest) {
     // Verify state matches stored cookie (CSRF protection)
     const storedState = request.cookies.get('strava_oauth_state')?.value
     if (!storedState || storedState !== stateFromUrl) {
-      console.error('CSRF validation failed: state mismatch')
+      apiLogger('CSRF validation failed: state mismatch')
       return NextResponse.redirect('/settings/integrations?error=csrf_validation_failed')
     }
 
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!tokenResponse.ok) {
-      console.error('Strava token exchange failed:', await tokenResponse.text())
+      apiLogger('Strava token exchange failed:', await tokenResponse.text())
       return NextResponse.redirect(
         `/settings/integrations?error=token_exchange_failed&code=${tokenResponse.status}`
       )
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
     const { access_token, refresh_token, expires_at } = tokenData
 
     if (!access_token) {
-      console.error('No access token in Strava response')
+      apiLogger('No access token in Strava response')
       return NextResponse.redirect('/settings/integrations?error=invalid_token_response')
     }
 
@@ -101,7 +102,7 @@ export async function GET(request: NextRequest) {
         encryptedRefreshToken = encryptToken(refresh_token, ENCRYPTION_KEY)
       }
     } catch (encryptError) {
-      console.error('Token encryption failed:', encryptError)
+      apiLogger('Token encryption failed:', encryptError)
       return NextResponse.redirect('/settings/integrations?error=encryption_failed')
     }
 
@@ -122,7 +123,7 @@ export async function GET(request: NextRequest) {
       )
 
     if (dbError) {
-      console.error('Failed to store integration:', dbError)
+      apiLogger('Failed to store integration:', dbError)
       return NextResponse.redirect('/settings/integrations?error=storage_failed')
     }
 
@@ -135,7 +136,7 @@ export async function GET(request: NextRequest) {
 
     return redirectResponse
   } catch (error) {
-    console.error('Strava callback error:', error)
+    apiLogger('Strava callback error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

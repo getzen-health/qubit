@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse } from '@/lib/security'
 
@@ -23,7 +24,7 @@ export const POST = createSecureApiHandler(
       },
       { onConflict: 'user_id,endpoint' }
     )
-    if (pushErr) console.error('push subscription upsert error', pushErr)
+    if (pushErr) apiLogger('push subscription upsert error', pushErr)
 
     return secureJsonResponse({ success: true })
   }

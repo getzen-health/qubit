@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000
@@ -19,7 +20,7 @@ export const GET = createSecureApiHandler(
       .maybeSingle()
 
     if (error) {
-      console.error('[predictions] GET error:', error)
+      apiLogger('[predictions] GET error:', error)
       return secureErrorResponse('Failed to fetch prediction', 500)
     }
 
@@ -88,7 +89,7 @@ export const POST = createSecureApiHandler(
 
     if (!response.ok) {
       const text = await response.text()
-      console.error('[predictions] Edge function error:', response.status, text)
+      apiLogger('[predictions] Edge function error:', response.status, text)
       return secureErrorResponse('Failed to generate forecast. Please try again later.', 502)
     }
 

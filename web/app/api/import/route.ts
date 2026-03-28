@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { NextRequest } from 'next/server'
 import {
   createSecureApiHandler,
@@ -54,7 +55,7 @@ export const POST = createSecureApiHandler(
         status: 'failed',
         errors: parsed.errors.length ? parsed.errors : ['No records parsed'],
       })
-      if (logErr1) console.error('import_logs insert error', logErr1)
+      if (logErr1) apiLogger('import_logs insert error', logErr1)
       return secureJsonResponse({
         imported: 0,
         skipped: 0,
@@ -113,7 +114,7 @@ export const POST = createSecureApiHandler(
       status,
       errors: rowErrors.length ? rowErrors.slice(0, 20) : null,
     })
-    if (logErr2) console.error('import_logs final insert error', logErr2)
+    if (logErr2) apiLogger('import_logs final insert error', logErr2)
 
     return secureJsonResponse({ imported, skipped, errors: rowErrors, date_range: parsed.date_range })
   }

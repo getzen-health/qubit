@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -37,7 +38,7 @@ export const DELETE = createSecureApiHandler(
   async (request, { user, supabase }) => {
     const { id } = await request.json()
     const { error: suppErr } = await supabase.from('user_supplements').update({ active: false }).eq('id', id).eq('user_id', user!.id)
-    if (suppErr) console.error('supplement update error', suppErr)
+    if (suppErr) apiLogger('supplement update error', suppErr)
     return secureJsonResponse({ success: true })
   }
 )

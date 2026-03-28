@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/api-logger'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
 // GET /api/cycle/history – last 12 cycles with computed lengths
@@ -17,7 +18,7 @@ export const GET = createSecureApiHandler(
       .limit(13) // fetch one extra to compute length of the oldest visible cycle
 
     if (error) {
-      console.error('Error fetching cycle history:', error)
+      apiLogger('Error fetching cycle history:', error)
       return secureErrorResponse('Failed to fetch cycle history', 500)
     }
 
