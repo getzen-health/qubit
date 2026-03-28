@@ -59,14 +59,14 @@ function getUSDANutrient(nutrients: USDASearchFood['foodNutrients'], id: number)
 }
 
 const querySchema = z.object({
-  q: z.string().min(2, 'Query too short').max(FOOD_API_CONFIG.MAX_FOOD_NAME_LENGTH, 'Query too long'),
+  q: z.string().min(1, 'Query too short').max(200, 'Query too long'),
   page: z.coerce.number().int().min(1).max(FOOD_API_CONFIG.MAX_SEARCH_PAGE).default(1),
 })
 
 export const GET = createSecureApiHandler(
   {
     rateLimit: 'foodScan',
-    requireAuth: true,
+    requireAuth: false,
     querySchema,
     auditAction: 'READ',
     auditResource: 'food_product',
