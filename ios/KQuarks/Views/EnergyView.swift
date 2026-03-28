@@ -255,6 +255,34 @@ struct EnergyView: View {
         }
     }
 
+    private var recentCheckins: [EnergyCheckin] { Array(vm.checkins.prefix(20)) }
+
+    @ViewBuilder
+    private func checkinRow(_ checkin: EnergyCheckin) -> some View {
+        HStack(spacing: 12) {
+            Text(checkin.level.emoji).font(.title3)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(checkin.level.label)
+                    .font(.subheadline)
+                    .foregroundStyle(checkin.level.color)
+                if !checkin.note.isEmpty {
+                    Text(checkin.note)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            Text(checkin.timestamp.kqFormatted(dateStyle: .medium, timeStyle: .short))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                vm.checkins.removeAll { $0.id == checkin.id }
+            } label: { Label("Delete", systemImage: "trash") }
+        }
+    }
+
     private var historySection: some View {
         Section("History") {
             if vm.checkins.isEmpty {
@@ -262,27 +290,9 @@ struct EnergyView: View {
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
             } else {
-                ForEach(vm.checkins.prefix(20)) { checkin in
-                    HStack(spacing: 12) {
-                        Text(checkin.level.emoji).font(.title3)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(checkin.level.label)
-                                .font(.subheadline)
-                                .foregroundStyle(checkin.level.color)
-                            if !checkin.note.isEmpty {
-                                Text(checkin.note)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        Spacer()
-                        Text(checkin.timestamp.kqFormatted(dateStyle: .abbreviated, timeStyle: .short))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .onDelete { indexSet in
-                    vm.checkins.remove(atOffsets: indexSet)
+                let items = recentCheckins
+                ForEach(items) { checkin in
+                    checkinRow(checkin)
                 }
             }
         }
