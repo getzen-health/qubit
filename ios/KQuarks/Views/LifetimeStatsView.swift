@@ -235,7 +235,6 @@ struct LifetimeStatsView: View {
             if let year = bestYear {
                 factLine("Best year: \(year) with \(bestYearSessions) sessions")
             }
-            }
         }
         .padding()
         .background(Color.teal.opacity(0.08))
