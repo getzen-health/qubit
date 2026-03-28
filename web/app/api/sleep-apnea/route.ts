@@ -1,4 +1,13 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+
+const postSleepApneaSchema = z.object({
+  stopbang_score: z.number().int().min(0).max(8),
+  ess_score: z.number().int().min(0).max(24).optional(),
+  stopbang_risk: z.enum(['Low', 'Intermediate', 'High']),
+  ess_category: z.string().max(50).nullable().optional(),
+  answers: z.record(z.string(), z.unknown()).nullable().optional(),
+})
 
 export const GET = createSecureApiHandler(
   { rateLimit: 'healthData', requireAuth: true },
@@ -16,19 +25,9 @@ export const GET = createSecureApiHandler(
 )
 
 export const POST = createSecureApiHandler(
-  { rateLimit: 'healthData', requireAuth: true },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
-    const { stopbang_score, ess_score, stopbang_risk, ess_category, answers } = body
-
-    if (
-      typeof stopbang_score !== 'number' ||
-      stopbang_score < 0 ||
-      stopbang_score > 8 ||
-      !stopbang_risk
-    ) {
-      return secureErrorResponse('Invalid payload', 400)
-    }
+  { rateLimit: 'healthData', requireAuth: true, bodySchema: postSleepApneaSchema },
+  async (_request, { user, supabase, body }) => {
+    const { stopbang_score, ess_score, stopbang_risk, ess_category, answers } = body as z.infer<typeof postSleepApneaSchema>
 
     const { data, error } = await supabase
       .from('sleep_apnea_screens')
