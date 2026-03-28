@@ -59,6 +59,8 @@ const moreCategories: MoreCategory[] = [
       { href: '/glucose', icon: '🩸', label: 'Glucose' },
       { href: '/sleep-analytics', icon: BedDouble, label: 'Sleep Analytics' },
       { href: '/vo2max', icon: Wind, label: 'VO2 Max' },
+      { href: '/environment', icon: '🌍', label: 'Environment' },
+      { href: '/noise-exposure', icon: '👂', label: 'Hearing' },
     ],
   },
   {
@@ -109,7 +111,6 @@ const moreCategories: MoreCategory[] = [
       { href: '/biological-age', icon: Dna, label: 'Bio Age' },
       { href: '/correlations', icon: BarChart2, label: 'Patterns' },
       { href: '/sun-exposure', icon: '☀️', label: 'Sun' },
-      { href: '/environment', icon: Wind, label: 'Air & UV' },
       { href: '/social', icon: Users, label: 'Social' },
     ],
   },

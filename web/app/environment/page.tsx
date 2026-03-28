@@ -89,6 +89,64 @@ export default function EnvironmentPage() {
     setIndoorLogs(logsData.indoorLogs)
   }
 
+  // UV risk level derived from index value
+  function uvRisk(uv: number): { label: string; color: string; bg: string } {
+    if (uv <= 2) return { label: 'Low', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' }
+    if (uv <= 5) return { label: 'Moderate', color: '#eab308', bg: 'rgba(234,179,8,0.12)' }
+    if (uv <= 7) return { label: 'High', color: '#f97316', bg: 'rgba(249,115,22,0.12)' }
+    if (uv <= 10) return { label: 'Very High', color: '#ef4444', bg: 'rgba(239,68,68,0.12)' }
+    return { label: 'Extreme', color: '#a855f7', bg: 'rgba(168,85,247,0.12)' }
+  }
+
+  function UVIndexCard({ uvIndex, uvCategory }: { uvIndex: number; uvCategory: string | null }) {
+    const risk = uvRisk(uvIndex)
+    const advice =
+      uvIndex >= 11 ? '🧴 SPF 50+ + hat + avoid midday sun' :
+      uvIndex >= 8  ? '🧴 SPF 30+ required, limit exposure' :
+      uvIndex >= 6  ? '🧴 SPF 30+ recommended' :
+      uvIndex >= 3  ? '🕶️ Sunglasses advised' :
+      '✅ No protection needed'
+    return (
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div
+          className="flex flex-col items-center justify-center rounded-2xl px-8 py-5 min-w-[140px]"
+          style={{ background: risk.bg }}
+        >
+          <span className="text-5xl mb-1">☀️</span>
+          <span className="text-4xl font-bold" style={{ color: risk.color }}>{uvIndex}</span>
+          <span className="text-base font-semibold mt-1" style={{ color: risk.color }}>{risk.label}</span>
+          {uvCategory && uvCategory !== risk.label && (
+            <span className="text-xs text-text-secondary mt-0.5">{uvCategory}</span>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="flex gap-2 flex-wrap">
+            {([
+              [0, 2, '#22c55e', 'Low'],
+              [3, 5, '#eab308', 'Moderate'],
+              [6, 7, '#f97316', 'High'],
+              [8, 10, '#ef4444', 'Very High'],
+              [11, 99, '#a855f7', 'Extreme'],
+            ] as [number, number, string, string][]).map(([lo, hi, color, name]) => (
+              <span
+                key={name}
+                className="px-2 py-0.5 rounded-full text-xs font-medium"
+                style={{
+                  background: uvIndex >= lo && uvIndex <= hi ? color + '33' : 'transparent',
+                  color: uvIndex >= lo && uvIndex <= hi ? color : 'var(--text-secondary)',
+                  border: `1px solid ${uvIndex >= lo && uvIndex <= hi ? color + '88' : 'transparent'}`,
+                }}
+              >
+                {name} ({lo}{hi < 99 ? `–${hi}` : '+'})
+              </span>
+            ))}
+          </div>
+          <span className="text-text-secondary text-xs">{advice}</span>
+        </div>
+      </div>
+    )
+  }
+
   // AQI badge
   function AQIBadge({ aqi }: { aqi: number | null }) {
     if (aqi == null) return <span className="text-text-secondary">No data</span>
@@ -143,25 +201,25 @@ export default function EnvironmentPage() {
               <span className="text-text-secondary text-xs mt-2">{getAQILevel(outdoor.aqi).exerciseAdvice}</span>
             )}
           </div>
-          {outdoor?.uvIndex != null && (
-            <div className="flex flex-col items-center justify-center bg-surface-secondary rounded-2xl px-5 py-3 min-w-[110px]">
-              <span className="text-xs text-text-secondary mb-1">UV Index</span>
-              <span className={`text-3xl font-bold ${
-                (outdoor.uvIndex ?? 0) < 3 ? 'text-green-400' :
-                (outdoor.uvIndex ?? 0) < 6 ? 'text-yellow-400' :
-                (outdoor.uvIndex ?? 0) < 8 ? 'text-orange-400' :
-                'text-red-400'
-              }`}>{outdoor.uvIndex}</span>
-              <span className="text-xs font-medium mt-1">{outdoor.uvCategory}</span>
-              <span className="text-xs text-text-secondary text-center mt-1">
-                {(outdoor.uvIndex ?? 0) >= 6 ? '🧴 SPF 30+ recommended' : (outdoor.uvIndex ?? 0) >= 3 ? '🕶️ Sunglasses advised' : '✅ Low UV risk'}
-              </span>
-            </div>
-          )}
+          
         </div>
       </section>
 
-      {/* Indoor AQI Section */}
+      {/* UV Index Section */}
+      <section className="bg-surface border border-border rounded-2xl p-4">
+        <h2 className="text-xl font-semibold mb-3">☀️ UV Index</h2>
+        {outdoor === null && loading ? (
+          <div className="text-text-secondary text-sm">Loading UV data…</div>
+        ) : outdoor?.uvIndex != null ? (
+          <UVIndexCard uvIndex={outdoor.uvIndex} uvCategory={outdoor.uvCategory} />
+        ) : (
+          <div className="flex flex-col items-center gap-2 py-6 text-center">
+            <span className="text-4xl">☀️</span>
+            <span className="text-text-secondary text-sm font-medium">UV data via GPS</span>
+            <span className="text-text-secondary text-xs">Tap &quot;Get My Location&quot; above to load real-time UV index</span>
+          </div>
+        )}
+      </section>
       <section className="bg-surface border border-border rounded-2xl p-4">
         <h2 className="text-xl font-semibold mb-2">Indoor Air Quality</h2>
         <form ref={formRef} className="flex flex-col gap-2 md:flex-row md:items-end" onSubmit={handleLog}>
