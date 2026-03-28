@@ -8,7 +8,7 @@ struct EditProfileView: View {
     @State private var heightCm: String = ""
     @State private var weightKg: String = ""
 
-    @State private var isLoading = false
+    @State private var isLoading = true
     @State private var isSaving = false
     @State private var errorMessage: String?
     @State private var successMessage: String?

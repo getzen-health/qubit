@@ -230,7 +230,7 @@ struct EnergyView: View {
                         .foregroundStyle(Color.yellow)
                     }
                 }
-                .chartYScale(domain: 0...7)
+                .chartYScale(domain: 0...max(7.0, (vm.last7Days.map(\.avg).max() ?? 7.0) * 1.1))
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day)) { value in
                         AxisValueLabel(format: .dateTime.weekday(.abbreviated))
