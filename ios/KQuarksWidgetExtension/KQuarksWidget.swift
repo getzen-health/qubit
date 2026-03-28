@@ -182,6 +182,8 @@ struct SmallWidgetView: View {
         .padding(12)
         .containerBackground(Color(.systemBackground), for: .widget)
         .widgetURL(URL(string: "kquarks://metric/steps"))
+    }
+}
 
 struct MediumWidgetView: View {
     let entry: KQuarksEntry
@@ -251,7 +253,10 @@ struct MediumWidgetView: View {
             Spacer()
         }
         .padding(16)
+        .containerBackground(Color(.systemBackground), for: .widget)
         .widgetURL(URL(string: "kquarks://metric/steps"))
+    }
+}
 
 struct AccessoryCircularView: View {
     let entry: KQuarksEntry
@@ -270,6 +275,8 @@ struct AccessoryCircularView: View {
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
         }
         .widgetURL(URL(string: "kquarks://metric/steps"))
+    }
+}
 
 struct AccessoryRectangularView: View {
     let entry: KQuarksEntry
@@ -304,7 +311,10 @@ struct AccessoryRectangularView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
         .widgetURL(URL(string: "kquarks://metric/sleep"))
+    }
+}
 
 struct AccessoryInlineView: View {
     let entry: KQuarksEntry
@@ -493,6 +503,10 @@ struct LargeWidgetView: View {
                 .frame(height: 60)
             }
         .widgetURL(URL(string: "kquarks://metric/recovery"))
+        }
+        .containerBackground(Color(.systemBackground), for: .widget)
+    }
+}
 
 struct KQuarksWidgetEntryView: View {
     let entry: KQuarksEntry

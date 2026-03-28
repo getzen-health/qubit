@@ -9,7 +9,7 @@ import {
   Pill, Trophy, Bot, CheckSquare,
   Wind, Heart, BedDouble, Download, Upload, Ruler, Activity,
   Stethoscope, Brain, Leaf, Zap, Dna,
-  UtensilsCrossed, Package, Clock, Search,
+  UtensilsCrossed, Package, Clock, Search, CalendarDays,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -103,6 +103,7 @@ const moreCategories: MoreCategory[] = [
   {
     title: 'Insights',
     items: [
+      { href: '/weekly-report', icon: CalendarDays, label: 'Weekly Report' },
       { href: '/coach', icon: Bot, label: 'AI Coach' },
       { href: '/longevity', icon: Dna, label: 'Longevity' },
       { href: '/biological-age', icon: Dna, label: 'Bio Age' },
