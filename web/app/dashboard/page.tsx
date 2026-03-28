@@ -10,6 +10,7 @@ import { HabitsTodayCard } from '@/components/habits-today-card'
 import XpCard from '@/components/xp-card'
 import PrescriptionCard from './components/prescription-card'
 import { VoiceLogger } from '@/components/voice-logger'
+import { QuickLogCard } from './components/quick-log-card'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -61,6 +62,7 @@ export default async function DashboardPage() {
       <div className="mb-4">
         <XpCard totalXP={stats?.total_xp ?? 0} currentStreak={stats?.current_streak ?? 0} />
       </div>
+      <QuickLogCard />
       <div className="mb-4">
         <PrescriptionCard />
       </div>
