@@ -665,6 +665,7 @@ function EnterResultsTab({ onSaved }: { onSaved: (r: LabResult) => void }) {
             <input
               type="date"
               required
+              aria-label="Test Date"
               value={form.test_date}
               onChange={(e) => setForm((f) => ({ ...f, test_date: e.target.value }))}
               className="w-full bg-surface-secondary border border-border rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
@@ -676,6 +677,7 @@ function EnterResultsTab({ onSaved }: { onSaved: (r: LabResult) => void }) {
               <label className="block text-xs font-medium text-text-secondary mb-1">Panel Name</label>
               <input
                 type="text"
+                aria-label="Panel Name"
                 placeholder="e.g. Comprehensive Metabolic"
                 value={form.panel_name}
                 onChange={(e) => setForm((f) => ({ ...f, panel_name: e.target.value }))}
@@ -686,6 +688,7 @@ function EnterResultsTab({ onSaved }: { onSaved: (r: LabResult) => void }) {
               <label className="block text-xs font-medium text-text-secondary mb-1">Lab Name</label>
               <input
                 type="text"
+                aria-label="Lab Name"
                 placeholder="e.g. LabCorp"
                 value={form.lab_name}
                 onChange={(e) => setForm((f) => ({ ...f, lab_name: e.target.value }))}
@@ -698,6 +701,7 @@ function EnterResultsTab({ onSaved }: { onSaved: (r: LabResult) => void }) {
             <label className="block text-xs font-medium text-text-secondary mb-1">Ordering Provider</label>
             <input
               type="text"
+              aria-label="Ordering Provider"
               placeholder="e.g. Dr. Smith"
               value={form.ordering_provider}
               onChange={(e) => setForm((f) => ({ ...f, ordering_provider: e.target.value }))}
@@ -737,6 +741,7 @@ function EnterResultsTab({ onSaved }: { onSaved: (r: LabResult) => void }) {
                 <input
                   type="number"
                   step="any"
+                  aria-label={`${marker.name} (${marker.unit})`}
                   placeholder={`${marker.optimalLow}–${marker.optimalHigh}`}
                   value={form.markers[marker.id] ?? ''}
                   onChange={(e) =>
@@ -867,6 +872,7 @@ function VisitsTab({
               <input
                 type="date"
                 required
+                aria-label="Visit Date"
                 value={form.visit_date}
                 onChange={(e) => setForm((f) => ({ ...f, visit_date: e.target.value }))}
                 className="w-full bg-surface-secondary border border-border rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
@@ -876,6 +882,7 @@ function VisitsTab({
               <label className="block text-xs font-medium text-text-secondary mb-1">Follow-up Date</label>
               <input
                 type="date"
+                aria-label="Follow-up Date"
                 value={form.follow_up_date}
                 onChange={(e) => setForm((f) => ({ ...f, follow_up_date: e.target.value }))}
                 className="w-full bg-surface-secondary border border-border rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
@@ -888,6 +895,7 @@ function VisitsTab({
               <label className="block text-xs font-medium text-text-secondary mb-1">Provider Name</label>
               <input
                 type="text"
+                aria-label="Provider Name"
                 placeholder="Dr. Jane Smith"
                 value={form.provider_name}
                 onChange={(e) => setForm((f) => ({ ...f, provider_name: e.target.value }))}
@@ -917,6 +925,7 @@ function VisitsTab({
             <label className="block text-xs font-medium text-text-secondary mb-1">Chief Complaint / Reason</label>
             <input
               type="text"
+              aria-label="Chief Complaint / Reason"
               placeholder="e.g. Annual checkup, fatigue workup"
               value={form.chief_complaint}
               onChange={(e) => setForm((f) => ({ ...f, chief_complaint: e.target.value }))}
@@ -930,6 +939,7 @@ function VisitsTab({
             </label>
             <input
               type="text"
+              aria-label="Diagnoses (comma-separated)"
               placeholder="e.g. Hypothyroidism, Vitamin D deficiency"
               value={form.diagnoses}
               onChange={(e) => setForm((f) => ({ ...f, diagnoses: e.target.value }))}

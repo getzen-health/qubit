@@ -29,6 +29,7 @@ function MoodSlider({
       </div>
       <input
         type="range" min={1} max={10} value={value}
+        aria-label={label}
         onChange={e => onChange(Number(e.target.value))}
         className="w-full accent-primary"
       />
@@ -165,6 +166,7 @@ function GratitudeForm({
             <label className="text-xs text-text-secondary">How did it make you feel?</label>
             <input
               type="text"
+              aria-label="How did it make you feel?"
               className="w-full rounded-xl border border-border bg-background p-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-primary/30"
               value={item.feeling}
               onChange={e => update(i, 'feeling', e.target.value)}
@@ -206,6 +208,7 @@ function CBTForm({
       </div>
       <input
         type="range" min={0} max={100} value={(record[key] as number) ?? 50}
+        aria-label={label}
         onChange={e => updateField(key, Number(e.target.value))}
         className="w-full accent-primary"
       />
@@ -238,12 +241,14 @@ function CBTForm({
           <textarea
             className="w-full rounded-xl border border-border bg-background p-2 text-sm text-text-primary resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
             rows={4}
+            aria-label={current.label}
             value={(record[current.key as keyof typeof record] as string) ?? ''}
             onChange={e => updateField(current.key, e.target.value)}
           />
         ) : (
           <input
             type="text"
+            aria-label={current.label}
             className="w-full rounded-xl border border-border bg-background p-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-primary/30"
             value={(record[current.key as keyof typeof record] as string) ?? ''}
             onChange={e => updateField(current.key, e.target.value)}
@@ -297,6 +302,7 @@ function TagsInput({ tags, onChange }: { tags: string[]; onChange: (t: string[])
       <div className="flex gap-1">
         <input
           type="text"
+          aria-label="Tags"
           className="flex-1 rounded-xl border border-border bg-surface p-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-primary/30"
           placeholder="Add tags (comma separated)"
           value={input}
@@ -618,6 +624,7 @@ function HistoryTab({ entries }: { entries: JournalEntry[] }) {
       {/* Search & filter */}
       <input
         type="text"
+        aria-label="Search journal entries"
         placeholder="Search entries…"
         value={search}
         onChange={e => setSearch(e.target.value)}
