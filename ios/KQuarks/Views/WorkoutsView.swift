@@ -96,12 +96,10 @@ struct WorkoutsView: View {
                             Image(systemName: "calendar.badge.clock")
                         }
                         NavigationLink(destination: WorkoutAnalyticsView()) {
-    Image(systemName: "chart.xyaxis.line")
-}
-NavigationLink(destination: HRZonesView()) {
-    Image(systemName: "heart.fill")
-}
                             Image(systemName: "chart.xyaxis.line")
+                        }
+                        NavigationLink(destination: HRZonesView()) {
+                            Image(systemName: "heart.fill")
                         }
                     }
                 }
