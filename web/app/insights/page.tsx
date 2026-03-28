@@ -45,6 +45,7 @@ export default function InsightsPage() {
   const supabase = createClient()
 
   const fetchInsights = useCallback(async (userId: string) => {
+    if (!supabase) return
     const { data } = await supabase
       .from('health_insights')
       .select('*')
@@ -55,13 +56,14 @@ export default function InsightsPage() {
   }, [supabase])
 
   useEffect(() => {
+    if (!supabase) return
     supabase.auth.getUser().then(async ({ data }: UserResponse) => {
       const user = data.user
       if (!user) return
       await fetchInsights(user.id)
       setLoading(false)
     })
-  }, [fetchInsights, supabase.auth])
+  }, [fetchInsights, supabase])
 
   const handleGenerate = async () => {
     if (cooldownSecs > 0 || generating) return

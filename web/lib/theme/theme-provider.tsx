@@ -75,6 +75,7 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
   // If the server value differs from localStorage, apply and persist it locally.
   useEffect(() => {
     const supabase = createClient()
+    if (!supabase) return
 
     const {
       data: { subscription },
@@ -137,6 +138,7 @@ export function ThemeProvider({ children, defaultTheme }: ThemeProviderProps) {
     setTheme((prev) => ({ ...prev, appearanceMode: mode }))
     // Fire-and-forget save to Supabase
     const supabase = createClient()
+    if (!supabase) return
     supabase.auth.getUser().then(({ data }: UserResponse) => {
       if (data.user) {
         saveThemeToServer(supabase, data.user.id, mode).catch(() => {})
