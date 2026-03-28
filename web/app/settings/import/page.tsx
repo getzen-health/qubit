@@ -22,8 +22,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export const metadata = { title: "Import Health Data" }
-
 export default function ImportPage() {
   // Apple Health
   const [appleFile, setAppleFile] = useState<File | null>(null)
