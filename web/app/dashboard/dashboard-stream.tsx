@@ -742,7 +742,10 @@ export function DashboardStream({
             </Link>
             <button
               type="button"
-              onClick={() => setShowShareCard(true)}
+              onClick={() => {
+                const shareDate = today?.date ?? new Date().toISOString().slice(0, 10)
+                window.open(`/share/${user.id}/${shareDate}`, '_blank', 'noopener,noreferrer')
+              }}
               className="p-2 rounded-lg hover:bg-surface-secondary transition-colors"
               title="Share today's stats"
             >
