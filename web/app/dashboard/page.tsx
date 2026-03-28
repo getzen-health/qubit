@@ -47,7 +47,7 @@ export default async function DashboardPage() {
       .from('user_profiles')
       .select('onboarding_completed')
       .eq('user_id', user.id)
-      .single(),
+      .maybeSingle(),
     supabase
       .from('user_streaks')
       .select('*')
@@ -58,6 +58,10 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .single(),
   ])
+
+  if (!profile?.onboarding_completed) {
+    redirect('/onboarding')
+  }
 
   return (
     <>
@@ -85,17 +89,6 @@ export default async function DashboardPage() {
           </div>
         </a>
       </div>
-      {!profile?.onboarding_completed && (
-        <div className="bg-accent/8 border border-accent/30 px-4 py-3 rounded-2xl mb-4 flex items-center justify-between">
-          <span className="text-sm text-text-primary">Complete your profile for personalized insights.</span>
-          <a
-            href="/onboarding"
-            className="ml-4 px-3 py-1.5 bg-accent text-accent-foreground rounded-xl text-xs font-semibold hover:opacity-90 transition-opacity"
-          >
-            Get Started
-          </a>
-        </div>
-      )}
       <Suspense fallback={<DashboardDataSkeleton />}>
         <DashboardDataLoader user={user} />
       </Suspense>
