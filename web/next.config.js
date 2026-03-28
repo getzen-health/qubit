@@ -1,9 +1,38 @@
 const { withSentryConfig } = require('@sentry/nextjs')
 
+const cspHeader = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://world.openfoodfacts.org https://api.fda.gov https://*.sentry.io",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join('; ')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   turbopack: {},
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Content-Security-Policy', value: cspHeader },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), interest-cohort=()' },
+          { key: 'X-DNS-Prefetch-Control', value: 'off' },
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.openfoodfacts.org' },
