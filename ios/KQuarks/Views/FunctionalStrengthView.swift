@@ -158,8 +158,6 @@ struct FunctionalStrengthView: View {
     }
 
     private var recentSessionsCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Sessions").font(.headline)
@@ -176,7 +174,7 @@ struct FunctionalStrengthView: View {
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date)).font(.caption).frame(width: 65, alignment: .leading)
+                        Text(s.date.kqFormat("MMM d")).font(.caption).frame(width: 65, alignment: .leading)
                         Text(String(format: "%.0f", s.durationMins)).font(.caption.monospacedDigit()).frame(width: 38, alignment: .trailing)
                         Text(String(format: "%.0f", s.kcal)).font(.caption.monospacedDigit()).foregroundStyle(.orange).frame(width: 45, alignment: .trailing)
                         Text(String(format: "%.1f", s.kcalPerMin)).font(.caption.monospacedDigit()).foregroundStyle(.yellow).frame(width: 45, alignment: .trailing)

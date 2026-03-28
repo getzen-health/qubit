@@ -339,7 +339,6 @@ struct RestingHRDeepDiveView: View {
         let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
         let bpmUnit = HKUnit.count().unitDivided(by: .minute())
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(sampleType: rhrType,
@@ -376,7 +375,7 @@ struct RestingHRDeepDiveView: View {
         // Monthly stats
         var mMap: [String: (Date, [Double])] = [:]
         for r in allReadings {
-            let mk = df.string(from: r.date)
+            let mk = r.date.kqFormat("yyyy-MM")
             let ms = cal.date(from: cal.dateComponents([.year, .month], from: r.date)) ?? r.date
             var cur = mMap[mk] ?? (ms, [])
             cur.1.append(r.bpm)

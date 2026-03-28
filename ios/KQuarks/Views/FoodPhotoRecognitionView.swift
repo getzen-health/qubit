@@ -387,7 +387,7 @@ private struct FoodResultRow: View {
                 food.isSelected.toggle()
             } label: {
                 Image(systemName: food.isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(food.isSelected ? .accentColor : .secondary)
+                    .foregroundStyle(food.isSelected ? Color.accentColor : Color.secondary)
                     .font(.title3)
             }
             .buttonStyle(.plain)

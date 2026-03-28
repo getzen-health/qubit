@@ -460,7 +460,7 @@ struct FastingInsightsView: View {
             var current = 0
             for i in 1...365 {
                 guard let d = cal.date(byAdding: .day, value: -i, to: Date()) else { break }
-                let ds = df.string(from: d)
+                let ds = d.kqFormat("yyyy-MM-dd")
                 if fastDates.contains(ds) { current += 1 } else { break }
             }
             currentStreak = current

@@ -1,6 +1,7 @@
 import ActivityKit
 import Foundation
 
+#if !targetEnvironment(macCatalyst)
 struct FastingLiveActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         var elapsedSeconds: Int
@@ -10,3 +11,4 @@ struct FastingLiveActivityAttributes: ActivityAttributes {
     var startTime: Date
     var goal: String // "16:8", "18:6", "24h"
 }
+#endif

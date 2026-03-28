@@ -51,7 +51,7 @@ final class CrashReportingService: NSObject, MXMetricManagerSubscriber {
             "exception_type": crash.exceptionType?.intValue ?? 0,
             "termination_reason": crash.terminationReason ?? "",
             "os_version": crash.metaData.osVersion,
-            "app_version": crash.metaData.applicationVersion,
+            "app_version": crash.metaData.applicationBuildVersion,
             "timestamp": ISO8601DateFormatter().string(from: timestamp),
             "call_stack": crash.callStackTree.jsonRepresentation().prefix(10000)
         ]

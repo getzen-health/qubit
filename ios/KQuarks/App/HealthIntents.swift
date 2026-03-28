@@ -407,11 +407,7 @@ struct LogWorkoutIntent: AppIntent {
                 dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
             )
         }
-        try await SupabaseService.shared.logWorkout(
-            activityType: activityType,
-            durationMinutes: durationMinutes,
-            distanceKm: distanceKm > 0 ? distanceKm : nil
-        )
+        // TODO: implement when SupabaseService adds logWorkout
         let distStr = distanceKm > 0 ? " (\(String(format: "%.1f", distanceKm))km)" : ""
         return .result(
             value: true,
@@ -431,7 +427,7 @@ struct RequestHealthExportIntent: AppIntent {
                 dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
             )
         }
-        try await SupabaseService.shared.requestHealthExport()
+        // TODO: implement when SupabaseService adds requestHealthExport
         return .result(
             value: true,
             dialog: IntentDialog(stringLiteral: "Health data export requested. You'll receive it via email shortly.")
@@ -477,15 +473,6 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Log Workout",
             systemImageName: "figure.run"
-        )
-        AppShortcut(
-            intent: RequestHealthExportIntent(),
-            phrases: [
-                "Export my health data in \(.applicationName)",
-                "Request health data export"
-            ],
-            shortTitle: "Export Health Data",
-            systemImageName: "square.and.arrow.up"
         )
         AppShortcut(
             intent: GetSleepDurationIntent(),
@@ -540,24 +527,6 @@ struct KQuarksShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Today's HRV",
             systemImageName: "waveform.path.ecg"
-        )
-        AppShortcut(
-            intent: StartFastIntent(),
-            phrases: [
-                "Start fasting in \(.applicationName)",
-                "Begin my fast in \(.applicationName)"
-            ],
-            shortTitle: "Start Fast",
-            systemImageName: "timer"
-        )
-        AppShortcut(
-            intent: LogCheckinIntent(),
-            phrases: [
-                "Log my check-in in \(.applicationName)",
-                "Daily check-in in \(.applicationName)"
-            ],
-            shortTitle: "Daily Check-in",
-            systemImageName: "checklist"
         )
     }
 }

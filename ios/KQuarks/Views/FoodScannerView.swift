@@ -103,7 +103,6 @@ struct FoodScannerView: View {
         }
     }
 }
-}
 
 // MARK: - ProductDetailView
 
@@ -117,6 +116,7 @@ struct ProductDetailView: View {
     @State private var isLoadingAlternatives = false
     @State private var showComparison = false
     @State private var servings: Double = 1.0
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -163,7 +163,7 @@ struct ProductDetailView: View {
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(Color(.secondarySystemBackground))
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(Color.accentColor)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -645,7 +645,7 @@ final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOut
         let output = AVCaptureMetadataOutput()
         session.addOutput(output)
         output.setMetadataObjectsDelegate(self, queue: .main)
-        output.metadataObjectTypes = [.ean8, .ean13, .upca, .upce, .code128, .code39, .qr]
+        output.metadataObjectTypes = [.ean8, .ean13, .upce, .code128, .code39, .qr]
 
         let preview = AVCaptureVideoPreviewLayer(session: session)
         preview.frame = view.layer.bounds

@@ -1,5 +1,7 @@
 import Foundation
 import HealthKit
+import CoreLocation
+import CoreLocation
 
 /**
  HealthKit Integration Service
@@ -121,7 +123,9 @@ class HealthKitService {
             types.insert(HKQuantityType(.runningVerticalOscillation))
             types.insert(HKQuantityType(.runningGroundContactTime))
             types.insert(HKQuantityType(.runningPower))
+            #if !targetEnvironment(macCatalyst)
             types.insert(HKQuantityType(.runningCadence))
+            #endif
         }
 
         // Mobility (iPhone walking metrics, iOS 14+)
@@ -974,31 +978,28 @@ class HealthKitService {
 
     func fetchWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocationCoordinate2D] {
         guard isHealthDataAvailable else { throw HealthKitError.notAvailable }
-        
-        let query = HKQuery.predicateForWorkout(with: workout.workoutActivityType)
-        let predicate = HKQuery.predicateForSamples(
-            withStart: workout.startDate,
-            end: workout.endDate,
-            options: .strictStartDate
-        )
-        let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [query, predicate])
-        
-        let samples = try await healthStore.samples(
-            matching: compound,
-            with: HKWorkoutRoute.self
-        )
-        
-        var allCoordinates: [CLLocationCoordinate2D] = []
-        
-        if let workoutRoute = samples.first as? HKWorkoutRoute {
-            try await workoutRoute.locations(between: workout.startDate, and: workout.endDate) { locations in
-                if let locations = locations {
-                    allCoordinates.append(contentsOf: locations.map { $0.coordinate })
+
+        let routeType = HKSeriesType.workoutRoute()
+        let predicate = HKQuery.predicateForObjects(from: workout)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, error in
+                if let error = error { continuation.resume(throwing: error); return }
+                guard let routes = samples as? [HKWorkoutRoute], let route = routes.first else {
+                    continuation.resume(returning: []); return
                 }
+                var allCoordinates: [CLLocationCoordinate2D] = []
+                let routeQuery = HKWorkoutRouteQuery(route: route) { _, locations, done, error in
+                    if let error = error { return }
+                    if let locations = locations {
+                        allCoordinates.append(contentsOf: locations.map { $0.coordinate })
+                    }
+                    if done { continuation.resume(returning: allCoordinates) }
+                }
+                self.healthStore.execute(routeQuery)
             }
+            self.healthStore.execute(query)
         }
-        
-        return allCoordinates
     }
 
     // MARK: - Workout Logging

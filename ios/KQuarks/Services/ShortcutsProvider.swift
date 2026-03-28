@@ -28,20 +28,4 @@ struct GetStepsIntent: AppIntent {
     }
 }
 
-@available(iOS 16.0, *)
-struct KQuarksShortcuts: AppShortcutsProvider {
-    static var appShortcuts: [AppShortcut] {
-        AppShortcut(
-            intent: LogMoodIntent(),
-            phrases: ["Log my mood in \(.applicationName)", "Track mood with \(.applicationName)"],
-            shortTitle: "Log Mood",
-            systemImageName: "face.smiling"
-        )
-        AppShortcut(
-            intent: GetStepsIntent(),
-            phrases: ["How many steps today in \(.applicationName)", "Get my steps from \(.applicationName)"],
-            shortTitle: "Today's Steps",
-            systemImageName: "figure.walk"
-        )
-    }
-}
+

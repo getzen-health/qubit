@@ -38,7 +38,7 @@ struct ScanHistoryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding()
                 } else {
-                    List(items) { item in
+                    List { ForEach(items, id: \.id) { item in
                         HStack(spacing: 12) {
                             // Score badge
                             if let score = item.score {
@@ -74,16 +74,15 @@ struct ScanHistoryView: View {
                                 }
                             }
                             Spacer()
-                            Button(action: {
-                                let shareText = "I just checked \(item.product_name) on KQuarks — it scored \(item.score ?? 0)/100 for health! Try it:"
-                                ShareHelper.share(items: [shareText])
-                            }) {
+                            let shareText = "I just checked \(item.product_name) on KQuarks — it scored \(item.score ?? 0)/100 for health!"
+                            ShareLink(item: shareText) {
                                 Image(systemName: "square.and.arrow.up")
-                                    .foregroundStyle(.accentColor)
+                                    .foregroundStyle(Color.accentColor)
                             }
                         }
                         .padding(.vertical, 4)
-                    }
+                    }  // end ForEach
+                     }
                     .listStyle(.plain)
                 }
             }

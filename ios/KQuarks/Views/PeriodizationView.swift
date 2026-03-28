@@ -306,8 +306,6 @@ struct PeriodizationView: View {
         let recentBlocks = phaseBlocks.suffix(6)
         guard !recentBlocks.isEmpty else { return AnyView(EmptyView()) }
 
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return AnyView(VStack(alignment: .leading, spacing: 8) {
             Text("Recent Training Blocks")
@@ -324,7 +322,7 @@ struct PeriodizationView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(block.phase.label)
                                 .font(.subheadline.weight(.medium))
-                            Text("\(df.string(from: block.startDate)) – \(df.string(from: block.endDate))")
+                            Text("\(block.startDate.kqFormat("MMM d")) – \(block.endDate.kqFormat("MMM d"))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

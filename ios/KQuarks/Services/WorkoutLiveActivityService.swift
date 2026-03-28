@@ -2,6 +2,7 @@ import ActivityKit
 import HealthKit
 import Foundation
 
+#if !targetEnvironment(macCatalyst)
 @available(iOS 16.1, *)
 @Observable
 class WorkoutLiveActivityService {
@@ -57,3 +58,4 @@ class WorkoutLiveActivityService {
         }
     }
 }
+#endif

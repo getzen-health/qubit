@@ -252,8 +252,6 @@ struct SleepEfficiencyView: View {
         let sorted = validNights.sorted { $0.efficiency > $1.efficiency }
         guard let best = sorted.first, let worst = sorted.last, best.date != worst.date else { return AnyView(EmptyView()) }
 
-        let df = DateFormatter()
-        df.dateFormat = "EEE, MMM d"
 
         return AnyView(HStack(spacing: 12) {
             nightSummary(night: best, label: "Most Efficient", emoji: "⭐", borderColor: .green)
@@ -262,10 +260,9 @@ struct SleepEfficiencyView: View {
     }
 
     private func nightSummary(night: EfficiencyNight, label: String, emoji: String, borderColor: Color) -> some View {
-        let df = DateFormatter(); df.dateFormat = "EEE, MMM d"
         return VStack(alignment: .leading, spacing: 6) {
             Text("\(emoji) \(label)").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-            Text(df.string(from: night.date)).font(.subheadline.bold())
+            Text(night.date.kqFormat("EEE, MMM d")).font(.subheadline.bold())
             VStack(alignment: .leading, spacing: 2) {
                 Text(String(format: "Efficiency: %.1f%%", night.efficiency))
                     .font(.caption)

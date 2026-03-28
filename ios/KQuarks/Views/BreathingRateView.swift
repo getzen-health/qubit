@@ -277,7 +277,6 @@ struct BreathingRateView: View {
         let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let brUnit = HKUnit.count().unitDivided(by: .minute())
         var calMon = Calendar.current; calMon.firstWeekday = 2
-        let df = DateFormatter(); df.dateFormat = "yyyy-'W'ww"
 
         let samples: [HKQuantitySample] = await withCheckedContinuation { cont in
             let q = HKSampleQuery(sampleType: rrType,

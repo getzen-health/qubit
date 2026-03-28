@@ -5,6 +5,7 @@ import SwiftUI
 // Lock Screen / Dynamic Island views for Fasting Live Activity
 // To enable: add a Widget Extension target in Xcode and reference these views
 
+#if !targetEnvironment(macCatalyst)
 struct FastingLiveActivityLockScreenView: View {
     let context: ActivityViewContext<FastingLiveActivityAttributes>
     
@@ -64,3 +65,4 @@ struct WorkoutLiveActivityLockScreenView: View {
         .padding(.horizontal)
     }
 }
+#endif

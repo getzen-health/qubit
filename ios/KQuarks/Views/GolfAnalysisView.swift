@@ -195,8 +195,6 @@ struct GolfAnalysisView: View {
     // MARK: - Round Table
 
     private var roundTableCard: some View {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recent Rounds").font(.headline)
@@ -213,7 +211,7 @@ struct GolfAnalysisView: View {
                 ForEach(rounds.suffix(12).reversed()) { r in
                     Divider()
                     HStack {
-                        Text(df.string(from: r.date)).font(.caption).frame(width: 65, alignment: .leading)
+                        Text(r.date.kqFormat("MMM d")).font(.caption).frame(width: 65, alignment: .leading)
                         Text(String(format: "%.0f", r.durationMins)).font(.caption.monospacedDigit()).frame(width: 40, alignment: .trailing)
                         Text(r.distanceKm > 0 ? String(format: "%.1f", r.distanceKm) : "—").font(.caption.monospacedDigit()).foregroundStyle(.green).frame(width: 40, alignment: .trailing)
                         Text(String(format: "%.0f", r.kcal)).font(.caption.monospacedDigit()).foregroundStyle(.orange).frame(width: 45, alignment: .trailing)
@@ -278,7 +276,6 @@ struct GolfAnalysisView: View {
         let hrUnit = HKUnit.count().unitDivided(by: .minute())
         let stepsUnit = HKUnit.count()
         let cal = Calendar.current
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         var rawRounds: [GolfRound] = []
         var monthMap: [String: (Date, Int, Double, Double)] = [:]
@@ -292,7 +289,7 @@ struct GolfAnalysisView: View {
             rawRounds.append(GolfRound(id: w.uuid, date: w.startDate, durationMins: w.duration / 60,
                                         distanceKm: dist, kcal: kcal, avgHR: avgHR, steps: steps))
 
-            let key = df.string(from: w.startDate)
+            let key = w.startDate.kqFormat("yyyy-MM")
             let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: w.startDate)) ?? w.startDate
             var m = monthMap[key] ?? (monthStart, 0, 0, 0)
             m.1 += 1; m.2 += dist; m.3 += kcal

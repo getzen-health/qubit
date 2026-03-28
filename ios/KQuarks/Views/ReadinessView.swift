@@ -17,8 +17,7 @@ struct ReadinessView: View {
 
     // Today's check-in (if any)
     private var todayCheckin: (date: String, energy: Int, mood: Int, stress: Int, notes: String?)? {
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
-        let today = df.string(from: Date())
+        let today = Date().kqFormat("yyyy-MM-dd")
         return checkins.first { $0.date == today }
     }
 
@@ -364,11 +363,10 @@ struct ReadinessView: View {
     }
 
     private func correlationAvg(minEnergy: Int? = nil, maxEnergy: Int? = nil) -> Int? {
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         // Build a lookup: date string → readiness score from 7-day history
         let scoreMap: [String: Int] = Dictionary(
             history.compactMap { pt -> (String, Int)? in
-                (df.string(from: pt.date), pt.score)
+                (pt.date.kqFormat("yyyy-MM-dd"), pt.score)
             },
             uniquingKeysWith: { a, _ in a }
         )
@@ -595,11 +593,12 @@ struct ReadinessView: View {
             default: return false
             }
         }
-        let sleepMins = sleepSamples.reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) / 60 }
+        let sleepMins: Double = sleepSamples.reduce(0.0) { (acc: Double, s: HKCategorySample) in acc + s.endDate.timeIntervalSince(s.startDate) / 60.0 }
         let sleepScore = Int(min(100, max(0, sleepMins / sleepGoalMins * 100)))
 
         // Overall score (weighted average)
-        let overall = Int(Double(hrvScore) * 0.40 + Double(rhrScore) * 0.30 + Double(sleepScore) * 0.30)
+        let overallWeighted = Double(hrvScore) * 0.40 + Double(rhrScore) * 0.30 + Double(sleepScore) * 0.30
+        let overall = Int(overallWeighted)
 
         let recommendation: ReadinessScore.Recommendation
         switch overall {
@@ -609,28 +608,13 @@ struct ReadinessView: View {
         default: recommendation = .recovery
         }
 
-        score = ReadinessScore(
-            overall: overall,
-            hrv: .init(
-                label: "Heart Rate Variability",
-                value: hrvScore,
-                detail: todayHRV.map { String(format: "%.0f ms (baseline: %.0f ms)", $0, baseline30HRV) } ?? "No data",
-                weight: 0.40
-            ),
-            rhr: .init(
-                label: "Resting Heart Rate",
-                value: rhrScore,
-                detail: todayRHR.map { String(format: "%.0f bpm (baseline: %.0f bpm)", $0, baseline30RHR) } ?? "No data",
-                weight: 0.30
-            ),
-            sleep: .init(
-                label: "Sleep Duration",
-                value: sleepScore,
-                detail: String(format: "%.1f h (goal: %.0f h)", sleepMins / 60, sleepGoalMins / 60),
-                weight: 0.30
-            ),
-            recommendation: recommendation
-        )
+        let hrvDetail = todayHRV.map { String(format: "%.0f ms (baseline: %.0f ms)", $0, baseline30HRV) } ?? "No data"
+        let rhrDetail = todayRHR.map { String(format: "%.0f bpm (baseline: %.0f bpm)", $0, baseline30RHR) } ?? "No data"
+        let sleepDetail = String(format: "%.1f h (goal: %.0f h)", sleepMins / 60, sleepGoalMins / 60)
+        let hrvComp = ReadinessScore.ComponentScore(label: "Heart Rate Variability", value: hrvScore, detail: hrvDetail, weight: 0.40)
+        let rhrComp = ReadinessScore.ComponentScore(label: "Resting Heart Rate", value: rhrScore, detail: rhrDetail, weight: 0.30)
+        let sleepComp = ReadinessScore.ComponentScore(label: "Sleep Duration", value: sleepScore, detail: sleepDetail, weight: 0.30)
+        score = ReadinessScore(overall: overall, hrv: hrvComp, rhr: rhrComp, sleep: sleepComp, recommendation: recommendation)
 
         // Compute 7-day history
         var pts: [HistoryPoint] = []
@@ -661,7 +645,8 @@ struct ReadinessView: View {
                 return Int(min(100, max(0, (baseline30RHR / r) * 70 + 30)))
             }()
             let dSleepScore = Int(min(100, max(0, dSleepMins / sleepGoalMins * 100)))
-            let dOverall = Int(Double(dHRVScore) * 0.40 + Double(dRHRScore) * 0.30 + Double(dSleepScore) * 0.30)
+            let dWeighted = Double(dHRVScore) * 0.40 + Double(dRHRScore) * 0.30 + Double(dSleepScore) * 0.30
+            let dOverall = Int(dWeighted)
             pts.append(HistoryPoint(date: day, score: dOverall))
         }
         history = pts

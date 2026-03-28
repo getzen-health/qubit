@@ -281,9 +281,6 @@ struct ECGAnalysisView: View {
             Text("Recent Recordings")
                 .font(.headline)
 
-            let df = DateFormatter()
-            df.dateStyle = .medium
-            df.timeStyle = .short
 
             ForEach(records.prefix(10).reversed()) { r in
                 HStack(spacing: 12) {
@@ -295,7 +292,7 @@ struct ECGAnalysisView: View {
                         Text(r.classification.rawValue)
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(r.classification.color)
-                        Text(df.string(from: r.date))
+                        Text(r.date.kqFormat("yyyy-MM"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -441,10 +438,9 @@ struct ECGAnalysisView: View {
 
         // Build monthly buckets
         var monthMap: [String: (Int, Int, Int)] = [:]  // key: "YYYY-MM" → (sinus, afib, inconclusive)
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM"
 
         for r in ecgRecords {
-            let key = df.string(from: r.date)
+            let key = r.date.kqFormatted(dateStyle: .medium, timeStyle: .short)
             var cur = monthMap[key] ?? (0, 0, 0)
             switch r.classification {
             case .sinusRhythm:   cur.0 += 1

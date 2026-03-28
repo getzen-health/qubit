@@ -372,7 +372,6 @@ class SyncService {
                     FormMetric(identifier: .runningVerticalOscillation, type: "running_vertical_oscillation", unit: .meterUnit(with: .centi)),
                     FormMetric(identifier: .runningGroundContactTime, type: "running_ground_contact_time", unit: .secondUnit(with: .milli)),
                     FormMetric(identifier: .runningPower, type: "running_power", unit: HKUnit.watt()),
-                    FormMetric(identifier: .runningCadence, type: "running_cadence", unit: HKUnit.count().unitDivided(by: .minute())),
                 ]
                 for metric in formMetrics {
                     let samples = try await healthKit.fetchSamples(
@@ -390,8 +389,7 @@ class SyncService {
                         unit: metric.identifier == HKQuantityTypeIdentifier.runningGroundContactTime ? "ms" :
                               metric.identifier == HKQuantityTypeIdentifier.runningVerticalOscillation ? "cm" :
                               metric.identifier == HKQuantityTypeIdentifier.runningStrideLength ? "m" :
-                              metric.identifier == HKQuantityTypeIdentifier.runningPower ? "W" :
-                              metric.identifier == HKQuantityTypeIdentifier.runningCadence ? "spm" : "spm",
+                              metric.identifier == HKQuantityTypeIdentifier.runningPower ? "W" : "spm",
                         source: workout.sourceRevision.source.name,
                         startTime: workout.startDate,
                         endTime: workout.endDate

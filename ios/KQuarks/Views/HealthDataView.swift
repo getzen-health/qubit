@@ -2499,7 +2499,7 @@ struct HealthDataRow: View {
             HStack {
                 Image(systemName: dataType.icon)
                     .font(.title2)
-                    .foregroundStyle(.accentColor)
+                    .foregroundStyle(Color.accentColor)
                     .frame(width: 44, height: 44)
                     .background(Color.accentColor.opacity(0.1))
                     .cornerRadius(10)

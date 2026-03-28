@@ -230,13 +230,11 @@ struct YogaAnalysisView: View {
                 }
                 .padding(.horizontal, 12).padding(.vertical, 8)
 
-                let df = DateFormatter()
-                df.dateFormat = "MMM d"
 
                 ForEach(sessions.suffix(12).reversed()) { s in
                     Divider()
                     HStack {
-                        Text(df.string(from: s.date))
+                        Text(s.date.kqFormat("MMM d"))
                             .font(.caption)
                             .frame(width: 65, alignment: .leading)
                         Text(s.typeName)

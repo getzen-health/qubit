@@ -25,22 +25,20 @@ struct NutritionGoalsView: View {
 
     var body: some View {
         Form {
-            Section("Presets") {
-                ForEach(Preset.allCases, id: \.self) { preset in
+            Section(header: Text("Presets"), footer: Text("Quick presets to get you started. Customize below.")) {
+                ForEach(Array(Preset.allCases), id: \.self) { preset in
                     Button(action: { applyPreset(preset) }) {
                         HStack {
                             Text(preset.rawValue)
                             Spacer()
                             if isPresetSelected(preset) {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accentColor)
+                                    .foregroundStyle(Color.accentColor)
                             }
                         }
                     }
                     .foregroundStyle(.primary)
                 }
-            } footer: {
-                Text("Quick presets to get you started. Customize below.")
             }
 
             Section("Custom Goals") {

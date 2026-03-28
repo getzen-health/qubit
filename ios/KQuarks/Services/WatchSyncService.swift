@@ -1,6 +1,13 @@
 import Foundation
 import WatchConnectivity
 
+struct WatchHealthSnapshot: Codable {
+    let steps: Int
+    let activeCalories: Double
+    let heartRate: Double
+    let date: Date
+}
+
 class WatchSyncService: NSObject, WCSessionDelegate {
     static let shared = WatchSyncService()
 

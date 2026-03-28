@@ -442,7 +442,8 @@ struct DailyReadinessView: View {
             let rhrScore = min(100, max(0, Int(100 - (rhrDelta + 5) * 10)))
             let sleepScore = sleepDurationScore(dayHours)
 
-            let total = Int(Double(hrvScore) * 0.40 + Double(rhrScore) * 0.30 + Double(sleepScore) * 0.30)
+            let weighted = Double(hrvScore) * 0.40 + Double(rhrScore) * 0.30 + Double(sleepScore) * 0.30
+            let total = Int(weighted)
             let zone = ReadinessZone(score: total)
 
             scores.append(DayScore(id: day, date: day, score: total,

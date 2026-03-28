@@ -249,9 +249,7 @@ struct LifetimeStatsView: View {
     }
 
     private func monthYearString(from date: Date) -> String {
-        let df = DateFormatter()
-        df.dateFormat = "MMMM yyyy"
-        return df.string(from: date)
+        return date.kqFormat("MMMM yyyy")
     }
 
     private func yearsAgo(from date: Date) -> String {
@@ -298,7 +296,6 @@ struct LifetimeStatsView: View {
         let sportsWithDist: Set<String> = ["Running", "Cycling", "Swimming", "Hiking", "Rowing", "Walking"]
         var yearBuckets: [Int: (Int, Double)] = [:]  // year → (sessions, hours)
         var uniqueDays = Set<String>()
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
         let cal = Calendar.current
 
         for w in validWorkouts {
@@ -319,7 +316,7 @@ struct LifetimeStatsView: View {
             sportMap[sportGroup]!.totalKm += km
 
             totalCalories += kcal
-            uniqueDays.insert(df.string(from: w.startDate))
+            uniqueDays.insert(w.startDate.kqFormat("yyyy-MM-dd"))
 
             let year = cal.component(.year, from: w.startDate)
             yearBuckets[year, default: (0, 0)].0 += 1

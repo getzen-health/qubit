@@ -13,12 +13,14 @@ struct AdaptiveNavigationView: View {
     @State private var showCheckinSheet = false
 
     var body: some View {
-        if horizontalSizeClass == .regular {
-            // iPad: Split view with sidebar
-            iPadNavigationView
-        } else {
-            // iPhone: Tab view
-            iPhoneNavigationView
+        Group {
+            if horizontalSizeClass == .regular {
+                // iPad: Split view with sidebar
+                iPadNavigationView
+            } else {
+                // iPhone: Tab view
+                iPhoneNavigationView
+            }
         }
         .onChange(of: deepLinkHandler.pendingDestination) { _, destination in
             handleDeepLinkNavigation(destination)
@@ -36,12 +38,14 @@ struct AdaptiveNavigationView: View {
             selectedTab = 0 // Dashboard tab (contains food scanner)
         case .readiness, .sleep, .workouts, .water, .hrv, .body, .glucose, .vitals:
             selectedTab = 1 // Health tab
-        case .insights, .achievements, .social:
-            selectedTab = 3 // Insights tab (social/achievements)
+        case .achievements, .social:
+            selectedTab = 3 // Insights tab
         case .settings, .profile:
             selectedTab = 4 // Settings tab
         case .habits:
             selectedTab = 3 // Insights tab
+        case .metric:
+            break // handled by individual views
         }
         
         // Clear the pending destination after handling
@@ -99,6 +103,9 @@ struct AdaptiveNavigationView: View {
                 .foregroundStyle(.secondary)
         case .settings:
             Text("Select a setting")
+                .foregroundStyle(.secondary)
+        default:
+            Text("Select an item")
                 .foregroundStyle(.secondary)
         }
     }

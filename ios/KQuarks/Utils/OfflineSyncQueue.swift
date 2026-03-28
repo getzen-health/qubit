@@ -83,18 +83,9 @@ class OfflineSyncQueue: ObservableObject {
     }
 
     private func processSyncItem(_ item: PendingSyncItem, supabase: SupabaseService) async throws {
-        let payload = try JSONDecoder().decode([String: AnyCodable].self, from: item.payload)
-
-        switch item.type {
-        case "food_log":
-            try await supabase.uploadFoodLog(payload)
-        case "water_log":
-            try await supabase.uploadWaterLog(payload)
-        case "manual_workout":
-            try await supabase.uploadManualWorkout(payload)
-        default:
-            throw NSError(domain: "OfflineSyncQueue", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown sync item type: \(item.type)"])
-        }
+        // TODO: implement when SupabaseService adds these methods
+        throw NSError(domain: "OfflineSyncQueue", code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "Sync method '\(item.type)' not yet implemented"])
     }
 
     private func updatePendingCount() {
@@ -118,6 +109,10 @@ struct AnyEncodable: Encodable {
 
 struct AnyCodable: Codable {
     let value: Any
+
+    init(_ value: Any) {
+        self.value = value
+    }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()

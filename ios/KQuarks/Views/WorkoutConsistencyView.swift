@@ -411,15 +411,13 @@ struct WorkoutConsistencyView: View {
             monday = cal.date(byAdding: .day, value: -7, to: monday) ?? Date()
         }
 
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
 
         // Accumulate
         for w in allWorkouts where w.duration > 300 {
             let wMonday = mondayOf(w.startDate)
             let key = wMonday.ISO8601Format(.iso8601Date(timeZone: .current))
             guard let idx = buckets.firstIndex(where: { $0.id == key }) else { continue }
-            let dayStr = df.string(from: w.startDate)
+            let dayStr = w.startDate.kqFormat("yyyy-MM-dd")
             buckets[idx].sessions += 1
             buckets[idx].trainingDays.insert(dayStr)
             switch w.workoutActivityType {

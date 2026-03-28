@@ -191,7 +191,7 @@ struct ProductComparisonView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color(.secondarySystemBackground))
-                        .foregroundStyle(.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
                 .padding()

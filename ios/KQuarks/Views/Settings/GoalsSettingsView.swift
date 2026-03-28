@@ -42,7 +42,7 @@ struct GoalsSettingsView: View {
                 }
             }
 
-            Section("Heart Health") {
+            Section(header: Text("Heart Health"), footer: Text("Target heart rate variability in milliseconds. Higher values indicate better recovery.")) {
                 HStack {
                     Label("HRV Target", systemImage: "heart.text.square")
                     Spacer()
@@ -53,8 +53,6 @@ struct GoalsSettingsView: View {
                         step: 5
                     )
                 }
-            } footer: {
-                Text("Target heart rate variability in milliseconds. Higher values indicate better recovery.")
             }
 
             Section {

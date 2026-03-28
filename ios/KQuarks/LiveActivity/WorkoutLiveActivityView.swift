@@ -2,6 +2,7 @@ import SwiftUI
 import WidgetKit
 import ActivityKit
 
+#if !targetEnvironment(macCatalyst)
 struct WorkoutLiveActivityView: View {
     let context: ActivityViewContext<WorkoutActivityAttributes>
     
@@ -102,3 +103,4 @@ struct WorkoutCompactTrailingView: View {
             .foregroundStyle(.green)
     }
 }
+#endif

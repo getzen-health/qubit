@@ -275,8 +275,6 @@ struct StressRecoveryView: View {
             Text("12-Week Timeline")
                 .font(.headline)
 
-            let df = DateFormatter()
-            df.dateFormat = "MMM d"
 
             Chart {
                 ForEach(weekPoints) { w in
@@ -460,7 +458,6 @@ struct StressRecoveryView: View {
 
         // Build weekly points
         var points: [WeekPoint] = []
-        let df = DateFormatter(); df.dateFormat = "yyyy-MM-dd"
 
         for (idx, monday) in allWeeks.enumerated() {
             let load = allLoads[idx]

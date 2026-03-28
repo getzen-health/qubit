@@ -1115,7 +1115,7 @@ class SupabaseService {
     
     func updateMealItem(itemId: String, calories: Int, protein: Double, carbs: Double, fat: Double) async throws {
         try await client.from("meal_items")
-            .update(["calories": calories, "protein": protein, "carbs": carbs, "fat": fat])
+            .update(["calories": Double(calories), "protein": protein, "carbs": carbs, "fat": fat])
             .eq("id", value: itemId)
             .execute()
     }
@@ -1692,6 +1692,38 @@ class SupabaseService {
         let result = try JSONDecoder().decode(AIInsightsService.AIAnalysisResult.self, from: data)
         return result
     }
+
+    // MARK: - App Intents helpers
+
+    /// Log a quick manual workout (used by App Intents / Siri shortcuts).
+    func logWorkout(activityType: String, durationMinutes: Int, distanceKm: Double?) async throws {
+        guard let userId = currentSession?.user.id else { throw SupabaseError.notAuthenticated }
+        let now = Date()
+        let start = now.addingTimeInterval(-Double(durationMinutes) * 60)
+        let record = WorkoutRecordUpload(
+            userId: userId,
+            workoutType: activityType,
+            startTime: start,
+            endTime: now,
+            durationMinutes: durationMinutes,
+            activeCalories: nil,
+            totalCalories: nil,
+            distanceMeters: distanceKm.map { $0 * 1000 },
+            avgHeartRate: nil,
+            maxHeartRate: nil,
+            elevationGainMeters: nil,
+            avgPacePerKm: nil,
+            source: "AppIntent"
+        )
+        try await uploadWorkoutRecord(record)
+    }
+
+    /// Request a full health data export to be sent via email (stub — queues server-side job).
+    func requestHealthExport() async throws {
+        guard currentSession != nil else { throw SupabaseError.notAuthenticated }
+        // Export is processed server-side via Supabase Edge Function
+        _ = try await client.functions.invoke("request-data-export", options: .init())
+    }
 }
 
 // MARK: - Data Export
@@ -1749,7 +1781,7 @@ struct HealthRecordUpload: Encodable {
     let source: String?
     let startTime: Date
     let endTime: Date?
-    let metadata: [String: String]? = nil
+    var metadata: [String: String]? = nil
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"

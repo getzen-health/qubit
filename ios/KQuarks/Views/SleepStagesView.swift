@@ -221,14 +221,12 @@ struct SleepStagesView: View {
     }
 
     private func nightCard(night: SleepSession, label: String, emoji: String, borderColor: Color) -> some View {
-        let df = DateFormatter()
-        df.dateFormat = "EEE, MMM d"
         let deepPct = night.totalMinutes > 0 ? Int(Double(night.deepMinutes) / Double(night.totalMinutes) * 100) : 0
         let remPct  = night.totalMinutes > 0 ? Int(Double(night.remMinutes)  / Double(night.totalMinutes) * 100) : 0
 
         return VStack(alignment: .leading, spacing: 6) {
             Text("\(emoji) \(label)").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-            Text(df.string(from: night.date)).font(.subheadline.bold())
+            Text(night.date.kqFormat("EEE, MMM d")).font(.subheadline.bold())
             VStack(alignment: .leading, spacing: 2) {
                 Text("Deep: \(deepPct)%").font(.caption).foregroundStyle(.indigo)
                 Text("REM: \(remPct)%").font(.caption).foregroundStyle(.purple)

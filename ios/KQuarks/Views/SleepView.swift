@@ -48,7 +48,7 @@ struct SleepView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
-                        NavigationLink(destination: SmartAlarmView()) {
+                        NavigationLink(destination: EmptyView()) {
                             Image(systemName: "alarm.fill")
                         }
                         NavigationLink(destination: SleepPatternView()) {

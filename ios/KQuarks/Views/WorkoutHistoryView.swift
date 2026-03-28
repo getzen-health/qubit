@@ -20,7 +20,7 @@ struct WorkoutHistoryView: View {
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(types, id: ".self") { type in
+                    ForEach(types, id: \.self) { type in
                         Button(type) { selectedType = type }
                             .font(.caption.weight(.medium))
                             .padding(.horizontal, 12).padding(.vertical, 6)
