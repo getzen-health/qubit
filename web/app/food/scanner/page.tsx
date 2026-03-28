@@ -333,8 +333,8 @@ export default function FoodScannerPage() {
         if (!data?.length) return
         const latest = data[0]
         const history = data.slice(1)
-        const hrvHistory = history.map(s => s.hrv).filter((v): v is number => v != null && v > 0)
-        const baselineHrv = hrvHistory.length > 0 ? hrvHistory.reduce((a, b) => a + b, 0) / hrvHistory.length : null
+        const hrvHistory = history.map((s: { hrv: number | null }) => s.hrv).filter((v: number | null): v is number => v != null && v > 0)
+        const baselineHrv = hrvHistory.length > 0 ? hrvHistory.reduce((a: number, b: number) => a + b, 0) / hrvHistory.length : null
         if (latest.hrv && baselineHrv) {
           const dev = (latest.hrv - baselineHrv) / baselineHrv
           const score = Math.max(0, Math.min(100, Math.round(50 + dev * 125)))

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Activity, Heart, Moon, Zap, Flame, Sparkles, RefreshCw, Smile, Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import type { UserResponse } from '@supabase/auth-js'
 import { BottomNav } from '@/components/bottom-nav'
 
 interface Insight {
@@ -54,7 +55,8 @@ export default function InsightsPage() {
   }, [supabase])
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data }: UserResponse) => {
+      const user = data.user
       if (!user) return
       await fetchInsights(user.id)
       setLoading(false)
@@ -115,26 +117,26 @@ export default function InsightsPage() {
           sleepQualityScore: null,
           activeMinutes: (today as Record<string, number>).active_minutes ?? 0,
         },
-        weekHistory: (summaries ?? []).slice(1).map((s) => ({
-          date: s.date,
-          steps: s.steps ?? 0,
-          activeCalories: s.active_calories ?? 0,
-          restingHeartRate: s.resting_heart_rate ?? null,
-          avgHrv: s.avg_hrv ?? null,
-          sleepDurationMinutes: s.sleep_duration_minutes ?? null,
+        weekHistory: (summaries ?? []).slice(1).map((s: Record<string, unknown>) => ({
+          date: s.date as string,
+          steps: (s.steps as number) ?? 0,
+          activeCalories: (s.active_calories as number) ?? 0,
+          restingHeartRate: (s.resting_heart_rate as number | null) ?? null,
+          avgHrv: (s.avg_hrv as number | null) ?? null,
+          sleepDurationMinutes: (s.sleep_duration_minutes as number | null) ?? null,
         })),
-        recentWorkouts: (workouts ?? []).map((w) => ({
-          workoutType: w.workout_type,
-          durationMinutes: w.duration_minutes ?? 0,
-          activeCalories: w.active_calories ?? null,
-          avgHeartRate: w.avg_heart_rate ?? null,
+        recentWorkouts: (workouts ?? []).map((w: Record<string, unknown>) => ({
+          workoutType: w.workout_type as string,
+          durationMinutes: (w.duration_minutes as number) ?? 0,
+          activeCalories: (w.active_calories as number | null) ?? null,
+          avgHeartRate: (w.avg_heart_rate as number | null) ?? null,
         })),
-        recentSleep: (sleepRecords ?? []).map((s) => ({
-          durationMinutes: s.duration_minutes ?? 0,
-          deepMinutes: s.deep_minutes ?? 0,
-          remMinutes: s.rem_minutes ?? 0,
-          coreMinutes: s.core_minutes ?? 0,
-          awakeMinutes: s.awake_minutes ?? 0,
+        recentSleep: (sleepRecords ?? []).map((s: Record<string, unknown>) => ({
+          durationMinutes: (s.duration_minutes as number) ?? 0,
+          deepMinutes: (s.deep_minutes as number) ?? 0,
+          remMinutes: (s.rem_minutes as number) ?? 0,
+          coreMinutes: (s.core_minutes as number) ?? 0,
+          awakeMinutes: (s.awake_minutes as number) ?? 0,
         })),
       }
 
