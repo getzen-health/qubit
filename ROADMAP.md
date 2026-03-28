@@ -179,3 +179,45 @@ A health tracking app combining **Bevel-style** dashboards with **Yuka-style** f
 /supabase   Postgres migrations, RLS, Edge Functions
 /docs       App Store assets, API reference, architecture
 ```
+
+---
+
+## Week 2 — Testing & Production Readiness (Days 8–14)
+> No new features. Only bug fixes, validation, and production hardening.
+
+| Day | Focus | GitHub Issue |
+|-----|-------|-------------|
+| **Day 8** | iOS full regression + HealthKit sync validation | #624 |
+| **Day 9** | Web E2E (Playwright) + API contract validation | #625 |
+| **Day 10** | Performance — Lighthouse ≥90, iOS Instruments, bundle size | #626 |
+| **Day 11** | Security audit — RLS isolation, OWASP scan, bundle secrets check | #627 |
+| **Day 12** | Accessibility (axe-core 0 violations) + cross-browser + dark mode | #628 |
+| **Day 13** | TestFlight beta UAT — 5-10 testers, triage P0/P1 | #629 |
+| **Day 14** | Production readiness checklist + go/no-go for launch | #630 |
+
+### Bug Priority During Testing Week
+| Priority | Definition | SLA |
+|----------|-----------|-----|
+| **P0** | Crash / data loss / auth bypass | Fix same day |
+| **P1** | Major flow broken / wrong data shown | Fix within 24h |
+| **P2** | Visual glitch / minor UX issue | Fix before Day 14 |
+| **P3** | Polish / nice-to-have | Defer to post-launch |
+
+### Go/No-Go Gate (Day 14)
+- [ ] 0 P0/P1 bugs open
+- [ ] Lighthouse ≥ 90 on /dashboard
+- [ ] iOS BUILD SUCCEEDED, 0 crashes in TestFlight
+- [ ] RLS verified — users cannot access each other's data
+- [ ] /privacy and /terms live at kquarks.app
+- [ ] App Store binary passes validation
+- [ ] Supabase production backups enabled
+- [ ] Error monitoring (Sentry) + uptime monitoring live
+
+---
+
+## Post-Launch (Week 3+)
+- [ ] Android app (Kotlin + Health Connect)
+- [ ] Apple Watch companion app
+- [ ] AI real-time coaching (streamed responses)
+- [ ] Social challenges + referral program
+- [ ] Doctor share report (PDF of health trends)
