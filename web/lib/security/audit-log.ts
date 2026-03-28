@@ -45,6 +45,7 @@ export type AuditResource =
   | 'anomaly'
   | 'blood_pressure'
   | 'calorie_balance'
+  | 'noise_log'
 
 interface AuditLogEntry {
   user_id: string
