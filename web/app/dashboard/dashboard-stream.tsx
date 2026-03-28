@@ -420,10 +420,12 @@ export function DashboardStream({
       }
       // Enrich with today's subjective check-in data if available
       const todayDateStr = new Date().toISOString().slice(0, 10)
+      const { data: { user: insightUser } } = await supabase.auth.getUser()
+      const insightUserId = insightUser?.id ?? ''
       const { data: todayCheckin } = await supabase
         .from('daily_checkins')
         .select('energy, mood, stress, notes')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id ?? '')
+        .eq('user_id', insightUserId)
         .eq('date', todayDateStr)
         .single()
       if (todayCheckin) {
@@ -440,13 +442,12 @@ export function DashboardStream({
         body: { healthContext: extendedContext, userApiKey },
       })
       if (error) throw error
-      // Refresh insights from DB
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
+      // Refresh insights from DB — reuse already-fetched user
+      if (insightUser) {
         const { data: fresh } = await supabase
           .from('health_insights')
           .select('id, title, content, category, priority, insight_type, created_at')
-          .eq('user_id', user.id)
+          .eq('user_id', insightUserId)
           .order('created_at', { ascending: false })
           .limit(20)
         if (fresh) setLocalInsights(fresh)
