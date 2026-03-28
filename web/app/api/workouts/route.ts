@@ -1,8 +1,20 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
+
+const workoutBodySchema = z.object({
+  type: z.string().min(1).max(100),
+  duration_minutes: z.number().positive(),
+  calories: z.number().nonnegative().nullable().optional(),
+  notes: z.string().max(1000).nullable().optional(),
+})
+
+const workoutDeleteQuerySchema = z.object({
+  id: z.string().uuid(),
+})
 
 export const GET = createSecureApiHandler(
   {
@@ -25,14 +37,13 @@ export const POST = createSecureApiHandler(
   {
     rateLimit: 'healthData',
     requireAuth: true,
+    bodySchema: workoutBodySchema,
   },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
-    const { type, duration_minutes, calories, notes } = body
-    if (!type || !duration_minutes) return secureErrorResponse('type and duration_minutes required', 400)
+  async (_request, { user, body, supabase }) => {
+    const { type, duration_minutes, calories, notes } = body as z.infer<typeof workoutBodySchema>
     const { data, error } = await supabase
       .from('workout_logs')
-      .insert({ user_id: user!.id, type, duration_minutes: Number(duration_minutes), calories: calories ? Number(calories) : null, notes: notes || null, workout_date: new Date().toISOString() })
+      .insert({ user_id: user!.id, type, duration_minutes, calories: calories ?? null, notes: notes ?? null, workout_date: new Date().toISOString() })
       .select().single()
     if (error) return secureErrorResponse(error.message, 500)
     return secureJsonResponse({ data }, 201)
@@ -43,11 +54,10 @@ export const DELETE = createSecureApiHandler(
   {
     rateLimit: 'healthData',
     requireAuth: true,
+    querySchema: workoutDeleteQuerySchema,
   },
-  async (request, { user, supabase }) => {
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-    if (!id) return secureErrorResponse('id required', 400)
+  async (_request, { user, query, supabase }) => {
+    const { id } = query as z.infer<typeof workoutDeleteQuerySchema>
     const { error } = await supabase.from('workout_logs').delete().eq('id', id).eq('user_id', user!.id)
     if (error) return secureErrorResponse(error.message, 500)
     return secureJsonResponse({ success: true })

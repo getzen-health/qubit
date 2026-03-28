@@ -1,8 +1,26 @@
+import { z } from 'zod'
 import {
   createSecureApiHandler,
   secureJsonResponse,
   secureErrorResponse,
 } from '@/lib/security'
+
+const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'] as const
+
+const foodDiaryBodySchema = z.object({
+  meal_type: z.enum(MEAL_TYPES),
+  food_name: z.string().min(1).max(500),
+  calories: z.number().nonnegative().nullable().optional(),
+  protein_g: z.number().nonnegative().nullable().optional(),
+  carbs_g: z.number().nonnegative().nullable().optional(),
+  fat_g: z.number().nonnegative().nullable().optional(),
+  fiber_g: z.number().nonnegative().nullable().optional(),
+  serving_size: z.string().max(100).nullable().optional(),
+})
+
+const foodDiaryDeleteQuerySchema = z.object({
+  id: z.string().uuid(),
+})
 
 // GET: Return today's entries grouped by meal_type, with totals
 export const GET = createSecureApiHandler(
@@ -43,11 +61,10 @@ export const POST = createSecureApiHandler(
   {
     rateLimit: 'healthData',
     requireAuth: true,
+    bodySchema: foodDiaryBodySchema,
   },
-  async (request, { user, supabase }) => {
-    const body = await request.json()
-    const { meal_type, food_name, calories, protein_g, carbs_g, fat_g, fiber_g, serving_size } = body
-    if (!meal_type || !food_name) return secureErrorResponse('Missing fields', 400)
+  async (_request, { user, body, supabase }) => {
+    const { meal_type, food_name, calories, protein_g, carbs_g, fat_g, fiber_g, serving_size } = body as z.infer<typeof foodDiaryBodySchema>
     const { error } = await supabase.from('food_diary_entries').insert({
       user_id: user!.id, meal_type, food_name, calories, protein_g, carbs_g, fat_g, fiber_g, serving_size
     })
@@ -61,11 +78,10 @@ export const DELETE = createSecureApiHandler(
   {
     rateLimit: 'healthData',
     requireAuth: true,
+    querySchema: foodDiaryDeleteQuerySchema,
   },
-  async (request, { user, supabase }) => {
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-    if (!id) return secureErrorResponse('Missing id', 400)
+  async (_request, { user, query, supabase }) => {
+    const { id } = query as z.infer<typeof foodDiaryDeleteQuerySchema>
     const { error } = await supabase.from('food_diary_entries').delete().eq('id', id).eq('user_id', user!.id)
     if (error) return secureErrorResponse(error.message, 500)
     return secureJsonResponse({ success: true })

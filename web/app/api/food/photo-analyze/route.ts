@@ -1,12 +1,14 @@
+import { z } from 'zod'
 import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
 
-export const POST = createSecureApiHandler(
-  { rateLimit: 'foodPhotoAnalyze', requireAuth: true },
-  async (request, { supabase: _supabase }) => {
-    const body = await request.json()
-    const { imageBase64 } = body  // base64 encoded image
+const photoAnalyzeBodySchema = z.object({
+  imageBase64: z.string().min(1),
+})
 
-    if (!imageBase64) return secureErrorResponse('No image provided', 400)
+export const POST = createSecureApiHandler(
+  { rateLimit: 'foodPhotoAnalyze', requireAuth: true, bodySchema: photoAnalyzeBodySchema },
+  async (_request, { body }) => {
+    const { imageBase64 } = body as z.infer<typeof photoAnalyzeBodySchema>
 
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) return secureErrorResponse('AI service not configured', 503)
