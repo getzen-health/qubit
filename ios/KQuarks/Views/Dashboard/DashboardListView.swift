@@ -283,6 +283,54 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: RunningView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "figure.run")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+                            Text("Running Analytics")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: RecoveryView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "bolt.heart.fill")
+                                .font(.title3)
+                                .foregroundStyle(.pink)
+                            Text("Recovery")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: CorrelationsView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "chart.dots.scatter")
+                                .font(.title3)
+                                .foregroundStyle(.indigo)
+                            Text("Correlations")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: WeeklyBalanceView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "chart.bar.xaxis")
