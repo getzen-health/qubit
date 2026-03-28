@@ -37,25 +37,27 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Check onboarding status
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('onboarding_completed')
-    .eq('user_id', user.id)
-    .single()
-
-  // Fetch streaks for summary card
-  const { data: streaks } = await supabase
-    .from('user_streaks')
-    .select('*')
-    .eq('user_id', user.id)
-
-  // Fetch XP and streak for XP card
-  const { data: stats } = await supabase
-    .from('user_stats')
-    .select('total_xp, current_streak')
-    .eq('user_id', user.id)
-    .single()
+  // Fetch all dashboard data in parallel to avoid sequential N+1 queries
+  const [
+    { data: profile },
+    { data: streaks },
+    { data: stats },
+  ] = await Promise.all([
+    supabase
+      .from('user_profiles')
+      .select('onboarding_completed')
+      .eq('user_id', user.id)
+      .single(),
+    supabase
+      .from('user_streaks')
+      .select('*')
+      .eq('user_id', user.id),
+    supabase
+      .from('user_stats')
+      .select('total_xp, current_streak')
+      .eq('user_id', user.id)
+      .single(),
+  ])
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createSecureApiHandler } from '@/lib/security'
+import { createSecureApiHandler, secureJsonResponse, secureErrorResponse } from '@/lib/security'
+import { logger } from '@/lib/logger'
 
 export const POST = createSecureApiHandler(
   { requireAuth: true },
@@ -13,10 +14,10 @@ export const POST = createSecureApiHandler(
       .eq('provider', 'fitbit')
 
     if (error) {
-      console.error('Failed to disconnect Fitbit:', error)
-      return NextResponse.json({ error: 'Failed to disconnect' }, { status: 500 })
+      logger.error('Failed to disconnect Fitbit:', error)
+      return secureErrorResponse('Failed to disconnect', 500)
     }
 
-    return NextResponse.json({ success: true })
+    return secureJsonResponse({ success: true })
   }
 )

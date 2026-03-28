@@ -7,6 +7,7 @@ import {
   startFastingSchema,
   endFastingSchema,
 } from '@/lib/security'
+import { logger } from '@/lib/logger'
 
 // Query schema for GET requests
 const getFastingQuerySchema = z.object({
@@ -40,7 +41,7 @@ export const GET = createSecureApiHandler(
     const { data: sessions, error } = await dbQuery
 
     if (error) {
-      console.error('Error fetching fasting sessions:', error)
+      logger.error('Error fetching fasting sessions:', error)
       return secureErrorResponse('Failed to fetch sessions', 500)
     }
 
@@ -116,7 +117,7 @@ export const POST = createSecureApiHandler(
       .single()
 
     if (error) {
-      console.error('Error creating fasting session:', error)
+      logger.error('Error creating fasting session:', error)
       return secureErrorResponse('Failed to start fasting', 500)
     }
 
@@ -174,7 +175,7 @@ export const PATCH = createSecureApiHandler(
       .single()
 
     if (error) {
-      console.error('Error ending fasting session:', error)
+      logger.error('Error ending fasting session:', error)
       return secureErrorResponse('Failed to end fasting', 500)
     }
 
@@ -228,7 +229,7 @@ export const DELETE = createSecureApiHandler(
       .eq('user_id', user!.id)
 
     if (error) {
-      console.error('Error deleting fasting session:', error)
+      logger.error('Error deleting fasting session:', error)
       return secureErrorResponse('Failed to delete session', 500)
     }
 

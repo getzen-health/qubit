@@ -10,6 +10,7 @@ import {
   Wind, Heart, BedDouble, Download, Upload, Ruler, Activity,
   Stethoscope, Brain, Leaf, Zap, Dna,
   UtensilsCrossed, Package, Clock, Search, CalendarDays,
+  TrendingUp, Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -79,6 +80,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/mental-health', icon: Brain, label: 'Mental Health' },
       { href: '/cognitive', icon: Brain, label: 'Cognitive' },
       { href: '/energy', icon: '⚡', label: 'Energy' },
+      { href: '/breathing', icon: Wind, label: 'Breathing' },
     ],
   },
   {
@@ -99,6 +101,8 @@ const moreCategories: MoreCategory[] = [
       { href: '/swimming', icon: '🏊', label: 'Swimming' },
       { href: '/steps', icon: '👟', label: 'Steps' },
       { href: '/hr-zones', icon: Heart, label: 'HR Zones' },
+      { href: '/zones', icon: Heart, label: 'Training Zones' },
+      { href: '/recovery', icon: Zap, label: 'Recovery' },
       { href: '/readiness', icon: Zap, label: 'Readiness' },
       { href: '/streaks', icon: Trophy, label: 'Streaks' },
       { href: '/achievements', icon: Trophy, label: 'Awards' },
@@ -112,6 +116,8 @@ const moreCategories: MoreCategory[] = [
       { href: '/longevity', icon: Dna, label: 'Longevity' },
       { href: '/biological-age', icon: Dna, label: 'Bio Age' },
       { href: '/correlations', icon: BarChart2, label: 'Patterns' },
+      { href: '/trends', icon: TrendingUp, label: 'Trends' },
+      { href: '/predictions', icon: Sparkles, label: 'Predictions' },
       { href: '/sun-exposure', icon: '☀️', label: 'Sun' },
       { href: '/social', icon: Users, label: 'Social' },
     ],

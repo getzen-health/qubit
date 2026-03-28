@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F2CE050FD68A7601863C4303 /* DeskBreaksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB71C52C09A447637808C1F9 /* DeskBreaksView.swift */; };
+		453CB9454FEE03848DAEECA9 /* EnergyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5719E7039B5301AF12D15E4 /* EnergyView.swift */; };
+		8BB56245B042519684588187 /* CaffeineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF021AAE64F5D8907DEF2003 /* CaffeineView.swift */; };
 		810971A823BD0AC35372209F /* AccessibilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819EF1CD8B44CF6A0392E70A /* AccessibilityExtensions.swift */; };
 		694B22EF0F4EBC5FD057C6ED /* FocusModeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD1E198B970CED8C8A3ECAC /* FocusModeExtension.swift */; };
 		304780CBD980811719686400 /* ShareExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4611689B61C8AD47C2E58316 /* ShareExtension.swift */; };
@@ -510,6 +513,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DB71C52C09A447637808C1F9 /* DeskBreaksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DeskBreaksView.swift; sourceTree = "<group>"; };
+		D5719E7039B5301AF12D15E4 /* EnergyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EnergyView.swift; sourceTree = "<group>"; };
+		DF021AAE64F5D8907DEF2003 /* CaffeineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaffeineView.swift; sourceTree = "<group>"; };
 		819EF1CD8B44CF6A0392E70A /* AccessibilityExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Extensions/AccessibilityExtensions.swift"; sourceTree = "<group>"; };
 		6BD1E198B970CED8C8A3ECAC /* FocusModeExtension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Extensions/FocusModeExtension.swift"; sourceTree = "<group>"; };
 		4611689B61C8AD47C2E58316 /* ShareExtension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Extensions/ShareExtension.swift"; sourceTree = "<group>"; };
@@ -1097,6 +1103,9 @@
 				112 /* InsightsView.swift */,
 				113 /* SettingsView.swift */,
 				129 /* WorkoutsView.swift */,
+				DB71C52C09A447637808C1F9 /* DeskBreaksView.swift */,
+				D5719E7039B5301AF12D15E4 /* EnergyView.swift */,
+				DF021AAE64F5D8907DEF2003 /* CaffeineView.swift */,
 				0F8FF6DE6AF13C2262534D0C /* ChatBubbleView.swift */,
 				52E0DE572BF4F8CE0A31CA89 /* PrivacyPolicyView.swift */,
 				28F35216D4217708B200D1D0 /* HealthShareCardView.swift */,
@@ -1806,6 +1815,9 @@
 				E779F70FB26B6934D4E6BF05 /* PredictionService.swift in Sources */,
 				7258855B2DA23F79251D466C /* ChatBubbleView.swift in Sources */,
 				E8AA8EA1071BD0FBACE33F51 /* HealthChatService.swift in Sources */,
+				F2CE050FD68A7601863C4303 /* DeskBreaksView.swift in Sources */,
+				453CB9454FEE03848DAEECA9 /* EnergyView.swift in Sources */,
+				8BB56245B042519684588187 /* CaffeineView.swift in Sources */,
 				F2BDF7A1225247942BFE5994 /* PrivacyPolicyView.swift in Sources */,
 				58351F37691B34BF17183736 /* ChatMessage.swift in Sources */,
 				033 /* WorkoutsView.swift in Sources */,
