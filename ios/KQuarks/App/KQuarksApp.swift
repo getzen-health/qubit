@@ -4,7 +4,6 @@ import SwiftData
 #if os(iOS)
 import BackgroundTasks
 #endif
-import KQuarks.Services.BackgroundSyncService
 
 @main
 struct KQuarksApp: App {
