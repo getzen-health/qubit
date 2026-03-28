@@ -20,6 +20,7 @@ import {
   BellRing,
 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
+import { getIsProServer } from '@/lib/subscription'
 
 export const metadata: Metadata = {
   title: 'Settings',
@@ -45,6 +46,8 @@ export default async function SettingsPage() {
   if (!user) {
     redirect('/login')
   }
+
+  const isPro = await getIsProServer(supabase, user.id)
 
   const settingsSections = [
   {
@@ -156,6 +159,46 @@ export default async function SettingsPage() {
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
+
+        {/* Subscription section */}
+        <div id="subscription" className="mb-6 p-4 bg-surface rounded-lg border border-border">
+          <div className="flex items-center gap-3 mb-3">
+            <Crown className="w-5 h-5 text-yellow-500" />
+            <h2 className="font-semibold text-text-primary">Subscription</h2>
+          </div>
+          {isPro ? (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-text-primary">KQuarks Pro</p>
+                <p className="text-sm text-text-secondary">All features unlocked</p>
+              </div>
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-accent hover:underline"
+              >
+                Manage Subscription
+              </a>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-text-primary">Free Plan</p>
+                <p className="text-sm text-text-secondary">Limited features</p>
+              </div>
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+              >
+                Upgrade to Pro — $4.99/mo
+              </a>
+            </div>
+          )}
+        </div>
+
         <div className="space-y-2">
           {settingsSections.map((section) => {
             const Icon = section.icon

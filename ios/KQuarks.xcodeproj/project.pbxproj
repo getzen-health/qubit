@@ -51,6 +51,8 @@
 		2F559BD983B33415908E12D9 /* SupplementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0225985D86C8AC54F4F69A3 /* SupplementsView.swift */; };
 		18B96B9CAF4A8209B52192DC /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67F15EE8AB9B126EF5172CC /* WaterIntakeView.swift */; };
 		F0ADF6865D4A095FFA54B029 /* BackgroundSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621B504FC9E5A593683D10ED /* BackgroundSyncService.swift */; };
+		AA11BB22CC33DD44EE55FF66 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */; };
+		BB22CC33DD44EE55FF66AA11 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66AA22 /* PaywallView.swift */; };
 		82EB8F2A553686E6B8A9AC06 /* CrashReportingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */; };
 		78C443BF1C1E47AFA45D176D /* AIBriefingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */; };
 		6F3EB7F98B2DDF1B91525A61 /* OfflineSyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67BE947807B66F65D08C04C /* OfflineSyncQueue.swift */; };
@@ -563,6 +565,8 @@
 		F0225985D86C8AC54F4F69A3 /* SupplementsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupplementsView.swift; sourceTree = "<group>"; };
 		E67F15EE8AB9B126EF5172CC /* WaterIntakeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
 		621B504FC9E5A593683D10ED /* BackgroundSyncService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackgroundSyncService.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE55FF66AA22 /* PaywallView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CrashReportingService.swift; sourceTree = "<group>"; };
 		725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIBriefingService.swift; sourceTree = "<group>"; };
 		D67BE947807B66F65D08C04C /* OfflineSyncQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OfflineSyncQueue.swift; sourceTree = "<group>"; };
@@ -1113,6 +1117,7 @@
 				110 /* DashboardView.swift */,
 				111 /* HealthDataView.swift */,
 				112 /* InsightsView.swift */,
+				BB22CC33DD44EE55FF66AA22 /* PaywallView.swift */,
 				113 /* SettingsView.swift */,
 				129 /* WorkoutsView.swift */,
 				DB71C52C09A447637808C1F9 /* DeskBreaksView.swift */,
@@ -1548,6 +1553,7 @@
 				B0E83C412964B4F0DAB82C36 /* HealthChatService.swift */,
 				B8581A1E6AF48F4E98E38C95 /* HapticService.swift */,
 				621B504FC9E5A593683D10ED /* BackgroundSyncService.swift */,
+				AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */,
 				BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */,
 				725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */,
 				1005B746906EC03014E62CE5 /* FoodScannerService.swift */,
@@ -1798,6 +1804,8 @@
 				2F559BD983B33415908E12D9 /* SupplementsView.swift in Sources */,
 				18B96B9CAF4A8209B52192DC /* WaterIntakeView.swift in Sources */,
 				F0ADF6865D4A095FFA54B029 /* BackgroundSyncService.swift in Sources */,
+				AA11BB22CC33DD44EE55FF66 /* SubscriptionService.swift in Sources */,
+				BB22CC33DD44EE55FF66AA11 /* PaywallView.swift in Sources */,
 				82EB8F2A553686E6B8A9AC06 /* CrashReportingService.swift in Sources */,
 				78C443BF1C1E47AFA45D176D /* AIBriefingService.swift in Sources */,
 				6F3EB7F98B2DDF1B91525A61 /* OfflineSyncQueue.swift in Sources */,

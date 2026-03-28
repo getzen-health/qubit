@@ -14,6 +14,8 @@ import {
   downloadFile,
 } from '@/lib/csv-export'
 import { generateHealthReportPDF, type HealthReportData } from '@/lib/generate-pdf-report'
+import { useIsPro } from '@/lib/subscription'
+import { PaywallBanner } from '@/components/paywall-banner'
 
 type ExportFormat = 'fhir' | 'csv' | 'pdf'
 type DatePreset = '30d' | '90d' | '1y' | 'all' | 'custom'
@@ -94,6 +96,7 @@ export default function ExportPage() {
   const [success, setSuccess] = useState(false)
   const [history, setHistory] = useState<ExportLog[]>([])
   const [historyLoading, setHistoryLoading] = useState(true)
+  const isPro = useIsPro()
 
   const fetchHistory = useCallback(async () => {
     const supabase = createClient()
@@ -331,6 +334,9 @@ export default function ExportPage() {
         )}
 
         {/* Export Button */}
+        {!isPro ? (
+          <PaywallBanner feature="Health Data Export" />
+        ) : (
         <button
           onClick={handleExport}
           disabled={loading || noneSelected}
@@ -353,6 +359,7 @@ export default function ExportPage() {
             </>
           )}
         </button>
+        )}
 
         {/* Privacy Notice */}
         <div className="flex items-start gap-2 px-1">

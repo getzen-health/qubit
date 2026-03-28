@@ -3,6 +3,8 @@
  * Manages subscription tiers and feature access control
  */
 
+import { useState, useEffect } from 'react'
+
 export type SubscriptionTier = 'free' | 'pro' | 'team'
 
 // Feature definitions by tier
@@ -186,4 +188,51 @@ export function getFeatureDetails(feature: string) {
 export function formatPrice(cents: number | null): string {
   if (cents === null) return 'Free'
   return `$${(cents / 100).toFixed(2)}/mo`
+}
+
+/**
+ * React hook — returns true when the current user has an active Pro subscription.
+ * Reads `user_profiles.is_pro` from Supabase.
+ * Must be called from a Client Component.
+ */
+export function useIsPro(): boolean {
+  const [isPro, setIsPro] = useState(false)
+
+  useEffect(() => {
+    import('@/lib/supabase/client').then(({ createClient }) => {
+      const supabase = createClient()
+      if (!supabase) return
+      supabase.auth.getUser().then(async ({ data }: { data: { user: { id: string } | null } }) => {
+        if (!data.user) return
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('is_pro')
+          .eq('user_id', data.user.id)
+          .single()
+        if (profile?.is_pro) setIsPro(true)
+      })
+    })
+  }, [])
+
+  return isPro
+}
+
+/**
+ * Server-side Pro check — reads `user_profiles.is_pro` for the given user.
+ * Pass the server Supabase client as `supabaseClient`.
+ */
+export async function getIsProServer(
+  supabaseClient: any,
+  userId: string
+): Promise<boolean> {
+  try {
+    const { data } = await supabaseClient
+      .from('user_profiles')
+      .select('is_pro')
+      .eq('user_id', userId)
+      .single()
+    return data?.is_pro === true
+  } catch {
+    return false
+  }
 }
