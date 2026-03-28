@@ -26,7 +26,7 @@ function WorkoutCard({ workout }: { workout: Workout }) {
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden">
-      <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center gap-3 p-4 text-left hover:bg-surface/80 transition-colors">
+      <button onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-label={`${workout.type} workout — tap to ${expanded ? 'collapse' : 'expand'} details`} className="w-full flex items-center gap-3 p-4 text-left hover:bg-surface/80 transition-colors">
         <span className="text-2xl">{icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
