@@ -36,6 +36,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/habits', icon: CheckSquare, label: 'Habits' },
       { href: '/journal', icon: BookOpen, label: 'Journal' },
       { href: '/goals', icon: '🎯', label: 'Goals' },
+      { href: '/desk-breaks', icon: '🪑', label: 'Desk Breaks' },
     ],
   },
   {
@@ -77,6 +78,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/mindfulness', icon: Leaf, label: 'Mindfulness' },
       { href: '/mental-health', icon: Brain, label: 'Mental Health' },
       { href: '/cognitive', icon: Brain, label: 'Cognitive' },
+      { href: '/energy', icon: '⚡', label: 'Energy' },
     ],
   },
   {
