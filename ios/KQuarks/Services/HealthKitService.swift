@@ -244,6 +244,19 @@ class HealthKitService {
     // MARK: - Fetch Today's Summary
 
     func fetchTodaySummary() async throws -> TodayHealthSummary {
+        #if targetEnvironment(simulator)
+        // Simulator has no HealthKit data — return realistic demo values
+        return TodayHealthSummary(
+            steps: 8432,
+            distanceMeters: 6210,
+            activeCalories: 387,
+            floorsClimbed: 12,
+            exerciseMinutes: 34,
+            restingHeartRate: 62,
+            hrv: 48.5,
+            sleepHours: 7.2
+        )
+        #else
         let calendar = Calendar.current
         let now = Date()
         let startOfDay = calendar.startOfDay(for: now)
@@ -267,6 +280,7 @@ class HealthKitService {
             hrv: hrv,
             sleepHours: lastNightSleep
         )
+        #endif
     }
 
     // MARK: - Week Summaries for AI
