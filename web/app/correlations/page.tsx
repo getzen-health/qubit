@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, GitCompareArrows } from 'lucide-react'
-import { CorrelationsClient } from './correlations-client'
+import dynamic from 'next/dynamic'
+const CorrelationsClient = dynamic(() => import('./correlations-client').then(m => ({ default: m.CorrelationsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function CorrelationsPage() {

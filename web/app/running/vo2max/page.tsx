@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Wind } from 'lucide-react'
-import { VO2maxClient } from './vo2max-client'
+import dynamic from 'next/dynamic'
+const VO2maxClient = dynamic(() => import('./vo2max-client').then(m => ({ default: m.VO2maxClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'VO₂max Trend' }

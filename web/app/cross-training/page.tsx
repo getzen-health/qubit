@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { CrossTrainingClient } from './cross-training-client'
+import dynamic from 'next/dynamic'
+const CrossTrainingClient = dynamic(() => import('./cross-training-client').then(m => ({ default: m.CrossTrainingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cross-Training Analytics' }

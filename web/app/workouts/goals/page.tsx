@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { WorkoutGoalsClient } from './workout-goals-client'
+import dynamic from 'next/dynamic'
+const WorkoutGoalsClient = dynamic(() => import('./workout-goals-client').then(m => ({ default: m.WorkoutGoalsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Workout Goals' }

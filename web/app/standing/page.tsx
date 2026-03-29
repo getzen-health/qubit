@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { StandingClient, type StandingData, type DailyStanding, type HourlyRate } from './standing-client'
+import dynamic from 'next/dynamic'
+const StandingClient = dynamic(() => import('./standing-client').then(m => ({ default: m.StandingClient })), { ssr: false })
+import type { StandingData, DailyStanding, HourlyRate } from './standing-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Standing Hours Analysis' }

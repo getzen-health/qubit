@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { WalkingClient } from './walking-client'
+import dynamic from 'next/dynamic'
+const WalkingClient = dynamic(() => import('./walking-client').then(m => ({ default: m.WalkingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Walking Analytics' }

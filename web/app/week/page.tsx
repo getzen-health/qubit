@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { WeekClient } from './week-client'
+import dynamic from 'next/dynamic'
+const WeekClient = dynamic(() => import('./week-client').then(m => ({ default: m.WeekClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Weekly Report' }

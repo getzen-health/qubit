@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { SpO2DeepDiveClient, type SpO2Data, type DailySpO2Reading, type SpO2Status } from './spo2-deep-dive-client'
+import dynamic from 'next/dynamic'
+const SpO2DeepDiveClient = dynamic(() => import('./spo2-deep-dive-client').then(m => ({ default: m.SpO2DeepDiveClient })), { ssr: false })
+import type { SpO2Data, DailySpO2Reading, SpO2Status } from './spo2-deep-dive-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Blood Oxygen Deep Dive' }

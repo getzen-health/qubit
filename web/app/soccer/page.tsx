@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { SoccerClient } from './soccer-client'
+import dynamic from 'next/dynamic'
+const SoccerClient = dynamic(() => import('./soccer-client').then(m => ({ default: m.SoccerClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Soccer Analytics' }

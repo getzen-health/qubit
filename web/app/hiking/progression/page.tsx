@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { HikingProgressionClient } from './hiking-progression-client'
+import dynamic from 'next/dynamic'
+const HikingProgressionClient = dynamic(() => import('./hiking-progression-client').then(m => ({ default: m.HikingProgressionClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hiking Progression' }

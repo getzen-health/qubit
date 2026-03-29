@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { OxygenPatternsClient, type OxygenPatternData } from './oxygen-patterns-client'
+import dynamic from 'next/dynamic'
+const OxygenPatternsClient = dynamic(() => import('./oxygen-patterns-client').then(m => ({ default: m.OxygenPatternsClient })), { ssr: false })
+import type { OxygenPatternData } from './oxygen-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'SpO₂ Patterns' }

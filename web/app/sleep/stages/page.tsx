@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { StagesClient } from './stages-client'
+import dynamic from 'next/dynamic'
+const StagesClient = dynamic(() => import('./stages-client').then(m => ({ default: m.StagesClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Sleep Stages' }

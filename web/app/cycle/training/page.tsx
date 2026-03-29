@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { CycleTrainingClient, type CycleTrainingData, type Phase } from './cycle-training-client'
+import dynamic from 'next/dynamic'
+const CycleTrainingClient = dynamic(() => import('./cycle-training-client').then(m => ({ default: m.CycleTrainingClient })), { ssr: false })
+import type { CycleTrainingData, Phase } from './cycle-training-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cycle-Synced Training' }

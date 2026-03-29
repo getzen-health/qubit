@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Moon } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { SocialJetLagClient } from './social-jet-lag-client'
+import dynamic from 'next/dynamic'
+const SocialJetLagClient = dynamic(() => import('./social-jet-lag-client').then(m => ({ default: m.SocialJetLagClient })), { ssr: false })
 
 export const metadata = { title: 'Social Jet Lag' }
 

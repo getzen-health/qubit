@@ -1,4 +1,5 @@
-import { WalkingSpeedClient } from './walking-speed-client'
+import dynamic from 'next/dynamic'
+const WalkingSpeedClient = dynamic(() => import('./walking-speed-client').then(m => ({ default: m.WalkingSpeedClient })), { ssr: false })
 
 export const metadata = {
   title: 'Walking Speed — KQuarks',

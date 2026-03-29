@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { OxygenClient } from './oxygen-client'
+import dynamic from 'next/dynamic'
+const OxygenClient = dynamic(() => import('./oxygen-client').then(m => ({ default: m.OxygenClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 

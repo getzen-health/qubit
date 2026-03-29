@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { ExerciseMinutesClient, type ExerciseMinutesData, type WeekData, type DayPattern } from './exercise-minutes-client'
+import dynamic from 'next/dynamic'
+const ExerciseMinutesClient = dynamic(() => import('./exercise-minutes-client').then(m => ({ default: m.ExerciseMinutesClient })), { ssr: false })
+import type { ExerciseMinutesData, WeekData, DayPattern } from './exercise-minutes-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Exercise Minutes' }

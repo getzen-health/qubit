@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Star } from 'lucide-react'
-import { SleepScoreClient } from './sleep-score-client'
+import dynamic from 'next/dynamic'
+const SleepScoreClient = dynamic(() => import('./sleep-score-client').then(m => ({ default: m.SleepScoreClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Sleep Quality Score' }
