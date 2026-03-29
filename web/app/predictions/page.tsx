@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import dynamic from 'next/dynamic'
-const PredictionsClient = dynamic(() => import('./predictions-client').then(m => ({ default: m.PredictionsClient })), { ssr: false })
+const PredictionsClient = dynamic(() => import('./predictions-client').then(m => ({ default: m.PredictionsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Forecast – KQuarks' }

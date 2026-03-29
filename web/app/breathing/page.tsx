@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-const BreathingClient = dynamic(() => import('./breathing-client').then(m => ({ default: m.BreathingClient })), { ssr: false })
+const BreathingClient = dynamic(() => import('./breathing-client').then(m => ({ default: m.BreathingClient })))
 
 export const metadata = {
   title: 'Breathing & Respiratory Health — KQuarks',

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Zap } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HiitPatternsClient = dynamic(() => import('./hiit-patterns-client').then(m => ({ default: m.HiitPatternsClient })), { ssr: false })
+const HiitPatternsClient = dynamic(() => import('./hiit-patterns-client').then(m => ({ default: m.HiitPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HIIT Patterns' }

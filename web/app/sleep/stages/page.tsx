@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StagesClient = dynamic(() => import('./stages-client').then(m => ({ default: m.StagesClient })), { ssr: false })
+const StagesClient = dynamic(() => import('./stages-client').then(m => ({ default: m.StagesClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Sleep Stages' }

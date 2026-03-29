@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Timer, Gauge, TrendingUp, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RunningClient = dynamic(() => import('./running-client').then(m => ({ default: m.RunningClient })), { ssr: false })
+const RunningClient = dynamic(() => import('./running-client').then(m => ({ default: m.RunningClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Running Analytics' }

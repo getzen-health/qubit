@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const ReadyClient = dynamic(() => import('./ready-client').then(m => ({ default: m.ReadyClient })), { ssr: false })
+const ReadyClient = dynamic(() => import('./ready-client').then(m => ({ default: m.ReadyClient })))
 import type { ReadinessData, DailyScore, ReadinessZone } from './ready-client'
 import { BottomNav } from '@/components/bottom-nav'
 import { calculateReadinessScore, toHrvScore, toRhrScore, toSleepScore } from '@/lib/readiness'

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SpO2DeepDiveClient = dynamic(() => import('./spo2-deep-dive-client').then(m => ({ default: m.SpO2DeepDiveClient })), { ssr: false })
+const SpO2DeepDiveClient = dynamic(() => import('./spo2-deep-dive-client').then(m => ({ default: m.SpO2DeepDiveClient })))
 import type { SpO2Data, DailySpO2Reading, SpO2Status } from './spo2-deep-dive-client'
 import { BottomNav } from '@/components/bottom-nav'
 

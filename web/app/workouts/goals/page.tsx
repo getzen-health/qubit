@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const WorkoutGoalsClient = dynamic(() => import('./workout-goals-client').then(m => ({ default: m.WorkoutGoalsClient })), { ssr: false })
+const WorkoutGoalsClient = dynamic(() => import('./workout-goals-client').then(m => ({ default: m.WorkoutGoalsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Workout Goals' }

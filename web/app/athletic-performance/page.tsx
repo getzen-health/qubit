@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Trophy } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const AthleticPerformanceClient = dynamic(() => import('./athletic-performance-client').then(m => ({ default: m.AthleticPerformanceClient })), { ssr: false })
+const AthleticPerformanceClient = dynamic(() => import('./athletic-performance-client').then(m => ({ default: m.AthleticPerformanceClient })))
 import { BottomNav } from '@/components/bottom-nav'
 import { calculateTrainingMetrics, calculateSessionLoad } from '@/lib/athletic-performance'
 

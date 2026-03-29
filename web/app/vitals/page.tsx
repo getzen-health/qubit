@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart, Wind } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const VitalsClient = dynamic(() => import('./vitals-client').then(m => ({ default: m.VitalsClient })), { ssr: false })
+const VitalsClient = dynamic(() => import('./vitals-client').then(m => ({ default: m.VitalsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Vitals' }

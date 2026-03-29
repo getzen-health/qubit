@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const MindfulnessImpactClient = dynamic(() => import('./mindfulness-impact-client').then(m => ({ default: m.MindfulnessImpactClient })), { ssr: false })
+const MindfulnessImpactClient = dynamic(() => import('./mindfulness-impact-client').then(m => ({ default: m.MindfulnessImpactClient })))
 import type { ImpactData } from './mindfulness-impact-client'
 import { BottomNav } from '@/components/bottom-nav'
 

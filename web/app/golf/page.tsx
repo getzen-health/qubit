@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const GolfClient = dynamic(() => import('./golf-client').then(m => ({ default: m.GolfClient })), { ssr: false })
+const GolfClient = dynamic(() => import('./golf-client').then(m => ({ default: m.GolfClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Golf Analytics' }

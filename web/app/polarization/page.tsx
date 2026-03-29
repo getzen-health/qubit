@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const PolarizationClient = dynamic(() => import('./polarization-client').then(m => ({ default: m.PolarizationClient })), { ssr: false })
+const PolarizationClient = dynamic(() => import('./polarization-client').then(m => ({ default: m.PolarizationClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Polarization' }

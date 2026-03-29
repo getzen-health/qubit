@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StrengthClient = dynamic(() => import('./strength-client').then(m => ({ default: m.StrengthClient })), { ssr: false })
+const StrengthClient = dynamic(() => import('./strength-client').then(m => ({ default: m.StrengthClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Strength Training' }

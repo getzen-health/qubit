@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StepPatternsClient = dynamic(() => import('./step-patterns-client').then(m => ({ default: m.StepPatternsClient })), { ssr: false })
+const StepPatternsClient = dynamic(() => import('./step-patterns-client').then(m => ({ default: m.StepPatternsClient })))
 import type { PatternData } from './step-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

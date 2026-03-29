@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CrossTrainingClient = dynamic(() => import('./cross-training-client').then(m => ({ default: m.CrossTrainingClient })), { ssr: false })
+const CrossTrainingClient = dynamic(() => import('./cross-training-client').then(m => ({ default: m.CrossTrainingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cross-Training Analytics' }

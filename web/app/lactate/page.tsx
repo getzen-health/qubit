@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const LactateClient = dynamic(() => import('./lactate-client').then(m => ({ default: m.LactateClient })), { ssr: false })
+const LactateClient = dynamic(() => import('./lactate-client').then(m => ({ default: m.LactateClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Lactate Threshold Analytics' }

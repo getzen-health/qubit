@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SwimmingClient = dynamic(() => import('./swimming-client').then(m => ({ default: m.SwimmingClient })), { ssr: false })
+const SwimmingClient = dynamic(() => import('./swimming-client').then(m => ({ default: m.SwimmingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Swimming Analytics' }

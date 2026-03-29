@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Thermometer, Clock, TrendingDown, TrendingUp, Layers, Percent, Moon, Zap, Star, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SleepPageClient = dynamic(() => import('./sleep-client').then(m => ({ default: m.SleepPageClient })), { ssr: false })
+const SleepPageClient = dynamic(() => import('./sleep-client').then(m => ({ default: m.SleepPageClient })))
 import { SleepInsightCard } from '@/components/sleep-insight-card'
 import { BottomNav } from '@/components/bottom-nav'
 import { SleepForm } from './sleep-form'

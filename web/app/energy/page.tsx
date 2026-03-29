@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-const EnergyClient = dynamic(() => import('./energy-client').then(m => ({ default: m.EnergyClient })), { ssr: false })
+const EnergyClient = dynamic(() => import('./energy-client').then(m => ({ default: m.EnergyClient })))
 
 export const metadata = {
   title: 'Energy Journal — KQuarks',

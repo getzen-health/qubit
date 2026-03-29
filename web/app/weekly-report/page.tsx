@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const WeeklyReportClient = dynamic(() => import('./weekly-report-client').then(m => ({ default: m.WeeklyReportClient })), { ssr: false })
+const WeeklyReportClient = dynamic(() => import('./weekly-report-client').then(m => ({ default: m.WeeklyReportClient })))
 import type { DaySummary } from './weekly-report-client'
 
 export const metadata = { title: 'Weekly Report — KQuarks' }

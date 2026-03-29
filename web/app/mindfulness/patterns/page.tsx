@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const MindfulnessPatternsClient = dynamic(() => import('./mindfulness-patterns-client').then(m => ({ default: m.MindfulnessPatternsClient })), { ssr: false })
+const MindfulnessPatternsClient = dynamic(() => import('./mindfulness-patterns-client').then(m => ({ default: m.MindfulnessPatternsClient })))
 import type { MindfulnessPatternData } from './mindfulness-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Moon } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const SocialJetLagClient = dynamic(() => import('./social-jet-lag-client').then(m => ({ default: m.SocialJetLagClient })), { ssr: false })
+const SocialJetLagClient = dynamic(() => import('./social-jet-lag-client').then(m => ({ default: m.SocialJetLagClient })))
 
 export const metadata = { title: 'Social Jet Lag' }
 

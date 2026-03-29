@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const BodyTrendsClient = dynamic(() => import('./body-trends-client').then(m => ({ default: m.BodyTrendsClient })), { ssr: false })
+const BodyTrendsClient = dynamic(() => import('./body-trends-client').then(m => ({ default: m.BodyTrendsClient })))
 import type { BodyTrendData } from './body-trends-client'
 import { BottomNav } from '@/components/bottom-nav'
 

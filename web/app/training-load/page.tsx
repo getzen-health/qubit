@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const TrainingLoadClient = dynamic(() => import('./training-load-client').then(m => ({ default: m.TrainingLoadClient })), { ssr: false })
+const TrainingLoadClient = dynamic(() => import('./training-load-client').then(m => ({ default: m.TrainingLoadClient })))
 
 export interface DayPoint {
   date: string

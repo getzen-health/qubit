@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Dumbbell } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StrengthPatternsClient = dynamic(() => import('./strength-patterns-client').then(m => ({ default: m.StrengthPatternsClient })), { ssr: false })
+const StrengthPatternsClient = dynamic(() => import('./strength-patterns-client').then(m => ({ default: m.StrengthPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Strength Training Patterns' }

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const ConsistencyClient = dynamic(() => import('./consistency-client').then(m => ({ default: m.ConsistencyClient })), { ssr: false })
+const ConsistencyClient = dynamic(() => import('./consistency-client').then(m => ({ default: m.ConsistencyClient })))
 
 export const metadata = { title: 'Training Consistency' }
 

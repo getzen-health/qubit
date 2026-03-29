@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const TennisClient = dynamic(() => import('./tennis-client').then(m => ({ default: m.TennisClient })), { ssr: false })
+const TennisClient = dynamic(() => import('./tennis-client').then(m => ({ default: m.TennisClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Tennis Analytics' }

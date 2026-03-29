@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const VO2MaxNormsClient = dynamic(() => import('./vo2max-norms-client').then(m => ({ default: m.VO2MaxNormsClient })), { ssr: false })
+const VO2MaxNormsClient = dynamic(() => import('./vo2max-norms-client').then(m => ({ default: m.VO2MaxNormsClient })))
 
 export const metadata = { title: 'VO₂ Max Norms' }
 

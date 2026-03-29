@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HydrationPatternsClient = dynamic(() => import('./hydration-patterns-client').then(m => ({ default: m.HydrationPatternsClient })), { ssr: false })
+const HydrationPatternsClient = dynamic(() => import('./hydration-patterns-client').then(m => ({ default: m.HydrationPatternsClient })))
 import type { HydrationPatternData } from './hydration-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

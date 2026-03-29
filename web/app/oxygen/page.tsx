@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const OxygenClient = dynamic(() => import('./oxygen-client').then(m => ({ default: m.OxygenClient })), { ssr: false })
+const OxygenClient = dynamic(() => import('./oxygen-client').then(m => ({ default: m.OxygenClient })))
 import { BottomNav } from '@/components/bottom-nav'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 

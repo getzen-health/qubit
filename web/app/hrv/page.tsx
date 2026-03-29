@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, CalendarHeart, Layers, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HrvClient = dynamic(() => import('./hrv-client').then(m => ({ default: m.HrvClient })), { ssr: false })
+const HrvClient = dynamic(() => import('./hrv-client').then(m => ({ default: m.HrvClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HRV Analysis' }

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const DebtClient = dynamic(() => import('./debt-client').then(m => ({ default: m.DebtClient })), { ssr: false })
+const DebtClient = dynamic(() => import('./debt-client').then(m => ({ default: m.DebtClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Sleep Debt' }

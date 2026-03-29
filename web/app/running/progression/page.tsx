@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const ProgressionClient = dynamic(() => import('./progression-client').then(m => ({ default: m.ProgressionClient })), { ssr: false })
+const ProgressionClient = dynamic(() => import('./progression-client').then(m => ({ default: m.ProgressionClient })))
 import type { ProgressionData } from './progression-client'
 import { BottomNav } from '@/components/bottom-nav'
 

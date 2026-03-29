@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RockClimbingClient = dynamic(() => import('./rock-climbing-client').then(m => ({ default: m.RockClimbingClient })), { ssr: false })
+const RockClimbingClient = dynamic(() => import('./rock-climbing-client').then(m => ({ default: m.RockClimbingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Rock Climbing Analytics' }

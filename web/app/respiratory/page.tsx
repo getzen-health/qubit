@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RespiratoryClient = dynamic(() => import('./respiratory-client').then(m => ({ default: m.RespiratoryClient })), { ssr: false })
+const RespiratoryClient = dynamic(() => import('./respiratory-client').then(m => ({ default: m.RespiratoryClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Respiratory Rate' }

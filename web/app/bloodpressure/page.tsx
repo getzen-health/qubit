@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const BloodPressureClient = dynamic(() => import('./bloodpressure-client').then(m => ({ default: m.BloodPressureClient })), { ssr: false })
+const BloodPressureClient = dynamic(() => import('./bloodpressure-client').then(m => ({ default: m.BloodPressureClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Blood Pressure' }

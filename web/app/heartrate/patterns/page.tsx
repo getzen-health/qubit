@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HRPatternsClient = dynamic(() => import('./patterns-client').then(m => ({ default: m.HRPatternsClient })), { ssr: false })
+const HRPatternsClient = dynamic(() => import('./patterns-client').then(m => ({ default: m.HRPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Heart Rate Patterns' }

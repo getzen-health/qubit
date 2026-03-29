@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HrvPatternsClient = dynamic(() => import('./hrv-patterns-client').then(m => ({ default: m.HrvPatternsClient })), { ssr: false })
+const HrvPatternsClient = dynamic(() => import('./hrv-patterns-client').then(m => ({ default: m.HrvPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HRV Patterns' }

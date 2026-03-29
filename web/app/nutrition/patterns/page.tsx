@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const NutritionPatternsClient = dynamic(() => import('./nutrition-patterns-client').then(m => ({ default: m.NutritionPatternsClient })), { ssr: false })
+const NutritionPatternsClient = dynamic(() => import('./nutrition-patterns-client').then(m => ({ default: m.NutritionPatternsClient })))
 import type { NutritionPatternData } from './nutrition-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

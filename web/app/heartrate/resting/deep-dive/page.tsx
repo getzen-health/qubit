@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RestingHRDeepDiveClient = dynamic(() => import('./resting-hr-deep-dive-client').then(m => ({ default: m.RestingHRDeepDiveClient })), { ssr: false })
+const RestingHRDeepDiveClient = dynamic(() => import('./resting-hr-deep-dive-client').then(m => ({ default: m.RestingHRDeepDiveClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Resting HR Deep Dive' }

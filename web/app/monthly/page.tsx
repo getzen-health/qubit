@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const MonthlyClient = dynamic(() => import('./monthly-client').then(m => ({ default: m.MonthlyClient })), { ssr: false })
+const MonthlyClient = dynamic(() => import('./monthly-client').then(m => ({ default: m.MonthlyClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function MonthlyPage() {

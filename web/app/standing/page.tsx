@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StandingClient = dynamic(() => import('./standing-client').then(m => ({ default: m.StandingClient })), { ssr: false })
+const StandingClient = dynamic(() => import('./standing-client').then(m => ({ default: m.StandingClient })))
 import type { StandingData, DailyStanding, HourlyRate } from './standing-client'
 import { BottomNav } from '@/components/bottom-nav'
 

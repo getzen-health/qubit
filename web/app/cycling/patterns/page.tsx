@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Bike } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CyclingPatternsClient = dynamic(() => import('./cycling-patterns-client').then(m => ({ default: m.CyclingPatternsClient })), { ssr: false })
+const CyclingPatternsClient = dynamic(() => import('./cycling-patterns-client').then(m => ({ default: m.CyclingPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cycling Patterns' }

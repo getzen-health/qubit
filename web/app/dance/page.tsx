@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const DanceClient = dynamic(() => import('./dance-client').then(m => ({ default: m.DanceClient })), { ssr: false })
+const DanceClient = dynamic(() => import('./dance-client').then(m => ({ default: m.DanceClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Dance & Aerobics Analytics' }

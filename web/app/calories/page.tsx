@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CaloriesClient = dynamic(() => import('./calories-client').then(m => ({ default: m.CaloriesClient })), { ssr: false })
+const CaloriesClient = dynamic(() => import('./calories-client').then(m => ({ default: m.CaloriesClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Calorie Balance' }

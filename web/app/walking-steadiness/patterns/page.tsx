@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const WalkingPatternsClient = dynamic(() => import('./walking-patterns-client').then(m => ({ default: m.WalkingPatternsClient })), { ssr: false })
+const WalkingPatternsClient = dynamic(() => import('./walking-patterns-client').then(m => ({ default: m.WalkingPatternsClient })))
 import type { WalkingPatternData } from './walking-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

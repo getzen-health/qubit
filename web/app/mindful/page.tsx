@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const MindfulClient = dynamic(() => import('./mindful-client').then(m => ({ default: m.MindfulClient })), { ssr: false })
+const MindfulClient = dynamic(() => import('./mindful-client').then(m => ({ default: m.MindfulClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Mindful Minutes Analytics' }

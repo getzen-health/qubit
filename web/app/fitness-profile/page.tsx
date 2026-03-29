@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const FitnessProfileClient = dynamic(() => import('./profile-client').then(m => ({ default: m.FitnessProfileClient })), { ssr: false })
+const FitnessProfileClient = dynamic(() => import('./profile-client').then(m => ({ default: m.FitnessProfileClient })))
 import type { FitnessProfileData, DimensionScore } from './profile-client'
 import { BottomNav } from '@/components/bottom-nav'
 

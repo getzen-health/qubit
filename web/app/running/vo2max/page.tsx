@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Wind } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const VO2maxClient = dynamic(() => import('./vo2max-client').then(m => ({ default: m.VO2maxClient })), { ssr: false })
+const VO2maxClient = dynamic(() => import('./vo2max-client').then(m => ({ default: m.VO2maxClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'VO₂max Trend' }

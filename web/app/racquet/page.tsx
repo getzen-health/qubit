@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RacquetClient = dynamic(() => import('./racquet-client').then(m => ({ default: m.RacquetClient })), { ssr: false })
+const RacquetClient = dynamic(() => import('./racquet-client').then(m => ({ default: m.RacquetClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Racquet Sports Analytics' }

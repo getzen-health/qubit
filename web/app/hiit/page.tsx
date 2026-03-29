@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HiitClient = dynamic(() => import('./hiit-client').then(m => ({ default: m.HiitClient })), { ssr: false })
+const HiitClient = dynamic(() => import('./hiit-client').then(m => ({ default: m.HiitClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HIIT Analytics' }

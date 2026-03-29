@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const MealPlannerClient = dynamic(() => import('./meal-planner-client').then(m => ({ default: m.MealPlannerClient })), { ssr: false })
+const MealPlannerClient = dynamic(() => import('./meal-planner-client').then(m => ({ default: m.MealPlannerClient })))
 import { calculateTDEE, calculateMacroTargets, calculateDietAdherenceScore, type MealEntry } from '@/lib/meal-planner'
 
 export const metadata = { title: 'Meal Planner | KQuarks' }
