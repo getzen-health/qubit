@@ -40,7 +40,7 @@ class ThemeManager {
 
     /// Current appearance mode
     @ObservationIgnored
-    @AppStorage("appearanceMode") private var storedAppearanceMode: String = AppearanceMode.system.rawValue
+    @AppStorage("appearanceMode") private var storedAppearanceMode: String = AppearanceMode.dark.rawValue
 
     /// Accent color hue (0-360)
     @ObservationIgnored
@@ -48,11 +48,11 @@ class ThemeManager {
 
     /// Accent color saturation (0-1)
     @ObservationIgnored
-    @AppStorage("accentColorSaturation") private var storedAccentSaturation: Double = 0.7
+    @AppStorage("accentColorSaturation") private var storedAccentSaturation: Double = 0.65
 
     /// Accent color brightness (0-1)
     @ObservationIgnored
-    @AppStorage("accentColorBrightness") private var storedAccentBrightness: Double = 0.5
+    @AppStorage("accentColorBrightness") private var storedAccentBrightness: Double = 0.82
 
     // MARK: - Computed Properties
 
@@ -107,10 +107,10 @@ class ThemeManager {
 
     /// Reset theme to defaults
     func resetToDefaults() {
-        appearanceMode = .system
+        appearanceMode = .dark
         accentHue = 270
-        accentSaturation = 0.7
-        accentBrightness = 0.5
+        accentSaturation = 0.65
+        accentBrightness = 0.82
     }
 
     /// Set appearance mode
@@ -124,7 +124,7 @@ class ThemeManager {
     }
 
     /// Set accent color from preset
-    func setAccentColor(hue: Double, saturation: Double = 0.7, brightness: Double = 0.5) {
+    func setAccentColor(hue: Double, saturation: Double = 0.65, brightness: Double = 0.82) {
         accentHue = hue
         accentSaturation = saturation
         accentBrightness = brightness
@@ -146,11 +146,11 @@ struct AccentColorPreset: Identifiable {
     }
 
     static let presets: [AccentColorPreset] = [
-        AccentColorPreset(name: "Purple", hue: 270, saturation: 0.7, brightness: 0.5),
-        AccentColorPreset(name: "Blue", hue: 220, saturation: 0.8, brightness: 0.5),
-        AccentColorPreset(name: "Green", hue: 150, saturation: 0.7, brightness: 0.4),
-        AccentColorPreset(name: "Orange", hue: 30, saturation: 0.9, brightness: 0.5),
-        AccentColorPreset(name: "Pink", hue: 330, saturation: 0.7, brightness: 0.55),
-        AccentColorPreset(name: "Teal", hue: 180, saturation: 0.7, brightness: 0.4),
+        AccentColorPreset(name: "Purple", hue: 270, saturation: 0.65, brightness: 0.82),
+        AccentColorPreset(name: "Blue", hue: 220, saturation: 0.70, brightness: 0.85),
+        AccentColorPreset(name: "Green", hue: 150, saturation: 0.65, brightness: 0.75),
+        AccentColorPreset(name: "Orange", hue: 30, saturation: 0.85, brightness: 0.90),
+        AccentColorPreset(name: "Pink", hue: 330, saturation: 0.65, brightness: 0.85),
+        AccentColorPreset(name: "Teal", hue: 180, saturation: 0.60, brightness: 0.78),
     ]
 }

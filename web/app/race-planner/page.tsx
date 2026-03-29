@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RacePlannerClient = dynamic(() => import('./race-planner-client').then(m => ({ default: m.RacePlannerClient })), { ssr: false })
+const RacePlannerClient = dynamic(() => import('./race-planner-client').then(m => ({ default: m.RacePlannerClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Race Goal Planner' }

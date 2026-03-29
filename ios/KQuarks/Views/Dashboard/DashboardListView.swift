@@ -44,10 +44,10 @@ struct DashboardListView: View {
                     }
 
                     if viewModel.isLoading {
-                        ProgressView()
-                            .padding(.top, 80)
+                        DashboardSkeletonView()
                     } else if let summary = viewModel.todaySummary {
                         dashboardContent(summary: summary)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                     } else if let error = viewModel.error {
                         errorView(error: error)
                     } else {
@@ -60,12 +60,13 @@ struct DashboardListView: View {
                     }
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background(PremiumBackgroundView())
+            .animation(.easeOut(duration: 0.35), value: viewModel.isLoading)
             .refreshable {
                 await viewModel.loadData()
             }
             .navigationTitle(greeting)
-            .toolbarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 12) {
@@ -157,9 +158,24 @@ struct DashboardListView: View {
         return "Good evening"
     }
 
+    /// Premium section header with accent line
+    @ViewBuilder
+    private func sectionHeader(_ title: String) -> some View {
+        HStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.accentColor)
+                .frame(width: 3, height: 14)
+            Text(title.uppercased())
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(.white.opacity(0.55))
+                .kerning(1.2)
+        }
+        .padding(.horizontal, 16)
+    }
+
     @ViewBuilder
     private func dashboardContent(summary: TodayHealthSummary) -> some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             // AI Essence - Recovery + Strain + AI Insight
             AIEssenceView(
                 recoveryScore: viewModel.recoveryScore,
@@ -192,273 +208,81 @@ struct DashboardListView: View {
             // Activity Stream
             activitySection(summary: summary)
 
-            // Wellbeing section: check-in + quick links
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Wellbeing")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 16)
-                VStack(spacing: 0) {
-                    CheckinDashboardCard(checkin: todayCheckin) {
-                        showCheckin = true
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: WaterView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "drop.fill")
-                                .font(.title3)
-                                .foregroundStyle(.blue)
-                            Text("Hydration")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: FastingView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "timer")
-                                .font(.title3)
-                                .foregroundStyle(.orange)
-                            Text("Fasting")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: HabitsView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "checklist")
-                                .font(.title3)
-                                .foregroundStyle(Color.accentColor)
-                            Text("Habits")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: MindfulnessView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "brain.head.profile")
-                                .font(.title3)
-                                .foregroundStyle(.teal)
-                            Text("Mindfulness")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: BreathingView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "wind")
-                                .font(.title3)
-                                .foregroundStyle(.cyan)
-                            Text("Breathing")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: RunningView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "figure.run")
-                                .font(.title3)
-                                .foregroundStyle(.orange)
-                            Text("Running Analytics")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: RecoveryView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "bolt.heart.fill")
-                                .font(.title3)
-                                .foregroundStyle(.pink)
-                            Text("Recovery")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: LeaderboardView()) {
-                        HStack(spacing: 12) {
-                            Text("🔥")
-                                .font(.title3)
-                            Text("Streak Leaderboard")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: ImportView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "square.and.arrow.down.on.square")
-                                .font(.title3)
-                                .foregroundStyle(.indigo)
-                            Text("Import Data")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: CorrelationsView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "chart.dots.scatter")
-                                .font(.title3)
-                                .foregroundStyle(.indigo)
-                            Text("Correlations")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: WeeklyBalanceView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "chart.bar.xaxis")
-                                .font(.title3)
-                                .foregroundStyle(.purple)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Weekly Balance")
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(.primary)
-                                Text("Cardio · Strength · Flexibility · Recovery")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: ReportView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "doc.text.magnifyingglass")
-                                .font(.title3)
-                                .foregroundStyle(.blue)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Doctor Report")
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(.primary)
-                                Text("Generate a PDF to share with your doctor")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: FoodScannerView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "barcode.viewfinder")
-                                .font(.title3)
-                                .foregroundStyle(.green)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Food Scanner")
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(.primary)
-                                Text("Scan or search for QuarkScore™")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: NutritionView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "fork.knife")
-                                .font(.title3)
-                                .foregroundStyle(.orange)
-                            Text("Nutrition")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
-                    NavigationLink(destination: GLP1View()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "syringe.fill")
-                                .font(.title3)
-                                .foregroundStyle(.purple)
-                            Text("GLP-1 / Zepbound")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
+            // Wellbeing section: check-in card + 2-column tile grid
+            VStack(alignment: .leading, spacing: 10) {
+                sectionHeader("Wellbeing")
+
+                // Check-in stays as a full-width card
+                CheckinDashboardCard(checkin: todayCheckin) {
+                    showCheckin = true
                 }
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 16)
+
+                // Tile grid
+                LazyVGrid(
+                    columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                    spacing: 12
+                ) {
+                    NavigationLink(destination: WaterView()) {
+                        DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .blue)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: FastingView()) {
+                        DashboardTileCard(icon: "timer", title: "Fasting", subtitle: "Track your window", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: HabitsView()) {
+                        DashboardTileCard(icon: "checklist", title: "Habits", subtitle: "Daily streaks", color: Color.accentColor)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: MindfulnessView()) {
+                        DashboardTileCard(icon: "brain.head.profile", title: "Mindfulness", subtitle: "Meditate & reflect", color: .teal)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: BreathingView()) {
+                        DashboardTileCard(icon: "wind", title: "Breathing", subtitle: "Calm your mind", color: .cyan)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: RunningView()) {
+                        DashboardTileCard(icon: "figure.run", title: "Running", subtitle: "Pace & cadence", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: RecoveryView()) {
+                        DashboardTileCard(icon: "bolt.heart.fill", title: "Recovery", subtitle: "HRV & readiness", color: .pink)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: LeaderboardView()) {
+                        DashboardTileCard(icon: "flame.fill", title: "Leaderboard", subtitle: "Step streaks", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: FoodScannerView()) {
+                        DashboardTileCard(icon: "barcode.viewfinder", title: "Food Scanner", subtitle: "QuarkScore™", color: .green)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: NutritionView()) {
+                        DashboardTileCard(icon: "fork.knife", title: "Nutrition", subtitle: "Macros & meals", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: WeeklyBalanceView()) {
+                        DashboardTileCard(icon: "chart.bar.xaxis", title: "Weekly Balance", subtitle: "Cardio · Strength", color: .purple)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: ReportView()) {
+                        DashboardTileCard(icon: "doc.text.magnifyingglass", title: "Doctor Report", subtitle: "Share as PDF", color: .blue)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: CorrelationsView()) {
+                        DashboardTileCard(icon: "chart.dots.scatter", title: "Correlations", subtitle: "Find patterns", color: .indigo)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: ImportView()) {
+                        DashboardTileCard(icon: "square.and.arrow.down.on.square", title: "Import Data", subtitle: "Garmin · Oura", color: .indigo)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: GLP1View()) {
+                        DashboardTileCard(icon: "syringe.fill", title: "GLP-1", subtitle: "Zepbound tracker", color: .purple)
+                    }.buttonStyle(.plain)
+                }
                 .padding(.horizontal, 16)
             }
 
@@ -466,87 +290,33 @@ struct DashboardListView: View {
             InsightsSectionView(insights: viewModel.insights)
                 .padding(.horizontal, 16)
 
-            // AI Features
-            VStack(alignment: .leading, spacing: 8) {
-                Text("AI Features")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 16)
-                VStack(spacing: 0) {
+            // AI Features — tile grid
+            VStack(alignment: .leading, spacing: 10) {
+                sectionHeader("AI Features")
+                LazyVGrid(
+                    columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                    spacing: 12
+                ) {
                     NavigationLink(destination: BriefingHistoryView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "sun.horizon.fill")
-                                .font(.title3)
-                                .foregroundStyle(.orange)
-                            Text("Morning Briefings")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
+                        DashboardTileCard(icon: "sun.horizon.fill", title: "Morning Briefing", subtitle: "Daily AI summary", color: .orange)
+                    }.buttonStyle(.plain)
+
                     NavigationLink(destination: AnomalyAlertView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .font(.title3)
-                                .foregroundStyle(.red)
-                            Text("Health Alerts")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
+                        DashboardTileCard(icon: "exclamationmark.triangle.fill", title: "Health Alerts", subtitle: "Anomaly detection", color: .red)
+                    }.buttonStyle(.plain)
+
                     NavigationLink(destination: HealthChatView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "bubble.left.and.bubble.right.fill")
-                                .font(.title3)
-                                .foregroundStyle(.indigo)
-                            Text("Health Coach")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
-                    Divider().padding(.leading, 16)
+                        DashboardTileCard(icon: "bubble.left.and.bubble.right.fill", title: "Health Coach", subtitle: "Ask your data", color: .indigo)
+                    }.buttonStyle(.plain)
+
                     NavigationLink(destination: CoachingView()) {
-                        Label("AI Coach", systemImage: "brain.head.profile")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                    }
-                    Divider().padding(.leading, 16)
+                        DashboardTileCard(icon: "brain.head.profile", title: "AI Coach", subtitle: "Personalized plans", color: .purple, badge: "AI")
+                    }.buttonStyle(.plain)
+
                     NavigationLink(destination: PredictiveInsightsView()) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "calendar.badge.clock")
-                                .font(.title3)
-                                .foregroundStyle(.teal)
-                            Text("Week Ahead")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding()
-                    }
+                        DashboardTileCard(icon: "calendar.badge.clock", title: "Week Ahead", subtitle: "Predicted trends", color: .teal)
+                    }.buttonStyle(.plain)
                 }
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal, 16)
             }
 
@@ -569,57 +339,57 @@ struct DashboardListView: View {
     }
 
     private func buildQuickStats(summary: TodayHealthSummary) -> [QuickStat] {
-        var stats: [QuickStat] = []
-
-        stats.append(QuickStat(
-            label: "Steps",
-            value: summary.steps.formatted(),
-            trend: viewModel.stepsTrend,
-            color: .activity
-        ))
-
-        stats.append(QuickStat(
-            label: "Calories",
-            value: "\(Int(summary.activeCalories))",
-            unit: "cal",
-            color: .strain
-        ))
-
-        stats.append(QuickStat(
-            label: "Body Battery",
-            value: "\(viewModel.bodyBatteryScore)",
-            unit: "%",
-            color: .recovery
-        ))
-
-        if let formattedSleep = summary.formattedSleep {
-            stats.append(QuickStat(
-                label: "Sleep",
-                value: formattedSleep,
-                color: .sleep
-            ))
-        }
-
+        // Always return exactly 4 stats for a clean 2×2 grid
+        let sleepValue = summary.formattedSleep ?? "--"
+        let hrvValue: String
+        let hrvUnit: String?
+        let hrvTrendValue: Int?
         if let hrv = summary.hrv {
-            stats.append(QuickStat(
-                label: "HRV",
-                value: "\(Int(hrv))",
-                unit: "ms",
-                trend: viewModel.hrvTrend,
-                color: .heart
-            ))
+            hrvValue = "\(Int(hrv))"
+            hrvUnit = "ms"
+            hrvTrendValue = viewModel.hrvTrend
+        } else {
+            hrvValue = "\(viewModel.recoveryScore)"
+            hrvUnit = "%"
+            hrvTrendValue = viewModel.recoveryTrend
         }
 
-        return stats
+        return [
+            QuickStat(
+                label: "Steps",
+                value: summary.steps.formatted(),
+                trend: viewModel.stepsTrend,
+                color: .activity,
+                icon: "figure.walk"
+            ),
+            QuickStat(
+                label: "Sleep",
+                value: sleepValue,
+                color: .sleep,
+                icon: "moon.fill"
+            ),
+            QuickStat(
+                label: "Calories",
+                value: "\(Int(summary.activeCalories))",
+                unit: "kcal",
+                color: .strain,
+                icon: "flame.fill"
+            ),
+            QuickStat(
+                label: summary.hrv != nil ? "HRV" : "Recovery",
+                value: hrvValue,
+                unit: hrvUnit,
+                trend: hrvTrendValue,
+                color: .heart,
+                icon: summary.hrv != nil ? "waveform.path.ecg" : "bolt.fill"
+            ),
+        ]
     }
 
     @ViewBuilder
     private func metricsSection(title: String, summary: TodayHealthSummary) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 16)
+            sectionHeader(title)
 
             VStack(spacing: 0) {
                 // Recovery
@@ -783,8 +553,7 @@ struct DashboardListView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .glassCard(cornerRadius: 16, shadowRadius: 12, shadowY: 6)
             .padding(.horizontal, 16)
         }
     }
@@ -792,10 +561,7 @@ struct DashboardListView: View {
     @ViewBuilder
     private func activitySection(summary: TodayHealthSummary) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Activity")
-                .font(.headline)
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 16)
+            sectionHeader("Activity")
 
             StepGoalRingView(
                 steps: summary.steps,
@@ -879,8 +645,7 @@ struct DashboardListView: View {
                     )
                 }
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .glassCard(cornerRadius: 16, shadowRadius: 12, shadowY: 6)
             .padding(.horizontal, 16)
         }
     }
@@ -1420,7 +1185,7 @@ struct StepGoalRingView: View {
             Spacer()
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }

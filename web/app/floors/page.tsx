@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const FloorsClient = dynamic(() => import('./floors-client').then(m => ({ default: m.FloorsClient })), { ssr: false })
+const FloorsClient = dynamic(() => import('./floors-client').then(m => ({ default: m.FloorsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Floors Climbed' }

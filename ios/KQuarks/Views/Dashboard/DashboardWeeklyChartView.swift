@@ -60,7 +60,7 @@ struct DashboardWeeklyChartView: View {
             }
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

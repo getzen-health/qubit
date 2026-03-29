@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Footprints } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RunningPatternsClient = dynamic(() => import('./running-patterns-client').then(m => ({ default: m.RunningPatternsClient })), { ssr: false })
+const RunningPatternsClient = dynamic(() => import('./running-patterns-client').then(m => ({ default: m.RunningPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Running Patterns' }

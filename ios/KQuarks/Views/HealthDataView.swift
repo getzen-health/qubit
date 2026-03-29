@@ -25,7 +25,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Science")
@@ -37,7 +37,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -48,7 +48,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
 
                                     VStack(alignment: .leading, spacing: 4) {
@@ -67,7 +67,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -78,7 +78,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Architecture")
@@ -94,7 +94,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -105,7 +105,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.yellow)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.yellow.opacity(0.1))
+                                        .background(Color.yellow.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Quality Score")
@@ -121,7 +121,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -132,7 +132,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Debt")
@@ -148,7 +148,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -159,7 +159,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Efficiency")
@@ -175,7 +175,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -186,7 +186,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Apnea")
@@ -202,7 +202,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -213,7 +213,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Regularity Index")
@@ -225,7 +225,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -236,7 +236,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Social Jet Lag")
@@ -248,7 +248,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -259,7 +259,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Chronotype")
@@ -275,7 +275,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -286,7 +286,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Wrist Temperature Science")
@@ -311,7 +311,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Wrist Temperature")
@@ -327,7 +327,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -338,7 +338,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Temperature Insights")
@@ -354,7 +354,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -365,7 +365,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.mint)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.1))
+                                        .background(Color.mint.opacity(0.2))
                                         .cornerRadius(10)
 
                                     VStack(alignment: .leading, spacing: 4) {
@@ -384,7 +384,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -396,7 +396,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.pink)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.pink.opacity(0.1))
+                                        .background(Color.pink.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cycle Tracking")
@@ -412,7 +412,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -423,7 +423,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Medication Adherence Science")
@@ -435,7 +435,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -446,7 +446,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Medication Tracking")
@@ -458,7 +458,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -469,7 +469,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Alcohol Tracker")
@@ -481,7 +481,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -492,7 +492,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.brown)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.brown.opacity(0.1))
+                                        .background(Color.brown.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Caffeine Analytics")
@@ -504,7 +504,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -515,7 +515,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.mint)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.1))
+                                        .background(Color.mint.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Oral Hygiene")
@@ -527,7 +527,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -539,7 +539,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Handwashing Science")
@@ -565,7 +565,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Handwashing")
@@ -581,7 +581,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -593,7 +593,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Audio Exposure Science")
@@ -609,7 +609,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -621,7 +621,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Glucose Science")
@@ -637,7 +637,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -649,7 +649,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Glucose")
@@ -665,7 +665,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -681,7 +681,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daily Readiness")
@@ -697,7 +697,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -709,7 +709,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardio Health Summary")
@@ -725,7 +725,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -737,7 +737,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("VO₂max Science")
@@ -753,7 +753,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -765,7 +765,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardio Fitness (VO₂ Max)")
@@ -781,7 +781,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -793,7 +793,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Race Predictor")
@@ -809,7 +809,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -821,7 +821,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.pink)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.pink.opacity(0.1))
+                                        .background(Color.pink.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daily HR Pattern")
@@ -837,7 +837,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -849,7 +849,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRR Science")
@@ -865,7 +865,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -877,7 +877,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HR Recovery")
@@ -893,7 +893,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -905,7 +905,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Breathing Rate Deep Dive")
@@ -921,7 +921,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -933,7 +933,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Respiratory Rate")
@@ -949,7 +949,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -960,7 +960,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Respiratory Patterns")
@@ -976,7 +976,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -988,7 +988,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Oxygen Science")
@@ -1004,7 +1004,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1016,7 +1016,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("SpO₂ Deep Dive")
@@ -1032,7 +1032,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1044,7 +1044,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Oxygen (SpO₂)")
@@ -1060,7 +1060,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1072,7 +1072,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Resting Heart Rate")
@@ -1088,7 +1088,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1100,7 +1100,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Science")
@@ -1116,7 +1116,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1128,7 +1128,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Analysis")
@@ -1144,7 +1144,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1155,7 +1155,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.pink)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.pink.opacity(0.1))
+                                        .background(Color.pink.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("RHR Patterns")
@@ -1171,7 +1171,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1182,7 +1182,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Calendar")
@@ -1198,7 +1198,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1210,7 +1210,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Recovery Zones")
@@ -1226,7 +1226,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1237,7 +1237,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Longevity Science")
@@ -1249,7 +1249,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1261,7 +1261,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.yellow)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.yellow.opacity(0.1))
+                                        .background(Color.yellow.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Vitality Score")
@@ -1277,7 +1277,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1289,7 +1289,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fitness Profile")
@@ -1305,7 +1305,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1317,7 +1317,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("AFib Science")
@@ -1333,7 +1333,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1345,7 +1345,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardiac Events")
@@ -1361,7 +1361,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1372,7 +1372,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Max HR Analysis")
@@ -1384,7 +1384,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1395,7 +1395,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Heart Rate Reserve")
@@ -1407,7 +1407,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1419,7 +1419,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
 
                                     VStack(alignment: .leading, spacing: 4) {
@@ -1438,7 +1438,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1449,7 +1449,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Exercise & Blood Pressure")
@@ -1461,7 +1461,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1476,7 +1476,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Standing Hours")
@@ -1492,7 +1492,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1503,7 +1503,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Floors Climbed")
@@ -1519,7 +1519,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1530,7 +1530,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Exercise Minutes")
@@ -1546,7 +1546,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1557,7 +1557,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.red)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.1))
+                                        .background(Color.red.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Active Energy")
@@ -1573,7 +1573,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1584,7 +1584,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Gait Science")
@@ -1596,7 +1596,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1607,7 +1607,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Gait Analysis")
@@ -1619,7 +1619,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1630,7 +1630,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Functional Fitness Battery")
@@ -1642,7 +1642,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1653,7 +1653,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.mint)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.1))
+                                        .background(Color.mint.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Immune Stress Index")
@@ -1665,7 +1665,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1676,7 +1676,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fall Risk Assessment")
@@ -1688,7 +1688,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1699,7 +1699,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Fragmentation")
@@ -1711,7 +1711,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1722,7 +1722,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("VILPA")
@@ -1734,7 +1734,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1745,7 +1745,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sedentary Breaks")
@@ -1757,7 +1757,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1768,7 +1768,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fasting Science")
@@ -1780,7 +1780,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1791,7 +1791,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Metabolic Rate Science")
@@ -1803,7 +1803,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1814,7 +1814,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Basal Metabolic Rate")
@@ -1826,7 +1826,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1837,7 +1837,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sweat Rate")
@@ -1849,7 +1849,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1860,7 +1860,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Bone Loading")
@@ -1872,7 +1872,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1883,7 +1883,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Asymmetry")
@@ -1895,7 +1895,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1906,7 +1906,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Speed")
@@ -1918,7 +1918,7 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1929,7 +1929,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Summary")
@@ -1945,7 +1945,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1956,7 +1956,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Monthly Summary")
@@ -1972,7 +1972,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -1983,7 +1983,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Goals History")
@@ -1999,7 +1999,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2010,7 +2010,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Rings")
@@ -2026,7 +2026,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2037,7 +2037,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Step Pattern")
@@ -2053,7 +2053,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2064,7 +2064,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Calorie Patterns")
@@ -2080,7 +2080,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2091,7 +2091,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.green)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.1))
+                                        .background(Color.green.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Calendar")
@@ -2107,7 +2107,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2118,7 +2118,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("6-Min Walk Test")
@@ -2134,7 +2134,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2145,7 +2145,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.mint)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.1))
+                                        .background(Color.mint.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Steadiness")
@@ -2161,7 +2161,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2172,7 +2172,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.blue)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.1))
+                                        .background(Color.blue.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Stair Speed")
@@ -2188,7 +2188,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2199,7 +2199,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Mobility")
@@ -2215,7 +2215,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2226,7 +2226,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daylight Exposure")
@@ -2242,7 +2242,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2253,7 +2253,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("UV Exposure")
@@ -2269,7 +2269,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2280,7 +2280,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.purple)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.1))
+                                        .background(Color.purple.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Audiogram")
@@ -2296,7 +2296,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2307,7 +2307,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Hearing Health")
@@ -2323,7 +2323,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2334,7 +2334,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.indigo)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.1))
+                                        .background(Color.indigo.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Health Correlations")
@@ -2350,7 +2350,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2361,7 +2361,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.teal)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(Color.teal.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Mindfulness Impact")
@@ -2377,7 +2377,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2388,7 +2388,7 @@ struct HealthDataView: View {
                                         .font(.title2)
                                         .foregroundStyle(.orange)
                                         .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.1))
+                                        .background(Color.orange.opacity(0.2))
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Symptoms Log")
@@ -2404,7 +2404,7 @@ struct HealthDataView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.cardSurface)
                                 .cornerRadius(12)
                             }
                             .buttonStyle(.plain)
@@ -2501,7 +2501,7 @@ struct HealthDataRow: View {
                     .font(.title2)
                     .foregroundStyle(Color.accentColor)
                     .frame(width: 44, height: 44)
-                    .background(Color.accentColor.opacity(0.1))
+                    .background(Color.accentColor.opacity(0.2))
                     .cornerRadius(10)
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -2525,7 +2525,7 @@ struct HealthDataRow: View {
                 Spacer()
             }
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .cornerRadius(12)
         }
         .buttonStyle(.plain)

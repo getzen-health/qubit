@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const FastingInsightsClient = dynamic(() => import('./fasting-insights-client').then(m => ({ default: m.FastingInsightsClient })), { ssr: false })
+const FastingInsightsClient = dynamic(() => import('./fasting-insights-client').then(m => ({ default: m.FastingInsightsClient })))
 import type { FastingInsightData } from './fasting-insights-client'
 import { BottomNav } from '@/components/bottom-nav'
 

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const GlucosePatternsClient = dynamic(() => import('./glucose-patterns-client').then(m => ({ default: m.GlucosePatternsClient })), { ssr: false })
+const GlucosePatternsClient = dynamic(() => import('./glucose-patterns-client').then(m => ({ default: m.GlucosePatternsClient })))
 import type { GlucosePatternData } from './glucose-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

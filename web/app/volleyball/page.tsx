@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const VolleyballClient = dynamic(() => import('./volleyball-client').then(m => ({ default: m.VolleyballClient })), { ssr: false })
+const VolleyballClient = dynamic(() => import('./volleyball-client').then(m => ({ default: m.VolleyballClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Volleyball Analytics' }

@@ -4,7 +4,7 @@ import { BottomNav } from '@/components/bottom-nav'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-const BiometricsClient = dynamic(() => import('./biometrics-client').then(m => ({ default: m.BiometricsClient })), { ssr: false })
+const BiometricsClient = dynamic(() => import('./biometrics-client').then(m => ({ default: m.BiometricsClient })))
 import type { BiometricLog, BiometricSettings } from '@/lib/biometrics'
 
 export default async function BiometricsPage() {

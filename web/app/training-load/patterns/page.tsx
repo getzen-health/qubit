@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Dumbbell } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const TrainingPatternsClient = dynamic(() => import('./training-patterns-client').then(m => ({ default: m.TrainingPatternsClient })), { ssr: false })
+const TrainingPatternsClient = dynamic(() => import('./training-patterns-client').then(m => ({ default: m.TrainingPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Patterns' }

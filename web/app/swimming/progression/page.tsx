@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SwimmingProgressionClient = dynamic(() => import('./swimming-progression-client').then(m => ({ default: m.SwimmingProgressionClient })), { ssr: false })
+const SwimmingProgressionClient = dynamic(() => import('./swimming-progression-client').then(m => ({ default: m.SwimmingProgressionClient })))
 import type { SwimmingProgressionData } from './swimming-progression-client'
 import { BottomNav } from '@/components/bottom-nav'
 

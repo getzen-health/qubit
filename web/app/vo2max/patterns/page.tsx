@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const VO2PatternClient = dynamic(() => import('./vo2-patterns-client').then(m => ({ default: m.VO2PatternClient })), { ssr: false })
+const VO2PatternClient = dynamic(() => import('./vo2-patterns-client').then(m => ({ default: m.VO2PatternClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'VO₂ Max Patterns' }

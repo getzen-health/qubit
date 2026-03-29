@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Scale } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const BodyPatternsClient = dynamic(() => import('./body-patterns-client').then(m => ({ default: m.BodyPatternsClient })), { ssr: false })
+const BodyPatternsClient = dynamic(() => import('./body-patterns-client').then(m => ({ default: m.BodyPatternsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Body Weight Trends' }

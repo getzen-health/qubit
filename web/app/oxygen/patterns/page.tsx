@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const OxygenPatternsClient = dynamic(() => import('./oxygen-patterns-client').then(m => ({ default: m.OxygenPatternsClient })), { ssr: false })
+const OxygenPatternsClient = dynamic(() => import('./oxygen-patterns-client').then(m => ({ default: m.OxygenPatternsClient })))
 import type { OxygenPatternData } from './oxygen-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

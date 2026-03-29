@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Target } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const GoalsClient = dynamic(() => import('./goals-client').then(m => ({ default: m.GoalsClient })), { ssr: false })
+const GoalsClient = dynamic(() => import('./goals-client').then(m => ({ default: m.GoalsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = {

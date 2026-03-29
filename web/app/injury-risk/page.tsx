@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, ShieldAlert } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const InjuryRiskClient = dynamic(() => import('./injury-risk-client').then(m => ({ default: m.InjuryRiskClient })), { ssr: false })
+const InjuryRiskClient = dynamic(() => import('./injury-risk-client').then(m => ({ default: m.InjuryRiskClient })))
 
 export const metadata = { title: 'Injury Risk Score' }
 

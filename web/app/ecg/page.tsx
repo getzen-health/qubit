@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const ECGClient = dynamic(() => import('./ecg-client').then(m => ({ default: m.ECGClient })), { ssr: false })
+const ECGClient = dynamic(() => import('./ecg-client').then(m => ({ default: m.ECGClient })))
 
 export const metadata = { title: 'ECG History' }
 

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const WorkoutPatternsClient = dynamic(() => import('./patterns-client').then(m => ({ default: m.WorkoutPatternsClient })), { ssr: false })
+const WorkoutPatternsClient = dynamic(() => import('./patterns-client').then(m => ({ default: m.WorkoutPatternsClient })))
 import type { PatternsData } from './patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

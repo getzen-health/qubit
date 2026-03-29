@@ -13,26 +13,42 @@ struct FoodSearchTab: View {
         VStack(spacing: 0) {
             searchBar
             if isSearching {
+                Spacer()
                 ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .tint(.white.opacity(0.6))
+                Spacer()
             } else if results.isEmpty && !query.isEmpty {
-                ContentUnavailableView(
-                    "No results",
-                    systemImage: "magnifyingglass",
-                    description: Text("Try a different search term or scan the barcode")
-                )
-            } else {
-                List(results) { product in
-                    Button {
-                        onProductSelected(product)
-                    } label: {
-                        ProductRowView(product: product, service: service)
-                    }
-                    .buttonStyle(.plain)
+                Spacer()
+                VStack(spacing: 12) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 36))
+                        .foregroundStyle(.white.opacity(0.2))
+                    Text("No results")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text("Try a different search term or scan the barcode")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.3))
                 }
-                .listStyle(.plain)
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        ForEach(results) { product in
+                            Button {
+                                onProductSelected(product)
+                            } label: {
+                                ProductRowView(product: product, service: service)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                }
             }
         }
+        .background(Color.premiumBackground)
         .onChange(of: query) { _, newValue in
             searchTask?.cancel()
             guard newValue.count >= 2 else {
@@ -53,20 +69,27 @@ struct FoodSearchTab: View {
     private var searchBar: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.white.opacity(0.35))
             TextField("Search food products…", text: $query)
-                .textFieldStyle(.plain)
+                .font(.system(size: 15))
+                .foregroundStyle(.white)
                 .autocorrectionDisabled()
             if !query.isEmpty {
                 Button { query = "" } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.3))
                 }
             }
         }
-        .padding(10)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal)
+        .padding(12)
+        .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+        )
+        .padding(.horizontal, 16)
         .padding(.vertical, 10)
     }
 }
@@ -87,33 +110,44 @@ struct ProductRowView: View {
                 AsyncImage(url: url) { img in
                     img.resizable().aspectRatio(contentMode: .fill)
                 } placeholder: {
-                    Color(.tertiarySystemBackground)
+                    Color.white.opacity(0.04)
                 }
                 .frame(width: 52, height: 52)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.white.opacity(0.06), lineWidth: 1)
+                )
             } else {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(.tertiarySystemBackground))
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.white.opacity(0.04))
                     .frame(width: 52, height: 52)
                     .overlay {
                         Image(systemName: "cart")
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white.opacity(0.2))
                     }
             }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(product.name)
-                    .font(.subheadline.weight(.medium))
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
                     .lineLimit(2)
                 if let brand = product.brand {
                     Text(brand)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11))
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
             Spacer()
             QuarkScoreBadge(score: quarkScore.score, grade: quarkScore.grade, size: .small)
         }
-        .padding(.vertical, 4)
+        .padding(12)
+        .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.white.opacity(0.04), lineWidth: 1)
+        )
     }
 }

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import dynamic from 'next/dynamic'
-const MedicationAdherenceClient = dynamic(() => import('./medication-adherence-client').then(m => ({ default: m.MedicationAdherenceClient })), { ssr: false })
+const MedicationAdherenceClient = dynamic(() => import('./medication-adherence-client').then(m => ({ default: m.MedicationAdherenceClient })))
 import type { MedicationEntry } from '@/lib/medication-adherence'
 
 export const metadata = {

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CyclingClient = dynamic(() => import('./cycling-client').then(m => ({ default: m.CyclingClient })), { ssr: false })
+const CyclingClient = dynamic(() => import('./cycling-client').then(m => ({ default: m.CyclingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cycling Analytics' }

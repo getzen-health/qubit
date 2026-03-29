@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SleepPatternsClient = dynamic(() => import('./sleep-patterns-client').then(m => ({ default: m.SleepPatternsClient })), { ssr: false })
+const SleepPatternsClient = dynamic(() => import('./sleep-patterns-client').then(m => ({ default: m.SleepPatternsClient })))
 import type { SleepPatternData } from './sleep-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

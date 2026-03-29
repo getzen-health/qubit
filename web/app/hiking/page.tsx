@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HikingClient = dynamic(() => import('./hiking-client').then(m => ({ default: m.HikingClient })), { ssr: false })
+const HikingClient = dynamic(() => import('./hiking-client').then(m => ({ default: m.HikingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hiking Analytics' }

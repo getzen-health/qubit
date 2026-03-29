@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const SocialClient = dynamic(() => import('./social-client').then(m => ({ default: m.SocialClient })), { ssr: false })
+const SocialClient = dynamic(() => import('./social-client').then(m => ({ default: m.SocialClient })))
 import { calculateSocialScore, emptyLog } from '@/lib/social-health'
 import type { SocialLog } from '@/lib/social-health'
 

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Expandable inline metric row for stream-based dashboard
+/// Expandable metric row with clean dark styling
 struct MetricRowView: View {
     let icon: String
     let label: String
@@ -10,41 +10,40 @@ struct MetricRowView: View {
     var trend: Int? = nil
     var color: Color = .primary
     var expandContent: (() -> AnyView)? = nil
-    /// When set, the row acts as a NavigationLink to this view.
     var destination: AnyView? = nil
 
     @State private var isExpanded = false
 
     private var rowLabel: some View {
         HStack(spacing: 12) {
+            // Small colored icon
             Image(systemName: icon)
-                .font(.system(size: 18))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(color)
-                .frame(width: 24, height: 24)
+                .frame(width: 32, height: 32)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text(label)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white.opacity(0.85))
                 if let sublabel = sublabel {
                     Text(sublabel)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
 
             Spacer()
 
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(color)
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(.white)
                 if let unit = unit {
                     Text(unit)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.35))
                 }
             }
 
@@ -54,27 +53,25 @@ struct MetricRowView: View {
 
             if destination != nil {
                 Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.2))
             } else if expandContent != nil {
                 Image(systemName: "chevron.down")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.2))
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.vertical, 13)
         .contentShape(Rectangle())
     }
 
     var body: some View {
         VStack(spacing: 0) {
             if let dest = destination {
-                NavigationLink(destination: dest) {
-                    rowLabel
-                }
-                .buttonStyle(.plain)
+                NavigationLink(destination: dest) { rowLabel }
+                    .buttonStyle(.plain)
             } else {
                 Button {
                     if expandContent != nil {
@@ -82,16 +79,15 @@ struct MetricRowView: View {
                             isExpanded.toggle()
                         }
                     }
-                } label: {
-                    rowLabel
-                }
-                .buttonStyle(.plain)
+                } label: { rowLabel }
+                    .buttonStyle(.plain)
             }
 
             if isExpanded, let content = expandContent {
                 VStack(spacing: 0) {
-                    Divider()
-                        .padding(.leading, 52)
+                    Color.premiumDivider
+                        .frame(height: 0.5)
+                        .padding(.leading, 56)
                     content()
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
@@ -99,14 +95,13 @@ struct MetricRowView: View {
                 }
             }
 
-            Divider()
-                .padding(.leading, 52)
+            Color.premiumDivider
+                .frame(height: 0.5)
+                .padding(.leading, 56)
         }
-        .background(Color(.systemBackground))
     }
 }
 
-/// Compact version for smaller displays
 struct MetricRowCompactView: View {
     let icon: String
     let label: String
@@ -119,30 +114,25 @@ struct MetricRowCompactView: View {
             Image(systemName: icon)
                 .font(.caption)
                 .foregroundStyle(color)
-
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
-
+                .foregroundStyle(.white.opacity(0.5))
             Spacer()
-
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text(value)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(color)
-
+                    .foregroundStyle(.white)
                 if let unit = unit {
                     Text(unit)
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.35))
                 }
             }
         }
     }
 }
 
-/// Trend badge showing percentage change
 struct TrendBadge: View {
     let value: Int
 
@@ -156,19 +146,20 @@ struct TrendBadge: View {
         HStack(spacing: 2) {
             Image(systemName: value > 0 ? "arrow.up" : value < 0 ? "arrow.down" : "minus")
                 .font(.system(size: 8, weight: .bold))
-            Text("\(abs(value))%")
+            Text("\(abs(trend))%")
                 .font(.caption2)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
         }
         .foregroundStyle(color)
         .padding(.horizontal, 6)
         .padding(.vertical, 3)
-        .background(color.opacity(0.15))
-        .clipShape(RoundedRectangle(cornerRadius: 6))
+        .background(color.opacity(0.12))
+        .clipShape(Capsule())
     }
+
+    private var trend: Int { value }
 }
 
-/// Detail row for expanded content
 struct MetricDetailRow: View {
     let label: String
     let value: String
@@ -178,61 +169,27 @@ struct MetricDetailRow: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.5))
             Spacer()
             Text(value)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundStyle(color ?? .primary)
+                .foregroundStyle(color ?? .white)
         }
     }
 }
 
 #Preview {
-    List {
-        MetricRowView(
-            icon: "bolt.fill",
-            label: "Recovery",
-            value: "78",
-            unit: "%",
-            sublabel: "Optimal",
-            trend: 5,
-            color: .recovery
-        ) {
-            AnyView(
-                VStack(spacing: 8) {
-                    MetricDetailRow(label: "Sleep Performance", value: "85%")
-                    MetricDetailRow(label: "HRV Balance", value: "Balanced")
-                    MetricDetailRow(label: "Respiratory Rate", value: "14.5 br/min")
-                }
-            )
+    ZStack {
+        PremiumBackgroundView()
+        VStack(spacing: 0) {
+            MetricRowView(icon: "bolt.fill", label: "Recovery", value: "78", unit: "%", sublabel: "Optimal", trend: 5, color: .recovery)
+            MetricRowView(icon: "flame.fill", label: "Strain", value: "14.2", unit: "/21", sublabel: "High", trend: -8, color: .strain)
+            MetricRowView(icon: "moon.fill", label: "Sleep", value: "7h 42m", sublabel: "85% quality", color: .sleep)
+            MetricRowView(icon: "heart.fill", label: "Resting HR", value: "58", unit: "bpm", color: .heart)
         }
-
-        MetricRowView(
-            icon: "flame.fill",
-            label: "Strain",
-            value: "14.2",
-            unit: "/21",
-            sublabel: "High",
-            trend: -8,
-            color: .strain
-        )
-
-        MetricRowView(
-            icon: "moon.fill",
-            label: "Sleep",
-            value: "7h 42m",
-            sublabel: "85% quality",
-            color: .sleep
-        )
-
-        MetricRowView(
-            icon: "heart.fill",
-            label: "Resting HR",
-            value: "58",
-            unit: "bpm",
-            color: .heart
-        )
+        .glassCard()
+        .padding()
     }
-    .listStyle(.plain)
+    .preferredColorScheme(.dark)
 }

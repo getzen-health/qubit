@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HiitProgressionClient = dynamic(() => import('./hiit-progression-client').then(m => ({ default: m.HiitProgressionClient })), { ssr: false })
+const HiitProgressionClient = dynamic(() => import('./hiit-progression-client').then(m => ({ default: m.HiitProgressionClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HIIT Progression' }

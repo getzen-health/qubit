@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const RHRClient = dynamic(() => import('./rhr-client').then(m => ({ default: m.RHRClient })), { ssr: false })
+const RHRClient = dynamic(() => import('./rhr-client').then(m => ({ default: m.RHRClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Resting Heart Rate' }

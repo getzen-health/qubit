@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const ImmuneClient = dynamic(() => import('./immune-client').then(m => ({ default: m.ImmuneClient })), { ssr: false })
+const ImmuneClient = dynamic(() => import('./immune-client').then(m => ({ default: m.ImmuneClient })))
 import { calculateImmuneScore } from '@/lib/immune-score'
 import type { ImmuneLog } from '@/lib/immune-score'
 

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const WalkingClient = dynamic(() => import('./walking-client').then(m => ({ default: m.WalkingClient })), { ssr: false })
+const WalkingClient = dynamic(() => import('./walking-client').then(m => ({ default: m.WalkingClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Walking Analytics' }

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HearingPatternsClient = dynamic(() => import('./hearing-patterns-client').then(m => ({ default: m.HearingPatternsClient })), { ssr: false })
+const HearingPatternsClient = dynamic(() => import('./hearing-patterns-client').then(m => ({ default: m.HearingPatternsClient })))
 import type { HearingPatternData } from './hearing-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 

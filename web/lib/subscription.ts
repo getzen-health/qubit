@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * Subscription and feature access helpers
  * Manages subscription tiers and feature access control

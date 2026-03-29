@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const TrendsClient = dynamic(() => import('./trends-client').then(m => ({ default: m.TrendsClient })), { ssr: false })
+const TrendsClient = dynamic(() => import('./trends-client').then(m => ({ default: m.TrendsClient })))
 import type { TrendEntry, TrendSummary } from './trends-client'
 import { BottomNav } from '@/components/bottom-nav'
 

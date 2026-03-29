@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StrengthProgressionClient = dynamic(() => import('./strength-progression-client').then(m => ({ default: m.StrengthProgressionClient })), { ssr: false })
+const StrengthProgressionClient = dynamic(() => import('./strength-progression-client').then(m => ({ default: m.StrengthProgressionClient })))
 import type { ProgressionData } from './strength-progression-client'
 import { BottomNav } from '@/components/bottom-nav'
 

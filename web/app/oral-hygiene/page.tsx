@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import dynamic from 'next/dynamic'
-const OralHygieneClient = dynamic(() => import('./oral-hygiene-client').then(m => ({ default: m.OralHygieneClient })), { ssr: false })
+const OralHygieneClient = dynamic(() => import('./oral-hygiene-client').then(m => ({ default: m.OralHygieneClient })))
 import type { OralHygieneLog } from './oral-hygiene-client'
 
 export const metadata = { title: 'Oral Hygiene — KQuarks' }

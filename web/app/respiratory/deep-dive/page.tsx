@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const BreathingRateClient = dynamic(() => import('./breathing-rate-client').then(m => ({ default: m.BreathingRateClient })), { ssr: false })
+const BreathingRateClient = dynamic(() => import('./breathing-rate-client').then(m => ({ default: m.BreathingRateClient })))
 import type { BreathingRateData, DailyReading, WeeklyAvg } from './breathing-rate-client'
 import { BottomNav } from '@/components/bottom-nav'
 

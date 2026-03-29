@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-const JournalClient = dynamic(() => import('./journal-client').then(m => ({ default: m.JournalClient })), { ssr: false })
+const JournalClient = dynamic(() => import('./journal-client').then(m => ({ default: m.JournalClient })))
 
 export const metadata = {
   title: 'Journal — KQuarks',

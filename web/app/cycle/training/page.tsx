@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const CycleTrainingClient = dynamic(() => import('./cycle-training-client').then(m => ({ default: m.CycleTrainingClient })), { ssr: false })
+const CycleTrainingClient = dynamic(() => import('./cycle-training-client').then(m => ({ default: m.CycleTrainingClient })))
 import type { CycleTrainingData, Phase } from './cycle-training-client'
 import { BottomNav } from '@/components/bottom-nav'
 

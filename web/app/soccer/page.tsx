@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const SoccerClient = dynamic(() => import('./soccer-client').then(m => ({ default: m.SoccerClient })), { ssr: false })
+const SoccerClient = dynamic(() => import('./soccer-client').then(m => ({ default: m.SoccerClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Soccer Analytics' }

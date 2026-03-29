@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Timer, Heart } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const PaceZonesClient = dynamic(() => import('./pace-zones-client').then(m => ({ default: m.PaceZonesClient })), { ssr: false })
+const PaceZonesClient = dynamic(() => import('./pace-zones-client').then(m => ({ default: m.PaceZonesClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Running Pace Zones' }

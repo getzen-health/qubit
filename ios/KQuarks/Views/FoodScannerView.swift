@@ -85,21 +85,27 @@ struct FoodScannerView: View {
                 .tabItem { Label("Search", systemImage: "magnifyingglass") }
                 .tag(1)
             }
+            .tint(.white)
             .navigationTitle("Food Scanner")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.premiumBackground, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
+                        .foregroundStyle(.white.opacity(0.7))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ScanHistoryView()) {
                         Label("History", systemImage: "clock.arrow.circlepath")
                     }
+                    .foregroundStyle(.white.opacity(0.7))
                 }
             }
             .sheet(item: $scannedProduct) { product in
                 ProductDetailSheet(product: product, service: service)
             }
+            .preferredColorScheme(.dark)
         }
     }
 }

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const WalkingSteadinessClient = dynamic(() => import('./walking-steadiness-client').then(m => ({ default: m.WalkingSteadinessClient })), { ssr: false })
+const WalkingSteadinessClient = dynamic(() => import('./walking-steadiness-client').then(m => ({ default: m.WalkingSteadinessClient })))
 import type { SteadinessData } from './walking-steadiness-client'
 import { BottomNav } from '@/components/bottom-nav'
 

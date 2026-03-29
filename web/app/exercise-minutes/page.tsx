@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const ExerciseMinutesClient = dynamic(() => import('./exercise-minutes-client').then(m => ({ default: m.ExerciseMinutesClient })), { ssr: false })
+const ExerciseMinutesClient = dynamic(() => import('./exercise-minutes-client').then(m => ({ default: m.ExerciseMinutesClient })))
 import type { ExerciseMinutesData, WeekData, DayPattern } from './exercise-minutes-client'
 import { BottomNav } from '@/components/bottom-nav'
 

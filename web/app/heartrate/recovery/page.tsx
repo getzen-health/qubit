@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HRRecoveryClient = dynamic(() => import('./hr-recovery-client').then(m => ({ default: m.HRRecoveryClient })), { ssr: false })
+const HRRecoveryClient = dynamic(() => import('./hr-recovery-client').then(m => ({ default: m.HRRecoveryClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Heart Rate Recovery' }

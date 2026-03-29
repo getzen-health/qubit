@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, CalendarDays, Building2, BarChart2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const StepsClient = dynamic(() => import('./steps-client').then(m => ({ default: m.StepsClient })), { ssr: false })
+const StepsClient = dynamic(() => import('./steps-client').then(m => ({ default: m.StepsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function StepsPage() {

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HRVZonesClient = dynamic(() => import('./hrv-zones-client').then(m => ({ default: m.HRVZonesClient })), { ssr: false })
+const HRVZonesClient = dynamic(() => import('./hrv-zones-client').then(m => ({ default: m.HRVZonesClient })))
 import type { HRVZoneData } from './hrv-zones-client'
 import { BottomNav } from '@/components/bottom-nav'
 

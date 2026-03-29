@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const VolumeClient = dynamic(() => import('./volume-client').then(m => ({ default: m.VolumeClient })), { ssr: false })
+const VolumeClient = dynamic(() => import('./volume-client').then(m => ({ default: m.VolumeClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Volume History' }

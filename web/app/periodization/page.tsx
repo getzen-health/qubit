@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const PeriodizationClient = dynamic(() => import('./periodization-client').then(m => ({ default: m.PeriodizationClient })), { ssr: false })
+const PeriodizationClient = dynamic(() => import('./periodization-client').then(m => ({ default: m.PeriodizationClient })))
 
 export const metadata = { title: 'Training Periodization' }
 

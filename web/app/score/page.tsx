@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const HealthScoreClient = dynamic(() => import('./score-client').then(m => ({ default: m.HealthScoreClient })), { ssr: false })
+const HealthScoreClient = dynamic(() => import('./score-client').then(m => ({ default: m.HealthScoreClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Health Score' }

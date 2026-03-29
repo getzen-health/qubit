@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-const YogaClient = dynamic(() => import('./yoga-client').then(m => ({ default: m.YogaClient })), { ssr: false })
+const YogaClient = dynamic(() => import('./yoga-client').then(m => ({ default: m.YogaClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Yoga & Mind-Body Analytics' }

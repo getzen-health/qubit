@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import dynamic from 'next/dynamic'
-const CardiacDriftClient = dynamic(() => import('./cardiac-drift-client').then(m => ({ default: m.CardiacDriftClient })), { ssr: false })
+const CardiacDriftClient = dynamic(() => import('./cardiac-drift-client').then(m => ({ default: m.CardiacDriftClient })))
 
 export const metadata = { title: 'Cardiac Drift' }
 
