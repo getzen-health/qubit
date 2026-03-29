@@ -22,6 +22,7 @@ const navItems: MoreItem[] = [
   { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
   { href: '/insights', icon: BarChart2, label: 'Insights' },
   { href: '/predictions', icon: '🔮', label: 'Forecast' },
+  { href: '/coaching', icon: '🤖', label: 'Coach' },
 ]
 
 type LucideIcon = React.ComponentType<{ className?: string }>
