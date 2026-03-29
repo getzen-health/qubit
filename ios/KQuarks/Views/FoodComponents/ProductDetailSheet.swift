@@ -26,6 +26,7 @@ struct ProductDetailSheet: View {
                         ingredientsCard(ingredients)
                     }
                     additivesSection
+                    sourcesSection
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
@@ -281,6 +282,16 @@ struct ProductDetailSheet: View {
                         .font(.system(size: 11))
                         .foregroundStyle(.white.opacity(0.4))
                         .lineSpacing(2)
+
+                    Link(destination: URL(string: "https://www.santepubliquefrance.fr/en/nutri-score")!) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "link")
+                                .font(.system(size: 9))
+                            Text("Santé publique France — Nutri-Score")
+                                .font(.system(size: 10))
+                        }
+                        .foregroundStyle(.purple.opacity(0.7))
+                    }
                 }
                 .padding(18)
                 .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -327,6 +338,16 @@ struct ProductDetailSheet: View {
                                 .lineLimit(2)
                         }
                         Spacer()
+                    }
+
+                    Link(destination: URL(string: "https://doi.org/10.1017/S1368980017000234")!) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "link")
+                                .font(.system(size: 9))
+                            Text("Monteiro et al. 2019 — NOVA Classification")
+                                .font(.system(size: 10))
+                        }
+                        .foregroundStyle(.purple.opacity(0.7))
                     }
                 }
                 .padding(18)
@@ -455,6 +476,96 @@ struct ProductDetailSheet: View {
                             .stroke(Color.white.opacity(0.06), lineWidth: 1)
                     )
                 }
+            }
+        }
+    }
+
+    // MARK: - Sources
+
+    private var sourcesSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                AccentBar(color: .white.opacity(0.4))
+                Text("SCIENTIFIC SOURCES")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.5))
+                    .kerning(1.2)
+                Spacer()
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                sourceLink(
+                    "Product data — Open Food Facts",
+                    url: "https://world.openfoodfacts.org",
+                    desc: "Open, collaborative food products database"
+                )
+                sourceLink(
+                    "Nutri-Score — Santé publique France",
+                    url: "https://www.santepubliquefrance.fr/en/nutri-score",
+                    desc: "French national public health agency"
+                )
+                sourceLink(
+                    "NOVA food classification — Monteiro et al.",
+                    url: "https://doi.org/10.1017/S1368980017000234",
+                    desc: "Public Health Nutrition, 2019"
+                )
+                sourceLink(
+                    "Food additive safety — EFSA",
+                    url: "https://www.efsa.europa.eu/en/topics/topic/food-additives",
+                    desc: "European Food Safety Authority evaluations"
+                )
+                sourceLink(
+                    "Additive carcinogenicity — IARC Monographs",
+                    url: "https://monographs.iarc.who.int/agents-classified-by-the-iarc/",
+                    desc: "WHO International Agency for Research on Cancer"
+                )
+                sourceLink(
+                    "Ultra-processed foods & health — BMJ 2024",
+                    url: "https://doi.org/10.1136/bmj-2023-077310",
+                    desc: "Lane et al. — UPF exposure and adverse health outcomes"
+                )
+                sourceLink(
+                    "Dietary guidelines — WHO",
+                    url: "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+                    desc: "World Health Organization healthy diet fact sheet"
+                )
+            }
+
+            Text("QuarkScore™ is an independent assessment combining nutrition science, food processing research, and additive safety data. It is not affiliated with Nutri-Score or NOVA.")
+                .font(.system(size: 10))
+                .foregroundStyle(.white.opacity(0.3))
+                .lineSpacing(2)
+                .padding(.top, 4)
+        }
+        .padding(18)
+        .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+        )
+    }
+
+    private func sourceLink(_ title: String, url: String, desc: String) -> some View {
+        Link(destination: URL(string: url)!) {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "doc.text")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.purple.opacity(0.6))
+                    .frame(width: 14, alignment: .center)
+                    .padding(.top, 2)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.7))
+                    Text(desc)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.white.opacity(0.35))
+                }
+                Spacer()
+                Image(systemName: "arrow.up.right")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.2))
+                    .padding(.top, 2)
             }
         }
     }
