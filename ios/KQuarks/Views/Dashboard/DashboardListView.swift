@@ -315,6 +315,21 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: LeaderboardView()) {
+                        HStack(spacing: 12) {
+                            Text("🔥")
+                                .font(.title3)
+                            Text("Streak Leaderboard")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: CorrelationsView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "chart.dots.scatter")
