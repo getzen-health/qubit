@@ -165,6 +165,12 @@ class SyncService {
 
         try await withRetry { try await self.supabase.uploadDailySummary(upload) }
 
+        // Write to App Group shared container for Watch companion
+        if let sharedDefaults = UserDefaults(suiteName: "group.app.kquarks") {
+            sharedDefaults.set(summary.steps, forKey: "todaySteps")
+            // TODO: write todaySteps and healthScore to App Group after sync
+        }
+
         // Cache recovery score for morning brief notification
         // Using Keychain (not UserDefaults) to prevent exposure via iCloud backup
         if let rec = AIInsightsService.shared.latestRecoveryScore {
