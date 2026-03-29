@@ -547,26 +547,26 @@ struct ProductDetailSheet: View {
 
     private func sourceLink(_ title: String, url: String, desc: String) -> some View {
         Link(destination: URL(string: url)!) {
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: "doc.text")
-                    .font(.system(size: 10))
-                    .foregroundStyle(.purple.opacity(0.6))
-                    .frame(width: 14, alignment: .center)
-                    .padding(.top, 2)
-                VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .center, spacing: 10) {
+                Image(systemName: "link.circle.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(.purple.opacity(0.8))
+                VStack(alignment: .leading, spacing: 3) {
                     Text(title)
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.9))
                     Text(desc)
-                        .font(.system(size: 9))
-                        .foregroundStyle(.white.opacity(0.35))
+                        .font(.system(size: 11))
+                        .foregroundStyle(.white.opacity(0.5))
                 }
                 Spacer()
                 Image(systemName: "arrow.up.right")
-                    .font(.system(size: 8, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.2))
-                    .padding(.top, 2)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.purple.opacity(0.5))
             }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
     }
 
