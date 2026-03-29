@@ -115,55 +115,85 @@ final class FoodScannerService {
     var isLoading = false
     var error: String?
 
-    private static let baseURL = "https://world.openfoodfacts.org"
+    // .net is the primary mirror; .org is the legacy endpoint (frequently returns 503)
+    private static let baseURLs = [
+        "https://world.openfoodfacts.net",
+        "https://world.openfoodfacts.org",
+    ]
     private static let userAgent = "KQuarks/1.0 (iOS; https://github.com/qxlsz/kquarks)"
     private static let fields = "code,product_name,brands,nutriments,image_url,nutriscore_grade,additives_tags,ingredients_text,labels_tags,categories_tags,nova_group,quantity,serving_size"
+
+    private func makeRequest(url: URL) -> URLRequest {
+        var req = URLRequest(url: url, timeoutInterval: 10)
+        req.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        return req
+    }
+
+    /// Returns (data, true) on success or (nil, false) if server returned HTML/error
+    private func fetchJSON(for request: URLRequest) async throws -> Data? {
+        let (data, response) = try await URLSession.shared.data(for: request)
+        if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
+            return nil
+        }
+        // Detect HTML error pages (API should return JSON)
+        if let prefix = String(data: data.prefix(20), encoding: .utf8),
+           prefix.trimmingCharacters(in: .whitespaces).hasPrefix("<") {
+            return nil
+        }
+        return data
+    }
 
     func fetchProduct(barcode: String) async {
         isLoading = true
         error = nil
         defer { isLoading = false }
 
-        guard let url = URL(string: "\(Self.baseURL)/api/v2/product/\(barcode).json?fields=\(Self.fields)") else { return }
-        var req = URLRequest(url: url)
-        req.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
-
-        do {
-            let (data, _) = try await URLSession.shared.data(for: req)
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            guard let status = json?["status"] as? Int, status == 1,
-                  let productJSON = json?["product"] else {
-                self.error = "Product not found"
+        for base in Self.baseURLs {
+            guard let url = URL(string: "\(base)/api/v2/product/\(barcode).json?fields=\(Self.fields)") else { continue }
+            do {
+                guard let data = try await fetchJSON(for: makeRequest(url: url)) else { continue }
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                guard let status = json?["status"] as? Int, status == 1,
+                      let productJSON = json?["product"] else {
+                    self.error = "Product not found"
+                    return
+                }
+                let productData = try JSONSerialization.data(withJSONObject: productJSON)
+                self.product = try JSONDecoder().decode(FoodProduct.self, from: productData)
                 return
+            } catch {
+                print("[FoodScanner] Fetch error (\(base)): \(error)")
+                continue
             }
-            let productData = try JSONSerialization.data(withJSONObject: productJSON)
-            self.product = try JSONDecoder().decode(FoodProduct.self, from: productData)
-        } catch {
-            self.error = error.localizedDescription
         }
+        self.error = "Product not found — please try again"
     }
 
     func searchProducts(query: String) async -> [FoodProduct] {
-        guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "\(Self.baseURL)/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=20&fields=\(Self.fields)") else { return [] }
-        var req = URLRequest(url: url)
-        req.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return [] }
 
-        do {
-            let (data, _) = try await URLSession.shared.data(for: req)
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            let products = json?["products"] as? [[String: Any]] ?? []
-            // Decode each product individually so one bad item doesn't kill the whole list
-            let decoder = JSONDecoder()
-            let decoded: [FoodProduct] = products.compactMap { productDict in
-                guard let itemData = try? JSONSerialization.data(withJSONObject: productDict) else { return nil }
-                return try? decoder.decode(FoodProduct.self, from: itemData)
+        for base in Self.baseURLs {
+            guard let url = URL(string: "\(base)/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=20&fields=\(Self.fields)") else { continue }
+            do {
+                guard let data = try await fetchJSON(for: makeRequest(url: url)) else {
+                    print("[FoodScanner] \(base) returned HTML/error, trying next mirror")
+                    continue
+                }
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                let products = json?["products"] as? [[String: Any]] ?? []
+                let decoder = JSONDecoder()
+                let decoded: [FoodProduct] = products.compactMap { productDict in
+                    guard let itemData = try? JSONSerialization.data(withJSONObject: productDict) else { return nil }
+                    return try? decoder.decode(FoodProduct.self, from: itemData)
+                }
+                return decoded.filter { $0.name != "Unknown Product" && !$0.name.isEmpty }
+            } catch {
+                print("[FoodScanner] Search error (\(base)): \(error)")
+                continue
             }
-            return decoded.filter { $0.name != "Unknown Product" && !$0.name.isEmpty }
-        } catch {
-            print("[FoodScanner] Search error: \(error)")
-            return []
         }
+        print("[FoodScanner] All mirrors failed for query: \(query)")
+        return []
     }
 
     // MARK: - QuarkScore Algorithm (5-pillar, 0-100)
