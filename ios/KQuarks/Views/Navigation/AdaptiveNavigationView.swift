@@ -127,7 +127,7 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Workouts", systemImage: "figure.run") }
                 .tag(2)
 
-            WaterIntakeView()
+            WaterTrackingView()
                 .tabItem { Label("Water", systemImage: "drop.fill") }
                 .tag(3)
 

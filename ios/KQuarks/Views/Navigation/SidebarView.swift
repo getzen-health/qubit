@@ -102,7 +102,7 @@ struct SidebarContentView: View {
         case .workouts:
             WorkoutsView()
         case .water:
-            WaterIntakeView()
+            WaterTrackingView()
         case .bodyMeasurements:
             BodyMeasurementsView()
         case .supplements:

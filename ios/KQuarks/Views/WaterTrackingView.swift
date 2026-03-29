@@ -49,7 +49,7 @@ final class WaterTrackingViewModel {
         defer { isLoading = false }
 
         guard let userId = SupabaseService.shared.currentSession?.user.id else {
-            errorMessage = "Not signed in"
+            // Not signed in — keep local logs, no error shown
             return
         }
 
@@ -67,38 +67,38 @@ final class WaterTrackingViewModel {
     // MARK: Logging
 
     func logWater(ml: Int) async {
-        guard let userId = SupabaseService.shared.currentSession?.user.id else {
-            errorMessage = "Not signed in"
-            return
-        }
+        // Local-first: update UI immediately
+        let newLog = WaterLog(id: UUID(), amount_ml: ml, logged_at: Date())
+        logs.append(newLog)
+        HapticService.impact(.light)
 
-        struct Payload: Encodable {
-            let user_id: String
-            let logged_at: String
-            let amount_ml: Int
-        }
-
-        do {
-            try await SupabaseService.shared.client
-                .from("water_logs")
-                .upsert(Payload(
-                    user_id: userId.uuidString,
-                    logged_at: ISO8601DateFormatter().string(from: Date()),
-                    amount_ml: ml
-                ), onConflict: "user_id,logged_at")
-                .execute()
-            
-            // Write water intake to Apple Health
-            do {
-                try await HealthKitService.shared.saveWater(milliliters: Double(ml))
-            } catch {
-                // Non-fatal — water log is already saved to Supabase
-                print("Warning: Failed to write water to HealthKit: \(error)")
+        // Persist to Supabase if signed in
+        if let userId = SupabaseService.shared.currentSession?.user.id {
+            struct Payload: Encodable {
+                let user_id: String
+                let logged_at: String
+                let amount_ml: Int
             }
-            
-            await loadData()
+
+            do {
+                try await SupabaseService.shared.client
+                    .from("water_logs")
+                    .upsert(Payload(
+                        user_id: userId.uuidString,
+                        logged_at: ISO8601DateFormatter().string(from: Date()),
+                        amount_ml: ml
+                    ), onConflict: "user_id,logged_at")
+                    .execute()
+            } catch {
+                print("Warning: Failed to save water to Supabase: \(error)")
+            }
+        }
+
+        // Write water intake to Apple Health
+        do {
+            try await HealthKitService.shared.saveWater(milliliters: Double(ml))
         } catch {
-            errorMessage = error.localizedDescription
+            print("Warning: Failed to write water to HealthKit: \(error)")
         }
     }
 
