@@ -38,8 +38,12 @@ class SubscriptionService {
     /// Stub: reads from UserDefaults `kquarks_is_pro`.
     func checkEntitlements() async {
         // TODO: Replace with RevenueCat CustomerInfo entitlement lookup:
-        //   let info = try? await Purchases.shared.customerInfo()
-        //   isPro = info?.entitlements["pro"]?.isActive == true
+        //   do {
+        //       let info = try await Purchases.shared.customerInfo()
+        //       isPro = info.entitlements["pro"]?.isActive == true
+        //   } catch {
+        //       print("[SubscriptionService] customerInfo failed: \(error)")
+        //   }
         isPro = UserDefaults.standard.bool(forKey: userDefaultsKey)
     }
 }
