@@ -1,16 +1,14 @@
 import SwiftUI
 
-/// Quick stats grid for glanceable metrics
+/// Quick stats grid — 2-column layout for readability with elevated cards.
 struct QuickStatsView: View {
     let stats: [QuickStat]
-    var columns: Int = 4
-
-    private var gridColumns: [GridItem] {
-        Array(repeating: GridItem(.flexible(), spacing: 12), count: min(columns, 4))
-    }
 
     var body: some View {
-        LazyVGrid(columns: gridColumns, spacing: 12) {
+        LazyVGrid(
+            columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+            spacing: 12
+        ) {
             ForEach(stats) { stat in
                 QuickStatView(stat: stat)
             }
@@ -66,9 +64,10 @@ struct QuickStatView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .padding(14)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 3)
     }
 }
 

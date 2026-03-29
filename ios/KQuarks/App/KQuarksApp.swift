@@ -94,7 +94,13 @@ struct KQuarksApp: App {
                     DeepLinkHandler.shared.handleDeepLink(url)
                 }
                 .fullScreenCover(isPresented: Binding(
-                    get: { !hasCompletedOnboarding },
+                    get: {
+                        #if targetEnvironment(simulator)
+                        return false  // Skip onboarding in simulator for faster iteration
+                        #else
+                        return !hasCompletedOnboarding
+                        #endif
+                    },
                     set: { _ in }
                 )) {
                     OnboardingView()

@@ -71,8 +71,8 @@ struct AIEssenceView: View {
         }
         .padding(16)
         .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.05), radius: 8, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.09), radius: 16, x: 0, y: 6)
     }
 }
 
@@ -90,11 +90,11 @@ struct ScoreBadge: View {
             // Ring with value
             ZStack {
                 Circle()
-                    .stroke(color.opacity(0.2), lineWidth: 8)
+                    .stroke(color.opacity(0.15), lineWidth: 10)
 
                 Circle()
                     .trim(from: 0, to: min(progress, 1.0))
-                    .stroke(color, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .stroke(color, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .animation(.spring(response: 0.5), value: progress)
 
@@ -105,7 +105,7 @@ struct ScoreBadge: View {
                         .foregroundStyle(color)
                 }
             }
-            .frame(width: 72, height: 72)
+            .frame(width: 84, height: 84)
 
             // Label and trend
             VStack(spacing: 4) {
@@ -181,7 +181,7 @@ enum StrainLevel {
         case .allOut: .strain
         case .high: .strain
         case .moderate: .activity
-        case .light: .secondary
+        case .light: Color(red: 0.2, green: 0.6, blue: 0.9) // blue-teal for light strain
         }
     }
 
