@@ -7,6 +7,11 @@ struct WaterLog: Identifiable, Decodable {
     let id: UUID
     let amount_ml: Int
     let logged_at: Date
+
+    /// Editable within 15 minutes of logging
+    var isEditable: Bool {
+        Date().timeIntervalSince(logged_at) < 15 * 60
+    }
 }
 
 struct DailyWaterTotal: Identifiable {
@@ -109,6 +114,33 @@ final class WaterTrackingViewModel {
         }
         customAmountText = ""
         await logWater(ml: ml)
+    }
+
+    // MARK: Edit
+
+    func editLog(id: UUID, newMl: Int) async {
+        guard (1...5000).contains(newMl) else {
+            errorMessage = "Please enter a valid amount between 1 and 5000 ml"
+            return
+        }
+        // Update locally first
+        if let idx = logs.firstIndex(where: { $0.id == id }) {
+            logs[idx] = WaterLog(id: id, amount_ml: newMl, logged_at: logs[idx].logged_at)
+        }
+        HapticService.impact(.light)
+
+        // Persist to Supabase
+        if SupabaseService.shared.currentSession?.user.id != nil {
+            do {
+                try await SupabaseService.shared.client
+                    .from("water_logs")
+                    .update(["amount_ml": newMl])
+                    .eq("id", value: id.uuidString)
+                    .execute()
+            } catch {
+                print("Warning: Failed to update water log in Supabase: \(error)")
+            }
+        }
     }
 
     // MARK: Deletion
@@ -239,6 +271,8 @@ private struct WaterQuickAddButton: View {
 struct WaterTrackingView: View {
     @State private var viewModel = WaterTrackingViewModel()
     @FocusState private var isCustomAmountFocused: Bool
+    @State private var editingLog: WaterLog?
+    @State private var editAmountText = ""
 
     private let quickAddOptions: [(emoji: String, label: String, ml: Int)] = [
         ("🥤", "Cup",       150),
@@ -268,6 +302,24 @@ struct WaterTrackingView: View {
             }
             .task { await viewModel.loadData() }
             .refreshable { await viewModel.loadData() }
+            .alert("Edit Water Entry", isPresented: .init(
+                get: { editingLog != nil },
+                set: { if !$0 { editingLog = nil } }
+            )) {
+                TextField("Amount in ml", text: $editAmountText)
+                    .keyboardType(.numberPad)
+                Button("Save") {
+                    if let log = editingLog, let ml = Int(editAmountText) {
+                        Task { await viewModel.editLog(id: log.id, newMl: ml) }
+                    }
+                    editingLog = nil
+                }
+                Button("Cancel", role: .cancel) { editingLog = nil }
+            } message: {
+                if let log = editingLog {
+                    Text("Current: \(log.amount_ml) ml")
+                }
+            }
             .alert(
                 "Error",
                 isPresented: .init(
@@ -393,7 +445,26 @@ struct WaterTrackingView: View {
                     .padding(.vertical, 8)
             } else {
                 ForEach(viewModel.logs) { log in
-                    logRow(log)
+                    let editable = log.isEditable
+                    logRow(log, editable: editable)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if editable {
+                                editAmountText = "\(log.amount_ml)"
+                                editingLog = log
+                            }
+                        }
+                        .swipeActions(edge: .leading) {
+                            if editable {
+                                Button {
+                                    editAmountText = "\(log.amount_ml)"
+                                    editingLog = log
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .tint(.orange)
+                            }
+                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 Task { await viewModel.deleteLog(id: log.id) }
@@ -406,7 +477,7 @@ struct WaterTrackingView: View {
         }
     }
 
-    private func logRow(_ log: WaterLog) -> some View {
+    private func logRow(_ log: WaterLog, editable: Bool = false) -> some View {
         HStack(spacing: 12) {
             Text(waterIcon(for: log.amount_ml))
                 .font(.title3)
@@ -421,6 +492,12 @@ struct WaterTrackingView: View {
             }
 
             Spacer()
+
+            if editable {
+                Image(systemName: "pencil.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange.opacity(0.6))
+            }
 
             Text("+\(log.amount_ml)")
                 .font(.caption.weight(.semibold))
