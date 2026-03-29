@@ -70,22 +70,29 @@ struct FoodScannerView: View {
 
     var body: some View {
         NavigationStack {
-            TabView(selection: $selectedTab) {
-                BarcodeScannerTab(service: service) { product in
-                    scannedProduct = product
-                    showProductSheet = true
+            VStack(spacing: 0) {
+                // Segmented picker instead of TabView to avoid colliding with bottom nav
+                Picker("Mode", selection: $selectedTab) {
+                    Label("Scan", systemImage: "barcode.viewfinder").tag(0)
+                    Label("Search", systemImage: "magnifyingglass").tag(1)
                 }
-                .tabItem { Label("Scan", systemImage: "barcode.viewfinder") }
-                .tag(0)
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
 
-                FoodSearchTab(service: service) { product in
-                    scannedProduct = product
-                    showProductSheet = true
+                if selectedTab == 0 {
+                    BarcodeScannerTab(service: service) { product in
+                        scannedProduct = product
+                        showProductSheet = true
+                    }
+                } else {
+                    FoodSearchTab(service: service) { product in
+                        scannedProduct = product
+                        showProductSheet = true
+                    }
                 }
-                .tabItem { Label("Search", systemImage: "magnifyingglass") }
-                .tag(1)
             }
-            .tint(.white)
+            .background(Color.premiumBackground)
             .navigationTitle("Food Scanner")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.premiumBackground, for: .navigationBar)
