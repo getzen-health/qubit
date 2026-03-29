@@ -132,6 +132,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/import', icon: Upload, label: 'Import' },
       { href: '/export', icon: Download, label: 'Export Data' },
       { href: '/report', icon: Stethoscope, label: 'Doctor Report' },
+      { href: '/invite', icon: '🎁', label: 'Invite' },
       { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
     ],
   },

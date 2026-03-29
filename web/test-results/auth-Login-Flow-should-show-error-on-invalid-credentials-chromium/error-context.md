@@ -1,0 +1,72 @@
+# Page snapshot
+
+```yaml
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - link "SWE Graph" [ref=e4] [cursor=pointer]:
+      - /url: /
+    - navigation "Primary navigation" [ref=e5]:
+      - link "Home" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - link "Courses" [ref=e7] [cursor=pointer]:
+        - /url: /courses
+      - link "Compiler" [ref=e8] [cursor=pointer]:
+        - /url: /compiler
+      - link "Interviews" [ref=e9] [cursor=pointer]:
+        - /url: /interviews
+      - link "Whiteboard" [ref=e10] [cursor=pointer]:
+        - /url: /whiteboard
+      - link "Profile" [ref=e11] [cursor=pointer]:
+        - /url: /profile
+      - link "Login" [ref=e12] [cursor=pointer]:
+        - /url: /login
+  - generic [ref=e13]:
+    - generic [ref=e14]: Auth-connected learner shell
+    - heading "Sign in to save lesson progress and unlock your profile." [level=1] [ref=e15]
+    - paragraph [ref=e16]: The learner shell now supports student registration, sign-in, and session-backed lesson progress without requiring a separate frontend framework.
+    - generic [ref=e17]:
+      - link "Check API health" [ref=e18] [cursor=pointer]:
+        - /url: http://127.0.0.1:4000/health
+      - link "Browse courses" [ref=e19] [cursor=pointer]:
+        - /url: /courses
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Student auth" [level=2] [ref=e22]
+      - paragraph [ref=e23]: Sign in or create an account to persist completed lessons and see continue-learning prompts.
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - heading "Sign in" [level=3] [ref=e26]
+        - paragraph [ref=e27]: Use your SWE Graph student account to unlock saved lesson progress and the profile dashboard.
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - generic [ref=e30]: Email
+            - textbox "Email" [ref=e31]
+          - generic [ref=e32]:
+            - generic [ref=e33]: Password
+            - textbox "Password" [ref=e34]
+          - button "Sign in" [ref=e36] [cursor=pointer]
+      - generic [ref=e37]:
+        - heading "Create student account" [level=3] [ref=e38]
+        - paragraph [ref=e39]: Register once, then use the same session to track course completion and revisit active learning paths.
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: Display name
+            - textbox "Display name" [ref=e43]
+          - generic [ref=e44]:
+            - generic [ref=e45]: Email
+            - textbox "Email" [ref=e46]
+          - generic [ref=e47]:
+            - generic [ref=e48]: Password
+            - textbox "Password" [ref=e49]
+          - button "Create account" [ref=e51] [cursor=pointer]
+  - generic [ref=e52]:
+    - heading "Backend contract" [level=2] [ref=e54]
+    - list [ref=e55]:
+      - listitem [ref=e56]: POST /v1/auth/register
+      - listitem [ref=e57]: POST /v1/auth/login
+      - listitem [ref=e58]: POST /v1/auth/refresh
+      - listitem [ref=e59]: POST /v1/auth/logout
+      - listitem [ref=e60]: GET /v1/auth/me
+      - listitem [ref=e61]: GET /v1/progress
+  - generic [ref=e62]: Built for deliberate, end-to-end SWE interview preparation.
+```
