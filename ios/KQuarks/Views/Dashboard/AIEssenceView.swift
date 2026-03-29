@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// AI Essence - Prominent AI summary header showing recovery, strain, and key insight
+/// AI Essence — Premium hero card with gradient background and dramatic glowing rings
 struct AIEssenceView: View {
     let recoveryScore: Int
     let strainScore: Double
@@ -9,20 +9,15 @@ struct AIEssenceView: View {
     var recoveryTrend: Int? = nil
     var strainTrend: Int? = nil
 
-    var recoveryLevel: RecoveryLevel {
-        RecoveryLevel.from(score: recoveryScore)
-    }
-
-    var strainLevel: StrainLevel {
-        StrainLevel.from(score: strainScore)
-    }
+    var recoveryLevel: RecoveryLevel { RecoveryLevel.from(score: recoveryScore) }
+    var strainLevel: StrainLevel { StrainLevel.from(score: strainScore) }
 
     var body: some View {
-        VStack(spacing: 16) {
-            // Score badges
-            HStack(spacing: 16) {
-                ScoreBadge(
-                    label: "Recovery",
+        VStack(spacing: 24) {
+            // Score rings
+            HStack(spacing: 32) {
+                ScoreRing(
+                    label: "RECOVERY",
                     value: "\(recoveryScore)%",
                     sublabel: recoveryLevel.label,
                     trend: recoveryTrend,
@@ -30,8 +25,13 @@ struct AIEssenceView: View {
                     progress: Double(recoveryScore) / 100
                 )
 
-                ScoreBadge(
-                    label: "Strain",
+                // Divider line
+                Rectangle()
+                    .fill(Color.white.opacity(0.08))
+                    .frame(width: 1, height: 80)
+
+                ScoreRing(
+                    label: "STRAIN",
                     value: String(format: "%.1f", strainScore),
                     sublabel: strainLevel.label,
                     trend: strainTrend,
@@ -39,45 +39,91 @@ struct AIEssenceView: View {
                     progress: strainScore / 21
                 )
             }
+            .padding(.top, 8)
 
-            // AI Insight
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                        .font(.caption)
-                        .foregroundStyle(.accent)
-                    Text("AI Insight")
-                        .font(.caption)
+            // AI Insight strip
+            HStack(spacing: 10) {
+                // Gradient accent dot
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [.purple, .blue],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 8, height: 8)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(primaryInsight)
+                        .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.9))
+                        .lineLimit(2)
+
+                    if let secondary = secondaryInsight {
+                        Text(secondary)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.45))
+                            .lineLimit(1)
+                    }
                 }
 
-                Text(primaryInsight)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
-                    .lineLimit(2)
+                Spacer(minLength: 0)
 
-                if let secondary = secondaryInsight {
-                    Text(secondary)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                Image(systemName: "sparkles")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.purple, .cyan],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(12)
-            .background(Color.accent.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(14)
+            .background(Color.white.opacity(0.04))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
-        .padding(16)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.09), radius: 16, x: 0, y: 6)
+        .padding(22)
+        .background(
+            ZStack {
+                // Deep gradient background
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.10, green: 0.08, blue: 0.22),
+                                Color(red: 0.08, green: 0.10, blue: 0.18),
+                                Color.cardSurface
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            }
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.15),
+                            Color.white.opacity(0.03)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: Color(red: 0.15, green: 0.10, blue: 0.35).opacity(0.5), radius: 30, x: 0, y: 12)
     }
 }
 
-/// Individual score badge with ring progress
-struct ScoreBadge: View {
+/// Glowing score ring with bold number
+struct ScoreRing: View {
     let label: String
     let value: String
     let sublabel: String
@@ -86,46 +132,56 @@ struct ScoreBadge: View {
     let progress: Double
 
     var body: some View {
-        VStack(spacing: 8) {
-            // Ring with value
+        VStack(spacing: 10) {
             ZStack {
+                // Outer glow
                 Circle()
-                    .stroke(color.opacity(0.15), lineWidth: 10)
+                    .fill(color.opacity(0.2))
+                    .frame(width: 110, height: 110)
+                    .blur(radius: 25)
 
+                // Track
+                Circle()
+                    .stroke(color.opacity(0.10), lineWidth: 8)
+
+                // Progress arc
                 Circle()
                     .trim(from: 0, to: min(progress, 1.0))
-                    .stroke(color, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .stroke(
+                        LinearGradient(
+                            colors: [color, color.opacity(0.6)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    )
                     .rotationEffect(.degrees(-90))
-                    .animation(.spring(response: 0.5), value: progress)
+                    .animation(.spring(response: 0.8, dampingFraction: 0.7), value: progress)
 
-                VStack(spacing: 2) {
-                    Text(value)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(color)
-                }
+                // Score value
+                Text(value)
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
             }
-            .frame(width: 84, height: 84)
+            .frame(width: 88, height: 88)
 
-            // Label and trend
-            VStack(spacing: 4) {
+            VStack(spacing: 3) {
                 Text(label)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.45))
+                    .kerning(1.2)
 
                 HStack(spacing: 4) {
                     Text(sublabel)
-                        .font(.caption2)
-                        .fontWeight(.medium)
+                        .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(color)
 
                     if let trend = trend {
                         HStack(spacing: 1) {
                             Image(systemName: trend > 0 ? "arrow.up" : trend < 0 ? "arrow.down" : "minus")
-                                .font(.system(size: 8, weight: .bold))
+                                .font(.system(size: 7, weight: .bold))
                             Text("\(abs(trend))%")
-                                .font(.system(size: 9, weight: .medium))
+                                .font(.system(size: 9, weight: .semibold))
                         }
                         .foregroundStyle(trend > 0 ? Color.recovery : trend < 0 ? Color.error : .secondary)
                     }
@@ -136,7 +192,8 @@ struct ScoreBadge: View {
     }
 }
 
-/// Recovery level classification
+// MARK: - Level Enums
+
 enum RecoveryLevel {
     case optimal, moderate, low
 
@@ -163,7 +220,6 @@ enum RecoveryLevel {
     }
 }
 
-/// Strain level classification
 enum StrainLevel {
     case allOut, high, moderate, light
 
@@ -181,7 +237,7 @@ enum StrainLevel {
         case .allOut: .strain
         case .high: .strain
         case .moderate: .activity
-        case .light: Color(red: 0.2, green: 0.6, blue: 0.9) // blue-teal for light strain
+        case .light: Color(hue: 0.52, saturation: 0.60, brightness: 0.85)
         }
     }
 
@@ -194,18 +250,17 @@ enum StrainLevel {
 }
 
 #Preview {
-    VStack {
+    ZStack {
+        PremiumBackgroundView()
         AIEssenceView(
             recoveryScore: 78,
             strainScore: 14.2,
             primaryInsight: "Your recovery is excellent. Today is ideal for high-intensity training.",
-            secondaryInsight: "HRV trending up 12% this week - a positive adaptation sign.",
+            secondaryInsight: "HRV trending up 12% this week",
             recoveryTrend: 5,
             strainTrend: -8
         )
         .padding()
-
-        Spacer()
     }
-    .background(Color(.systemGroupedBackground))
+    .preferredColorScheme(.dark)
 }

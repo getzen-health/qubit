@@ -24,7 +24,7 @@ struct InsightsSectionView: View {
                         }
                     }
                 }
-                .background(Color(.systemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
@@ -90,7 +90,7 @@ struct EmptyInsightsView: View {
                 .font(.title)
                 .foregroundStyle(.tertiary)
                 .frame(width: 48, height: 48)
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(Circle())
 
             Text("No insights yet")
@@ -106,7 +106,7 @@ struct EmptyInsightsView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(24)
-        .background(Color(.systemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
@@ -141,5 +141,5 @@ struct EmptyInsightsView: View {
         }
         .padding()
     }
-    .background(Color(.systemGroupedBackground))
+    .background(Color.premiumBackground)
 }

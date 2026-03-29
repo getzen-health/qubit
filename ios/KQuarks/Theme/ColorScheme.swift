@@ -4,26 +4,26 @@ import SwiftUI
 extension Color {
     // MARK: - Metric Colors
 
-    /// Recovery score color (green)
-    static let recovery = Color(hue: 0.39, saturation: 0.71, brightness: 0.45)
+    /// Recovery score color (vivid green)
+    static let recovery = Color(hue: 0.38, saturation: 0.70, brightness: 0.78)
 
-    /// Strain score color (orange)
-    static let strain = Color(hue: 0.067, saturation: 0.95, brightness: 0.53)
+    /// Strain score color (vivid orange)
+    static let strain = Color(hue: 0.06, saturation: 0.85, brightness: 0.92)
 
-    /// Heart rate color (red)
-    static let heartMetric = Color(hue: 0, saturation: 0.84, brightness: 0.60)
+    /// Heart rate color (vivid red)
+    static let heartMetric = Color(hue: 0.98, saturation: 0.72, brightness: 0.90)
 
-    /// Sleep metric color (blue)
-    static let sleepMetric = Color(hue: 0.61, saturation: 0.83, brightness: 0.53)
+    /// Sleep metric color (vivid blue)
+    static let sleepMetric = Color(hue: 0.60, saturation: 0.65, brightness: 0.88)
 
-    /// Activity color (dark green)
-    static let activityMetric = Color(hue: 0.39, saturation: 0.76, brightness: 0.36)
+    /// Activity color (bright green)
+    static let activityMetric = Color(hue: 0.38, saturation: 0.65, brightness: 0.75)
 
-    /// HRV color (purple)
-    static let hrvMetric = Color(hue: 0.78, saturation: 0.70, brightness: 0.55)
+    /// HRV color (vivid purple)
+    static let hrvMetric = Color(hue: 0.77, saturation: 0.55, brightness: 0.88)
 
     /// Glucose color (amber)
-    static let glucoseMetric = Color(hue: 0.125, saturation: 0.93, brightness: 0.47)
+    static let glucoseMetric = Color(hue: 0.12, saturation: 0.85, brightness: 0.85)
 
     // MARK: - Convenience Aliases
 
@@ -45,16 +45,16 @@ extension Color {
     // MARK: - Status Colors
 
     /// Success/positive color
-    static let success = Color(hue: 0.39, saturation: 0.71, brightness: 0.45)
+    static let success = Color(hue: 0.38, saturation: 0.70, brightness: 0.78)
 
     /// Warning color
-    static let warning = Color(hue: 0.105, saturation: 0.92, brightness: 0.50)
+    static let warning = Color(hue: 0.10, saturation: 0.80, brightness: 0.90)
 
     /// Error/negative color
-    static let danger = Color(hue: 0, saturation: 0.84, brightness: 0.60)
+    static let danger = Color(hue: 0.98, saturation: 0.72, brightness: 0.90)
 
     /// Info color
-    static let info = Color(hue: 0.61, saturation: 0.83, brightness: 0.53)
+    static let info = Color(hue: 0.60, saturation: 0.65, brightness: 0.88)
 
     // MARK: - Surface Colors
 

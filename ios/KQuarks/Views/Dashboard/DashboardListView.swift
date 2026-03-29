@@ -60,13 +60,13 @@ struct DashboardListView: View {
                     }
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background(PremiumBackgroundView())
             .animation(.easeOut(duration: 0.35), value: viewModel.isLoading)
             .refreshable {
                 await viewModel.loadData()
             }
             .navigationTitle(greeting)
-            .toolbarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 12) {
@@ -158,20 +158,24 @@ struct DashboardListView: View {
         return "Good evening"
     }
 
-    /// Oura-style uppercase tracked section header.
+    /// Premium section header with accent line
     @ViewBuilder
     private func sectionHeader(_ title: String) -> some View {
-        Text(title.uppercased())
-            .font(.caption)
-            .fontWeight(.semibold)
-            .foregroundStyle(.secondary)
-            .kerning(0.6)
-            .padding(.horizontal, 16)
+        HStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.accentColor)
+                .frame(width: 3, height: 14)
+            Text(title.uppercased())
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(.white.opacity(0.55))
+                .kerning(1.2)
+        }
+        .padding(.horizontal, 16)
     }
 
     @ViewBuilder
     private func dashboardContent(summary: TodayHealthSummary) -> some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             // AI Essence - Recovery + Strain + AI Insight
             AIEssenceView(
                 recoveryScore: viewModel.recoveryScore,
@@ -549,8 +553,7 @@ struct DashboardListView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .glassCard(cornerRadius: 16, shadowRadius: 12, shadowY: 6)
             .padding(.horizontal, 16)
         }
     }
@@ -642,8 +645,7 @@ struct DashboardListView: View {
                     )
                 }
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .glassCard(cornerRadius: 16, shadowRadius: 12, shadowY: 6)
             .padding(.horizontal, 16)
         }
     }
@@ -1183,7 +1185,7 @@ struct StepGoalRingView: View {
             Spacer()
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
