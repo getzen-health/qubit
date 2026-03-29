@@ -55,6 +55,7 @@ struct KQuarksApp: App {
         }
         AIBriefingService.shared.registerBackgroundTask()
         CrashReportingService.shared.start()
+        SentryService.start(dsn: ProcessInfo.processInfo.environment["SENTRY_DSN"] ?? "")
         BackgroundSyncService.shared.registerBackgroundTask()
         BackgroundSyncService.shared.scheduleNextSync()
         if #available(iOS 16.4, *) {
