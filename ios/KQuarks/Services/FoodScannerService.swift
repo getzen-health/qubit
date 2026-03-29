@@ -15,6 +15,9 @@ struct FoodProduct: Codable, Identifiable {
     let nutriscoreGrade: String?
     let labelsTags: [String]
     let categoriesTags: [String]
+    let origins: String?
+    let manufacturingPlaces: String?
+    let countriesTags: [String]
 
     enum CodingKeys: String, CodingKey {
         case id = "code"
@@ -28,6 +31,9 @@ struct FoodProduct: Codable, Identifiable {
         case nutriscoreGrade = "nutriscore_grade"
         case labelsTags = "labels_tags"
         case categoriesTags = "categories_tags"
+        case origins
+        case manufacturingPlaces = "manufacturing_places"
+        case countriesTags = "countries_tags"
     }
 
     init(from decoder: Decoder) throws {
@@ -43,6 +49,9 @@ struct FoodProduct: Codable, Identifiable {
         nutriscoreGrade = try c.decodeIfPresent(String.self, forKey: .nutriscoreGrade)
         labelsTags = try c.decodeIfPresent([String].self, forKey: .labelsTags) ?? []
         categoriesTags = try c.decodeIfPresent([String].self, forKey: .categoriesTags) ?? []
+        origins = try c.decodeIfPresent(String.self, forKey: .origins)
+        manufacturingPlaces = try c.decodeIfPresent(String.self, forKey: .manufacturingPlaces)
+        countriesTags = try c.decodeIfPresent([String].self, forKey: .countriesTags) ?? []
     }
 }
 
@@ -121,7 +130,7 @@ final class FoodScannerService {
         "https://world.openfoodfacts.org",
     ]
     private static let userAgent = "KQuarks/1.0 (iOS; https://github.com/qxlsz/kquarks)"
-    private static let fields = "code,product_name,brands,nutriments,image_url,nutriscore_grade,additives_tags,ingredients_text,labels_tags,categories_tags,nova_group,quantity,serving_size"
+    private static let fields = "code,product_name,brands,nutriments,image_url,nutriscore_grade,additives_tags,ingredients_text,labels_tags,categories_tags,nova_group,quantity,serving_size,origins,manufacturing_places,countries_tags"
 
     private func makeRequest(url: URL) -> URLRequest {
         var req = URLRequest(url: url, timeoutInterval: 10)

@@ -26,6 +26,7 @@ struct ProductDetailSheet: View {
                         ingredientsCard(ingredients)
                     }
                     additivesSection
+                    sourcingSection
                     sourcesSection
                 }
                 .padding(.horizontal, 16)
@@ -478,6 +479,76 @@ struct ProductDetailSheet: View {
                 }
             }
         }
+    }
+
+    // MARK: - Sourcing & Origin
+
+    private var sourcingSection: some View {
+        let origins = product.origins?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let manufacturing = product.manufacturingPlaces?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let countries = product.countriesTags
+            .map { $0.replacingOccurrences(of: "en:", with: "").replacingOccurrences(of: "-", with: " ").capitalized }
+        let hasData = !origins.isEmpty || !manufacturing.isEmpty || !countries.isEmpty
+
+        return Group {
+            if hasData {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        AccentBar(color: .cyan)
+                        Text("SOURCING & ORIGIN")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.5))
+                            .kerning(1.2)
+                        Spacer()
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        if !origins.isEmpty {
+                            sourcingRow(icon: "leaf.fill", color: .green, title: "Ingredients Origin", value: origins)
+                        }
+                        if !manufacturing.isEmpty {
+                            sourcingRow(icon: "building.2.fill", color: .orange, title: "Manufactured In", value: manufacturing)
+                        }
+                        if !countries.isEmpty {
+                            sourcingRow(icon: "globe", color: .cyan, title: "Sold In", value: countries.joined(separator: ", "))
+                        }
+                    }
+
+                    Text("Origin data from Open Food Facts. May not reflect all sourcing regions for every batch.")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .lineSpacing(2)
+                        .padding(.top, 2)
+                }
+                .padding(18)
+                .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Color.white.opacity(0.06), lineWidth: 1)
+                )
+            }
+        }
+    }
+
+    private func sourcingRow(icon: String, color: Color, title: String, value: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .foregroundStyle(color.opacity(0.8))
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.5))
+                Text(value)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.9))
+            }
+            Spacer()
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     // MARK: - Sources
