@@ -29,6 +29,21 @@ struct FoodProduct: Codable, Identifiable {
         case labelsTags = "labels_tags"
         case categoriesTags = "categories_tags"
     }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeIfPresent(String.self, forKey: .id) ?? "unknown"
+        name = try c.decodeIfPresent(String.self, forKey: .name) ?? "Unknown Product"
+        brand = try c.decodeIfPresent(String.self, forKey: .brand)
+        imageURL = try c.decodeIfPresent(String.self, forKey: .imageURL)
+        nutriments = try c.decodeIfPresent(Nutriments.self, forKey: .nutriments)
+        ingredientsText = try c.decodeIfPresent(String.self, forKey: .ingredientsText)
+        additivesTags = try c.decodeIfPresent([String].self, forKey: .additivesTags) ?? []
+        novaGroup = try c.decodeIfPresent(Int.self, forKey: .novaGroup)
+        nutriscoreGrade = try c.decodeIfPresent(String.self, forKey: .nutriscoreGrade)
+        labelsTags = try c.decodeIfPresent([String].self, forKey: .labelsTags) ?? []
+        categoriesTags = try c.decodeIfPresent([String].self, forKey: .categoriesTags) ?? []
+    }
 }
 
 struct Nutriments: Codable {
