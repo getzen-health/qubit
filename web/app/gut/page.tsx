@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { GutClient } from './gut-client'
+import dynamic from 'next/dynamic'
+const GutClient = dynamic(() => import('./gut-client').then(m => ({ default: m.GutClient })), { ssr: false })
 import { calculateGutScore, emptyGutLog } from '@/lib/gut-health'
 
 export default async function GutPage() {

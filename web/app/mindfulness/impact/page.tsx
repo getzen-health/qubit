@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { MindfulnessImpactClient, type ImpactData } from './mindfulness-impact-client'
+import dynamic from 'next/dynamic'
+const MindfulnessImpactClient = dynamic(() => import('./mindfulness-impact-client').then(m => ({ default: m.MindfulnessImpactClient })), { ssr: false })
+import type { ImpactData } from './mindfulness-impact-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Mindfulness Impact' }

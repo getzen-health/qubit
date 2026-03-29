@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { BreathingRateClient, type BreathingRateData, type DailyReading, type WeeklyAvg } from './breathing-rate-client'
+import dynamic from 'next/dynamic'
+const BreathingRateClient = dynamic(() => import('./breathing-rate-client').then(m => ({ default: m.BreathingRateClient })), { ssr: false })
+import type { BreathingRateData, DailyReading, WeeklyAvg } from './breathing-rate-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Breathing Rate Deep Dive' }

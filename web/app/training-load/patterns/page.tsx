@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Dumbbell } from 'lucide-react'
-import { TrainingPatternsClient } from './training-patterns-client'
+import dynamic from 'next/dynamic'
+const TrainingPatternsClient = dynamic(() => import('./training-patterns-client').then(m => ({ default: m.TrainingPatternsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Patterns' }

@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { TrendsClient, type TrendEntry, type TrendSummary } from './trends-client'
+import dynamic from 'next/dynamic'
+const TrendsClient = dynamic(() => import('./trends-client').then(m => ({ default: m.TrendsClient })), { ssr: false })
+import type { TrendEntry, TrendSummary } from './trends-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Sleep Trends' }

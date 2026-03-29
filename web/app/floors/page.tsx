@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { FloorsClient } from './floors-client'
+import dynamic from 'next/dynamic'
+const FloorsClient = dynamic(() => import('./floors-client').then(m => ({ default: m.FloorsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Floors Climbed' }

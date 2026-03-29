@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { ConsistencyClient } from './consistency-client'
+import dynamic from 'next/dynamic'
+const ConsistencyClient = dynamic(() => import('./consistency-client').then(m => ({ default: m.ConsistencyClient })), { ssr: false })
 
 export const metadata = { title: 'Training Consistency' }
 

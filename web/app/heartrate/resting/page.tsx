@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart, BarChart2 } from 'lucide-react'
-import { RHRClient } from './rhr-client'
+import dynamic from 'next/dynamic'
+const RHRClient = dynamic(() => import('./rhr-client').then(m => ({ default: m.RHRClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Resting Heart Rate' }

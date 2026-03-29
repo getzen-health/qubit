@@ -1,4 +1,5 @@
-import { MentalWellbeingClient } from './mental-wellbeing-client'
+import dynamic from 'next/dynamic'
+const MentalWellbeingClient = dynamic(() => import('./mental-wellbeing-client').then(m => ({ default: m.MentalWellbeingClient })), { ssr: false })
 
 export const metadata = {
   title: 'Mental Wellbeing — KQuarks',

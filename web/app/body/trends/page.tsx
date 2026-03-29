@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { BodyTrendsClient, type BodyTrendData } from './body-trends-client'
+import dynamic from 'next/dynamic'
+const BodyTrendsClient = dynamic(() => import('./body-trends-client').then(m => ({ default: m.BodyTrendsClient })), { ssr: false })
+import type { BodyTrendData } from './body-trends-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Body Weight Trends' }

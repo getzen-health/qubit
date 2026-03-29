@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { WaterSportsClient } from './water-sports-client'
+import dynamic from 'next/dynamic'
+const WaterSportsClient = dynamic(() => import('./water-sports-client').then(m => ({ default: m.WaterSportsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Water & Paddle Sports' }

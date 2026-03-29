@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { BottomNav } from '@/components/bottom-nav'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { BiometricsClient } from './biometrics-client'
+import dynamic from 'next/dynamic'
+const BiometricsClient = dynamic(() => import('./biometrics-client').then(m => ({ default: m.BiometricsClient })), { ssr: false })
 import type { BiometricLog, BiometricSettings } from '@/lib/biometrics'
 
 export default async function BiometricsPage() {

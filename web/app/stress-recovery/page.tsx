@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { StressRecoveryClient } from './stress-recovery-client'
+import dynamic from 'next/dynamic'
+const StressRecoveryClient = dynamic(() => import('./stress-recovery-client').then(m => ({ default: m.StressRecoveryClient })), { ssr: false })
 
 export const metadata = { title: 'Stress & Recovery Analysis' }
 

@@ -1,4 +1,5 @@
-import { FunctionalFitnessClient } from './functional-fitness-client'
+import dynamic from 'next/dynamic'
+const FunctionalFitnessClient = dynamic(() => import('./functional-fitness-client').then(m => ({ default: m.FunctionalFitnessClient })), { ssr: false })
 
 export const metadata = {
   title: 'Functional Fitness & Aging Biomarkers — KQuarks',

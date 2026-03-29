@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { AlcoholClient } from './alcohol-client'
+import dynamic from 'next/dynamic'
+const AlcoholClient = dynamic(() => import('./alcohol-client').then(m => ({ default: m.AlcoholClient })), { ssr: false })
 
 export default async function AlcoholPage() {
   const supabase = await createClient()

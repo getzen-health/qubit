@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
-import { HikingClient } from './hiking-client'
+import dynamic from 'next/dynamic'
+const HikingClient = dynamic(() => import('./hiking-client').then(m => ({ default: m.HikingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hiking Analytics' }

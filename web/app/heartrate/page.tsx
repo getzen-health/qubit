@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity, GitPullRequest, BarChart2, TrendingDown, Heart, HeartPulse } from 'lucide-react'
-import { HeartRateClient } from './heartrate-client'
+import dynamic from 'next/dynamic'
+const HeartRateClient = dynamic(() => import('./heartrate-client').then(m => ({ default: m.HeartRateClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function HeartRatePage() {

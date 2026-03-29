@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { PolarizationClient } from './polarization-client'
+import dynamic from 'next/dynamic'
+const PolarizationClient = dynamic(() => import('./polarization-client').then(m => ({ default: m.PolarizationClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Polarization' }

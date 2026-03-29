@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { StepPatternsClient, type PatternData } from './step-patterns-client'
+import dynamic from 'next/dynamic'
+const StepPatternsClient = dynamic(() => import('./step-patterns-client').then(m => ({ default: m.StepPatternsClient })), { ssr: false })
+import type { PatternData } from './step-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Step Patterns' }

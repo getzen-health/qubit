@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { ZonesClient } from './zones-client'
+import dynamic from 'next/dynamic'
+const ZonesClient = dynamic(() => import('./zones-client').then(m => ({ default: m.ZonesClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Training Zones' }

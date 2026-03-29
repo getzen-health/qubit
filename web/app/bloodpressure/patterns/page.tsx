@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { BPPatternsClient, type BPPatternData } from './bp-patterns-client'
+import dynamic from 'next/dynamic'
+const BPPatternsClient = dynamic(() => import('./bp-patterns-client').then(m => ({ default: m.BPPatternsClient })), { ssr: false })
+import type { BPPatternData } from './bp-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Blood Pressure Patterns' }

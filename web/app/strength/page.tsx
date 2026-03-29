@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
-import { StrengthClient } from './strength-client'
+import dynamic from 'next/dynamic'
+const StrengthClient = dynamic(() => import('./strength-client').then(m => ({ default: m.StrengthClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Strength Training' }

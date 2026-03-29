@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useDebounce } from '@/lib/useDebounce'
 
 export default function ScanHistoryPage() {
@@ -78,7 +79,7 @@ export default function ScanHistoryPage() {
         <div className="space-y-3">
           {scans.map((scan: any) => (
             <div key={scan.id} className="flex items-center gap-4 border border-border rounded-xl p-4">
-              {scan.image_url && <img src={scan.image_url} alt={scan.product_name} className="w-12 h-12 rounded-lg object-cover" />}
+              {scan.image_url && <Image src={scan.image_url} alt={scan.product_name} width={48} height={48} className="rounded-lg object-cover" unoptimized />}
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{scan.product_name}</p>
                 {scan.brand && <p className="text-xs text-muted-foreground">{scan.brand}</p>}

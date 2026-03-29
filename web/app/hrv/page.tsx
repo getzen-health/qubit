@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, CalendarHeart, Layers, BarChart2 } from 'lucide-react'
-import { HrvClient } from './hrv-client'
+import dynamic from 'next/dynamic'
+const HrvClient = dynamic(() => import('./hrv-client').then(m => ({ default: m.HrvClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'HRV Analysis' }

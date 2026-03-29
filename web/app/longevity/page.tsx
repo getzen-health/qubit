@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { LongevityClient } from './longevity-client'
+import dynamic from 'next/dynamic'
+const LongevityClient = dynamic(() => import('./longevity-client').then(m => ({ default: m.LongevityClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata: Metadata = {

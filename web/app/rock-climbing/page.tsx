@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { RockClimbingClient } from './rock-climbing-client'
+import dynamic from 'next/dynamic'
+const RockClimbingClient = dynamic(() => import('./rock-climbing-client').then(m => ({ default: m.RockClimbingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Rock Climbing Analytics' }

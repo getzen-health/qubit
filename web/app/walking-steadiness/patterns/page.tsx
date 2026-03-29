@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { WalkingPatternsClient, type WalkingPatternData } from './walking-patterns-client'
+import dynamic from 'next/dynamic'
+const WalkingPatternsClient = dynamic(() => import('./walking-patterns-client').then(m => ({ default: m.WalkingPatternsClient })), { ssr: false })
+import type { WalkingPatternData } from './walking-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Walking Steadiness Patterns' }

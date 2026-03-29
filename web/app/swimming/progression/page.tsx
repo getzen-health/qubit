@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
-import { SwimmingProgressionClient, type SwimmingProgressionData } from './swimming-progression-client'
+import dynamic from 'next/dynamic'
+const SwimmingProgressionClient = dynamic(() => import('./swimming-progression-client').then(m => ({ default: m.SwimmingProgressionClient })), { ssr: false })
+import type { SwimmingProgressionData } from './swimming-progression-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Swimming Progression' }
