@@ -50,6 +50,8 @@ const nextConfig = {
 
 module.exports = withSentryConfig(nextConfig, {
   silent: !process.env.CI,
+  org: 'kquarks',
+  project: 'kquarks-web',
   widenClientFileUpload: true,
   disableLogger: true,
   hideSourceMaps: true,
