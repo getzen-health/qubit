@@ -47,7 +47,7 @@ export function ShareCardModal({ data, onClose }: ShareCardModalProps) {
               <p className="text-text-secondary text-sm">Generating card...</p>
             </div>
           ) : previewUrl ? (
-            <img src={previewUrl} alt="Share card preview" className="w-full h-full object-cover" />
+            <img src={previewUrl} alt="Share card preview" loading="lazy" className="w-full h-full object-cover" />
           ) : null}
         </div>
 

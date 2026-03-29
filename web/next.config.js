@@ -17,6 +17,8 @@ const cspHeader = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  compress: true,
+  poweredByHeader: false,
   turbopack: {},
   async headers() {
     return [
