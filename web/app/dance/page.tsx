@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { DanceClient } from './dance-client'
+import dynamic from 'next/dynamic'
+const DanceClient = dynamic(() => import('./dance-client').then(m => ({ default: m.DanceClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Dance & Aerobics Analytics' }

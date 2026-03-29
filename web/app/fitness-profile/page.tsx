@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { FitnessProfileClient, type FitnessProfileData, type DimensionScore } from './profile-client'
+import dynamic from 'next/dynamic'
+const FitnessProfileClient = dynamic(() => import('./profile-client').then(m => ({ default: m.FitnessProfileClient })), { ssr: false })
+import type { FitnessProfileData, DimensionScore } from './profile-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Fitness Profile' }

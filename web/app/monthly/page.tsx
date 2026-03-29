@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { MonthlyClient } from './monthly-client'
+import dynamic from 'next/dynamic'
+const MonthlyClient = dynamic(() => import('./monthly-client').then(m => ({ default: m.MonthlyClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export default async function MonthlyPage() {

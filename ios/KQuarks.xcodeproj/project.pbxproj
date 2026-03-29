@@ -54,6 +54,7 @@
 		AA11BB22CC33DD44EE55FF66 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */; };
 		BB22CC33DD44EE55FF66AA11 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE55FF66AA22 /* PaywallView.swift */; };
 		82EB8F2A553686E6B8A9AC06 /* CrashReportingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* SentryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2E1D0C9B8A7F6E5D4C3B2A1 /* SentryService.swift */; };
 		78C443BF1C1E47AFA45D176D /* AIBriefingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */; };
 		6F3EB7F98B2DDF1B91525A61 /* OfflineSyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67BE947807B66F65D08C04C /* OfflineSyncQueue.swift */; };
 		C286DE00E1ED83048603FF7E /* ProductDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4BF8721F8F3AF890690F41 /* ProductDetailSheet.swift */; };
@@ -568,6 +569,7 @@
 		AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
 		BB22CC33DD44EE55FF66AA22 /* PaywallView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CrashReportingService.swift; sourceTree = "<group>"; };
+		F2E1D0C9B8A7F6E5D4C3B2A1 /* SentryService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SentryService.swift; sourceTree = "<group>"; };
 		725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIBriefingService.swift; sourceTree = "<group>"; };
 		D67BE947807B66F65D08C04C /* OfflineSyncQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OfflineSyncQueue.swift; sourceTree = "<group>"; };
 		DE4BF8721F8F3AF890690F41 /* ProductDetailSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodComponents/ProductDetailSheet.swift; sourceTree = "<group>"; };
@@ -1555,6 +1557,7 @@
 				621B504FC9E5A593683D10ED /* BackgroundSyncService.swift */,
 				AA11BB22CC33DD44EE55FF77 /* SubscriptionService.swift */,
 				BD9237A36C4BFA605DEB55DD /* CrashReportingService.swift */,
+				F2E1D0C9B8A7F6E5D4C3B2A1 /* SentryService.swift */,
 				725BC2BB6043B747474AB3A6 /* AIBriefingService.swift */,
 				1005B746906EC03014E62CE5 /* FoodScannerService.swift */,
 				127 /* KeychainHelper.swift */,
@@ -1807,6 +1810,7 @@
 				AA11BB22CC33DD44EE55FF66 /* SubscriptionService.swift in Sources */,
 				BB22CC33DD44EE55FF66AA11 /* PaywallView.swift in Sources */,
 				82EB8F2A553686E6B8A9AC06 /* CrashReportingService.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* SentryService.swift in Sources */,
 				78C443BF1C1E47AFA45D176D /* AIBriefingService.swift in Sources */,
 				6F3EB7F98B2DDF1B91525A61 /* OfflineSyncQueue.swift in Sources */,
 				5F7E73709D832EF062FA7EEB /* BarcodeScannerTab.swift in Sources */,

@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { HearingClient } from './hearing-client'
+import dynamic from 'next/dynamic'
+const HearingClient = dynamic(() => import('./hearing-client').then(m => ({ default: m.HearingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hearing Health' }

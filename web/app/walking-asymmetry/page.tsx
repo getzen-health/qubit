@@ -1,4 +1,5 @@
-import { WalkingAsymmetryClient } from './walking-asymmetry-client'
+import dynamic from 'next/dynamic'
+const WalkingAsymmetryClient = dynamic(() => import('./walking-asymmetry-client').then(m => ({ default: m.WalkingAsymmetryClient })), { ssr: false })
 
 export const metadata = {
   title: 'Walking Asymmetry — KQuarks',

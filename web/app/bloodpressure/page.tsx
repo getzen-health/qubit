@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { BloodPressureClient } from './bloodpressure-client'
+import dynamic from 'next/dynamic'
+const BloodPressureClient = dynamic(() => import('./bloodpressure-client').then(m => ({ default: m.BloodPressureClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Blood Pressure' }

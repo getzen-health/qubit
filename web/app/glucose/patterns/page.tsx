@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { GlucosePatternsClient, type GlucosePatternData } from './glucose-patterns-client'
+import dynamic from 'next/dynamic'
+const GlucosePatternsClient = dynamic(() => import('./glucose-patterns-client').then(m => ({ default: m.GlucosePatternsClient })), { ssr: false })
+import type { GlucosePatternData } from './glucose-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Glucose Patterns' }

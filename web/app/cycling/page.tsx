@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2, TrendingUp } from 'lucide-react'
-import { CyclingClient } from './cycling-client'
+import dynamic from 'next/dynamic'
+const CyclingClient = dynamic(() => import('./cycling-client').then(m => ({ default: m.CyclingClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Cycling Analytics' }

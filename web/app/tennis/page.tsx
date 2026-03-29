@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { TennisClient } from './tennis-client'
+import dynamic from 'next/dynamic'
+const TennisClient = dynamic(() => import('./tennis-client').then(m => ({ default: m.TennisClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Tennis Analytics' }

@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, TrendingUp } from 'lucide-react'
-import { TemperatureClient } from './temperature-client'
+import dynamic from 'next/dynamic'
+const TemperatureClient = dynamic(() => import('./temperature-client').then(m => ({ default: m.TemperatureClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Wrist Temperature' }

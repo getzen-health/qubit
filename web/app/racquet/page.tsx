@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { RacquetClient } from './racquet-client'
+import dynamic from 'next/dynamic'
+const RacquetClient = dynamic(() => import('./racquet-client').then(m => ({ default: m.RacquetClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Racquet Sports Analytics' }

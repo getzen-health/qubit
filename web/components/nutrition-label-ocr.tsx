@@ -206,7 +206,7 @@ export function NutritionLabelOCR({ onResult }: NutritionLabelOCRProps) {
         onClick={() => fileRef.current?.click()}
       >
         {preview ? (
-          <img src={preview} alt="Label preview" className="max-h-48 mx-auto rounded-xl object-contain" />
+          <img src={preview} alt="Label preview" loading="lazy" className="max-h-48 mx-auto rounded-xl object-contain" />
         ) : (
           <>
             <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">

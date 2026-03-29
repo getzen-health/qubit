@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Heart } from 'lucide-react'
-import { RestingHRDeepDiveClient } from './resting-hr-deep-dive-client'
+import dynamic from 'next/dynamic'
+const RestingHRDeepDiveClient = dynamic(() => import('./resting-hr-deep-dive-client').then(m => ({ default: m.RestingHRDeepDiveClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Resting HR Deep Dive' }

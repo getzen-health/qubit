@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Flame } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { ActiveEnergyClient } from './active-energy-client'
+import dynamic from 'next/dynamic'
+const ActiveEnergyClient = dynamic(() => import('./active-energy-client').then(m => ({ default: m.ActiveEnergyClient })), { ssr: false })
 import type { DayRecord } from './active-energy-client'
 
 export const metadata = { title: 'Active Energy' }

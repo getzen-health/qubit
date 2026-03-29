@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { CaloriePatternsClient, type CaloriePatternData } from './calorie-patterns-client'
+import dynamic from 'next/dynamic'
+const CaloriePatternsClient = dynamic(() => import('./calorie-patterns-client').then(m => ({ default: m.CaloriePatternsClient })), { ssr: false })
+import type { CaloriePatternData } from './calorie-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Calorie Patterns' }

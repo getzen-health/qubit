@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { RacePredictorClient } from './race-predictor-client'
+import dynamic from 'next/dynamic'
+const RacePredictorClient = dynamic(() => import('./race-predictor-client').then(m => ({ default: m.RacePredictorClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Race Predictor' }

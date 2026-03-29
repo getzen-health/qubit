@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { Zone2Client } from './zone2-client'
+import dynamic from 'next/dynamic'
+const Zone2Client = dynamic(() => import('./zone2-client').then(m => ({ default: m.Zone2Client })), { ssr: false })
 
 export const metadata = { title: 'Zone 2 Training' }
 

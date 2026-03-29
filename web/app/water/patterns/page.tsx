@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { HydrationPatternsClient, type HydrationPatternData } from './hydration-patterns-client'
+import dynamic from 'next/dynamic'
+const HydrationPatternsClient = dynamic(() => import('./hydration-patterns-client').then(m => ({ default: m.HydrationPatternsClient })), { ssr: false })
+import type { HydrationPatternData } from './hydration-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hydration Patterns' }

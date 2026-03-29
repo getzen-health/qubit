@@ -1,4 +1,5 @@
-import { MindfulnessClient } from './mindfulness-client'
+import dynamic from 'next/dynamic'
+const MindfulnessClient = dynamic(() => import('./mindfulness-client').then(m => ({ default: m.MindfulnessClient })), { ssr: false })
 
 export const metadata = {
   title: 'Mindfulness — KQuarks',

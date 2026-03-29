@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { ArrowLeft, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { IngredientDetailsSection } from '../../ingredients/IngredientDetailsSection'
 
 // Nutrient reference daily values (adult, 2000 kcal diet)
@@ -128,7 +129,7 @@ export default function ProductDetailPage() {
       {/* Product header */}
       <div className="flex gap-4 mb-6">
         {product.image_url && (
-          <img src={product.image_url} alt={product.product_name} className="w-20 h-20 object-contain rounded-xl bg-white flex-shrink-0" />
+          <Image src={product.image_url} alt={product.product_name} width={80} height={80} className="object-contain rounded-xl bg-white flex-shrink-0" unoptimized />
         )}
         <div>
           <h1 className="text-xl font-bold text-text-primary">{product.product_name}</h1>

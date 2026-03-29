@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2 } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
-import { MonotonyClient } from './monotony-client'
+import dynamic from 'next/dynamic'
+const MonotonyClient = dynamic(() => import('./monotony-client').then(m => ({ default: m.MonotonyClient })), { ssr: false })
 
 export const metadata = { title: 'Training Monotony & Strain' }
 

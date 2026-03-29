@@ -2,7 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { HearingPatternsClient, type HearingPatternData } from './hearing-patterns-client'
+import dynamic from 'next/dynamic'
+const HearingPatternsClient = dynamic(() => import('./hearing-patterns-client').then(m => ({ default: m.HearingPatternsClient })), { ssr: false })
+import type { HearingPatternData } from './hearing-patterns-client'
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Hearing Health Patterns' }

@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { FunctionalStrengthClient } from './functional-strength-client'
+import dynamic from 'next/dynamic'
+const FunctionalStrengthClient = dynamic(() => import('./functional-strength-client').then(m => ({ default: m.FunctionalStrengthClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Functional Strength Analytics' }

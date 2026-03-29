@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 function gradeColor(grade: string) {
   switch (grade) {
@@ -90,7 +91,7 @@ export default function CosmeticsScannerPage() {
       {result && (
         <div className="border rounded-lg p-4 mb-4 bg-white shadow">
           <div className="flex gap-4 items-center mb-2">
-            {result.product.imageUrl && <img src={result.product.imageUrl} alt="Product" className="w-20 h-20 object-contain rounded" />}
+            {result.product.imageUrl && <Image src={result.product.imageUrl} alt="Product" width={80} height={80} className="object-contain rounded" unoptimized />}
             <div>
               <div className="font-bold text-lg">{result.product.name}</div>
               <div className="text-gray-500">{result.product.brand}</div>

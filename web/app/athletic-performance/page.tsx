@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Trophy } from 'lucide-react'
-import { AthleticPerformanceClient } from './athletic-performance-client'
+import dynamic from 'next/dynamic'
+const AthleticPerformanceClient = dynamic(() => import('./athletic-performance-client').then(m => ({ default: m.AthleticPerformanceClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 import { calculateTrainingMetrics, calculateSessionLoad } from '@/lib/athletic-performance'
 

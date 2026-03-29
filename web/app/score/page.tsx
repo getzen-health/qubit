@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { HealthScoreClient } from './score-client'
+import dynamic from 'next/dynamic'
+const HealthScoreClient = dynamic(() => import('./score-client').then(m => ({ default: m.HealthScoreClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Health Score' }

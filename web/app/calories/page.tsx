@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BarChart2 } from 'lucide-react'
-import { CaloriesClient } from './calories-client'
+import dynamic from 'next/dynamic'
+const CaloriesClient = dynamic(() => import('./calories-client').then(m => ({ default: m.CaloriesClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Calorie Balance' }

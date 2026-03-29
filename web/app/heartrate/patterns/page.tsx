@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Activity } from 'lucide-react'
-import { HRPatternsClient } from './patterns-client'
+import dynamic from 'next/dynamic'
+const HRPatternsClient = dynamic(() => import('./patterns-client').then(m => ({ default: m.HRPatternsClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Heart Rate Patterns' }

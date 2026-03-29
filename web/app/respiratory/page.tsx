@@ -2,7 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { RespiratoryClient } from './respiratory-client'
+import dynamic from 'next/dynamic'
+const RespiratoryClient = dynamic(() => import('./respiratory-client').then(m => ({ default: m.RespiratoryClient })), { ssr: false })
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = { title: 'Respiratory Rate' }
