@@ -74,30 +74,54 @@ struct BarcodeScannerTab: View {
     }
 
     private var manualEntryFallback: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 28) {
+            Spacer()
             Image(systemName: "barcode.viewfinder")
-                .font(.system(size: 64))
-                .foregroundStyle(.secondary)
-            Text("Camera scanner not available")
-                .font(.headline)
-            Text("Enter a barcode manually to look up a food product")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            HStack(spacing: 12) {
-                TextField("e.g. 0012000161155", text: $manualBarcode)
-                    .textFieldStyle(.roundedBorder)
+                .font(.system(size: 56, weight: .light))
+                .foregroundStyle(.white.opacity(0.15))
+            VStack(spacing: 6) {
+                Text("Camera not available")
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.7))
+                Text("Enter a barcode to look up a food product")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white.opacity(0.35))
+            }
+            HStack(spacing: 10) {
+                TextField("e.g. 049000006346", text: $manualBarcode)
+                    .font(.system(size: 15))
+                    .foregroundStyle(.white)
+                    .padding(12)
+                    .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                    )
                     .keyboardType(.numberPad)
-                Button("Search") {
+                Button {
                     guard !manualBarcode.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                     handleBarcode(manualBarcode.trimmingCharacters(in: .whitespaces))
+                } label: {
+                    Text("Search")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: [.purple, .blue],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        )
                 }
-                .buttonStyle(.borderedProminent)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 24)
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.premiumBackground)
     }
 
     private func handleBarcode(_ code: String) {
