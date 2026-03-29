@@ -134,12 +134,6 @@ struct ScoreRing: View {
     var body: some View {
         VStack(spacing: 12) {
             ZStack {
-                // Outer glow — contained within ring bounds
-                Circle()
-                    .fill(color.opacity(0.15))
-                    .frame(width: 88, height: 88)
-                    .blur(radius: 18)
-
                 // Track
                 Circle()
                     .stroke(color.opacity(0.10), lineWidth: 8)
@@ -164,7 +158,11 @@ struct ScoreRing: View {
                     .foregroundStyle(.white)
             }
             .frame(width: 88, height: 88)
-            .clipped()
+            .background(
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .blur(radius: 18)
+            )
 
             VStack(spacing: 3) {
                 Text(label)
