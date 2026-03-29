@@ -106,6 +106,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/recovery', icon: Zap, label: 'Recovery' },
       { href: '/readiness', icon: Zap, label: 'Readiness' },
       { href: '/streaks', icon: Trophy, label: 'Streaks' },
+      { href: '/leaderboard', icon: '🔥', label: 'Streaks Board' },
       { href: '/achievements', icon: Trophy, label: 'Awards' },
     ],
   },
