@@ -330,6 +330,22 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: ImportView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "square.and.arrow.down.on.square")
+                                .font(.title3)
+                                .foregroundStyle(.indigo)
+                            Text("Import Data")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: CorrelationsView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "chart.dots.scatter")
