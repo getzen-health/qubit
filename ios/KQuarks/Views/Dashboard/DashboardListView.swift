@@ -484,6 +484,14 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: CoachingView()) {
+                        Label("AI Coach", systemImage: "brain.head.profile")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: PredictiveInsightsView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "calendar.badge.clock")
