@@ -24,10 +24,10 @@ struct QuickStatView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Colored icon badge (iOS Settings style)
+            // Neutral icon background — color lives on the symbol only (Apple Health style)
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(stat.color.opacity(0.15))
+                    .fill(Color(.systemFill))
                     .frame(width: 32, height: 32)
                 Image(systemName: stat.icon)
                     .font(.system(size: 14, weight: .semibold))

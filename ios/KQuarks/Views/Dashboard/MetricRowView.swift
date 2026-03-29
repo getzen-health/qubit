@@ -17,10 +17,10 @@ struct MetricRowView: View {
 
     private var rowLabel: some View {
         HStack(spacing: 12) {
-            // iOS-Settings-style colored icon square
+            // Neutral icon background — color on symbol only (Apple Health style)
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(color.opacity(0.15))
+                    .fill(Color(.systemFill))
                     .frame(width: 34, height: 34)
                 Image(systemName: icon)
                     .font(.system(size: 15, weight: .semibold))
