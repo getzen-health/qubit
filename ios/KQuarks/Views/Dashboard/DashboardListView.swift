@@ -315,6 +315,21 @@ struct DashboardListView: View {
                         .padding()
                     }
                     Divider().padding(.leading, 16)
+                    NavigationLink(destination: LeaderboardView()) {
+                        HStack(spacing: 12) {
+                            Text("🔥")
+                                .font(.title3)
+                            Text("Streak Leaderboard")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
                     NavigationLink(destination: CorrelationsView()) {
                         HStack(spacing: 12) {
                             Image(systemName: "chart.dots.scatter")
@@ -341,6 +356,27 @@ struct DashboardListView: View {
                                     .font(.subheadline.weight(.medium))
                                     .foregroundStyle(.primary)
                                 Text("Cardio · Strength · Flexibility · Recovery")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                    }
+                    Divider().padding(.leading, 16)
+                    NavigationLink(destination: ReportView()) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "doc.text.magnifyingglass")
+                                .font(.title3)
+                                .foregroundStyle(.blue)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Doctor Report")
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.primary)
+                                Text("Generate a PDF to share with your doctor")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }

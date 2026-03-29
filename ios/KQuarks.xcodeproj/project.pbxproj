@@ -187,6 +187,7 @@
 		2BB7ECA4CE552D0940E4CF42 /* PhysicalEffortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431AC6DFA091C70930251F98 /* PhysicalEffortView.swift */; };
 		2BB8B65C50B0254D96102392 /* HikingScienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7899F86E15234221BCF84C81 /* HikingScienceView.swift */; };
 		2C3D1EF6F089DDB5E7AF311D /* WeeklyReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F9A08BBF4962A6C7B71F62 /* WeeklyReportView.swift */; };
+		959EED5A19C848EAA39ED66C /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D044B0ABBF04E66B43968D1 /* ReportView.swift */; };
 		2C647C78A4CB414A876FF43E /* WalkingSpeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566214C380CAC9D0AB15AB80 /* WalkingSpeedView.swift */; };
 		2C6E33206047391C1E57ABE4 /* RacquetballScienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874984238114D933431A6A9 /* RacquetballScienceView.swift */; };
 		2D3525F53713BCFD22A737F1 /* WalkingSteadinessPatternView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF67E7B754AD34851DF002D /* WalkingSteadinessPatternView.swift */; };
@@ -738,6 +739,7 @@
 		448F955569010EF651D6BDF3 /* WellnessInsightsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WellnessInsightsView.swift; sourceTree = "<group>"; };
 		4522B5385F2423D960AF3500 /* SleepEfficiencyView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SleepEfficiencyView.swift; sourceTree = "<group>"; };
 		45F9A08BBF4962A6C7B71F62 /* WeeklyReportView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WeeklyReportView.swift; sourceTree = "<group>"; };
+		0D044B0ABBF04E66B43968D1 /* ReportView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		465CFF3051EBC54B85A2E048 /* EquestrianScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EquestrianScienceView.swift; sourceTree = "<group>"; };
 		4735C97EA8DE065D9FA6AA0A /* SweatRateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SweatRateView.swift; sourceTree = "<group>"; };
 		4858BA0E795024FA0C3952EF /* BaseballSoftballView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BaseballSoftballView.swift; sourceTree = "<group>"; };
@@ -1520,6 +1522,7 @@
 				5CB2722B6B961713C18AAC2E /* WaterView.swift */,
 				034D6043710E8866302B12F8 /* WeeklyBalanceView.swift */,
 				45F9A08BBF4962A6C7B71F62 /* WeeklyReportView.swift */,
+				0D044B0ABBF04E66B43968D1 /* ReportView.swift */,
 				448F955569010EF651D6BDF3 /* WellnessInsightsView.swift */,
 				A74BD1DFD422CE5B02C9999C /* WheelchairFitnessView.swift */,
 				710DE78C0DA533EB9FAD2D9B /* WheelchairSportsScienceView.swift */,
@@ -2218,6 +2221,7 @@
 				94355F5AE8E6A2D59BBA7FA8 /* WaterView.swift in Sources */,
 				528F9D7404AF2582D029C7FF /* WeeklyBalanceView.swift in Sources */,
 				2C3D1EF6F089DDB5E7AF311D /* WeeklyReportView.swift in Sources */,
+				959EED5A19C848EAA39ED66C /* ReportView.swift in Sources */,
 				D6B476156E9CCB1295F9CC29 /* WellnessInsightsView.swift in Sources */,
 				4B206FAF380717A71DE7787D /* WheelchairFitnessView.swift in Sources */,
 				52CA8E1EE7FAD6F171EC84EF /* WheelchairSportsScienceView.swift in Sources */,
