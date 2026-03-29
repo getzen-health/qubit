@@ -152,11 +152,16 @@ final class FoodScannerService {
         do {
             let (data, _) = try await URLSession.shared.data(for: req)
             let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            let products = json?["products"] as? [Any] ?? []
-            let productsData = try JSONSerialization.data(withJSONObject: products)
-            let decoded = try JSONDecoder().decode([FoodProduct].self, from: productsData)
-            return decoded.filter { !$0.name.isEmpty }
+            let products = json?["products"] as? [[String: Any]] ?? []
+            // Decode each product individually so one bad item doesn't kill the whole list
+            let decoder = JSONDecoder()
+            let decoded: [FoodProduct] = products.compactMap { productDict in
+                guard let itemData = try? JSONSerialization.data(withJSONObject: productDict) else { return nil }
+                return try? decoder.decode(FoodProduct.self, from: itemData)
+            }
+            return decoded.filter { $0.name != "Unknown Product" && !$0.name.isEmpty }
         } catch {
+            print("[FoodScanner] Search error: \(error)")
             return []
         }
     }
