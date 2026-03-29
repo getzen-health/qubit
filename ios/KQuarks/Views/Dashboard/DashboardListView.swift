@@ -44,10 +44,10 @@ struct DashboardListView: View {
                     }
 
                     if viewModel.isLoading {
-                        ProgressView()
-                            .padding(.top, 80)
+                        DashboardSkeletonView()
                     } else if let summary = viewModel.todaySummary {
                         dashboardContent(summary: summary)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                     } else if let error = viewModel.error {
                         errorView(error: error)
                     } else {
@@ -61,6 +61,7 @@ struct DashboardListView: View {
                 }
             }
             .background(Color(.systemGroupedBackground))
+            .animation(.easeOut(duration: 0.35), value: viewModel.isLoading)
             .refreshable {
                 await viewModel.loadData()
             }
@@ -157,6 +158,17 @@ struct DashboardListView: View {
         return "Good evening"
     }
 
+    /// Oura-style uppercase tracked section header.
+    @ViewBuilder
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title.uppercased())
+            .font(.caption)
+            .fontWeight(.semibold)
+            .foregroundStyle(.secondary)
+            .kerning(0.6)
+            .padding(.horizontal, 16)
+    }
+
     @ViewBuilder
     private func dashboardContent(summary: TodayHealthSummary) -> some View {
         VStack(spacing: 20) {
@@ -194,10 +206,7 @@ struct DashboardListView: View {
 
             // Wellbeing section: check-in + quick links
             VStack(alignment: .leading, spacing: 8) {
-                Text("Wellbeing")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 16)
+                sectionHeader("Wellbeing")
                 VStack(spacing: 0) {
                     CheckinDashboardCard(checkin: todayCheckin) {
                         showCheckin = true
@@ -468,10 +477,7 @@ struct DashboardListView: View {
 
             // AI Features
             VStack(alignment: .leading, spacing: 8) {
-                Text("AI Features")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 16)
+                sectionHeader("AI Features")
                 VStack(spacing: 0) {
                     NavigationLink(destination: BriefingHistoryView()) {
                         HStack(spacing: 12) {
@@ -575,28 +581,32 @@ struct DashboardListView: View {
             label: "Steps",
             value: summary.steps.formatted(),
             trend: viewModel.stepsTrend,
-            color: .activity
+            color: .activity,
+            icon: "figure.walk"
         ))
 
         stats.append(QuickStat(
             label: "Calories",
             value: "\(Int(summary.activeCalories))",
             unit: "cal",
-            color: .strain
+            color: .strain,
+            icon: "flame.fill"
         ))
 
         stats.append(QuickStat(
             label: "Body Battery",
             value: "\(viewModel.bodyBatteryScore)",
             unit: "%",
-            color: .recovery
+            color: .recovery,
+            icon: "bolt.fill"
         ))
 
         if let formattedSleep = summary.formattedSleep {
             stats.append(QuickStat(
                 label: "Sleep",
                 value: formattedSleep,
-                color: .sleep
+                color: .sleep,
+                icon: "moon.fill"
             ))
         }
 
@@ -606,7 +616,8 @@ struct DashboardListView: View {
                 value: "\(Int(hrv))",
                 unit: "ms",
                 trend: viewModel.hrvTrend,
-                color: .heart
+                color: .heart,
+                icon: "waveform.path.ecg"
             ))
         }
 
@@ -616,10 +627,7 @@ struct DashboardListView: View {
     @ViewBuilder
     private func metricsSection(title: String, summary: TodayHealthSummary) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 16)
+            sectionHeader(title)
 
             VStack(spacing: 0) {
                 // Recovery
@@ -792,10 +800,7 @@ struct DashboardListView: View {
     @ViewBuilder
     private func activitySection(summary: TodayHealthSummary) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Activity")
-                .font(.headline)
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 16)
+            sectionHeader("Activity")
 
             StepGoalRingView(
                 steps: summary.steps,

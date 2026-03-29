@@ -17,10 +17,15 @@ struct MetricRowView: View {
 
     private var rowLabel: some View {
         HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 18))
-                .foregroundStyle(color)
-                .frame(width: 24, height: 24)
+            // iOS-Settings-style colored icon square
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(color.opacity(0.15))
+                    .frame(width: 34, height: 34)
+                Image(systemName: icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(color)
+            }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)
@@ -91,7 +96,7 @@ struct MetricRowView: View {
             if isExpanded, let content = expandContent {
                 VStack(spacing: 0) {
                     Divider()
-                        .padding(.leading, 52)
+                        .padding(.leading, 62)
                     content()
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
@@ -100,7 +105,7 @@ struct MetricRowView: View {
             }
 
             Divider()
-                .padding(.leading, 52)
+                .padding(.leading, 62)
         }
         .background(Color(.systemBackground))
     }

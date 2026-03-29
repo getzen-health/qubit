@@ -18,22 +18,28 @@ struct QuickStatsView: View {
     }
 }
 
-/// Individual quick stat item
+/// Individual quick stat item — iOS-Settings-style icon badge + bold metric.
 struct QuickStatView: View {
     let stat: QuickStat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(stat.label)
-                .font(.caption2)
-                .fontWeight(.medium)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 6) {
+            // Colored icon badge (iOS Settings style)
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(stat.color.opacity(0.15))
+                    .frame(width: 32, height: 32)
+                Image(systemName: stat.icon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(stat.color)
+            }
 
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(stat.value)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(stat.color)
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(.primary)
+                    .minimumScaleFactor(0.65)
+                    .lineLimit(1)
 
                 if let unit = stat.unit {
                     Text(unit)
@@ -41,6 +47,12 @@ struct QuickStatView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+
+            Text(stat.label)
+                .font(.caption2)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
 
             if let trend = stat.trend {
                 HStack(spacing: 2) {
@@ -56,7 +68,7 @@ struct QuickStatView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
 
@@ -68,16 +80,17 @@ struct QuickStat: Identifiable {
     var unit: String? = nil
     var trend: Int? = nil
     var color: Color = .primary
+    var icon: String = "bolt.fill"
 }
 
 #Preview {
     VStack {
         QuickStatsView(
             stats: [
-                QuickStat(label: "Steps", value: "8,432", trend: 12, color: .activity),
-                QuickStat(label: "Calories", value: "423", unit: "cal", color: .strain),
-                QuickStat(label: "Sleep", value: "7h 42m", color: .sleep),
-                QuickStat(label: "HRV", value: "52", unit: "ms", trend: 8, color: .heart),
+                QuickStat(label: "Steps", value: "8,432", trend: 12, color: .activity, icon: "figure.walk"),
+                QuickStat(label: "Calories", value: "423", unit: "cal", color: .strain, icon: "flame.fill"),
+                QuickStat(label: "Sleep", value: "7h 42m", color: .sleep, icon: "moon.fill"),
+                QuickStat(label: "HRV", value: "52", unit: "ms", trend: 8, color: .heart, icon: "waveform.path.ecg"),
             ]
         )
         .padding()
