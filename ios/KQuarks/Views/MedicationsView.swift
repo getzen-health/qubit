@@ -423,6 +423,8 @@ struct MedicationsView: View {
             } message: {
                 Text(vm.errorMessage ?? "")
             }
+            .preferredColorScheme(.dark)
+            .toolbarColorScheme(.dark, for: .navigationBar)
         }
     }
 
@@ -442,14 +444,20 @@ struct MedicationsView: View {
     // MARK: - List
 
     private var medicationsList: some View {
-        List {
-            todaySection
-            activeMedicationsSection
-            if vm.medications.contains(where: { !$0.active }) {
-                pausedSection
+        ZStack {
+            PremiumBackgroundView()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    todaySection
+                    activeMedicationsSection
+                    if vm.medications.contains(where: { !$0.active }) {
+                        pausedSection
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
             }
         }
-        .listStyle(.insetGrouped)
         .animation(.default, value: vm.medications)
         .animation(.default, value: vm.todayLogs)
     }
@@ -459,39 +467,43 @@ struct MedicationsView: View {
     @ViewBuilder
     private var todaySection: some View {
         if !vm.medicationsDueToday.isEmpty {
-            Section {
-                ForEach(vm.medicationsDueToday, id: \.medication.id) { item in
-                    TodayMedicationRow(
-                        medication: item.medication,
-                        log: item.log,
-                        onTaken: { await vm.markTaken(medication: item.medication) },
-                        onSkipped: { await vm.markSkipped(medication: item.medication) },
-                        onUndo: { await vm.undoLog(medication: item.medication) }
-                    )
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
-                            Task { await vm.delete(medication: item.medication) }
-                        } label: {
-                            Label("Delete", systemImage: "trash")
+            VStack(alignment: .leading, spacing: 10) {
+                PremiumSectionHeader(title: "TODAY'S SCHEDULE", icon: "calendar.badge.clock", tint: .pink)
+                VStack(spacing: 0) {
+                    ForEach(vm.medicationsDueToday, id: \.medication.id) { item in
+                        TodayMedicationRow(
+                            medication: item.medication,
+                            log: item.log,
+                            onTaken: { await vm.markTaken(medication: item.medication) },
+                            onSkipped: { await vm.markSkipped(medication: item.medication) },
+                            onUndo: { await vm.undoLog(medication: item.medication) }
+                        )
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 4)
+                        .contextMenu {
+                            Button { editingMedication = item.medication } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            Button(role: .destructive) {
+                                Task { await vm.delete(medication: item.medication) }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
-                        Button {
-                            editingMedication = item.medication
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
+                        if item.medication.id != vm.medicationsDueToday.last?.medication.id {
+                            Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
                         }
-                        .tint(.blue)
                     }
+                    let taken = vm.todayLogs.filter { !$0.skipped }.count
+                    let total = vm.medicationsDueToday.count
+                    Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
+                    Text("\(taken)/\(total) taken today")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.3))
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-            } header: {
-                Label("Today's Schedule", systemImage: "calendar.badge.clock")
-                    .foregroundStyle(.primary)
-                    .font(.headline)
-                    .textCase(nil)
-            } footer: {
-                let taken = vm.todayLogs.filter { !$0.skipped }.count
-                let total = vm.medicationsDueToday.count
-                Text("\(taken)/\(total) taken today")
-                    .foregroundStyle(.secondary)
+                .premiumCard(cornerRadius: 18, tint: .pink, tintOpacity: 0.02)
             }
         }
     }
@@ -503,32 +515,33 @@ struct MedicationsView: View {
         ForEach(TimeOfDay.allCases, id: \.rawValue) { time in
             let meds = vm.medicationsForTimeOfDay(time)
             if !meds.isEmpty {
-                Section {
-                    ForEach(meds) { med in
-                        ActiveMedicationRow(medication: med) {
-                            editingMedication = med
-                        } onToggleActive: {
-                            Task { await vm.toggleActive(medication: med) }
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                Task { await vm.delete(medication: med) }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            Button {
+                VStack(alignment: .leading, spacing: 10) {
+                    PremiumSectionHeader(title: time.displayName.uppercased(), icon: time.icon, tint: time.color)
+                    VStack(spacing: 0) {
+                        ForEach(Array(meds.enumerated()), id: \.element.id) { index, med in
+                            ActiveMedicationRow(medication: med) {
                                 editingMedication = med
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
+                            } onToggleActive: {
+                                Task { await vm.toggleActive(medication: med) }
                             }
-                            .tint(.blue)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 4)
+                            .contextMenu {
+                                Button { editingMedication = med } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                Button(role: .destructive) {
+                                    Task { await vm.delete(medication: med) }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                            if index < meds.count - 1 {
+                                Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
+                            }
                         }
                     }
-                } header: {
-                    Label(time.displayName, systemImage: time.icon)
-                        .foregroundStyle(time.color)
-                        .font(.subheadline.weight(.semibold))
-                        .textCase(nil)
+                    .premiumCard(cornerRadius: 18, tint: time.color, tintOpacity: 0.02)
                 }
             }
         }
@@ -538,27 +551,32 @@ struct MedicationsView: View {
 
     @ViewBuilder
     private var pausedSection: some View {
-        Section {
-            ForEach(vm.medications.filter { !$0.active }) { med in
-                ActiveMedicationRow(medication: med) {
-                    editingMedication = med
-                } onToggleActive: {
-                    Task { await vm.toggleActive(medication: med) }
-                }
-                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
-                        Task { await vm.delete(medication: med) }
-                    } label: {
-                        Label("Delete", systemImage: "trash")
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "PAUSED", icon: "pause.circle", tint: .gray)
+            VStack(spacing: 0) {
+                let pausedMeds = vm.medications.filter { !$0.active }
+                ForEach(Array(pausedMeds.enumerated()), id: \.element.id) { index, med in
+                    ActiveMedicationRow(medication: med) {
+                        editingMedication = med
+                    } onToggleActive: {
+                        Task { await vm.toggleActive(medication: med) }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 4)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            Task { await vm.delete(medication: med) }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                    .opacity(0.6)
+                    if index < pausedMeds.count - 1 {
+                        Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
                     }
                 }
-                .opacity(0.6)
             }
-        } header: {
-            Label("Paused", systemImage: "pause.circle")
-                .foregroundStyle(.secondary)
-                .font(.subheadline.weight(.semibold))
-                .textCase(nil)
+            .premiumCard(cornerRadius: 18, tint: .gray, tintOpacity: 0.02)
         }
     }
 }
@@ -588,7 +606,7 @@ private struct TodayMedicationRow: View {
             } label: {
                 Image(systemName: isTaken ? "checkmark.circle.fill" : isSkipped ? "xmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(isTaken ? .green : isSkipped ? .orange : .secondary)
+                    .foregroundStyle(isTaken ? .green : isSkipped ? .orange : .white.opacity(0.4))
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.plain)
@@ -597,16 +615,16 @@ private struct TodayMedicationRow: View {
                 Text(medication.name)
                     .font(.body.weight(.medium))
                     .strikethrough(isTaken)
-                    .foregroundStyle(isTaken ? .secondary : .primary)
+                    .foregroundStyle(isTaken ? .white.opacity(0.4) : .white.opacity(0.85))
                 HStack(spacing: 4) {
                     Text("\(formattedDosage) \(medication.unit)")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text("·")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text(MedFrequency(rawValue: medication.frequency)?.displayName ?? medication.frequency)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
 
@@ -659,7 +677,7 @@ private struct ActiveMedicationRow: View {
             HStack(spacing: 3) {
                 ForEach(TimeOfDay.allCases, id: \.rawValue) { time in
                     Circle()
-                        .fill(medication.time_of_day.contains(time.rawValue) ? time.color : Color(.systemGray5))
+                        .fill(medication.time_of_day.contains(time.rawValue) ? time.color : Color.white.opacity(0.08))
                         .frame(width: 7, height: 7)
                 }
             }
@@ -680,16 +698,16 @@ private struct ActiveMedicationRow: View {
                 HStack(spacing: 4) {
                     Text("\(formattedDosage) \(medication.unit)")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text("·")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text(MedFrequency(rawValue: medication.frequency)?.displayName ?? medication.frequency)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     if let startDate = Self.df.date(from: medication.start_date) {
                         Text("· since \(startDate, format: .dateTime.month(.abbreviated).day())")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                 }
             }
@@ -707,7 +725,7 @@ private struct ActiveMedicationRow: View {
             } label: {
                 Image(systemName: "ellipsis")
                     .font(.callout)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                     .padding(6)
                     .contentShape(Circle())
             }
