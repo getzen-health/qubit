@@ -52,39 +52,66 @@ struct WorkoutsView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if workouts.isEmpty {
-                    ContentUnavailableView(
-                        "No Workouts",
-                        systemImage: "figure.run",
-                        description: Text("No workouts found for this period. Start tracking workouts in the Apple Health app.")
-                    )
-                } else {
-                    List {
-                        Section {
-                            WorkoutSummaryRow(workouts: filtered)
-                        }
+            ZStack {
+                PremiumBackgroundView()
 
-                        if typeBreakdown.count > 1 {
-                            Section("By Type") {
-                                WorkoutTypeBreakdownView(breakdown: typeBreakdown)
-                            }
-                        }
+                Group {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.green)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if workouts.isEmpty {
+                        ContentUnavailableView(
+                            "No Workouts",
+                            systemImage: "figure.run",
+                            description: Text("No workouts found for this period. Start tracking workouts in the Apple Health app.")
+                        )
+                    } else {
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 20) {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    workoutSectionHeader("Summary", icon: "chart.pie.fill")
+                                    WorkoutSummaryRow(workouts: filtered)
+                                        .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.03)
+                                }
 
-                        ForEach(filtered, id: \.uuid) { workout in
-                            NavigationLink(destination: WorkoutDetailView(workout: workout)) {
-                                WorkoutRow(workout: workout)
+                                if typeBreakdown.count > 1 {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        workoutSectionHeader("By Type", icon: "square.grid.2x2.fill")
+                                        WorkoutTypeBreakdownView(breakdown: typeBreakdown)
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 12)
+                                            .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
+                                    }
+                                }
+
+                                VStack(alignment: .leading, spacing: 10) {
+                                    workoutSectionHeader("Workouts", icon: "figure.run")
+                                    VStack(spacing: 0) {
+                                        ForEach(Array(filtered.enumerated()), id: \.element.uuid) { index, workout in
+                                            NavigationLink(destination: WorkoutDetailView(workout: workout)) {
+                                                WorkoutRow(workout: workout)
+                                            }
+                                            .buttonStyle(.plain)
+                                            if index < filtered.count - 1 {
+                                                Color.premiumDivider
+                                                    .frame(height: 0.5)
+                                                    .padding(.leading, 68)
+                                            }
+                                        }
+                                    }
+                                    .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
+                                }
                             }
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 100)
                         }
                     }
-                    .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle("Workouts")
             .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .searchable(text: $searchText, prompt: "Filter by type")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -127,8 +154,22 @@ struct WorkoutsView: View {
             .task(id: selectedPeriod) {
                 await loadWorkouts()
             }
-            .refreshable { await loadWorkouts() }
         }
+        .preferredColorScheme(.dark)
+    }
+
+    private func workoutSectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.green.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
     }
 
     private func loadWorkouts() async {
@@ -165,16 +206,23 @@ struct WorkoutTypeBreakdownView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         HStack {
                             Text(stat.name)
-                                .font(.subheadline)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.75))
                             Spacer()
                             Text("\(stat.count) · \(fmt(stat.totalSeconds))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.35))
                                 .monospacedDigit()
                         }
                         GeometryReader { geo in
                             RoundedRectangle(cornerRadius: 3)
-                                .fill(stat.color.opacity(0.25))
+                                .fill(
+                                    LinearGradient(
+                                        colors: [stat.color.opacity(0.4), stat.color.opacity(0.15)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
                                 .frame(
                                     width: geo.size.width * CGFloat(stat.count) / CGFloat(maxCount),
                                     height: 6
@@ -200,32 +248,39 @@ struct WorkoutRow: View {
                 .font(.title2)
                 .foregroundStyle(workout.workoutActivityType.color)
                 .frame(width: 44, height: 44)
-                .background(workout.workoutActivityType.color.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .background(workout.workoutActivityType.color.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(workout.workoutActivityType.name)
-                    .font(.headline)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
 
                 Text(workout.startDate, style: .date)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.35))
             }
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
                 Text(formatDuration(workout.duration))
-                    .font(.subheadline.monospacedDigit())
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.7))
 
                 if let calories = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) {
                     Text("\(Int(calories)) cal")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.orange.opacity(0.6))
                 }
             }
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.15))
         }
-        .padding(.vertical, 4)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
     }
 
     private func formatDuration(_ seconds: TimeInterval) -> String {
@@ -261,30 +316,30 @@ struct WorkoutSummaryRow: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            SummaryBubble(label: "Sessions", value: "\(workouts.count)")
-            Divider().frame(height: 40)
-            SummaryBubble(label: "Total Time", value: fmt(totalSeconds))
-            Divider().frame(height: 40)
-            SummaryBubble(label: "Calories", value: totalCalories > 0 ? "\(totalCalories)" : "—")
+            SummaryBubble(label: "Sessions", value: "\(workouts.count)", color: .green)
+            Color.premiumDivider.frame(width: 0.5, height: 40)
+            SummaryBubble(label: "Total Time", value: fmt(totalSeconds), color: .cyan)
+            Color.premiumDivider.frame(width: 0.5, height: 40)
+            SummaryBubble(label: "Calories", value: totalCalories > 0 ? "\(totalCalories)" : "—", color: .orange)
         }
         .frame(maxWidth: .infinity)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(.vertical, 4)
     }
 }
 
 struct SummaryBubble: View {
     let label: String
     let value: String
+    var color: Color = .primary
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 3) {
             Text(value)
-                .font(.subheadline.bold().monospacedDigit())
-                .foregroundStyle(.primary)
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .foregroundStyle(color)
             Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.35))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
