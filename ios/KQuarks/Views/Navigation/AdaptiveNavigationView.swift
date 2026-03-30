@@ -70,11 +70,11 @@ struct AdaptiveNavigationView: View {
         case .readiness, .sleep, .workouts, .water, .hrv, .body, .glucose, .vitals:
             selectedTab = 1 // Health tab
         case .achievements, .social:
-            selectedTab = 3 // Insights tab
+            selectedTab = 0 // Dashboard
         case .settings, .profile:
-            selectedTab = 4 // Settings tab
+            selectedTab = 4 // Profile tab
         case .habits:
-            selectedTab = 3 // Insights tab
+            selectedTab = 0 // Dashboard
         case .metric:
             break // handled by individual views
         }
@@ -162,37 +162,9 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Water", systemImage: "drop.fill") }
                 .tag(3)
 
-            BodyMeasurementsView()
-                .tabItem { Label("Measurements", systemImage: "ruler") }
-                .tag(4)
-
-            SupplementsView()
-                .tabItem { Label("Supplements", systemImage: "pills.fill") }
-                .tag(5)
-
-            MoodView()
-                .tabItem { Label("Mood", systemImage: "face.smiling") }
-                .tag(6)
-
-            CycleView()
-                .tabItem { Label("Cycle", systemImage: "calendar") }
-                .tag(11)
-
-            StressView()
-                .tabItem { Label("Stress", systemImage: "waveform.path.ecg") }
-                .tag(10)
-
             ProfileView()
                 .tabItem { Label("Profile", systemImage: "person.crop.circle") }
-                .tag(7)
-
-            InsightsView()
-                .tabItem { Label("Insights", systemImage: "sparkles") }
-                .tag(8)
-
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(9)
+                .tag(4)
         }
         .sheet(isPresented: $showCheckinSheet) {
             CheckinView()

@@ -337,6 +337,34 @@ struct DashboardListView: View {
                     NavigationLink(destination: GLP1View()) {
                         DashboardTileCard(icon: "syringe.fill", title: "GLP-1", subtitle: "Zepbound tracker", color: .purple)
                     }.buttonStyle(.plain)
+
+                    NavigationLink(destination: MoodView()) {
+                        DashboardTileCard(icon: "face.smiling", title: "Mood", subtitle: "Track feelings", color: .yellow)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: SupplementsView()) {
+                        DashboardTileCard(icon: "pills.fill", title: "Supplements", subtitle: "Daily stack", color: .green)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: BodyMeasurementsView()) {
+                        DashboardTileCard(icon: "ruler", title: "Measurements", subtitle: "Body metrics", color: .mint)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: CycleView()) {
+                        DashboardTileCard(icon: "calendar", title: "Cycle", subtitle: "Period tracking", color: .pink)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: StressView()) {
+                        DashboardTileCard(icon: "waveform.path.ecg", title: "Stress", subtitle: "HRV analysis", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: InsightsView()) {
+                        DashboardTileCard(icon: "sparkles", title: "Insights", subtitle: "AI analysis", color: .cyan)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: SettingsView()) {
+                        DashboardTileCard(icon: "gearshape", title: "Settings", subtitle: "Preferences", color: .gray)
+                    }.buttonStyle(.plain)
                 }
                 .padding(.horizontal, 16)
             }
