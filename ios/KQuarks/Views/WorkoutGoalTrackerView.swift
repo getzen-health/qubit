@@ -55,7 +55,7 @@ struct WorkoutGoalTrackerView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Workout Goals")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -119,7 +119,7 @@ struct WorkoutGoalTrackerView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -164,7 +164,7 @@ struct WorkoutGoalTrackerView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -194,7 +194,7 @@ struct WorkoutGoalTrackerView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -223,7 +223,7 @@ struct WorkoutGoalTrackerView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

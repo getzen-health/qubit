@@ -69,7 +69,7 @@ struct CyclingAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Cycling")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -117,7 +117,7 @@ struct CyclingAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -173,7 +173,7 @@ struct CyclingAnalysisView: View {
             .chartYAxisLabel("km/h")
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -208,7 +208,7 @@ struct CyclingAnalysisView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -252,7 +252,7 @@ struct CyclingAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -294,7 +294,7 @@ struct CyclingAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

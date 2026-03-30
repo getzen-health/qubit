@@ -45,7 +45,7 @@ struct FitnessProfileView: View {
                 .padding(.bottom, 32)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Fitness Profile")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -97,7 +97,7 @@ struct FitnessProfileView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -138,7 +138,7 @@ struct FitnessProfileView: View {
             .padding(.horizontal)
             .padding(.bottom)
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -289,7 +289,7 @@ struct FitnessProfileView: View {
             .frame(height: 4)
         }
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -324,7 +324,7 @@ struct FitnessProfileView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -411,7 +411,7 @@ struct FitnessProfileView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

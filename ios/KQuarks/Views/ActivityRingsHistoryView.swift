@@ -63,7 +63,7 @@ struct ActivityRingsHistoryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Activity Rings")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -130,7 +130,7 @@ struct ActivityRingsHistoryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -161,7 +161,7 @@ struct ActivityRingsHistoryView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             // Legend
@@ -249,7 +249,7 @@ struct ActivityRingsHistoryView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -272,7 +272,7 @@ struct ActivityRingsHistoryView: View {
                 streakBubble(label: "Perfect days", value: perfectDays, icon: "star.fill", color: .yellow)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

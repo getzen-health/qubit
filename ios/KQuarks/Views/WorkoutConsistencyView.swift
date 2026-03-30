@@ -63,7 +63,7 @@ struct WorkoutConsistencyView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Training Consistency")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -96,7 +96,7 @@ struct WorkoutConsistencyView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -135,7 +135,7 @@ struct WorkoutConsistencyView: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -209,7 +209,7 @@ struct WorkoutConsistencyView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -247,7 +247,7 @@ struct WorkoutConsistencyView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             HStack(spacing: 12) {
@@ -301,7 +301,7 @@ struct WorkoutConsistencyView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -338,7 +338,7 @@ struct WorkoutConsistencyView: View {
                     .background(i % 2 == 1 ? Color(.systemFill).opacity(0.3) : .clear)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

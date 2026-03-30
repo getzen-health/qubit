@@ -51,7 +51,7 @@ private enum SessionType: String {
 
     var color: Color {
         switch self {
-        case .rest:     return Color(.systemGray4)
+        case .rest:     return Color.white.opacity(0.12)
         case .easy:     return .blue
         case .active:   return .teal
         case .moderate: return .green
@@ -122,7 +122,7 @@ struct TrainingAdvisorView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Training Advisor")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -210,7 +210,7 @@ struct TrainingAdvisorView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -268,7 +268,7 @@ struct TrainingAdvisorView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             HStack(spacing: 16) {
@@ -341,7 +341,7 @@ struct TrainingAdvisorView: View {
             .background(
                 day.isToday
                     ? day.session.color.opacity(0.12)
-                    : Color(.systemBackground)
+                    : Color.premiumBackground
             )
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay(
@@ -388,7 +388,7 @@ struct TrainingAdvisorView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

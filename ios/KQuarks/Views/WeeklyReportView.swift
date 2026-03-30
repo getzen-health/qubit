@@ -25,7 +25,7 @@ struct WeeklyReportView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Weekly Report")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -45,7 +45,7 @@ struct WeeklyReportView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -64,7 +64,7 @@ struct WeeklyReportView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -84,7 +84,7 @@ struct WeeklyReportView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -118,7 +118,7 @@ struct WeeklyReportView: View {
                 }
             }
             .padding(.vertical, 10)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -153,7 +153,7 @@ struct WeeklyReportView: View {
                     value: "\(r.workoutDays)/7"
                 )
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

@@ -114,7 +114,7 @@ struct RowingAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Rowing")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -184,7 +184,7 @@ struct RowingAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -236,7 +236,7 @@ struct RowingAnalysisView: View {
             .chartYScale(domain: 0...max(5, (weeklyData.map(\.count).max() ?? 3) + 1))
             .frame(height: 130)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -309,7 +309,7 @@ struct RowingAnalysisView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -352,7 +352,7 @@ struct RowingAnalysisView: View {
             }
             .frame(height: 130)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -404,7 +404,7 @@ struct RowingAnalysisView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -465,7 +465,7 @@ struct RowingAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

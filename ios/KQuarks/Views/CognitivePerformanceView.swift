@@ -143,7 +143,7 @@ struct CognitivePerformanceView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 8)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -179,7 +179,7 @@ struct CognitivePerformanceView: View {
                 )
             }
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
         )
@@ -194,7 +194,7 @@ struct CognitivePerformanceView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 3).fill(Color(.tertiarySystemBackground))
+                    RoundedRectangle(cornerRadius: 3).fill(Color.premiumSurface)
                     RoundedRectangle(cornerRadius: 3).fill(color.opacity(0.7))
                         .frame(width: geo.size.width * min(value / 100, 1))
                 }
@@ -244,7 +244,7 @@ struct CognitivePerformanceView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -277,7 +277,7 @@ struct CognitivePerformanceView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

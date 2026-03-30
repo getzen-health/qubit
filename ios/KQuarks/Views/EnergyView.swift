@@ -98,13 +98,21 @@ struct EnergyView: View {
     @State private var showHistory = false
 
     var body: some View {
-        List {
-            checkInSection
-            sparklineSection
-            insightSection
-            historySection
+        ZStack {
+            PremiumBackgroundView()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    checkInSection
+                    sparklineSection
+                    insightSection
+                    historySection
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
+            }
         }
-        .listStyle(.insetGrouped)
+        .preferredColorScheme(.dark)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .navigationTitle("Energy")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -112,7 +120,8 @@ struct EnergyView: View {
     // MARK: - Sections
 
     private var checkInSection: some View {
-        Section {
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "TODAY'S CHECK-IN", icon: "checkmark.circle.fill", tint: .yellow)
             VStack(spacing: 16) {
                 if let today = vm.todayCheckin {
                     VStack(spacing: 8) {
@@ -123,7 +132,7 @@ struct EnergyView: View {
                             .foregroundStyle(today.level.color)
                         Text("Logged today at \(today.timestamp.kqFormatted(dateStyle: .none, timeStyle: .short))")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
@@ -133,7 +142,7 @@ struct EnergyView: View {
                             .font(.headline)
                         Text("Tap to log your current energy level")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 8)
@@ -155,14 +164,14 @@ struct EnergyView: View {
                                     .animation(.spring(response: 0.3), value: vm.todayCheckin?.level)
                                 Text(String(level.rawValue))
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.4))
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 8)
                             .background(
                                 vm.todayCheckin?.level == level
                                     ? level.color.opacity(0.2)
-                                    : Color.secondary.opacity(0.07)
+                                    : Color.white.opacity(0.05)
                             )
                             .cornerRadius(10)
                             .overlay(
@@ -176,18 +185,21 @@ struct EnergyView: View {
 
                 if vm.todayCheckin != nil {
                     TextField("Add a note (optional)", text: $vm.pendingNote)
-                        .textFieldStyle(.roundedBorder)
                         .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(10)
+                        .background(Color.white.opacity(0.06))
+                        .cornerRadius(10)
                 }
             }
-            .padding(.vertical, 8)
-        } header: {
-            Text("Today's Check-in")
+            .padding(16)
+            .premiumCard(cornerRadius: 18, tint: .yellow, tintOpacity: 0.02)
         }
     }
 
     private var sparklineSection: some View {
-        Section("7-Day Trend") {
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "7-DAY TREND", icon: "chart.line.uptrend.xyaxis", tint: .orange)
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     if vm.weekAverage > 0 {
@@ -198,10 +210,10 @@ struct EnergyView: View {
                                 .font(.title3.bold())
                             Text("Weekly average")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.white.opacity(0.4))
                         }
                     } else {
-                        Text("No data yet").foregroundStyle(.secondary)
+                        Text("No data yet").foregroundStyle(.white.opacity(0.4))
                     }
                 }
 
@@ -231,27 +243,46 @@ struct EnergyView: View {
                     }
                 }
                 .chartYScale(domain: 0...max(7.0, (vm.last7Days.map(\.avg).max() ?? 7.0) * 1.1))
+                .chartPlotStyle { plotArea in plotArea.background(Color.clear) }
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day)) { value in
                         AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                            .foregroundStyle(.white.opacity(0.4))
+                        AxisGridLine()
+                            .foregroundStyle(.white.opacity(0.06))
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisValueLabel()
+                            .foregroundStyle(.white.opacity(0.4))
+                        AxisGridLine()
+                            .foregroundStyle(.white.opacity(0.06))
                     }
                 }
                 .frame(height: 100)
             }
+            .padding(16)
+            .premiumCard(cornerRadius: 18, tint: .orange, tintOpacity: 0.02)
         }
     }
 
     private var insightSection: some View {
-        Section("Insights") {
-            if vm.weekAverage >= 5 {
-                InsightRow(icon: "star.fill", color: .yellow, text: "Great week — your energy averaged \(String(format: "%.1f", vm.weekAverage))/7. Keep it up!")
-            } else if vm.weekAverage >= 3 {
-                InsightRow(icon: "info.circle.fill", color: .blue, text: "Moderate energy this week. Check sleep quality and caffeine timing for improvement.")
-            } else if vm.weekAverage > 0 {
-                InsightRow(icon: "exclamationmark.triangle.fill", color: .orange, text: "Low energy trend detected. Prioritize sleep, hydration, and recovery.")
-            } else {
-                InsightRow(icon: "hand.wave.fill", color: .teal, text: "Start logging your energy to get personalized insights.")
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "INSIGHTS", icon: "lightbulb.fill", tint: .yellow)
+            VStack(spacing: 0) {
+                if vm.weekAverage >= 5 {
+                    InsightRow(icon: "star.fill", color: .yellow, text: "Great week — your energy averaged \(String(format: "%.1f", vm.weekAverage))/7. Keep it up!")
+                } else if vm.weekAverage >= 3 {
+                    InsightRow(icon: "info.circle.fill", color: .blue, text: "Moderate energy this week. Check sleep quality and caffeine timing for improvement.")
+                } else if vm.weekAverage > 0 {
+                    InsightRow(icon: "exclamationmark.triangle.fill", color: .orange, text: "Low energy trend detected. Prioritize sleep, hydration, and recovery.")
+                } else {
+                    InsightRow(icon: "hand.wave.fill", color: .teal, text: "Start logging your energy to get personalized insights.")
+                }
             }
+            .padding(16)
+            .premiumCard(cornerRadius: 18, tint: .yellow, tintOpacity: 0.02)
         }
     }
 
@@ -268,13 +299,13 @@ struct EnergyView: View {
                 if !checkin.note.isEmpty {
                     Text(checkin.note)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
             Spacer()
             Text(checkin.timestamp.kqFormatted(dateStyle: .medium, timeStyle: .short))
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.4))
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
@@ -284,17 +315,27 @@ struct EnergyView: View {
     }
 
     private var historySection: some View {
-        Section("History") {
-            if vm.checkins.isEmpty {
-                Text("No check-ins yet")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-            } else {
-                let items = recentCheckins
-                ForEach(items) { checkin in
-                    checkinRow(checkin)
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "HISTORY", icon: "clock.fill", tint: .orange)
+            VStack(spacing: 0) {
+                if vm.checkins.isEmpty {
+                    Text("No check-ins yet")
+                        .foregroundStyle(.white.opacity(0.4))
+                        .font(.subheadline)
+                        .padding(16)
+                } else {
+                    let items = recentCheckins
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, checkin in
+                        checkinRow(checkin)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                        if index < items.count - 1 {
+                            Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
+                        }
+                    }
                 }
             }
+            .premiumCard(cornerRadius: 18, tint: .orange, tintOpacity: 0.02)
         }
     }
 
@@ -318,7 +359,7 @@ private struct InsightRow: View {
                 .font(.subheadline)
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.4))
         }
     }
 }

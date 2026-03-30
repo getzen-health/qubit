@@ -48,7 +48,7 @@ struct RunningStreakView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Running Streaks")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -100,7 +100,7 @@ struct RunningStreakView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -148,7 +148,7 @@ struct RunningStreakView: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -191,7 +191,7 @@ struct RunningStreakView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -225,7 +225,7 @@ struct RunningStreakView: View {
                 .font(.caption).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

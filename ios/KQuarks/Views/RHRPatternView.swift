@@ -135,7 +135,7 @@ struct RHRPatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("RHR Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -165,7 +165,7 @@ struct RHRPatternView: View {
                 statCell(value: "\(n)", label: "Days Tracked", color: .secondary)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -207,7 +207,7 @@ struct RHRPatternView: View {
             classRow(label: "Below Avg", minBpm: 80, maxBpm: 999, color: .red)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -224,7 +224,7 @@ struct RHRPatternView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -244,7 +244,7 @@ struct RHRPatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -265,7 +265,7 @@ struct RHRPatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -285,7 +285,7 @@ struct RHRPatternView: View {
         }
         .font(.caption)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

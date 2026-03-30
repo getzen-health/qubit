@@ -90,7 +90,7 @@ struct FunctionalFitnessBatteryView: View {
                 // Composite gauge
                 ZStack {
                     Circle()
-                        .stroke(Color(.tertiarySystemBackground), lineWidth: 14)
+                        .stroke(Color.premiumSurface, lineWidth: 14)
                         .frame(width: 110, height: 110)
                     if let score = compositeScore {
                         Circle()
@@ -149,7 +149,7 @@ struct FunctionalFitnessBatteryView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -166,7 +166,7 @@ struct FunctionalFitnessBatteryView: View {
                         HStack(spacing: 2) {
                             ForEach(0..<5) { i in
                                 Circle()
-                                    .fill(i < filled ? comp.color : Color(.tertiarySystemBackground))
+                                    .fill(i < filled ? comp.color : Color.premiumSurface)
                                     .frame(width: 6, height: 6)
                             }
                         }
@@ -190,7 +190,7 @@ struct FunctionalFitnessBatteryView: View {
                         .lineLimit(1)
                 }
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
@@ -211,7 +211,7 @@ struct FunctionalFitnessBatteryView: View {
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color(.tertiarySystemBackground))
+                                .fill(Color.premiumSurface)
                                 .frame(height: 16)
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(comp.color.gradient)
@@ -231,7 +231,7 @@ struct FunctionalFitnessBatteryView: View {
                 .font(.caption2).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -248,7 +248,7 @@ struct FunctionalFitnessBatteryView: View {
             scienceItem("Stair Speed (Bhatt et al. 2013)", detail: "Stair climbing speed is a validated predictor of all-cause mortality in older adults. Stair ascent speed <0.5 m/s = elevated cardiovascular risk.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

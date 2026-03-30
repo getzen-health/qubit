@@ -56,7 +56,7 @@ struct PerformanceOverviewView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Performance Overview")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -81,7 +81,7 @@ struct PerformanceOverviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -123,7 +123,7 @@ struct PerformanceOverviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -207,7 +207,7 @@ struct PerformanceOverviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 

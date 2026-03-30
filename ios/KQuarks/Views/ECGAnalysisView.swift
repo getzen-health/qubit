@@ -106,7 +106,7 @@ struct ECGAnalysisView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("ECG Analysis")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -160,7 +160,7 @@ struct ECGAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -208,7 +208,7 @@ struct ECGAnalysisView: View {
             .frame(height: max(Double(classCounts.count) * 44, 100))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -263,7 +263,7 @@ struct ECGAnalysisView: View {
             .font(.caption2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14)))
     }
 
@@ -313,7 +313,7 @@ struct ECGAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

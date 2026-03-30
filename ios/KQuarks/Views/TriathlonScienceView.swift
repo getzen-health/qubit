@@ -166,7 +166,7 @@ struct TriathlonScienceView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(10)
     }
 
@@ -178,7 +178,7 @@ struct TriathlonScienceView: View {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in row }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
         .padding(.horizontal)
     }

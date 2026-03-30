@@ -90,7 +90,7 @@ struct HIITAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("HIIT")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -151,7 +151,7 @@ struct HIITAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -203,7 +203,7 @@ struct HIITAnalysisView: View {
             .chartYScale(domain: 0...max(5, (weeklyData.map(\.count).max() ?? 3) + 1))
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -261,7 +261,7 @@ struct HIITAnalysisView: View {
             }
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -307,7 +307,7 @@ struct HIITAnalysisView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -363,7 +363,7 @@ struct HIITAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

@@ -89,7 +89,7 @@ struct CircadianHRView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Daily HR Pattern")
         .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
@@ -184,7 +184,7 @@ struct CircadianHRView: View {
             .frame(height: 200)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -212,7 +212,7 @@ struct CircadianHRView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -242,7 +242,7 @@ struct CircadianHRView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -312,7 +312,7 @@ struct CircadianStatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

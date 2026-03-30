@@ -71,7 +71,7 @@ struct NutritionLabelScannerView: View {
             .font(.subheadline)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .foregroundStyle(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 14))
     }
@@ -82,7 +82,7 @@ struct NutritionLabelScannerView: View {
             .font(.headline)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .foregroundStyle(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 14))
     }

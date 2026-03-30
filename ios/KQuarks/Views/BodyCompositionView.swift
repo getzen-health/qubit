@@ -97,7 +97,7 @@ struct BodyCompositionView: View {
             }
             .padding(.vertical)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Stats
@@ -178,7 +178,7 @@ struct BodyCompositionView: View {
                 .padding(.horizontal)
             }
             .padding(.vertical, 12)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
         }
@@ -207,13 +207,13 @@ struct BodyCompositionView: View {
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 10)
-                    .background(Color(.systemBackground))
+                    .background(Color.premiumBackground)
                     if filtered.last?.id != sample.id {
                         Divider().padding(.leading)
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
         }
@@ -244,7 +244,7 @@ struct BodyCompositionView: View {
             .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Helpers
@@ -295,7 +295,7 @@ private struct BodyStatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

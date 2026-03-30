@@ -257,7 +257,7 @@ struct HabitsView: View {
             }
         }
         #if os(iOS)
-        .listStyle(.insetGrouped)
+        .premiumList()
         #else
         .listStyle(.plain)
         #endif
@@ -287,7 +287,7 @@ struct HabitsView: View {
             .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: Add Habit Sheet

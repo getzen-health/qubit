@@ -155,7 +155,7 @@ struct HRZoneProgressionView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -191,7 +191,7 @@ struct HRZoneProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -234,7 +234,7 @@ struct HRZoneProgressionView: View {
             monthlyChartContent(isPct: isPct)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -292,7 +292,7 @@ struct HRZoneProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -335,7 +335,7 @@ struct HRZoneProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -371,7 +371,7 @@ struct HRZoneProgressionView: View {
             scienceItem("Polarization vs Pyramidal", detail: "Polarized (mostly easy + some very hard) outperforms pyramidal (lots of moderate) for aerobic performance gains. High Z3 time may indicate insufficient easy recovery.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

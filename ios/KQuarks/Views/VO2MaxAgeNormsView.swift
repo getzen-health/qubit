@@ -69,7 +69,7 @@ struct VO2MaxAgeNormsView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("VO₂ Max & Age Norms")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -116,7 +116,7 @@ struct VO2MaxAgeNormsView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -168,7 +168,7 @@ struct VO2MaxAgeNormsView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -210,7 +210,7 @@ struct VO2MaxAgeNormsView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

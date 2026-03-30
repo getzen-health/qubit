@@ -73,7 +73,7 @@ struct FitnessAgeView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Fitness Age")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -130,7 +130,7 @@ struct FitnessAgeView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -199,7 +199,7 @@ struct FitnessAgeView: View {
             .font(.caption2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14)))
     }
 
@@ -275,7 +275,7 @@ struct FitnessAgeView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

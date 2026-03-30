@@ -121,7 +121,7 @@ struct WorkoutCalendarView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Training Calendar")
         .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
@@ -212,7 +212,7 @@ struct WorkoutCalendarView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -314,7 +314,7 @@ struct WorkoutCalendarView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -337,7 +337,7 @@ struct WorkoutCalendarView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -432,7 +432,7 @@ struct CalStatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

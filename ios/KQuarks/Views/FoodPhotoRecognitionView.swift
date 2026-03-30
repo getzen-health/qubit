@@ -88,7 +88,7 @@ struct FoodPhotoRecognitionView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(.secondarySystemBackground))
+                        .background(Color.cardSurface)
                         .foregroundStyle(.primary)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
@@ -150,7 +150,7 @@ struct FoodPhotoRecognitionView: View {
                             Image(systemName: "chevron.right").foregroundStyle(.secondary)
                         }
                         .padding()
-                        .background(Color(.secondarySystemBackground))
+                        .background(Color.cardSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     .foregroundStyle(.primary)
@@ -164,7 +164,7 @@ struct FoodPhotoRecognitionView: View {
                             .font(.subheadline)
                             .frame(maxWidth: .infinity)
                             .padding(12)
-                            .background(Color(.secondarySystemBackground))
+                            .background(Color.cardSurface)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
 
@@ -173,7 +173,7 @@ struct FoodPhotoRecognitionView: View {
                             .font(.subheadline)
                             .frame(maxWidth: .infinity)
                             .padding(12)
-                            .background(Color(.secondarySystemBackground))
+                            .background(Color.cardSurface)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                 }

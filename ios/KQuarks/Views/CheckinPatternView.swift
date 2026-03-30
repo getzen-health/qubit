@@ -85,7 +85,7 @@ struct CheckinPatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Check-in Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -132,7 +132,7 @@ struct CheckinPatternView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -190,7 +190,7 @@ struct CheckinPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -214,7 +214,7 @@ struct CheckinPatternView: View {
                     GeometryReader { geo in
                         let pct = d.avgStress > 0 ? min(d.avgStress / 5.0, 1.0) : 0
                         ZStack(alignment: .leading) {
-                            Capsule().fill(Color(.tertiarySystemBackground)).frame(height: 10)
+                            Capsule().fill(Color.premiumSurface).frame(height: 10)
                             Capsule()
                                 .fill(stressBarColor(d.avgStress))
                                 .frame(width: geo.size.width * pct, height: 10)
@@ -229,7 +229,7 @@ struct CheckinPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -270,7 +270,7 @@ struct CheckinPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -295,7 +295,7 @@ struct CheckinPatternView: View {
                 .frame(maxWidth: .infinity)
 
                 Rectangle()
-                    .fill(Color(.separator))
+                    .fill(Color.premiumDivider)
                     .frame(width: 1, height: 50)
 
                 VStack(spacing: 4) {
@@ -312,7 +312,7 @@ struct CheckinPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -352,7 +352,7 @@ struct CheckinPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -363,7 +363,7 @@ struct CheckinPatternView: View {
                     Text(emojis[d.score]).font(.caption)
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
-                            Capsule().fill(Color(.tertiarySystemBackground)).frame(height: 8)
+                            Capsule().fill(Color.premiumSurface).frame(height: 8)
                             Capsule()
                                 .fill(scoreBarColor(d.score, isStress: isStress))
                                 .frame(width: geo.size.width * CGFloat(d.pct) / 100, height: 8)
@@ -395,7 +395,7 @@ struct CheckinPatternView: View {
             GeometryReader { geo in
                 let pct = min(Double(totalDays) / 365.0, 1.0)
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color(.tertiarySystemBackground)).frame(height: 10)
+                    Capsule().fill(Color.premiumSurface).frame(height: 10)
                     Capsule()
                         .fill(Color.purple)
                         .frame(width: geo.size.width * pct, height: 10)
@@ -407,7 +407,7 @@ struct CheckinPatternView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

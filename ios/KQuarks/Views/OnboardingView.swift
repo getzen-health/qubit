@@ -33,7 +33,7 @@ struct OnboardingView: View {
                 .padding(.bottom, 24)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
     }
 
     private func advance() {

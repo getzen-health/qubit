@@ -167,7 +167,7 @@ struct CardioHealthSummaryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Cardio Health")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -192,7 +192,7 @@ struct CardioHealthSummaryView: View {
                 Spacer()
                 // Status ring
                 ZStack {
-                    Circle().stroke(Color(.systemGray5), lineWidth: 6)
+                    Circle().stroke(Color.white.opacity(0.08), lineWidth: 6)
                     let score = Double(statusScore(overallStatus)) / 3.0
                     Circle()
                         .trim(from: 0, to: score)
@@ -249,7 +249,7 @@ struct CardioHealthSummaryView: View {
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal, 14)
-                .background(Color(.systemBackground))
+                .background(Color.premiumBackground)
                 if comp.id != components.last?.id { Divider().padding(.leading, 56) }
             }
         }
@@ -300,7 +300,7 @@ struct CardioHealthSummaryView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -357,7 +357,7 @@ struct CardioHealthSummaryView: View {
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -376,7 +376,7 @@ struct CardioHealthSummaryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

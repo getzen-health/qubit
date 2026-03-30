@@ -43,7 +43,7 @@ struct RecordsView: View {
                 Divider().frame(height: 40)
                 TotalBubble(label: "Calories", value: totalCalories > 0 ? "\(totalCalories.formatted()) kcal" : "—")
             }
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -71,7 +71,7 @@ struct RecordsView: View {
                     )
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -119,7 +119,7 @@ struct RecordsView: View {
                         .padding()
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

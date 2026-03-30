@@ -81,7 +81,7 @@ struct TrainingVolumeHistoryView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Volume History")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -106,7 +106,7 @@ struct TrainingVolumeHistoryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -137,7 +137,7 @@ struct TrainingVolumeHistoryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -195,7 +195,7 @@ struct TrainingVolumeHistoryView: View {
             }
             .frame(height: 220)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -232,7 +232,7 @@ struct TrainingVolumeHistoryView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -265,7 +265,7 @@ struct TrainingVolumeHistoryView: View {
                     .background(i % 2 == 1 ? Color(.systemFill).opacity(0.3) : .clear)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

@@ -71,7 +71,7 @@ struct GoalsHistoryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Goals History")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -151,7 +151,7 @@ struct GoalsHistoryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

@@ -35,7 +35,7 @@ struct HRZonesView: View {
                     Text("Max HR: \(maxHR) bpm").font(.headline).foregroundStyle(.red)
                 }
                 .padding()
-                .background(Color(.systemGroupedBackground))
+                .background(Color.premiumBackground)
                 .cornerRadius(12)
 
                 ForEach(hrZones) { zone in
@@ -53,7 +53,7 @@ struct HRZonesView: View {
                         }
                     }
                     .padding()
-                    .background(Color(.systemGroupedBackground))
+                    .background(Color.premiumBackground)
                     .cornerRadius(12)
                 }
             }

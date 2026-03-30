@@ -71,7 +71,7 @@ struct HealthTimelineView: View {
                 scrollView
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Timeline")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -413,7 +413,7 @@ private struct EventRow: View {
                 .padding(.top, 2)
         }
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 

@@ -41,7 +41,7 @@ struct BloodOxygenView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Blood Oxygen")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -114,7 +114,7 @@ struct BloodOxygenView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -168,7 +168,7 @@ struct BloodOxygenView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -238,7 +238,7 @@ struct BloodOxygenView: View {
                 statBubble(label: "Normal range", value: String(format: "%.0f%%", pctNormal), highlight: false)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -270,7 +270,7 @@ struct BloodOxygenView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

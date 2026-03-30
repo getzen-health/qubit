@@ -12,16 +12,47 @@ struct AdaptiveNavigationView: View {
     @State private var selectedTab: Int = 0
     @State private var showCheckinSheet = false
 
+    init() {
+        // Global UIKit appearance for premium dark theme
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(red: 0.06, green: 0.06, blue: 0.08, alpha: 1.0)
+        tabBarAppearance.shadowColor = .clear
+        
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.normal.iconColor = UIColor.white.withAlphaComponent(0.3)
+        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white.withAlphaComponent(0.3)]
+        itemAppearance.selected.iconColor = UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)
+        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)]
+        tabBarAppearance.stackedLayoutAppearance = itemAppearance
+        tabBarAppearance.inlineLayoutAppearance = itemAppearance
+        tabBarAppearance.compactInlineLayoutAppearance = itemAppearance
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.backgroundColor = UIColor(red: 0.05, green: 0.05, blue: 0.07, alpha: 0.95)
+        navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.shadowColor = .clear
+        
+        UINavigationBar.appearance().standardAppearance = navBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
+        UINavigationBar.appearance().compactAppearance = navBarAppearance
+        UINavigationBar.appearance().tintColor = UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)
+    }
+
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
-                // iPad: Split view with sidebar
                 iPadNavigationView
             } else {
-                // iPhone: Tab view
                 iPhoneNavigationView
             }
         }
+        .preferredColorScheme(.dark)
         .onChange(of: deepLinkHandler.pendingDestination) { _, destination in
             handleDeepLinkNavigation(destination)
         }

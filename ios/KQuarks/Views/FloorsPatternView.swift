@@ -126,7 +126,7 @@ struct FloorsPatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Floors Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -146,7 +146,7 @@ struct FloorsPatternView: View {
             Divider().frame(height: 50)
             statCell(value: "\(maxFloors)", label: "Best Day", color: .purple)
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -174,7 +174,7 @@ struct FloorsPatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 VStack(spacing: 4) {
@@ -183,7 +183,7 @@ struct FloorsPatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             let goalPctInt = n > 0 ? Int(Double(goalDays) / Double(n) * 100) : 0
@@ -204,7 +204,7 @@ struct FloorsPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -221,7 +221,7 @@ struct FloorsPatternView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -241,7 +241,7 @@ struct FloorsPatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -265,7 +265,7 @@ struct FloorsPatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -283,7 +283,7 @@ struct FloorsPatternView: View {
         .font(.caption)
         .foregroundStyle(.secondary)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

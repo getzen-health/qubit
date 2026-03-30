@@ -41,7 +41,7 @@ struct RespiratoryRateView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Respiratory Rate")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -158,7 +158,7 @@ struct RespiratoryRateView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -215,7 +215,7 @@ struct RespiratoryRateView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -247,7 +247,7 @@ struct RespiratoryRateView: View {
                 statBubble(label: "In range", value: String(format: "%.0f%%", pctNormal))
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -301,7 +301,7 @@ struct RespiratoryRateView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

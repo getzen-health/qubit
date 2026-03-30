@@ -90,7 +90,7 @@ struct RunningPaceZonesView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Pace Zones")
         .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
@@ -200,7 +200,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -248,7 +248,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -302,7 +302,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -321,7 +321,7 @@ struct RunningPaceZonesView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -412,7 +412,7 @@ struct PaceZoneCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

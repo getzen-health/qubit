@@ -69,7 +69,7 @@ struct LifetimeStatsView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Lifetime Training")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -99,7 +99,7 @@ struct LifetimeStatsView: View {
         .padding(.vertical, 16)
         .background(
             LinearGradient(
-                colors: [Color(.systemBackground), color.opacity(0.06)],
+                colors: [Color.premiumBackground, color.opacity(0.06)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -132,7 +132,7 @@ struct LifetimeStatsView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -174,7 +174,7 @@ struct LifetimeStatsView: View {
                     .background(i % 2 == 1 ? Color(.systemFill).opacity(0.3) : .clear)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -204,7 +204,7 @@ struct LifetimeStatsView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

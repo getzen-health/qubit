@@ -46,7 +46,7 @@ struct RockClimbingScienceView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(10)
     }
 
@@ -60,7 +60,7 @@ struct RockClimbingScienceView: View {
             sessionBar(label: "Bouldering Session", subtitle: "<1.5 h • Power/problem solving focus", color: .yellow, fraction: 0.15)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 
@@ -74,7 +74,7 @@ struct RockClimbingScienceView: View {
             Text(subtitle).font(.caption).foregroundStyle(.secondary)
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color(.systemGray5)).frame(height: 6)
+                    Capsule().fill(Color.white.opacity(0.08)).frame(height: 6)
                     Capsule().fill(color).frame(width: geo.size.width * fraction, height: 6)
                 }
             }
@@ -105,7 +105,7 @@ struct RockClimbingScienceView: View {
             .frame(height: 110)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 
@@ -168,7 +168,7 @@ struct RockClimbingScienceView: View {
                     }
                 }
                 .padding(10)
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .cornerRadius(8)
             }
             if sessions.isEmpty && !isLoading {
@@ -188,7 +188,7 @@ struct RockClimbingScienceView: View {
             content()
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 

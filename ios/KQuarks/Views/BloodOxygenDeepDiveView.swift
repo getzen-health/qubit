@@ -82,7 +82,7 @@ struct BloodOxygenDeepDiveView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Blood Oxygen (SpO₂)")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -126,7 +126,7 @@ struct BloodOxygenDeepDiveView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -179,7 +179,7 @@ struct BloodOxygenDeepDiveView: View {
             .frame(height: 170)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -215,7 +215,7 @@ struct BloodOxygenDeepDiveView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

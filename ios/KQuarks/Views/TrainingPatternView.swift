@@ -66,7 +66,7 @@ struct TrainingPatternView: View {
                 .padding(.bottom, 32)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Training Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -100,7 +100,7 @@ struct TrainingPatternView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -161,7 +161,7 @@ struct TrainingPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -220,7 +220,7 @@ struct TrainingPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -316,7 +316,7 @@ struct TrainingPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -343,7 +343,7 @@ struct TrainingPatternView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         )
     }
@@ -412,7 +412,7 @@ struct TrainingPatternView: View {
                 .padding(.horizontal, 40)
         }
         .frame(maxWidth: .infinity, minHeight: 300)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Data loading

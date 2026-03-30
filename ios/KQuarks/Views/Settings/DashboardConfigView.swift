@@ -47,7 +47,7 @@ struct WidgetConfigRow: View {
                 .foregroundStyle(isEnabled ? .accent : .secondary)
                 .frame(width: 28, height: 28)
                 .background(
-                    (isEnabled ? Color.accentColor : Color(.secondarySystemBackground))
+                    (isEnabled ? Color.accentColor : Color.cardSurface)
                         .opacity(isEnabled ? 0.15 : 1)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 6))

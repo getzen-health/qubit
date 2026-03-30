@@ -195,7 +195,7 @@ struct DeskBreaksView: View {
             activeCountdownSection
             todaySection
         }
-        .listStyle(.insetGrouped)
+        .premiumList()
         .navigationTitle("Desk Breaks")
         .navigationBarTitleDisplayMode(.large)
     }

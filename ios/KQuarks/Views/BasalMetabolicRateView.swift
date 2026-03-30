@@ -189,7 +189,7 @@ struct BasalMetabolicRateView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -293,7 +293,7 @@ struct BasalMetabolicRateView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -372,7 +372,7 @@ struct BasalMetabolicRateView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -406,14 +406,14 @@ struct BasalMetabolicRateView: View {
                         }
                     }
                     .padding(10)
-                    .background(mult == selectedMultiplier ? Color.orange.opacity(0.12) : Color(.tertiarySystemBackground))
+                    .background(mult == selectedMultiplier ? Color.orange.opacity(0.12) : Color.premiumSurface)
                     .cornerRadius(10)
                 }
                 .buttonStyle(.plain)
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -456,7 +456,7 @@ struct BasalMetabolicRateView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 

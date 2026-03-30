@@ -51,7 +51,7 @@ struct HRZoneDonutChart: View {
             .padding(.vertical, 8)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

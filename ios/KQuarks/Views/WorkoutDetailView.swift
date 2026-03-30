@@ -225,7 +225,7 @@ struct WorkoutDetailView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .premiumList()
         .navigationTitle(workout.workoutActivityType.name)
         .toolbarTitleDisplayMode(.inline)
         .toolbar {

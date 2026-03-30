@@ -131,7 +131,7 @@ struct PeriodizationView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Periodization")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -179,7 +179,7 @@ struct PeriodizationView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(currentPhase.color.opacity(0.25), lineWidth: 1.5))
     }
@@ -246,7 +246,7 @@ struct PeriodizationView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -296,7 +296,7 @@ struct PeriodizationView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -342,7 +342,7 @@ struct PeriodizationView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14)))
     }
 

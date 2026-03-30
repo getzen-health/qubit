@@ -107,7 +107,7 @@ struct RunningPowerZonesView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Running Power")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -151,7 +151,7 @@ struct RunningPowerZonesView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -207,7 +207,7 @@ struct RunningPowerZonesView: View {
             .frame(height: 200)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -253,7 +253,7 @@ struct RunningPowerZonesView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -283,7 +283,7 @@ struct RunningPowerZonesView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

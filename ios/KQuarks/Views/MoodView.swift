@@ -26,7 +26,7 @@ struct MoodView: View {
                                     Text(moodEmojis[i - 1])
                                         .font(.title)
                                         .frame(width: 52, height: 52)
-                                        .background(selectedScore == i ? Color.accentColor.opacity(0.2) : Color(.systemGray6))
+                                        .background(selectedScore == i ? Color.accentColor.opacity(0.2) : Color.cardSurface)
                                         .cornerRadius(12)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 12)
@@ -40,7 +40,7 @@ struct MoodView: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding()
-                    .background(Color(.systemBackground))
+                    .background(Color.premiumBackground)
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.05), radius: 8)
                     
@@ -52,11 +52,11 @@ struct MoodView: View {
                         TextEditor(text: $notes)
                             .frame(height: 80)
                             .padding(8)
-                            .background(Color(.systemGray6))
+                            .background(Color.cardSurface)
                             .cornerRadius(10)
                     }
                     .padding()
-                    .background(Color(.systemBackground))
+                    .background(Color.premiumBackground)
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.05), radius: 8)
                     
@@ -116,14 +116,14 @@ struct MoodView: View {
                             }
                         }
                         .padding()
-                        .background(Color(.systemBackground))
+                        .background(Color.premiumBackground)
                         .cornerRadius(16)
                         .shadow(color: .black.opacity(0.05), radius: 8)
                     }
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Mood")
             .navigationBarTitleDisplayMode(.large)
             .task { await loadRecentLogs() }

@@ -103,7 +103,7 @@ struct RestingHRDeepDiveView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Resting HR Deep Dive")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -158,7 +158,7 @@ struct RestingHRDeepDiveView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -206,7 +206,7 @@ struct RestingHRDeepDiveView: View {
             .frame(height: 190)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -233,7 +233,7 @@ struct RestingHRDeepDiveView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -261,7 +261,7 @@ struct RestingHRDeepDiveView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -297,7 +297,7 @@ struct RestingHRDeepDiveView: View {
                 .font(.caption2).foregroundStyle(.tertiary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

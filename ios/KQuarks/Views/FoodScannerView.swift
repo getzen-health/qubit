@@ -148,7 +148,7 @@ struct ProductDetailView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Product")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -175,7 +175,7 @@ struct ProductDetailView: View {
                 .font(.subheadline.bold())
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .foregroundStyle(Color.accentColor)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
         }
@@ -188,7 +188,7 @@ struct ProductDetailView: View {
                     img.resizable().aspectRatio(contentMode: .fit)
                 } placeholder: {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(.secondarySystemBackground))
+                        .fill(Color.cardSurface)
                         .overlay(Image(systemName: "photo").foregroundStyle(.tertiary))
                 }
                 .frame(width: 80, height: 80)
@@ -209,7 +209,7 @@ struct ProductDetailView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -263,7 +263,7 @@ struct ProductDetailView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -281,7 +281,7 @@ struct ProductDetailView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -291,7 +291,7 @@ struct ProductDetailView: View {
             Text(coloredIngredients(ingredients))
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -376,7 +376,7 @@ struct ProductDetailView: View {
             .disabled(isSaving)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -456,7 +456,7 @@ struct ProductDetailView: View {
                 }
             }
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }
@@ -504,7 +504,7 @@ struct ProductDetailView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color(.tertiarySystemBackground))
+                        .background(Color.premiumSurface)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                 }
@@ -524,7 +524,7 @@ struct ProductDetailView: View {
                 }
             }
             .padding()
-            .background(Color(.secondarySystemBackground))
+            .background(Color.cardSurface)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .task {
                 await fetchAlternatives()

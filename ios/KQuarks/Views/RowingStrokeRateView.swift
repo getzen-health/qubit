@@ -95,7 +95,7 @@ struct RowingStrokeRateView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Rowing Stroke Rate")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -148,7 +148,7 @@ struct RowingStrokeRateView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -204,7 +204,7 @@ struct RowingStrokeRateView: View {
             .frame(height: 180)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -244,7 +244,7 @@ struct RowingStrokeRateView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -274,7 +274,7 @@ struct RowingStrokeRateView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

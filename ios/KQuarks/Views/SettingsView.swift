@@ -274,6 +274,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .premiumList()
             .navigationTitle("Settings")
             .toolbarTitleDisplayMode(.inline)
             .onAppear { biometricEnabled = biometric.isEnabled }
@@ -410,6 +411,7 @@ struct AISettingsView: View {
                 }
             }
         }
+        .premiumList()
         .navigationTitle("AI Provider")
         .toolbarTitleDisplayMode(.inline)
         .alert("Settings Saved", isPresented: $showSavedAlert) {
@@ -493,6 +495,7 @@ struct AboutView: View {
                 }
             }
         }
+        .premiumList()
         .navigationTitle("About")
         .toolbarTitleDisplayMode(.inline)
     }

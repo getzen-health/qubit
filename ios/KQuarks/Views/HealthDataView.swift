@@ -29,16 +29,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Sleep stages, performance impact & chronobiology — Walker 2017: SWS doubles GH; Mah 2011: +9% shooting accuracy with sleep extension; Van Dongen 2003: 6h/night ≡ 24h deprivation")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -54,21 +53,20 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep History")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Last 30 nights")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -83,19 +81,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Architecture")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("REM, Core & Deep stage breakdown — 30 nights")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -110,19 +107,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Quality Score")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Nightly 0–100 score: duration, stages & efficiency")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -137,19 +133,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Debt")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Cumulative deficit & repayment tracking")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -164,19 +159,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Efficiency")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Time asleep vs time in bed (CBT-I target ≥85%)")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -191,19 +185,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Apnea")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("AHI tracking, severity classification & CPAP context (Apple Watch S9+)")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -217,16 +210,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sleep Regularity Index")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Day-to-day sleep/wake consistency score — Phillips 2021 mortality predictor")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -240,16 +232,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Social Jet Lag")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Weekday vs weekend sleep timing mismatch — MSFsc, Roenneberg 2012")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -264,19 +255,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Chronotype")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Early bird vs night owl & social jet lag")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -291,15 +281,15 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Wrist Temperature Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Thermoregulation, circadian biology, illness detection & fertility tracking")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding(.vertical, 4)
                             }
@@ -316,19 +306,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Wrist Temperature")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Nightly deviation (Series 8+)")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -343,19 +332,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Temperature Insights")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Illness signals, cycle correlation & 30-day trend")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
                         } else if selectedCategory == .body {
@@ -371,21 +359,20 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Body Weight")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Trend chart and history")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -401,19 +388,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cycle Tracking")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Phase analysis & training recommendations")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -427,16 +413,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Medication Adherence Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Adherence research, chronic disease outcomes & reminder science — WHO 2003: only 50% of chronic patients take meds as prescribed")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -450,16 +435,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Medication Tracking")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("FHIR clinical medication records, dosage history & biomarker correlations")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -473,16 +457,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Alcohol Tracker")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Drink count vs WHO guidelines, next-day HRV & RHR impact")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -496,16 +479,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Caffeine Analytics")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Daily intake, half-life model & bedtime impact on sleep quality")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -519,16 +501,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Oral Hygiene")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch Series 5+")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -544,15 +525,15 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Handwashing Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Infection prevention, Apple Watch detection & WHO 20-second evidence")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding(.vertical, 4)
                             }
@@ -570,19 +551,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Handwashing")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Daily events, streaks & time-of-day pattern")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -598,19 +578,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Audio Exposure Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Cochlear damage science, noise dose limits & tinnitus research — WHO 2015: 80 dB safe limit; Kujawa 2009: hidden hearing loss before audiogram changes")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -626,19 +605,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Glucose Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("CGM metrics, insulin resistance, exercise & glucose, metabolic flexibility — ADA 2023, DPP trial, Zeevi 2015 Cell personalized nutrition")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -654,19 +632,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Glucose")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("CGM, time in range & est. A1C")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -686,19 +663,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daily Readiness")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("0–100 score from HRV, resting HR & sleep")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -714,19 +690,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardio Health Summary")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("HRV, RHR, VO₂ Max & HR Recovery")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -742,19 +717,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("VO₂max Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Physiology, longevity research, training protocols & Apple Watch accuracy — Mandsager 2018: elite fitness = 5× lower mortality")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -770,19 +744,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardio Fitness (VO₂ Max)")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Trend and fitness level")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -798,19 +771,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Race Predictor")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("5K, 10K, half & full marathon")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -826,19 +798,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daily HR Pattern")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("24-hour circadian rhythm")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -854,19 +825,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRR Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Heart rate recovery physiology, mortality research & training protocols — Cole 1999 NEJM: HRR ≤12 bpm = 4× higher mortality")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -882,19 +852,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HR Recovery")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Post-workout recovery rate")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -910,19 +879,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Breathing Rate Deep Dive")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day trend, baseline vs current & illness signals")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -938,19 +906,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Respiratory Rate")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Breathing rate during sleep")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -965,19 +932,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Respiratory Patterns")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Day-of-week & monthly breathing rate patterns")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -993,19 +959,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Oxygen Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("SpO₂ physiology, hypoxia, altitude acclimatization & sleep apnea detection — Levine 1997: LHTI; Apple Watch FDA-cleared OSA screening (watchOS 11)")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1021,19 +986,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("SpO₂ Deep Dive")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day trend, nighttime avg & low alerts")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1049,19 +1013,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Oxygen (SpO₂)")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day trend & low alerts")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1077,19 +1040,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Resting Heart Rate")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("6-month trend & fitness zone")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1105,19 +1067,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Autonomic physiology, health outcomes, HRV-guided training & Apple Watch accuracy — Plews 2013: 7-day rolling avg r=0.72 with performance")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1133,19 +1094,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Analysis")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Baseline, trends, patterns")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1160,19 +1120,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("RHR Patterns")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Day-of-week, monthly & distribution analysis")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1187,19 +1146,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Calendar")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("52-week heatmap — daily HRV vs personal baseline")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1215,19 +1173,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("HRV Recovery Zones")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Green / yellow / orange zone history")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1241,16 +1198,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Longevity Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Exercise & mortality, biomarkers & cellular aging — Kodama 2009: each 1 MET = 13% mortality reduction; Mandsager 2018: low CRF = 500% higher mortality vs elite fitness")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1266,19 +1222,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Vitality Score")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Multi-metric longevity index")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1294,19 +1249,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fitness Profile")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("6-dimension health fingerprint")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1322,19 +1276,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("AFib Science")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("AFib physiology, ECG accuracy, stroke risk (CHA₂DS₂-VASc), treatment & Apple Watch FDA-cleared screening — Perez 2019 NEJM Apple Heart Study")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1350,19 +1303,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Cardiac Events")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("High HR, low HR & irregular rhythm")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1376,16 +1328,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Max HR Analysis")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Observed HRmax vs. formulas, by sport & zone calibration")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1399,16 +1350,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Heart Rate Reserve")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Karvonen zones, 90-day HRR trend & fitness classification")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1425,21 +1375,20 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Blood Pressure")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Log and track readings")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1453,16 +1402,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Exercise & Blood Pressure")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Does your training lower your BP? — Cornelissen 2013: aerobic exercise reduces SBP by 3.5 mmHg")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1481,19 +1429,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Standing Hours")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Daily stand hours, 12-hr goal streak & hourly pattern")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1508,19 +1455,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Floors Climbed")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Daily floors, 30-day trend & 10-floor goal streak")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1535,19 +1481,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Exercise Minutes")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("WHO 150 min/week goal progress & streak history")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1562,19 +1507,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Active Energy")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Move ring calories, weekly totals & day-of-week patterns")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1588,16 +1532,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Gait Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1611,16 +1554,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Gait Analysis")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Walking speed, step length, asymmetry & double support — passively measured")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1634,16 +1576,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Functional Fitness Battery")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("VO₂ max + 6-min walk + steadiness + gait speed + stair speed — composite functional age")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1657,16 +1598,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Immune Stress Index")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("HRV drop + RHR elevation + temp deviation + step reduction — illness early warning")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1680,16 +1620,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fall Risk Assessment")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("STEADI gait speed + steadiness + asymmetry composite — Studenski 2011")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1703,16 +1642,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Fragmentation")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("How broken-up your movement is — Diaz 2017 JAMA active/sedentary transition index")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1726,16 +1664,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("VILPA")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Vigorous Intermittent Lifestyle Activity — Stamatakis 2022 Nature Medicine: ≥3 bouts/day, 38% mortality reduction")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1749,16 +1686,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sedentary Breaks")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Longest sitting streak & break frequency — Biswas 2015 Ann Intern Med: >11hrs/day = 40% mortality risk")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1772,16 +1708,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Fasting Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Autophagy, metabolic switching & hormonal response — Ohsumi 2016 (Nobel): autophagy peaks 24–48h; Sutton 2018: TRE improves insulin sensitivity 38%; Ho 1988: 24h fasting raises GH 5×")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1795,16 +1730,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Metabolic Rate Science")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("RMR measurement, metabolic adaptation & TDEE components — Mifflin 1990, Rosenbaum 2010, Pontzer 2021")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1818,16 +1752,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Basal Metabolic Rate")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Apple Watch BMR, Mifflin-St Jeor formula & TDEE estimate")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1841,16 +1774,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Sweat Rate")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Fluid loss per hour from weigh-ins near workouts — Sawka 2007 ACSM: >2% mass loss impairs performance")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1864,16 +1796,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Bone Loading")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Weekly bone impact score from running (×2.5), walking (×1.2) & stairs — Wolff's Law, Nikander 2010")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1887,16 +1818,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Asymmetry")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Left/right step timing imbalance — Schmid 2019: >5% asymmetry = 2.5× higher knee OA risk")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1910,16 +1840,15 @@ struct HealthDataView: View {
                                         .cornerRadius(10)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Speed")
-                                            .font(.headline).foregroundStyle(.primary)
+                                            .font(.headline).foregroundStyle(.white)
                                         Text("Sixth vital sign — Studenski 2011 JAMA: each 0.1 m/s faster = ~12% lower 10-year mortality risk")
-                                            .font(.subheadline).foregroundStyle(.secondary)
+                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.secondary)
+                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1934,19 +1863,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Summary")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("This week vs last week with streak & goals")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1961,19 +1889,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Monthly Summary")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("This month vs last month with best days")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -1988,19 +1915,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Goals History")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day step, calorie & sleep goal streaks")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2015,19 +1941,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Rings")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day ring close history")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2042,19 +1967,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Step Pattern")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Hourly & weekday activity rhythm")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2069,19 +1993,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Calorie Patterns")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Day-of-week & seasonal calorie burn")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2096,19 +2019,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Activity Calendar")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("365-day heatmap")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2123,19 +2045,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("6-Min Walk Test")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Apple's estimated functional fitness & 90-day trend")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2150,19 +2071,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Walking Steadiness")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Balance & fall risk assessment")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2177,19 +2097,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Stair Speed")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Ascent & descent speed — fall risk indicator (iPhone 8+)")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2204,19 +2123,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Mobility")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Walking speed, step length & gait")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2231,19 +2149,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Daylight Exposure")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Outdoor light for circadian health")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2258,19 +2175,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("UV Exposure")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Daily UV radiation, WHO categories & Vitamin D science")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2285,19 +2201,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Audiogram")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Hearing threshold by frequency — noise notch detection")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2312,19 +2227,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Hearing Health")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("Noise & headphone exposure")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2339,19 +2253,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Health Correlations")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("How sleep, HRV & steps influence each other — 60-day Pearson analysis")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2366,19 +2279,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Mindfulness Impact")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("How meditation affects HRV & recovery")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2393,19 +2305,18 @@ struct HealthDataView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Symptoms Log")
                                             .font(.headline)
-                                            .foregroundStyle(.primary)
+                                            .foregroundStyle(.white)
                                         Text("30-day log of logged symptoms with severity & patterns")
                                             .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
-                                .background(Color.cardSurface)
-                                .cornerRadius(12)
+                                .premiumCard(cornerRadius: 12)
                             }
                             .buttonStyle(.plain)
 
@@ -2514,19 +2425,18 @@ struct HealthDataRow: View {
                     } else if let value = latestValue {
                         Text(formatValue(value, for: dataType))
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     } else {
                         Text("No data")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                 }
 
                 Spacer()
             }
             .padding()
-            .background(Color.cardSurface)
-            .cornerRadius(12)
+            .premiumCard(cornerRadius: 12)
         }
         .buttonStyle(.plain)
         .task {

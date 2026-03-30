@@ -97,7 +97,7 @@ struct NutritionPatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Nutrition Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -133,7 +133,7 @@ struct NutritionPatternView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(10)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -168,7 +168,7 @@ struct NutritionPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -262,7 +262,7 @@ struct NutritionPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -302,7 +302,7 @@ struct NutritionPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -331,7 +331,7 @@ struct NutritionPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -350,7 +350,7 @@ struct NutritionPatternView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -394,7 +394,7 @@ struct NutritionPatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -435,7 +435,7 @@ struct NutritionPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

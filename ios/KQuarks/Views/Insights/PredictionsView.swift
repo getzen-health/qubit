@@ -66,7 +66,7 @@ struct PredictionsView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Predictions")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -99,7 +99,7 @@ struct PredictionsView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -122,7 +122,7 @@ struct PredictionsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -143,7 +143,7 @@ struct PredictionsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -166,7 +166,7 @@ struct PredictionsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -183,7 +183,7 @@ struct PredictionsView: View {
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 12)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(Capsule())
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -248,7 +248,7 @@ struct PredictionsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 

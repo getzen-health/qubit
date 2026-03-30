@@ -69,7 +69,7 @@ struct WorkoutVarietyView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Workout Variety")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -95,7 +95,7 @@ struct WorkoutVarietyView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -145,7 +145,7 @@ struct WorkoutVarietyView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }
@@ -187,7 +187,7 @@ struct WorkoutVarietyView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -229,7 +229,7 @@ struct WorkoutVarietyView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -272,7 +272,7 @@ struct WorkoutVarietyView: View {
                 .foregroundStyle(.secondary.opacity(0.7))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

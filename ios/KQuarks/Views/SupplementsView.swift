@@ -43,31 +43,61 @@ struct SupplementsView: View {
 
     var body: some View {
         NavigationStack {
-            List(COMMON_SUPPLEMENTS) { supplement in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(supplement.name).font(.headline)
-                        Text("\(supplement.dose) \(supplement.unit)").font(.caption).foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    if viewModel.takenToday.contains(supplement.name) {
-                        Label("Taken", systemImage: "checkmark.circle.fill")
-                            .font(.subheadline)
-                            .foregroundStyle(.green)
-                    } else {
-                        Button("Log") {
-                            Task {
-                                await viewModel.logSupplement(name: supplement.name)
-                                HapticService.impact(.medium)
+            ZStack {
+                PremiumBackgroundView()
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            PremiumSectionHeader(title: "DAILY SUPPLEMENTS", icon: "pill.fill", tint: .green)
+                            VStack(spacing: 0) {
+                                ForEach(Array(COMMON_SUPPLEMENTS.enumerated()), id: \.element.id) { index, supplement in
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(supplement.name)
+                                                .font(.system(size: 16, weight: .semibold))
+                                                .foregroundStyle(.white.opacity(0.85))
+                                            Text("\(supplement.dose) \(supplement.unit)")
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(.white.opacity(0.4))
+                                        }
+                                        Spacer()
+                                        if viewModel.takenToday.contains(supplement.name) {
+                                            Label("Taken", systemImage: "checkmark.circle.fill")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.green)
+                                        } else {
+                                            Button("Log") {
+                                                Task {
+                                                    await viewModel.logSupplement(name: supplement.name)
+                                                    HapticService.impact(.medium)
+                                                }
+                                            }
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 6)
+                                            .background(LinearGradient(colors: [.green, .green.opacity(0.7)], startPoint: .leading, endPoint: .trailing))
+                                            .clipShape(Capsule())
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 10)
+                                    if index < COMMON_SUPPLEMENTS.count - 1 {
+                                        Color.premiumDivider.frame(height: 0.5)
+                                    }
+                                }
                             }
+                            .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 100)
                 }
-                .padding(.vertical, 4)
             }
             .navigationTitle("Supplements")
+            .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
         }
+        .preferredColorScheme(.dark)
     }
 }

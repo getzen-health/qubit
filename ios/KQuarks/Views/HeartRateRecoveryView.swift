@@ -85,7 +85,7 @@ struct HeartRateRecoveryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("HR Recovery")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -139,7 +139,7 @@ struct HeartRateRecoveryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -223,7 +223,7 @@ struct HeartRateRecoveryView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -270,7 +270,7 @@ struct HeartRateRecoveryView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -325,7 +325,7 @@ struct HeartRateRecoveryView: View {
                 }
             }
             .padding(.vertical, 8)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -346,7 +346,7 @@ struct HeartRateRecoveryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

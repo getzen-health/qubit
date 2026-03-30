@@ -93,7 +93,7 @@ struct ProductComparisonView: View {
                     productHeader(b)
                 }
                 .padding(.vertical, 12)
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
 
                 Divider()
 
@@ -190,14 +190,14 @@ struct ProductComparisonView: View {
                         .font(.subheadline.bold())
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(.secondarySystemBackground))
+                        .background(Color.cardSurface)
                         .foregroundStyle(Color.accentColor)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Subviews
@@ -209,13 +209,13 @@ struct ProductComparisonView: View {
                     img.resizable().aspectRatio(contentMode: .fit)
                 } placeholder: {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(.tertiarySystemBackground))
+                        .fill(Color.premiumSurface)
                 }
                 .frame(width: 56, height: 56)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(.tertiarySystemBackground))
+                    .fill(Color.premiumSurface)
                     .frame(width: 56, height: 56)
                     .overlay(Text("🍎").font(.title))
             }
@@ -241,7 +241,7 @@ struct ProductComparisonView: View {
                 AsyncImage(url: url) { img in
                     img.resizable().aspectRatio(contentMode: .fit)
                 } placeholder: {
-                    Color(.secondarySystemBackground)
+                    Color.cardSurface
                 }
                 .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -267,7 +267,7 @@ struct ProductComparisonView: View {
             .frame(width: 44, height: 44)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -299,7 +299,7 @@ struct ProductComparisonView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .overlay(Divider(), alignment: .bottom)
     }
 
@@ -331,7 +331,7 @@ struct ProductComparisonView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .overlay(Divider(), alignment: .bottom)
     }
 

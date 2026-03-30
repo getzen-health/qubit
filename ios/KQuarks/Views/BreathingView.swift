@@ -20,7 +20,7 @@ struct BreathingView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Breathing")
             .toolbarTitleDisplayMode(.inline)
             .sheet(item: $selectedTechnique) { technique in
@@ -65,7 +65,7 @@ private struct TechniqueCard: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(16)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }

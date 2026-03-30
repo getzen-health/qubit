@@ -13,6 +13,7 @@ struct DashboardListView: View {
 
     @State private var showCheckin = false
     @State private var todayCheckin: DailyCheckin?
+    @State private var appearAnimations: [Bool] = Array(repeating: false, count: 8)
 
     var body: some View {
         NavigationStack {
@@ -65,8 +66,8 @@ struct DashboardListView: View {
             .refreshable {
                 await viewModel.loadData()
             }
-            .navigationTitle(greeting)
-            .toolbarTitleDisplayMode(.large)
+            .navigationTitle("")
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 12) {
@@ -114,6 +115,7 @@ struct DashboardListView: View {
             .task {
                 await viewModel.loadData()
                 todayCheckin = try? await SupabaseService.shared.fetchTodayCheckin()
+                triggerEntranceAnimations()
             }
             .sheet(isPresented: $showCheckin, onDismiss: {
                 Task { todayCheckin = try? await SupabaseService.shared.fetchTodayCheckin() }
@@ -158,6 +160,43 @@ struct DashboardListView: View {
         return "Good evening"
     }
 
+    private var greetingEmoji: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 6 { return "🌙" }
+        if hour < 12 { return "☀️" }
+        if hour < 17 { return "🌤️" }
+        if hour < 21 { return "🌅" }
+        return "🌙"
+    }
+
+    @ViewBuilder
+    private var greetingHeader: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("\(greetingEmoji) \(greeting)")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [.white, .white.opacity(0.7)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+
+            Text(Date(), format: .dateTime.weekday(.wide).month(.wide).day())
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.white.opacity(0.4))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func triggerEntranceAnimations() {
+        for i in 0..<appearAnimations.count {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(Double(i) * 0.08)) {
+                appearAnimations[i] = true
+            }
+        }
+    }
+
     /// Premium section header with accent line
     @ViewBuilder
     private func sectionHeader(_ title: String) -> some View {
@@ -176,6 +215,12 @@ struct DashboardListView: View {
     @ViewBuilder
     private func dashboardContent(summary: TodayHealthSummary) -> some View {
         VStack(spacing: 24) {
+            // Premium Greeting Header
+            greetingHeader
+                .padding(.horizontal, 16)
+                .opacity(appearAnimations[0] ? 1 : 0)
+                .offset(y: appearAnimations[0] ? 0 : 20)
+
             // AI Essence - Recovery + Strain + AI Insight
             AIEssenceView(
                 recoveryScore: viewModel.recoveryScore,
@@ -186,12 +231,16 @@ struct DashboardListView: View {
                 strainTrend: viewModel.strainTrend
             )
             .padding(.horizontal, 16)
+            .opacity(appearAnimations[1] ? 1 : 0)
+            .offset(y: appearAnimations[1] ? 0 : 30)
 
             // Quick Stats Grid
             QuickStatsView(
                 stats: buildQuickStats(summary: summary)
             )
             .padding(.horizontal, 16)
+            .opacity(appearAnimations[2] ? 1 : 0)
+            .offset(y: appearAnimations[2] ? 0 : 30)
 
             // Weekly Step Chart
             if !viewModel.weeklyData.isEmpty {
@@ -200,13 +249,19 @@ struct DashboardListView: View {
                     stepGoal: GoalService.shared.stepsGoal
                 )
                 .padding(.horizontal, 16)
+                .opacity(appearAnimations[3] ? 1 : 0)
+                .offset(y: appearAnimations[3] ? 0 : 30)
             }
 
             // Primary Metrics Stream
             metricsSection(title: "Today's Metrics", summary: summary)
+                .opacity(appearAnimations[4] ? 1 : 0)
+                .offset(y: appearAnimations[4] ? 0 : 30)
 
             // Activity Stream
             activitySection(summary: summary)
+                .opacity(appearAnimations[5] ? 1 : 0)
+                .offset(y: appearAnimations[5] ? 0 : 30)
 
             // Wellbeing section: check-in card + 2-column tile grid
             VStack(alignment: .leading, spacing: 10) {
@@ -285,10 +340,14 @@ struct DashboardListView: View {
                 }
                 .padding(.horizontal, 16)
             }
+            .opacity(appearAnimations[6] ? 1 : 0)
+            .offset(y: appearAnimations[6] ? 0 : 30)
 
             // AI Insights
             InsightsSectionView(insights: viewModel.insights)
                 .padding(.horizontal, 16)
+                .opacity(appearAnimations[7] ? 1 : 0)
+                .offset(y: appearAnimations[7] ? 0 : 30)
 
             // AI Features — tile grid
             VStack(alignment: .leading, spacing: 10) {

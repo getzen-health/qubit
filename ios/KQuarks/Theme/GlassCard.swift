@@ -160,6 +160,48 @@ struct PremiumBackgroundView: View {
     }
 }
 
+// MARK: - Premium List Wrapper
+
+/// Wraps a List-based view in premium dark styling automatically.
+/// Use this on existing List views to upgrade them without rewriting to ScrollView.
+struct PremiumListModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .scrollContentBackground(.hidden)
+            .background(PremiumBackgroundView())
+            .preferredColorScheme(.dark)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+    }
+}
+
+/// Premium Section header for use inside ScrollView-based premium views.
+struct PremiumSectionHeader: View {
+    let title: String
+    let icon: String
+    var tint: Color = .cyan
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(tint.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
+    }
+}
+
+extension View {
+    /// Quickly upgrade any List-based view to premium dark styling
+    func premiumList() -> some View {
+        modifier(PremiumListModifier())
+    }
+}
+
 #Preview {
     ZStack {
         PremiumBackgroundView()

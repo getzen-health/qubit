@@ -23,7 +23,7 @@ struct ChatBubbleView: View {
                     .padding(.vertical, 10)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(isUser ? Color.blue : Color(.systemGray5))
+                            .fill(isUser ? Color.blue : Color.white.opacity(0.08))
                     )
 
                 Text(Self.timeFormatter.string(from: message.timestamp))

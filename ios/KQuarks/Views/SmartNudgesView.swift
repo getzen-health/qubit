@@ -38,7 +38,7 @@ struct SmartNudgesView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Smart Nudges")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -77,7 +77,7 @@ struct SmartNudgesView: View {
                 .foregroundStyle(.purple)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -426,7 +426,7 @@ private struct NudgeCard: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }

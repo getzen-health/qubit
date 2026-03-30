@@ -25,7 +25,7 @@ struct BloodPressureView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Blood Pressure")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -87,7 +87,7 @@ struct BloodPressureView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(20)
-                .background(Color(.systemBackground))
+                .background(Color.premiumBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
             }
         }
@@ -147,7 +147,7 @@ struct BloodPressureView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -186,7 +186,7 @@ struct BloodPressureView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

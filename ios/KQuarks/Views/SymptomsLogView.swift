@@ -115,7 +115,7 @@ struct SymptomsLogView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Symptoms Log")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -157,7 +157,7 @@ struct SymptomsLogView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -190,7 +190,7 @@ struct SymptomsLogView: View {
             .frame(height: CGFloat(freqData.count) * 32 + 20)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -244,7 +244,7 @@ struct SymptomsLogView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
