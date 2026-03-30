@@ -42,17 +42,33 @@ class ThemeManager {
     @ObservationIgnored
     @AppStorage("appearanceMode") private var storedAppearanceMode: String = AppearanceMode.dark.rawValue
 
+    /// Migration flag to reset old purple accent
+    @ObservationIgnored
+    @AppStorage("themeV2Migrated") private var themeV2Migrated: Bool = false
+
     /// Accent color hue (0-360)
     @ObservationIgnored
-    @AppStorage("accentColorHue") private var storedAccentHue: Double = 270
+    @AppStorage("accentColorHue") private var storedAccentHue: Double = 195
 
     /// Accent color saturation (0-1)
     @ObservationIgnored
-    @AppStorage("accentColorSaturation") private var storedAccentSaturation: Double = 0.65
+    @AppStorage("accentColorSaturation") private var storedAccentSaturation: Double = 0.15
 
     /// Accent color brightness (0-1)
     @ObservationIgnored
-    @AppStorage("accentColorBrightness") private var storedAccentBrightness: Double = 0.82
+    @AppStorage("accentColorBrightness") private var storedAccentBrightness: Double = 0.98
+
+    // MARK: - Init (migrate old purple accent)
+
+    private init() {
+        if !themeV2Migrated {
+            storedAccentHue = 195
+            storedAccentSaturation = 0.15
+            storedAccentBrightness = 0.98
+            storedAppearanceMode = AppearanceMode.dark.rawValue
+            themeV2Migrated = true
+        }
+    }
 
     // MARK: - Computed Properties
 
@@ -108,9 +124,9 @@ class ThemeManager {
     /// Reset theme to defaults
     func resetToDefaults() {
         appearanceMode = .dark
-        accentHue = 270
-        accentSaturation = 0.65
-        accentBrightness = 0.82
+        accentHue = 195
+        accentSaturation = 0.15
+        accentBrightness = 0.98
     }
 
     /// Set appearance mode
@@ -129,8 +145,6 @@ class ThemeManager {
         accentSaturation = saturation
         accentBrightness = brightness
     }
-
-    private init() {}
 }
 
 /// Preset accent colors
