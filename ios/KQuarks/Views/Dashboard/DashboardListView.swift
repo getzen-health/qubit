@@ -273,41 +273,18 @@ struct DashboardListView: View {
                 }
                 .padding(.horizontal, 16)
 
-                // Tile grid
+                // Tile grid — curated color palette by health category
                 LazyVGrid(
                     columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
                     spacing: 12
                 ) {
+                    // Hydration & Nutrition
                     NavigationLink(destination: WaterView()) {
-                        DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .blue)
+                        DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .cyan)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: FastingView()) {
                         DashboardTileCard(icon: "timer", title: "Fasting", subtitle: "Track your window", color: .orange)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: HabitsView()) {
-                        DashboardTileCard(icon: "checklist", title: "Habits", subtitle: "Daily streaks", color: Color.accentColor)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: MindfulnessView()) {
-                        DashboardTileCard(icon: "brain.head.profile", title: "Mindfulness", subtitle: "Meditate & reflect", color: .teal)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: BreathingView()) {
-                        DashboardTileCard(icon: "wind", title: "Breathing", subtitle: "Calm your mind", color: .cyan)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: RunningView()) {
-                        DashboardTileCard(icon: "figure.run", title: "Running", subtitle: "Pace & cadence", color: .orange)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: RecoveryView()) {
-                        DashboardTileCard(icon: "bolt.heart.fill", title: "Recovery", subtitle: "HRV & readiness", color: .pink)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: LeaderboardView()) {
-                        DashboardTileCard(icon: "flame.fill", title: "Leaderboard", subtitle: "Step streaks", color: .orange)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: FoodScannerView()) {
@@ -318,52 +295,80 @@ struct DashboardListView: View {
                         DashboardTileCard(icon: "fork.knife", title: "Nutrition", subtitle: "Macros & meals", color: .orange)
                     }.buttonStyle(.plain)
 
-                    NavigationLink(destination: WeeklyBalanceView()) {
-                        DashboardTileCard(icon: "chart.bar.xaxis", title: "Weekly Balance", subtitle: "Cardio · Strength", color: .purple)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: ReportView()) {
-                        DashboardTileCard(icon: "doc.text.magnifyingglass", title: "Doctor Report", subtitle: "Share as PDF", color: .blue)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: CorrelationsView()) {
-                        DashboardTileCard(icon: "chart.dots.scatter", title: "Correlations", subtitle: "Find patterns", color: .indigo)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: ImportView()) {
-                        DashboardTileCard(icon: "square.and.arrow.down.on.square", title: "Import Data", subtitle: "Garmin · Oura", color: .indigo)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: GLP1View()) {
-                        DashboardTileCard(icon: "syringe.fill", title: "GLP-1", subtitle: "Zepbound tracker", color: .purple)
-                    }.buttonStyle(.plain)
-
+                    // Mind & Wellness
                     NavigationLink(destination: MoodView()) {
-                        DashboardTileCard(icon: "face.smiling", title: "Mood", subtitle: "Track feelings", color: .yellow)
+                        DashboardTileCard(icon: "face.smiling", title: "Mood", subtitle: "Track feelings", color: Color(red: 1.0, green: 0.8, blue: 0.3))
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: MindfulnessView()) {
+                        DashboardTileCard(icon: "brain.head.profile", title: "Mindfulness", subtitle: "Meditate & reflect", color: .teal)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: BreathingView()) {
+                        DashboardTileCard(icon: "wind", title: "Breathing", subtitle: "Calm your mind", color: .mint)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: StressView()) {
+                        DashboardTileCard(icon: "waveform.path.ecg", title: "Stress", subtitle: "HRV analysis", color: Color(red: 1.0, green: 0.55, blue: 0.4))
+                    }.buttonStyle(.plain)
+
+                    // Activity & Fitness
+                    NavigationLink(destination: HabitsView()) {
+                        DashboardTileCard(icon: "checklist", title: "Habits", subtitle: "Daily streaks", color: .green)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: RunningView()) {
+                        DashboardTileCard(icon: "figure.run", title: "Running", subtitle: "Pace & cadence", color: Color(red: 0.35, green: 0.85, blue: 0.45))
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: RecoveryView()) {
+                        DashboardTileCard(icon: "bolt.heart.fill", title: "Recovery", subtitle: "HRV & readiness", color: Color(red: 0.4, green: 0.8, blue: 1.0))
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: LeaderboardView()) {
+                        DashboardTileCard(icon: "flame.fill", title: "Leaderboard", subtitle: "Step streaks", color: .orange)
+                    }.buttonStyle(.plain)
+
+                    // Body & Health
+                    NavigationLink(destination: BodyMeasurementsView()) {
+                        DashboardTileCard(icon: "ruler", title: "Measurements", subtitle: "Body metrics", color: .mint)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: SupplementsView()) {
-                        DashboardTileCard(icon: "pills.fill", title: "Supplements", subtitle: "Daily stack", color: .green)
-                    }.buttonStyle(.plain)
-
-                    NavigationLink(destination: BodyMeasurementsView()) {
-                        DashboardTileCard(icon: "ruler", title: "Measurements", subtitle: "Body metrics", color: .mint)
+                        DashboardTileCard(icon: "pills.fill", title: "Supplements", subtitle: "Daily stack", color: Color(red: 0.45, green: 0.85, blue: 0.65))
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: CycleView()) {
                         DashboardTileCard(icon: "calendar", title: "Cycle", subtitle: "Period tracking", color: .pink)
                     }.buttonStyle(.plain)
 
-                    NavigationLink(destination: StressView()) {
-                        DashboardTileCard(icon: "waveform.path.ecg", title: "Stress", subtitle: "HRV analysis", color: .orange)
+                    NavigationLink(destination: GLP1View()) {
+                        DashboardTileCard(icon: "syringe.fill", title: "GLP-1", subtitle: "Zepbound tracker", color: .teal)
+                    }.buttonStyle(.plain)
+
+                    // Tools & Reports
+                    NavigationLink(destination: WeeklyBalanceView()) {
+                        DashboardTileCard(icon: "chart.bar.xaxis", title: "Weekly Balance", subtitle: "Cardio · Strength", color: Color(red: 0.4, green: 0.7, blue: 1.0))
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: ReportView()) {
+                        DashboardTileCard(icon: "doc.text.magnifyingglass", title: "Doctor Report", subtitle: "Share as PDF", color: .cyan)
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: CorrelationsView()) {
+                        DashboardTileCard(icon: "chart.dots.scatter", title: "Correlations", subtitle: "Find patterns", color: Color(red: 0.5, green: 0.7, blue: 0.95))
+                    }.buttonStyle(.plain)
+
+                    NavigationLink(destination: ImportView()) {
+                        DashboardTileCard(icon: "square.and.arrow.down.on.square", title: "Import Data", subtitle: "Garmin · Oura", color: Color(red: 0.6, green: 0.6, blue: 0.65))
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: InsightsView()) {
-                        DashboardTileCard(icon: "sparkles", title: "Insights", subtitle: "AI analysis", color: .cyan)
+                        DashboardTileCard(icon: "sparkles", title: "Insights", subtitle: "AI analysis", color: .teal)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: SettingsView()) {
-                        DashboardTileCard(icon: "gearshape", title: "Settings", subtitle: "Preferences", color: .gray)
+                        DashboardTileCard(icon: "gearshape", title: "Settings", subtitle: "Preferences", color: Color(red: 0.55, green: 0.55, blue: 0.6))
                     }.buttonStyle(.plain)
                 }
                 .padding(.horizontal, 16)
@@ -389,19 +394,19 @@ struct DashboardListView: View {
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: AnomalyAlertView()) {
-                        DashboardTileCard(icon: "exclamationmark.triangle.fill", title: "Health Alerts", subtitle: "Anomaly detection", color: .red)
+                        DashboardTileCard(icon: "exclamationmark.triangle.fill", title: "Health Alerts", subtitle: "Anomaly detection", color: Color(red: 1.0, green: 0.45, blue: 0.40))
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: HealthChatView()) {
-                        DashboardTileCard(icon: "bubble.left.and.bubble.right.fill", title: "Health Coach", subtitle: "Ask your data", color: .indigo)
+                        DashboardTileCard(icon: "bubble.left.and.bubble.right.fill", title: "Health Coach", subtitle: "Ask your data", color: .teal)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: CoachingView()) {
-                        DashboardTileCard(icon: "brain.head.profile", title: "AI Coach", subtitle: "Personalized plans", color: .purple, badge: "AI")
+                        DashboardTileCard(icon: "brain.head.profile", title: "AI Coach", subtitle: "Personalized plans", color: .mint, badge: "AI")
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: PredictiveInsightsView()) {
-                        DashboardTileCard(icon: "calendar.badge.clock", title: "Week Ahead", subtitle: "Predicted trends", color: .teal)
+                        DashboardTileCard(icon: "calendar.badge.clock", title: "Week Ahead", subtitle: "Predicted trends", color: .cyan)
                     }.buttonStyle(.plain)
                 }
                 .padding(.horizontal, 16)

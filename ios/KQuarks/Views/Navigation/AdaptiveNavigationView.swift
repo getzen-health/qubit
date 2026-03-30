@@ -20,10 +20,10 @@ struct AdaptiveNavigationView: View {
         tabBarAppearance.shadowColor = .clear
         
         let itemAppearance = UITabBarItemAppearance()
-        itemAppearance.normal.iconColor = UIColor.white.withAlphaComponent(0.3)
-        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white.withAlphaComponent(0.3)]
-        itemAppearance.selected.iconColor = UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)
-        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)]
+        itemAppearance.normal.iconColor = UIColor.white.withAlphaComponent(0.30)
+        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white.withAlphaComponent(0.30)]
+        itemAppearance.selected.iconColor = UIColor.white
+        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.white]
         tabBarAppearance.stackedLayoutAppearance = itemAppearance
         tabBarAppearance.inlineLayoutAppearance = itemAppearance
         tabBarAppearance.compactInlineLayoutAppearance = itemAppearance
@@ -41,7 +41,7 @@ struct AdaptiveNavigationView: View {
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
-        UINavigationBar.appearance().tintColor = UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)
+        UINavigationBar.appearance().tintColor = .white
     }
 
     var body: some View {

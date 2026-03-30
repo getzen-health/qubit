@@ -145,15 +145,15 @@ struct PremiumBackgroundView: View {
     var body: some View {
         ZStack {
             Color.premiumBackground
-            // Subtle radial gradient for depth
+            // Subtle warm dark gradient — no purple cast
             RadialGradient(
                 colors: [
-                    Color(red: 0.08, green: 0.06, blue: 0.18).opacity(0.5),
+                    Color(red: 0.07, green: 0.08, blue: 0.12).opacity(0.6),
                     Color.clear
                 ],
-                center: .top,
-                startRadius: 50,
-                endRadius: 500
+                center: .topLeading,
+                startRadius: 100,
+                endRadius: 600
             )
         }
         .ignoresSafeArea()
