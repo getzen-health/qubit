@@ -81,7 +81,7 @@ struct BreathingRateView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Breathing Rate")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -125,7 +125,7 @@ struct BreathingRateView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -178,7 +178,7 @@ struct BreathingRateView: View {
             .frame(height: 170)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -212,7 +212,7 @@ struct BreathingRateView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

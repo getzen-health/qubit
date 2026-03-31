@@ -54,7 +54,7 @@ struct GolfAnalysisView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Golf")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -92,7 +92,7 @@ struct GolfAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -135,7 +135,7 @@ struct GolfAnalysisView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -181,7 +181,7 @@ struct GolfAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -222,7 +222,7 @@ struct GolfAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

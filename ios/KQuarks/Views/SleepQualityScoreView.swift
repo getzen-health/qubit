@@ -98,7 +98,7 @@ struct SleepQualityScoreView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Sleep Quality Score")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -139,7 +139,7 @@ struct SleepQualityScoreView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -153,7 +153,7 @@ struct SleepQualityScoreView: View {
                 .foregroundStyle(.secondary)
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2).fill(Color(.systemGray5)).frame(height: 4)
+                    RoundedRectangle(cornerRadius: 2).fill(Color.white.opacity(0.08)).frame(height: 4)
                     RoundedRectangle(cornerRadius: 2).fill(color)
                         .frame(width: geo.size.width * CGFloat(score) / 100, height: 4)
                 }
@@ -187,7 +187,7 @@ struct SleepQualityScoreView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
@@ -239,7 +239,7 @@ struct SleepQualityScoreView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -258,7 +258,7 @@ struct SleepQualityScoreView: View {
                 componentRow(label: "Efficiency (30%)",score: avgEffScore,     desc: "Sleep time / time in bed")
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -272,7 +272,7 @@ struct SleepQualityScoreView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 3).fill(Color(.systemGray5)).frame(height: 6)
+                    RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.08)).frame(height: 6)
                     RoundedRectangle(cornerRadius: 3).fill(grade(score).color)
                         .frame(width: geo.size.width * CGFloat(score) / 100, height: 6)
                 }
@@ -314,7 +314,7 @@ struct SleepQualityScoreView: View {
             .chartYScale(domain: 0...dowmax)
             .frame(height: 120)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             if let best = dowData.max(by: { $0.1 < $1.1 }), best.1 > 0 {
@@ -357,7 +357,7 @@ struct SleepQualityScoreView: View {
                     if name != "Poor" { Divider().padding(.leading, 34) }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             Text("Score = 40% duration + 30% sleep stages + 30% efficiency. Stages score is neutral (50) when stage data is unavailable.")

@@ -90,7 +90,7 @@ struct HealthChatView: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
-                            .background(Color(.systemGray6))
+                            .background(Color.cardSurface)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .padding(.horizontal, 16)
                         }
@@ -127,7 +127,7 @@ struct HealthChatView: View {
                             .padding(.vertical, 10)
                             .background(
                                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .fill(Color(.systemGray5))
+                                    .fill(Color.white.opacity(0.08))
                             )
                             Spacer(minLength: 48)
                         }
@@ -157,7 +157,7 @@ struct HealthChatView: View {
                 .lineLimit(1...5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(Color(.systemGray6))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .focused($isInputFocused)
                 .disabled(service.isStreaming)
@@ -176,7 +176,7 @@ struct HealthChatView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Helpers

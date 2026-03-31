@@ -150,7 +150,7 @@ struct CircadianPerformanceView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -200,7 +200,7 @@ struct CircadianPerformanceView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -242,7 +242,7 @@ struct CircadianPerformanceView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

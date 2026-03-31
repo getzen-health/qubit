@@ -130,7 +130,7 @@ private struct GoalStepperRow: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }

@@ -56,8 +56,8 @@ struct RunningPaceZonesView: View {
         for r in runs {
             guard let monday = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: r.date)) else { continue }
             if map[monday] == nil { map[monday] = (0, 0) }
-            if r.zone <= 2 { map[monday]!.easy += r.durationSecs / 60 }
-            else { map[monday]!.hard += r.durationSecs / 60 }
+            if r.zone <= 2 { map[monday, default: (0, 0)].easy += r.durationSecs / 60 }
+            else { map[monday, default: (0, 0)].hard += r.durationSecs / 60 }
         }
         return map.sorted { $0.key < $1.key }.suffix(12).map { (key, val) in
             let label = key.formatted(.dateTime.month(.abbreviated).day())
@@ -90,7 +90,7 @@ struct RunningPaceZonesView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Pace Zones")
         .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
@@ -187,7 +187,7 @@ struct RunningPaceZonesView: View {
                             RoundedRectangle(cornerRadius: 3)
                                 .fill(Self.zoneColors[entry.zone] ?? .gray)
                                 .frame(width: 10, height: 10)
-                            Text("Z\(entry.zone) \(Self.zoneNames[entry.zone]!)")
+                            Text("Z\(entry.zone) \(Self.zoneNames[entry.zone] ?? "")")
                                 .font(.caption.weight(.medium))
                             Spacer()
                             Text(totalSecs > 0 ? "\(Int((entry.secs / totalSecs * 100).rounded()))%" : "—")
@@ -200,7 +200,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -248,7 +248,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -272,9 +272,9 @@ struct RunningPaceZonesView: View {
                         .fill(Self.zoneColors[entry.zone] ?? .gray)
                         .frame(width: 8, height: 24)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Z\(entry.zone) \(Self.zoneNames[entry.zone]!)")
+                        Text("Z\(entry.zone) \(Self.zoneNames[entry.zone] ?? "")")
                             .font(.caption.weight(.medium))
-                        Text(zoneDescs[entry.zone]!)
+                        Text(zoneDescs[entry.zone] ?? "")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -302,7 +302,7 @@ struct RunningPaceZonesView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -321,7 +321,7 @@ struct RunningPaceZonesView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -412,7 +412,7 @@ struct PaceZoneCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

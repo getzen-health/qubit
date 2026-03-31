@@ -170,7 +170,7 @@ struct FoodDiaryView: View {
                 }
                 .padding(.vertical)
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Food Diary")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $editingEntry) { entry in

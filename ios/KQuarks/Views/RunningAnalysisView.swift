@@ -82,7 +82,7 @@ struct RunningAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Running")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -138,7 +138,7 @@ struct RunningAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -202,7 +202,7 @@ struct RunningAnalysisView: View {
                     .padding(8)
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -236,7 +236,7 @@ struct RunningAnalysisView: View {
             }
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -270,7 +270,7 @@ struct RunningAnalysisView: View {
                           sub: "\(String(format: "%.1f km", b10.distanceKm)) run", color: .orange)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -305,7 +305,7 @@ struct RunningAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

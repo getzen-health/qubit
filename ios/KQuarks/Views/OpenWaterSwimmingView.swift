@@ -59,7 +59,7 @@ struct OpenWaterSwimmingView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Open Water Swimming")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -98,7 +98,7 @@ struct OpenWaterSwimmingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -156,7 +156,7 @@ struct OpenWaterSwimmingView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -183,7 +183,7 @@ struct OpenWaterSwimmingView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -217,7 +217,7 @@ struct OpenWaterSwimmingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

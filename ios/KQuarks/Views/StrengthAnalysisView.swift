@@ -99,7 +99,7 @@ struct StrengthAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Strength Training")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -155,7 +155,7 @@ struct StrengthAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -214,7 +214,7 @@ struct StrengthAnalysisView: View {
             .chartYScale(domain: 0...max(7, (weeklyData.map(\.count).max() ?? 5) + 1))
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -256,7 +256,7 @@ struct StrengthAnalysisView: View {
             .chartYAxisLabel("min")
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -302,7 +302,7 @@ struct StrengthAnalysisView: View {
             }
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -333,7 +333,7 @@ struct StrengthAnalysisView: View {
                   sub: "\(sessions.count) sessions", color: .purple)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -382,7 +382,7 @@ struct StrengthAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

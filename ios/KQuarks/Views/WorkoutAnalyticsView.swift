@@ -463,7 +463,7 @@ struct WorkoutAnalyticsView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .premiumList()
         .navigationTitle("Analytics")
         .toolbarTitleDisplayMode(.inline)
     }

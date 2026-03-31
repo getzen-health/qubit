@@ -144,7 +144,7 @@ struct RespiratoryPatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Respiratory Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -164,7 +164,7 @@ struct RespiratoryPatternView: View {
             Divider().frame(height: 50)
             statCell(value: "\(highCount)", label: "Elevated", sub: "> 20 br/min", color: highColor)
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -197,7 +197,7 @@ struct RespiratoryPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -226,7 +226,7 @@ struct RespiratoryPatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             if let day = dayAvg {
@@ -240,12 +240,12 @@ struct RespiratoryPatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -265,7 +265,7 @@ struct RespiratoryPatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -285,7 +285,7 @@ struct RespiratoryPatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -317,7 +317,7 @@ struct RespiratoryPatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -335,7 +335,7 @@ struct RespiratoryPatternView: View {
         }
         .font(.caption)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

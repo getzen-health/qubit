@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Premium tile card with color tint for dashboard feature grids
+/// Premium tile card — icon in a tinted circle, subtle card with color accent
 struct DashboardTileCard: View {
     let icon: String
     let title: String
@@ -9,50 +9,55 @@ struct DashboardTileCard: View {
     var badge: String? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
-                // Colored icon
-                Image(systemName: icon)
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(color)
+                // Icon in colored circle
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 38, height: 38)
+                    Image(systemName: icon)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(color)
+                }
 
                 Spacer()
 
                 if let badge = badge {
                     Text(badge)
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(color)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 3)
-                        .background(
-                            LinearGradient(
-                                colors: [color, color.opacity(0.7)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
+                        .background(color.opacity(0.15))
                         .clipShape(Capsule())
                 }
             }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white.opacity(0.9))
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.88))
                     .lineLimit(1)
 
                 if let subtitle = subtitle {
                     Text(subtitle)
-                        .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.4))
+                        .font(.system(size: 11, weight: .regular))
+                        .foregroundStyle(.white.opacity(0.38))
                         .lineLimit(2)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .premiumCard(cornerRadius: 18, tint: color, tintOpacity: 0.05)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color.cardSurface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+        )
     }
 }
 
@@ -60,10 +65,10 @@ struct DashboardTileCard: View {
     ZStack {
         PremiumBackgroundView()
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .blue)
+            DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .cyan)
             DashboardTileCard(icon: "timer", title: "Fasting", subtitle: "Track window", color: .orange)
-            DashboardTileCard(icon: "sparkles", title: "AI Coach", subtitle: "Ask anything", color: .purple, badge: "AI")
-            DashboardTileCard(icon: "brain.head.profile", title: "Health Chat", subtitle: "Chat with AI", color: .indigo)
+            DashboardTileCard(icon: "sparkles", title: "AI Coach", subtitle: "Ask anything", color: .teal, badge: "AI")
+            DashboardTileCard(icon: "brain.head.profile", title: "Health Chat", subtitle: "Chat with AI", color: .mint)
         }
         .padding()
     }

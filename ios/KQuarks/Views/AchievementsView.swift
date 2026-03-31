@@ -46,13 +46,13 @@ struct AchievementsView: View {
                         }
                     }
                 }
-                .background(Color(.systemBackground))
+                .background(Color.premiumBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(.horizontal)
                 .padding(.bottom, 24)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Empty state
@@ -71,7 +71,7 @@ struct AchievementsView: View {
                 .padding(.horizontal, 40)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Load

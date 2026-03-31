@@ -52,7 +52,7 @@ struct StreaksView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Streaks")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -75,7 +75,7 @@ struct StreaksView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -166,7 +166,7 @@ struct StreaksView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -222,7 +222,7 @@ struct StreaksView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -396,7 +396,7 @@ private struct StreakCard: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
@@ -433,7 +433,7 @@ private struct StreakHeatmap: View {
                     let met = isGoalMet(day)
                     let isToday = day == todayStr
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(met ? color : Color(.systemGray5))
+                        .fill(met ? color : Color.white.opacity(0.08))
                         .frame(maxWidth: .infinity)
                         .aspectRatio(1, contentMode: .fit)
                         .overlay(
@@ -456,7 +456,7 @@ private struct ChecklistRow: View {
         HStack(spacing: 10) {
             Image(systemName: met ? "checkmark.circle.fill" : "circle")
                 .font(.title3)
-                .foregroundStyle(met ? .green : Color(.systemGray4))
+                .foregroundStyle(met ? .green : Color.white.opacity(0.12))
                 .frame(width: 26)
 
             Text(label)

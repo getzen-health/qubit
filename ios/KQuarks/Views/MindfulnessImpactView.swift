@@ -56,7 +56,7 @@ struct MindfulnessImpactView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Mindfulness Impact")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -113,7 +113,7 @@ struct MindfulnessImpactView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -162,7 +162,7 @@ struct MindfulnessImpactView: View {
                 .foregroundStyle(.secondary.opacity(0.7))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -260,7 +260,7 @@ struct MindfulnessImpactView: View {
             .frame(height: 150)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -304,7 +304,7 @@ struct MindfulnessImpactView: View {
             .frame(height: 200)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

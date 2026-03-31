@@ -8,25 +8,30 @@ struct InsightsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                if !subscriptionService.isPro {
-                    InsightsProTeaserView(showPaywall: $showPaywall)
-                } else if isLoading {
-                    ProgressView()
-                        .padding(.top, 100)
-                } else if insights.isEmpty {
-                    InsightsEmptyStateView()
-                } else {
-                    LazyVStack(spacing: 16) {
-                        ForEach(insights) { insight in
-                            InsightCard(insight: insight)
+            ZStack {
+                PremiumBackgroundView()
+                ScrollView {
+                    if !subscriptionService.isPro {
+                        InsightsProTeaserView(showPaywall: $showPaywall)
+                    } else if isLoading {
+                        ProgressView()
+                            .padding(.top, 100)
+                    } else if insights.isEmpty {
+                        InsightsEmptyStateView()
+                    } else {
+                        LazyVStack(spacing: 16) {
+                            ForEach(insights) { insight in
+                                InsightCard(insight: insight)
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
                 }
             }
             .navigationTitle("Insights")
             .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     HStack(spacing: 4) {
@@ -134,7 +139,7 @@ struct InsightsProTeaserView: View {
                 .blur(radius: 6)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(.systemBackground).opacity(0.4))
+                        .fill(Color.premiumBackground.opacity(0.4))
                 )
                 .allowsHitTesting(false)
 
@@ -145,11 +150,12 @@ struct InsightsProTeaserView: View {
 
                 Text("AI Insights are a Pro feature")
                     .font(.headline)
+                    .foregroundStyle(.white.opacity(0.85))
                     .multilineTextAlignment(.center)
 
                 Text("Upgrade to KQuarks Pro for daily AI-powered health insights, trend analysis, and more.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
 
@@ -176,10 +182,11 @@ struct InsightsEmptyStateView: View {
 
             Text("No Insights Yet")
                 .font(.title2.bold())
+                .foregroundStyle(.white.opacity(0.85))
 
             Text("Once you have enough health data, AI-powered insights will appear here.")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.4))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
         }
@@ -200,21 +207,22 @@ struct InsightCard: View {
 
                 Text(insight.category.title)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
 
                 Spacer()
 
                 Text(insight.date, style: .date)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
             }
 
             Text(insight.title)
                 .font(.headline)
+                .foregroundStyle(.white.opacity(0.85))
 
             Text(insight.content)
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.5))
 
             if insight.priority == .high {
                 HStack {
@@ -227,8 +235,7 @@ struct InsightCard: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(16)
+        .premiumCard(cornerRadius: 16, tint: insight.category.color, tintOpacity: 0.03)
     }
 }
 

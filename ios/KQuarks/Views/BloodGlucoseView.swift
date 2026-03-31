@@ -67,7 +67,7 @@ struct BloodGlucoseView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Blood Glucose")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -132,7 +132,7 @@ struct BloodGlucoseView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -193,7 +193,7 @@ struct BloodGlucoseView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -257,7 +257,7 @@ struct BloodGlucoseView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -284,7 +284,7 @@ struct BloodGlucoseView: View {
                 }
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -359,7 +359,7 @@ struct BloodGlucoseView: View {
             .chartYAxisLabel("mg/dL")
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -386,7 +386,7 @@ struct BloodGlucoseView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

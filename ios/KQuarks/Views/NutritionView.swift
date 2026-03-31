@@ -33,7 +33,7 @@ struct NutritionView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Nutrition")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -139,7 +139,7 @@ struct NutritionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -181,7 +181,7 @@ struct NutritionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -207,7 +207,7 @@ struct NutritionView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color(.systemBackground))
+                        .background(Color.premiumBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     .buttonStyle(.plain)
@@ -231,7 +231,7 @@ struct NutritionView: View {
                         Text(MealTypeOption.from(meal.meal_type).emoji)
                             .font(.title3)
                             .frame(width: 36, height: 36)
-                            .background(Color(.systemGroupedBackground))
+                            .background(Color.premiumBackground)
                             .clipShape(Circle())
 
                         VStack(alignment: .leading, spacing: 2) {
@@ -267,7 +267,7 @@ struct NutritionView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

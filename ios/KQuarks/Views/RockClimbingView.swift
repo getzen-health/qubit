@@ -54,7 +54,7 @@ struct RockClimbingView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Rock Climbing")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -96,7 +96,7 @@ struct RockClimbingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -130,7 +130,7 @@ struct RockClimbingView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -169,7 +169,7 @@ struct RockClimbingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -210,7 +210,7 @@ struct RockClimbingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

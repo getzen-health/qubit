@@ -96,7 +96,7 @@ struct SleepApneaView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Sleep Apnea")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -146,7 +146,7 @@ struct SleepApneaView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -194,7 +194,7 @@ struct SleepApneaView: View {
             .frame(height: 150)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -233,7 +233,7 @@ struct SleepApneaView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

@@ -28,7 +28,7 @@ struct TrainingLoadView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Training Load")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -102,7 +102,7 @@ struct TrainingLoadView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -127,7 +127,7 @@ struct TrainingLoadView: View {
             .chartYAxisLabel("Arbitrary Load Units")
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -164,7 +164,7 @@ struct TrainingLoadView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -184,7 +184,7 @@ struct TrainingLoadView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

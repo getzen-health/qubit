@@ -87,7 +87,7 @@ struct FastingView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Fasting")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -173,7 +173,7 @@ struct FastingView: View {
             .padding(.top, 8)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 
@@ -309,7 +309,7 @@ struct FastingView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
         }

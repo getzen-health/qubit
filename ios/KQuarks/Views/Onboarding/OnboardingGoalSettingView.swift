@@ -165,7 +165,7 @@ private struct GoalCard: View {
                             .font(.caption2.bold())
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 8)
-                            .background(value == option ? color : Color(.systemGray5))
+                            .background(value == option ? color : Color.white.opacity(0.08))
                             .foregroundStyle(value == option ? .white : .primary)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
@@ -173,7 +173,7 @@ private struct GoalCard: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }

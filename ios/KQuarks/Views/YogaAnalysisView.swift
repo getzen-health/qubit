@@ -79,7 +79,7 @@ struct YogaAnalysisView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Yoga & Mind-Body")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -125,7 +125,7 @@ struct YogaAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -178,7 +178,7 @@ struct YogaAnalysisView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -208,7 +208,7 @@ struct YogaAnalysisView: View {
             .frame(height: max(Double(typeCounts.count) * 44, 80))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -259,7 +259,7 @@ struct YogaAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

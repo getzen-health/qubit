@@ -92,7 +92,7 @@ struct WorkoutEfficiencyView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Workout Efficiency")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -110,7 +110,7 @@ struct WorkoutEfficiencyView: View {
             statBubble(value: String(format: "%.1f", overallEfficiency), label: "Avg kcal/min", color: overallEfficiency >= 8 ? .green : overallEfficiency >= 5 ? .yellow : .orange)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -163,7 +163,7 @@ struct WorkoutEfficiencyView: View {
             .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -223,7 +223,7 @@ struct WorkoutEfficiencyView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -281,7 +281,7 @@ struct WorkoutEfficiencyView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -347,7 +347,7 @@ struct WorkoutEfficiencyView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -365,7 +365,7 @@ struct WorkoutEfficiencyView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -385,7 +385,7 @@ struct WorkoutEfficiencyView: View {
                 .padding(.horizontal, 40)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
     }
 
     // MARK: - Load

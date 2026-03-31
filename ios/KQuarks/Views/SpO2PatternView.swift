@@ -142,7 +142,7 @@ struct SpO2PatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("SpO₂ Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -162,7 +162,7 @@ struct SpO2PatternView: View {
             Divider().frame(height: 50)
             statCell(value: "\(lowCount)", label: "Low Events", sub: "< 90%", color: lowColor)
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -195,7 +195,7 @@ struct SpO2PatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -224,7 +224,7 @@ struct SpO2PatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             if let day = dayAvg {
@@ -238,12 +238,12 @@ struct SpO2PatternView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -263,7 +263,7 @@ struct SpO2PatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -283,7 +283,7 @@ struct SpO2PatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -312,7 +312,7 @@ struct SpO2PatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -329,7 +329,7 @@ struct SpO2PatternView: View {
         }
         .font(.caption)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

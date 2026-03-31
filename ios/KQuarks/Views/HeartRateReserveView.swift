@@ -157,7 +157,7 @@ struct HeartRateReserveView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -243,7 +243,7 @@ struct HeartRateReserveView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -298,7 +298,7 @@ struct HeartRateReserveView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -367,7 +367,7 @@ struct HeartRateReserveView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 

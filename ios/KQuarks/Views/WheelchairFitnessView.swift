@@ -185,7 +185,7 @@ struct WheelchairFitnessView: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -243,7 +243,7 @@ struct WheelchairFitnessView: View {
                 .font(.caption2).foregroundStyle(.tertiary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -268,7 +268,7 @@ struct WheelchairFitnessView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -306,7 +306,7 @@ struct WheelchairFitnessView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

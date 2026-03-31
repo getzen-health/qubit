@@ -106,7 +106,7 @@ struct CycleTrainingView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Cycle-Synced Training")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -188,7 +188,7 @@ struct CycleTrainingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -211,7 +211,7 @@ struct CycleTrainingView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

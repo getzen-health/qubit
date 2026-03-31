@@ -100,7 +100,7 @@ struct MedicationTrackingView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(24)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -126,7 +126,7 @@ struct MedicationTrackingView: View {
             .foregroundStyle(.secondary)
         }
         .padding(24)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -171,12 +171,12 @@ struct MedicationTrackingView: View {
                     Spacer()
                 }
                 .padding(10)
-                .background(Color(.tertiarySystemBackground))
+                .background(Color.premiumSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -203,12 +203,12 @@ struct MedicationTrackingView: View {
                     }
                 }
                 .padding(10)
-                .background(Color(.tertiarySystemBackground))
+                .background(Color.premiumSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -274,7 +274,7 @@ struct MedicationTrackingView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -289,7 +289,7 @@ struct MedicationTrackingView: View {
             scienceItem("Disclaimer", detail: "This view is informational only and does not constitute medical advice. Always discuss medication changes with your healthcare provider.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

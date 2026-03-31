@@ -250,7 +250,7 @@ struct PreviewCard: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

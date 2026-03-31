@@ -311,7 +311,7 @@ struct ActivityRingsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 }
@@ -365,7 +365,7 @@ struct StatCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(title)

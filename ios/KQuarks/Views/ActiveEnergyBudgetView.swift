@@ -61,7 +61,7 @@ struct ActiveEnergyBudgetView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Active Energy")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -120,7 +120,7 @@ struct ActiveEnergyBudgetView: View {
                 .font(.caption).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -168,7 +168,7 @@ struct ActiveEnergyBudgetView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -205,7 +205,7 @@ struct ActiveEnergyBudgetView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -241,7 +241,7 @@ struct ActiveEnergyBudgetView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

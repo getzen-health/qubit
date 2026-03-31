@@ -50,7 +50,7 @@ struct HealthHeatmapView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Health Heatmap")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -69,7 +69,7 @@ struct HealthHeatmapView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -103,7 +103,7 @@ struct HealthHeatmapView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -190,7 +190,7 @@ struct HealthHeatmapView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .transition(.asymmetric(
             insertion: .move(edge: .top).combined(with: .opacity),
@@ -223,7 +223,7 @@ struct HealthHeatmapView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

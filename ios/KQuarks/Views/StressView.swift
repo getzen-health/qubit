@@ -208,8 +208,10 @@ struct StressView: View {
                     mainContent
                 }
             }
+            .background(PremiumBackgroundView())
             .navigationTitle("Stress & Cortisol")
             .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -236,51 +238,80 @@ struct StressView: View {
                 Text(viewModel.errorMessage ?? "")
             }
         }
+        .preferredColorScheme(.dark)
     }
 
     @ViewBuilder
     private var mainContent: some View {
-        List {
-            Section {
-                TodayStressCard(
-                    manualLog: viewModel.todayManualLog,
-                    hrvDerivedStress: viewModel.todayHRVDerivedStress,
-                    hrv: viewModel.todayHRVSummary?.avgHrv,
-                    onLogTap: { showLogSheet = true }
-                )
-            }
+        ZStack {
+            PremiumBackgroundView()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    // Today's Stress
+                    VStack(alignment: .leading, spacing: 10) {
+                        sectionHeader("TODAY'S STRESS", icon: "brain.head.profile")
+                        TodayStressCard(
+                            manualLog: viewModel.todayManualLog,
+                            hrvDerivedStress: viewModel.todayHRVDerivedStress,
+                            hrv: viewModel.todayHRVSummary?.avgHrv,
+                            onLogTap: { showLogSheet = true }
+                        )
+                        .padding(16)
+                        .premiumCard(cornerRadius: 18, tint: .orange, tintOpacity: 0.02)
+                    }
 
-            Section {
-                StressTrendChart(
-                    logs: viewModel.stressLogs,
-                    summaries: viewModel.dailySummaries,
-                    days: trendDays
-                )
-                Picker("Range", selection: $trendDays) {
-                    Text("7 Days").tag(7)
-                    Text("30 Days").tag(30)
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, 4)
-            }
+                    // Stress Trend
+                    VStack(alignment: .leading, spacing: 10) {
+                        sectionHeader("STRESS TREND", icon: "chart.xyaxis.line")
+                        VStack(spacing: 0) {
+                            StressTrendChart(
+                                logs: viewModel.stressLogs,
+                                summaries: viewModel.dailySummaries,
+                                days: trendDays
+                            )
+                            .padding(16)
+                            Color.premiumDivider.frame(height: 0.5)
+                            Picker("Range", selection: $trendDays) {
+                                Text("7 Days").tag(7)
+                                Text("30 Days").tag(30)
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(16)
+                        }
+                        .premiumCard(cornerRadius: 18, tint: .orange, tintOpacity: 0.02)
+                    }
 
-            if !viewModel.recentLogs.isEmpty {
-                Section("Recent (14 days)") {
-                    ForEach(viewModel.recentLogs) { log in
-                        StressLogRow(log: log)
-                            .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) {
-                                    logToDelete = log
-                                    showDeleteConfirm = true
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
+                    // Recent Logs
+                    if !viewModel.recentLogs.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionHeader("RECENT (14 DAYS)", icon: "clock.arrow.circlepath")
+                            VStack(spacing: 0) {
+                                ForEach(Array(viewModel.recentLogs.enumerated()), id: \.element.id) { index, log in
+                                    StressLogRow(log: log)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .contextMenu {
+                                            Button(role: .destructive) {
+                                                logToDelete = log
+                                                showDeleteConfirm = true
+                                            } label: {
+                                                Label("Delete", systemImage: "trash")
+                                            }
+                                        }
+                                    if index < viewModel.recentLogs.count - 1 {
+                                        Color.premiumDivider.frame(height: 0.5)
+                                            .padding(.leading, 72)
+                                    }
                                 }
                             }
+                            .premiumCard(cornerRadius: 18, tint: .orange, tintOpacity: 0.02)
+                        }
                     }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
             }
         }
-        .listStyle(.insetGrouped)
         .confirmationDialog(
             "Delete this stress log?",
             isPresented: $showDeleteConfirm,
@@ -292,6 +323,20 @@ struct StressView: View {
                 }
             }
         }
+    }
+
+    private func sectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.orange.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
     }
 }
 
@@ -311,18 +356,19 @@ struct TodayStressCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Today")
                         .font(.headline)
+                        .foregroundStyle(.white.opacity(0.85))
                     if let log = manualLog {
                         Text("Updated \(log.loggedAt, style: .relative) ago")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     } else if hrvDerivedStress != nil {
                         Text("From HRV data")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     } else {
                         Text("No data yet")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                 }
                 Spacer()
@@ -332,7 +378,7 @@ struct TodayStressCard: View {
                 } label: {
                     Image(systemName: "pencil.circle")
                         .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
 
@@ -359,7 +405,7 @@ struct TodayStressCard: View {
                     if manualLog == nil && hrvDerivedStress == nil {
                         Text("Tap + to log your\nstress level now")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -390,7 +436,7 @@ struct StressGauge: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color(.systemGray5), lineWidth: 14)
+                .stroke(Color.white.opacity(0.08), lineWidth: 14)
                 .frame(width: 120, height: 120)
 
             if let level = level {
@@ -413,10 +459,10 @@ struct StressGauge: View {
                 VStack(spacing: 2) {
                     Text("—")
                         .font(.system(size: 38, weight: .bold, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text("No Data")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
             }
         }
@@ -440,7 +486,7 @@ struct StressSourceRow: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(label)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                 Text(value)
                     .font(.subheadline.bold().monospacedDigit())
                     .foregroundStyle(color)
@@ -465,9 +511,9 @@ struct StressTagsFlow: View {
                     .font(.caption2)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color.cardSurface)
                     .clipShape(Capsule())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
             }
         }
     }
@@ -513,13 +559,10 @@ struct StressTrendChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Stress Trend")
-                .font(.headline)
-
             if manualPoints.isEmpty && hrvPoints.isEmpty {
                 Text("No data for this period")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                     .frame(height: 160, alignment: .center)
                     .frame(maxWidth: .infinity)
             } else {
@@ -548,6 +591,22 @@ struct StressTrendChart: View {
                         yEnd: .value("Max", 10)
                     )
                     .foregroundStyle(Color(red: 0.937, green: 0.267, blue: 0.267).opacity(0.06))
+
+                    // HRV-derived area fill
+                    ForEach(hrvPoints) { point in
+                        AreaMark(
+                            x: .value("Date", point.date),
+                            y: .value("Stress", point.value)
+                        )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color.blue.opacity(0.25), Color.blue.opacity(0.0)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .interpolationMethod(.catmullRom)
+                    }
 
                     // HRV-derived line
                     ForEach(hrvPoints) { point in
@@ -580,30 +639,39 @@ struct StressTrendChart: View {
                 .chartYScale(domain: 1...max(10, Int(manualPoints.map(\.value).max() ?? 10)))
                 .chartYAxis {
                     AxisMarks(values: [1, 3, 5, 7, 10]) { value in
-                        AxisGridLine()
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                            .foregroundStyle(.white.opacity(0.06))
                         AxisValueLabel {
-                            if let v = value.as(Int.self) { Text("\(v)") }
+                            if let v = value.as(Int.self) {
+                                Text("\(v)")
+                                    .foregroundStyle(.white.opacity(0.3))
+                            }
                         }
                     }
                 }
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: days <= 7 ? 1 : 7)) {
-                        AxisGridLine()
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                            .foregroundStyle(.white.opacity(0.06))
                         AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                            .foregroundStyle(.white.opacity(0.3))
                     }
                 }
                 .frame(height: 160)
+                .chartPlotStyle { plotArea in
+                    plotArea.background(Color.clear)
+                }
 
                 HStack(spacing: 16) {
                     HStack(spacing: 4) {
                         Circle().fill(Color.blue.opacity(0.85)).frame(width: 8, height: 8)
-                        Text("HRV-derived").font(.caption2).foregroundStyle(.secondary)
+                        Text("HRV-derived").font(.caption2).foregroundStyle(.white.opacity(0.4))
                     }
                     HStack(spacing: 4) {
                         Circle()
                             .fill(Color(red: 0.937, green: 0.267, blue: 0.267))
                             .frame(width: 8, height: 8)
-                        Text("Manual log").font(.caption2).foregroundStyle(.secondary)
+                        Text("Manual log").font(.caption2).foregroundStyle(.white.opacity(0.4))
                     }
                 }
             }
@@ -640,6 +708,7 @@ struct StressLogRow: View {
                 HStack {
                     Text(log.loggedAt, style: .date)
                         .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.85))
                     Spacer()
                     HStack(spacing: 3) {
                         Image(systemName: sourceIcon)
@@ -647,16 +716,16 @@ struct StressLogRow: View {
                         Text(sourceLabel)
                             .font(.caption2)
                     }
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                 }
                 Text(log.loggedAt, style: .time)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
 
                 if let notes = log.notes, !notes.isEmpty {
                     Text(notes)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                         .lineLimit(1)
                 }
 
@@ -668,9 +737,9 @@ struct StressLogRow: View {
                                     .font(.caption2)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(Color(.secondarySystemBackground))
+                                    .background(Color.cardSurface)
                                     .clipShape(Capsule())
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.4))
                             }
                         }
                     }
@@ -735,11 +804,11 @@ struct QuickLogSheet: View {
                             HStack {
                                 Text("Relaxed")
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.4))
                                 Spacer()
                                 Text("Very Stressed")
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.4))
                             }
                         }
                     }
@@ -773,7 +842,7 @@ struct QuickLogSheet: View {
                                 .background(
                                     isSelected
                                         ? currentLevel.stressColor.opacity(0.12)
-                                        : Color(.secondarySystemBackground)
+                                        : Color.cardSurface
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)

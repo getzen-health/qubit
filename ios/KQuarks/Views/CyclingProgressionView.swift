@@ -59,7 +59,7 @@ struct CyclingProgressionView: View {
                 .padding(.bottom, 32)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Cycling Progression")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -102,7 +102,7 @@ struct CyclingProgressionView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -129,7 +129,7 @@ struct CyclingProgressionView: View {
             Text(firstLastMessage).font(.caption).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -164,7 +164,7 @@ struct CyclingProgressionView: View {
             .frame(height: 150)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -203,7 +203,7 @@ struct CyclingProgressionView: View {
             .frame(height: 180)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -234,7 +234,7 @@ struct CyclingProgressionView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -261,7 +261,7 @@ struct CyclingProgressionView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -288,7 +288,7 @@ struct CyclingProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

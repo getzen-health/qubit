@@ -126,142 +126,258 @@ struct CaffeineView: View {
     @State private var showCustom = false
 
     var body: some View {
-        List {
-            statusSection
-            quickAddSection
-            weekSection
-            todaySection
+        ZStack {
+            PremiumBackgroundView()
+
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    statusSection
+                    quickAddSection
+                    weekSection
+                    todaySection
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
+            }
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Caffeine")
         .navigationBarTitleDisplayMode(.large)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .sheet(isPresented: $showCustom) {
             customAddSheet
         }
+        .preferredColorScheme(.dark)
+    }
+
+    private func caffeineSectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.brown.opacity(0.6))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
     }
 
     // MARK: - Sections
 
     private var statusSection: some View {
-        Section {
-            VStack(spacing: 16) {
-                // Gauge
-                ZStack {
-                    Circle()
-                        .stroke(Color.secondary.opacity(0.2), lineWidth: 12)
-                        .frame(width: 120, height: 120)
-                    Circle()
-                        .trim(from: 0, to: min(CGFloat(vm.todayTotal) / CGFloat(vm.safeLimit), 1.0))
-                        .stroke(vm.statusColor, style: StrokeStyle(lineWidth: 12, lineCap: .round))
-                        .frame(width: 120, height: 120)
-                        .rotationEffect(.degrees(-90))
-                        .animation(.easeInOut, value: vm.todayTotal)
-                    VStack(spacing: 2) {
-                        Text("\(vm.todayTotal)")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                        Text("mg today")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
+        VStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .stroke(Color.white.opacity(0.06), lineWidth: 14)
+                    .frame(width: 130, height: 130)
+                Circle()
+                    .trim(from: 0, to: min(CGFloat(vm.todayTotal) / CGFloat(vm.safeLimit), 1.0))
+                    .stroke(
+                        LinearGradient(
+                            colors: [vm.statusColor, vm.statusColor.opacity(0.5)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                    )
+                    .frame(width: 130, height: 130)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.spring(response: 0.8, dampingFraction: 0.7), value: vm.todayTotal)
+                Circle()
+                    .trim(from: 0, to: min(CGFloat(vm.todayTotal) / CGFloat(vm.safeLimit), 1.0))
+                    .stroke(vm.statusColor.opacity(0.3), lineWidth: 20)
+                    .frame(width: 130, height: 130)
+                    .rotationEffect(.degrees(-90))
+                    .blur(radius: 10)
+                VStack(spacing: 2) {
+                    Text("\(vm.todayTotal)")
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [vm.statusColor, vm.statusColor.opacity(0.6)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    Text("mg today")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.35))
+                        .textCase(.uppercase)
+                        .tracking(1)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
-
-                HStack(spacing: 24) {
-                    statPill(label: "Status", value: vm.statusLabel, color: vm.statusColor)
-                    statPill(label: "In system", value: String(format: "%.0f mg", vm.currentCaffeineInSystem), color: .blue)
-                    statPill(label: "Last caffeine\nbefore sleep", value: vm.sleepCutoffMessage, color: .purple)
-                }
-
-                Text("Daily limit: \(vm.safeLimit) mg (FDA recommendation)")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
             }
-            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 16)
+
+            HStack(spacing: 24) {
+                statPill(label: "Status", value: vm.statusLabel, color: vm.statusColor)
+                statPill(label: "In system", value: String(format: "%.0f mg", vm.currentCaffeineInSystem), color: .blue)
+                statPill(label: "Last caffeine\nbefore sleep", value: vm.sleepCutoffMessage, color: .purple)
+            }
+
+            Text("Daily limit: \(vm.safeLimit) mg (FDA recommendation)")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.white.opacity(0.3))
         }
+        .padding(.vertical, 12)
+        .premiumCard(cornerRadius: 20, tint: vm.statusColor, tintOpacity: 0.03, gradientBorder: true)
     }
 
     private var quickAddSection: some View {
-        Section("Quick Add") {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                ForEach(CaffeineViewModel.DrinkPreset.allCases) { preset in
-                    Button {
-                        vm.add(preset)
-                        let impact = UIImpactFeedbackGenerator(style: .medium)
-                        impact.impactOccurred()
-                    } label: {
-                        VStack(spacing: 6) {
-                            Image(systemName: preset.icon)
-                                .font(.title2)
-                                .foregroundStyle(preset.color)
-                            Text(preset.rawValue)
-                                .font(.caption2)
-                                .multilineTextAlignment(.center)
-                                .lineLimit(2)
-                            Text("\(preset.mg)mg")
-                                .font(.caption2)
-                                .bold()
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(preset.color.opacity(0.1))
-                        .cornerRadius(10)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.vertical, 4)
+        VStack(alignment: .leading, spacing: 10) {
+            caffeineSectionHeader("Quick Add", icon: "plus.circle.fill")
 
-            Button {
-                showCustom = true
-            } label: {
-                Label("Add Custom", systemImage: "plus.circle")
+            VStack(spacing: 12) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    ForEach(CaffeineViewModel.DrinkPreset.allCases) { preset in
+                        Button {
+                            vm.add(preset)
+                            let impact = UIImpactFeedbackGenerator(style: .medium)
+                            impact.impactOccurred()
+                        } label: {
+                            VStack(spacing: 6) {
+                                Image(systemName: preset.icon)
+                                    .font(.title2)
+                                    .foregroundStyle(preset.color)
+                                Text(preset.rawValue)
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.6))
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(2)
+                                Text("\(preset.mg)mg")
+                                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                                    .foregroundStyle(preset.color.opacity(0.8))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(preset.color.opacity(0.08))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(preset.color.opacity(0.15), lineWidth: 0.5)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Button {
+                    showCustom = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle")
+                            .foregroundStyle(.brown.opacity(0.6))
+                        Text("Add Custom")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.cardSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+                    )
+                }
+                .buttonStyle(.plain)
             }
+            .premiumCard(cornerRadius: 18, tint: .brown, tintOpacity: 0.02)
         }
     }
 
     private var weekSection: some View {
-        Section("Last 7 Days") {
-            Chart(vm.last7Days, id: \.date) { day in
-                BarMark(
-                    x: .value("Day", day.date, unit: .day),
-                    y: .value("mg", day.mg)
-                )
-                .foregroundStyle(day.mg >= vm.safeLimit ? Color.red : Color.brown)
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { value in
-                    AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+        VStack(alignment: .leading, spacing: 10) {
+            caffeineSectionHeader("Last 7 Days", icon: "chart.bar.fill")
+
+            VStack {
+                Chart(vm.last7Days, id: \.date) { day in
+                    BarMark(
+                        x: .value("Day", day.date, unit: .day),
+                        y: .value("mg", day.mg)
+                    )
+                    .foregroundStyle(
+                        day.mg >= vm.safeLimit
+                            ? LinearGradient(colors: [.red, .red.opacity(0.5)], startPoint: .top, endPoint: .bottom)
+                            : LinearGradient(colors: [.brown, .brown.opacity(0.4)], startPoint: .top, endPoint: .bottom)
+                    )
+                    .cornerRadius(4)
                 }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .day)) { _ in
+                        AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.4))
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                            .foregroundStyle(.white.opacity(0.06))
+                        AxisValueLabel()
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.3))
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(Color.clear)
+                }
+                .frame(height: 100)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 4)
             }
-            .frame(height: 100)
+            .premiumCard(cornerRadius: 18, tint: .brown, tintOpacity: 0.02)
         }
     }
 
     private var todaySection: some View {
-        Section("Today's Log") {
-            if vm.entries.filter({ Calendar.current.isDateInToday($0.timestamp) }).isEmpty {
-                Text("No caffeine logged today")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-            } else {
-                ForEach(vm.entries.filter { Calendar.current.isDateInToday($0.timestamp) }) { entry in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(entry.name).font(.subheadline)
-                            Text(entry.timestamp.kqFormatted(dateStyle: .none, timeStyle: .short))
-                                .font(.caption).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 10) {
+            caffeineSectionHeader("Today's Log", icon: "list.bullet")
+
+            VStack(spacing: 0) {
+                let todayEntries = vm.entries.filter { Calendar.current.isDateInToday($0.timestamp) }
+                if todayEntries.isEmpty {
+                    Text("No caffeine logged today")
+                        .foregroundStyle(.white.opacity(0.35))
+                        .font(.system(size: 14, weight: .medium))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 24)
+                } else {
+                    ForEach(Array(todayEntries.enumerated()), id: \.element.id) { index, entry in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(entry.name)
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.85))
+                                Text(entry.timestamp.kqFormatted(dateStyle: .none, timeStyle: .short))
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.3))
+                            }
+                            Spacer()
+                            Text("\(entry.mgCaffeine) mg")
+                                .font(.system(size: 15, weight: .bold, design: .rounded))
+                                .foregroundStyle(.brown)
                         }
-                        Spacer()
-                        Text("\(entry.mgCaffeine) mg").font(.subheadline).bold()
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                vm.remove(entry)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+
+                        if index < todayEntries.count - 1 {
+                            Color.premiumDivider
+                                .frame(height: 0.5)
+                                .padding(.leading, 16)
+                        }
                     }
                 }
-                .onDelete { indexSet in
-                    let todayEntries = vm.entries.filter { Calendar.current.isDateInToday($0.timestamp) }
-                    indexSet.forEach { i in vm.remove(todayEntries[i]) }
-                }
             }
+            .premiumCard(cornerRadius: 18, tint: .brown, tintOpacity: 0.02)
         }
     }
 
@@ -295,8 +411,14 @@ struct CaffeineView: View {
     @ViewBuilder
     private func statPill(label: String, value: String, color: Color) -> some View {
         VStack(spacing: 4) {
-            Text(value).font(.caption).bold().foregroundStyle(color).multilineTextAlignment(.center)
-            Text(label).font(.caption2).foregroundStyle(.secondary).multilineTextAlignment(.center)
+            Text(value)
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundStyle(color)
+                .multilineTextAlignment(.center)
+            Text(label)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.35))
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
     }

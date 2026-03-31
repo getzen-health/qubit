@@ -29,7 +29,7 @@ struct PredictiveInsightsView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Week Ahead")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -67,7 +67,7 @@ struct PredictiveInsightsView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -90,7 +90,7 @@ struct PredictiveInsightsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -111,7 +111,7 @@ struct PredictiveInsightsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -134,7 +134,7 @@ struct PredictiveInsightsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -189,7 +189,7 @@ struct PredictiveInsightsView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 

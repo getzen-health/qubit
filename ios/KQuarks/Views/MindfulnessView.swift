@@ -43,7 +43,7 @@ struct MindfulnessView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Mindfulness")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -117,7 +117,7 @@ struct MindfulnessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 
@@ -149,7 +149,7 @@ struct MindfulnessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -238,7 +238,7 @@ struct MindfulnessView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
         }

@@ -165,7 +165,7 @@ private struct PowerToWeightContent: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -208,7 +208,7 @@ private struct PowerToWeightContent: View {
             .chartYAxisLabel("W/kg")
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -251,7 +251,7 @@ private struct PowerToWeightContent: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -309,7 +309,7 @@ private struct PowerToWeightContent: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -329,7 +329,7 @@ private struct PowerToWeightContent: View {
                         detail: "FTP typically peaks mid-season and drops 10-15% in off-season. W/kg fluctuates with training block and body composition changes. Track both metrics independently.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

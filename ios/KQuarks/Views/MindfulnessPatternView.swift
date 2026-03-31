@@ -190,7 +190,7 @@ struct MindfulnessPatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Mindfulness Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -211,7 +211,7 @@ struct MindfulnessPatternView: View {
                      sub: "weeks with sessions",
                      color: consistencyPct >= 70 ? .green : consistencyPct >= 40 ? .yellow : .red)
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -239,7 +239,7 @@ struct MindfulnessPatternView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 6).fill(Color(.tertiarySystemFill)).frame(height: 10)
+                    RoundedRectangle(cornerRadius: 6).fill(Color.white.opacity(0.06)).frame(height: 10)
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.teal.opacity(0.7))
                         .frame(width: geo.size.width * CGFloat(consistencyPct) / 100, height: 10)
@@ -251,7 +251,7 @@ struct MindfulnessPatternView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -274,13 +274,13 @@ struct MindfulnessPatternView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(10)
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color.cardSurface)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -295,7 +295,7 @@ struct MindfulnessPatternView: View {
                     Text(b.label).font(.caption).frame(width: 52, alignment: .trailing)
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 4).fill(Color(.tertiarySystemFill))
+                            RoundedRectangle(cornerRadius: 4).fill(Color.white.opacity(0.06))
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(Color.teal.opacity(0.6))
                                 .frame(width: geo.size.width * CGFloat(b.count) / CGFloat(maxCount))
@@ -308,7 +308,7 @@ struct MindfulnessPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -325,7 +325,7 @@ struct MindfulnessPatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -341,7 +341,7 @@ struct MindfulnessPatternView: View {
                         Text(d.label).font(.caption).frame(width: 30, alignment: .trailing)
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
-                                RoundedRectangle(cornerRadius: 4).fill(Color(.tertiarySystemFill))
+                                RoundedRectangle(cornerRadius: 4).fill(Color.white.opacity(0.06))
                                 RoundedRectangle(cornerRadius: 4)
                                     .fill(Color.teal.opacity(0.5))
                                     .frame(width: geo.size.width * CGFloat(avg) / CGFloat(maxAvg))
@@ -354,7 +354,7 @@ struct MindfulnessPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -383,7 +383,7 @@ struct MindfulnessPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

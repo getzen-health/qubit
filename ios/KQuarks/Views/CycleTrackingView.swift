@@ -416,54 +416,69 @@ struct CycleTrackingView: View {
                     }
                 }
             }
+            .preferredColorScheme(.dark)
+            .toolbarColorScheme(.dark, for: .navigationBar)
         }
     }
 
     private var cycleList: some View {
-        List {
-            if let phase = vm.currentPhase {
-                Section {
-                    CyclePredictionCard(
-                        phase: phase,
-                        daysUntilNext: vm.daysUntilNextPeriod ?? 0,
-                        nextDate: vm.nextPeriodDate,
-                        avgLength: vm.averageCycleLength
-                    )
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-            }
-
-            Section {
-                CycleQuickLogSection(
-                    currentPeriodDays: vm.currentPeriodDays,
-                    hasOngoing: vm.cycles.first?.isOngoing == true,
-                    onLogStart: {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        Task { await vm.logPeriodStart() }
-                    },
-                    onLogEnd: {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        Task { await vm.logPeriodEnd() }
+        ZStack {
+            PremiumBackgroundView()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    if let phase = vm.currentPhase {
+                        CyclePredictionCard(
+                            phase: phase,
+                            daysUntilNext: vm.daysUntilNextPeriod ?? 0,
+                            nextDate: vm.nextPeriodDate,
+                            avgLength: vm.averageCycleLength
+                        )
                     }
-                )
-            }
 
-            Section("Recent Cycles") {
-                ForEach(vm.cycles.prefix(6)) { cycle in
-                    CycleRowView(cycle: cycle)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            // Only allow editing DB-backed entries (not synthetic HK entries)
-                            guard !cycle.id.hasPrefix("hk-") else { return }
-                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                            editingCycle = cycle
-                            showingEdit = true
+                    VStack(alignment: .leading, spacing: 10) {
+                        PremiumSectionHeader(title: "QUICK LOG", icon: "plus.circle.fill", tint: .pink)
+                        CycleQuickLogSection(
+                            currentPeriodDays: vm.currentPeriodDays,
+                            hasOngoing: vm.cycles.first?.isOngoing == true,
+                            onLogStart: {
+                                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                Task { await vm.logPeriodStart() }
+                            },
+                            onLogEnd: {
+                                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                Task { await vm.logPeriodEnd() }
+                            }
+                        )
+                        .padding(16)
+                        .premiumCard(cornerRadius: 18, tint: .pink, tintOpacity: 0.02)
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        PremiumSectionHeader(title: "RECENT CYCLES", icon: "calendar", tint: .purple)
+                        VStack(spacing: 0) {
+                            ForEach(Array(vm.cycles.prefix(6).enumerated()), id: \.element.id) { index, cycle in
+                                CycleRowView(cycle: cycle)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 4)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        guard !cycle.id.hasPrefix("hk-") else { return }
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        editingCycle = cycle
+                                        showingEdit = true
+                                    }
+                                if index < vm.cycles.prefix(6).count - 1 {
+                                    Color.premiumDivider.frame(height: 0.5).padding(.horizontal, 16)
+                                }
+                            }
                         }
+                        .premiumCard(cornerRadius: 18, tint: .purple, tintOpacity: 0.02)
+                    }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
             }
         }
-        .listStyle(.insetGrouped)
         .animation(.easeInOut(duration: 0.25), value: vm.cycles.map(\.id))
     }
 }
@@ -492,14 +507,14 @@ struct CyclePredictionCard: View {
                         .font(.headline)
                     Text(phase.description)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
                 Spacer()
             }
             .padding()
-            .background(phase.color.opacity(0.07))
+            .background(phase.color.opacity(0.05))
 
-            Divider()
+            Color.premiumDivider.frame(height: 0.5)
 
             HStack(spacing: 0) {
                 CyclePhaseStat(
@@ -507,13 +522,13 @@ struct CyclePredictionCard: View {
                     value: daysUntilNext == 0 ? "Today" : "in \(daysUntilNext)d",
                     color: phase.color
                 )
-                Divider().frame(height: 44)
+                Color.premiumDivider.frame(width: 0.5, height: 44)
                 CyclePhaseStat(
                     label: "Expected",
                     value: nextDate.map { $0.formatted(.dateTime.month(.abbreviated).day()) } ?? "—",
                     color: .secondary
                 )
-                Divider().frame(height: 44)
+                Color.premiumDivider.frame(width: 0.5, height: 44)
                 CyclePhaseStat(
                     label: "Avg Cycle",
                     value: "\(avgLength) days",
@@ -522,11 +537,7 @@ struct CyclePredictionCard: View {
             }
             .padding(.vertical, 4)
         }
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.06), radius: 6, y: 2)
-        .padding(.horizontal)
-        .padding(.vertical, 4)
+        .premiumCard(cornerRadius: 14, tint: phase.color, tintOpacity: 0.03)
     }
 }
 
@@ -542,7 +553,7 @@ struct CyclePhaseStat: View {
                 .foregroundStyle(color)
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.4))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -604,10 +615,10 @@ struct CycleRowView: View {
             VStack(spacing: 2) {
                 Text(cycle.startDate.formatted(.dateTime.month(.abbreviated).day()))
                     .font(.caption2.bold())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                 Text(cycle.startDate.formatted(.dateTime.year()))
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
             }
             .frame(width: 44)
 
@@ -619,7 +630,7 @@ struct CycleRowView: View {
                             .foregroundStyle(.red)
                         Text("· Day \((Calendar.current.dateComponents([.day], from: cycle.startDate, to: Date()).day ?? 0) + 1)")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     } else if let dur = cycle.duration {
                         Text("\(dur) day period")
                             .font(.subheadline.bold())
@@ -638,7 +649,7 @@ struct CycleRowView: View {
                 if !cycle.symptoms.isEmpty {
                     Text(cycle.symptoms.prefix(3).map { cycleSymptomLabel($0) }.joined(separator: " · "))
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                         .lineLimit(1)
                 }
             }
@@ -646,7 +657,7 @@ struct CycleRowView: View {
             if !cycle.id.hasPrefix("hk-") {
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.white.opacity(0.3))
             }
         }
         .padding(.vertical, 4)

@@ -96,7 +96,7 @@ struct MindfulMinutesView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Mindful Minutes")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -147,7 +147,7 @@ struct MindfulMinutesView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -183,7 +183,7 @@ struct MindfulMinutesView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -206,7 +206,7 @@ struct MindfulMinutesView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -239,7 +239,7 @@ struct MindfulMinutesView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

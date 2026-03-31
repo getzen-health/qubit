@@ -25,7 +25,7 @@ struct LeaderboardView: View {
                     }
                 }
             }
-            .listStyle(.insetGrouped)
+            .premiumList()
             .navigationTitle("Streak Leaderboard")
         }
     }

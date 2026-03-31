@@ -104,7 +104,7 @@ struct InjuryRiskView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Injury Risk")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -147,7 +147,7 @@ struct InjuryRiskView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(riskLevel.color.opacity(0.08))
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -207,7 +207,7 @@ struct InjuryRiskView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -281,7 +281,7 @@ struct InjuryRiskView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -310,7 +310,7 @@ struct InjuryRiskView: View {
                 .frame(width: 10, height: 10)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -339,7 +339,7 @@ struct InjuryRiskView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

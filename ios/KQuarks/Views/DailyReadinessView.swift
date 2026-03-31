@@ -108,7 +108,7 @@ struct DailyReadinessView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Daily Readiness")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -158,7 +158,7 @@ struct DailyReadinessView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -181,7 +181,7 @@ struct DailyReadinessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -235,7 +235,7 @@ struct DailyReadinessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -287,7 +287,7 @@ struct DailyReadinessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

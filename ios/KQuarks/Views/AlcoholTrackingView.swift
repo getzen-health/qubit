@@ -177,7 +177,7 @@ struct AlcoholTrackingView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -257,7 +257,7 @@ struct AlcoholTrackingView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -277,7 +277,7 @@ struct AlcoholTrackingView: View {
             .chartYAxisLabel("avg drinks")
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -316,7 +316,7 @@ struct AlcoholTrackingView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -357,7 +357,7 @@ struct AlcoholTrackingView: View {
             scienceItem("Resting HR elevation", detail: "Alcohol increases heart rate during sleep and the following morning. Each standard drink raises overnight mean HR by ~1-2 bpm. Visible clearly in Apple Watch heart rate data.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -489,7 +489,7 @@ private struct AlcCard: View {
                 .clipShape(Capsule())
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

@@ -150,7 +150,7 @@ struct CaffeineAnalyticsView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -237,7 +237,7 @@ struct CaffeineAnalyticsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -288,7 +288,7 @@ struct CaffeineAnalyticsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -351,7 +351,7 @@ struct CaffeineAnalyticsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -368,7 +368,7 @@ struct CaffeineAnalyticsView: View {
             scienceItem("Optimal Timing", detail: "Delay first caffeine 90-120 min after waking to avoid blunting cortisol awakening response. Cut off caffeine 8-10h before target bedtime for sensitive individuals.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -468,7 +468,7 @@ private struct CafCard: View {
             Text(unit).font(.caption2).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

@@ -25,7 +25,7 @@ struct CorrelationInsightsView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Correlations")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -322,7 +322,7 @@ private struct CorrelationInsightCard: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }

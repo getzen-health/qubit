@@ -5,7 +5,7 @@ struct BiometricLockView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
+            Color.premiumBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 32) {

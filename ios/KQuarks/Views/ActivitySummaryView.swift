@@ -59,7 +59,7 @@ struct ActivitySummaryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Activity Summary")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -86,7 +86,7 @@ struct ActivitySummaryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -147,7 +147,7 @@ struct ActivitySummaryView: View {
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -204,7 +204,7 @@ struct ActivitySummaryView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             if let peak = thisWeekSummary.peakStepsDay {
@@ -258,7 +258,7 @@ struct ActivitySummaryView: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -290,7 +290,7 @@ struct ActivitySummaryView: View {
             }
             .frame(height: 120)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -314,7 +314,7 @@ struct ActivitySummaryView: View {
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 6).fill(Color(.systemGray5)).frame(height: 12)
+                    RoundedRectangle(cornerRadius: 6).fill(Color.white.opacity(0.08)).frame(height: 12)
                     RoundedRectangle(cornerRadius: 6)
                         .fill(progress >= 1 ? Color.green : Color.blue)
                         .frame(width: geo.size.width * min(CGFloat(progress), 1.0), height: 12)
@@ -339,7 +339,7 @@ struct ActivitySummaryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

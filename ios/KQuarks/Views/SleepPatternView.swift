@@ -74,7 +74,7 @@ struct SleepPatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Sleep Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -114,7 +114,7 @@ struct SleepPatternView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -164,7 +164,7 @@ struct SleepPatternView: View {
             .font(.caption2).foregroundStyle(.secondary).padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -215,7 +215,7 @@ struct SleepPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16)))
     }
 
@@ -257,7 +257,7 @@ struct SleepPatternView: View {
             .font(.caption2).foregroundStyle(.secondary).padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -292,7 +292,7 @@ struct SleepPatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -334,7 +334,7 @@ struct SleepPatternView: View {
                 .font(.caption2).foregroundStyle(.secondary.opacity(0.7))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -368,7 +368,7 @@ struct SleepPatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16)))
     }
 

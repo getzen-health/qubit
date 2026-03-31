@@ -30,7 +30,7 @@ struct LongevityView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Vitality Score")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -81,7 +81,7 @@ struct LongevityView: View {
             }
             .padding()
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -140,7 +140,7 @@ struct LongevityView: View {
             }
         }
         .padding(14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -165,7 +165,7 @@ struct LongevityView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             VStack(alignment: .leading, spacing: 8) {
@@ -182,7 +182,7 @@ struct LongevityView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -214,7 +214,7 @@ struct LongevityView: View {
             .padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -246,7 +246,7 @@ struct LongevityView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -454,9 +454,9 @@ struct MetricScore: Identifiable {
     // MARK: - Piecewise scoring
 
     private static func piecewise(_ v: Double, _ pts: [(Double, Double)]) -> Double {
-        guard !pts.isEmpty else { return 0 }
-        if v <= pts.first!.0 { return pts.first!.1 }
-        if v >= pts.last!.0 { return pts.last!.1 }
+        guard let first = pts.first, let last = pts.last else { return 0 }
+        if v <= first.0 { return first.1 }
+        if v >= last.0 { return last.1 }
         for i in 0..<(pts.count - 1) {
             let (v0, s0) = pts[i]
             let (v1, s1) = pts[i + 1]

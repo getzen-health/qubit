@@ -109,7 +109,7 @@ struct CheckinView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Daily Check-in")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
@@ -205,7 +205,7 @@ struct CheckinView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
             if let notes = c.notes, !notes.isEmpty {
@@ -219,7 +219,7 @@ struct CheckinView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color(.systemBackground))
+                .background(Color.premiumBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
@@ -277,7 +277,7 @@ struct CheckinView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
             // Save / Cancel
@@ -341,7 +341,7 @@ struct EmojiSelectorView: View {
                     Button {
                         value = isSelected ? nil : v
                     } label: {
-                        let bgColor: Color = isSelected ? accent.opacity(0.2) : Color(.systemGroupedBackground)
+                        let bgColor: Color = isSelected ? accent.opacity(0.2) : Color.premiumBackground
                         let strokeColor: Color = isSelected ? accent : Color.clear
                         let scale: CGFloat = isSelected ? 1.08 : 1.0
                         Text(emojis[v])
@@ -402,7 +402,7 @@ struct CheckinDashboardCard: View {
                     .foregroundStyle(.tertiary)
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
         }
         .buttonStyle(.plain)
     }

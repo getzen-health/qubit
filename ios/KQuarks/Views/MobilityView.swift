@@ -48,7 +48,7 @@ struct MobilityView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Mobility")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -138,7 +138,7 @@ struct MobilityView: View {
             .padding(.top, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -244,7 +244,7 @@ struct MobilityView: View {
             }
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -290,7 +290,7 @@ struct MobilityView: View {
                     color: latestDoubleSupport.map { $0 < 25 ? Color.green : .orange } ?? .secondary
                 )
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -332,7 +332,7 @@ struct MobilityView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

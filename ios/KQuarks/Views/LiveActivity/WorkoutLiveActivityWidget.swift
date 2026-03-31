@@ -144,7 +144,7 @@ struct WorkoutLiveActivityExpandedView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(8)
-                .background(Color(.systemGray6))
+                .background(Color.cardSurface)
                 .cornerRadius(8)
                 
                 // Calories
@@ -158,7 +158,7 @@ struct WorkoutLiveActivityExpandedView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(8)
-                .background(Color(.systemGray6))
+                .background(Color.cardSurface)
                 .cornerRadius(8)
                 
                 // Distance (if available)
@@ -173,7 +173,7 @@ struct WorkoutLiveActivityExpandedView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(8)
-                    .background(Color(.systemGray6))
+                    .background(Color.cardSurface)
                     .cornerRadius(8)
                 }
             }

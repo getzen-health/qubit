@@ -80,7 +80,7 @@ struct SleepEfficiencyView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Sleep Efficiency")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -135,7 +135,7 @@ struct SleepEfficiencyView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -158,7 +158,7 @@ struct SleepEfficiencyView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -206,7 +206,7 @@ struct SleepEfficiencyView: View {
             .padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -242,7 +242,7 @@ struct SleepEfficiencyView: View {
             .padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -273,7 +273,7 @@ struct SleepEfficiencyView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(borderColor.opacity(0.4), lineWidth: 1))
     }
@@ -294,7 +294,7 @@ struct SleepEfficiencyView: View {
                 .font(.caption2).foregroundStyle(.secondary).opacity(0.5).padding(.top, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

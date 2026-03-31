@@ -52,7 +52,7 @@ struct WellnessInsightsView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Wellness Insights")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -76,7 +76,7 @@ struct WellnessInsightsView: View {
                       emojis: stressEmojis, color: .orange)
         }
         .padding(.vertical, 8)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -143,7 +143,7 @@ struct WellnessInsightsView: View {
             .font(.caption2).foregroundStyle(.secondary).padding(.horizontal, 4)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -219,7 +219,7 @@ struct WellnessInsightsView: View {
                 }.frame(height: 6)
             }
             .padding(12)
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -258,7 +258,7 @@ struct WellnessInsightsView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

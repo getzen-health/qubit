@@ -53,7 +53,7 @@ struct YearInReviewView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Year in Review")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -95,7 +95,7 @@ struct YearInReviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -154,7 +154,7 @@ struct YearInReviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -203,7 +203,7 @@ struct YearInReviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -233,7 +233,7 @@ struct YearInReviewView: View {
             .chartYAxisLabel("steps")
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -264,7 +264,7 @@ struct YearInReviewView: View {
             .chartYAxisLabel("workouts")
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -302,7 +302,7 @@ struct YearInReviewView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

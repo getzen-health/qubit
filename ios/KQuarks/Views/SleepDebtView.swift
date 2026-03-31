@@ -36,7 +36,7 @@ struct SleepDebtView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Sleep Debt")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -106,7 +106,7 @@ struct SleepDebtView: View {
                 .multilineTextAlignment(.center)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -148,7 +148,7 @@ struct SleepDebtView: View {
             }
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -174,7 +174,7 @@ struct SleepDebtView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -232,7 +232,7 @@ struct SleepDebtView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

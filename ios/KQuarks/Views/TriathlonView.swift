@@ -209,7 +209,7 @@ struct TriathlonView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -252,7 +252,7 @@ struct TriathlonView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -276,7 +276,7 @@ struct TriathlonView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(selectedRace == rt ? Color.blue : Color(.tertiarySystemBackground))
+                            .background(selectedRace == rt ? Color.blue : Color.premiumSurface)
                             .foregroundStyle(selectedRace == rt ? .white : .primary)
                             .cornerRadius(10)
                         }
@@ -328,7 +328,7 @@ struct TriathlonView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -363,7 +363,7 @@ struct TriathlonView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 

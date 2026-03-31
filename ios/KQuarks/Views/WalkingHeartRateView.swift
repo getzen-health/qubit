@@ -91,7 +91,7 @@ struct WalkingHeartRateView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Walking Heart Rate")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -160,7 +160,7 @@ struct WalkingHeartRateView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -226,7 +226,7 @@ struct WalkingHeartRateView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -266,7 +266,7 @@ struct WalkingHeartRateView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

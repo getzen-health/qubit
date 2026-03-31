@@ -10,41 +10,63 @@ struct SleepView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if sessions.isEmpty {
-                    ContentUnavailableView(
-                        "No Sleep Data",
-                        systemImage: "moon.zzz",
-                        description: Text("No sleep data found for the past 30 days. Enable sleep tracking in your Apple Watch or iPhone.")
-                    )
-                } else {
-                    List {
-                        if sessions.count >= 2 {
-                            Section {
-                                SleepBarChart(sessions: sessions)
-                            }
-                        }
+            ZStack {
+                PremiumBackgroundView()
 
-                        if sessions.count >= 3 {
-                            Section {
-                                SleepWeeklyAverageRow(sessions: sessions)
-                            }
-                        }
+                Group {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.indigo)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if sessions.isEmpty {
+                        ContentUnavailableView(
+                            "No Sleep Data",
+                            systemImage: "moon.zzz",
+                            description: Text("No sleep data found for the past 30 days. Enable sleep tracking in your Apple Watch or iPhone.")
+                        )
+                    } else {
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 20) {
+                                if sessions.count >= 2 {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        sleepSectionHeader("Last 7 Nights", icon: "chart.bar.fill")
+                                        SleepBarChart(sessions: sessions)
+                                            .premiumCard(cornerRadius: 18, tint: .indigo, tintOpacity: 0.03)
+                                    }
+                                }
 
-                        Section("Recent Nights") {
-                            ForEach(sessions) { session in
-                                SleepSessionRow(session: session)
+                                if sessions.count >= 3 {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        sleepSectionHeader("7-Day Average", icon: "chart.line.uptrend.xyaxis")
+                                        SleepWeeklyAverageRow(sessions: sessions)
+                                            .premiumCard(cornerRadius: 18, tint: .indigo, tintOpacity: 0.03)
+                                    }
+                                }
+
+                                VStack(alignment: .leading, spacing: 10) {
+                                    sleepSectionHeader("Recent Nights", icon: "moon.fill")
+                                    VStack(spacing: 0) {
+                                        ForEach(Array(sessions.enumerated()), id: \.element.id) { index, session in
+                                            SleepSessionRow(session: session)
+                                            if index < sessions.count - 1 {
+                                                Color.premiumDivider
+                                                    .frame(height: 0.5)
+                                                    .padding(.horizontal, 16)
+                                            }
+                                        }
+                                    }
+                                    .premiumCard(cornerRadius: 18, tint: .indigo, tintOpacity: 0.02)
+                                }
                             }
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 100)
                         }
                     }
-                    .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle("Sleep")
             .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 4) {
@@ -81,8 +103,22 @@ struct SleepView: View {
             .task {
                 await loadSleep()
             }
-            .refreshable { await loadSleep() }
         }
+        .preferredColorScheme(.dark)
+    }
+
+    private func sleepSectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.indigo.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
     }
 
     private func loadSleep() async {
@@ -182,21 +218,16 @@ struct SleepWeeklyAverageRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("7-Day Average")
-                .font(.headline)
-
             HStack(spacing: 0) {
                 StatBubble(label: "Total", value: fmt(avgMinutes), color: .indigo)
-                Divider().frame(height: 40)
+                Color.premiumDivider.frame(width: 0.5, height: 40)
                 StatBubble(label: "Deep", value: fmt(avgDeep), color: .blue)
-                Divider().frame(height: 40)
+                Color.premiumDivider.frame(width: 0.5, height: 40)
                 StatBubble(label: "REM", value: fmt(avgRem), color: .purple)
             }
             .frame(maxWidth: .infinity)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 12)
     }
 }
 
@@ -206,13 +237,13 @@ struct StatBubble: View {
     let color: Color
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 3) {
             Text(value)
-                .font(.subheadline.bold().monospacedDigit())
+                .font(.system(size: 15, weight: .bold, design: .rounded))
                 .foregroundStyle(color)
             Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.4))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
@@ -239,17 +270,14 @@ struct SleepBarChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Last 7 Nights")
-                .font(.headline)
-
             Chart {
                 RuleMark(y: .value("Goal", 8.0))
                     .foregroundStyle(.indigo.opacity(0.35))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
                     .annotation(position: .top, alignment: .trailing) {
                         Text("8h goal")
-                            .font(.caption2)
-                            .foregroundStyle(.indigo.opacity(0.6))
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.indigo.opacity(0.5))
                     }
 
                 ForEach(chartData, id: \.label) { item in
@@ -257,25 +285,40 @@ struct SleepBarChart: View {
                         x: .value("Day", item.label),
                         y: .value("Hours", item.hours)
                     )
-                    .foregroundStyle(.indigo.gradient)
+                    .foregroundStyle(
+                        LinearGradient(colors: [.indigo, .indigo.opacity(0.5)], startPoint: .top, endPoint: .bottom)
+                    )
                     .cornerRadius(4)
                 }
             }
             .chartYScale(domain: 0...sleepdatamax)
             .chartYAxis {
                 AxisMarks(values: [0, 4, 6, 8, 10]) { value in
-                    AxisGridLine()
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                        .foregroundStyle(.white.opacity(0.06))
                     AxisValueLabel {
                         if let h = value.as(Double.self) {
                             Text("\(Int(h))h")
-                                .font(.caption2)
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.3))
                         }
                     }
                 }
             }
+            .chartXAxis {
+                AxisMarks { _ in
+                    AxisValueLabel()
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+            }
+            .chartPlotStyle { plotArea in
+                plotArea.background(Color.clear)
+            }
             .frame(height: 160)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 4)
         }
-        .padding(.vertical, 4)
     }
 }
 
@@ -288,10 +331,11 @@ struct SleepSessionRow: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(session.date, style: .date)
-                    .font(.headline)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
                 Spacer()
                 Text(session.formattedTotal)
-                    .font(.subheadline.monospacedDigit().bold())
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundStyle(.indigo)
             }
 
@@ -306,7 +350,8 @@ struct SleepSessionRow: View {
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }
 
@@ -363,8 +408,8 @@ struct SleepStagePill: View {
                 .fill(color)
                 .frame(width: 8, height: 8)
             Text("\(label) \(fmt(minutes))")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.white.opacity(0.45))
         }
     }
 }

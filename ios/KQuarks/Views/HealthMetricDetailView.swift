@@ -137,7 +137,7 @@ struct HealthMetricDetailView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -150,7 +150,7 @@ struct HealthMetricDetailView: View {
             statCell(label: "Max", value: weekData.map(\.value).max())
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -192,7 +192,7 @@ struct HealthMetricDetailView: View {
             .frame(height: 8)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 

@@ -10,7 +10,7 @@ struct ProfileView: View {
                     HStack {
                         Image(systemName: "person.circle.fill")
                             .font(.largeTitle)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.accentColor)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Health Tracker")
                                 .font(.headline)
@@ -81,6 +81,7 @@ struct ProfileView: View {
                     }
                 }
             }
+            .premiumList()
             .navigationTitle("Profile")
             .alert("Sign Out", isPresented: $showSignOutAlert) {
                 Button("Sign Out", role: .destructive) { /* call auth sign out */ }
@@ -101,6 +102,7 @@ struct UnitsSettingsView: View {
                 Text("Pounds (lbs)").tag(true)
             }
         }
+        .premiumList()
         .navigationTitle("Units")
     }
 }

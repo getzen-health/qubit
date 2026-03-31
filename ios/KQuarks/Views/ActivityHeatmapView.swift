@@ -27,7 +27,7 @@ struct ActivityHeatmapView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Activity Calendar")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -91,7 +91,7 @@ struct ActivityHeatmapView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -145,7 +145,7 @@ struct ActivityHeatmapView: View {
                 .padding(.vertical, 8)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -193,7 +193,7 @@ struct ActivityHeatmapView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

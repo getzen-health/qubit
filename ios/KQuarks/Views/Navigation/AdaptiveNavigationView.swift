@@ -12,16 +12,47 @@ struct AdaptiveNavigationView: View {
     @State private var selectedTab: Int = 0
     @State private var showCheckinSheet = false
 
+    init() {
+        // Global UIKit appearance for premium dark theme
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(red: 0.06, green: 0.06, blue: 0.08, alpha: 1.0)
+        tabBarAppearance.shadowColor = .clear
+        
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.normal.iconColor = UIColor.white.withAlphaComponent(0.30)
+        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white.withAlphaComponent(0.30)]
+        itemAppearance.selected.iconColor = UIColor(red: 0.43, green: 0.78, blue: 0.95, alpha: 1.0)
+        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(red: 0.43, green: 0.78, blue: 0.95, alpha: 1.0)]
+        tabBarAppearance.stackedLayoutAppearance = itemAppearance
+        tabBarAppearance.inlineLayoutAppearance = itemAppearance
+        tabBarAppearance.compactInlineLayoutAppearance = itemAppearance
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.backgroundColor = UIColor(red: 0.05, green: 0.05, blue: 0.07, alpha: 0.95)
+        navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.shadowColor = .clear
+        
+        UINavigationBar.appearance().standardAppearance = navBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
+        UINavigationBar.appearance().compactAppearance = navBarAppearance
+        UINavigationBar.appearance().tintColor = UIColor(red: 0.43, green: 0.78, blue: 0.95, alpha: 1.0)
+    }
+
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
-                // iPad: Split view with sidebar
                 iPadNavigationView
             } else {
-                // iPhone: Tab view
                 iPhoneNavigationView
             }
         }
+        .preferredColorScheme(.dark)
         .onChange(of: deepLinkHandler.pendingDestination) { _, destination in
             handleDeepLinkNavigation(destination)
         }
@@ -39,11 +70,11 @@ struct AdaptiveNavigationView: View {
         case .readiness, .sleep, .workouts, .water, .hrv, .body, .glucose, .vitals:
             selectedTab = 1 // Health tab
         case .achievements, .social:
-            selectedTab = 3 // Insights tab
+            selectedTab = 0 // Dashboard
         case .settings, .profile:
-            selectedTab = 4 // Settings tab
+            selectedTab = 4 // Profile tab
         case .habits:
-            selectedTab = 3 // Insights tab
+            selectedTab = 0 // Dashboard
         case .metric:
             break // handled by individual views
         }
@@ -127,41 +158,13 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Workouts", systemImage: "figure.run") }
                 .tag(2)
 
-            WaterIntakeView()
+            WaterTrackingView()
                 .tabItem { Label("Water", systemImage: "drop.fill") }
                 .tag(3)
 
-            BodyMeasurementsView()
-                .tabItem { Label("Measurements", systemImage: "ruler") }
-                .tag(4)
-
-            SupplementsView()
-                .tabItem { Label("Supplements", systemImage: "pills.fill") }
-                .tag(5)
-
-            MoodView()
-                .tabItem { Label("Mood", systemImage: "face.smiling") }
-                .tag(6)
-
-            CycleView()
-                .tabItem { Label("Cycle", systemImage: "calendar") }
-                .tag(11)
-
-            StressView()
-                .tabItem { Label("Stress", systemImage: "waveform.path.ecg") }
-                .tag(10)
-
             ProfileView()
                 .tabItem { Label("Profile", systemImage: "person.crop.circle") }
-                .tag(7)
-
-            InsightsView()
-                .tabItem { Label("Insights", systemImage: "sparkles") }
-                .tag(8)
-
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(9)
+                .tag(4)
         }
         .sheet(isPresented: $showCheckinSheet) {
             CheckinView()

@@ -95,7 +95,7 @@ struct EditProfileView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .premiumList()
         .navigationTitle("Edit Profile")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

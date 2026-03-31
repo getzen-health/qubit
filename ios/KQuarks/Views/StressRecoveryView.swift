@@ -105,7 +105,7 @@ struct StressRecoveryView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Stress & Recovery")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -156,7 +156,7 @@ struct StressRecoveryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(currentQuadrant.color.opacity(0.25), lineWidth: 1.5))
     }
@@ -263,7 +263,7 @@ struct StressRecoveryView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -316,7 +316,7 @@ struct StressRecoveryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

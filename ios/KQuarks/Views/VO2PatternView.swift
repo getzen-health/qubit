@@ -79,7 +79,7 @@ struct VO2PatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("VO₂ Max History")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -114,7 +114,7 @@ struct VO2PatternView: View {
                 statCell(value: "\(n)", label: "Readings", color: .secondary)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -156,7 +156,7 @@ struct VO2PatternView: View {
             .frame(height: 180)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -195,7 +195,7 @@ struct VO2PatternView: View {
             .padding(.top, 2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -212,7 +212,7 @@ struct VO2PatternView: View {
         .font(.caption)
         .foregroundStyle(.secondary)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

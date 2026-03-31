@@ -105,7 +105,7 @@ struct StepPatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Step Pattern")
         .toolbarTitleDisplayMode(.inline)
         .task { await loadData() }
@@ -193,7 +193,7 @@ struct StepPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -233,7 +233,7 @@ struct StepPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -273,7 +273,7 @@ struct StepPatternView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -298,7 +298,7 @@ struct StepPatternView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(16)
     }
 
@@ -440,7 +440,7 @@ struct StepPatternCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

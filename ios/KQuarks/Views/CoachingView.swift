@@ -13,7 +13,7 @@ struct CoachingView: View {
                             if msg.role == "user" { Spacer() }
                             Text(msg.text)
                                 .padding(10)
-                                .background(msg.role == "user" ? Color.blue : Color(.systemGray5))
+                                .background(msg.role == "user" ? Color.blue : Color.white.opacity(0.08))
                                 .foregroundColor(msg.role == "user" ? .white : .primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             if msg.role == "assistant" { Spacer() }

@@ -63,7 +63,7 @@ struct ExerciseMinutesView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Exercise Minutes")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -123,7 +123,7 @@ struct ExerciseMinutesView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -168,7 +168,7 @@ struct ExerciseMinutesView: View {
             .font(.caption2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -209,7 +209,7 @@ struct ExerciseMinutesView: View {
             .frame(height: 150)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -251,7 +251,7 @@ struct ExerciseMinutesView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

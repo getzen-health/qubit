@@ -62,7 +62,7 @@ struct StandingHoursView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Standing Hours")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -116,7 +116,7 @@ struct StandingHoursView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -154,7 +154,7 @@ struct StandingHoursView: View {
             .font(.caption2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -201,7 +201,7 @@ struct StandingHoursView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -253,7 +253,7 @@ struct StandingHoursView: View {
             .frame(height: 110)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

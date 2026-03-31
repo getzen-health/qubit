@@ -26,7 +26,7 @@ struct MoodHistoryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Mood History")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -59,7 +59,7 @@ struct MoodHistoryView: View {
             )
         }
         .padding(.vertical, 8)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -150,7 +150,7 @@ struct MoodHistoryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -190,7 +190,7 @@ struct MoodHistoryView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

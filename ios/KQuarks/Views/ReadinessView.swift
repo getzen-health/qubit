@@ -101,26 +101,31 @@ struct ReadinessView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                if isLoading {
-                    ProgressView().padding(.top, 80)
-                } else if let s = score {
-                    heroCard(s)
-                    factorsCard(s)
-                    recommendationCard(s)
-                    checkinCorrelationCard
-                    if history.count >= 5 { historyChart }
-                    methodologyCard
-                } else {
-                    emptyState
+        ZStack {
+            PremiumBackgroundView()
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    if isLoading {
+                        ProgressView().padding(.top, 80)
+                    } else if let s = score {
+                        heroCard(s)
+                        factorsCard(s)
+                        recommendationCard(s)
+                        checkinCorrelationCard
+                        if history.count >= 5 { historyChart }
+                        methodologyCard
+                    } else {
+                        emptyState
+                    }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 100)
             }
-            .padding()
         }
-        .background(Color(.systemGroupedBackground))
         .navigationTitle("Daily Readiness")
         .toolbarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .preferredColorScheme(.dark)
         .task { await load() }
         .refreshable { await load() }
     }
@@ -134,7 +139,7 @@ struct ReadinessView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Today's Readiness")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text("\(s.overall)")
                         .font(.system(size: 64, weight: .heavy, design: .rounded))
                         .foregroundStyle(z.color)
@@ -158,11 +163,14 @@ struct ReadinessView: View {
                 // Circular gauge
                 ZStack {
                     Circle()
-                        .stroke(Color(.systemFill), lineWidth: 12)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 12)
                         .frame(width: 90, height: 90)
                     Circle()
                         .trim(from: 0, to: CGFloat(s.overall) / 100)
-                        .stroke(z.color, style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                        .stroke(
+                            LinearGradient(colors: [z.color, z.color.opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                            style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                        )
                         .frame(width: 90, height: 90)
                         .rotationEffect(.degrees(-90))
                         .animation(.easeInOut(duration: 0.8), value: s.overall)
@@ -170,6 +178,7 @@ struct ReadinessView: View {
                         .font(.title2)
                         .foregroundStyle(z.color)
                 }
+                .glow(color: z.color, radius: 15, intensity: 0.3)
             }
 
             // Mini factor bars
@@ -180,14 +189,13 @@ struct ReadinessView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
     }
 
     private func factorPill(label: String, value: Int, color: Color) -> some View {
         VStack(spacing: 4) {
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3).fill(Color(.systemFill)).frame(height: 6)
+                RoundedRectangle(cornerRadius: 3).fill(Color.white.opacity(0.08)).frame(height: 6)
                 RoundedRectangle(cornerRadius: 3).fill(color)
                     .frame(width: max(4, CGFloat(value) / 100 * 80), height: 6)
             }
@@ -195,7 +203,7 @@ struct ReadinessView: View {
             HStack(spacing: 4) {
                 Text(label)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
                 Text("\(value)")
                     .font(.caption2.bold())
                     .foregroundStyle(color)
@@ -206,10 +214,8 @@ struct ReadinessView: View {
     // MARK: - Factors Card
 
     private func factorsCard(_ s: ReadinessScore) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Score Breakdown")
-                .font(.headline)
-                .padding(.horizontal, 4)
+        VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "SCORE BREAKDOWN", icon: "chart.bar.fill", tint: .green)
 
             VStack(spacing: 0) {
                 ForEach([s.hrv, s.rhr, s.sleep], id: \.label) { comp in
@@ -217,11 +223,14 @@ struct ReadinessView: View {
                         // Score ring
                         ZStack {
                             Circle()
-                                .stroke(Color(.systemFill), lineWidth: 4)
+                                .stroke(Color.white.opacity(0.08), lineWidth: 4)
                                 .frame(width: 36, height: 36)
                             Circle()
                                 .trim(from: 0, to: CGFloat(comp.value) / 100)
-                                .stroke(scoreColor(comp.value), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                                .stroke(
+                                    LinearGradient(colors: [scoreColor(comp.value), scoreColor(comp.value).opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                    style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                                )
                                 .frame(width: 36, height: 36)
                                 .rotationEffect(.degrees(-90))
                             Text("\(comp.value)")
@@ -234,24 +243,23 @@ struct ReadinessView: View {
                                 .font(.subheadline.weight(.medium))
                             Text(comp.detail)
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.white.opacity(0.4))
                         }
 
                         Spacer()
 
                         Text(String(format: "%.0f%%", comp.weight * 100) + " weight")
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                     if comp.label != s.sleep.label {
-                        Divider().padding(.leading, 64)
+                        Color.premiumDivider.frame(height: 0.5).padding(.leading, 64)
                     }
                 }
             }
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
         }
     }
 
@@ -263,26 +271,19 @@ struct ReadinessView: View {
 
     private var checkinCorrelationCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "heart.text.square.fill")
-                    .foregroundStyle(.pink)
-                Text("Subjective Impact")
-                    .font(.headline)
-            }
-            .padding(.horizontal, 4)
+            PremiumSectionHeader(title: "SUBJECTIVE IMPACT", icon: "heart.text.square.fill", tint: .pink)
 
             if checkins.isEmpty {
                 HStack(spacing: 10) {
                     Image(systemName: "square.and.pencil")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                     Text("Log a daily check-in to see subjective impact")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
             } else {
                 // Energy correlation rows
                 let highEnergyAvg = correlationAvg(minEnergy: 4)
@@ -296,7 +297,7 @@ struct ReadinessView: View {
                             avg: high,
                             color: .green
                         )
-                        Divider().padding(.leading, 16)
+                        Color.premiumDivider.frame(height: 0.5).padding(.leading, 16)
                     }
                     if let low = lowEnergyAvg {
                         correlationRow(
@@ -309,18 +310,17 @@ struct ReadinessView: View {
                     if highEnergyAvg == nil && lowEnergyAvg == nil {
                         Text("Not enough check-in variety yet — keep logging!")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.4))
                             .padding()
                     }
                 }
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
 
                 // Recent check-ins mini list
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Recent Check-ins")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.4))
                         .padding(.horizontal, 4)
 
                     VStack(spacing: 0) {
@@ -328,7 +328,7 @@ struct ReadinessView: View {
                             HStack(spacing: 12) {
                                 Text(c.date)
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.4))
                                     .frame(width: 80, alignment: .leading)
                                 HStack(spacing: 6) {
                                     Label("\(c.energy)", systemImage: "bolt.fill")
@@ -339,7 +339,7 @@ struct ReadinessView: View {
                                         .foregroundStyle(.green)
                                     Label("\(c.stress)", systemImage: "brain.head.profile")
                                         .font(.caption2)
-                                        .foregroundStyle(c.stress >= 4 ? .orange : .secondary)
+                                        .foregroundStyle(c.stress >= 4 ? .orange : .white.opacity(0.4))
                                 }
                                 Spacer()
                                 if c.energy <= 2 || c.stress >= 4 {
@@ -351,12 +351,11 @@ struct ReadinessView: View {
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             if idx < min(checkins.count, 3) - 1 {
-                                Divider().padding(.leading, 16)
+                                Color.premiumDivider.frame(height: 0.5).padding(.leading, 16)
                             }
                         }
                     }
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
                 }
             }
         }
@@ -396,7 +395,7 @@ struct ReadinessView: View {
                     .font(.subheadline.weight(.medium))
                 Text(detail)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
             }
             Spacer()
             Text("avg \(avg)")
@@ -421,23 +420,19 @@ struct ReadinessView: View {
                     .foregroundStyle(s.recommendation.color)
                 Text(s.recommendation.advice)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.4))
             }
         }
         .padding()
-        .background(s.recommendation.color.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(s.recommendation.color.opacity(0.25), lineWidth: 1))
+        .premiumCard(cornerRadius: 18, tint: s.recommendation.color, tintOpacity: 0.04, gradientBorder: true)
     }
 
     // MARK: - History Chart
 
     private var historyChart: some View {
         let scoremax = history.map(\.score).max().map { Swift.max($0, 10) } ?? 100
-        return VStack(alignment: .leading, spacing: 8) {
-            Text("7-Day Readiness History")
-                .font(.headline)
-                .padding(.horizontal, 4)
+        return VStack(alignment: .leading, spacing: 10) {
+            PremiumSectionHeader(title: "7-DAY READINESS", icon: "chart.xyaxis.line", tint: .green)
 
             Chart {
                 RuleMark(y: .value("Optimal", 80))
@@ -474,15 +469,24 @@ struct ReadinessView: View {
                 }
             }
             .chartYScale(domain: 0...scoremax)
+            .chartPlotStyle { $0.background(Color.clear) }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
+                AxisMarks { _ in
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                        .foregroundStyle(.white.opacity(0.3))
+                }
+            }
+            .chartYAxis {
+                AxisMarks { _ in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5))
+                        .foregroundStyle(.white.opacity(0.06))
+                    AxisValueLabel()
+                        .foregroundStyle(.white.opacity(0.3))
                 }
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .premiumCard(cornerRadius: 18, tint: .green, tintOpacity: 0.02)
         }
     }
 
@@ -492,9 +496,10 @@ struct ReadinessView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: "info.circle.fill")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.blue.opacity(0.7))
                 Text("How Readiness Is Calculated")
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.85))
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text("• HRV (40%): Today's HRV vs your 30-day baseline. Higher-than-normal HRV signals good recovery.")
@@ -502,11 +507,10 @@ struct ReadinessView: View {
                 Text("• Sleep (30%): Duration scored against an 8-hour target. More sleep = higher component score.")
             }
             .font(.caption)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.white.opacity(0.4))
         }
         .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .premiumCard(cornerRadius: 18, tint: .blue, tintOpacity: 0.02)
     }
 
     // MARK: - Empty State
@@ -515,12 +519,12 @@ struct ReadinessView: View {
         VStack(spacing: 12) {
             Image(systemName: "gauge.with.dots.needle.67percent")
                 .font(.system(size: 48))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.green.opacity(0.5))
             Text("No Readiness Data")
                 .font(.title3.bold())
             Text("Readiness requires Apple Watch data for HRV and resting heart rate, plus sleep tracking. Make sure you're wearing your Watch at night.")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.3))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
         }

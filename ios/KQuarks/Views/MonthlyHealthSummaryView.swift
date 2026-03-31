@@ -102,7 +102,7 @@ struct MonthlyHealthSummaryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Monthly Summary")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -121,7 +121,7 @@ struct MonthlyHealthSummaryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -213,7 +213,7 @@ struct MonthlyHealthSummaryView: View {
             }
         }
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -251,7 +251,7 @@ struct MonthlyHealthSummaryView: View {
             .frame(height: 180)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -298,7 +298,7 @@ struct MonthlyHealthSummaryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -337,7 +337,7 @@ struct MonthlyHealthSummaryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -399,7 +399,7 @@ struct MonthlyHealthSummaryView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

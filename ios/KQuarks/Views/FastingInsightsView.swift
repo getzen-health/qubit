@@ -97,7 +97,7 @@ struct FastingInsightsView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Fasting Insights")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -132,7 +132,7 @@ struct FastingInsightsView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(10)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -219,7 +219,7 @@ struct FastingInsightsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -244,7 +244,7 @@ struct FastingInsightsView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -284,7 +284,7 @@ struct FastingInsightsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -340,7 +340,7 @@ struct FastingInsightsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

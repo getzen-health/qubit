@@ -7,6 +7,11 @@ struct WaterLog: Identifiable, Decodable {
     let id: UUID
     let amount_ml: Int
     let logged_at: Date
+
+    /// Editable within 15 minutes of logging
+    var isEditable: Bool {
+        Date().timeIntervalSince(logged_at) < 15 * 60
+    }
 }
 
 struct DailyWaterTotal: Identifiable {
@@ -49,7 +54,7 @@ final class WaterTrackingViewModel {
         defer { isLoading = false }
 
         guard let userId = SupabaseService.shared.currentSession?.user.id else {
-            errorMessage = "Not signed in"
+            // Not signed in — keep local logs, no error shown
             return
         }
 
@@ -67,38 +72,38 @@ final class WaterTrackingViewModel {
     // MARK: Logging
 
     func logWater(ml: Int) async {
-        guard let userId = SupabaseService.shared.currentSession?.user.id else {
-            errorMessage = "Not signed in"
-            return
-        }
+        // Local-first: update UI immediately
+        let newLog = WaterLog(id: UUID(), amount_ml: ml, logged_at: Date())
+        logs.append(newLog)
+        HapticService.impact(.light)
 
-        struct Payload: Encodable {
-            let user_id: String
-            let logged_at: String
-            let amount_ml: Int
-        }
-
-        do {
-            try await SupabaseService.shared.client
-                .from("water_logs")
-                .upsert(Payload(
-                    user_id: userId.uuidString,
-                    logged_at: ISO8601DateFormatter().string(from: Date()),
-                    amount_ml: ml
-                ), onConflict: "user_id,logged_at")
-                .execute()
-            
-            // Write water intake to Apple Health
-            do {
-                try await HealthKitService.shared.saveWater(milliliters: Double(ml))
-            } catch {
-                // Non-fatal — water log is already saved to Supabase
-                print("Warning: Failed to write water to HealthKit: \(error)")
+        // Persist to Supabase if signed in
+        if let userId = SupabaseService.shared.currentSession?.user.id {
+            struct Payload: Encodable {
+                let user_id: String
+                let logged_at: String
+                let amount_ml: Int
             }
-            
-            await loadData()
+
+            do {
+                try await SupabaseService.shared.client
+                    .from("water_logs")
+                    .upsert(Payload(
+                        user_id: userId.uuidString,
+                        logged_at: ISO8601DateFormatter().string(from: Date()),
+                        amount_ml: ml
+                    ), onConflict: "user_id,logged_at")
+                    .execute()
+            } catch {
+                print("Warning: Failed to save water to Supabase: \(error)")
+            }
+        }
+
+        // Write water intake to Apple Health
+        do {
+            try await HealthKitService.shared.saveWater(milliliters: Double(ml))
         } catch {
-            errorMessage = error.localizedDescription
+            print("Warning: Failed to write water to HealthKit: \(error)")
         }
     }
 
@@ -109,6 +114,33 @@ final class WaterTrackingViewModel {
         }
         customAmountText = ""
         await logWater(ml: ml)
+    }
+
+    // MARK: Edit
+
+    func editLog(id: UUID, newMl: Int) async {
+        guard (1...5000).contains(newMl) else {
+            errorMessage = "Please enter a valid amount between 1 and 5000 ml"
+            return
+        }
+        // Update locally first
+        if let idx = logs.firstIndex(where: { $0.id == id }) {
+            logs[idx] = WaterLog(id: id, amount_ml: newMl, logged_at: logs[idx].logged_at)
+        }
+        HapticService.impact(.light)
+
+        // Persist to Supabase
+        if SupabaseService.shared.currentSession?.user.id != nil {
+            do {
+                try await SupabaseService.shared.client
+                    .from("water_logs")
+                    .update(["amount_ml": newMl])
+                    .eq("id", value: id.uuidString)
+                    .execute()
+            } catch {
+                print("Warning: Failed to update water log in Supabase: \(error)")
+            }
+        }
     }
 
     // MARK: Deletion
@@ -181,27 +213,47 @@ final class WaterTrackingViewModel {
     }
 }
 
-// MARK: - Circular Progress Ring
+// MARK: - Premium Progress Ring
 
-private struct CircularProgressRing: View {
+private struct PremiumProgressRing: View {
     let progress: Double
     let color: Color
-    var lineWidth: CGFloat = 18
+    var lineWidth: CGFloat = 16
+    var size: CGFloat = 180
 
     var body: some View {
         ZStack {
+            // Background track
             Circle()
-                .stroke(Color(.tertiarySystemFill), lineWidth: lineWidth)
+                .stroke(Color.white.opacity(0.06), lineWidth: lineWidth)
+
+            // Gradient progress arc
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                .stroke(
+                    LinearGradient(
+                        colors: [color, color.opacity(0.5)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.8), value: progress)
+                .animation(.spring(response: 0.8, dampingFraction: 0.7), value: progress)
+
+            // Glow behind ring
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(color.opacity(0.4), lineWidth: lineWidth + 8)
+                .rotationEffect(.degrees(-90))
+                .blur(radius: 12)
+                .animation(.spring(response: 0.8, dampingFraction: 0.7), value: progress)
         }
+        .frame(width: size, height: size)
     }
 }
 
-// MARK: - Quick-Add Button
+// MARK: - Premium Quick-Add Button
 
 private struct WaterQuickAddButton: View {
     let emoji: String
@@ -211,24 +263,32 @@ private struct WaterQuickAddButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 5) {
+            VStack(spacing: 6) {
                 Text(emoji)
                     .font(.title2)
                 Text(label)
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.5))
                     .lineLimit(1)
                 Text("\(ml) ml")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.blue)
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .foregroundStyle(.cyan)
             }
-            .frame(width: 76, height: 84)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .frame(width: 78, height: 88)
+            .background(Color.cardSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color(.separator).opacity(0.4), lineWidth: 0.5)
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.1), Color.white.opacity(0.03)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 0.5
+                    )
             )
+            .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
         }
         .buttonStyle(.plain)
     }
@@ -239,6 +299,8 @@ private struct WaterQuickAddButton: View {
 struct WaterTrackingView: View {
     @State private var viewModel = WaterTrackingViewModel()
     @FocusState private var isCustomAmountFocused: Bool
+    @State private var editingLog: WaterLog?
+    @State private var editAmountText = ""
 
     private let quickAddOptions: [(emoji: String, label: String, ml: Int)] = [
         ("🥤", "Cup",       150),
@@ -250,16 +312,24 @@ struct WaterTrackingView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                summarySection
-                quickAddSection
-                customAmountSection
-                todayLogSection
-                weeklyChartSection
+            ZStack {
+                PremiumBackgroundView()
+
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        summarySection
+                        quickAddSection
+                        customAmountSection
+                        todayLogSection
+                        weeklyChartSection
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 100)
+                }
             }
-            .listStyle(.insetGrouped)
             .navigationTitle("Hydration")
             .toolbarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -267,7 +337,24 @@ struct WaterTrackingView: View {
                 }
             }
             .task { await viewModel.loadData() }
-            .refreshable { await viewModel.loadData() }
+            .alert("Edit Water Entry", isPresented: .init(
+                get: { editingLog != nil },
+                set: { if !$0 { editingLog = nil } }
+            )) {
+                TextField("Amount in ml", text: $editAmountText)
+                    .keyboardType(.numberPad)
+                Button("Save") {
+                    if let log = editingLog, let ml = Int(editAmountText) {
+                        Task { await viewModel.editLog(id: log.id, newMl: ml) }
+                    }
+                    editingLog = nil
+                }
+                Button("Cancel", role: .cancel) { editingLog = nil }
+            } message: {
+                if let log = editingLog {
+                    Text("Current: \(log.amount_ml) ml")
+                }
+            }
             .alert(
                 "Error",
                 isPresented: .init(
@@ -280,53 +367,60 @@ struct WaterTrackingView: View {
                 Text(viewModel.errorMessage ?? "")
             }
         }
+        .preferredColorScheme(.dark)
     }
 
     // MARK: - Summary Section
 
     @ViewBuilder
     private var summarySection: some View {
-        Section {
-            VStack(spacing: 16) {
-                ZStack {
-                    CircularProgressRing(progress: viewModel.progress, color: viewModel.ringColor)
-                        .frame(width: 170, height: 170)
+        VStack(spacing: 16) {
+            ZStack {
+                PremiumProgressRing(progress: viewModel.progress, color: viewModel.ringColor)
 
-                    VStack(spacing: 4) {
-                        Text("\(Int(viewModel.progress * 100))%")
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
-                            .foregroundStyle(viewModel.ringColor)
-                            .contentTransition(.numericText())
-                            .animation(.easeInOut(duration: 0.5), value: viewModel.progress)
+                VStack(spacing: 4) {
+                    Text("\(Int(viewModel.progress * 100))%")
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [viewModel.ringColor, viewModel.ringColor.opacity(0.6)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .contentTransition(.numericText())
+                        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: viewModel.progress)
 
-                        Text("hydrated")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Text("\(viewModel.todayTotal) / \(WaterTrackingViewModel.dailyGoalMl) ml")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-
-                if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(0.75)
+                    Text("hydrated")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.4))
+                        .textCase(.uppercase)
+                        .tracking(1.5)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 20)
+
+            Text("\(viewModel.todayTotal) / \(WaterTrackingViewModel.dailyGoalMl) ml")
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white.opacity(0.5))
+
+            if viewModel.isLoading {
+                ProgressView()
+                    .tint(.cyan)
+                    .scaleEffect(0.75)
+            }
         }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets())
-        .listSectionSeparator(.hidden)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .padding(.top, 8)
     }
 
     // MARK: - Quick Add Section
 
     @ViewBuilder
     private var quickAddSection: some View {
-        Section("Quick Add") {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("Quick Add", icon: "plus.circle.fill")
+
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(quickAddOptions, id: \.ml) { option in
@@ -339,11 +433,9 @@ struct WaterTrackingView: View {
                         }
                     }
                 }
-                .padding(.vertical, 8)
+                .padding(.horizontal, 2)
+                .padding(.vertical, 4)
             }
-            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
         }
     }
 
@@ -351,31 +443,51 @@ struct WaterTrackingView: View {
 
     @ViewBuilder
     private var customAmountSection: some View {
-        Section("Custom Amount") {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("Custom Amount", icon: "drop.fill")
+
             HStack(spacing: 12) {
                 HStack(spacing: 8) {
                     Image(systemName: "drop.fill")
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.cyan.opacity(0.6))
                         .font(.subheadline)
                     TextField("Amount (1–5000 ml)", text: $viewModel.customAmountText)
                         .keyboardType(.numberPad)
                         .focused($isCustomAmountFocused)
+                        .foregroundStyle(.white)
                 }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(Color.cardSurface)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+                )
 
                 Button {
                     isCustomAmountFocused = false
                     Task { await viewModel.logCustomAmount() }
                 } label: {
                     Text("Log")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 8)
-                        .background(viewModel.customAmountText.isEmpty ? Color.gray : Color.blue)
+                        .padding(.horizontal, 22)
+                        .padding(.vertical, 12)
+                        .background(
+                            LinearGradient(
+                                colors: viewModel.customAmountText.isEmpty
+                                    ? [Color.gray.opacity(0.3), Color.gray.opacity(0.2)]
+                                    : [Color.cyan, Color.cyan.opacity(0.7)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .clipShape(Capsule())
+                        .shadow(color: viewModel.customAmountText.isEmpty ? .clear : .cyan.opacity(0.3), radius: 8, y: 4)
                 }
                 .disabled(viewModel.customAmountText.isEmpty)
-                .animation(.easeInOut(duration: 0.15), value: viewModel.customAmountText.isEmpty)
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.customAmountText.isEmpty)
             }
         }
     }
@@ -384,99 +496,167 @@ struct WaterTrackingView: View {
 
     @ViewBuilder
     private var todayLogSection: some View {
-        Section("Today's Log — \(viewModel.todayTotal) ml") {
-            if viewModel.logs.isEmpty && !viewModel.isLoading {
-                Text("No entries yet — start hydrating! 💧")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 8)
-            } else {
-                ForEach(viewModel.logs) { log in
-                    logRow(log)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                Task { await viewModel.deleteLog(id: log.id) }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("Today — \(viewModel.todayTotal) ml", icon: "list.bullet")
+
+            VStack(spacing: 0) {
+                if viewModel.logs.isEmpty && !viewModel.isLoading {
+                    Text("No entries yet — start hydrating! 💧")
+                        .foregroundStyle(.white.opacity(0.35))
+                        .font(.system(size: 14, weight: .medium))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 24)
+                } else {
+                    ForEach(Array(viewModel.logs.enumerated()), id: \.element.id) { index, log in
+                        let editable = log.isEditable
+                        logRow(log, editable: editable)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if editable {
+                                    editAmountText = "\(log.amount_ml)"
+                                    editingLog = log
+                                }
                             }
+                            .contextMenu {
+                                if editable {
+                                    Button {
+                                        editAmountText = "\(log.amount_ml)"
+                                        editingLog = log
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                }
+                                Button(role: .destructive) {
+                                    Task { await viewModel.deleteLog(id: log.id) }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+
+                        if index < viewModel.logs.count - 1 {
+                            Color.premiumDivider
+                                .frame(height: 0.5)
+                                .padding(.leading, 48)
                         }
+                    }
                 }
             }
+            .premiumCard(cornerRadius: 18, tint: .cyan, tintOpacity: 0.02)
         }
     }
 
-    private func logRow(_ log: WaterLog) -> some View {
+    private func logRow(_ log: WaterLog, editable: Bool = false) -> some View {
         HStack(spacing: 12) {
             Text(waterIcon(for: log.amount_ml))
                 .font(.title3)
                 .frame(width: 32)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text("\(log.amount_ml) ml")
-                    .font(.subheadline.weight(.medium))
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.9))
                 Text(log.logged_at.formatted(date: .omitted, time: .shortened))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.3))
             }
 
             Spacer()
 
+            if editable {
+                Text("edit")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.cyan.opacity(0.6))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(.cyan.opacity(0.08), in: Capsule())
+            }
+
             Text("+\(log.amount_ml)")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.blue.opacity(0.8))
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundStyle(.cyan.opacity(0.7))
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     // MARK: - Weekly Chart Section
 
     @ViewBuilder
     private var weeklyChartSection: some View {
-        Section("7-Day History") {
-            Chart {
-                ForEach(viewModel.weeklyTotals) { day in
-                    BarMark(
-                        x: .value("Day", day.id, unit: .day),
-                        y: .value("ml", day.totalMl)
-                    )
-                    .foregroundStyle(
-                        day.totalMl >= WaterTrackingViewModel.dailyGoalMl
-                            ? Color.green.gradient
-                            : Color.blue.gradient
-                    )
-                    .cornerRadius(6)
-                }
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("7-Day History", icon: "chart.bar.fill")
 
-                RuleMark(y: .value("Goal", WaterTrackingViewModel.dailyGoalMl))
-                    .foregroundStyle(.orange)
-                    .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
-                    .annotation(position: .top, alignment: .trailing) {
-                        Text("Goal")
-                            .font(.caption2)
-                            .foregroundStyle(.orange)
-                            .padding(.trailing, 4)
+            VStack {
+                Chart {
+                    ForEach(viewModel.weeklyTotals) { day in
+                        BarMark(
+                            x: .value("Day", day.id, unit: .day),
+                            y: .value("ml", day.totalMl)
+                        )
+                        .foregroundStyle(
+                            day.totalMl >= WaterTrackingViewModel.dailyGoalMl
+                                ? LinearGradient(colors: [.green, .green.opacity(0.6)], startPoint: .top, endPoint: .bottom)
+                                : LinearGradient(colors: [.cyan, .cyan.opacity(0.4)], startPoint: .top, endPoint: .bottom)
+                        )
+                        .cornerRadius(6)
                     }
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
-                    AxisValueLabel(format: .dateTime.weekday(.abbreviated))
-                        .font(.caption2)
-                }
-            }
-            .chartYAxis {
-                AxisMarks { value in
-                    AxisValueLabel {
-                        if let ml = value.as(Int.self) {
-                            Text(ml >= 1000 ? "\(ml / 1000)L" : "\(ml)")
-                                .font(.caption2)
+
+                    RuleMark(y: .value("Goal", WaterTrackingViewModel.dailyGoalMl))
+                        .foregroundStyle(.orange.opacity(0.6))
+                        .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                        .annotation(position: .top, alignment: .trailing) {
+                            Text("Goal")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(.orange.opacity(0.6))
+                                .padding(.trailing, 4)
                         }
-                    }
-                    AxisGridLine()
                 }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .day)) { _ in
+                        AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.4))
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisValueLabel {
+                            if let ml = value.as(Int.self) {
+                                Text(ml >= 1000 ? "\(ml / 1000)L" : "\(ml)")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.3))
+                            }
+                        }
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))
+                            .foregroundStyle(.white.opacity(0.06))
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea
+                        .background(Color.clear)
+                }
+                .frame(height: 190)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 4)
             }
-            .frame(height: 190)
-            .padding(.vertical, 8)
+            .premiumCard(cornerRadius: 18, tint: .cyan, tintOpacity: 0.02)
         }
+    }
+
+    // MARK: - Section Header Helper
+
+    private func sectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.cyan.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
     }
 
     // MARK: - Helpers

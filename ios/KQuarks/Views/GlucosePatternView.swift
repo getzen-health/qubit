@@ -74,7 +74,7 @@ struct GlucosePatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Glucose Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -109,7 +109,7 @@ struct GlucosePatternView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Rectangle().fill(Color(.separator)).frame(width: 1, height: 50)
+            Rectangle().fill(Color.premiumDivider).frame(width: 1, height: 50)
 
             VStack(spacing: 4) {
                 Text(String(format: "%.0f%%", inRangePct))
@@ -120,7 +120,7 @@ struct GlucosePatternView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Rectangle().fill(Color(.separator)).frame(width: 1, height: 50)
+            Rectangle().fill(Color.premiumDivider).frame(width: 1, height: 50)
 
             VStack(spacing: 4) {
                 Text(String(format: "%.1f%%", estA1c))
@@ -134,7 +134,7 @@ struct GlucosePatternView: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -189,7 +189,7 @@ struct GlucosePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -218,7 +218,7 @@ struct GlucosePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -242,7 +242,7 @@ struct GlucosePatternView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -263,7 +263,7 @@ struct GlucosePatternView: View {
                     GeometryReader { geo in
                         let pct = d.inRangePct ?? 0
                         ZStack(alignment: .leading) {
-                            Capsule().fill(Color(.tertiarySystemBackground)).frame(height: 8)
+                            Capsule().fill(Color.premiumSurface).frame(height: 8)
                             Capsule()
                                 .fill(pct >= 70 ? Color.green : pct >= 50 ? Color.yellow : Color.red)
                                 .frame(width: geo.size.width * pct / 100, height: 8)
@@ -277,7 +277,7 @@ struct GlucosePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -301,7 +301,7 @@ struct GlucosePatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 

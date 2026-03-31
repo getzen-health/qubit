@@ -70,7 +70,7 @@ struct BloodPressurePatternView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("BP Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -130,7 +130,7 @@ struct BloodPressurePatternView: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -150,7 +150,7 @@ struct BloodPressurePatternView: View {
 
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
-                            Capsule().fill(Color(.tertiarySystemBackground)).frame(height: 10)
+                            Capsule().fill(Color.premiumSurface).frame(height: 10)
                             Capsule()
                                 .fill(categoryColor(cat.label).opacity(0.7))
                                 .frame(width: geo.size.width * CGFloat(cat.pct) / 100, height: 10)
@@ -174,7 +174,7 @@ struct BloodPressurePatternView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -200,7 +200,7 @@ struct BloodPressurePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -240,7 +240,7 @@ struct BloodPressurePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -267,7 +267,7 @@ struct BloodPressurePatternView: View {
             .frame(height: 160)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -307,7 +307,7 @@ struct BloodPressurePatternView: View {
                     if i < monthData.count - 1 { Divider().padding(.leading) }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

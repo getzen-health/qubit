@@ -43,7 +43,7 @@ struct HRVDetailView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("HRV Analysis")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
@@ -114,7 +114,7 @@ struct HRVDetailView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -184,7 +184,7 @@ struct HRVDetailView: View {
             }
             .frame(height: 200)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -218,7 +218,7 @@ struct HRVDetailView: View {
             .chartYScale(domain: 0...(maxVal * 1.2))
             .frame(height: 140)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -253,7 +253,7 @@ struct HRVDetailView: View {
             }
             .frame(height: 160)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         })
     }
@@ -274,7 +274,7 @@ struct HRVDetailView: View {
                 statBubble(label: "Range", value: "\(Int(max - min)) ms")
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

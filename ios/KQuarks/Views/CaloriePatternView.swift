@@ -107,7 +107,7 @@ struct CaloriePatternView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Calorie Patterns")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -190,7 +190,7 @@ struct CaloriePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -222,7 +222,7 @@ struct CaloriePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -259,7 +259,7 @@ struct CaloriePatternView: View {
                 }
             }
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         )
     }
@@ -303,7 +303,7 @@ struct CaloriePatternView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -347,7 +347,7 @@ struct CaloriePatternView: View {
                 .padding(.top, 2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -469,7 +469,7 @@ private struct CalorieStatCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(Color.cardSurface)
         .cornerRadius(12)
     }
 }

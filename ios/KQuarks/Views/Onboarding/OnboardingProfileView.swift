@@ -180,7 +180,7 @@ struct OnboardingProfileView: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
                 }
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .padding(.horizontal, 24)
 

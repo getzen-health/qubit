@@ -151,7 +151,7 @@ struct OralHygieneView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -231,7 +231,7 @@ struct OralHygieneView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -257,7 +257,7 @@ struct OralHygieneView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -299,7 +299,7 @@ struct OralHygieneView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -325,7 +325,7 @@ struct OralHygieneView: View {
             scienceItem("Apple Watch Detection", detail: "Apple Watch Series 5+ uses accelerometer data to automatically detect brushing events — no special app needed. Sessions appear in Health app under Other Data → Toothbrushing.")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -432,7 +432,7 @@ private struct OralStatCard: View {
             Text(unit).font(.caption2).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

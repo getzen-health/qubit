@@ -164,7 +164,7 @@ struct GlycogenStatusView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 6)
-                            .fill(Color(.tertiarySystemBackground))
+                            .fill(Color.premiumSurface)
                         RoundedRectangle(cornerRadius: 6)
                             .fill(currentState.color.gradient)
                             .frame(width: geo.size.width * ((currentPct ?? 0) / 100))
@@ -185,7 +185,7 @@ struct GlycogenStatusView: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -258,7 +258,7 @@ struct GlycogenStatusView: View {
             .font(.caption2)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -306,7 +306,7 @@ struct GlycogenStatusView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

@@ -145,18 +145,60 @@ struct PremiumBackgroundView: View {
     var body: some View {
         ZStack {
             Color.premiumBackground
-            // Subtle radial gradient for depth
+            // Subtle warm dark gradient — no purple cast
             RadialGradient(
                 colors: [
-                    Color(red: 0.08, green: 0.06, blue: 0.18).opacity(0.5),
+                    Color(red: 0.07, green: 0.08, blue: 0.12).opacity(0.6),
                     Color.clear
                 ],
-                center: .top,
-                startRadius: 50,
-                endRadius: 500
+                center: .topLeading,
+                startRadius: 100,
+                endRadius: 600
             )
         }
         .ignoresSafeArea()
+    }
+}
+
+// MARK: - Premium List Wrapper
+
+/// Wraps a List-based view in premium dark styling automatically.
+/// Use this on existing List views to upgrade them without rewriting to ScrollView.
+struct PremiumListModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .scrollContentBackground(.hidden)
+            .background(PremiumBackgroundView())
+            .preferredColorScheme(.dark)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+    }
+}
+
+/// Premium Section header for use inside ScrollView-based premium views.
+struct PremiumSectionHeader: View {
+    let title: String
+    let icon: String
+    var tint: Color = .cyan
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(tint.opacity(0.5))
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(.white.opacity(0.5))
+                .textCase(.uppercase)
+                .tracking(0.8)
+        }
+        .padding(.leading, 4)
+    }
+}
+
+extension View {
+    /// Quickly upgrade any List-based view to premium dark styling
+    func premiumList() -> some View {
+        modifier(PremiumListModifier())
     }
 }
 

@@ -54,7 +54,7 @@ struct FunctionalStrengthView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Functional Strength")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -91,7 +91,7 @@ struct FunctionalStrengthView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -123,7 +123,7 @@ struct FunctionalStrengthView: View {
             .frame(height: 130)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -153,7 +153,7 @@ struct FunctionalStrengthView: View {
             .frame(height: 120)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -185,7 +185,7 @@ struct FunctionalStrengthView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 

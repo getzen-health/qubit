@@ -25,7 +25,7 @@ struct HistoryView: View {
                     )
                     .datePickerStyle(.graphical)
                     .padding(.horizontal)
-                    .background(Color(.systemBackground))
+                    .background(Color.premiumBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal)
 
@@ -40,7 +40,7 @@ struct HistoryView: View {
                 .padding(.top, 8)
                 .padding(.bottom, 40)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.premiumBackground)
             .navigationTitle("Day History")
             .toolbarTitleDisplayMode(.inline)
             .onChange(of: selectedDate) { _, _ in Task { await load() } }
@@ -98,7 +98,7 @@ struct HistoryView: View {
             .padding(.horizontal)
         }
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal)
     }
@@ -137,7 +137,7 @@ struct HistoryView: View {
             }
         }
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal)
     }
@@ -178,7 +178,7 @@ struct HistoryView: View {
             }
         }
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(.horizontal)
     }

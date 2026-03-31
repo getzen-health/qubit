@@ -67,7 +67,7 @@ struct StrengthProgressionView: View {
                 .padding(.bottom, 32)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Strength Progression")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -121,7 +121,7 @@ struct StrengthProgressionView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -146,7 +146,7 @@ struct StrengthProgressionView: View {
             Text(firstLastMessage).font(.caption).foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -172,7 +172,7 @@ struct StrengthProgressionView: View {
             .frame(height: 150)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -211,7 +211,7 @@ struct StrengthProgressionView: View {
             .frame(height: 180)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -240,7 +240,7 @@ struct StrengthProgressionView: View {
             .frame(height: 140)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -266,7 +266,7 @@ struct StrengthProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -293,7 +293,7 @@ struct StrengthProgressionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -353,8 +353,8 @@ struct StrengthProgressionView: View {
             let monthKey = String(format: "%04d-%02d", monthComps.year ?? 0, monthComps.month ?? 0)
             let label = monthFmt.string(from: w.startDate)
             if monthMap[monthKey] == nil { monthMap[monthKey] = (label, 0, 0) }
-            monthMap[monthKey]!.count += 1
-            monthMap[monthKey]!.totalMins += mins
+            monthMap[monthKey, default: (label, 0, 0)].count += 1
+            monthMap[monthKey, default: (label, 0, 0)].totalMins += mins
 
             let typeName: String
             switch w.workoutActivityType {

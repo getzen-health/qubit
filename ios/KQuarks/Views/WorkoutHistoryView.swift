@@ -24,7 +24,7 @@ struct WorkoutHistoryView: View {
                         Button(type) { selectedType = type }
                             .font(.caption.weight(.medium))
                             .padding(.horizontal, 12).padding(.vertical, 6)
-                            .background(selectedType == type ? Color.purple : Color(.systemGray6))
+                            .background(selectedType == type ? Color.purple : Color.cardSurface)
                             .foregroundStyle(selectedType == type ? .white : .secondary)
                             .cornerRadius(20)
                     }

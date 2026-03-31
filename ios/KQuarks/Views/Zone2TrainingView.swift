@@ -63,7 +63,7 @@ struct Zone2TrainingView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Zone 2 Training")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -115,7 +115,7 @@ struct Zone2TrainingView: View {
                 .foregroundStyle(reached ? .green : .secondary)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -143,7 +143,7 @@ struct Zone2TrainingView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -208,7 +208,7 @@ struct Zone2TrainingView: View {
             }
             .frame(height: 220)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -241,7 +241,7 @@ struct Zone2TrainingView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -280,7 +280,7 @@ struct Zone2TrainingView: View {
                     .background(i % 2 == 1 ? Color(.systemFill).opacity(0.3) : .clear)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

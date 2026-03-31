@@ -110,3 +110,9 @@ GoogleService-Info.plist
 # Local development
 .claude/plans/
 .worktrees/
+ios/build_dd/
+ios/build_dd/
+ios/build_verify/
+ios/build_dd/
+ios/build_verify/
+ios/build_check/

@@ -17,7 +17,7 @@ struct ImportView: View {
                     Link("Open Import Page", destination: URL(string: "https://kquarks.app/import")!)
                 }
             }
-            .listStyle(.insetGrouped)
+            .premiumList()
             .navigationTitle("Import Data")
         }
     }

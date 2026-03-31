@@ -82,7 +82,7 @@ struct HikingProgressionView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Hiking Progression")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -115,7 +115,7 @@ struct HikingProgressionView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -140,7 +140,7 @@ struct HikingProgressionView: View {
                 .padding(.top, 2)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -207,7 +207,7 @@ struct HikingProgressionView: View {
             }
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -248,7 +248,7 @@ struct HikingProgressionView: View {
             }
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             Text(distSlope > 0.00005 ? "Distance per hike is trending up." :
@@ -300,7 +300,7 @@ struct HikingProgressionView: View {
             }
             .frame(height: 180)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
 
             Text(elevSlope > 0.0001 ? "Taking on more elevation over time — great strength gains." :
@@ -344,7 +344,7 @@ struct HikingProgressionView: View {
                     .background(i % 2 == 1 ? Color(.systemFill).opacity(0.3) : .clear)
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

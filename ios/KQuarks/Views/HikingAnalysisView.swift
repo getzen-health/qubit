@@ -75,7 +75,7 @@ struct HikingAnalysisView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color.premiumBackground)
         .navigationTitle("Hiking")
         .toolbarTitleDisplayMode(.inline)
         .task { await load() }
@@ -121,7 +121,7 @@ struct HikingAnalysisView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -151,7 +151,7 @@ struct HikingAnalysisView: View {
             .chartYAxisLabel("km")
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -194,7 +194,7 @@ struct HikingAnalysisView: View {
             }
             .frame(height: 150)
             .padding()
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
@@ -227,7 +227,7 @@ struct HikingAnalysisView: View {
                   color: .brown)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.premiumBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -282,7 +282,7 @@ struct HikingAnalysisView: View {
                     }
                 }
             }
-            .background(Color(.systemBackground))
+            .background(Color.premiumBackground)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }

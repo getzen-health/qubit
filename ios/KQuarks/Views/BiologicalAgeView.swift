@@ -93,7 +93,7 @@ struct BiologicalAgeView: View {
             HStack(alignment: .center, spacing: 20) {
                 ZStack {
                     Circle()
-                        .stroke(Color(.tertiarySystemBackground), lineWidth: 14)
+                        .stroke(Color.premiumSurface, lineWidth: 14)
                         .frame(width: 110, height: 110)
                     if let ca = compositeAge {
                         let pct = min(1.0, max(0.0, (ca - 18) / 62))   // 18–80 range
@@ -146,7 +146,7 @@ struct BiologicalAgeView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -179,7 +179,7 @@ struct BiologicalAgeView: View {
                         ZStack(alignment: .leading) {
                             // Background bar up to chronological
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color(.tertiarySystemBackground))
+                                .fill(Color.premiumSurface)
                                 .frame(height: 14)
 
                             // Colored bar for estimated age
@@ -225,7 +225,7 @@ struct BiologicalAgeView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -254,7 +254,7 @@ struct BiologicalAgeView: View {
                     Text(organ.note).font(.caption2).foregroundStyle(.tertiary).lineLimit(1)
                 }
                 .padding()
-                .background(Color(.secondarySystemBackground))
+                .background(Color.cardSurface)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
         }
@@ -289,7 +289,7 @@ struct BiologicalAgeView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }
@@ -314,7 +314,7 @@ struct BiologicalAgeView: View {
             scienceItem("Aerobic Age (ACSM Guidelines, 11th Ed.)", detail: "VO₂ max age norms by decade allow fitness age computation. Aerobic fitness is the single strongest predictor of all-cause mortality (Myers 2002).")
         }
         .padding()
-        .background(Color(.tertiarySystemBackground))
+        .background(Color.premiumSurface)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
     }

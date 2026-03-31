@@ -246,7 +246,7 @@ struct CardioFitnessTrajectoryView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -285,7 +285,7 @@ struct CardioFitnessTrajectoryView: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -337,7 +337,7 @@ struct CardioFitnessTrajectoryView: View {
                 .padding(.top, 4)
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 
@@ -389,7 +389,7 @@ struct CardioFitnessTrajectoryView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .cornerRadius(14)
     }
 

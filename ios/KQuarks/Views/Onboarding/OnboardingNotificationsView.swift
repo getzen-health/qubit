@@ -130,7 +130,7 @@ private struct MockNotificationCard: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
