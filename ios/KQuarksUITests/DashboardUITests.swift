@@ -23,69 +23,80 @@ final class DashboardUITests: XCTestCase {
         XCTAssertTrue(app.state == .runningForeground)
     }
 
-    func testTabBarOrSidebarIsPresent() {
-        // Either a tab bar or sidebar navigation exists
-        let hasTabBar = app.tabBars.firstMatch.waitForExistence(timeout: 3)
-        let hasSidebar = app.navigationBars.firstMatch.waitForExistence(timeout: 3)
-        XCTAssertTrue(hasTabBar || hasSidebar, "No tab bar or navigation bar found")
+    func testTabBarIsPresent() {
+        let hasTabBar = app.tabBars.firstMatch.waitForExistence(timeout: 5)
+        XCTAssertTrue(hasTabBar, "Tab bar should be visible on launch")
     }
 
-    func testDashboardMetricCardsVisible() {
-        // Scroll down to verify cards are rendered
+    func testAllFiveTabsExist() {
+        let tabBar = app.tabBars.firstMatch
+        guard tabBar.waitForExistence(timeout: 5) else {
+            XCTFail("Tab bar not found")
+            return
+        }
+        let expectedTabs = ["Dashboard", "Health", "Workouts", "Water", "Profile"]
+        for tab in expectedTabs {
+            XCTAssertTrue(tabBar.buttons[tab].exists, "Tab '\(tab)' should exist in tab bar")
+        }
+    }
+
+    func testDashboardScrollsWithoutCrash() {
         let scrollView = app.scrollViews.firstMatch
-        if scrollView.exists {
+        if scrollView.waitForExistence(timeout: 3) {
             scrollView.swipeUp()
+            sleep(1)
+            scrollView.swipeUp()
+            sleep(1)
             scrollView.swipeDown()
         }
-        // App should still be in foreground after scrolling
-        XCTAssertTrue(app.state == .runningForeground)
+        XCTAssertTrue(app.state == .runningForeground, "App should not crash after scrolling")
     }
 
-    // MARK: - Navigation
+    // MARK: - Tab Navigation
 
-    func testCanNavigateToSleepView() {
-        tapNavigationItem(label: "Sleep")
+    func testNavigateToHealthTab() {
+        tapTab("Health")
+        XCTAssertTrue(app.state == .runningForeground, "Health tab should not crash")
     }
 
-    func testCanNavigateToWorkoutsView() {
-        tapNavigationItem(label: "Workout")
+    func testNavigateToWorkoutsTab() {
+        tapTab("Workouts")
+        XCTAssertTrue(app.state == .runningForeground, "Workouts tab should not crash")
     }
 
-    func testCanNavigateToNutritionOrFoodView() {
-        let tapped = tapNavigationItem(label: "Food") ||
-                     tapNavigationItem(label: "Nutrition") ||
-                     tapNavigationItem(label: "Scan")
-        XCTAssertTrue(tapped, "Could not find Food/Nutrition/Scan nav item")
+    func testNavigateToWaterTab() {
+        tapTab("Water")
+        XCTAssertTrue(app.state == .runningForeground, "Water tab should not crash")
     }
 
-    func testCanNavigateToSettingsView() {
-        let tapped = tapNavigationItem(label: "Settings") ||
-                     tapNavigationItem(label: "Profile")
-        XCTAssertTrue(tapped, "Could not find Settings/Profile nav item")
+    func testNavigateToProfileTab() {
+        tapTab("Profile")
+        XCTAssertTrue(app.state == .runningForeground, "Profile tab should not crash")
+    }
+
+    func testNavigateAllTabsRoundTrip() {
+        for tab in ["Health", "Workouts", "Water", "Profile", "Dashboard"] {
+            tapTab(tab)
+            sleep(1)
+            XCTAssertTrue(app.state == .runningForeground, "Crash navigating to \(tab)")
+        }
+    }
+
+    // MARK: - Dashboard Content
+
+    func testDashboardShowsGreeting() {
+        let greeting = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS[c] 'morning' OR label CONTAINS[c] 'afternoon' OR label CONTAINS[c] 'evening' OR label CONTAINS[c] 'night'")
+        ).firstMatch
+        XCTAssertTrue(greeting.waitForExistence(timeout: 5), "Dashboard should show time-based greeting")
     }
 
     // MARK: - Helpers
 
-    @discardableResult
-    private func tapNavigationItem(label: String) -> Bool {
-        // Try tab bar first
-        let tabItem = app.tabBars.buttons[label]
-        if tabItem.exists {
-            tabItem.tap()
-            return true
+    private func tapTab(_ name: String) {
+        let tab = app.tabBars.buttons[name]
+        if tab.waitForExistence(timeout: 3) {
+            tab.tap()
         }
-        // Try sidebar / list cells
-        let cell = app.cells.staticTexts[label].firstMatch
-        if cell.waitForExistence(timeout: 2) {
-            cell.tap()
-            return true
-        }
-        // Try any button matching label
-        let btn = app.buttons.matching(identifier: label).firstMatch
-        if btn.exists {
-            btn.tap()
-            return true
-        }
-        return false
     }
 }

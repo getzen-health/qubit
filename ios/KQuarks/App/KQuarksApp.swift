@@ -125,6 +125,13 @@ class AppState {
     }
 
     func initializeAuth() async {
+        // Skip real auth during UI testing
+        if ProcessInfo.processInfo.arguments.contains("UI_TESTING") {
+            isAuthenticated = true
+            isCheckingAuth = false
+            return
+        }
+
         isCheckingAuth = true
 
         do {

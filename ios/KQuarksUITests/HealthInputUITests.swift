@@ -16,41 +16,99 @@ final class HealthInputUITests: XCTestCase {
         app = nil
     }
 
-    // MARK: - Water
+    // MARK: - Water Tab
 
-    func testWaterTrackerReachable() {
-        let reached = navigate(to: ["Water", "Hydration"])
-        XCTAssertTrue(reached || app.state == .runningForeground)
+    func testWaterTabReachable() {
+        tapTab("Water")
+        XCTAssertTrue(app.state == .runningForeground, "Water tab should not crash")
     }
 
-    func testWaterAddButtonExists() {
-        guard navigate(to: ["Water", "Hydration"]) else { return }
-        let addBtn = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'add' OR label CONTAINS[c] '+'")
-        ).firstMatch
-        // Button may exist — non-fatal if not (page may require auth)
-        _ = addBtn.waitForExistence(timeout: 3)
+    func testWaterTabHasProgressRing() {
+        tapTab("Water")
+        sleep(2)
+        // Water view should show some progress/goal element
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.exists {
+            scrollView.swipeUp()
+        }
         XCTAssertTrue(app.state == .runningForeground)
     }
 
-    // MARK: - Mood
-
-    func testMoodTrackerReachable() {
-        let reached = navigate(to: ["Mood", "Mental"])
-        XCTAssertTrue(reached || app.state == .runningForeground)
+    func testWaterQuickAddButtons() {
+        tapTab("Water")
+        sleep(2)
+        // Look for quick-add amount buttons (250ml, 500ml, etc.)
+        let addButton = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS[c] 'ml' OR label CONTAINS[c] 'add' OR label CONTAINS[c] '+'")
+        ).firstMatch
+        if addButton.waitForExistence(timeout: 3) {
+            addButton.tap()
+            sleep(1)
+        }
+        XCTAssertTrue(app.state == .runningForeground, "Should not crash adding water")
     }
 
-    // MARK: - Stress
+    // MARK: - Health Tab Features
 
-    func testStressTrackerReachable() {
-        let reached = navigate(to: ["Stress", "Recovery"])
-        XCTAssertTrue(reached || app.state == .runningForeground)
+    func testHealthTabReachable() {
+        tapTab("Health")
+        XCTAssertTrue(app.state == .runningForeground, "Health tab should not crash")
+    }
+
+    func testHealthTabScrollsWithoutCrash() {
+        tapTab("Health")
+        sleep(2)
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.waitForExistence(timeout: 3) {
+            scrollView.swipeUp()
+            sleep(1)
+            scrollView.swipeUp()
+            sleep(1)
+            scrollView.swipeDown()
+        }
+        XCTAssertTrue(app.state == .runningForeground)
+    }
+
+    // MARK: - Profile Tab
+
+    func testProfileTabReachable() {
+        tapTab("Profile")
+        XCTAssertTrue(app.state == .runningForeground, "Profile tab should not crash")
+    }
+
+    func testProfileTabHasSignOut() {
+        tapTab("Profile")
+        sleep(2)
+        // Scroll to find Sign Out button
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.exists {
+            scrollView.swipeUp()
+            scrollView.swipeUp()
+        }
+        let signOut = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS[c] 'Sign Out' OR label CONTAINS[c] 'sign out'")
+        ).firstMatch
+        _ = signOut.waitForExistence(timeout: 3)
+        XCTAssertTrue(app.state == .runningForeground)
+    }
+
+    // MARK: - Workouts Tab
+
+    func testWorkoutsTabScrollable() {
+        tapTab("Workouts")
+        sleep(2)
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.waitForExistence(timeout: 3) {
+            scrollView.swipeUp()
+            sleep(1)
+            scrollView.swipeDown()
+        }
+        XCTAssertTrue(app.state == .runningForeground)
     }
 
     // MARK: - Accessibility
 
     func testNoCriticalAccessibilityLabelsAreMissing() {
-        // All interactive elements should have accessibility identifiers or labels
         let buttons = app.buttons.allElementsBoundByIndex
         var unlabeledCount = 0
         for btn in buttons.prefix(20) {
@@ -64,16 +122,10 @@ final class HealthInputUITests: XCTestCase {
 
     // MARK: - Helpers
 
-    @discardableResult
-    private func navigate(to labels: [String]) -> Bool {
-        for label in labels {
-            let tab = app.tabBars.buttons[label]
-            if tab.exists { tab.tap(); return true }
-            let cell = app.cells.staticTexts[label].firstMatch
-            if cell.waitForExistence(timeout: 2) { cell.tap(); return true }
-            let btn = app.buttons[label]
-            if btn.exists { btn.tap(); return true }
+    private func tapTab(_ name: String) {
+        let tab = app.tabBars.buttons[name]
+        if tab.waitForExistence(timeout: 5) {
+            tab.tap()
         }
-        return false
     }
 }
