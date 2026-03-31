@@ -284,7 +284,7 @@ struct ProductDetailSheet: View {
                         .foregroundStyle(.white.opacity(0.4))
                         .lineSpacing(2)
 
-                    Link(destination: URL(string: "https://www.santepubliquefrance.fr/en/nutri-score")!) {
+                    Link(destination: URL(string: "https://www.santepubliquefrance.fr/en/nutri-score") ?? URL(string: "https://kquarks.app")!) {
                         HStack(spacing: 4) {
                             Image(systemName: "link")
                                 .font(.system(size: 9))
@@ -341,7 +341,7 @@ struct ProductDetailSheet: View {
                         Spacer()
                     }
 
-                    Link(destination: URL(string: "https://doi.org/10.1017/S1368980017000234")!) {
+                    Link(destination: URL(string: "https://doi.org/10.1017/S1368980017000234") ?? URL(string: "https://kquarks.app")!) {
                         HStack(spacing: 4) {
                             Image(systemName: "link")
                                 .font(.system(size: 9))
@@ -617,7 +617,7 @@ struct ProductDetailSheet: View {
     }
 
     private func sourceLink(_ title: String, url: String, desc: String) -> some View {
-        Link(destination: URL(string: url)!) {
+        Link(destination: URL(string: url) ?? URL(string: "https://kquarks.app")!) {
             HStack(alignment: .center, spacing: 10) {
                 Image(systemName: "link.circle.fill")
                     .font(.system(size: 16))

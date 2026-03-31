@@ -244,11 +244,11 @@ struct SettingsView: View {
                         Label("About", systemImage: "info.circle")
                     }
 
-                    Link(destination: URL(string: "https://kquarks.app/privacy")!) {
+                    Link(destination: URL(string: "https://kquarks.app/privacy") ?? URL(string: "https://kquarks.app")!) {
                         Label("Privacy Policy", systemImage: "hand.raised")
                     }
 
-                    Link(destination: URL(string: "https://kquarks.app/terms")!) {
+                    Link(destination: URL(string: "https://kquarks.app/terms") ?? URL(string: "https://kquarks.app")!) {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                 }
@@ -490,7 +490,7 @@ struct AboutView: View {
             }
 
             Section {
-                Link(destination: URL(string: "https://github.com/qxlsz/kquarks")!) {
+                Link(destination: URL(string: "https://github.com/qxlsz/kquarks") ?? URL(string: "https://kquarks.app")!) {
                     Label("View on GitHub", systemImage: "link")
                 }
             }

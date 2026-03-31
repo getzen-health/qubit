@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(AppState.self) private var appState
     @State private var showSignOutAlert = false
     
     var body: some View {
@@ -84,7 +85,12 @@ struct ProfileView: View {
             .premiumList()
             .navigationTitle("Profile")
             .alert("Sign Out", isPresented: $showSignOutAlert) {
-                Button("Sign Out", role: .destructive) { /* call auth sign out */ }
+                Button("Sign Out", role: .destructive) {
+                    Task {
+                        try? await SupabaseService.shared.signOut()
+                        await MainActor.run { appState.isAuthenticated = false }
+                    }
+                }
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Are you sure you want to sign out?")

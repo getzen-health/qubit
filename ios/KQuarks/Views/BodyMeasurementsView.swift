@@ -56,7 +56,10 @@ class BodyMeasurementsViewModel {
         body["sex"] = sex
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         guard let (_, response) = try? await URLSession.shared.data(for: request),
-              (response as? HTTPURLResponse)?.statusCode == 201 else { return }
+              (response as? HTTPURLResponse)?.statusCode == 201 else {
+            errorMessage = "Failed to save measurements"
+            return
+        }
         saved = true
         HapticService.notification(.success)
     }
