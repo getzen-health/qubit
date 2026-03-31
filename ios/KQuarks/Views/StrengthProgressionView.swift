@@ -353,8 +353,8 @@ struct StrengthProgressionView: View {
             let monthKey = String(format: "%04d-%02d", monthComps.year ?? 0, monthComps.month ?? 0)
             let label = monthFmt.string(from: w.startDate)
             if monthMap[monthKey] == nil { monthMap[monthKey] = (label, 0, 0) }
-            monthMap[monthKey]!.count += 1
-            monthMap[monthKey]!.totalMins += mins
+            monthMap[monthKey, default: (label, 0, 0)].count += 1
+            monthMap[monthKey, default: (label, 0, 0)].totalMins += mins
 
             let typeName: String
             switch w.workoutActivityType {

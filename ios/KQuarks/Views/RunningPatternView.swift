@@ -519,10 +519,10 @@ struct RunningPatternView: View {
             let monthKey = String(format: "%04d-%02d", monthComps.year ?? 0, monthComps.month ?? 0)
             let label = monthFmt.string(from: w.startDate)
             if monthMap[monthKey] == nil { monthMap[monthKey] = (label, 0, 0, []) }
-            monthMap[monthKey]!.km += km
-            monthMap[monthKey]!.count += 1
+            monthMap[monthKey, default: (label, 0, 0, [])].km += km
+            monthMap[monthKey, default: (label, 0, 0, [])].count += 1
             if let p = paceSecsPerKm, p > 120, p < 900 {
-                monthMap[monthKey]!.paces.append(p)
+                monthMap[monthKey, default: (label, 0, 0, [])].paces.append(p)
             }
 
             // ISO week
@@ -530,8 +530,8 @@ struct RunningPatternView: View {
             let weekKey = String(format: "W%02d", weekComps.weekOfYear ?? 0)
             let weekStart = cal.date(from: weekComps) ?? w.startDate
             if weekMap[weekKey] == nil { weekMap[weekKey] = (0, 0, weekStart) }
-            weekMap[weekKey]!.km += km
-            weekMap[weekKey]!.count += 1
+            weekMap[weekKey, default: (0, 0, weekStart)].km += km
+            weekMap[weekKey, default: (0, 0, weekStart)].count += 1
         }
 
         // Build sorted arrays

@@ -414,7 +414,8 @@ struct HRZoneProgressionView: View {
         var bucketMap: [Date: ZoneMinutes] = [:]
         var current = start
         while current <= end {
-            let monthStart = calendar.startOfDay(for: calendar.dateInterval(of: .month, for: current)!.start)
+            guard let interval = calendar.dateInterval(of: .month, for: current) else { continue }
+            let monthStart = calendar.startOfDay(for: interval.start)
             bucketMap[monthStart] = ZoneMinutes()
             current = calendar.date(byAdding: .month, value: 1, to: current) ?? Date()
         }
@@ -422,7 +423,8 @@ struct HRZoneProgressionView: View {
         // 3. Process workouts concurrently (batching to avoid overload)
         for workout in workouts {
             let hrSamples = await fetchHRSamples(for: workout)
-            let monthKey = calendar.startOfDay(for: calendar.dateInterval(of: .month, for: workout.startDate)!.start)
+            guard let workoutInterval = calendar.dateInterval(of: .month, for: workout.startDate) else { continue }
+            let monthKey = calendar.startOfDay(for: workoutInterval.start)
             guard bucketMap[monthKey] != nil else { continue }
 
             for sample in hrSamples {
@@ -431,11 +433,11 @@ struct HRZoneProgressionView: View {
                 let minutesFraction = sample.endDate.timeIntervalSince(sample.startDate) / 60.0
 
                 switch pctMax {
-                case ..<0.60:    bucketMap[monthKey]!.z1 += minutesFraction
-                case 0.60..<0.70: bucketMap[monthKey]!.z2 += minutesFraction
-                case 0.70..<0.80: bucketMap[monthKey]!.z3 += minutesFraction
-                case 0.80..<0.90: bucketMap[monthKey]!.z4 += minutesFraction
-                default:          bucketMap[monthKey]!.z5 += minutesFraction
+                case ..<0.60:    bucketMap[monthKey, default: ZoneMinutes()].z1 += minutesFraction
+                case 0.60..<0.70: bucketMap[monthKey, default: ZoneMinutes()].z2 += minutesFraction
+                case 0.70..<0.80: bucketMap[monthKey, default: ZoneMinutes()].z3 += minutesFraction
+                case 0.80..<0.90: bucketMap[monthKey, default: ZoneMinutes()].z4 += minutesFraction
+                default:          bucketMap[monthKey, default: ZoneMinutes()].z5 += minutesFraction
                 }
             }
         }
