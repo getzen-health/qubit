@@ -133,6 +133,8 @@ class AppState {
             self.isAuthenticated = true
             if let user { GoalService.shared.apply(from: user) }
         } catch {
+            print("[Auth] initializeAuth failed: \(error.localizedDescription)")
+            self.isAuthenticated = false
         }
 
         isCheckingAuth = false
@@ -152,6 +154,7 @@ class AppState {
                 self.isAuthenticated = true
                 if let user { GoalService.shared.apply(from: user) }
             } catch {
+                print("[Auth] signedIn user fetch failed: \(error.localizedDescription)")
             }
         case .signedOut:
             self.user = nil

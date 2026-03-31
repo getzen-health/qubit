@@ -279,7 +279,7 @@ struct DashboardListView: View {
                     spacing: 12
                 ) {
                     // Hydration & Nutrition
-                    NavigationLink(destination: WaterView()) {
+                    NavigationLink(destination: WaterTrackingView()) {
                         DashboardTileCard(icon: "drop.fill", title: "Hydration", subtitle: "Log water intake", color: .cyan)
                     }.buttonStyle(.plain)
 

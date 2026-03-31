@@ -35,14 +35,18 @@ export default function CorrelationsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const supabase = createClient()
-
   useEffect(() => {
     const fetchCorrelations = async () => {
       setLoading(true)
       setError(null)
 
       try {
+        const supabase = createClient()
+        if (!supabase) {
+          setError('Unable to connect')
+          setLoading(false)
+          return
+        }
         const { data: { session } } = await supabase.auth.getSession()
 
         if (!session) {
@@ -72,7 +76,7 @@ export default function CorrelationsPage() {
     }
 
     fetchCorrelations()
-  }, [days, supabase.auth])
+  }, [days])
 
   if (loading) {
     return (
