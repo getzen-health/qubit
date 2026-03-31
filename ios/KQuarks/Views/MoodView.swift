@@ -190,7 +190,9 @@ struct MoodView: View {
                 }
                 recentLogs = logs
             }
-        } catch { }
+        } catch {
+            print("[MoodView] Failed to load mood history: \(error)")
+        }
     }
 }
 

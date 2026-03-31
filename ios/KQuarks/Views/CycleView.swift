@@ -68,6 +68,11 @@ struct CycleView: View {
         isLoading = true
         errorMessage = nil
         successMessage = nil
+        guard endDate >= startDate else {
+            errorMessage = "End date must be on or after start date"
+            isLoading = false
+            return
+        }
         guard let baseURL = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String,
               let url = URL(string: "\(baseURL)/api/cycle") else {
             errorMessage = "Configuration error"

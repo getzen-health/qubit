@@ -49,9 +49,9 @@ struct AuthView: View {
             .padding(.horizontal, 24)
             .disabled(isSigningIn)
 
-            // Skip button
+            #if DEBUG
+            // Skip button — development only
             Button {
-                // For development: skip auth
                 appState.isAuthenticated = true
             } label: {
                 Text("Skip for now")
@@ -59,6 +59,7 @@ struct AuthView: View {
                     .foregroundStyle(.secondary)
             }
             .padding(.bottom, 48)
+            #endif
         }
         .overlay {
             if isSigningIn {

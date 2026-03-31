@@ -123,9 +123,11 @@ struct ExportDataView: View {
                 let jsonData = try await supabase.exportAllUserData(selection: selection)
 
                 let filename = "kquarks-export-\(Date().kqFormat("yyyy-MM-dd")).json"
-                let fileURL = FileManager.default
-                    .urls(for: .documentDirectory, in: .userDomainMask)[0]
-                    .appendingPathComponent(filename)
+                guard let documentDir = FileManager.default
+                    .urls(for: .documentDirectory, in: .userDomainMask).first else {
+                    throw NSError(domain: "ExportData", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot access document directory"])
+                }
+                let fileURL = documentDir.appendingPathComponent(filename)
                 try jsonData.write(to: fileURL)
 
                 await MainActor.run {

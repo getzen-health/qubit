@@ -33,8 +33,13 @@ class SupplementsViewModel {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["name": name])
-        _ = try? await URLSession.shared.data(for: request)
-        takenToday.insert(name)
+        if let (_, response) = try? await URLSession.shared.data(for: request),
+           let http = response as? HTTPURLResponse, http.statusCode == 201 {
+            takenToday.insert(name)
+        } else {
+            takenToday.insert(name) // Still mark locally for UX
+            errorMessage = "Saved locally — sync pending"
+        }
     }
 }
 

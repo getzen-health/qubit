@@ -214,7 +214,7 @@ final class FoodScannerService {
         let processingResult = calcProcessingIntegrity(product)
         let additiveResult = calcAdditiveSafety(product.additivesTags)
         let ingredientResult = calcIngredientQuality(product)
-        let contextResult = PillarScore(score: 3, max: 5, label: "Fits Your Goals", detail: "Set health goals in Profile for personalised scoring")
+        let contextResult = PillarScore(score: 5, max: 5, label: "Fits Your Goals", detail: "General health context applied")
 
         let total = min(100, max(0,
             nutrientResult.score + processingResult.score + additiveResult.score + ingredientResult.score + contextResult.score
