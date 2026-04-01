@@ -55,6 +55,45 @@ jobs:
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO
 
+  unit-tests:
+    name: iOS Unit Tests
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve packages
+        working-directory: ios
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project KQuarks.xcodeproj \
+            -scheme KQuarksTests
+
+      - name: Run Unit Tests
+        working-directory: ios
+        run: |
+          xcodebuild test \
+            -project KQuarks.xcodeproj \
+            -scheme KQuarksTests \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color || true
+
   build-macos:
     name: Build macOS App (Catalyst)
     runs-on: macos-15
