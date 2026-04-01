@@ -18,7 +18,7 @@ struct AppearanceSettingsView: View {
             } header: {
                 Text("Theme")
             } footer: {
-                Text("Choose how KQuarks appears on your device.")
+                Text("Choose how GetZen appears on your device.")
             }
 
             // Accent Color
@@ -220,7 +220,7 @@ struct PreviewCard: View {
                     }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("KQuarks Health")
+                    Text("GetZen Health")
                         .font(.subheadline)
                         .fontWeight(.semibold)
 

@@ -18,7 +18,7 @@ struct HealthShareCardView: View {
                     Image(systemName: "k.circle.fill")
                         .foregroundStyle(.purple)
                         .font(.title2)
-                    Text("KQuarks")
+                    Text("GetZen")
                         .font(.headline)
                         .foregroundStyle(.white)
                     Spacer()

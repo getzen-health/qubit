@@ -10,7 +10,7 @@ import Foundation
 class SubscriptionService {
     static let shared = SubscriptionService()
 
-    private let userDefaultsKey = "kquarks_is_pro"
+    private let userDefaultsKey = "getzen_is_pro"
 
     /// `true` when the user has an active Pro entitlement.
     var isPro: Bool = false

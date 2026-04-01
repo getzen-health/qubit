@@ -1,4 +1,4 @@
-# KQuarks 10-Hour Sprint + 1-Year Roadmap
+# GetZen 10-Hour Sprint + 1-Year Roadmap
 
 **Date:** 2026-03-24
 **Target:** Public App Store launch + AI-first + Apple Watch
@@ -8,7 +8,7 @@
 
 ## Vision
 
-KQuarks ships as a **platform**: iPhone is the data source, Watch is the ambient layer, Web is the analysis layer, Claude is the intelligence layer. Each is independently valuable, compounding together.
+GetZen ships as a **platform**: iPhone is the data source, Watch is the ambient layer, Web is the analysis layer, Claude is the intelligence layer. Each is independently valuable, compounding together.
 
 ---
 
@@ -52,7 +52,7 @@ Apple Watch ◄────────────────────┤  
 **iOS side:**
 - `AIBriefingService.swift` — fetches last 24h summary from Supabase, calls Claude API, formats as push payload
 - Scheduled via `BGTaskScheduler` (morning, ~7am)
-- `NotificationService` extension: registers `com.kquarks.morning-briefing` task identifier
+- `NotificationService` extension: registers `com.getzen.morning-briefing` task identifier
 
 **Supabase Edge Function:**
 - `supabase/functions/morning-briefing/index.ts`
@@ -109,7 +109,7 @@ User: [JSON summary of last 7 days: steps, HRV, sleep, workouts, calories]
 - `AppDescription.md` — App Store description draft
 
 **AppDelegate / info.plist:**
-- `NSHealthShareUsageDescription` — "KQuarks reads your health data to provide insights and track your fitness progress."
+- `NSHealthShareUsageDescription` — "GetZen reads your health data to provide insights and track your fitness progress."
 - `NSHealthUpdateUsageDescription` — not required (read-only)
 - Background modes: `fetch`, `remote-notification`, `processing`
 

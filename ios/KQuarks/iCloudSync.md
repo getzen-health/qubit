@@ -1,14 +1,14 @@
-# iCloud Sync Configuration for KQuarks
+# iCloud Sync Configuration for GetZen
 
-This document outlines the iCloud sync setup for SwiftData persistence in KQuarks.
+This document outlines the iCloud sync setup for SwiftData persistence in GetZen.
 
 ## Overview
 
-KQuarks uses SwiftData with CloudKit integration to sync data across user devices. This allows seamless synchronization of locally stored health data (pending sync items, offline records, etc.) across iPhone, iPad, and Mac (via Catalyst).
+GetZen uses SwiftData with CloudKit integration to sync data across user devices. This allows seamless synchronization of locally stored health data (pending sync items, offline records, etc.) across iPhone, iPad, and Mac (via Catalyst).
 
 ## Configuration Steps
 
-### 1. ModelContainer Setup (KQuarksApp.swift)
+### 1. ModelContainer Setup (GetZenApp.swift)
 
 The app initializes SwiftData with CloudKit support:
 
@@ -30,14 +30,14 @@ modelContainer = try ModelContainer(
 - Uses the same iCloud container identifier across all devices
 - Syncs only local SwiftData models (not HealthKit data directly)
 
-### 2. Entitlements (KQuarks.entitlements)
+### 2. Entitlements (GetZen.entitlements)
 
 The following entitlements are required:
 
 ```xml
 <key>com.apple.developer.icloud-container-identifiers</key>
 <array>
-    <string>iCloud.com.qxlsz.kquarks</string>
+    <string>iCloud.com.qxlsz.getzen</string>
 </array>
 <key>com.apple.developer.icloud-services</key>
 <array>
@@ -46,7 +46,7 @@ The following entitlements are required:
 ```
 
 These entitlements:
-- Define the CloudKit container ID (`iCloud.com.qxlsz.kquarks`)
+- Define the CloudKit container ID (`iCloud.com.qxlsz.getzen`)
 - Enable CloudKit capabilities for the app
 
 ### 3. Data Models
@@ -79,18 +79,18 @@ Future models can be added to the Schema for automatic CloudKit sync.
 xcode-select --install
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator'
 ```
 
 ### Device Testing
 - Ensure user is signed into iCloud on the device
 - Enable iCloud in Settings > [Apple ID] > iCloud
-- Toggle "KQuarks" in the app's iCloud services list
+- Toggle "GetZen" in the app's iCloud services list
 
 ### Debugging CloudKit
 Use Xcode's Debug navigator:
-1. Open KQuarks in Xcode
+1. Open GetZen in Xcode
 2. Go to Scheme > Edit Scheme > Options
 3. Check "CloudKit logging" if available in Console
 

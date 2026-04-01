@@ -1,5 +1,5 @@
 /**
- * WASM Loader for kquarks Core
+ * WASM Loader for getzen Core
  *
  * Provides lazy loading and initialization of the Rust WASM module.
  * Falls back to JavaScript implementations when WASM is unavailable.
@@ -33,11 +33,11 @@ export async function initWasm(): Promise<typeof QuarksCore | null> {
       wasmModule = wasm
       wasmInitialized = true
       if (process.env.NODE_ENV === 'development') {
-        console.log('[kquarks] WASM module initialized, version:', wasm.version())
+        console.log('[getzen] WASM module initialized, version:', wasm.version())
       }
       return wasm
     } catch (error) {
-      console.error('[kquarks] WASM initialization failed, using JS fallbacks:', error)
+      console.error('[getzen] WASM initialization failed, using JS fallbacks:', error)
       wasmInitialized = true // Mark as initialized even on failure to prevent retries
       return null
     }

@@ -1,6 +1,6 @@
-# KQuarks iOS UI Tests
+# GetZen iOS UI Tests
 
-XCUITest files for end-to-end UI testing of the KQuarks iOS app.
+XCUITest files for end-to-end UI testing of the GetZen iOS app.
 
 ## Test Files
 
@@ -17,7 +17,7 @@ The test files are ready, but the Xcode project needs a **UI Testing Bundle** ta
 1. Open `ios/KQuarks.xcodeproj` in Xcode
 2. **File → New → Target → UI Testing Bundle**
 3. Name it exactly: `KQuarksUITests`
-4. Set **Target to be Tested** to `KQuarks`
+4. Set **Target to be Tested** to `GetZen`
 5. Drag the three `.swift` files from this folder into the new target
 6. **Product → Test** (⌘U) to verify they compile
 
@@ -29,14 +29,14 @@ Once added, the `ui-tests.yml` GitHub Actions workflow will automatically run th
 # Run all UI tests on iPhone 16 simulator
 xcodebuild test \
   -project ios/KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
   CODE_SIGNING_ALLOWED=NO
 
 # Run a single test class
 xcodebuild test \
   -project ios/KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -only-testing:KQuarksUITests/DashboardUITests \
   -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
   CODE_SIGNING_ALLOWED=NO

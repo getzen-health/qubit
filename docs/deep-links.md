@@ -1,54 +1,54 @@
-# KQuarks Deep Links
+# GetZen Deep Links
 
-KQuarks supports deep linking to navigate directly to specific features within the app. Deep links use the `kquarks://` URL scheme and can be invoked from external sources like websites, push notifications, or other apps.
+GetZen supports deep linking to navigate directly to specific features within the app. Deep links use the `getzen://` URL scheme and can be invoked from external sources like websites, push notifications, or other apps.
 
 ## URL Format
 
 ```
-kquarks://<destination>[/<sub-path>]
+getzen://<destination>[/<sub-path>]
 ```
 
 ## Supported Destinations
 
 | URL | Destination | Notes |
 |-----|-------------|-------|
-| `kquarks://ready` or `kquarks://readiness` | Readiness Score | Daily readiness dashboard |
-| `kquarks://sleep` | Sleep Dashboard | Sleep tracking and analysis |
-| `kquarks://workouts` or `kquarks://workout` | Workouts | Workout history and logging |
-| `kquarks://food/scan` | Food Barcode Scanner | Scan product barcodes |
-| `kquarks://food/diary` or `kquarks://nutrition/diary` | Food Diary | Daily meal tracking |
-| `kquarks://food/history` or `kquarks://nutrition/history` | Scan History | Previous barcode scans |
-| `kquarks://water` | Water Tracking | Hydration logger |
-| `kquarks://habits` or `kquarks://habit` | Habits | Daily habit streaks |
-| `kquarks://hrv` | Heart Rate Variability | HRV trends and recovery |
-| `kquarks://body` | Body Metrics | Weight, body composition |
-| `kquarks://glucose` | Glucose Dashboard | Blood glucose tracking |
-| `kquarks://vitals` | Vitals | Blood pressure, oxygen, temperature |
-| `kquarks://social` | Social & Challenges | Challenges and friend activity |
-| `kquarks://achievements` | Achievements | Badges and milestones |
-| `kquarks://settings` | Settings | App preferences |
-| `kquarks://profile` | Profile | User profile |
+| `getzen://ready` or `getzen://readiness` | Readiness Score | Daily readiness dashboard |
+| `getzen://sleep` | Sleep Dashboard | Sleep tracking and analysis |
+| `getzen://workouts` or `getzen://workout` | Workouts | Workout history and logging |
+| `getzen://food/scan` | Food Barcode Scanner | Scan product barcodes |
+| `getzen://food/diary` or `getzen://nutrition/diary` | Food Diary | Daily meal tracking |
+| `getzen://food/history` or `getzen://nutrition/history` | Scan History | Previous barcode scans |
+| `getzen://water` | Water Tracking | Hydration logger |
+| `getzen://habits` or `getzen://habit` | Habits | Daily habit streaks |
+| `getzen://hrv` | Heart Rate Variability | HRV trends and recovery |
+| `getzen://body` | Body Metrics | Weight, body composition |
+| `getzen://glucose` | Glucose Dashboard | Blood glucose tracking |
+| `getzen://vitals` | Vitals | Blood pressure, oxygen, temperature |
+| `getzen://social` | Social & Challenges | Challenges and friend activity |
+| `getzen://achievements` | Achievements | Badges and milestones |
+| `getzen://settings` | Settings | App preferences |
+| `getzen://profile` | Profile | User profile |
 
 ## Examples
 
 ### Navigate to food diary
 ```
-kquarks://food/diary
+getzen://food/diary
 ```
 
 ### Open sleep dashboard
 ```
-kquarks://sleep
+getzen://sleep
 ```
 
 ### Start food barcode scanner
 ```
-kquarks://food/scan
+getzen://food/scan
 ```
 
 ### View achievements
 ```
-kquarks://achievements
+getzen://achievements
 ```
 
 ## Implementation

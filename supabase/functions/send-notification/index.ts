@@ -16,7 +16,7 @@ import { retryWithBackoff } from "../_shared/retry.ts"
  */
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://kquarks.vercel.app",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://getzen.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
@@ -69,7 +69,7 @@ async function sendAPNsNotification(
   deviceToken: string,
   notification: NotificationRequest,
 ): Promise<{ success: boolean; error?: string }> {
-  const apnsBundleId = Deno.env.get("APPLE_BUNDLE_ID") || "com.kquarks.health"
+  const apnsBundleId = Deno.env.get("APPLE_BUNDLE_ID") || "com.getzen.health"
   const apnsKeyId = Deno.env.get("APPLE_KEY_ID") || ""
   const apnsTeamId = Deno.env.get("APPLE_TEAM_ID") || ""
   const apnsPrivateKey = Deno.env.get("APPLE_PRIVATE_KEY") || ""

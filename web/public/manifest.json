@@ -1,6 +1,6 @@
 {
-  "name": "KQuarks Health",
-  "short_name": "KQuarks",
+  "name": "GetZen Health",
+  "short_name": "GetZen",
   "description": "Track your health, scan products, get AI insights",
   "start_url": "/dashboard",
   "display": "standalone",

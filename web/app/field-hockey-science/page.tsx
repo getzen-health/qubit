@@ -682,7 +682,7 @@ export default function FieldHockeySciencePage() {
             3D Game Transition Analysis — Elite International Hockey
           </p>
           <p style={{ marginTop: '0.5rem' }}>
-            KQuarks Sport Science · Data is educational only and does not constitute medical advice.
+            GetZen Sport Science · Data is educational only and does not constitute medical advice.
           </p>
         </footer>
 

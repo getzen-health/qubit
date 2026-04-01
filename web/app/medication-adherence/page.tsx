@@ -5,7 +5,7 @@ const MedicationAdherenceClient = dynamic(() => import('./medication-adherence-c
 import type { MedicationEntry } from '@/lib/medication-adherence'
 
 export const metadata = {
-  title: 'Medication Adherence — KQuarks',
+  title: 'Medication Adherence — GetZen',
   description: 'Track medication compliance, reminder schedules, and drug-food interactions.',
 }
 

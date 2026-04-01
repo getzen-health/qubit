@@ -1,4 +1,4 @@
-# Supabase Cron Setup for KQuarks AI Features
+# Supabase Cron Setup for GetZen AI Features
 
 ## Morning Briefing (daily 7am UTC)
 Run this SQL in Supabase Dashboard → SQL Editor:

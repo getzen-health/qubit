@@ -6,11 +6,11 @@ import Link from 'next/link'
 const FAQS = [
   {
     q: 'How do I connect Apple Health?',
-    a: 'Open the KQuarks iOS app, go to Settings → Health Permissions, then tap "Grant Access". Make sure to enable all the categories you want to sync. Changes take effect on the next background sync.',
+    a: 'Open the GetZen iOS app, go to Settings → Health Permissions, then tap "Grant Access". Make sure to enable all the categories you want to sync. Changes take effect on the next background sync.',
   },
   {
     q: "Why isn't my data syncing?",
-    a: 'Check that Health Permissions are still granted (iOS Settings → Privacy & Security → Health → KQuarks). Also ensure Background App Refresh is enabled for KQuarks (iOS Settings → General → Background App Refresh). A manual sync can be triggered from the iOS app Settings → Sync Now.',
+    a: 'Check that Health Permissions are still granted (iOS Settings → Privacy & Security → Health → GetZen). Also ensure Background App Refresh is enabled for GetZen (iOS Settings → General → Background App Refresh). A manual sync can be triggered from the iOS app Settings → Sync Now.',
   },
   {
     q: 'How do I delete my data?',
@@ -35,11 +35,11 @@ const FAQS = [
   },
   {
     q: 'How do I cancel my Pro subscription?',
-    a: 'Subscriptions are managed through Apple. Go to App Store → tap your profile photo → Subscriptions → KQuarks → Cancel Subscription. Your Pro access continues until the end of the current billing period.',
+    a: 'Subscriptions are managed through Apple. Go to App Store → tap your profile photo → Subscriptions → GetZen → Cancel Subscription. Your Pro access continues until the end of the current billing period.',
   },
   {
     q: 'Which devices are supported?',
-    a: 'The KQuarks iOS app requires an iPhone running iOS 16 or later. The web dashboard works in any modern browser (Chrome, Safari, Firefox, Edge). Apple Watch support is on our roadmap.',
+    a: 'The GetZen iOS app requires an iPhone running iOS 16 or later. The web dashboard works in any modern browser (Chrome, Safari, Firefox, Edge). Apple Watch support is on our roadmap.',
   },
   {
     q: 'How do I export my data?',
@@ -55,8 +55,8 @@ const FAQS = [
     ),
   },
   {
-    q: 'Does KQuarks provide medical advice?',
-    a: 'No. KQuarks provides informational insights and trend analysis only. Nothing in the app constitutes medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional for medical concerns.',
+    q: 'Does GetZen provide medical advice?',
+    a: 'No. GetZen provides informational insights and trend analysis only. Nothing in the app constitutes medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional for medical concerns.',
   },
   {
     q: 'My health score looks wrong — what should I do?',

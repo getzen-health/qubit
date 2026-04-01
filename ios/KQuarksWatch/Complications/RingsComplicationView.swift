@@ -22,7 +22,7 @@ struct RingsComplicationView: View {
     var body: some View {
         ZStack {
             // Outer ring: Steps (red)
-            Link(destination: URL(string: "kquarks://dashboard")!) {
+            Link(destination: URL(string: "getzen://dashboard")!) {
                 Gauge(value: min(stepsPercent, 1.0)) {
                     EmptyView()
                 }
@@ -31,7 +31,7 @@ struct RingsComplicationView: View {
             }
 
             // Middle ring: Calories (green)
-            Link(destination: URL(string: "kquarks://dashboard")!) {
+            Link(destination: URL(string: "getzen://dashboard")!) {
                 Gauge(value: min(caloriesPercent, 1.0)) {
                     EmptyView()
                 }
@@ -41,7 +41,7 @@ struct RingsComplicationView: View {
             }
 
             // Inner ring: Readiness (cyan)
-            Link(destination: URL(string: "kquarks://ready")!) {
+            Link(destination: URL(string: "getzen://ready")!) {
                 Gauge(value: min(readinessPercent, 1.0)) {
                     EmptyView()
                 }

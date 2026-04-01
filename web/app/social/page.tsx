@@ -6,7 +6,7 @@ const SocialClient = dynamic(() => import('./social-client').then(m => ({ defaul
 import { calculateSocialScore, emptyLog } from '@/lib/social-health'
 import type { SocialLog } from '@/lib/social-health'
 
-export const metadata = { title: 'Social Health — KQuarks' }
+export const metadata = { title: 'Social Health — GetZen' }
 
 export default async function SocialPage() {
   const supabase = await createClient()

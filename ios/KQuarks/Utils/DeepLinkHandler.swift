@@ -27,11 +27,11 @@ final class DeepLinkHandler {
     var pendingDestination: DeepLinkDestination?
     
     func handleDeepLink(_ url: URL) {
-        guard url.scheme == "kquarks" else { return }
+        guard url.scheme == "getzen" else { return }
         let host = url.host ?? ""
         let path = url.pathComponents.dropFirst().first ?? ""
         
-        // Handle metric-specific deep links: kquarks://metric/steps
+        // Handle metric-specific deep links: getzen://metric/steps
         if host == "metric" {
             pendingDestination = .metric(path)
             return

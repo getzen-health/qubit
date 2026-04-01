@@ -294,7 +294,7 @@ export function WalkingSpeedClient() {
                 <p className="text-base font-semibold text-text-primary">No walking speed data yet</p>
                 <p className="text-sm text-text-secondary max-w-xs leading-relaxed">
                   Start tracking workouts in Apple Health to see your pace here. Walking workouts synced
-                  to KQuarks will appear automatically.
+                  to GetZen will appear automatically.
                 </p>
               </div>
             ) : (

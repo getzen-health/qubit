@@ -61,7 +61,7 @@ export function DebtClient({ records, goalMinutes }: DebtClientProps) {
         <span className="text-5xl">😴</span>
         <h2 className="text-lg font-semibold text-text-primary">No sleep data yet</h2>
         <p className="text-sm text-text-secondary max-w-xs">
-          Sleep data syncs from Apple Health via the KQuarks iOS app.
+          Sleep data syncs from Apple Health via the GetZen iOS app.
         </p>
       </div>
     )

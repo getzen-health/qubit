@@ -1,4 +1,4 @@
-# KQuarks Android — Scoping Document
+# GetZen Android — Scoping Document
 
 ## Timeline
 Q3 2026: Research & scoping (this doc)

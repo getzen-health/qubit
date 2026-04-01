@@ -210,7 +210,7 @@ Then add this button before the Settings button:
 - [ ] **Step 4: TypeScript check**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npx tsc --noEmit 2>&1 | head -20
+cd /Users/qxlsz/projects/getzen/web && npx tsc --noEmit 2>&1 | head -20
 ```
 
 Expected: no output
@@ -218,7 +218,7 @@ Expected: no output
 - [ ] **Step 5: Build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npm run build 2>&1 | tail -10
+cd /Users/qxlsz/projects/getzen/web && npm run build 2>&1 | tail -10
 ```
 
 Expected: build succeeds
@@ -226,7 +226,7 @@ Expected: build succeeds
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add web/app/workouts/page.tsx web/app/workouts/workouts-list.tsx web/app/dashboard/dashboard-stream.tsx
+cd /Users/qxlsz/projects/getzen && git add web/app/workouts/page.tsx web/app/workouts/workouts-list.tsx web/app/dashboard/dashboard-stream.tsx
 git commit -m "Add web workout history page"
 ```
 
@@ -302,9 +302,9 @@ ScrollView {
 - [ ] **Step 2: Build to verify**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E 'error:|BUILD'
@@ -315,7 +315,7 @@ Expected: `BUILD SUCCEEDED` — SourceKit false-positive errors are normal; igno
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Views/HealthDataView.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Views/HealthDataView.swift
 git commit -m "Fix empty Sleep tab — add SleepView navigation link in HealthDataView"
 ```
 
@@ -326,5 +326,5 @@ git commit -m "Fix empty Sleep tab — add SleepView navigation link in HealthDa
 - [ ] **Step 1: Push**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git push origin main
+cd /Users/qxlsz/projects/getzen && git push origin main
 ```

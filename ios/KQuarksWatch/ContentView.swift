@@ -51,7 +51,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationTitle("KQuarks")
+            .navigationTitle("GetZen")
             .onAppear { vm.fetchData() }
         }
     }

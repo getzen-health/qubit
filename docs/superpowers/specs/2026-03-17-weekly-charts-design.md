@@ -1,7 +1,7 @@
 # 7-Day Trend Charts — Design Spec
 
 **Date:** 2026-03-17
-**Project:** KQuarks web dashboard
+**Project:** GetZen web dashboard
 **Status:** Approved
 
 ---

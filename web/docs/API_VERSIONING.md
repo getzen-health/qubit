@@ -1,8 +1,8 @@
-# KQuarks API Versioning Guide
+# GetZen API Versioning Guide
 
 ## Overview
 
-All KQuarks API responses include version headers to support future API evolution and client compatibility tracking.
+All GetZen API responses include version headers to support future API evolution and client compatibility tracking.
 
 ## Version Headers
 

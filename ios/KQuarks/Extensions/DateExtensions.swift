@@ -1,7 +1,7 @@
 import Foundation
 
 private enum KQDateFormatters {
-    private static let lock = DispatchQueue(label: "kquarks.dateformatter.cache")
+    private static let lock = DispatchQueue(label: "getzen.dateformatter.cache")
     private static var formatCache: [String: DateFormatter] = [:]
 
     static func formatter(format: String) -> DateFormatter {

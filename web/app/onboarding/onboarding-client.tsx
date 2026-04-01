@@ -61,9 +61,9 @@ export function OnboardingClient({ userId: _userId }: OnboardingClientProps) {
   const [weightKg, setWeightKg] = useState('')
 
   function persistGoals() {
-    localStorage.setItem('kquarks_step_goal', String(stepGoal))
-    localStorage.setItem('kquarks_calorie_goal', String(calorieGoal))
-    localStorage.setItem('kquarks_sleep_goal_minutes', String(Math.round(sleepGoalHours * 60)))
+    localStorage.setItem('getzen_step_goal', String(stepGoal))
+    localStorage.setItem('getzen_calorie_goal', String(calorieGoal))
+    localStorage.setItem('getzen_sleep_goal_minutes', String(Math.round(sleepGoalHours * 60)))
   }
 
   async function handleFinish() {
@@ -109,7 +109,7 @@ export function OnboardingClient({ userId: _userId }: OnboardingClientProps) {
               <div className="text-center py-6 flex-1">
                 <div className="text-5xl mb-4">👋</div>
                 <h1 className="text-3xl font-bold text-text-primary mb-3">
-                  Welcome to KQuarks
+                  Welcome to GetZen
                 </h1>
                 <p className="text-text-secondary text-base mb-8">
                   Let&apos;s set up your profile so we can personalise your experience.

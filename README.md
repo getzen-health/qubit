@@ -1,4 +1,4 @@
-# KQuarks
+# GetZen
 
 A comprehensive health tracking application that syncs Apple Health data to the cloud, provides insightful analytics, and offers a web dashboard for data visualization.
 
@@ -61,7 +61,7 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 ```
 ├── ios/                 # iOS app (Swift/SwiftUI)
 │   ├── KQuarks.xcodeproj # Xcode project
-│   └── KQuarks/          # Source code
+│   └── GetZen/          # Source code
 │       ├── App/         # App entry point
 │       ├── Models/      # Data models
 │       ├── Views/       # SwiftUI views
@@ -89,8 +89,8 @@ A comprehensive health tracking application that syncs Apple Health data to the 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/qxlsz/kquarks.git
-   cd kquarks
+   git clone https://github.com/qxlsz/getzen.git
+   cd getzen
    ```
 
 2. **Open in Xcode**
@@ -111,7 +111,7 @@ A comprehensive health tracking application that syncs Apple Health data to the 
      cd ios
      xcodebuild build \
        -project KQuarks.xcodeproj \
-       -scheme KQuarks \
+       -scheme GetZen \
        -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
        -configuration Debug \
        CODE_SIGNING_ALLOWED=NO
@@ -219,7 +219,7 @@ The app provides AI-powered health insights using:
 
 2. **Create App ID**
    - Go to Certificates, Identifiers & Profiles
-   - Create a new App ID with bundle identifier: `com.qxlsz.kquarks`
+   - Create a new App ID with bundle identifier: `com.qxlsz.getzen`
    - Enable HealthKit capability
 
 3. **Create Provisioning Profiles**
@@ -232,10 +232,10 @@ The app provides AI-powered health insights using:
    - Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com)
    - Click "+" to add a new app
    - Fill in app information:
-     - Name: KQuarks
+     - Name: GetZen
      - Primary language: English
-     - Bundle ID: com.qxlsz.kquarks
-     - SKU: kquarks-health-app
+     - Bundle ID: com.qxlsz.getzen
+     - SKU: getzen-health-app
 
 2. **Prepare App Store Listing**
    - **App Icon**: 1024x1024 PNG (no transparency)
@@ -260,15 +260,15 @@ The app provides AI-powered health insights using:
    cd ios
    xcodebuild archive \
      -project KQuarks.xcodeproj \
-     -scheme KQuarks \
-     -archivePath build/KQuarks.xcarchive \
+     -scheme GetZen \
+     -archivePath build/GetZen.xcarchive \
      -destination 'generic/platform=iOS'
    ```
 
 2. **Export for App Store**
    ```bash
    xcodebuild -exportArchive \
-     -archivePath build/KQuarks.xcarchive \
+     -archivePath build/GetZen.xcarchive \
      -exportPath build/AppStore \
      -exportOptionsPlist ExportOptions.plist
    ```

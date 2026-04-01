@@ -107,7 +107,7 @@ async function buildHealthDataExport(supabase: any, userId: string, days: number
 
   const csv = csvRows.join('\n')
   const json = JSON.stringify({ data: jsonData, days, exportedAt: new Date().toISOString(), truncated }, null, 2)
-  const filename = `kquarks_health_${days}d`
+  const filename = `getzen_health_${days}d`
 
   return { csv, json, filename, rowCount, truncated }
 }

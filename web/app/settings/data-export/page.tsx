@@ -37,7 +37,7 @@ export default function DataExportPage() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `kquarks_health_${selectedDays}d.${selectedFormat}`
+      a.download = `getzen_health_${selectedDays}d.${selectedFormat}`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)

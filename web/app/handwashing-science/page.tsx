@@ -1363,7 +1363,7 @@ export default function HandwashingSciencePage() {
                 className="font-mono-jb"
                 style={{ fontSize: 10, color: '#cbd5e1', margin: 0 }}
               >
-                KQuarks Health Intelligence · Handwashing Science · WHO Clean Protocol
+                GetZen Health Intelligence · Handwashing Science · WHO Clean Protocol
               </p>
             </div>
           </footer>

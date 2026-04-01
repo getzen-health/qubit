@@ -38,7 +38,7 @@ export function ReportClient() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'kquarks-health-report.pdf'
+      a.download = 'getzen-health-report.pdf'
       a.click()
       URL.revokeObjectURL(url)
     } catch (err) {

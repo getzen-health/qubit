@@ -89,7 +89,7 @@ export function HrvClient({ summaries, sleepRecords, workoutDays }: HrvClientPro
         <span className="text-5xl">💗</span>
         <h2 className="text-lg font-semibold text-text-primary">No HRV data yet</h2>
         <p className="text-sm text-text-secondary max-w-xs">
-          HRV syncs from Apple Watch via the KQuarks iOS app. Ensure your Watch is set to measure
+          HRV syncs from Apple Watch via the GetZen iOS app. Ensure your Watch is set to measure
           HRV during sleep.
         </p>
       </div>

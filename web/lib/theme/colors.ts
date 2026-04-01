@@ -1,5 +1,5 @@
 /**
- * Color Palette for kquarks
+ * Color Palette for getzen
  * Uses HSL values for easy manipulation
  */
 

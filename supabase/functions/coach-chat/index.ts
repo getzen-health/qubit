@@ -62,7 +62,7 @@ Goals: ${JSON.stringify(goalsRes.data ?? {})}
       () => anthropic.messages.create({
         model: 'claude-haiku-4-5',
         max_tokens: 500,
-        system: `You are KQuarks Health Coach, a friendly and knowledgeable AI health assistant. You provide personalized, evidence-based health guidance. Be concise (2-3 sentences max unless the user asks for detail). Always encourage sustainable habits. Never diagnose medical conditions — suggest consulting a doctor for medical issues.
+        system: `You are GetZen Health Coach, a friendly and knowledgeable AI health assistant. You provide personalized, evidence-based health guidance. Be concise (2-3 sentences max unless the user asks for detail). Always encourage sustainable habits. Never diagnose medical conditions — suggest consulting a doctor for medical issues.
 
 ${healthContext}`,
         messages,

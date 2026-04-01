@@ -547,7 +547,7 @@ export function VitalsClient({ spO2, respRate, bloodPressure, restingHR, hrv, bo
       {/* Info card */}
       <div className="bg-surface rounded-xl border border-border p-4 text-xs text-text-secondary space-y-1">
         <p className="font-medium text-text-primary text-sm">How this data is collected</p>
-        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Resting heart rate and HRV (RMSSD) are computed nightly by Apple Watch. Body temperature uses wrist skin temperature measured during sleep. Blood pressure requires a compatible third-party device connected to Apple Health. Data syncs automatically through the KQuarks iOS app.</p>
+        <p>Blood oxygen and respiratory rate are measured by your Apple Watch during sleep and periodic spot checks. Resting heart rate and HRV (RMSSD) are computed nightly by Apple Watch. Body temperature uses wrist skin temperature measured during sleep. Blood pressure requires a compatible third-party device connected to Apple Health. Data syncs automatically through the GetZen iOS app.</p>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 /**
  * FHIR R4 export utilities
- * Builds HL7 FHIR R4-compliant Bundle resources from KQuarks health data.
+ * Builds HL7 FHIR R4-compliant Bundle resources from GetZen health data.
  * References: https://hl7.org/fhir/R4/
  */
 

@@ -122,7 +122,7 @@ struct ExportDataView: View {
                 )
                 let jsonData = try await supabase.exportAllUserData(selection: selection)
 
-                let filename = "kquarks-export-\(Date().kqFormat("yyyy-MM-dd")).json"
+                let filename = "getzen-export-\(Date().kqFormat("yyyy-MM-dd")).json"
                 guard let documentDir = FileManager.default
                     .urls(for: .documentDirectory, in: .userDomainMask).first else {
                     throw NSError(domain: "ExportData", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot access document directory"])

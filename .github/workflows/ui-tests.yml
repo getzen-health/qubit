@@ -7,7 +7,7 @@ on:
   push:
     paths:
       - 'web/e2e/**'
-      - 'ios/KQuarksUITests/**'
+      - 'ios/GetZenUITests/**'
       - 'web/playwright.config.ts'
       - '.github/workflows/ui-tests.yml'
   workflow_dispatch:       # allow manual trigger from GitHub Actions UI
@@ -76,8 +76,8 @@ jobs:
 
   # ──────────────────────────────────────────────
   # iOS UI Tests (XCUITest via xcodebuild)
-  # Note: requires KQuarksUITests target added in Xcode.
-  # See ios/KQuarksUITests/README.md for setup instructions.
+  # Note: requires GetZenUITests target added in Xcode.
+  # See ios/GetZenUITests/README.md for setup instructions.
   # ──────────────────────────────────────────────
   ios-ui-tests:
     name: iOS UI Tests (XCUITest)
@@ -91,13 +91,13 @@ jobs:
       - name: Check if UITest target exists
         id: check_target
         run: |
-          if xcodebuild -project ios/KQuarks.xcodeproj -list 2>/dev/null | grep -q "KQuarksUITests"; then
+          if xcodebuild -project ios/KQuarks.xcodeproj -list 2>/dev/null | grep -q "GetZenUITests"; then
             echo "target_exists=true" >> $GITHUB_OUTPUT
           else
             echo "target_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️  KQuarksUITests target not found in Xcode project."
+            echo "⚠️  GetZenUITests target not found in Xcode project."
             echo "   Add it via Xcode: File > New > Target > UI Testing Bundle."
-            echo "   See ios/KQuarksUITests/README.md for instructions."
+            echo "   See ios/GetZenUITests/README.md for instructions."
           fi
 
       - name: Run iOS UI tests
@@ -106,7 +106,7 @@ jobs:
           xcodebuild test \
             -project ios/KQuarks.xcodeproj \
             -scheme KQuarks \
-            -testPlan KQuarksUITests \
+            -testPlan GetZenUITests \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \

@@ -2,7 +2,7 @@ import { apiLogger } from '@/lib/api-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { createSecureApiHandler } from '@/lib/security'
 
-// Strava activity type mapping to KQuarks workout types
+// Strava activity type mapping to GetZen workout types
 const STRAVA_TO_KQUARKS_MAPPING: Record<string, string> = {
   // Running
   'Run': 'running',
@@ -185,7 +185,7 @@ export const POST = createSecureApiHandler(
     let skippedCount = 0
 
     for (const activity of activities) {
-      // Map Strava type to KQuarks workout type
+      // Map Strava type to GetZen workout type
       const workoutType = STRAVA_TO_KQUARKS_MAPPING[activity.type] || 'other_activity'
 
       // Skip activities older than 90 days to avoid huge syncs

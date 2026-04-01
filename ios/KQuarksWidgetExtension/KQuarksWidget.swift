@@ -181,7 +181,7 @@ struct SmallWidgetView: View {
         }
         .padding(12)
         .containerBackground(Color(.systemBackground), for: .widget)
-        .widgetURL(URL(string: "kquarks://metric/steps"))
+        .widgetURL(URL(string: "getzen://metric/steps"))
     }
 }
 
@@ -254,7 +254,7 @@ struct MediumWidgetView: View {
         }
         .padding(16)
         .containerBackground(Color(.systemBackground), for: .widget)
-        .widgetURL(URL(string: "kquarks://metric/steps"))
+        .widgetURL(URL(string: "getzen://metric/steps"))
     }
 }
 
@@ -274,7 +274,7 @@ struct AccessoryCircularView: View {
                  : "\(entry.steps)")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
         }
-        .widgetURL(URL(string: "kquarks://metric/steps"))
+        .widgetURL(URL(string: "getzen://metric/steps"))
     }
 }
 
@@ -312,7 +312,7 @@ struct AccessoryRectangularView: View {
                 }
             }
         }
-        .widgetURL(URL(string: "kquarks://metric/sleep"))
+        .widgetURL(URL(string: "getzen://metric/sleep"))
     }
 }
 
@@ -360,7 +360,7 @@ struct LargeWidgetView: View {
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("KQuarks")
+                    Text("GetZen")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(.secondary)
                     Text("Today")
@@ -502,7 +502,7 @@ struct LargeWidgetView: View {
                 }
                 .frame(height: 60)
             }
-        .widgetURL(URL(string: "kquarks://metric/recovery"))
+        .widgetURL(URL(string: "getzen://metric/recovery"))
         }
         .containerBackground(Color(.systemBackground), for: .widget)
     }
@@ -541,7 +541,7 @@ struct KQuarksWidget: Widget {
         StaticConfiguration(kind: kind, provider: KQuarksProvider()) { entry in
             KQuarksWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("KQuarks")
+        .configurationDisplayName("GetZen")
         .description("Today's steps, recovery, and sleep at a glance.")
         .supportedFamilies([
             .systemSmall,

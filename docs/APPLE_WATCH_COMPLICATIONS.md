@@ -1,6 +1,6 @@
 # Apple Watch Complications Setup Guide
 
-KQuarks provides Apple Watch complications through WidgetKit, which are automatically available on watchOS 10+ via iPhone mirroring.
+GetZen provides Apple Watch complications through WidgetKit, which are automatically available on watchOS 10+ via iPhone mirroring.
 
 ## Supported Complications
 
@@ -18,19 +18,19 @@ KQuarks provides Apple Watch complications through WidgetKit, which are automati
 ### watchOS 10+
 
 1. **On iPhone:**
-   - Open the Health app or KQuarks app
+   - Open the Health app or GetZen app
    - Ensure widgets are enabled (Settings > Widgets > Allow Widgets)
 
 2. **On Apple Watch:**
    - Long press the watch face to enter editing mode
    - Tap "Add Complication" (if available on your watch face)
-   - Select one of the KQuarks complications from the list
+   - Select one of the GetZen complications from the list
    - Tap a location to place it on your watch face
 
 3. **Alternative Method (Modular Compact Watch Face):**
    - Press and hold the watch face
    - Tap "Edit"
-   - Scroll to find and select a KQuarks complication
+   - Scroll to find and select a GetZen complication
    - Tap to add it to the selected area
 
 ### What Shows on Each Face
@@ -51,19 +51,19 @@ Different Apple Watch faces support different complication styles:
 
 - Watch faces must support complications via WidgetKit
 - Very old watchOS versions may not support all complication types
-- Data is pulled from HealthKit, so make sure the KQuarks app has HealthKit permissions
+- Data is pulled from HealthKit, so make sure the GetZen app has HealthKit permissions
 - Complications require the iPhone's widget extension to be enabled
 
 ## Troubleshooting
 
 **Complications not appearing?**
-1. Ensure KQuarks widgets are enabled on iPhone
+1. Ensure GetZen widgets are enabled on iPhone
 2. Restart the watch
 3. Restart the iPhone
 4. Re-enable widgets in Settings
 
 **Data not updating?**
-1. Check that the KQuarks app has HealthKit permissions
+1. Check that the GetZen app has HealthKit permissions
 2. Manually refresh widgets on iPhone
 3. Ensure Bluetooth connection between watch and iPhone
 

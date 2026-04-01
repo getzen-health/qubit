@@ -17,7 +17,7 @@ export const GET = createSecureApiHandler(
 
     const response = await fetch(
       `https://world.openbeautyfacts.org/api/v0/product/${barcode}.json`,
-      { headers: { 'User-Agent': 'KQuarks/1.0' }, next: { revalidate: 86400 } }
+      { headers: { 'User-Agent': 'GetZen/1.0' }, next: { revalidate: 86400 } }
     )
 
     if (!response.ok) return secureErrorResponse('Product not found', 404)

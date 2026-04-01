@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <div style={{ color: '#a78bfa', fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase' }}>
-              KQuarks
+              GetZen
             </div>
             <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>Health Summary</div>
           </div>

@@ -25,7 +25,7 @@ struct PaywallView: View {
                     .padding(.top, 40)
 
                 VStack(spacing: 8) {
-                    Text("Unlock KQuarks Pro")
+                    Text("Unlock GetZen Pro")
                         .font(.title.bold())
                         .multilineTextAlignment(.center)
 

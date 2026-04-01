@@ -171,7 +171,7 @@ export function SyncStatusClient({ devices, summaries, workouts, latestSleep, he
               </p>
             )}
             {!lastSyncAt && (
-              <p className="text-xs text-text-secondary mt-0.5">Open the KQuarks iOS app to sync</p>
+              <p className="text-xs text-text-secondary mt-0.5">Open the GetZen iOS app to sync</p>
             )}
           </div>
           <span className="text-3xl">{lastSyncAt ? (syncAge! < 24 ? '✅' : '⚠️') : '❌'}</span>
@@ -280,7 +280,7 @@ export function SyncStatusClient({ devices, summaries, workouts, latestSleep, he
           <p className="text-3xl mb-3">📱</p>
           <p className="font-semibold text-text-primary mb-1">No data synced yet</p>
           <p className="text-sm text-text-secondary">
-            Download the KQuarks app on your iPhone, sign in, and tap Sync to import your Apple Health data.
+            Download the GetZen app on your iPhone, sign in, and tap Sync to import your Apple Health data.
           </p>
         </div>
       )}

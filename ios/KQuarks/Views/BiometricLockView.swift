@@ -16,7 +16,7 @@ struct BiometricLockView: View {
                     .foregroundStyle(.purple, .indigo.opacity(0.4))
 
                 VStack(spacing: 8) {
-                    Text("KQuarks")
+                    Text("GetZen")
                         .font(.largeTitle.bold())
                     Text("Locked")
                         .font(.subheadline)

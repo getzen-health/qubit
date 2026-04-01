@@ -205,13 +205,13 @@ Replace with:
 - [ ] **Step 3: Verify TypeScript build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npx tsc --noEmit 2>&1 | head -30
+cd /Users/qxlsz/projects/getzen/web && npx tsc --noEmit 2>&1 | head -30
 ```
 
 If errors appear, fix them. Then run:
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npm run build 2>&1 | tail -20
+cd /Users/qxlsz/projects/getzen/web && npm run build 2>&1 | tail -20
 ```
 
 Expected: build completes successfully.
@@ -219,7 +219,7 @@ Expected: build completes successfully.
 - [ ] **Step 4: Commit and push**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add web/app/dashboard/components/weekly-charts.tsx web/app/dashboard/dashboard-stream.tsx
+cd /Users/qxlsz/projects/getzen && git add web/app/dashboard/components/weekly-charts.tsx web/app/dashboard/dashboard-stream.tsx
 git commit -m "Add 7-day trend charts to web dashboard"
 git push origin main
 ```

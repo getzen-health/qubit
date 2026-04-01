@@ -57,8 +57,8 @@ export default async function StreaksPage() {
                 )}
                 {s.current_streak >= 7 && (
                   <ShareButton
-                    title={`I'm on a ${s.current_streak}-day health streak on KQuarks!`}
-                    text={`🔥 I'm on a ${s.current_streak}-day health streak on KQuarks! Building better habits every day.`}
+                    title={`I'm on a ${s.current_streak}-day health streak on GetZen!`}
+                    text={`🔥 I'm on a ${s.current_streak}-day health streak on GetZen! Building better habits every day.`}
                     className="mt-1"
                   />
                 )}

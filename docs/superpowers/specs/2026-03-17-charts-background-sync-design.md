@@ -1,7 +1,7 @@
 # Health Metric Charts & Background Sync — Design Spec
 
 **Date:** 2026-03-17
-**Project:** KQuarks iOS app
+**Project:** GetZen iOS app
 **Status:** Approved
 
 ---
@@ -67,8 +67,8 @@ The app currently only syncs when the user manually taps the sync button or open
 
 | Identifier | Type | Trigger | Work |
 |------------|------|---------|------|
-| `com.kquarks.sync.refresh` | BGAppRefreshTask | Every ~2h, OS-managed | Fetch today's HealthKit summary, upload to Supabase |
-| `com.kquarks.sync.full` | BGProcessingTask | Power + wifi, nightly | Full sync: all tables, past 7 days |
+| `com.getzen.sync.refresh` | BGAppRefreshTask | Every ~2h, OS-managed | Fetch today's HealthKit summary, upload to Supabase |
+| `com.getzen.sync.full` | BGProcessingTask | Power + wifi, nightly | Full sync: all tables, past 7 days |
 
 ### SyncService additions
 
@@ -79,12 +79,12 @@ func handleFullSyncTask(_ task: BGProcessingTask) async
 ```
 
 `scheduleBackgroundSync()` is called:
-- On app launch (from `KQuarksApp.init` or `.onAppear`)
+- On app launch (from `GetZenApp.init` or `.onAppear`)
 - After each sync completes (refresh reschedules itself)
 
 ### Registration
 
-**Plist keys (array values):** `UIBackgroundModes` and `BGTaskSchedulerPermittedIdentifiers` are array-typed and cannot be expressed as scalar `INFOPLIST_KEY_*` build settings. Instead, create `ios/KQuarks/Info.plist` with these two keys and set `INFOPLIST_FILE = KQuarks/Info.plist` in the Xcode build settings. Xcode 14+ merges a manually-specified plist with the auto-generated one when `GENERATE_INFOPLIST_FILE = YES` is also set.
+**Plist keys (array values):** `UIBackgroundModes` and `BGTaskSchedulerPermittedIdentifiers` are array-typed and cannot be expressed as scalar `INFOPLIST_KEY_*` build settings. Instead, create `ios/KQuarks/Info.plist` with these two keys and set `INFOPLIST_FILE = GetZen/Info.plist` in the Xcode build settings. Xcode 14+ merges a manually-specified plist with the auto-generated one when `GENERATE_INFOPLIST_FILE = YES` is also set.
 
 `Info.plist` contents:
 ```xml
@@ -99,19 +99,19 @@ func handleFullSyncTask(_ task: BGProcessingTask) async
     </array>
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>com.kquarks.sync.refresh</string>
-        <string>com.kquarks.sync.full</string>
+        <string>com.getzen.sync.refresh</string>
+        <string>com.getzen.sync.full</string>
     </array>
 </dict>
 </plist>
 ```
 
-**Handler registration** must happen synchronously before the app finishes launching. In `KQuarksApp.init()` (not `.task` or `.onAppear`), call:
+**Handler registration** must happen synchronously before the app finishes launching. In `GetZenApp.init()` (not `.task` or `.onAppear`), call:
 ```swift
-BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.refresh", using: nil) { task in
+BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.getzen.sync.refresh", using: nil) { task in
     Task { await SyncService.shared.handleRefreshTask(task as! BGAppRefreshTask) }
 }
-BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.full", using: nil) { task in
+BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.getzen.sync.full", using: nil) { task in
     Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
 }
 ```
@@ -125,11 +125,11 @@ Both `handleRefreshTask` and `handleFullSyncTask` call `scheduleBackgroundSync()
 Submits both task requests unconditionally (duplicate submission silently replaces a pending request — harmless):
 ```swift
 func scheduleBackgroundSync() {
-    let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.kquarks.sync.refresh")
+    let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.getzen.sync.refresh")
     refreshRequest.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 3600)
     try? BGTaskScheduler.shared.submit(refreshRequest)
 
-    let fullRequest = BGProcessingTaskRequest(identifier: "com.kquarks.sync.full")
+    let fullRequest = BGProcessingTaskRequest(identifier: "com.getzen.sync.full")
     fullRequest.requiresNetworkConnectivity = true   // Supabase calls need network
     fullRequest.requiresExternalPower = true          // Full sync only on charger
     try? BGTaskScheduler.shared.submit(fullRequest)
@@ -150,7 +150,7 @@ func scheduleBackgroundSync() {
 | `ios/KQuarks/Services/SyncService.swift` | Add `scheduleBackgroundSync()`, `handleRefreshTask()`, `handleFullSyncTask()`, `import BackgroundTasks` |
 | `ios/KQuarks/Info.plist` | New — `UIBackgroundModes` + `BGTaskSchedulerPermittedIdentifiers` |
 | `ios/KQuarks.xcodeproj/project.pbxproj` | Register new Swift file + `INFOPLIST_FILE` build setting |
-| `ios/KQuarks/App/KQuarksApp.swift` | Add `init()`, register BGTaskScheduler handlers, `import BackgroundTasks` |
+| `ios/KQuarks/App/GetZenApp.swift` | Add `init()`, register BGTaskScheduler handlers, `import BackgroundTasks` |
 
 ### Data flow
 
@@ -169,7 +169,7 @@ App launch → SyncService.scheduleBackgroundSync()
   → BGTaskScheduler.shared.submit(BGAppRefreshTaskRequest)
   → BGTaskScheduler.shared.submit(BGProcessingTaskRequest)
 
-OS fires com.kquarks.sync.refresh
+OS fires com.getzen.sync.refresh
   → SyncService.handleRefreshTask(_:)
     → HealthKitService.fetchTodaySummary()
     → SupabaseService.uploadDailySummary(_:)

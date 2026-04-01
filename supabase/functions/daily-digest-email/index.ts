@@ -27,7 +27,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
  */
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://kquarks.vercel.app",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://getzen.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
@@ -64,7 +64,7 @@ async function sendEmail(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "noreply@kquarks.com",
+        from: "noreply@getzen.com",
         to,
         subject,
         html,
@@ -93,7 +93,7 @@ function buildEmailHtml(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KQuarks Daily Health Digest</title>
+  <title>GetZen Daily Health Digest</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
@@ -153,7 +153,7 @@ function buildEmailHtml(
       </div>
 
       <div class="section" style="text-align: center;">
-        <a href="https://kquarks.vercel.app/dashboard" style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">
+        <a href="https://getzen.vercel.app/dashboard" style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">
           View Full Dashboard →
         </a>
       </div>
@@ -161,8 +161,8 @@ function buildEmailHtml(
 
     <div class="footer">
       <p>
-        This is an automated message from KQuarks. 
-        <a href="https://kquarks.vercel.app/settings">Manage preferences</a>
+        This is an automated message from GetZen. 
+        <a href="https://getzen.vercel.app/settings">Manage preferences</a>
       </p>
     </div>
   </div>

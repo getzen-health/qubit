@@ -78,7 +78,7 @@ export default function AppearanceSettingsPage() {
           <div>
             <h2 className="text-lg font-semibold text-text-primary">Theme</h2>
             <p className="text-sm text-text-secondary">
-              Choose how KQuarks looks on your device
+              Choose how GetZen looks on your device
             </p>
           </div>
 
@@ -153,7 +153,7 @@ export default function AppearanceSettingsPage() {
                 <span className="text-accent-foreground font-bold">k</span>
               </div>
               <div>
-                <p className="font-medium text-text-primary">KQuarks Health</p>
+                <p className="font-medium text-text-primary">GetZen Health</p>
                 <p className="text-sm text-text-secondary">Your health companion</p>
               </div>
             </div>

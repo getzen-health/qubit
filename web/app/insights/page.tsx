@@ -146,12 +146,12 @@ export default function InsightsPage() {
       }
 
       const userApiKey = typeof window !== 'undefined'
-        ? localStorage.getItem('kquarks_claude_api_key') ?? undefined
+        ? localStorage.getItem('getzen_claude_api_key') ?? undefined
         : undefined
 
-      const stepGoalRaw = localStorage.getItem('kquarks_step_goal')
-      const calGoalRaw = localStorage.getItem('kquarks_calorie_goal')
-      const sleepGoalRaw = localStorage.getItem('kquarks_sleep_goal_minutes')
+      const stepGoalRaw = localStorage.getItem('getzen_step_goal')
+      const calGoalRaw = localStorage.getItem('getzen_calorie_goal')
+      const sleepGoalRaw = localStorage.getItem('getzen_sleep_goal_minutes')
       const userGoals = {
         stepGoal: stepGoalRaw ? parseInt(stepGoalRaw, 10) || 10000 : 10000,
         calorieGoal: calGoalRaw ? parseInt(calGoalRaw, 10) || 500 : 500,

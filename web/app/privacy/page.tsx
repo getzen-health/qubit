@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How KQuarks collects, uses, and protects your health data.',
+  description: 'How GetZen collects, uses, and protects your health data.',
 }
 
 export default function PrivacyPage() {
@@ -14,9 +14,9 @@ export default function PrivacyPage() {
 
         <Section title="1. Introduction">
           <p>
-            KQuarks (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This
+            GetZen (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This
             Privacy Policy explains how we collect, use, and safeguard your information when you use
-            the KQuarks iOS app and web dashboard. By using KQuarks you agree to the practices
+            the GetZen iOS app and web dashboard. By using GetZen you agree to the practices
             described here.
           </p>
         </Section>
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
 
         <Section title="4. HealthKit Data — Apple Guidelines">
           <p>
-            KQuarks complies with Apple&apos;s HealthKit guidelines. HealthKit data is:
+            GetZen complies with Apple&apos;s HealthKit guidelines. HealthKit data is:
           </p>
           <ul className="list-disc pl-5 space-y-2 mt-2">
             <li>Never used for advertising or ad targeting.</li>
@@ -184,7 +184,7 @@ export default function PrivacyPage() {
 
         <Section title="11. Children">
           <p>
-            KQuarks is not directed at children under 13. We do not knowingly collect personal
+            GetZen is not directed at children under 13. We do not knowingly collect personal
             information from children. If you believe we have inadvertently collected such
             information, contact us immediately.
           </p>
@@ -193,7 +193,7 @@ export default function PrivacyPage() {
         <Section title="12. Changes to This Policy">
           <p>
             We may update this Privacy Policy from time to time. Material changes will be
-            communicated via in-app notification or email. Continued use of KQuarks after changes
+            communicated via in-app notification or email. Continued use of GetZen after changes
             take effect constitutes acceptance of the updated policy.
           </p>
         </Section>

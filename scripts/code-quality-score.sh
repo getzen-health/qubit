@@ -1,5 +1,5 @@
 #!/bin/bash
-# KQuarks Code Quality Score
+# GetZen Code Quality Score
 # Returns a composite score where lower = better, target = 0.
 # Inspired by jmilinovich/goal-md fitness function pattern.
 #
@@ -9,9 +9,9 @@
 
 set -euo pipefail
 
-VIEWS="ios/KQuarks/Views"
-SERVICES="ios/KQuarks/Services"
-VIEWMODELS="ios/KQuarks/ViewModels"
+VIEWS="ios/GetZen/Views"
+SERVICES="ios/GetZen/Services"
+VIEWMODELS="ios/GetZen/ViewModels"
 WEB="web"
 
 cd "$(git rev-parse --show-toplevel)"
@@ -62,7 +62,7 @@ if [[ "${1:-}" == "--metric" && "${2:-}" == "score" ]]; then
 fi
 
 echo "╔══════════════════════════════════════════════╗"
-echo "║       KQuarks Code Quality Score             ║"
+echo "║       GetZen Code Quality Score             ║"
 echo "╠══════════════════════════════════════════════╣"
 printf "║  Force-unwraps (×15):    %4d  →  %5d pts ║\n" "$force_unwraps" "$((force_unwraps * 15))"
 printf "║  Hardcoded charts (×5):  %4d  →  %5d pts ║\n" "$hardcoded_charts" "$((hardcoded_charts * 5))"

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Zap, AlertTriangle, Activity, Trophy, Target, CheckCircle } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Wheelchair Fitness | KQuarks' }
+export const metadata = { title: 'Wheelchair Fitness | GetZen' }
 
 const intensityLevels = [
   {
@@ -414,7 +414,7 @@ export default async function WheelchairFitnessPage() {
             <div className="flex items-start gap-2.5">
               <div className="w-2 h-2 rounded-full bg-blue-400 mt-1.5 shrink-0" />
               <p className="text-sm text-gray-400 leading-relaxed">
-                <strong className="text-white">KQuarks tracking:</strong> All push sessions detected by Apple Watch are logged and visualised against your weekly WHO target, so you can see progress in real time.
+                <strong className="text-white">GetZen tracking:</strong> All push sessions detected by Apple Watch are logged and visualised against your weekly WHO target, so you can see progress in real time.
               </p>
             </div>
           </div>

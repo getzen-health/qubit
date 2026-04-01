@@ -2,7 +2,7 @@
 name = "quarks-core"
 version = "0.1.0"
 edition = "2021"
-description = "Core health data processing library for kquarks"
+description = "Core health data processing library for getzen"
 license = "MIT"
 
 [lib]

@@ -1,4 +1,4 @@
-KQuarks is your personal health intelligence hub — combining the power of Bevel's recovery analytics with Yuka's food scanning to give you a complete picture of your health.
+GetZen is your personal health intelligence hub — combining the power of Bevel's recovery analytics with Yuka's food scanning to give you a complete picture of your health.
 
 HEALTH TRACKING
 • Sync steps, heart rate, HRV, sleep, and workouts from Apple Health

@@ -1,6 +1,6 @@
-# KQuarks — Roadmap to Launch
+# GetZen — Roadmap to Launch
 
-## What KQuarks Is
+## What GetZen Is
 A health tracking app combining **Bevel-style** dashboards with **Yuka-style** food scanning.
 - iOS (Swift/SwiftUI) reads Apple Health → syncs to cloud
 - Web dashboard (Next.js 14) visualises all metrics + AI insights
@@ -81,7 +81,7 @@ A health tracking app combining **Bevel-style** dashboards with **Yuka-style** f
 ---
 
 ### Day 4 — Intelligence Layer
-**Goal: KQuarks connects the dots — surfaces insights users can't see themselves**
+**Goal: GetZen connects the dots — surfaces insights users can't see themselves**
 
 | Task | Est |
 |------|-----|

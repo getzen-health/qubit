@@ -40,7 +40,7 @@ export async function generateShareCard(data: ShareCardData): Promise<Blob> {
   ctx.fillStyle = 'rgba(255,255,255,0.9)'
   ctx.font = 'bold 36px -apple-system, system-ui, sans-serif'
   ctx.textAlign = 'left'
-  ctx.fillText('⚡ KQuarks', 80, 80)
+  ctx.fillText('⚡ GetZen', 80, 80)
 
   // Main emoji
   const emoji = data.emoji ?? '🏆'
@@ -92,7 +92,7 @@ export async function generateShareCard(data: ShareCardData): Promise<Blob> {
   return new Promise(resolve => canvas.toBlob(blob => resolve(blob!), 'image/png', 0.95))
 }
 
-export function downloadCard(blob: Blob, filename = 'kquarks-share.png') {
+export function downloadCard(blob: Blob, filename = 'getzen-share.png') {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url

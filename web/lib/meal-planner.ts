@@ -376,7 +376,7 @@ export async function searchOpenFoodFacts(query: string): Promise<FoodItem[]> {
   const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encoded}&json=1&page_size=10`
 
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'KQuarks-NutritionApp/1.0' },
+    headers: { 'User-Agent': 'GetZen-NutritionApp/1.0' },
     next: { revalidate: 3600 },
   })
 

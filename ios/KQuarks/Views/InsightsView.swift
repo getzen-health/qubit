@@ -153,7 +153,7 @@ struct InsightsProTeaserView: View {
                     .foregroundStyle(.white.opacity(0.85))
                     .multilineTextAlignment(.center)
 
-                Text("Upgrade to KQuarks Pro for daily AI-powered health insights, trend analysis, and more.")
+                Text("Upgrade to GetZen Pro for daily AI-powered health insights, trend analysis, and more.")
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.4))
                     .multilineTextAlignment(.center)

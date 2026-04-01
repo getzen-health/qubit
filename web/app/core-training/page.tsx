@@ -22,7 +22,7 @@ const TEAL   = '#14b8a6'
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
-export const metadata = { title: 'Core Training · KQuarks' }
+export const metadata = { title: 'Core Training · GetZen' }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 

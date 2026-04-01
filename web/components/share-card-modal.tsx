@@ -28,7 +28,7 @@ export function ShareCardModal({ data, onClose }: ShareCardModalProps) {
 
   const handleShare = async () => {
     const blob = await generateShareCard(data)
-    const ok = await shareCard(blob, data.title, data.subtitle ?? 'Tracked with KQuarks')
+    const ok = await shareCard(blob, data.title, data.subtitle ?? 'Tracked with GetZen')
     if (!ok) downloadCard(blob)
     setShared(true)
   }

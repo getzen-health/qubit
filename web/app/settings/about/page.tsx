@@ -12,11 +12,11 @@ export default function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: 'Settings', href: '/settings' }, { label: 'About' }]} />
-      <h1 className="text-2xl font-bold mb-6">About KQuarks</h1>
+      <h1 className="text-2xl font-bold mb-6">About GetZen</h1>
       <div className="space-y-4">
         <div className="rounded-xl border border-border p-6 text-center">
           <p className="text-4xl mb-3">💎</p>
-          <h2 className="font-bold text-lg">KQuarks</h2>
+          <h2 className="font-bold text-lg">GetZen</h2>
           <p className="text-sm text-muted-foreground">Version 1.0.0</p>
           <p className="text-sm text-muted-foreground mt-2">Your personal health intelligence platform</p>
           {scanCount !== null && (

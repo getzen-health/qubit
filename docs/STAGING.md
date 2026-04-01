@@ -1,7 +1,7 @@
 # Staging Environment Setup
 
 ## Overview
-KQuarks uses separate Supabase projects for staging and production.
+GetZen uses separate Supabase projects for staging and production.
 
 ## Staging Setup
 1. Create a new Supabase project at https://supabase.com for staging

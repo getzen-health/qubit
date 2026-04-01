@@ -17,7 +17,7 @@
 | `ios/KQuarks/Services/NotificationService.swift` | Create |
 | `ios/KQuarks/Services/SyncService.swift` | Modify (2 insertions) |
 | `ios/KQuarks/Services/AIInsightsService.swift` | Modify (1 insertion) |
-| `ios/KQuarks/App/KQuarksApp.swift` | Modify (add refreshAuthorizationStatus call) |
+| `ios/KQuarks/App/GetZenApp.swift` | Modify (add refreshAuthorizationStatus call) |
 | `ios/KQuarks/Views/SettingsView.swift` | Modify (add Notifications section) |
 | `ios/KQuarks.xcodeproj/project.pbxproj` | Modify (fileRef 134, buildFile 038) |
 
@@ -145,9 +145,9 @@ Edit `ios/KQuarks.xcodeproj/project.pbxproj`:
 - [ ] **Step 3: Verify build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -159,7 +159,7 @@ Expected: `BUILD SUCCEEDED`.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Services/NotificationService.swift ios/KQuarks.xcodeproj/project.pbxproj
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Services/NotificationService.swift ios/KQuarks.xcodeproj/project.pbxproj
 git commit -m "Add NotificationService for local push notifications"
 ```
 
@@ -225,9 +225,9 @@ Replace with:
 - [ ] **Step 3: Verify build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -239,7 +239,7 @@ Expected: `BUILD SUCCEEDED`.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Services/SyncService.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Services/SyncService.swift
 git commit -m "Fire step goal notification after sync completes"
 ```
 
@@ -278,9 +278,9 @@ Replace with:
 - [ ] **Step 2: Verify build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -292,7 +292,7 @@ Expected: `BUILD SUCCEEDED`.
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Services/AIInsightsService.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Services/AIInsightsService.swift
 git commit -m "Fire notification after AI insights are generated"
 ```
 
@@ -301,12 +301,12 @@ git commit -m "Fire notification after AI insights are generated"
 ### Task 4: Refresh notification status on launch + add Settings section
 
 **Files:**
-- Modify: `ios/KQuarks/App/KQuarksApp.swift`
+- Modify: `ios/KQuarks/App/GetZenApp.swift`
 - Modify: `ios/KQuarks/Views/SettingsView.swift`
 
-- [ ] **Step 1: Add refreshAuthorizationStatus call in KQuarksApp**
+- [ ] **Step 1: Add refreshAuthorizationStatus call in GetZenApp**
 
-In `KQuarksApp.body`, add the call inside the existing second `.task` modifier (the one that calls `scheduleBackgroundSync()`), alongside it. Find:
+In `GetZenApp.body`, add the call inside the existing second `.task` modifier (the one that calls `scheduleBackgroundSync()`), alongside it. Find:
 
 ```swift
                 .task {
@@ -376,9 +376,9 @@ Replace with:
 - [ ] **Step 3: Verify build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -390,7 +390,7 @@ Expected: `BUILD SUCCEEDED`.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/App/KQuarksApp.swift ios/KQuarks/Views/SettingsView.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/App/GetZenApp.swift ios/KQuarks/Views/SettingsView.swift
 git commit -m "Add notification status to Settings and refresh on launch"
 ```
 
@@ -401,5 +401,5 @@ git commit -m "Add notification status to Settings and refresh on launch"
 - [ ] **Step 1: Push**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git push origin main
+cd /Users/qxlsz/projects/getzen && git push origin main
 ```

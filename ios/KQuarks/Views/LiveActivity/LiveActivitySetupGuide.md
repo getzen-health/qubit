@@ -1,16 +1,16 @@
-# Setting Up Live Activities in KQuarks
+# Setting Up Live Activities in GetZen
 
 ## Steps to enable Live Activities:
 
 1. In Xcode, add a new target: File → New Target → Widget Extension
-2. Name it "KQuarksLiveActivity"
+2. Name it "GetZenLiveActivity"
 3. Ensure "Include Live Activity" is checked
 4. In the widget extension, import the attributes:
    - `FastingLiveActivityAttributes`
    - `WorkoutLiveActivityAttributes`
 5. Use `FastingLiveActivityLockScreenView` and `WorkoutLiveActivityLockScreenView` 
    from the `FastingLiveActivityWidget.swift` file for the lock screen UI
-6. Add the widget extension to the App Group: `group.com.qxlsz.kquarks`
+6. Add the widget extension to the App Group: `group.com.qxlsz.getzen`
 
 ## Info.plist
 `NSSupportsLiveActivities` = YES (already added)

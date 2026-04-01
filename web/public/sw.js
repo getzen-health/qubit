@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kquarks-v1'
+const CACHE_NAME = 'getzen-v1'
 const STATIC_ASSETS = ['/', '/dashboard', '/offline']
 
 self.addEventListener('install', (event) => {
@@ -34,7 +34,7 @@ self.addEventListener('push', (event) => {
   if (!event.data) return
   const data = event.data.json()
   event.waitUntil(
-    self.registration.showNotification(data.title || 'KQuarks', {
+    self.registration.showNotification(data.title || 'GetZen', {
       body: data.body || '',
       icon: data.icon || '/icon-192.png',
       badge: '/icon-192.png',

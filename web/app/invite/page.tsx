@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { InviteClient } from './invite-client'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata: Metadata = { title: 'Invite Friends | KQuarks' }
+export const metadata: Metadata = { title: 'Invite Friends | GetZen' }
 
 export default async function InvitePage() {
   const supabase = await createClient()

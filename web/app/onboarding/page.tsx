@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { OnboardingClient } from './onboarding-client'
 
 export const metadata: Metadata = {
-  title: 'Welcome to KQuarks',
+  title: 'Welcome to GetZen',
   description: 'Set up your health profile to get started.',
 }
 

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata = {
-  title: 'Elliptical Science — KQuarks',
+  title: 'Elliptical Science — GetZen',
   description:
     'Zero-impact cardiovascular science. The biomechanics, physiology, and clinical evidence behind the elliptical trainer.',
 }
@@ -1521,7 +1521,7 @@ export default function EllipticalSciencePage() {
                   textTransform: 'uppercase',
                 }}
               >
-                KQuarks — Elliptical Science · For informational purposes only · Not medical advice
+                GetZen — Elliptical Science · For informational purposes only · Not medical advice
               </p>
             </div>
           </footer>

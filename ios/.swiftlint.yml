@@ -1,10 +1,10 @@
-# SwiftLint Configuration for KQuarks
+# SwiftLint Configuration for GetZen
 
 included:
-  - KQuarks
+  - GetZen
 
 excluded:
-  - KQuarks/Generated
+  - GetZen/Generated
   - .build
 
 # Rules

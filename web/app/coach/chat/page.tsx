@@ -65,7 +65,7 @@ export default function CoachChatPage() {
         {messages.length === 0 && (
           <div className="text-center py-12">
             <Bot className="w-12 h-12 text-primary mx-auto mb-3" />
-            <p className="font-semibold text-text-primary">Hi! I&apos;m your KQuarks Health Coach</p>
+            <p className="font-semibold text-text-primary">Hi! I&apos;m your GetZen Health Coach</p>
             <p className="text-sm text-text-secondary mt-1">Ask me about your health data, workout tips, nutrition, or sleep optimization.</p>
             <div className="flex flex-wrap gap-2 justify-center mt-4">
               {['How were my steps this week?', 'Tips to improve my sleep', 'Should I work out today?', 'What supplements help with recovery?'].map(q => (

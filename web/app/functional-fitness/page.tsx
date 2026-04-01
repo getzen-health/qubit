@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 const FunctionalFitnessClient = dynamic(() => import('./functional-fitness-client').then(m => ({ default: m.FunctionalFitnessClient })))
 
 export const metadata = {
-  title: 'Functional Fitness & Aging Biomarkers — KQuarks',
+  title: 'Functional Fitness & Aging Biomarkers — GetZen',
   description:
     'Track grip strength, gait speed, chair stand, balance, and 6-minute walk tests. Compute your Functional Age based on validated clinical research.',
 }

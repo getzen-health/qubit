@@ -4,7 +4,7 @@
 
 **Goal:** Add 7-day history charts to every health metric detail view, and enable automatic background Supabase sync via BGTaskScheduler.
 
-**Architecture:** `HealthKitService` gains `fetchWeekData(for:isDiscrete:)` using `HKStatisticsCollectionQuery`; a new `HealthMetricDetailView` renders Swift Charts bar/line charts and a min/avg/max strip; `HealthDataView` rows become `NavigationLink`s into it. `SyncService` gains three BGTask methods; `KQuarksApp.init()` registers handlers before launch completes; `Info.plist` declares the two task identifiers and background modes.
+**Architecture:** `HealthKitService` gains `fetchWeekData(for:isDiscrete:)` using `HKStatisticsCollectionQuery`; a new `HealthMetricDetailView` renders Swift Charts bar/line charts and a min/avg/max strip; `HealthDataView` rows become `NavigationLink`s into it. `SyncService` gains three BGTask methods; `GetZenApp.init()` registers handlers before launch completes; `Info.plist` declares the two task identifiers and background modes.
 
 **Tech Stack:** Swift 5.9+, SwiftUI, HealthKit (`HKStatisticsCollectionQuery`), Swift Charts (`import Charts`), BackgroundTasks framework (`BGTaskScheduler`, `BGAppRefreshTask`, `BGProcessingTask`).
 
@@ -20,7 +20,7 @@
 | `ios/KQuarks/Views/HealthDataView.swift` | Modify | Rows → `NavigationLink` |
 | `ios/KQuarks/Info.plist` | Modify | Add `UIBackgroundModes` + `BGTaskSchedulerPermittedIdentifiers` |
 | `ios/KQuarks/Services/SyncService.swift` | Modify | BGTask scheduling + handlers |
-| `ios/KQuarks/App/KQuarksApp.swift` | Modify | `init()` with BGTask handler registration |
+| `ios/KQuarks/App/GetZenApp.swift` | Modify | `init()` with BGTask handler registration |
 | `ios/KQuarks.xcodeproj/project.pbxproj` | Modify | Register `HealthMetricDetailView.swift` |
 
 > **Note:** `HealthDataType` is defined in `ios/KQuarks/Models/HealthData.swift`. The `healthKitIdentifier` extension is a separate extension block at the bottom of `HealthDataView.swift`. Add `isDiscrete` to the enum definition in `HealthData.swift`.
@@ -31,7 +31,7 @@
 
 - **pbxproj ID scheme:** Numeric strings. Last used: file ref `130`, build file `034`. Use `131` / `035` for the new view.
 - **Views group ID:** `506`. **Sources build phase ID:** `601`.
-- **Info.plist** already exists at `ios/KQuarks/Info.plist`. `INFOPLIST_FILE = KQuarks/Info.plist` and `GENERATE_INFOPLIST_FILE = YES` are already set in pbxproj — no pbxproj change needed for plist.
+- **Info.plist** already exists at `ios/KQuarks/Info.plist`. `INFOPLIST_FILE = GetZen/Info.plist` and `GENERATE_INFOPLIST_FILE = YES` are already set in pbxproj — no pbxproj change needed for plist.
 - **`preferredUnit(for:)`** already exists in `HealthKitService` — reuse it inside `fetchWeekData`.
 - **SourceKit** false positives are common (it analyses files in isolation). Only trust `xcodebuild` output.
 
@@ -142,7 +142,7 @@ func fetchWeekData(for identifier: HKQuantityTypeIdentifier, isDiscrete: Bool) a
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -476,7 +476,7 @@ In `project.pbxproj`, make three edits:
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -552,7 +552,7 @@ Note: `.buttonStyle(.plain)` prevents the NavigationLink from highlighting the e
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -588,8 +588,8 @@ Add before the closing `</dict>` tag:
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.kquarks.sync.refresh</string>
-		<string>com.kquarks.sync.full</string>
+		<string>com.getzen.sync.refresh</string>
+		<string>com.getzen.sync.full</string>
 	</array>
 ```
 
@@ -597,7 +597,7 @@ Add before the closing `</dict>` tag:
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -641,11 +641,11 @@ Add a new `// MARK: - Background Sync` section after the existing `syncWorkouts(
 // MARK: - Background Sync
 
 func scheduleBackgroundSync() {
-    let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.kquarks.sync.refresh")
+    let refreshRequest = BGAppRefreshTaskRequest(identifier: "com.getzen.sync.refresh")
     refreshRequest.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 3600)
     try? BGTaskScheduler.shared.submit(refreshRequest)
 
-    let fullRequest = BGProcessingTaskRequest(identifier: "com.kquarks.sync.full")
+    let fullRequest = BGProcessingTaskRequest(identifier: "com.getzen.sync.full")
     fullRequest.requiresNetworkConnectivity = true
     fullRequest.requiresExternalPower = true
     try? BGTaskScheduler.shared.submit(fullRequest)
@@ -698,7 +698,7 @@ Note: `syncTodaySummary()` is `private` but all three new methods are added to t
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -715,14 +715,14 @@ git commit -m "Add BGTaskScheduler scheduling and handlers to SyncService"
 
 ---
 
-## Task 6: Register handlers in `KQuarksApp.init()` and schedule on launch
+## Task 6: Register handlers in `GetZenApp.init()` and schedule on launch
 
 **Files:**
-- Modify: `ios/KQuarks/App/KQuarksApp.swift`
+- Modify: `ios/KQuarks/App/GetZenApp.swift`
 
-- [ ] **Step 1: Add `import BackgroundTasks` and an `init()` to `KQuarksApp`**
+- [ ] **Step 1: Add `import BackgroundTasks` and an `init()` to `GetZenApp`**
 
-The `KQuarksApp` struct currently has no `init()`. Add one. The struct becomes:
+The `GetZenApp` struct currently has no `init()`. Add one. The struct becomes:
 
 ```swift
 import SwiftUI
@@ -730,17 +730,17 @@ import Supabase
 import BackgroundTasks
 
 @main
-struct KQuarksApp: App {
+struct GetZenApp: App {
     @State private var appState = AppState()
     @State private var themeManager = ThemeManager.shared
 
     init() {
         // MUST register handlers before app finishes launching.
         // Do NOT move this to .task or .onAppear.
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.refresh", using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.getzen.sync.refresh", using: nil) { task in
             Task { await SyncService.shared.handleRefreshTask(task as! BGAppRefreshTask) }
         }
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.kquarks.sync.full", using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.getzen.sync.full", using: nil) { task in
             Task { await SyncService.shared.handleFullSyncTask(task as! BGProcessingTask) }
         }
     }
@@ -766,7 +766,7 @@ struct KQuarksApp: App {
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
@@ -777,8 +777,8 @@ Expected: `** BUILD SUCCEEDED **`
 - [ ] **Step 3: Commit**
 
 ```bash
-git add ios/KQuarks/App/KQuarksApp.swift
-git commit -m "Register BGTask handlers in KQuarksApp.init and schedule on launch"
+git add ios/KQuarks/App/GetZenApp.swift
+git commit -m "Register BGTask handlers in GetZenApp.init and schedule on launch"
 ```
 
 ---
@@ -789,7 +789,7 @@ git commit -m "Register BGTask handlers in KQuarksApp.init and schedule on launc
 
 ```bash
 cd ios && xcodebuild build \
-  -project KQuarks.xcodeproj -scheme KQuarks \
+  -project KQuarks.xcodeproj -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug CODE_SIGNING_ALLOWED=NO \
   2>&1 | tail -3
@@ -818,6 +818,6 @@ After building and running on device/simulator:
 
 **Simulate background task in simulator:**
 ```
-e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.kquarks.sync.refresh"]
+e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.getzen.sync.refresh"]
 ```
 (Paste in Xcode debugger console while app is paused)

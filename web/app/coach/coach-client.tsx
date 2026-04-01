@@ -12,8 +12,8 @@ interface Message {
   ts?: number
 }
 
-const HISTORY_KEY = 'kquarks_coach_history'
-const MORNING_DATE_KEY = 'kquarks_morning_checkin_date'
+const HISTORY_KEY = 'getzen_coach_history'
+const MORNING_DATE_KEY = 'getzen_morning_checkin_date'
 const MAX_HISTORY = 20
 
 function loadHistory(): Message[] {
@@ -321,7 +321,7 @@ export function AICoachHub({ initialContext }: { initialContext: HealthContext }
               <div className="text-center py-10">
                 <Bot className="w-10 h-10 text-primary mx-auto mb-3" />
                 <p className="font-semibold text-text-primary">
-                  {mode === 'goal_coach' ? 'Goal Coach' : "Hi! I'm your KQuarks Health Coach"}
+                  {mode === 'goal_coach' ? 'Goal Coach' : "Hi! I'm your GetZen Health Coach"}
                 </p>
                 <p className="text-xs text-text-secondary mt-1 max-w-xs mx-auto">
                   {mode === 'goal_coach'

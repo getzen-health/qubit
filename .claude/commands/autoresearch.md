@@ -1,4 +1,4 @@
-# /autoresearch — KQuarks Autonomous Code Quality Loop
+# /autoresearch — GetZen Autonomous Code Quality Loop
 
 Runs the 8-phase autoresearch loop against `scripts/code-quality-score.sh`.
 Each iteration: identify → change → commit → verify → keep or revert → log → repeat.
@@ -13,7 +13,7 @@ Inspired by uditgoenka/autoresearch + jmilinovich/goal-md patterns.
 2. Run `bash scripts/code-quality-score.sh` to establish baseline score.
 3. Read `scripts/autoresearch-results.tsv` if it exists (learn from prior iterations).
 4. Read `git log --oneline -20` to see recent changes and avoid re-doing fixed work.
-5. Confirm scope: Swift files in `ios/KQuarks/`, TypeScript in `web/`.
+5. Confirm scope: Swift files in `ios/GetZen/`, TypeScript in `web/`.
 6. Print: "Baseline: {score}. Starting loop. Target: 0."
 
 ## The 8-Phase Loop
@@ -89,7 +89,7 @@ If push fails (upstream diverged), run `git pull --rebase origin main` then push
 5. **Auto-revert on regression** — never keep a change that raised the score
 6. **No Co-Authored-By** — per CLAUDE.md
 7. **No unrelated cleanup** — fix only what reduces the score metric
-8. **Guard: never delete views** — view count in `ios/KQuarks/Views/` must not decrease
+8. **Guard: never delete views** — view count in `ios/GetZen/Views/` must not decrease
 
 ## When Stuck
 

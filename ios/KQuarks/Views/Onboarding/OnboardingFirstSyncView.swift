@@ -173,7 +173,7 @@ private enum SyncPhase: Equatable {
         switch self {
         case .idle: return "Preparing..."
         case .reading(let msg): return msg
-        case .done: return "All done! Welcome to KQuarks."
+        case .done: return "All done! Welcome to GetZen."
         case .failed(let msg): return msg
         }
     }
