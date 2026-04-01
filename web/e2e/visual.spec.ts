@@ -4,10 +4,15 @@
  * Subsequent runs compare against baseline (threshold: 0.2).
  *
  * Update baselines: npx playwright test --update-snapshots
+ *
+ * NOTE: These tests are skipped in CI because baselines must be
+ * managed locally. Run manually after UI changes to update snapshots.
  */
 import { test, expect } from '@playwright/test'
 
 test.describe('Visual Regression', () => {
+  test.skip(!!process.env.CI, 'Visual regression baselines must be managed locally')
+
   test('login page snapshot', async ({ page }) => {
     await page.goto('/login')
     await page.waitForLoadState('networkidle')

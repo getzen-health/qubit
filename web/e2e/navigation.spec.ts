@@ -43,14 +43,14 @@ test.describe('App Navigation', () => {
 
 test.describe('Food Scanner Page', () => {
   test('scanner page loads', async ({ page }) => {
-    const res = await page.goto('/scan')
+    const res = await page.goto('/scanner')
     expect(res?.status()).toBeLessThan(400)
     const body = await page.textContent('body')
     expect(body?.length ?? 0).toBeGreaterThan(50)
   })
 
   test('scanner has search input', async ({ page }) => {
-    await page.goto('/scan')
+    await page.goto('/scanner')
     await page.waitForLoadState('networkidle')
     const inputs = page.locator('input[type="text"], input[type="search"], input:not([type])')
     expect(await inputs.count()).toBeGreaterThan(0)

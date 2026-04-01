@@ -8,7 +8,8 @@ test.describe('Login Flow', () => {
     expect(page.url()).toContain('/login')
 
     // Verify app heading and sign-in options (OAuth-based: Apple + Google)
-    await expect(page.getByRole('heading', { name: /welcome back|getzen/i })).toBeVisible()
+    // Use 'Welcome back' heading specifically (h2 in the sign-in card)
+    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
     await expect(
       page.getByRole('button', { name: /continue with apple/i })
     ).toBeVisible()
