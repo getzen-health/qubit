@@ -636,7 +636,7 @@ struct StressTrendChart: View {
                         .symbol(.circle)
                     }
                 }
-                .chartYScale(domain: 1...max(10, Int(manualPoints.map(\.value).max() ?? 10)))
+                .chartYScale(domain: 1...10)
                 .chartYAxis {
                     AxisMarks(values: [1, 3, 5, 7, 10]) { value in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.3))

@@ -7,43 +7,31 @@ test.describe('Login Flow', () => {
     // Check if we're on the login page
     expect(page.url()).toContain('/login')
 
-    // Verify key elements are visible
-    await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible()
-    await expect(page.getByLabel(/email/i)).toBeVisible()
-    await expect(page.getByLabel(/password/i)).toBeVisible()
+    // Verify app heading and sign-in options (OAuth-based: Apple + Google)
+    await expect(page.getByRole('heading', { name: /welcome back|getzen/i })).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /sign in/i })
+      page.getByRole('button', { name: /continue with apple/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /continue with google/i })
     ).toBeVisible()
   })
 
   test('should show error on invalid credentials', async ({ page }) => {
-    await page.goto('/login')
+    // Navigate to login with a simulated error param
+    await page.goto('/login?error=auth_callback_error')
 
-    // Fill in invalid credentials
-    await page.getByLabel(/email/i).fill('test@example.com')
-    await page.getByLabel(/password/i).fill('wrongpassword')
+    // Verify error message appears
+    await expect(page.getByText(/sign-in failed/i)).toBeVisible()
 
-    // Submit the form
-    await page.getByRole('button', { name: /sign in/i }).click()
-
-    // Look for error message (specific error may vary)
-    // Wait a bit for any error to appear
-    await page.waitForTimeout(1000)
-
-    // Check if we're still on login page (not redirected)
+    // Check if we're still on login page
     expect(page.url()).toContain('/login')
   })
 
   test('should have password reset link', async ({ page }) => {
     await page.goto('/login')
 
-    // Check for "Forgot password" or similar link
-    const forgotLink = page.getByRole('link', {
-      name: /forgot|reset|password/i,
-    })
-
-    // Link may or may not be present depending on implementation
-    // This test just verifies the test can find login elements
-    await expect(page.getByLabel(/email/i)).toBeVisible()
+    // App uses OAuth — just verify the page loads with sign-in options
+    await expect(page.getByRole('button', { name: /continue with apple/i })).toBeVisible()
   })
 })

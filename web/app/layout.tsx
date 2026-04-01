@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   creator: 'GetZen',
   metadataBase: new URL('https://kquarks.com'),
   manifest: '/manifest.json',
-  themeColor: '#000000',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
