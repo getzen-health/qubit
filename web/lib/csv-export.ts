@@ -1,5 +1,5 @@
 /**
- * CSV export utilities for KQuarks health data.
+ * CSV export utilities for GetZen health data.
  * Each function returns a CSV string with headers.
  * Uses browser Blob + URL.createObjectURL for client-side downloads.
  */

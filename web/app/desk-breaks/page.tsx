@@ -1,7 +1,7 @@
 import { DeskBreaksClient } from './desk-breaks-client'
 
 export const metadata = {
-  title: 'Desk Breaks — KQuarks',
+  title: 'Desk Breaks — GetZen',
   description: 'Pomodoro-style break reminders to reduce sitting time and improve posture.',
 }
 

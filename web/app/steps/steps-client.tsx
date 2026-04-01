@@ -39,7 +39,7 @@ export function StepsClient({ summaries, dbStepGoal }: StepsClientProps) {
 
   useEffect(() => {
     if (dbStepGoal) return // DB value wins
-    const stored = localStorage.getItem('kquarks_step_goal')
+    const stored = localStorage.getItem('getzen_step_goal')
     if (stored) setStepGoal(Number(stored))
   }, [dbStepGoal])
 

@@ -24,14 +24,14 @@ import { getIsProServer } from '@/lib/subscription'
 
 export const metadata: Metadata = {
   title: 'Settings',
-  description: 'Manage your KQuarks account, preferences, and data settings.',
+  description: 'Manage your GetZen account, preferences, and data settings.',
   openGraph: {
-    title: 'KQuarks Settings',
+    title: 'GetZen Settings',
     description: 'Manage your account, preferences, and data settings.',
     type: 'website',
   },
   twitter: {
-    title: 'KQuarks Settings',
+    title: 'GetZen Settings',
     description: 'Manage your account, preferences, and data settings.',
   },
 }
@@ -169,7 +169,7 @@ export default async function SettingsPage() {
           {isPro ? (
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-text-primary">KQuarks Pro</p>
+                <p className="font-medium text-text-primary">GetZen Pro</p>
                 <p className="text-sm text-text-secondary">All features unlocked</p>
               </div>
               <a

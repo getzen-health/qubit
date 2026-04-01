@@ -1,6 +1,6 @@
-# KQuarks - Swarm Agent Definitions
+# GetZen - Swarm Agent Definitions
 
-This file defines specialized agents for parallel development of KQuarks.
+This file defines specialized agents for parallel development of GetZen.
 
 ## Agent Definitions
 

@@ -82,7 +82,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_workouts.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_workouts.csv', rowCount: rows.length }
   }
 
   if (type === 'sleep') {
@@ -112,7 +112,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_sleep.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_sleep.csv', rowCount: rows.length }
   }
 
   if (type === 'water') {
@@ -131,7 +131,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ...rows.map((r: { date: string; total_ml: number }) => [r.date ?? '', r.total_ml ?? ''].join(',')),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_water.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_water.csv', rowCount: rows.length }
   }
 
   if (type === 'nutrition') {
@@ -164,7 +164,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       }
     }
 
-    return { csv: csvRows.join('\n'), filename: 'kquarks_nutrition.csv', rowCount: data?.length ?? 0 }
+    return { csv: csvRows.join('\n'), filename: 'getzen_nutrition.csv', rowCount: data?.length ?? 0 }
   }
 
   if (type === 'checkins') {
@@ -192,7 +192,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_checkins.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_checkins.csv', rowCount: rows.length }
   }
 
   if (type === 'habits') {
@@ -223,7 +223,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_habits.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_habits.csv', rowCount: rows.length }
   }
 
   if (type === 'fasting') {
@@ -251,7 +251,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
       ),
     ].join('\n')
 
-    return { csv, filename: 'kquarks_fasting.csv', rowCount: rows.length }
+    return { csv, filename: 'getzen_fasting.csv', rowCount: rows.length }
   }
 
   // Default: daily summaries
@@ -299,7 +299,7 @@ async function buildExport(supabase: any, userId: string, type: string, from?: s
     if (truncated) break
   }
 
-  return { csv: csvRows.join('\n'), filename: 'kquarks_daily.csv', rowCount, truncated }
+  return { csv: csvRows.join('\n'), filename: 'getzen_daily.csv', rowCount, truncated }
 }
 
 export const GET = createSecureApiHandler(
@@ -503,7 +503,7 @@ export const POST = createSecureApiHandler(
           date_range_start: dateStart ?? null,
           date_range_end: dateEnd ?? null,
           record_count: recordCount,
-          filename: `kquarks-export-${new Date().toISOString().split('T')[0]}.${format === 'fhir' ? 'json' : format}`,
+          filename: `getzen-export-${new Date().toISOString().split('T')[0]}.${format === 'fhir' ? 'json' : format}`,
         })
       }
     } catch {

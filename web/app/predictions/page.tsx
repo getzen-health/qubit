@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 const PredictionsClient = dynamic(() => import('./predictions-client').then(m => ({ default: m.PredictionsClient })))
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Forecast – KQuarks' }
+export const metadata = { title: 'Forecast – GetZen' }
 
 export default async function PredictionsPage() {
   const supabase = await createClient()

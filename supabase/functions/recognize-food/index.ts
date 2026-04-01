@@ -5,7 +5,7 @@ const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
 
 const corsHeaders = {
   'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || 'https://kquarks.vercel.app',
+  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || 'https://getzen.vercel.app',
   'Access-Control-Allow-Headers': 'authorization, content-type',
 }
 
@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
       headers: {
-        'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || 'https://kquarks.vercel.app',
+        'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || 'https://getzen.vercel.app',
         'Access-Control-Allow-Headers': 'authorization, content-type',
       },
     })

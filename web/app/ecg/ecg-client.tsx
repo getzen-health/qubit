@@ -202,7 +202,7 @@ export function ECGClient({ data }: Props) {
             </li>
             <li className="flex gap-2">
               <span className="shrink-0 font-semibold text-gray-400 dark:text-gray-500 tabular-nums">3.</span>
-              Sync KQuarks from the iOS app to upload your results.
+              Sync GetZen from the iOS app to upload your results.
             </li>
           </ol>
           <p className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-400 dark:text-gray-500 leading-relaxed">

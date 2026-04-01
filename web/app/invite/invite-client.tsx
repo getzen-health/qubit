@@ -41,7 +41,7 @@ export function InviteClient() {
   useEffect(() => { void loadData() }, [loadData])
 
   const shareText = referral
-    ? `Join me on KQuarks — the health app that actually shows you useful data. Use my code ${referral.code} for 1 free month of Pro! kquarks.app`
+    ? `Join me on GetZen — the health app that actually shows you useful data. Use my code ${referral.code} for 1 free month of Pro! kquarks.app`
     : ''
 
   async function handleCopy() {
@@ -54,7 +54,7 @@ export function InviteClient() {
   async function handleShare() {
     if (!shareText) return
     if (navigator.share) {
-      await navigator.share({ title: 'Join KQuarks', text: shareText })
+      await navigator.share({ title: 'Join GetZen', text: shareText })
     } else {
       await navigator.clipboard.writeText(shareText)
       setCopied(true)
@@ -95,7 +95,7 @@ export function InviteClient() {
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Invite Friends</h1>
           <p className="text-sm text-text-secondary mt-1">
-            Share your code — you <span className="font-medium text-accent">both</span> get 1 month of KQuarks Pro free.
+            Share your code — you <span className="font-medium text-accent">both</span> get 1 month of GetZen Pro free.
           </p>
         </div>
 

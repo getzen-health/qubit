@@ -1,10 +1,10 @@
-# KQuarks API Documentation
+# GetZen API Documentation
 
 ## Authentication
 All API endpoints require a valid Supabase JWT Bearer token.
 
 ## Base URL
-`https://kquarks.vercel.app/api`
+`https://getzen.vercel.app/api`
 
 ## Endpoints
 

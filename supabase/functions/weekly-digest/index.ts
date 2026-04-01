@@ -31,7 +31,7 @@ import { retryWithBackoff } from "../_shared/retry.ts"
 const resendKey = Deno.env.get('RESEND_API_KEY')
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://kquarks.vercel.app",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://getzen.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
@@ -117,7 +117,7 @@ function buildEmailHtml(
 
     <!-- Header -->
     <div style="text-align:center;margin-bottom:32px;">
-      <h1 style="margin:0;font-size:28px;font-weight:700;color:#f8fafc;">KQuarks</h1>
+      <h1 style="margin:0;font-size:28px;font-weight:700;color:#f8fafc;">GetZen</h1>
       <p style="margin:8px 0 0;color:#94a3b8;font-size:14px;">Weekly Health Digest · ${weekLabel}</p>
     </div>
 
@@ -177,7 +177,7 @@ function buildEmailHtml(
 
     <!-- CTA -->
     <div style="text-align:center;margin-top:32px;">
-      <a href="${Deno.env.get("APP_URL") ?? "https://kquarks.app"}/dashboard"
+      <a href="${Deno.env.get("APP_URL") ?? "https://getzen.app"}/dashboard"
          style="display:inline-block;background:#3b82f6;color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none;">
         View Full Dashboard →
       </a>
@@ -185,7 +185,7 @@ function buildEmailHtml(
 
     <!-- Footer -->
     <p style="text-align:center;color:#475569;font-size:12px;margin-top:32px;">
-      KQuarks · <a href="${Deno.env.get("APP_URL") ?? "https://kquarks.app"}/settings" style="color:#475569;">Unsubscribe</a>
+      GetZen · <a href="${Deno.env.get("APP_URL") ?? "https://getzen.app"}/settings" style="color:#475569;">Unsubscribe</a>
     </p>
   </div>
 </body>
@@ -202,7 +202,7 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "KQuarks <digest@kquarks.app>",
+          from: "GetZen <digest@getzen.app>",
           to,
           subject,
           html,

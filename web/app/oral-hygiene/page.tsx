@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 const OralHygieneClient = dynamic(() => import('./oral-hygiene-client').then(m => ({ default: m.OralHygieneClient })))
 import type { OralHygieneLog } from './oral-hygiene-client'
 
-export const metadata = { title: 'Oral Hygiene — KQuarks' }
+export const metadata = { title: 'Oral Hygiene — GetZen' }
 
 export default async function OralHygienePage() {
   const supabase = await createClient()

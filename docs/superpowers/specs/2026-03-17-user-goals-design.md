@@ -1,7 +1,7 @@
 # User-Configurable Health Goals — Design Spec
 
 **Date:** 2026-03-17
-**Project:** KQuarks iOS app
+**Project:** GetZen iOS app
 **Status:** Approved
 
 ---

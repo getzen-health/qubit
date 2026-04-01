@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, BookOpen, Zap, TrendingUp, Clock, Calendar, Activity } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Track & Field | KQuarks' }
+export const metadata = { title: 'Track & Field | GetZen' }
 
 // ─── Energy system data ───────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ export default async function TrackFieldPage() {
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-white/40" />
               <h2 className="font-rajdhani font-semibold text-sm tracking-wide text-white/80">
-                Session Classification in KQuarks
+                Session Classification in GetZen
               </h2>
             </div>
             <p className="text-[10px] font-mono-jb text-white/30">
@@ -533,7 +533,7 @@ export default async function TrackFieldPage() {
                   {[
                     {
                       title: 'Workout Type',
-                      body: 'Record as "Track Workout" on Apple Watch for accurate categorization in KQuarks.',
+                      body: 'Record as "Track Workout" on Apple Watch for accurate categorization in GetZen.',
                     },
                     {
                       title: 'Auto-captured metrics',

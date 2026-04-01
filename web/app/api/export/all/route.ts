@@ -28,7 +28,7 @@ export const GET = createSecureApiHandler(
     return new NextResponse(json, {
       headers: {
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="kquarks-health-data-${new Date().toISOString().split('T')[0]}.json"`,
+        'Content-Disposition': `attachment; filename="getzen-health-data-${new Date().toISOString().split('T')[0]}.json"`,
       },
     })
   }

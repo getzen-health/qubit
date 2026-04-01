@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 const WeeklyReportClient = dynamic(() => import('./weekly-report-client').then(m => ({ default: m.WeeklyReportClient })))
 import type { DaySummary } from './weekly-report-client'
 
-export const metadata = { title: 'Weekly Report — KQuarks' }
+export const metadata = { title: 'Weekly Report — GetZen' }
 
 function avg(vals: (number | null | undefined)[]): number | null {
   const valid = vals.filter((v): v is number => v != null && v > 0)

@@ -76,9 +76,9 @@ if viewModel.currentStreak > 0 {
 - [ ] **Step 4: Build to verify**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E 'error:|BUILD'
@@ -89,7 +89,7 @@ Expected: `BUILD SUCCEEDED` — SourceKit false-positive errors in the IDE are n
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Views/Dashboard/DashboardListView.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Views/Dashboard/DashboardListView.swift
 git commit -m "Add step goal streak counter to iOS dashboard"
 ```
 
@@ -164,7 +164,7 @@ In `web/app/dashboard/dashboard-stream.tsx`, in the Activity `DataStreamSection`
 - [ ] **Step 4: TypeScript check**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npx tsc --noEmit 2>&1 | head -20
+cd /Users/qxlsz/projects/getzen/web && npx tsc --noEmit 2>&1 | head -20
 ```
 
 Expected: no output (no errors).
@@ -172,7 +172,7 @@ Expected: no output (no errors).
 - [ ] **Step 5: Production build**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/web && npm run build 2>&1 | tail -10
+cd /Users/qxlsz/projects/getzen/web && npm run build 2>&1 | tail -10
 ```
 
 Expected: build completes with no errors.
@@ -180,7 +180,7 @@ Expected: build completes with no errors.
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add web/app/dashboard/page.tsx web/app/dashboard/dashboard-stream.tsx
+cd /Users/qxlsz/projects/getzen && git add web/app/dashboard/page.tsx web/app/dashboard/dashboard-stream.tsx
 git commit -m "Add step goal streak counter to web dashboard"
 ```
 
@@ -191,7 +191,7 @@ git commit -m "Add step goal streak counter to web dashboard"
 - [ ] **Step 1: Push**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git push origin main
+cd /Users/qxlsz/projects/getzen && git push origin main
 ```
 
 Expected: push succeeds.

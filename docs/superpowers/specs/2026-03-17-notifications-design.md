@@ -1,14 +1,14 @@
 # Local Push Notifications — Design Spec
 
 **Date:** 2026-03-17
-**Project:** KQuarks iOS app
+**Project:** GetZen iOS app
 **Status:** Approved
 
 ---
 
 ## Overview
 
-KQuarks syncs health data and generates AI insights but never tells the user anything happened. This feature adds two local notifications via `UserNotifications`:
+GetZen syncs health data and generates AI insights but never tells the user anything happened. This feature adds two local notifications via `UserNotifications`:
 
 1. **Step goal reached** — fires after a sync if today's steps meet or exceed the user's configured goal.
 2. **Insights ready** — fires immediately after `AIInsightsService.generateInsights()` succeeds.
@@ -132,9 +132,9 @@ return result
 
 Because `scheduleInsightsNotification()` is synchronous (no `await`), it can be called directly inside the `do` block.
 
-### KQuarksApp changes
+### GetZenApp changes
 
-In `KQuarksApp`, call `await NotificationService.shared.refreshAuthorizationStatus()` from the `.task` modifier that handles scheduling (alongside `scheduleBackgroundSync()`). This ensures `isAuthorized` reflects the current system state on launch without re-prompting.
+In `GetZenApp`, call `await NotificationService.shared.refreshAuthorizationStatus()` from the `.task` modifier that handles scheduling (alongside `scheduleBackgroundSync()`). This ensures `isAuthorized` reflects the current system state on launch without re-prompting.
 
 ### SettingsView changes
 
@@ -181,7 +181,7 @@ Section("Notifications") {
 | `ios/KQuarks/Services/NotificationService.swift` | New — permission + notification scheduling |
 | `ios/KQuarks/Services/SyncService.swift` | Add `Task { await NotificationService.shared.notifyAfterSync() }` after full sync and after refresh task |
 | `ios/KQuarks/Services/AIInsightsService.swift` | Add `NotificationService.shared.scheduleInsightsNotification()` after insights success |
-| `ios/KQuarks/App/KQuarksApp.swift` | Add `refreshAuthorizationStatus()` call in `.task` |
+| `ios/KQuarks/App/GetZenApp.swift` | Add `refreshAuthorizationStatus()` call in `.task` |
 | `ios/KQuarks/Views/SettingsView.swift` | Add Notifications section |
 | `ios/KQuarks.xcodeproj/project.pbxproj` | Register NotificationService.swift (fileRef 134, buildFile 038) |
 

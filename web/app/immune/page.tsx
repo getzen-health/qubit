@@ -6,7 +6,7 @@ const ImmuneClient = dynamic(() => import('./immune-client').then(m => ({ defaul
 import { calculateImmuneScore } from '@/lib/immune-score'
 import type { ImmuneLog } from '@/lib/immune-score'
 
-export const metadata = { title: 'Immune System Tracker — KQuarks' }
+export const metadata = { title: 'Immune System Tracker — GetZen' }
 
 export default async function ImmunePage() {
   const supabase = await createClient()

@@ -87,7 +87,7 @@ export const GET = createSecureApiHandler(
       `https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=product_name,brands,nutriments,serving_size,image_url,code,nutriscore_grade,additives_tags,allergens_tags,ingredients_text,labels_tags,categories_tags,quantity,nova_group`,
       {
         headers: {
-          'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
+          'User-Agent': 'getzen Health App - https://github.com/qxlsz/getzen',
         },
       }
     )
@@ -113,7 +113,7 @@ export const GET = createSecureApiHandler(
       let usdaRes: Response
       try {
         usdaRes = await fetch(usdaUrl, {
-          headers: { 'User-Agent': 'KQuarks/1.0' },
+          headers: { 'User-Agent': 'GetZen/1.0' },
           signal: AbortSignal.timeout(8000),
         })
       } catch {

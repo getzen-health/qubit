@@ -113,7 +113,7 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
           ...(({ scale: 2, useCORS: true, backgroundColor: null }) as any),
         })
         const link = document.createElement('a')
-        link.download = `kquarks-health-${date ?? new Date().toISOString().slice(0, 10)}.png`
+        link.download = `getzen-health-${date ?? new Date().toISOString().slice(0, 10)}.png`
         link.href = canvas.toDataURL('image/png')
         link.click()
       } else {
@@ -150,7 +150,7 @@ export function ShareCard({ metrics, shareUrl }: ShareCardProps) {
               <Activity className="w-4.5 h-4.5 text-white" />
             </div>
             <div>
-              <p className="text-[11px] font-bold tracking-widest text-purple-400 uppercase">KQuarks</p>
+              <p className="text-[11px] font-bold tracking-widest text-purple-400 uppercase">GetZen</p>
               {userName && (
                 <p className="text-[10px] text-white/40 leading-tight">{userName}</p>
               )}

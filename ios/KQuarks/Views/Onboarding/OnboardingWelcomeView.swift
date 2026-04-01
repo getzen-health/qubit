@@ -27,7 +27,7 @@ struct OnboardingWelcomeView: View {
             Spacer().frame(height: 32)
 
             // Title
-            Text("KQuarks")
+            Text("GetZen")
                 .font(.largeTitle.bold())
 
             Spacer().frame(height: 8)

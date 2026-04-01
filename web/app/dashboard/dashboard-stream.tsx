@@ -345,14 +345,14 @@ export function DashboardStream({
   useEffect(() => {
     // Only use localStorage if DB didn't provide goals
     if (!dbStepGoal) {
-      const storedSteps = localStorage.getItem('kquarks_step_goal')
+      const storedSteps = localStorage.getItem('getzen_step_goal')
       if (storedSteps) {
         const n = parseInt(storedSteps, 10)
         if (!isNaN(n) && n > 0) setStepGoal(n)
       }
     }
     if (!dbCalGoal) {
-      const storedCal = localStorage.getItem('kquarks_calorie_goal')
+      const storedCal = localStorage.getItem('getzen_calorie_goal')
       if (storedCal) {
         const n = parseInt(storedCal, 10)
         if (!isNaN(n) && n > 0) setCalGoal(n)
@@ -364,7 +364,7 @@ export function DashboardStream({
     setIsGeneratingInsights(true)
     setInsightError(null)
     try {
-      const userApiKey = localStorage.getItem('kquarks_claude_api_key') ?? undefined
+      const userApiKey = localStorage.getItem('getzen_claude_api_key') ?? undefined
       const todaySummary = summaries[0]
       const trendHistory = summaries.slice(1, 15)
       const healthContext = {
@@ -403,9 +403,9 @@ export function DashboardStream({
           awakeMinutes: s.awake_minutes ?? 0,
         })),
       }
-      const stepGoalRaw = localStorage.getItem('kquarks_step_goal')
-      const calGoalRaw = localStorage.getItem('kquarks_calorie_goal')
-      const sleepGoalRaw = localStorage.getItem('kquarks_sleep_goal_minutes')
+      const stepGoalRaw = localStorage.getItem('getzen_step_goal')
+      const calGoalRaw = localStorage.getItem('getzen_calorie_goal')
+      const sleepGoalRaw = localStorage.getItem('getzen_sleep_goal_minutes')
       const userGoals = {
         stepGoal: stepGoalRaw ? parseInt(stepGoalRaw, 10) || 10000 : 10000,
         calorieGoal: calGoalRaw ? parseInt(calGoalRaw, 10) || 500 : 500,

@@ -16,33 +16,33 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'KQuarks - AI-Powered Health Tracking & Insights',
-    template: '%s | KQuarks',
+    default: 'GetZen - AI-Powered Health Tracking & Insights',
+    template: '%s | GetZen',
   },
   description: 'Sync your Apple Health data to the cloud, visualize trends, and get AI-powered insights to optimize your wellness journey.',
   keywords: ['health tracking', 'apple health sync', 'health dashboard', 'AI health insights', 'fitness tracking', 'wellness analytics'],
-  authors: [{ name: 'KQuarks' }],
-  creator: 'KQuarks',
+  authors: [{ name: 'GetZen' }],
+  creator: 'GetZen',
   metadataBase: new URL('https://kquarks.com'),
   manifest: '/manifest.json',
   themeColor: '#000000',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'KQuarks',
+    title: 'GetZen',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://kquarks.com',
-    siteName: 'KQuarks',
-    title: 'KQuarks - AI-Powered Health Tracking & Insights',
+    siteName: 'GetZen',
+    title: 'GetZen - AI-Powered Health Tracking & Insights',
     description: 'Sync your Apple Health data to the cloud, visualize trends, and get AI-powered insights to optimize your wellness journey.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KQuarks Health Dashboard' }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'GetZen Health Dashboard' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KQuarks - AI-Powered Health Tracking & Insights',
+    title: 'GetZen - AI-Powered Health Tracking & Insights',
     description: 'Sync your Apple Health data to the cloud, visualize trends, and get AI-powered insights to optimize your wellness journey.',
     images: ['/og-image.png'],
   },
@@ -93,7 +93,7 @@ export default function RootLayout({
     <a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
     <a href="/terms" className="hover:text-foreground transition-colors">Terms of Service</a>
     <a href="/support" className="hover:text-foreground transition-colors">Support</a>
-    <span className="hidden sm:inline">© {new Date().getFullYear()} KQuarks</span>
+    <span className="hidden sm:inline">© {new Date().getFullYear()} GetZen</span>
   </div>
 </footer>
         </WidgetProvider>

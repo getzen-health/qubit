@@ -47,7 +47,7 @@ struct SmallWidgetView: View {
     let entry: HealthEntry
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("KQuarks").font(.caption2).foregroundColor(.secondary)
+            Text("GetZen").font(.caption2).foregroundColor(.secondary)
             Spacer()
             Text("\(entry.healthScore)").font(.system(size: 44, weight: .bold, design: .rounded))
                 .foregroundColor(scoreColor(entry.healthScore))
@@ -64,7 +64,7 @@ struct MediumWidgetView: View {
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading) {
-                Text("KQuarks").font(.caption2).foregroundColor(.secondary)
+                Text("GetZen").font(.caption2).foregroundColor(.secondary)
                 Text("\(entry.healthScore)").font(.system(size: 36, weight: .bold, design: .rounded))
                     .foregroundColor(scoreColor(entry.healthScore))
                 Text("Health Score").font(.caption2).foregroundColor(.secondary)

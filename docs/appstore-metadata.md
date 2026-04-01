@@ -1,7 +1,7 @@
-# KQuarks — App Store Metadata
+# GetZen — App Store Metadata
 
 ## App Name
-KQuarks
+GetZen
 
 ## Subtitle (30 chars max)
 Health Insights & Food Scanner
@@ -10,7 +10,7 @@ Health Insights & Food Scanner
 Health & Fitness
 
 ## Description (4000 chars max)
-KQuarks gives you a complete picture of your health by syncing Apple Health data to a beautiful dashboard — and scanning food products for instant nutrition scores.
+GetZen gives you a complete picture of your health by syncing Apple Health data to a beautiful dashboard — and scanning food products for instant nutrition scores.
 
 **Features:**
 - 📊 **Health Dashboard** — Steps, heart rate, sleep, workouts, calories, HRV and more
@@ -23,7 +23,7 @@ KQuarks gives you a complete picture of your health by syncing Apple Health data
 - 📤 **Export** — Download your data as CSV or JSON anytime
 
 **Privacy First:**
-Your health data stays yours. KQuarks uses Apple Health — we never store raw sensor data on our servers.
+Your health data stays yours. GetZen uses Apple Health — we never store raw sensor data on our servers.
 
 ## Keywords (100 chars max)
 health,fitness,apple health,food scanner,nutrition,sleep,heart rate,steps,AI insights,workout

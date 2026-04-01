@@ -1,4 +1,4 @@
-# KQuarks App Store Screenshots Specification
+# GetZen App Store Screenshots Specification
 
 Required sizes: 6.9" (iPhone 16 Pro Max, 1320×2868 px) and 13" (iPad Pro M4, 2064×2752 px).
 All screenshots use dark mode. Status bar shows 9:41 AM, full signal, full battery.

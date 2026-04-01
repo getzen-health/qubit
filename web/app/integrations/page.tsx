@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
-export const metadata = { title: 'Integrations – KQuarks' }
+export const metadata = { title: 'Integrations – GetZen' }
 
 const PROVIDERS = [
   {
@@ -70,7 +70,7 @@ export default async function IntegrationsPage() {
           </Link>
           <h1 className="text-3xl font-bold">Integrations</h1>
           <p className="mt-1 text-slate-600 dark:text-slate-400">
-            Connect your fitness platforms and wearables to KQuarks.
+            Connect your fitness platforms and wearables to GetZen.
           </p>
         </div>
 

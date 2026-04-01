@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 const WalkingSpeedClient = dynamic(() => import('./walking-speed-client').then(m => ({ default: m.WalkingSpeedClient })))
 
 export const metadata = {
-  title: 'Walking Speed — KQuarks',
+  title: 'Walking Speed — GetZen',
   description:
     'Walking speed — the "sixth vital sign" — passively measured by iPhone and Apple Watch. ' +
     'Track 90-day trends, longevity thresholds, and clinical risk cut-points.',

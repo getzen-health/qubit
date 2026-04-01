@@ -4,10 +4,10 @@ import SwiftUI
 struct OnboardingScreen3: View {
     @Environment(AppState.self) private var appState
 
-    @AppStorage("kquarks_step_goal") private var stepGoal: Int = 10000
-    @AppStorage("kquarks_calorie_goal") private var calorieGoal: Int = 500
+    @AppStorage("getzen_step_goal") private var stepGoal: Int = 10000
+    @AppStorage("getzen_calorie_goal") private var calorieGoal: Int = 500
     // Stored as minutes; 8 h = 480 min default
-    @AppStorage("kquarks_sleep_goal_minutes") private var sleepGoalMinutes: Int = 480
+    @AppStorage("getzen_sleep_goal_minutes") private var sleepGoalMinutes: Int = 480
 
     var body: some View {
         ScrollView {

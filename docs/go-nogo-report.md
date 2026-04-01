@@ -1,4 +1,4 @@
-## KQuarks Production Go/No-Go Report — Sat Mar 28 17:38:17 PDT 2026
+## GetZen Production Go/No-Go Report — Sat Mar 28 17:38:17 PDT 2026
 
 | Check | Status | Notes |
 |-------|--------|-------|

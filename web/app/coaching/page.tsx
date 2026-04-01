@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import CoachingClient from './coaching-client'
 
 export const metadata: Metadata = {
-  title: 'AI Health Coach | KQuarks',
+  title: 'AI Health Coach | GetZen',
   description: 'Real-time AI health coaching powered by Claude',
 }
 

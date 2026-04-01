@@ -82,7 +82,7 @@ struct SidebarView: View {
             }
         }
         .listStyle(.sidebar)
-        .navigationTitle("KQuarks")
+        .navigationTitle("GetZen")
         .toolbarTitleDisplayMode(.inline)
     }
 }

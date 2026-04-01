@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { HistoryClient, type ScanRecord } from './history-client'
 
-export const metadata = { title: 'Scan History — KQuarks' }
+export const metadata = { title: 'Scan History — GetZen' }
 
 const PAGE_SIZE = 20
 

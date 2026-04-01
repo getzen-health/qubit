@@ -4,28 +4,28 @@ SwiftData is configured to use CloudKit for syncing.
 
 ## Required Xcode Steps
 
-To enable iCloud sync for KQuarks on your development machine:
+To enable iCloud sync for GetZen on your development machine:
 
 1. **Open Xcode**
    - Open `ios/KQuarks.xcodeproj` in Xcode
 
 2. **Add iCloud Capability**
-   - Select the KQuarks target
+   - Select the GetZen target
    - Go to Signing & Capabilities
    - Click "+ Capability" and add "iCloud"
    - Check "CloudKit"
-   - Create or select container: `iCloud.com.qxlsz.kquarks`
+   - Create or select container: `iCloud.com.qxlsz.getzen`
 
 3. **Add Background Modes**
    - In Signing & Capabilities, click "+ Capability" and add "Background Modes"
    - Check "Remote notifications"
 
 4. **Add CloudKit Container Entitlements**
-   - Ensure `ios/KQuarks/KQuarks.entitlements` contains:
+   - Ensure `ios/KQuarks/GetZen.entitlements` contains:
      ```xml
      <key>com.apple.developer.icloud-container-identifiers</key>
      <array>
-         <string>iCloud.com.qxlsz.kquarks</string>
+         <string>iCloud.com.qxlsz.getzen</string>
      </array>
      <key>com.apple.developer.icloud-services</key>
      <array>
@@ -60,4 +60,4 @@ These are managed entirely by Supabase for consistency across devices.
 Monitor your CloudKit container at:
 https://icloud.developer.apple.com/cloudkit/
 
-Select the `iCloud.com.qxlsz.kquarks` container to view production and development data.
+Select the `iCloud.com.qxlsz.getzen` container to view production and development data.

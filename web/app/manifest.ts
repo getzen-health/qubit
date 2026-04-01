@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'KQuarks',
-    short_name: 'KQuarks',
+    name: 'GetZen',
+    short_name: 'GetZen',
     description: 'AI-powered health tracking and insights',
     start_url: '/dashboard',
     display: 'standalone',

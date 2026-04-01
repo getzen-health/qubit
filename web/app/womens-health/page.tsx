@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 import { WomensHealthClient } from './womens-health-client'
 
-export const metadata = { title: "Women's Health | KQuarks" }
+export const metadata = { title: "Women's Health | GetZen" }
 
 export default async function WomensHealthPage() {
   const supabase = await createClient()

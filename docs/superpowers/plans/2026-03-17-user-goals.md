@@ -104,9 +104,9 @@ In `ios/KQuarks.xcodeproj/project.pbxproj`, make three edits:
 - [ ] **Step 3: Verify build succeeds**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -118,7 +118,7 @@ Expected: `BUILD SUCCEEDED` with no errors.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Services/GoalService.swift ios/KQuarks.xcodeproj/project.pbxproj
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Services/GoalService.swift ios/KQuarks.xcodeproj/project.pbxproj
 git commit -m "Add GoalService for user-configurable health goals"
 ```
 
@@ -215,9 +215,9 @@ In `ios/KQuarks.xcodeproj/project.pbxproj`, make three edits:
 - [ ] **Step 3: Verify build succeeds**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -229,7 +229,7 @@ Expected: `BUILD SUCCEEDED` with no errors.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Views/Settings/GoalsSettingsView.swift ios/KQuarks.xcodeproj/project.pbxproj
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Views/Settings/GoalsSettingsView.swift ios/KQuarks.xcodeproj/project.pbxproj
 git commit -m "Add GoalsSettingsView for editing daily health targets"
 ```
 
@@ -279,9 +279,9 @@ Section("Health Data") {
 - [ ] **Step 2: Verify build succeeds**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -293,7 +293,7 @@ Expected: `BUILD SUCCEEDED` with no errors.
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Views/SettingsView.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Views/SettingsView.swift
 git commit -m "Add Goals link in Settings Health Data section"
 ```
 
@@ -343,9 +343,9 @@ After removal the extension should contain only `chartColor`.
 - [ ] **Step 3: Verify build succeeds**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks/ios && xcodebuild build \
+cd /Users/qxlsz/projects/getzen/ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO \
@@ -357,7 +357,7 @@ Expected: `BUILD SUCCEEDED` with no errors.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git add ios/KQuarks/Views/HealthMetricDetailView.swift
+cd /Users/qxlsz/projects/getzen && git add ios/KQuarks/Views/HealthMetricDetailView.swift
 git commit -m "Read daily goals from GoalService instead of hardcoded values"
 ```
 
@@ -368,7 +368,7 @@ git commit -m "Read daily goals from GoalService instead of hardcoded values"
 - [ ] **Step 1: Push to main**
 
 ```bash
-cd /Users/qxlsz/projects/kquarks && git push origin main
+cd /Users/qxlsz/projects/getzen && git push origin main
 ```
 
 Expected: All 4 commits pushed successfully.

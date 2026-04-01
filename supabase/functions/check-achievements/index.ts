@@ -11,7 +11,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
  */
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://kquarks.vercel.app",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://getzen.vercel.app",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
@@ -54,7 +54,7 @@ const ALL_ACHIEVEMENTS: Record<string, Omit<Achievement, "type">> = {
   },
   steps_million: {
     title: "Million Steps",
-    description: "Walked over 1,000,000 total steps tracked in KQuarks.",
+    description: "Walked over 1,000,000 total steps tracked in GetZen.",
     icon: "🌍",
   },
 
@@ -182,7 +182,7 @@ const ALL_ACHIEVEMENTS: Record<string, Omit<Achievement, "type">> = {
   // Additional sleep achievements
   first_sleep: {
     title: "Rest Tracked",
-    description: "Had sleep data recorded in KQuarks.",
+    description: "Had sleep data recorded in GetZen.",
     icon: "😴",
   },
   quality_sleep: {

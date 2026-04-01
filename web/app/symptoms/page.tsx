@@ -246,7 +246,7 @@ function ScienceCard() {
       <div className="mt-4 pt-4 border-t border-teal-200 dark:border-teal-900/50 flex gap-2 items-start">
         <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
         <p className="text-xs text-teal-700 dark:text-teal-400 leading-relaxed">
-          <strong className="text-teal-800 dark:text-teal-300">Wellness only.</strong> KQuarks is not a
+          <strong className="text-teal-800 dark:text-teal-300">Wellness only.</strong> GetZen is not a
           medical device. Any chest pain, pressure, or sudden shortness of breath warrants immediate
           medical attention — call emergency services if in doubt.
         </p>

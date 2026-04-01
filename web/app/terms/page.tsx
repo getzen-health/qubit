@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms and conditions for using KQuarks.',
+  description: 'Terms and conditions for using GetZen.',
 }
 
 export default function TermsPage() {
@@ -14,7 +14,7 @@ export default function TermsPage() {
 
         <Section title="1. Acceptance of Terms">
           <p>
-            By downloading the KQuarks iOS app or using the KQuarks web dashboard
+            By downloading the GetZen iOS app or using the GetZen web dashboard
             (&quot;Service&quot;), you agree to these Terms of Service (&quot;Terms&quot;). If you
             do not agree, do not use the Service.
           </p>
@@ -22,7 +22,7 @@ export default function TermsPage() {
 
         <Section title="2. Description of Service">
           <p>
-            KQuarks provides tools to sync Apple Health data to a personal cloud account,
+            GetZen provides tools to sync Apple Health data to a personal cloud account,
             visualise health trends, and generate AI-powered wellness insights. The Service is
             provided for informational and personal wellness purposes only.
           </p>
@@ -30,12 +30,12 @@ export default function TermsPage() {
 
         <Section title="3. Not Medical Advice">
           <p>
-            <strong>KQuarks is not a medical device and does not provide medical advice.</strong>{' '}
+            <strong>GetZen is not a medical device and does not provide medical advice.</strong>{' '}
             All content, insights, recommendations, and health scores provided by the Service are
             for general informational purposes only and are not a substitute for professional
             medical advice, diagnosis, or treatment. Always consult a qualified healthcare
             provider with any questions regarding a medical condition. Never disregard professional
-            medical advice or delay seeking it because of something you read or saw in KQuarks.
+            medical advice or delay seeking it because of something you read or saw in GetZen.
           </p>
         </Section>
 
@@ -53,7 +53,7 @@ export default function TermsPage() {
 
         <Section title="5. Subscription & Billing">
           <p>
-            KQuarks offers a free tier with core features and an optional Pro subscription.
+            GetZen offers a free tier with core features and an optional Pro subscription.
           </p>
           <ul className="list-disc pl-5 space-y-2 mt-2">
             <li>
@@ -78,7 +78,7 @@ export default function TermsPage() {
 
         <Section title="6. Your Data & Ownership">
           <p>
-            <strong>You own your health data.</strong> KQuarks claims no intellectual property
+            <strong>You own your health data.</strong> GetZen claims no intellectual property
             rights over the health metrics, food logs, journal entries, or other content you
             contribute to the Service. We store your data to provide the Service and will never
             sell it. You can export or delete your data at any time (see our{' '}
@@ -105,8 +105,8 @@ export default function TermsPage() {
 
         <Section title="8. Intellectual Property">
           <p>
-            The KQuarks brand, logos, app design, and proprietary algorithms are the intellectual
-            property of KQuarks and its licensors. Nothing in these Terms grants you a right to
+            The GetZen brand, logos, app design, and proprietary algorithms are the intellectual
+            property of GetZen and its licensors. Nothing in these Terms grants you a right to
             use our trademarks without prior written consent.
           </p>
         </Section>
@@ -123,7 +123,7 @@ export default function TermsPage() {
 
         <Section title="10. Limitation of Liability">
           <p>
-            To the maximum extent permitted by law, KQuarks and its affiliates, directors,
+            To the maximum extent permitted by law, GetZen and its affiliates, directors,
             employees, and agents shall not be liable for any indirect, incidental, special,
             consequential, or punitive damages arising from your use of or inability to use the
             Service. Our total liability for any claim arising from these Terms shall not exceed

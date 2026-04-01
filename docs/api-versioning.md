@@ -1,6 +1,6 @@
 # API Versioning
 
-KQuarks uses URL-based API versioning (`/api/v1/`).
+GetZen uses URL-based API versioning (`/api/v1/`).
 
 ## Current Version: v1
 

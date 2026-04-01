@@ -470,7 +470,7 @@ struct AboutView: View {
                         .font(.system(size: 60))
                         .foregroundStyle(.purple, .indigo.opacity(0.3))
 
-                    Text("KQuarks")
+                    Text("GetZen")
                         .font(.title.bold())
 
                     Text("Your personal health dashboard with AI-powered insights.")

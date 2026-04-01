@@ -114,7 +114,7 @@ private struct MockNotificationCard: View {
                     .foregroundStyle(.red)
 
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("KQuarks")
+                    Text("GetZen")
                         .font(.caption.weight(.semibold))
                     Text("now")
                         .font(.caption2)

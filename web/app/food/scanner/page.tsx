@@ -576,8 +576,8 @@ export default function FoodScannerPage() {
             {/* Share button */}
             <div className="flex justify-end">
               <ShareButton
-                title={`I just checked ${product.name} on KQuarks`}
-                text={`I just checked ${product.name} on KQuarks — it scored ${product.healthScore.score}/100 for health! Try it:`}
+                title={`I just checked ${product.name} on GetZen`}
+                text={`I just checked ${product.name} on GetZen — it scored ${product.healthScore.score}/100 for health! Try it:`}
               />
             </div>
             {/* Hero card */}

@@ -1,6 +1,6 @@
-# Contributing to KQuarks
+# Contributing to GetZen
 
-Thank you for your interest in contributing to KQuarks!
+Thank you for your interest in contributing to GetZen!
 
 ## Development Setup
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to KQuarks!
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/qxlsz/kquarks.git
-   cd kquarks
+   git clone https://github.com/qxlsz/getzen.git
+   cd getzen
    ```
 
 2. **Set up the backend**

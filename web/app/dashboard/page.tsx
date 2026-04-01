@@ -16,12 +16,12 @@ export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'Your health dashboard with real-time stats, workouts, sleep data, and AI insights.',
   openGraph: {
-    title: 'KQuarks Dashboard',
+    title: 'GetZen Dashboard',
     description: 'Your health dashboard with real-time stats, workouts, sleep data, and AI insights.',
     type: 'website',
   },
   twitter: {
-    title: 'KQuarks Dashboard',
+    title: 'GetZen Dashboard',
     description: 'Your health dashboard with real-time stats, workouts, sleep data, and AI insights.',
   },
 }

@@ -100,11 +100,11 @@ export const GET = createSecureApiHandler(
 
     const [offResponse, usdaResponse] = await Promise.allSettled([
       fetch(offUrl.toString(), {
-        headers: { 'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks' },
+        headers: { 'User-Agent': 'getzen Health App - https://github.com/qxlsz/getzen' },
       }),
       usdaUrl
         ? fetch(usdaUrl, {
-            headers: { 'User-Agent': 'KQuarks/1.0' },
+            headers: { 'User-Agent': 'GetZen/1.0' },
             signal: AbortSignal.timeout(8000),
           })
         : Promise.reject(new Error('USDA_API_KEY not configured')),

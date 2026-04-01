@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { BottomNav } from '@/components/bottom-nav'
 
-export const metadata = { title: 'Fitness Gaming | KQuarks' }
+export const metadata = { title: 'Fitness Gaming | GetZen' }
 
 const MET_TABLE = [
   {
@@ -241,7 +241,7 @@ export default async function FitnessGamingPage() {
               Intensity Zones
             </h2>
             <p className="text-sm text-gray-400 mt-1">
-              How KQuarks classifies your gaming sessions by calorie burn rate
+              How GetZen classifies your gaming sessions by calorie burn rate
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">

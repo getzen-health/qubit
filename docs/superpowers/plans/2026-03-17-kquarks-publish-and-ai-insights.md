@@ -1,8 +1,8 @@
-# KQuarks: App Store Publishing + Claude AI Health Insights
+# GetZen: App Store Publishing + Claude AI Health Insights
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship KQuarks to the App Store with real Claude-powered health analysis, replacing all placeholder/mock data with live insights.
+**Goal:** Ship GetZen to the App Store with real Claude-powered health analysis, replacing all placeholder/mock data with live insights.
 
 **Architecture:** The iOS app calls a Supabase Edge Function with health data context. The edge function calls Claude API with a structured health analysis prompt and stores insights in the `health_insights` table. The iOS app fetches and displays these insights. Users can optionally provide their own Claude API key in settings (stored in iOS Keychain, sent per-request over HTTPS), otherwise the app's server-side key is used.
 
@@ -88,7 +88,7 @@ Apple requires a privacy manifest for all apps submitted after Spring 2024. Heal
 
 - [ ] **Step 2: Add file to Xcode project (Resources build phase)**
 
-Open the project in Xcode and drag `PrivacyInfo.xcprivacy` into the KQuarks group in the navigator. Ensure it's added to the KQuarks target. Xcode will automatically place it in the **Resources** build phase (not Sources). Verify: Target → Build Phases → Copy Bundle Resources should list `PrivacyInfo.xcprivacy`.
+Open the project in Xcode and drag `PrivacyInfo.xcprivacy` into the GetZen group in the navigator. Ensure it's added to the GetZen target. Xcode will automatically place it in the **Resources** build phase (not Sources). Verify: Target → Build Phases → Copy Bundle Resources should list `PrivacyInfo.xcprivacy`.
 
 If working from CLI, add entries to `project.pbxproj`: a `PBXFileReference`, a `PBXBuildFile` in the `PBXResourcesBuildPhase` (not `PBXSourcesBuildPhase`), and include it in the appropriate `PBXGroup`.
 
@@ -97,7 +97,7 @@ If working from CLI, add entries to `project.pbxproj`: a `PBXFileReference`, a `
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -20
@@ -126,10 +126,10 @@ In `project.pbxproj`, find and update the `INFOPLIST_KEY_NSHealthShareUsageDescr
 
 ```
 // Old:
-INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks needs access to your health data to display insights and sync to the cloud.";
+INFOPLIST_KEY_NSHealthShareUsageDescription = "GetZen needs access to your health data to display insights and sync to the cloud.";
 
 // New:
-INFOPLIST_KEY_NSHealthShareUsageDescription = "KQuarks reads your health data to display activity, heart rate, sleep, and workout metrics on your dashboard and generate personalized AI-powered health insights.";
+INFOPLIST_KEY_NSHealthShareUsageDescription = "GetZen reads your health data to display activity, heart rate, sleep, and workout metrics on your dashboard and generate personalized AI-powered health insights.";
 ```
 
 This needs to be done in both the Debug and Release `buildSettings` sections of `project.pbxproj`.
@@ -139,7 +139,7 @@ This needs to be done in both the Debug and Release `buildSettings` sections of 
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -178,7 +178,7 @@ Link(destination: URL(string: "https://kquarks.app/terms")!) {
 }
 ```
 
-**Note to implementer:** Ask the user what domain/URLs they want to use. If they don't have a website yet, they can host these on GitHub Pages, Notion, or even as static pages on their Vercel deployment (e.g., `kquarks.vercel.app/privacy`).
+**Note to implementer:** Ask the user what domain/URLs they want to use. If they don't have a website yet, they can host these on GitHub Pages, Notion, or even as static pages on their Vercel deployment (e.g., `getzen.vercel.app/privacy`).
 
 - [ ] **Step 2: Update version to use bundle version**
 
@@ -280,14 +280,14 @@ enum KeychainHelper {
 
 - [ ] **Step 2: Add file to Xcode project**
 
-Open Xcode, drag `KeychainHelper.swift` into the `Services` group in the project navigator. Ensure it's added to the KQuarks target. Xcode will update `project.pbxproj` automatically.
+Open Xcode, drag `KeychainHelper.swift` into the `Services` group in the project navigator. Ensure it's added to the GetZen target. Xcode will update `project.pbxproj` automatically.
 
 - [ ] **Step 3: Build and verify**
 
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -426,7 +426,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 2048,
-        system: `You are a health data analyst embedded in a personal health tracking app called KQuarks.
+        system: `You are a health data analyst embedded in a personal health tracking app called GetZen.
 Your role is to analyze the user's health metrics and provide actionable, personalized insights.
 
 Guidelines:
@@ -707,7 +707,7 @@ struct DaySummaryForAI: Codable {
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -992,14 +992,14 @@ func invokeGenerateInsights(
 
 - [ ] **Step 3: Add AIInsightsService.swift to Xcode project**
 
-Open Xcode, drag `AIInsightsService.swift` into the `Services` group. Ensure it's added to the KQuarks target.
+Open Xcode, drag `AIInsightsService.swift` into the `Services` group. Ensure it's added to the GetZen target.
 
 - [ ] **Step 4: Build and verify**
 
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -10
@@ -1157,7 +1157,7 @@ enum AIProvider: String, CaseIterable {
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -1242,7 +1242,7 @@ static func from(string: String) -> InsightCategory {
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -1451,7 +1451,7 @@ private let aiService = AIInsightsService.shared
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -1569,7 +1569,7 @@ if let formattedSleep = summary.formattedSleep {
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -1601,8 +1601,8 @@ Go to: https://developer.apple.com/account
 2. Click "+" to create a new App ID
 3. Select "App IDs" → Continue
 4. Platform: iOS
-5. Description: "KQuarks"
-6. Bundle ID: Explicit → `com.yourname.kquarks` (match your Xcode bundle ID)
+5. Description: "GetZen"
+6. Bundle ID: Explicit → `com.yourname.getzen` (match your Xcode bundle ID)
 7. Under Capabilities, check:
    - HealthKit
    - Sign in with Apple
@@ -1621,7 +1621,7 @@ Go to: https://developer.apple.com/account
 
 In Xcode:
 1. Open `ios/KQuarks.xcodeproj`
-2. Select the KQuarks target
+2. Select the GetZen target
 3. Go to "Signing & Capabilities" tab
 4. Check "Automatically manage signing" (easiest approach)
 5. Select your Team from the dropdown
@@ -1633,10 +1633,10 @@ In Xcode:
 1. Go to https://appstoreconnect.apple.com
 2. My Apps → "+" → New App
 3. Platform: iOS
-4. Name: "KQuarks"
+4. Name: "GetZen"
 5. Primary Language: English
 6. Bundle ID: Select your registered App ID
-7. SKU: "kquarks-001" (any unique string)
+7. SKU: "getzen-001" (any unique string)
 
 - [ ] **Step 6: Required App Store Metadata**
 
@@ -1664,12 +1664,12 @@ Or via command line:
 ```bash
 cd ios && xcodebuild archive \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
-  -archivePath build/KQuarks.xcarchive \
+  -scheme GetZen \
+  -archivePath build/GetZen.xcarchive \
   -destination 'generic/platform=iOS'
 
 xcodebuild -exportArchive \
-  -archivePath build/KQuarks.xcarchive \
+  -archivePath build/GetZen.xcarchive \
   -exportPath build/export \
   -exportOptionsPlist ExportOptions.plist
 ```

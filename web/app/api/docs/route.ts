@@ -5,8 +5,8 @@ import {
 
 const API_DOCS = {
   version: '1.0.0',
-  title: 'KQuarks Health API',
-  description: 'REST API for KQuarks health tracking platform',
+  title: 'GetZen Health API',
+  description: 'REST API for GetZen health tracking platform',
   baseUrl: process.env.NEXT_PUBLIC_APP_URL ?? 'https://kquarks.vercel.app',
   authentication: 'Bearer token (Supabase JWT) required for all endpoints',
   endpoints: {

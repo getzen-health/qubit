@@ -13,7 +13,7 @@ export function PremiumGate({ feature, children, isPro = false }: PremiumGatePro
         <div className="text-center space-y-2 p-4">
           <p className="text-2xl">⭐</p>
           <p className="font-semibold">Pro Feature</p>
-          <p className="text-sm text-muted-foreground">{feature} requires KQuarks Pro</p>
+          <p className="text-sm text-muted-foreground">{feature} requires GetZen Pro</p>
           <a href="/upgrade" className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
             Upgrade to Pro
           </a>

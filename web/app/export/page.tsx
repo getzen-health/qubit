@@ -142,13 +142,13 @@ export default function ExportPage() {
 
       if (format === 'fhir') {
         const bundle = buildFHIRBundle(data)
-        downloadFile(JSON.stringify(bundle, null, 2), `kquarks-fhir-${dateTag}.json`, 'application/json')
+        downloadFile(JSON.stringify(bundle, null, 2), `getzen-fhir-${dateTag}.json`, 'application/json')
       } else if (format === 'csv') {
-        if (data.metrics?.length) downloadFile(metricsToCSV(data.metrics), `kquarks-metrics-${dateTag}.csv`, 'text/csv')
-        if (data.sleep?.length) downloadFile(sleepToCSV(data.sleep), `kquarks-sleep-${dateTag}.csv`, 'text/csv')
-        if (data.food_scans?.length) downloadFile(foodScansToCSV(data.food_scans), `kquarks-food-scans-${dateTag}.csv`, 'text/csv')
-        if (data.lab_results?.length) downloadFile(labResultsToCSV(data.lab_results), `kquarks-labs-${dateTag}.csv`, 'text/csv')
-        if (data.medications?.length) downloadFile(medicationsToCSV(data.medications), `kquarks-medications-${dateTag}.csv`, 'text/csv')
+        if (data.metrics?.length) downloadFile(metricsToCSV(data.metrics), `getzen-metrics-${dateTag}.csv`, 'text/csv')
+        if (data.sleep?.length) downloadFile(sleepToCSV(data.sleep), `getzen-sleep-${dateTag}.csv`, 'text/csv')
+        if (data.food_scans?.length) downloadFile(foodScansToCSV(data.food_scans), `getzen-food-scans-${dateTag}.csv`, 'text/csv')
+        if (data.lab_results?.length) downloadFile(labResultsToCSV(data.lab_results), `getzen-labs-${dateTag}.csv`, 'text/csv')
+        if (data.medications?.length) downloadFile(medicationsToCSV(data.medications), `getzen-medications-${dateTag}.csv`, 'text/csv')
       } else if (format === 'pdf') {
         const metrics = data.metrics ?? []
         const allSteps = metrics.map(r => r.steps).filter((v): v is number => v != null)

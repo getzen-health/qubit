@@ -7,7 +7,7 @@ interface QueuedRequest {
   retryCount: number
 }
 
-const QUEUE_STORAGE_KEY = 'kquarks_offline_queue'
+const QUEUE_STORAGE_KEY = 'getzen_offline_queue'
 const MAX_RETRIES = 3
 
 export class OfflineQueue {

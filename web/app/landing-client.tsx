@@ -40,10 +40,10 @@ export function LandingPage() {
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-5 border-b border-zinc-800/60 backdrop-blur-md bg-zinc-950/80">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <span className="text-sm font-semibold tracking-tight">KQuarks</span>
+          <span className="text-sm font-semibold tracking-tight">GetZen</span>
           <div className="flex items-center gap-6">
             <a
-              href="https://github.com/qxlsz/kquarks"
+              href="https://github.com/qxlsz/getzen"
               className="text-xs text-zinc-400 hover:text-zinc-100 transition-colors hidden sm:block"
             >
               GitHub
@@ -168,12 +168,12 @@ export function LandingPage() {
       {/* Footer */}
       <footer className="py-10 px-6 border-t border-zinc-800">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <span className="text-sm font-medium text-zinc-100">KQuarks</span>
+          <span className="text-sm font-medium text-zinc-100">GetZen</span>
           <div className="flex flex-wrap justify-center gap-6 text-xs text-zinc-500">
             <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy</a>
             <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms</a>
             <a href="/support" className="hover:text-zinc-300 transition-colors">Support</a>
-            <a href="https://github.com/qxlsz/kquarks" className="hover:text-zinc-300 transition-colors">GitHub</a>
+            <a href="https://github.com/qxlsz/getzen" className="hover:text-zinc-300 transition-colors">GitHub</a>
           </div>
         </div>
       </footer>

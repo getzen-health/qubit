@@ -42,7 +42,7 @@ struct KQuarksComplication: Widget {
         StaticConfiguration(kind: "KQuarksComplication", provider: KQuarksComplicationProvider()) { entry in
             KQuarksComplicationEntryView(entry: entry)
         }
-        .configurationDisplayName("KQuarks")
+        .configurationDisplayName("GetZen")
         .description("Daily steps and health score on your watch face.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryCorner])
     }

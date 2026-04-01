@@ -1,6 +1,6 @@
 {
-  "name": "KQuarks Health",
-  "short_name": "KQuarks",
+  "name": "GetZen Health",
+  "short_name": "GetZen",
   "description": "AI-powered health tracking and insights synced from Apple Health.",
   "start_url": "/dashboard",
   "display": "standalone",

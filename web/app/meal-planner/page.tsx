@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 const MealPlannerClient = dynamic(() => import('./meal-planner-client').then(m => ({ default: m.MealPlannerClient })))
 import { calculateTDEE, calculateMacroTargets, calculateDietAdherenceScore, type MealEntry } from '@/lib/meal-planner'
 
-export const metadata = { title: 'Meal Planner | KQuarks' }
+export const metadata = { title: 'Meal Planner | GetZen' }
 
 export default async function MealPlannerPage() {
   const supabase = await createClient()

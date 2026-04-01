@@ -24,7 +24,7 @@ function buildSystemPrompt(ctx: z.infer<typeof bodySchema>['context']): string {
   const heartRate = ctx?.heartRate != null ? `${ctx.heartRate}` : 'unknown'
   const insight = ctx?.recentInsight ? ctx.recentInsight : ''
 
-  return `You are a personal health coach for KQuarks. You help users understand their health data and make positive lifestyle changes. You are encouraging, evidence-based, and concise. The user's recent data: ${steps} steps today, ${sleep}h sleep last night, resting HR ${heartRate}bpm. ${insight}
+  return `You are a personal health coach for GetZen. You help users understand their health data and make positive lifestyle changes. You are encouraging, evidence-based, and concise. The user's recent data: ${steps} steps today, ${sleep}h sleep last night, resting HR ${heartRate}bpm. ${insight}
 Respond conversationally in 2-4 sentences. Be specific to their data.`
 }
 

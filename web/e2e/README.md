@@ -1,6 +1,6 @@
 # E2E Tests
 
-End-to-end tests for critical KQuarks user flows using Playwright.
+End-to-end tests for critical GetZen user flows using Playwright.
 
 ## Test Coverage
 

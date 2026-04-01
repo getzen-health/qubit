@@ -1,5 +1,5 @@
 /**
- * Alcohol Health Library — research-backed calculations for KQuarks
+ * Alcohol Health Library — research-backed calculations for GetZen
  *
  * Sources:
  *  - NIAAA 2023 low-risk drinking guidelines

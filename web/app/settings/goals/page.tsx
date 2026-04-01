@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-const STEP_KEY = 'kquarks_step_goal'
-const CAL_KEY = 'kquarks_calorie_goal'
-const SLEEP_KEY = 'kquarks_sleep_goal_minutes'
-const HRV_KEY = 'kquarks_hrv_target'
+const STEP_KEY = 'getzen_step_goal'
+const CAL_KEY = 'getzen_calorie_goal'
+const SLEEP_KEY = 'getzen_sleep_goal_minutes'
+const HRV_KEY = 'getzen_hrv_target'
 const DEFAULT_STEP_GOAL = 10000
 const DEFAULT_CAL_GOAL = 500
 const DEFAULT_SLEEP_GOAL = 480 // 8 hours

@@ -1,8 +1,8 @@
-# KQuarks - Claude Code Guidelines
+# GetZen - Claude Code Guidelines
 
 ## Project Overview
 
-KQuarks is a comprehensive health tracking app that syncs Apple Health data to the cloud, displays interesting stats and AI-powered insights, and provides a web interface for data visualization.
+GetZen is a comprehensive health tracking app that syncs Apple Health data to the cloud, displays interesting stats and AI-powered insights, and provides a web interface for data visualization.
 
 ## Architecture
 
@@ -21,7 +21,7 @@ KQuarks is a comprehensive health tracking app that syncs Apple Health data to t
 ```
 /
 ├── ios/                    # Swift iOS app
-│   └── KQuarks/
+│   └── GetZen/
 │       ├── App/           # App entry, configuration
 │       ├── Models/        # Data models
 │       ├── Views/         # SwiftUI views
@@ -169,7 +169,7 @@ open ios/KQuarks.xcodeproj
 # Build for iOS Simulator
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO
@@ -177,7 +177,7 @@ cd ios && xcodebuild build \
 # Build for macOS (Mac Catalyst)
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'platform=macOS,variant=Mac Catalyst' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO

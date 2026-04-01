@@ -14,7 +14,7 @@ struct OnboardingScreen1: View {
                     .foregroundStyle(.purple)
                     .padding(.bottom, 32)
 
-                Text("Welcome to KQuarks")
+                Text("Welcome to GetZen")
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)

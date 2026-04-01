@@ -51,7 +51,7 @@ export const GET = createSecureApiHandler(
 
     const response = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'kquarks Health App - https://github.com/qxlsz/kquarks',
+        'User-Agent': 'getzen Health App - https://github.com/qxlsz/getzen',
       },
     })
 

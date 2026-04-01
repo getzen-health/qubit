@@ -53,8 +53,8 @@ function fmtDate(dateStr: string): string {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { userId, date } = await params
   const ogImageUrl = `/api/share-card?userId=${encodeURIComponent(userId)}&date=${encodeURIComponent(date)}`
-  const title = `Health Summary — ${date} | KQuarks`
-  const description = 'Daily health metrics powered by KQuarks'
+  const title = `Health Summary — ${date} | GetZen`
+  const description = 'Daily health metrics powered by GetZen'
 
   return {
     title,
@@ -62,8 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: 'KQuarks Health Summary Card' }],
-      siteName: 'KQuarks',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: 'GetZen Health Summary Card' }],
+      siteName: 'GetZen',
     },
     twitter: {
       card: 'summary_large_image',
@@ -125,7 +125,7 @@ export default async function SharePage({ params }: Props) {
           ⚡
         </div>
         <div>
-          <p className="text-xs font-bold tracking-widest text-purple-400 uppercase">KQuarks</p>
+          <p className="text-xs font-bold tracking-widest text-purple-400 uppercase">GetZen</p>
           <p className="text-xs text-white/40">Health Summary</p>
         </div>
       </div>
@@ -159,7 +159,7 @@ export default async function SharePage({ params }: Props) {
       <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
         <a
           href={ogImageUrl}
-          download={`kquarks-${date}.png`}
+          download={`getzen-${date}.png`}
           className="flex items-center justify-center gap-2 flex-1 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-colors"
         >
           <Download className="w-4 h-4" />

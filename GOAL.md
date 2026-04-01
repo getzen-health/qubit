@@ -1,4 +1,4 @@
-# KQuarks Autoresearch Goal
+# GetZen Autoresearch Goal
 
 > "Set the GOAL → Claude runs the LOOP → Results appear."
 > Inspired by jmilinovich/goal-md + uditgoenka/autoresearch

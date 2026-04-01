@@ -1,4 +1,4 @@
-# KQuarks: Workouts View, Sleep View, Delete Data
+# GetZen: Workouts View, Sleep View, Delete Data
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -232,7 +232,7 @@ Add to `project.pbxproj`: PBXFileReference, PBXBuildFile in Sources, add to View
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -569,7 +569,7 @@ Add to `project.pbxproj`: PBXFileReference, PBXBuildFile in Sources, add to View
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5
@@ -692,7 +692,7 @@ if isDeletingData {
 ```bash
 cd ios && xcodebuild build \
   -project KQuarks.xcodeproj \
-  -scheme KQuarks \
+  -scheme GetZen \
   -destination 'generic/platform=iOS Simulator' \
   -configuration Debug \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tail -5

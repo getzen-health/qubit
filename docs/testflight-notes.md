@@ -1,4 +1,4 @@
-# KQuarks TestFlight Beta
+# GetZen TestFlight Beta
 
 ## What to test
 - [ ] Apple Health sync (grant all permissions on first launch)
@@ -18,4 +18,4 @@
 Please report bugs via the TestFlight feedback button or email beta@kquarks.app
 
 ## Beta Notes (shown in TestFlight)
-Welcome to KQuarks beta! This release includes the full health dashboard, food scanner, AI insights, strength logger and sleep analysis. Your feedback shapes v1.0.
+Welcome to GetZen beta! This release includes the full health dashboard, food scanner, AI insights, strength logger and sleep analysis. Your feedback shapes v1.0.

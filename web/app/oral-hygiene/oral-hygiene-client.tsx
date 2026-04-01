@@ -929,8 +929,8 @@ export function OralHygieneClient({
               },
               {
                 step: '3',
-                title: 'Sync to KQuarks',
-                body: 'Open KQuarks → Sync → grant Health access. Brushing events import automatically.',
+                title: 'Sync to GetZen',
+                body: 'Open GetZen → Sync → grant Health access. Brushing events import automatically.',
               },
             ].map(({ step, title, body }) => (
               <li key={step} className="flex gap-3">

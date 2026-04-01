@@ -7,7 +7,7 @@ const GoalsClient = dynamic(() => import('./goals-client').then(m => ({ default:
 import { BottomNav } from '@/components/bottom-nav'
 
 export const metadata = {
-  title: 'Health Goals — KQuarks',
+  title: 'Health Goals — GetZen',
   description: 'Set SMART goals with the WOOP framework. Vision board, progress tracking, and weekly check-ins.',
 }
 
