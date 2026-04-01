@@ -1,6 +1,7 @@
 name: UI Tests
 
-# Runs daily at 6 AM UTC + on any push touching web/e2e or iOS UI test files
+# Playwright runs on every PR to main touching web code + daily schedule
+# iOS UI tests run on push to UI test files + daily schedule
 on:
   schedule:
     - cron: '0 6 * * *'   # daily 6 AM UTC
@@ -10,6 +11,11 @@ on:
       - 'ios/GetZenUITests/**'
       - 'web/playwright.config.ts'
       - '.github/workflows/ui-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'web/e2e/**'
   workflow_dispatch:       # allow manual trigger from GitHub Actions UI
 
 jobs:
