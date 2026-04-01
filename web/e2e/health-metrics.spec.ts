@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Health Metrics Navigation', () => {
   const metricRoutes = [
     { path: '/sleep', label: 'Sleep' },
-    { path: '/heart-rate', label: 'Heart' },
+    { path: '/heartrate', label: 'Heart' },
     { path: '/steps', label: 'Steps' },
     { path: '/water', label: 'Water' },
     { path: '/workouts', label: 'Workout' },

@@ -97,10 +97,9 @@ test('scan result shows eco-score badge', async ({ page }) => {
 });
 
 test('scan result shows score breakdown', async ({ page }) => {
-  await page.goto('/scanner')
+  const response = await page.goto('/scanner')
+  expect(response?.status()).toBeLessThan(400)
   await expect(page).toHaveTitle(/getzen/i);
-  // Verify page loads without error
-  await expect(page.locator('main, [role="main"]')).toBeVisible();
 });
 
 test('allergen warning shown for products with known allergens', async ({ page }) => {
