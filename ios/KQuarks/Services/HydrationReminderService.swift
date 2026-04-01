@@ -22,7 +22,7 @@ class HydrationReminderService {
         while hour <= endHour {
             let content = UNMutableNotificationContent()
             content.title = "💧 Time to hydrate!"
-            content.body = "Stay on track with your water goal. Log your intake in KQuarks."
+            content.body = "Stay on track with your water goal. Log your intake in GetZen."
             content.sound = .default
             
             var dateComponents = DateComponents()

@@ -18,7 +18,7 @@ struct GetTodayStepsIntent: AppIntent {
 
 struct GetRecoveryScoreIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Recovery Score"
-    static var description = IntentDescription("Shows your current recovery score from KQuarks.")
+    static var description = IntentDescription("Shows your current recovery score from GetZen.")
 
     func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
         let score = UserDefaults.standard.integer(forKey: "cached_recovery_score")
@@ -97,19 +97,19 @@ struct LogWeightIntent: AppIntent {
 
 struct SyncHealthDataIntent: AppIntent {
     static var title: LocalizedStringResource = "Sync Health Data"
-    static var description = IntentDescription("Syncs your Apple Health data to KQuarks.")
+    static var description = IntentDescription("Syncs your Apple Health data to GetZen.")
 
     func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: false,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         await SyncService.shared.performFullSync()
         return .result(
             value: true,
-            dialog: IntentDialog(stringLiteral: "Health data synced to KQuarks.")
+            dialog: IntentDialog(stringLiteral: "Health data synced to GetZen.")
         )
     }
 }
@@ -167,7 +167,7 @@ struct GetTodayHRVIntent: AppIntent {
 
 struct LogWaterIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Water"
-    static var description = IntentDescription("Log water intake in KQuarks.")
+    static var description = IntentDescription("Log water intake in GetZen.")
 
     @Parameter(title: "Amount (ml)", description: "Amount of water in millilitres.")
     var amountMl: Int
@@ -180,7 +180,7 @@ struct LogWaterIntent: AppIntent {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         try await SupabaseService.shared.logWater(amountMl: amountMl)
@@ -196,7 +196,7 @@ struct LogWaterIntent: AppIntent {
 
 struct StartFastIntent: AppIntent {
     static var title: LocalizedStringResource = "Start Fasting"
-    static var description = IntentDescription("Start a fasting session in KQuarks.")
+    static var description = IntentDescription("Start a fasting session in GetZen.")
 
     @Parameter(title: "Hours", description: "Fast duration in hours.", default: 16)
     var targetHours: Int
@@ -209,7 +209,7 @@ struct StartFastIntent: AppIntent {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: false,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         let protocolName: String
@@ -231,13 +231,13 @@ struct StartFastIntent: AppIntent {
 
 struct CheckFastIntent: AppIntent {
     static var title: LocalizedStringResource = "Fasting Status"
-    static var description = IntentDescription("Check your current fasting progress in KQuarks.")
+    static var description = IntentDescription("Check your current fasting progress in GetZen.")
 
     func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         let status = try await SupabaseService.shared.getFastingStatus()
@@ -254,7 +254,7 @@ struct CheckFastIntent: AppIntent {
         } else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "No active fast. Say \"Start fasting in KQuarks\" to begin.")
+                dialog: IntentDialog(stringLiteral: "No active fast. Say \"Start fasting in GetZen\" to begin.")
             )
         }
     }
@@ -262,19 +262,19 @@ struct CheckFastIntent: AppIntent {
 
 struct EndFastIntent: AppIntent {
     static var title: LocalizedStringResource = "End Fasting"
-    static var description = IntentDescription("End your current fasting session in KQuarks.")
+    static var description = IntentDescription("End your current fasting session in GetZen.")
 
     func perform() async throws -> some ReturnsValue<Double> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         guard let elapsed = try await SupabaseService.shared.endFasting() else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "No active fast found. Say \"Start fasting in KQuarks\" to begin one.")
+                dialog: IntentDialog(stringLiteral: "No active fast found. Say \"Start fasting in GetZen\" to begin one.")
             )
         }
         NotificationService.shared.cancelFastingNotifications()
@@ -289,13 +289,13 @@ struct EndFastIntent: AppIntent {
 
 struct GetHabitsProgressIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Today's Habit Progress"
-    static var description = IntentDescription("Shows how many habits you've completed today in KQuarks.")
+    static var description = IntentDescription("Shows how many habits you've completed today in GetZen.")
 
     func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         guard let session = SupabaseService.shared.currentSession else {
@@ -324,7 +324,7 @@ struct GetHabitsProgressIntent: AppIntent {
 
 struct LogCheckinIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Daily Check-in"
-    static var description = IntentDescription("Log your energy, mood, and stress levels in KQuarks.")
+    static var description = IntentDescription("Log your energy, mood, and stress levels in GetZen.")
 
     @Parameter(title: "Energy (1-5)", description: "Your energy level from 1 (very low) to 5 (great).", default: 3)
     var energy: Int
@@ -343,7 +343,7 @@ struct LogCheckinIntent: AppIntent {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: false,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         let e = max(1, min(5, energy))
@@ -359,13 +359,13 @@ struct LogCheckinIntent: AppIntent {
 
 struct GetReadinessIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Readiness Score"
-    static var description = IntentDescription("Shows your readiness score for today from KQuarks.")
+    static var description = IntentDescription("Shows your readiness score for today from GetZen.")
 
     func perform() async throws -> some ReturnsValue<Int> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: 0,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         let readiness = UserDefaults.standard.integer(forKey: "cached_readiness_score")
@@ -385,7 +385,7 @@ struct GetReadinessIntent: AppIntent {
 
 struct LogWorkoutIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Workout"
-    static var description = IntentDescription("Quick log a workout in KQuarks.")
+    static var description = IntentDescription("Quick log a workout in GetZen.")
 
     @Parameter(title: "Activity Type", description: "The type of workout (e.g., running, cycling).")
     var activityType: String
@@ -404,7 +404,7 @@ struct LogWorkoutIntent: AppIntent {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: false,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         // TODO: implement when SupabaseService adds logWorkout
@@ -418,13 +418,13 @@ struct LogWorkoutIntent: AppIntent {
 
 struct RequestHealthExportIntent: AppIntent {
     static var title: LocalizedStringResource = "Request Health Data Export"
-    static var description = IntentDescription("Request an export of your health data from KQuarks.")
+    static var description = IntentDescription("Request an export of your health data from GetZen.")
 
     func perform() async throws -> some ReturnsValue<Bool> & ProvidesDialog {
         guard SupabaseService.shared.isAuthenticated else {
             return .result(
                 value: false,
-                dialog: IntentDialog(stringLiteral: "Please open KQuarks and sign in first.")
+                dialog: IntentDialog(stringLiteral: "Please open GetZen and sign in first.")
             )
         }
         // TODO: implement when SupabaseService adds requestHealthExport

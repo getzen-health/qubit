@@ -5,7 +5,7 @@ import Foundation
 @available(iOS 16.0, *)
 struct LogWaterIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Water Intake"
-    static var description = IntentDescription("Log a water intake amount to KQuarks.")
+    static var description = IntentDescription("Log a water intake amount to GetZen.")
     
     @Parameter(title: "Amount (ml)", description: "Amount of water in milliliters", default: 250)
     var amountMl: Int
@@ -17,7 +17,7 @@ struct LogWaterIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard let supabaseURL = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String,
               let url = URL(string: "\(supabaseURL)/rest/v1/water_entries") else {
-            return .result(dialog: "Could not connect to KQuarks.")
+            return .result(dialog: "Could not connect to GetZen.")
         }
         
         // Store locally via UserDefaults as offline queue
@@ -27,7 +27,7 @@ struct LogWaterIntent: AppIntent {
         _ = url // Will sync when app opens
         
         let liters = Double(amountMl) / 1000.0
-        return .result(dialog: "Logged \(amountMl)ml (\(String(format: "%.2f", liters))L) of water in KQuarks.")
+        return .result(dialog: "Logged \(amountMl)ml (\(String(format: "%.2f", liters))L) of water in GetZen.")
     }
 }
 
@@ -35,7 +35,7 @@ struct LogWaterIntent: AppIntent {
 @available(iOS 16.0, *)
 struct LogMoodIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Mood"
-    static var description = IntentDescription("Log your current mood score to KQuarks.")
+    static var description = IntentDescription("Log your current mood score to GetZen.")
     
     @Parameter(title: "Mood Score", description: "Your mood from 1 (terrible) to 5 (excellent)", default: 3)
     var moodScore: Int
@@ -60,7 +60,7 @@ struct LogMoodIntent: AppIntent {
         
         let moodLabels = ["", "Terrible", "Bad", "Okay", "Good", "Excellent"]
         let label = moodScore < moodLabels.count ? moodLabels[moodScore] : "Unknown"
-        return .result(dialog: "Logged mood as \(label) (\(moodScore)/5) in KQuarks.")
+        return .result(dialog: "Logged mood as \(label) (\(moodScore)/5) in GetZen.")
     }
 }
 
@@ -68,7 +68,7 @@ struct LogMoodIntent: AppIntent {
 @available(iOS 16.0, *)
 struct HealthSummaryIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Health Summary"
-    static var description = IntentDescription("Get your today's health summary from KQuarks.")
+    static var description = IntentDescription("Get your today's health summary from GetZen.")
     
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // Read from HealthKit UserDefaults cache
@@ -77,7 +77,7 @@ struct HealthSummaryIntent: AppIntent {
         let sleepHours = defaults.double(forKey: "lastKnownSleepHours")
         let calories = defaults.integer(forKey: "lastKnownCalories")
         
-        var summary = "Today in KQuarks: "
+        var summary = "Today in GetZen: "
         if steps > 0 { summary += "\(steps) steps" }
         if calories > 0 { summary += ", \(calories) active calories" }
         if sleepHours > 0 { summary += ", \(String(format: "%.1f", sleepHours)) hours of sleep last night" }
@@ -100,7 +100,7 @@ struct StartWorkoutIntent: AppIntent {
     var workoutType: String
     
     static var parameterSummary: some ParameterSummary {
-        Summary("Start a \(\.$workoutType) workout in KQuarks")
+        Summary("Start a \(\.$workoutType) workout in GetZen")
     }
     
     func perform() async throws -> some IntentResult & ProvidesDialog {

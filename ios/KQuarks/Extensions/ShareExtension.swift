@@ -5,7 +5,7 @@ extension View {
     func shareHealthSummary(steps: Int, calories: Double, date: Date = Date()) -> some View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        let text = "My health stats for \(formatter.string(from: date)) via KQuarks:\n🚶 \(steps) steps\n🔥 \(Int(calories)) calories burned\n\nTrack yours at kquarks.app"
+        let text = "My health stats for \(formatter.string(from: date)) via GetZen:\n🚶 \(steps) steps\n🔥 \(Int(calories)) calories burned\n\nTrack yours at kquarks.app"
         return self.onTapGesture {
             let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -24,7 +24,7 @@ struct ShareHealthButton: View {
 
     @State private var showShareSheet = false
     private var shareText: String {
-        "My health stats via KQuarks:\n🚶 \(steps) steps\n🔥 \(Int(calories)) calories\n\nTrack yours at kquarks.app"
+        "My health stats via GetZen:\n🚶 \(steps) steps\n🔥 \(Int(calories)) calories\n\nTrack yours at kquarks.app"
     }
 
     var body: some View {

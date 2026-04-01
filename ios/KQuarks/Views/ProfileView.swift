@@ -33,7 +33,7 @@ struct ProfileView: View {
                 // Widget info
                 HStack {
                     Image(systemName: "rectangle.stack.fill.badge.plus").foregroundStyle(Color.accentColor)
-                    Text("Add the KQuarks widget to your Home Screen for quick health stats.")
+                    Text("Add the GetZen widget to your Home Screen for quick health stats.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
