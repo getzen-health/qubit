@@ -1,4 +1,5 @@
 import SwiftUI
+import OSLog
 #if os(iOS) && !targetEnvironment(macCatalyst)
 import VisionKit
 #endif
@@ -157,7 +158,11 @@ struct DataScannerView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
-        try? uiViewController.startScanning()
+        do {
+            try uiViewController.startScanning()
+        } catch {
+            Logger.sync.error("Barcode scanner failed to start: \(error.localizedDescription)")
+        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -179,7 +184,11 @@ struct DataScannerView: UIViewControllerRepresentable {
                 onScan(value)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                     self?.hasScanned = false
-                    try? dataScanner.startScanning()
+                    do {
+                        try dataScanner.startScanning()
+                    } catch {
+                        Logger.sync.error("Barcode scanner failed to restart: \(error.localizedDescription)")
+                    }
                 }
             }
         }

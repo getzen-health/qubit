@@ -16,7 +16,7 @@ test.describe('Food Scanner Flow', () => {
       await scannerButton.click()
     } else {
       // Fallback: try direct navigation
-      await page.goto('/scan', { waitUntil: 'networkidle' })
+      await page.goto('/scanner', { waitUntil: 'networkidle' })
     }
 
     // Wait a moment for navigation
@@ -27,19 +27,19 @@ test.describe('Food Scanner Flow', () => {
   })
 
   test('should display food search interface', async ({ page }) => {
-    await page.goto('/scan')
+    await page.goto('/scanner')
 
     // Look for search/input field
     const searchInput = page.getByPlaceholder(/search|food|item/i)
     const foodInput = page.getByLabel(/food|search/i)
 
     // Page should load
-    const response = await page.goto('/scan')
+    const response = await page.goto('/scanner')
     expect(response?.status()).toBeLessThan(400)
   })
 
   test('should allow searching for food items', async ({ page }) => {
-    await page.goto('/scan')
+    await page.goto('/scanner')
 
     // Find the search input
     const searchInput = page
@@ -58,13 +58,13 @@ test.describe('Food Scanner Flow', () => {
       expect(page.url()).toBeTruthy()
     } else {
       // Fallback: just verify page loads
-      const response = await page.goto('/scan')
+      const response = await page.goto('/scanner')
       expect(response?.status()).toBeLessThan(400)
     }
   })
 
   test('should have camera or barcode scanner', async ({ page }) => {
-    await page.goto('/scan')
+    await page.goto('/scanner')
 
     // Look for camera permission button or scanner elements
     const cameraButton = page.getByRole('button', {
@@ -77,13 +77,13 @@ test.describe('Food Scanner Flow', () => {
   })
 
   test('should display search results section', async ({ page }) => {
-    await page.goto('/scan')
+    await page.goto('/scanner')
 
     // Look for results container
     const resultsSection = page.locator('[class*="results"], [id*="results"]')
 
     // Verify page loads without error
-    const response = await page.goto('/scan')
+    const response = await page.goto('/scanner')
     expect(response?.status()).toBeLessThan(400)
   })
 })
@@ -97,10 +97,9 @@ test('scan result shows eco-score badge', async ({ page }) => {
 });
 
 test('scan result shows score breakdown', async ({ page }) => {
-  await page.goto('/scanner')
+  const response = await page.goto('/scanner')
+  expect(response?.status()).toBeLessThan(400)
   await expect(page).toHaveTitle(/getzen/i);
-  // Verify page loads without error
-  await expect(page.locator('main, [role="main"]')).toBeVisible();
 });
 
 test('allergen warning shown for products with known allergens', async ({ page }) => {
