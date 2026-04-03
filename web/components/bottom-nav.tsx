@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   LayoutDashboard, Moon, Dumbbell, MoreHorizontal, Utensils, Droplets,
   ShieldAlert, BarChart2, ScanBarcode, BookOpen, X, Users, CalendarRange,
@@ -14,52 +15,44 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-// Primary bottom bar — most-used daily features
-const navItems: MoreItem[] = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { href: '/sleep', icon: Moon, label: 'Sleep' },
-  { href: '/workouts', icon: Dumbbell, label: 'Workouts' },
-  { href: '/nutrition', icon: Utensils, label: 'Nutrition' },
-  { href: '/insights', icon: BarChart2, label: 'Insights' },
-  { href: '/predictions', icon: '🔮', label: 'Forecast' },
-  { href: '/coaching', icon: '🤖', label: 'Coach' },
-]
-
 type LucideIcon = React.ComponentType<{ className?: string }>
-type MoreItem = { href: string; icon: LucideIcon | string; label: string }
-type MoreCategory = { title: string; items: MoreItem[] }
+type MoreItem = { href: string; icon: LucideIcon | string; label: string; tKey?: string }
+type MoreCategory = { title: string; tKey?: string; items: MoreItem[] }
 
 // "More" sheet — secondary features grouped by category
 const moreCategories: MoreCategory[] = [
   {
     title: 'Daily',
+    tKey: 'daily',
     items: [
-      { href: '/hydration', icon: Droplets, label: 'Hydration' },
-      { href: '/mood', icon: '😊', label: 'Mood' },
-      { href: '/habits', icon: CheckSquare, label: 'Habits' },
-      { href: '/journal', icon: BookOpen, label: 'Journal' },
-      { href: '/goals', icon: '🎯', label: 'Goals' },
-      { href: '/desk-breaks', icon: '🪑', label: 'Desk Breaks' },
+      { href: '/hydration', icon: Droplets, label: 'Hydration', tKey: 'hydration' },
+      { href: '/mood', icon: '😊', label: 'Mood', tKey: 'mood' },
+      { href: '/habits', icon: CheckSquare, label: 'Habits', tKey: 'habits' },
+      { href: '/journal', icon: BookOpen, label: 'Journal', tKey: 'journal' },
+      { href: '/goals', icon: '🎯', label: 'Goals', tKey: 'goals' },
+      { href: '/desk-breaks', icon: '🪑', label: 'Desk Breaks', tKey: 'deskBreaks' },
     ],
   },
   {
     title: 'Nutrition',
+    tKey: 'nutrition',
     items: [
-      { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scanner' },
-      { href: '/scanner/history', icon: Package, label: 'Scan History' },
-      { href: '/meal-planner', icon: UtensilsCrossed, label: 'Meal Planner' },
-      { href: '/food/diary', icon: BookOpen, label: 'Food Diary' },
-      { href: '/supplements', icon: '💊', label: 'Supplements' },
-      { href: '/fasting', icon: Clock, label: 'Fasting' },
-      { href: '/caffeine', icon: '☕', label: 'Caffeine' },
+      { href: '/food/scanner', icon: ScanBarcode, label: 'Food Scanner', tKey: 'foodScanner' },
+      { href: '/scanner/history', icon: Package, label: 'Scan History', tKey: 'scanHistory' },
+      { href: '/meal-planner', icon: UtensilsCrossed, label: 'Meal Planner', tKey: 'mealPlanner' },
+      { href: '/food/diary', icon: BookOpen, label: 'Food Diary', tKey: 'foodDiary' },
+      { href: '/supplements', icon: '💊', label: 'Supplements', tKey: 'supplements' },
+      { href: '/fasting', icon: Clock, label: 'Fasting', tKey: 'fasting' },
+      { href: '/caffeine', icon: '☕', label: 'Caffeine', tKey: 'caffeine' },
     ],
   },
   {
     title: 'Health Metrics',
+    tKey: 'healthMetrics',
     items: [
-      { href: '/heartrate', icon: Heart, label: 'Heart Rate' },
-      { href: '/hrv', icon: Activity, label: 'HRV' },
-      { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure' },
+      { href: '/heartrate', icon: Heart, label: 'Heart Rate', tKey: 'heartRate' },
+      { href: '/hrv', icon: Activity, label: 'HRV', tKey: 'hrv' },
+      { href: '/blood-pressure', icon: ShieldAlert, label: 'Blood Pressure', tKey: 'bloodPressure' },
       { href: '/glucose', icon: '🩸', label: 'Glucose' },
       { href: '/sleep-analytics', icon: BedDouble, label: 'Sleep Analytics' },
       { href: '/vo2max', icon: Wind, label: 'VO2 Max' },
@@ -82,7 +75,7 @@ const moreCategories: MoreCategory[] = [
       { href: '/mental-health', icon: Brain, label: 'Mental Health' },
       { href: '/cognitive', icon: Brain, label: 'Cognitive' },
       { href: '/energy', icon: '⚡', label: 'Energy' },
-      { href: '/breathing', icon: Wind, label: 'Breathing' },
+      { href: '/breathing', icon: Wind, label: 'Breathing', tKey: 'breathing' },
     ],
   },
   {
@@ -92,14 +85,14 @@ const moreCategories: MoreCategory[] = [
       { href: '/oral-hygiene', icon: '🦷', label: 'Oral Care' },
       { href: '/labs', icon: '🧪', label: 'Lab Results' },
       { href: '/symptoms', icon: Stethoscope, label: 'Symptoms' },
-      { href: '/cycle', icon: CalendarRange, label: 'Cycle' },
+      { href: '/cycle', icon: CalendarRange, label: 'Cycle', tKey: 'cycle' },
     ],
   },
   {
     title: 'Activity',
     items: [
-      { href: '/running', icon: '🏃', label: 'Running' },
-      { href: '/cycling', icon: '🚴', label: 'Cycling' },
+      { href: '/running', icon: '🏃', label: 'Running', tKey: 'running' },
+      { href: '/cycling', icon: '🚴', label: 'Cycling', tKey: 'cycling' },
       { href: '/swimming', icon: '🏊', label: 'Swimming' },
       { href: '/steps', icon: '👟', label: 'Steps' },
       { href: '/hr-zones', icon: Heart, label: 'HR Zones' },
@@ -113,6 +106,7 @@ const moreCategories: MoreCategory[] = [
   },
   {
     title: 'Insights',
+    tKey: 'insights',
     items: [
       { href: '/weekly-report', icon: CalendarDays, label: 'Weekly Report' },
       { href: '/coach', icon: Bot, label: 'AI Coach' },
@@ -127,18 +121,19 @@ const moreCategories: MoreCategory[] = [
   },
   {
     title: 'Settings',
+    tKey: 'settings',
     items: [
-      { href: '/profile', icon: '👤', label: 'Profile' },
+      { href: '/profile', icon: '👤', label: 'Profile', tKey: 'profile' },
       { href: '/import', icon: Upload, label: 'Import' },
       { href: '/export', icon: Download, label: 'Export Data' },
       { href: '/report', icon: Stethoscope, label: 'Doctor Report' },
       { href: '/invite', icon: '🎁', label: 'Invite' },
-      { href: '/settings', icon: MoreHorizontal, label: 'Settings' },
+      { href: '/settings', icon: MoreHorizontal, label: 'Settings', tKey: 'settings' },
     ],
   },
 ]
 
-const allMoreItems = moreCategories.flatMap((c) => c.items)
+const allMoreItemsGlobal = moreCategories.flatMap((c) => c.items)
 
 function NavIcon({ icon, className }: { icon: LucideIcon | string; className: string }) {
   if (typeof icon === 'string') return <span className="text-base leading-none">{icon}</span>
@@ -150,7 +145,20 @@ export function BottomNav() {
   const pathname = usePathname()
   const [moreOpen, setMoreOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const t = useTranslations('navigation')
 
+  // Primary bottom bar — most-used daily features
+  const navItems: MoreItem[] = [
+    { href: '/dashboard', icon: LayoutDashboard, label: t('home') },
+    { href: '/sleep', icon: Moon, label: t('sleep') },
+    { href: '/workouts', icon: Dumbbell, label: t('workouts') },
+    { href: '/nutrition', icon: Utensils, label: t('nutrition') },
+    { href: '/insights', icon: BarChart2, label: t('insights') },
+    { href: '/predictions', icon: '🔮', label: t('forecast') },
+    { href: '/coaching', icon: '🤖', label: t('coach') },
+  ]
+
+  const allMoreItems = allMoreItemsGlobal
   const isMoreActive = allMoreItems.some(({ href }) => pathname === href || pathname.startsWith(href))
 
   const query = search.trim().toLowerCase()
@@ -204,14 +212,14 @@ export function BottomNav() {
 
           {/* Categories */}
           <div className="max-h-[58vh] overflow-y-auto space-y-4 pb-1">
-            {visibleCategories.map(({ title, items }) =>
-              items.length > 0 ? (
-                <div key={title}>
+            {visibleCategories.map((cat) =>
+              cat.items.length > 0 ? (
+                <div key={cat.title}>
                   <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider mb-1.5 px-0.5">
-                    {title}
+                    {cat.tKey ? t(cat.tKey) : cat.title}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
-                    {items.map(({ href, icon, label }) => {
+                    {cat.items.map(({ href, icon, label, tKey }) => {
                       const active = pathname === href || pathname.startsWith(href)
                       return (
                         <Link
@@ -226,7 +234,9 @@ export function BottomNav() {
                           )}
                         >
                           <NavIcon icon={icon} className="w-5 h-5" />
-                          <span className="text-[11px] font-medium text-center leading-tight">{label}</span>
+                          <span className="text-[11px] font-medium text-center leading-tight">
+                            {tKey ? t(tKey) : label}
+                          </span>
                         </Link>
                       )
                     })}

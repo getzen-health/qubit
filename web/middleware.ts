@@ -4,7 +4,7 @@ import createMiddleware from 'next-intl/middleware'
 import { getCSPHeader } from '@/lib/security/csp'
 
 const intlMiddleware = createMiddleware({
-  locales: ['en', 'es', 'fr'],
+  locales: ['en', 'es', 'fr', 'pt', 'de', 'ja', 'zh', 'ko'],
   defaultLocale: 'en',
   localePrefix: 'as-needed',
 })
@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/',
-    '/(en|es|fr)/:path*',
+    '/(en|es|fr|pt|de|ja|zh|ko)/:path*',
     '/dashboard/:path*',
     '/workouts/:path*',
     '/sleep/:path*',

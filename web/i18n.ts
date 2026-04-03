@@ -2,7 +2,7 @@ import { getRequestConfig } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
 // Define supported locales
-const locales = ['en', 'es', 'fr']
+const locales = ['en', 'es', 'fr', 'pt', 'de', 'ja', 'zh', 'ko']
 
 export default getRequestConfig(async ({ locale }) => {
   // Validate that the requested locale is supported
