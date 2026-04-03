@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SWRegister } from '@/components/sw-register'
 import { WidgetProvider } from '@/lib/widgets/widget-context'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -58,11 +60,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const messages = await getMessages()
   return (
     <html lang="en">
       <head>
@@ -76,6 +79,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SWRegister />
         <WidgetProvider>
+          <NextIntlClientProvider messages={messages}>
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm"
@@ -95,6 +99,7 @@ export default function RootLayout({
     <span className="hidden sm:inline">© {new Date().getFullYear()} GetZen</span>
   </div>
 </footer>
+          </NextIntlClientProvider>
         </WidgetProvider>
         <Analytics />
       </body>
