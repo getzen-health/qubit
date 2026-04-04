@@ -162,8 +162,8 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Water", systemImage: "drop.fill") }
                 .tag(3)
 
-            ProfileView()
-                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+            SettingsView()
+                .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(4)
         }
         .sheet(isPresented: $showCheckinSheet) {
