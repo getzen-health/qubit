@@ -3,10 +3,10 @@ import SwiftUI
 /// Expandable metric row with clean dark styling
 struct MetricRowView: View {
     let icon: String
-    let label: String
+    let label: LocalizedStringKey
     let value: String
     var unit: String? = nil
-    var sublabel: String? = nil
+    var sublabel: LocalizedStringKey? = nil
     var trend: Int? = nil
     var color: Color = .primary
     var expandContent: (() -> AnyView)? = nil
@@ -104,7 +104,7 @@ struct MetricRowView: View {
 
 struct MetricRowCompactView: View {
     let icon: String
-    let label: String
+    let label: LocalizedStringKey
     let value: String
     var unit: String? = nil
     var color: Color = .primary
@@ -161,7 +161,7 @@ struct TrendBadge: View {
 }
 
 struct MetricDetailRow: View {
-    let label: String
+    let label: LocalizedStringKey
     let value: String
     var color: Color? = nil
 

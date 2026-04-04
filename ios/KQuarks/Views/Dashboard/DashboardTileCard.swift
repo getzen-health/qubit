@@ -3,8 +3,8 @@ import SwiftUI
 /// Premium tile card — icon in a tinted circle, subtle card with color accent
 struct DashboardTileCard: View {
     let icon: String
-    let title: String
-    var subtitle: String? = nil
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey? = nil
     var color: Color = .accentColor
     var badge: String? = nil
 

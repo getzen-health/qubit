@@ -19,7 +19,7 @@ struct AIEssenceView: View {
                 ScoreRing(
                     label: "RECOVERY",
                     value: "\(recoveryScore)%",
-                    sublabel: recoveryLevel.label,
+                    sublabel: LocalizedStringKey(recoveryLevel.label),
                     trend: recoveryTrend,
                     color: recoveryLevel.color,
                     progress: Double(recoveryScore) / 100
@@ -33,7 +33,7 @@ struct AIEssenceView: View {
                 ScoreRing(
                     label: "STRAIN",
                     value: String(format: "%.1f", strainScore),
-                    sublabel: strainLevel.label,
+                    sublabel: LocalizedStringKey(strainLevel.label),
                     trend: strainTrend,
                     color: strainLevel.color,
                     progress: strainScore / 21
@@ -124,9 +124,9 @@ struct AIEssenceView: View {
 
 /// Glowing score ring with bold number
 struct ScoreRing: View {
-    let label: String
+    let label: LocalizedStringKey
     let value: String
-    let sublabel: String
+    let sublabel: LocalizedStringKey
     var trend: Int? = nil
     let color: Color
     let progress: Double
