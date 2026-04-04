@@ -135,6 +135,18 @@ struct SettingsView: View {
                     } label: {
                         Label("Dashboard Widgets", systemImage: "square.grid.2x2")
                     }
+
+                    NavigationLink {
+                        LanguageSettingsView()
+                    } label: {
+                        HStack {
+                            Label("Language", systemImage: "globe")
+                            Spacer()
+                            Text(LanguageManager.shared.currentLanguageDisplayName)
+                                .foregroundStyle(.secondary)
+                                .font(.subheadline)
+                        }
+                    }
                 }
 
                 // Siri Shortcuts

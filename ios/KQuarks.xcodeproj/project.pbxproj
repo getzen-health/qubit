@@ -461,6 +461,7 @@
 		E28468B54B69BD6038AFC4A4 /* ActivitySummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6884DD7DD5B052EC1E2F9C /* ActivitySummaryView.swift */; };
 		E3A65D1EEA3E5C640075C4A0 /* FoodPhotoRecognitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E533AF508DACD155B45A09 /* FoodPhotoRecognitionView.swift */; };
 		E3A780CA7FB61A6ECF4EB7FB /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B2BF31B0C8287B41E8804F /* ExportDataView.swift */; };
+		A9C1234567890ABCDEF01235 /* LanguageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1234567890ABCDEF01234 /* LanguageSettingsView.swift */; };
 		E3ABBC54C2163D9BD9A36986 /* ArcheryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF67150DB1DEBC65430CEF3 /* ArcheryView.swift */; };
 		E65635EA267A18B68B335AFF /* PadelScienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF52DC91F0E895C903751695 /* PadelScienceView.swift */; };
 		E6AB7F19884D4D568986DAE8 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541407B19633C8EF508EE781 /* AchievementsView.swift */; };
@@ -924,6 +925,7 @@
 		B2ABC35F544852E212EB1307 /* StepPatternView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StepPatternView.swift; sourceTree = "<group>"; };
 		B3441FD23BBB84F8CEFEA881 /* CricketScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CricketScienceView.swift; sourceTree = "<group>"; };
 		B3B2BF31B0C8287B41E8804F /* ExportDataView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Settings/ExportDataView.swift; sourceTree = "<group>"; };
+		A9C1234567890ABCDEF01234 /* LanguageSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Settings/LanguageSettingsView.swift; sourceTree = "<group>"; };
 		B4E94D2AB3139B05F629CFC9 /* StepAerobicsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StepAerobicsView.swift; sourceTree = "<group>"; };
 		B547A282ED0307DF42B0EC01 /* FunctionalStrengthView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FunctionalStrengthView.swift; sourceTree = "<group>"; };
 		B5CCD77F94802C92493EC882 /* DownhillSkiingScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DownhillSkiingScienceView.swift; sourceTree = "<group>"; };
@@ -1210,6 +1212,7 @@
 				B3B2BF31B0C8287B41E8804F /* ExportDataView.swift */,
 				8DBB06BE354FE2DCAFC53DDB /* NutritionGoalsView.swift */,
 				B68E53636EB19AF9C37BBF13 /* ProfileSettingsView.swift */,
+				A9C1234567890ABCDEF01234 /* LanguageSettingsView.swift */,
 				026E17CE9115409481DCC718 /* OnboardingScreen1.swift */,
 				F658F0D7C97E49C0AA5CAFF6 /* OnboardingScreen2.swift */,
 				26F8467956DA45DFB8E3C060 /* OnboardingScreen3.swift */,
@@ -1947,6 +1950,7 @@
 				332B79411A3C4368EEB4C4AC /* AnomalyAlertView.swift in Sources */,
 				10267CA98A01EBE211F87BF7 /* BriefingHistoryView.swift in Sources */,
 				E3A780CA7FB61A6ECF4EB7FB /* ExportDataView.swift in Sources */,
+				A9C1234567890ABCDEF01235 /* LanguageSettingsView.swift in Sources */,
 				F59ACFB03E0D8DC906574D23 /* NutritionGoalsView.swift in Sources */,
 				061F08EB8BA779FBEDA03845 /* ProfileSettingsView.swift in Sources */,
 				5F2D714001D249CC871C5517 /* OnboardingScreen1.swift in Sources */,
