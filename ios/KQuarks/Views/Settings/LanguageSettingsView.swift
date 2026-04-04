@@ -3,24 +3,41 @@ import ObjectiveC
 
 // MARK: - Bundle Swizzling for In-App Language Switching
 
-private var _bundleAssocKey: UInt8 = 0
-
-private final class _LanguageBundle: Bundle {
-    override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
-        guard let override = objc_getAssociatedObject(self, &_bundleAssocKey) as? Bundle else {
-            return super.localizedString(forKey: key, value: value, table: tableName)
-        }
-        return override.localizedString(forKey: key, value: value, table: tableName)
-    }
-}
+private var _languageBundleKey: UInt8 = 0
 
 extension Bundle {
+    private static var _swizzled = false
+
+    /// The language-specific bundle to use for lookups
+    var _languageOverride: Bundle? {
+        get { objc_getAssociatedObject(self, &_languageBundleKey) as? Bundle }
+        set { objc_setAssociatedObject(self, &_languageBundleKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
+    /// Swizzled implementation of localizedString(forKey:value:table:)
+    @objc dynamic func _swizzled_localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
+        if let override = _languageOverride {
+            let result = override.localizedString(forKey: key, value: value, table: tableName)
+            // If the override bundle returned the key itself (no translation), return result anyway (English fallback)
+            return result
+        }
+        // Call original (this actually calls the original because methods are swapped)
+        return _swizzled_localizedString(forKey: key, value: value, table: tableName)
+    }
+
     static func swapLanguage(_ code: String) {
+        // One-time swizzle of Bundle's localizedString method
+        if !_swizzled {
+            let original = class_getInstanceMethod(Bundle.self, #selector(Bundle.localizedString(forKey:value:table:)))!
+            let replacement = class_getInstanceMethod(Bundle.self, #selector(Bundle._swizzled_localizedString(forKey:value:table:)))!
+            method_exchangeImplementations(original, replacement)
+            _swizzled = true
+        }
+
         let path = Bundle.main.path(forResource: code, ofType: "lproj")
             ?? Bundle.main.path(forResource: "en", ofType: "lproj")
         guard let p = path, let langBundle = Bundle(path: p) else { return }
-        objc_setAssociatedObject(Bundle.main, &_bundleAssocKey, langBundle, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        object_setClass(Bundle.main, _LanguageBundle.self)
+        Bundle.main._languageOverride = langBundle
     }
 }
 

@@ -1085,28 +1085,28 @@ class SyncService {
 extension HKWorkoutActivityType {
     var name: String {
         switch self {
-        case .running: return "Running"
-        case .cycling: return "Cycling"
-        case .walking: return "Walking"
-        case .swimming: return "Swimming"
-        case .hiking: return "Hiking"
-        case .yoga: return "Yoga"
-        case .functionalStrengthTraining: return "Strength Training"
-        case .traditionalStrengthTraining: return "Weight Training"
-        case .coreTraining: return "Core Training"
-        case .highIntensityIntervalTraining: return "HIIT"
-        case .crossTraining: return "Cross Training"
-        case .elliptical: return "Elliptical"
-        case .rowing: return "Rowing"
-        case .stairClimbing: return "Stair Climbing"
-        case .pilates: return "Pilates"
-        case .dance: return "Dance"
-        case .cooldown: return "Cooldown"
-        case .basketball: return "Basketball"
-        case .soccer: return "Soccer"
-        case .tennis: return "Tennis"
-        case .golf: return "Golf"
-        default: return "Workout"
+        case .running: return NSLocalizedString("Running", comment: "Workout type")
+        case .cycling: return NSLocalizedString("Cycling", comment: "Workout type")
+        case .walking: return NSLocalizedString("Walking", comment: "Workout type")
+        case .swimming: return NSLocalizedString("Swimming", comment: "Workout type")
+        case .hiking: return NSLocalizedString("Hiking", comment: "Workout type")
+        case .yoga: return NSLocalizedString("Yoga", comment: "Workout type")
+        case .functionalStrengthTraining: return NSLocalizedString("Strength Training", comment: "Workout type")
+        case .traditionalStrengthTraining: return NSLocalizedString("Weight Training", comment: "Workout type")
+        case .coreTraining: return NSLocalizedString("Core Training", comment: "Workout type")
+        case .highIntensityIntervalTraining: return NSLocalizedString("HIIT", comment: "Workout type")
+        case .crossTraining: return NSLocalizedString("Cross Training", comment: "Workout type")
+        case .elliptical: return NSLocalizedString("Elliptical", comment: "Workout type")
+        case .rowing: return NSLocalizedString("Rowing", comment: "Workout type")
+        case .stairClimbing: return NSLocalizedString("Stair Climbing", comment: "Workout type")
+        case .pilates: return NSLocalizedString("Pilates", comment: "Workout type")
+        case .dance: return NSLocalizedString("Dance", comment: "Workout type")
+        case .cooldown: return NSLocalizedString("Cooldown", comment: "Workout type")
+        case .basketball: return NSLocalizedString("Basketball", comment: "Workout type")
+        case .soccer: return NSLocalizedString("Soccer", comment: "Workout type")
+        case .tennis: return NSLocalizedString("Tennis", comment: "Workout type")
+        case .golf: return NSLocalizedString("Golf", comment: "Workout type")
+        default: return NSLocalizedString("Workout", comment: "Workout type")
         }
     }
 }

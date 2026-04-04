@@ -163,7 +163,7 @@ struct WorkoutsView: View {
             Image(systemName: icon)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.green.opacity(0.5))
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(.white.opacity(0.5))
                 .textCase(.uppercase)
@@ -205,7 +205,7 @@ struct WorkoutTypeBreakdownView: View {
 
                     VStack(alignment: .leading, spacing: 2) {
                         HStack {
-                            Text(stat.name)
+                            Text(LocalizedStringKey(stat.name))
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundStyle(.white.opacity(0.75))
                             Spacer()
@@ -252,7 +252,7 @@ struct WorkoutRow: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(workout.workoutActivityType.name)
+                Text(LocalizedStringKey(workout.workoutActivityType.name))
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.85))
 
@@ -334,10 +334,10 @@ struct SummaryBubble: View {
 
     var body: some View {
         VStack(spacing: 3) {
-            Text(value)
+            Text(LocalizedStringKey(value))
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundStyle(color)
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(.white.opacity(0.35))
         }
@@ -353,9 +353,9 @@ enum WorkoutPeriod: CaseIterable {
 
     var label: String {
         switch self {
-        case .week: return "1W"
-        case .month: return "1M"
-        case .threeMonths: return "3M"
+        case .week: return NSLocalizedString("1W", comment: "Period label")
+        case .month: return NSLocalizedString("1M", comment: "Period label")
+        case .threeMonths: return NSLocalizedString("3M", comment: "Period label")
         }
     }
 

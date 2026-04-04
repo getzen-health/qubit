@@ -83,7 +83,7 @@ struct AppearanceModeRow: View {
                     .foregroundStyle(isSelected ? .accent : .secondary)
                     .frame(width: 28)
 
-                Text(mode.rawValue.capitalized)
+                Text(LocalizedStringKey(mode.displayName))
                     .foregroundStyle(.primary)
 
                 Spacer()
@@ -261,7 +261,7 @@ struct MetricBadge: View {
     let color: Color
 
     var body: some View {
-        Text(label)
+        Text(LocalizedStringKey(label))
             .font(.caption2)
             .fontWeight(.medium)
             .foregroundStyle(color)

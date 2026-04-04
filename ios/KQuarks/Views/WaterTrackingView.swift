@@ -266,7 +266,7 @@ private struct WaterQuickAddButton: View {
             VStack(spacing: 6) {
                 Text(emoji)
                     .font(.title2)
-                Text(label)
+                Text(LocalizedStringKey(label))
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(.white.opacity(0.5))
                     .lineLimit(1)
@@ -650,7 +650,7 @@ struct WaterTrackingView: View {
             Image(systemName: icon)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.cyan.opacity(0.5))
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(.white.opacity(0.5))
                 .textCase(.uppercase)

@@ -57,14 +57,14 @@ struct QuickStatCard: View {
                     .lineLimit(1)
 
                 if let unit = stat.unit {
-                    Text(unit)
+                    Text(LocalizedStringKey(unit))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(.white.opacity(0.4))
                 }
             }
 
             // Label
-            Text(stat.label)
+            Text(LocalizedStringKey(stat.label))
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
         }

@@ -2782,3 +2782,254 @@
 "🏅 Milestones Achieved" = "🏅 Milestones Achieved";
 "💡 Low-intensity mind-body sessions (45–60 min, 3×/week) have been shown to reduce cortisol, lower resting HR, and improve HRV over 8–12 weeks (Bird et al., 2015; Granath et al., 2006)." = "💡 Low-intensity mind-body sessions (45–60 min, 3×/week) have been shown to reduce cortisol, lower resting HR, and improve HRV over 8–12 weeks (Bird et al., 2015; Granath et al., 2006).";
 "💡 Set Apple Watch reminders to stand: Settings → Activity. The watch reminds you at 10 minutes to the hour if you haven't stood yet." = "💡 Set Apple Watch reminders to stand: Settings → Activity. The watch reminds you at 10 minutes to the hour if you haven't stood yet.";
+
+// MARK: - Dynamic Labels & Insights
+"Fully charged" = "Fully charged";
+"Good energy" = "Good energy";
+"Draining" = "Draining";
+"Depleted" = "Depleted";
+"Elevated" = "Elevated";
+"Good morning" = "Good morning";
+"Good afternoon" = "Good afternoon";
+"Good evening" = "Good evening";
+"All Out" = "All Out";
+"System" = "System";
+"Dark" = "Dark";
+"You slept under 5 hours last night. Prioritise recovery — avoid high-intensity training today." = "You slept under 5 hours last night. Prioritise recovery — avoid high-intensity training today.";
+"Your deep sleep was low last night (%d%%). Recovery may be impaired — consider lighter activity." = "Your deep sleep was low last night (%d%%). Recovery may be impaired — consider lighter activity.";
+"Great sleep and strong recovery (%d%%). An excellent day for a hard training session." = "Great sleep and strong recovery (%d%%). An excellent day for a hard training session.";
+"Excellent recovery with a %d-day step streak. Today is ideal for high-intensity training." = "Excellent recovery with a %d-day step streak. Today is ideal for high-intensity training.";
+"Your recovery is excellent (%d%%). Today is ideal for high-intensity training." = "Your recovery is excellent (%d%%). Today is ideal for high-intensity training.";
+"You're moderately recovered after %d workouts this week. Consider an active recovery session today." = "You're moderately recovered after %d workouts this week. Consider an active recovery session today.";
+"You're moderately recovered (%d%%). A balanced workout or tempo session works well today." = "You're moderately recovered (%d%%). A balanced workout or tempo session works well today.";
+"High strain score (%@/21) with low recovery. Rest or light movement is recommended." = "High strain score (%@/21) with low recovery. Rest or light movement is recommended.";
+"Your recovery is low (%d%%). Prioritize rest, hydration, and light activity today." = "Your recovery is low (%d%%). Prioritize rest, hydration, and light activity today.";
+"HRV trending up %d%% this week — a positive adaptation sign." = "HRV trending up %d%% this week — a positive adaptation sign.";
+"HRV dropped %d%% this week — your body may need more recovery." = "HRV dropped %d%% this week — your body may need more recovery.";
+"You're %d%% more active than your weekly average. Great momentum!" = "You're %d%% more active than your weekly average. Great momentum!";
+"Activity is down %d%% vs. your recent average. Try to move more today." = "Activity is down %d%% vs. your recent average. Try to move more today.";
+"%d-night sleep streak — consistent sleep is a top recovery driver." = "%d-night sleep streak — consistent sleep is a top recovery driver.";
+"%d-day workout streak — impressive consistency!" = "%d-day workout streak — impressive consistency!";
+"%d%% deep sleep" = "%d%% deep sleep";
+
+// MARK: - Settings / Profile (Complete Localization)
+"Health Settings" = "Health Settings";
+"Manage your profile" = "Manage your profile";
+"Health Tracker" = "Health Tracker";
+"Add the KQuarks widget to your Home Screen for quick health stats." = "Add the KQuarks widget to your Home Screen for quick health stats.";
+"Units (kg / lbs)" = "Units (kg / lbs)";
+"Notification Preferences" = "Notification Preferences";
+"HealthKit Permissions" = "HealthKit Permissions";
+"Open Settings to manage HealthKit access" = "Open Settings to manage HealthKit access";
+"Notification settings coming soon" = "Notification settings coming soon";
+
+// MARK: - Nutrition Goals Presets
+"Weight Loss" = "Weight Loss";
+"Maintenance" = "Maintenance";
+"Muscle Gain" = "Muscle Gain";
+"Saving..." = "Saving...";
+
+// MARK: - Profile Settings (Physical Profile rows)
+"Height (cm)" = "Height (cm)";
+"Weight (kg)" = "Weight (kg)";
+"Max HR (bpm)" = "Max HR (bpm)";
+"Resting HR (bpm)" = "Resting HR (bpm)";
+"e.g. 175" = "e.g. 175";
+"e.g. 70.5" = "e.g. 70.5";
+"e.g. 185" = "e.g. 185";
+"e.g. 60" = "e.g. 60";
+"Leave Max HR blank to use the 220 − age estimate in calculations." = "Leave Max HR blank to use the 220 − age estimate in calculations.";
+
+// MARK: - Export Data
+"Health Records" = "Health Records";
+"Steps, heart rate, HRV, and more" = "Steps, heart rate, HRV, and more";
+"Activity sessions and metrics" = "Activity sessions and metrics";
+"Sleep stages and quality scores" = "Sleep stages and quality scores";
+"Food Diary" = "Food Diary";
+"Meals, calories, and nutrition" = "Meals, calories, and nutrition";
+"Body Measurements" = "Body Measurements";
+"Weight, body fat, and daily summaries" = "Weight, body fat, and daily summaries";
+"Your data will be exported as a JSON file that you can save, share, or import into other apps." = "Your data will be exported as a JSON file that you can save, share, or import into other apps.";
+
+// MARK: - Widget Names & Descriptions
+"AI Essence" = "AI Essence";
+"Recovery, strain, and AI insights" = "Recovery, strain, and AI insights";
+"Quick Stats" = "Quick Stats";
+"At-a-glance metrics grid" = "At-a-glance metrics grid";
+"Daily recovery score" = "Daily recovery score";
+"Strain" = "Strain";
+"Daily strain score" = "Daily strain score";
+"Sleep duration and stages" = "Sleep duration and stages";
+"Resting HR and HRV" = "Resting HR and HRV";
+"Daily step count" = "Daily step count";
+"Active calories burned" = "Active calories burned";
+"Walking/running distance" = "Walking/running distance";
+"Water intake tracking" = "Water intake tracking";
+"Personalized health insights" = "Personalized health insights";
+"Trends" = "Trends";
+"Weekly/monthly trend charts" = "Weekly/monthly trend charts";
+"Discover metric correlations" = "Discover metric correlations";
+"Core Metrics" = "Core Metrics";
+
+// MARK: - Widget Category & Config
+"Widgets at the top will appear first on your dashboard." = "Widgets at the top will appear first on your dashboard.";
+"Choose how GetZen appears on your device." = "Choose how GetZen appears on your device.";
+"Customize your interface color." = "Customize your interface color.";
+"Custom" = "Custom";
+
+// MARK: - Insight Categories
+"sleep" = "sleep";
+"activity" = "activity";
+"heart" = "heart";
+"recovery" = "recovery";
+"strain" = "strain";
+
+// MARK: - AI Provider
+"Claude (Default)" = "Claude (Default)";
+"OpenAI GPT-4" = "OpenAI GPT-4";
+"Custom API" = "Custom API";
+
+// MARK: - Notification Settings
+"Afternoon Step Reminder" = "Afternoon Step Reminder";
+"Fasting Milestones" = "Fasting Milestones";
+"Daily Hydration Reminder" = "Daily Hydration Reminder";
+"Morning Readiness Alerts" = "Morning Readiness Alerts";
+"HRV Alerts" = "HRV Alerts";
+"Achievement Unlocked" = "Achievement Unlocked";
+"Low Recovery Alerts" = "Low Recovery Alerts";
+"Weekly Digest" = "Weekly Digest";
+"Time" = "Time";
+"Enable" = "Enable";
+"Grant notification permission to receive morning briefs and activity reminders." = "Grant notification permission to receive morning briefs and activity reminders.";
+"A daily summary of yesterday's activity and today's step goal, delivered each morning." = "A daily summary of yesterday's activity and today's step goal, delivered each morning.";
+"Enable individual notification types you'd like to receive." = "Enable individual notification types you'd like to receive.";
+"Reminds you between 4–8pm if you're below 50% of your step goal for the day." = "Reminds you between 4–8pm if you're below 50% of your step goal for the day.";
+"Notifies you at 25%, 50%, 75%, and when you reach your fasting goal." = "Notifies you at 25%, 50%, 75%, and when you reach your fasting goal.";
+"A daily reminder to log your water and hit your hydration goal." = "A daily reminder to log your water and hit your hydration goal.";
+"A nightly reminder to start winding down before bed." = "A nightly reminder to start winding down before bed.";
+
+// MARK: - Goals Settings
+"steps" = "steps";
+
+// MARK: - About
+"Apple Health Sync" = "Apple Health Sync";
+"Web Dashboard" = "Web Dashboard";
+"Privacy Focused" = "Privacy Focused";
+"Your personal health dashboard with AI-powered insights." = "Your personal health dashboard with AI-powered insights.";
+"Features" = "Features";
+"View on GitHub" = "View on GitHub";
+
+// MARK: - Sync
+"Sync Health History" = "Sync Health History";
+"Are you sure you want to sign out?" = "Are you sure you want to sign out?";
+"This will delete all your synced health data from the cloud. This action cannot be undone." = "This will delete all your synced health data from the cloud. This action cannot be undone.";
+"This will sync up to 1 year of your Apple Health data (steps, sleep, workouts, heart rate). This may take a few minutes." = "This will sync up to 1 year of your Apple Health data (steps, sleep, workouts, heart rate). This may take a few minutes.";
+"Delete Data" = "Delete Data";
+"Delete" = "Delete";
+"Cancel" = "Cancel";
+"Delete Failed" = "Delete Failed";
+"OK" = "OK";
+"Analyzing your health data..." = "Analyzing your health data...";
+"Generate Insights Now" = "Generate Insights Now";
+"Settings Saved" = "Settings Saved";
+"Remove Saved Key" = "Remove Saved Key";
+"No insights yet" = "No insights yet";
+"As we learn more about your health patterns, personalized insights will appear here." = "As we learn more about your health patterns, personalized insights will appear here.";
+
+// --- Additional localization keys ---
+"Delete Cloud Data" = "Delete Cloud Data";
+"%d%% — syncing up to 1 year of history…" = "%d%% — syncing up to 1 year of history…";
+"%@ steps" = "%@ steps";
+"%d cal" = "%d cal";
+"Goal: %@" = "Goal: %@";
+"Synced %@ ago" = "Synced %@ ago";
+"day" = "day";
+"days" = "days";
+"session" = "session";
+"sessions" = "sessions";
+"You mostly train in the %@." = "You mostly train in the %@.";
+"%dh %dm sleep" = "%dh %dm sleep";
+"%dh sleep" = "%dh sleep";
+"Low Risk" = "Low Risk";
+"Elevated Risk" = "Elevated Risk";
+"High Risk" = "High Risk";
+"Safe Level" = "Safe Level";
+"Caution" = "Caution";
+"Loud" = "Loud";
+"Dangerous" = "Dangerous";
+"Breakfast" = "Breakfast";
+"Lunch" = "Lunch";
+"Dinner" = "Dinner";
+"Snack" = "Snack";
+"Box Breathing" = "Box Breathing";
+"4-7-8 Breathing" = "4-7-8 Breathing";
+"Physiological Sigh" = "Physiological Sigh";
+"Relaxing Breath" = "Relaxing Breath";
+"Calm and focus your mind" = "Calm and focus your mind";
+"Reduce anxiety quickly" = "Reduce anxiety quickly";
+"Fastest way to reduce stress" = "Fastest way to reduce stress";
+"Slow down and unwind" = "Slow down and unwind";
+"Below Average" = "Below Average";
+"Superior" = "Superior";
+"Athlete" = "Athlete";
+"Goal: %d cal" = "Goal: %d cal";
+"Updated %@ ago" = "Updated %@ ago";
+"%@ sessions analysed" = "%@ sessions analysed";
+
+// --- Deep view & format string translations ---
+"%@ Week" = "%@ Week";
+"%@ · %d sessions analysed" = "%@ · %d sessions analysed";
+"%@%d yrs" = "%@%d yrs";
+"%@%d yrs vs chronological" = "%@%d yrs vs chronological";
+"%d cal goal" = "%d cal goal";
+"%d hikes" = "%d hikes";
+"%d kcal" = "%d kcal";
+"%d min" = "%d min";
+"%d runs  ·  %@" = "%d runs  ·  %@";
+"%d sessions" = "%d sessions";
+"%d%% of goal" = "%d%% of goal";
+"%dg · %d%% of cals" = "%dg · %d%% of cals";
+"%dg/day" = "%dg/day";
+"Age %d" = "Age %d";
+"Analysis" = "Analysis";
+"Athletes" = "Athletes";
+"Basketball" = "Basketball";
+"Below Avg" = "Below Avg";
+"Best month: %@ — %@ km" = "Best month: %@ — %@ km";
+"Blood Pressure (Diastolic)" = "Blood Pressure (Diastolic)";
+"Blood Pressure (Systolic)" = "Blood Pressure (Systolic)";
+"Chronological: %d yrs" = "Chronological: %d yrs";
+"Dance" = "Dance";
+"Elliptical" = "Elliptical";
+"Least: %@" = "Least: %@";
+"Most: %@" = "Most: %@";
+"Pilates" = "Pilates";
+"Updated %@" = "Updated %@";
+"Week of %@" = "Week of %@";
+"Workout" = "Workout";
+"Zone: %@ · %@" = "Zone: %@ · %@";
+"avg %dm" = "avg %dm";
+"night" = "night";
+"nights" = "nights";
+"this week" = "this week";
+"vs %@" = "vs %@";
+"You eat %d kcal more on %@" = "You eat %d kcal more on %@";
+"4s inhale · 4s hold · 4s exhale · 4s hold" = "4s inhale · 4s hold · 4s exhale · 4s hold";
+"4s inhale · 7s hold · 8s exhale" = "4s inhale · 7s hold · 8s exhale";
+"5s inhale · 7s exhale" = "5s inhale · 7s exhale";
+"Double inhale · long exhale" = "Double inhale · long exhale";
+"Above-average aerobic base. Adding more long aerobic runs/rides and occasional threshold work will push you to excellent." = "Above-average aerobic base. Adding more long aerobic runs/rides and occasional threshold work will push you to excellent.";
+"Add 1 extra workout or extend long session to shift toward Peaking." = "Add 1 extra workout or extend long session to shift toward Peaking.";
+"Begin ramping up training. Your body is ready for more stimulus." = "Begin ramping up training. Your body is ready for more stimulus.";
+"Below average. Start with consistent low-intensity cardio 4× per week. VO₂ max responds well to training — early gains are large." = "Below average. Start with consistent low-intensity cardio 4× per week. VO₂ max responds well to training — early gains are large.";
+"Elite-level aerobic capacity. Your VO₂ max is in the top tier — associated with exceptional longevity and cardiovascular protection." = "Elite-level aerobic capacity. Your VO₂ max is in the top tier — associated with exceptional longevity and cardiovascular protection.";
+"High stress without enough recovery. If sustained, leads to overtraining. Prioritize sleep, reduce intensity, and add rest days." = "High stress without enough recovery. If sustained, leads to overtraining. Prioritize sleep, reduce intensity, and add rest days.";
+"Low aerobic capacity. Even modest increases in walking or easy cycling produce significant VO₂ max gains. Start gradually." = "Low aerobic capacity. Even modest increases in walking or easy cycling produce significant VO₂ max gains. Start gradually.";
+"Low training load with high recovery capacity. Perfect for taper weeks before a race, or deload blocks." = "Low training load with high recovery capacity. Perfect for taper weeks before a race, or deload blocks.";
+"Moderate aerobic fitness. Regular Zone 2 cardio (150+ min/week) will meaningfully improve VO₂ max within 8–12 weeks." = "Moderate aerobic fitness. Regular Zone 2 cardio (150+ min/week) will meaningfully improve VO₂ max within 8–12 weeks.";
+"Moderate stress and recovery — sustainable long-term training. Gradually increase stimulus to enter the Peaking quadrant." = "Moderate stress and recovery — sustainable long-term training. Gradually increase stimulus to enter the Peaking quadrant.";
+"Optimal zone: you’re absorbing training well. Your body is recovering faster than the stress. This is where fitness gains happen." = "Optimal zone: you’re absorbing training well. Your body is recovering faster than the stress. This is where fitness gains happen.";
+"Outstanding aerobic fitness. Sustaining this through consistent Zone 2 training and periodic hard efforts will maintain your advantage." = "Outstanding aerobic fitness. Sustaining this through consistent Zone 2 training and periodic hard efforts will maintain your advantage.";
+"Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep." = "Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep.";
+"Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to ‘Good’." = "Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to ‘Good’.";
+"Stay the course. Maintain load and protect recovery habits." = "Stay the course. Maintain load and protect recovery habits.";

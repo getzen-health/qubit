@@ -17,10 +17,10 @@ enum WidgetCategory: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .metrics: "Core Metrics"
-        case .activity: "Activity"
-        case .insights: "Insights"
-        case .analysis: "Analysis"
+        case .metrics: NSLocalizedString("Core Metrics", comment: "Widget category")
+        case .activity: NSLocalizedString("Activity", comment: "Widget category")
+        case .insights: NSLocalizedString("Insights", comment: "Widget category")
+        case .analysis: NSLocalizedString("Analysis", comment: "Widget category")
         }
     }
 }

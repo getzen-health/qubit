@@ -9,7 +9,7 @@ struct HealthDataView: View {
                 // Category picker
                 Picker("Category", selection: $selectedCategory) {
                     ForEach(HealthCategory.allCases, id: \.self) { category in
-                        Text(category.title).tag(category)
+                        Text(LocalizedStringKey(category.title)).tag(category)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -2375,10 +2375,10 @@ enum HealthCategory: CaseIterable {
 
     var title: String {
         switch self {
-        case .activity: return "Activity"
-        case .heart: return "Heart"
-        case .sleep: return "Sleep"
-        case .body: return "Body"
+        case .activity: return NSLocalizedString("Activity", comment: "Health category")
+        case .heart: return NSLocalizedString("Heart", comment: "Health category")
+        case .sleep: return NSLocalizedString("Sleep", comment: "Health category")
+        case .body: return NSLocalizedString("Body", comment: "Health category")
         }
     }
 
