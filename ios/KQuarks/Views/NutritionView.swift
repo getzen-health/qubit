@@ -453,10 +453,10 @@ enum MealTypeOption: String, CaseIterable {
 
     var label: String {
         switch self {
-        case .breakfast: return "Breakfast"
-        case .lunch: return "Lunch"
-        case .dinner: return "Dinner"
-        case .snack: return "Snack"
+        case .breakfast: return NSLocalizedString("Breakfast", comment: "Meal type")
+        case .lunch: return NSLocalizedString("Lunch", comment: "Meal type")
+        case .dinner: return NSLocalizedString("Dinner", comment: "Meal type")
+        case .snack: return NSLocalizedString("Snack", comment: "Meal type")
         }
     }
 

@@ -453,10 +453,10 @@ enum AudioZone {
 
     var label: String {
         switch self {
-        case .safe: return "Safe Level"
-        case .caution: return "Caution"
-        case .loud: return "Loud"
-        case .danger: return "Dangerous"
+        case .safe: return NSLocalizedString("Safe Level", comment: "Hearing health level")
+        case .caution: return NSLocalizedString("Caution", comment: "Hearing health level")
+        case .loud: return NSLocalizedString("Loud", comment: "Hearing health level")
+        case .danger: return NSLocalizedString("Dangerous", comment: "Hearing health level")
         }
     }
 

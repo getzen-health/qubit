@@ -269,9 +269,12 @@ struct RestingHRDeepDiveView: View {
 
     private var fitnessClassCard: some View {
         let classes: [(FitnessClass, String)] = [
-            (.athlete, "Athletes"), (.excellent, "Excellent"),
-            (.good, "Good"), (.average, "Average"),
-            (.belowAverage, "Below Avg"), (.poor, "Poor")
+            (.athlete, NSLocalizedString("Athletes", comment: "Fitness class label")),
+            (.excellent, NSLocalizedString("Excellent", comment: "Fitness class label")),
+            (.good, NSLocalizedString("Good", comment: "Fitness class label")),
+            (.average, NSLocalizedString("Average", comment: "Fitness class label")),
+            (.belowAverage, NSLocalizedString("Below Avg", comment: "Fitness class label")),
+            (.poor, NSLocalizedString("Poor", comment: "Fitness class label"))
         ]
 
         return VStack(alignment: .leading, spacing: 8) {

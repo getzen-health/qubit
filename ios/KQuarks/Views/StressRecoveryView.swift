@@ -56,22 +56,22 @@ struct StressRecoveryView: View {
         var description: String {
             switch self {
             case .peaking:
-                return "Optimal zone: you're absorbing training well. Your body is recovering faster than the stress. This is where fitness gains happen."
+                return NSLocalizedString("Optimal zone: you're absorbing training well. Your body is recovering faster than the stress. This is where fitness gains happen.", comment: "Stress recovery quadrant description")
             case .overreaching:
-                return "High stress without enough recovery. If sustained, leads to overtraining. Prioritize sleep, reduce intensity, and add rest days."
+                return NSLocalizedString("High stress without enough recovery. If sustained, leads to overtraining. Prioritize sleep, reduce intensity, and add rest days.", comment: "Stress recovery quadrant description")
             case .recovering:
-                return "Low training load with high recovery capacity. Perfect for taper weeks before a race, or deload blocks."
+                return NSLocalizedString("Low training load with high recovery capacity. Perfect for taper weeks before a race, or deload blocks.", comment: "Stress recovery quadrant description")
             case .balanced:
-                return "Moderate stress and recovery — sustainable long-term training. Gradually increase stimulus to enter the Peaking quadrant."
+                return NSLocalizedString("Moderate stress and recovery — sustainable long-term training. Gradually increase stimulus to enter the Peaking quadrant.", comment: "Stress recovery quadrant description")
             }
         }
 
         var advice: String {
             switch self {
-            case .peaking:      return "Stay the course. Maintain load and protect recovery habits."
-            case .overreaching: return "Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep."
-            case .recovering:   return "Begin ramping up training. Your body is ready for more stimulus."
-            case .balanced:     return "Add 1 extra workout or extend long session to shift toward Peaking."
+            case .peaking:      return NSLocalizedString("Stay the course. Maintain load and protect recovery habits.", comment: "Stress recovery advice")
+            case .overreaching: return NSLocalizedString("Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep.", comment: "Stress recovery advice")
+            case .recovering:   return NSLocalizedString("Begin ramping up training. Your body is ready for more stimulus.", comment: "Stress recovery advice")
+            case .balanced:     return NSLocalizedString("Add 1 extra workout or extend long session to shift toward Peaking.", comment: "Stress recovery advice")
             }
         }
     }
