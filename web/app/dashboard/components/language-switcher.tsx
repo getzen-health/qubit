@@ -13,14 +13,21 @@ export function LanguageSwitcher() {
     { code: 'en', label: 'English' },
     { code: 'es', label: 'Español' },
     { code: 'fr', label: 'Français' },
+    { code: 'pt', label: 'Português' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'ja', label: '日本語' },
+    { code: 'zh', label: '中文' },
+    { code: 'ko', label: '한국어' },
   ]
+
+  const supportedLocales = ['en', 'es', 'fr', 'pt', 'de', 'ja', 'zh', 'ko']
 
   const handleLanguageChange = (langCode: string) => {
     // Remove current locale from pathname
     const segments = pathname.split('/')
     let newPathname = pathname
 
-    if (segments[1] && ['en', 'es', 'fr'].includes(segments[1])) {
+    if (segments[1] && supportedLocales.includes(segments[1])) {
       // Remove locale prefix
       newPathname = '/' + segments.slice(2).join('/')
     }
@@ -37,7 +44,7 @@ export function LanguageSwitcher() {
     <div className="space-y-4">
       <div>
         <h3 className="font-semibold text-text-primary mb-3">{t('settings.language')}</h3>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -51,7 +58,7 @@ export function LanguageSwitcher() {
         </div>
       </div>
       <p className="text-xs text-text-secondary">
-        {t('common.loading')} language will update the interface.
+        Changing language updates the interface.
       </p>
     </div>
   )

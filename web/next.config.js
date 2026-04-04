@@ -1,4 +1,7 @@
 const { withSentryConfig } = require('@sentry/nextjs')
+const createNextIntlPlugin = require('next-intl/plugin')
+
+const withNextIntl = createNextIntlPlugin('./i18n.ts')
 
 const cspHeader = [
   "default-src 'self'",
@@ -50,11 +53,11 @@ const nextConfig = {
   },
 }
 
-module.exports = withSentryConfig(nextConfig, {
+module.exports = withNextIntl(withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   org: 'kquarks',
   project: 'kquarks-web',
   widenClientFileUpload: true,
   disableLogger: true,
   hideSourceMaps: true,
-})
+}))

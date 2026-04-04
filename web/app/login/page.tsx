@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { useSearchParams } from 'next/navigation'
 import { useState, Suspense } from 'react'
+import { useTranslations } from 'next-intl'
 
 type OAuthProvider = 'apple' | 'google'
 type LoadingState = OAuthProvider | null
@@ -11,6 +12,7 @@ function LoginContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const [loading, setLoading] = useState<LoadingState>(null)
+  const t = useTranslations()
 
   const handleSignInWithOAuth = async (provider: OAuthProvider) => {
     setLoading(provider)
@@ -41,8 +43,8 @@ function LoginContent() {
               d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-text-primary">GetZen</h1>
-        <p className="mt-1 text-sm text-text-secondary">Health tracking, privately.</p>
+        <h1 className="text-2xl font-bold text-text-primary">{t('login.title')}</h1>
+        <p className="mt-1 text-sm text-text-secondary">{t('login.subtitle')}</p>
       </div>
 
       {/* Error */}
@@ -50,8 +52,8 @@ function LoginContent() {
         <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
           <p className="text-sm text-red-400 text-center">
             {error === 'auth_callback_error'
-              ? 'Sign-in failed. Please try again.'
-              : 'An error occurred. Please try again.'}
+              ? t('login.errorCallback')
+              : t('login.errorGeneric')}
           </p>
         </div>
       )}
@@ -59,7 +61,7 @@ function LoginContent() {
       {/* Card */}
       <div className="bg-surface border border-border rounded-2xl p-6 space-y-4">
         <div className="text-center">
-          <h2 className="font-semibold text-text-primary">Welcome back</h2>
+          <h2 className="font-semibold text-text-primary">{t('login.welcome')}</h2>
           <p className="mt-1 text-sm text-text-secondary">
             Sign in to sync your health data
           </p>
@@ -78,7 +80,7 @@ function LoginContent() {
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
             </svg>
           )}
-          <span>{loading === 'apple' ? 'Signing in…' : 'Continue with Apple'}</span>
+          <span>{loading === 'apple' ? t('login.signingIn') : t('login.signInApple')}</span>
         </button>
 
         {/* Continue with Google */}
@@ -97,7 +99,7 @@ function LoginContent() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
           )}
-          <span>{loading === 'google' ? 'Signing in…' : 'Continue with Google'}</span>
+          <span>{loading === 'google' ? t('login.signingIn') : t('login.signInGoogle')}</span>
         </button>
 
         <p className="text-xs text-center text-text-secondary">
