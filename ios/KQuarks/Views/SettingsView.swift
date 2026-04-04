@@ -325,7 +325,7 @@ struct SettingsView: View {
             )) {
                 Button("OK", role: .cancel) { deleteError = nil }
             } message: {
-                Text(deleteError ?? "")
+                Text(LocalizedStringKey(deleteError ?? ""))
             }
             .alert("Sync Health History", isPresented: $showingHistoricalSyncConfirm) {
                 Button("Cancel", role: .cancel) { }
@@ -417,7 +417,7 @@ struct AISettingsView: View {
                 }
 
                 if let error = AIInsightsService.shared.lastError {
-                    Text(error)
+                    Text(LocalizedStringKey(error))
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
@@ -464,9 +464,9 @@ enum AIProvider: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .claude: return "Claude (Default)"
-        case .openai: return "OpenAI GPT-4"
-        case .custom: return "Custom API"
+        case .claude: return NSLocalizedString("Claude (Default)", comment: "AI provider")
+        case .openai: return NSLocalizedString("OpenAI GPT-4", comment: "AI provider")
+        case .custom: return NSLocalizedString("Custom API", comment: "AI provider")
         }
     }
 }

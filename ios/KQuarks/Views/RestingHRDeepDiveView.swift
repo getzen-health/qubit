@@ -127,7 +127,7 @@ struct RestingHRDeepDiveView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(fitnessClass.color).frame(width: 8, height: 8)
-                        Text(fitnessClass.rawValue)
+                        Text(LocalizedStringKey(fitnessClass.rawValue))
                             .font(.subheadline).foregroundStyle(fitnessClass.color)
                     }
                 }
@@ -269,9 +269,12 @@ struct RestingHRDeepDiveView: View {
 
     private var fitnessClassCard: some View {
         let classes: [(FitnessClass, String)] = [
-            (.athlete, "Athletes"), (.excellent, "Excellent"),
-            (.good, "Good"), (.average, "Average"),
-            (.belowAverage, "Below Avg"), (.poor, "Poor")
+            (.athlete, NSLocalizedString("Athletes", comment: "Fitness class label")),
+            (.excellent, NSLocalizedString("Excellent", comment: "Fitness class label")),
+            (.good, NSLocalizedString("Good", comment: "Fitness class label")),
+            (.average, NSLocalizedString("Average", comment: "Fitness class label")),
+            (.belowAverage, NSLocalizedString("Below Avg", comment: "Fitness class label")),
+            (.poor, NSLocalizedString("Poor", comment: "Fitness class label"))
         ]
 
         return VStack(alignment: .leading, spacing: 8) {
@@ -280,7 +283,7 @@ struct RestingHRDeepDiveView: View {
                 ForEach(classes, id: \.0.rawValue) { cls, label in
                     HStack(spacing: 10) {
                         Circle().fill(cls.color).frame(width: 10, height: 10)
-                        Text(cls.rawValue).font(.caption.bold()).foregroundStyle(cls.color).frame(width: 80, alignment: .leading)
+                        Text(LocalizedStringKey(cls.rawValue)).font(.caption.bold()).foregroundStyle(cls.color).frame(width: 80, alignment: .leading)
                         Text(cls.range).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
                         Spacer()
                         if cls == fitnessClass {

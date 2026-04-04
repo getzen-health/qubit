@@ -46,7 +46,7 @@ struct ProfileSettingsView: View {
 
             if let error = saveError {
                 Section {
-                    Text(error)
+                    Text(LocalizedStringKey(error))
                         .font(.footnote)
                         .foregroundStyle(.red)
                 }
@@ -80,9 +80,9 @@ struct ProfileSettingsView: View {
     @ViewBuilder
     private func row(label: String, placeholder: String, text: Binding<String>, keyboard: UIKeyboardType, field: Field) -> some View {
         HStack {
-            Text(label)
+            Text(LocalizedStringKey(label))
             Spacer()
-            TextField(placeholder, text: text)
+            TextField(LocalizedStringKey(placeholder), text: text)
                 .multilineTextAlignment(.trailing)
                 .keyboardType(keyboard)
                 .focused($focusedField, equals: field)

@@ -330,28 +330,28 @@ enum BreathingTechnique: String, CaseIterable, Identifiable {
 
     var name: String {
         switch self {
-        case .box: return "Box Breathing"
-        case .fourSevenEight: return "4-7-8 Breathing"
-        case .physiologicalSigh: return "Physiological Sigh"
-        case .relaxing: return "Relaxing Breath"
+        case .box: return NSLocalizedString("Box Breathing", comment: "Breathing technique name")
+        case .fourSevenEight: return NSLocalizedString("4-7-8 Breathing", comment: "Breathing technique name")
+        case .physiologicalSigh: return NSLocalizedString("Physiological Sigh", comment: "Breathing technique name")
+        case .relaxing: return NSLocalizedString("Relaxing Breath", comment: "Breathing technique name")
         }
     }
 
     var tagline: String {
         switch self {
-        case .box: return "Calm and focus your mind"
-        case .fourSevenEight: return "Reduce anxiety quickly"
-        case .physiologicalSigh: return "Fastest way to reduce stress"
-        case .relaxing: return "Slow down and unwind"
+        case .box: return NSLocalizedString("Calm and focus your mind", comment: "Breathing technique tagline")
+        case .fourSevenEight: return NSLocalizedString("Reduce anxiety quickly", comment: "Breathing technique tagline")
+        case .physiologicalSigh: return NSLocalizedString("Fastest way to reduce stress", comment: "Breathing technique tagline")
+        case .relaxing: return NSLocalizedString("Slow down and unwind", comment: "Breathing technique tagline")
         }
     }
 
     var phaseDescription: String {
         switch self {
-        case .box: return "4s inhale · 4s hold · 4s exhale · 4s hold"
-        case .fourSevenEight: return "4s inhale · 7s hold · 8s exhale"
-        case .physiologicalSigh: return "Double inhale · long exhale"
-        case .relaxing: return "5s inhale · 7s exhale"
+        case .box: return NSLocalizedString("4s inhale · 4s hold · 4s exhale · 4s hold", comment: "Breathing phase description")
+        case .fourSevenEight: return NSLocalizedString("4s inhale · 7s hold · 8s exhale", comment: "Breathing phase description")
+        case .physiologicalSigh: return NSLocalizedString("Double inhale · long exhale", comment: "Breathing phase description")
+        case .relaxing: return NSLocalizedString("5s inhale · 7s exhale", comment: "Breathing phase description")
         }
     }
 

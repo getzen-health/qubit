@@ -41,7 +41,7 @@ struct MetricRowView: View {
                     .font(.system(.title3, design: .rounded, weight: .bold))
                     .foregroundStyle(.white)
                 if let unit = unit {
-                    Text(unit)
+                    Text(LocalizedStringKey(unit))
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.35))
                 }
@@ -124,7 +124,7 @@ struct MetricRowCompactView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                 if let unit = unit {
-                    Text(unit)
+                    Text(LocalizedStringKey(unit))
                         .font(.caption2)
                         .foregroundStyle(.white.opacity(0.35))
                 }

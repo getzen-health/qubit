@@ -127,7 +127,7 @@ struct RowingStrokeRateView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(zone.color).frame(width: 8, height: 8)
-                        Text(zone.rawValue).font(.subheadline).foregroundStyle(zone.color)
+                        Text(LocalizedStringKey(zone.rawValue)).font(.subheadline).foregroundStyle(zone.color)
                     }
                 }
                 Spacer()

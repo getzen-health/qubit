@@ -25,9 +25,9 @@ enum RiskLevel {
 
     var label: String {
         switch self {
-        case .low: return "Low Risk"
-        case .elevated: return "Elevated Risk"
-        case .high: return "High Risk"
+        case .low: return NSLocalizedString("Low Risk", comment: "Injury risk level")
+        case .elevated: return NSLocalizedString("Elevated Risk", comment: "Injury risk level")
+        case .high: return NSLocalizedString("High Risk", comment: "Injury risk level")
         }
     }
 

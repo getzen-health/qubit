@@ -72,10 +72,10 @@ struct SidebarView: View {
     var body: some View {
         List(selection: $selection) {
             ForEach(SidebarSection.allCases, id: \.self) { section in
-                Section(section.rawValue) {
+                Section(LocalizedStringKey(section.rawValue)) {
                     ForEach(section.items) { item in
                         NavigationLink(value: item) {
-                            Label(item.rawValue, systemImage: item.icon)
+                            Label(LocalizedStringKey(item.rawValue), systemImage: item.icon)
                         }
                     }
                 }

@@ -106,7 +106,7 @@ struct BloodOxygenDeepDiveView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(status.color).frame(width: 8, height: 8)
-                        Text(status.rawValue)
+                        Text(LocalizedStringKey(status.rawValue))
                             .font(.subheadline).foregroundStyle(status.color)
                     }
                 }
@@ -208,7 +208,7 @@ struct BloodOxygenDeepDiveView: View {
                         Text(String(format: "%.0f%%", d.minPct)).font(.caption.monospacedDigit()).foregroundStyle(d.minPct < 92 ? .red : .secondary).frame(width: 50, alignment: .trailing)
                         Text("\(d.readingCount)").font(.caption.monospacedDigit()).foregroundStyle(.secondary).frame(width: 55, alignment: .trailing)
                         Spacer()
-                        Text(d.status.rawValue).font(.caption2.bold()).foregroundStyle(d.status.color).frame(width: 65, alignment: .trailing)
+                        Text(LocalizedStringKey(d.status.rawValue)).font(.caption2.bold()).foregroundStyle(d.status.color).frame(width: 65, alignment: .trailing)
                     }
                     .padding(.horizontal, 12).padding(.vertical, 7)
                 }

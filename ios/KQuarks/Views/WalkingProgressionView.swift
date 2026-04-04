@@ -77,7 +77,7 @@ struct WalkingProgressionView: View {
             .frame(height: 180)
 
             if let b = monthBuckets.max(by: { $0.totalKm < $1.totalKm }), b.totalKm > 0 {
-                Text("Best month: \(monthName(b.monthStart)) — \(String(format: "%.1f", b.totalKm)) km")
+                Text(String(format: NSLocalizedString("Best month: %@ — %@ km", comment: "Best walking month"), monthName(b.monthStart), String(format: "%.1f", b.totalKm)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -188,7 +188,7 @@ struct WalkingProgressionView: View {
                             Text(q.label)
                                 .font(.caption)
                                 .frame(width: 40, alignment: .leading)
-                            Text("\(q.sessionCount) sessions")
+                            Text(String(format: NSLocalizedString("%d sessions", comment: "Session count"), q.sessionCount))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()

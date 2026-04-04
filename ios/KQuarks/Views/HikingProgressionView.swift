@@ -149,7 +149,7 @@ struct HikingProgressionView: View {
             Text(label)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
-            Text("\(count) hikes")
+            Text(String(format: NSLocalizedString("%d hikes", comment: "Hike count"), count))
                 .font(.title3.bold())
                 .foregroundStyle(color)
             Text(String(format: "%.1f km avg", avgKm))

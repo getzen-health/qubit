@@ -198,9 +198,9 @@ enum RecoveryLevel {
 
     var label: String {
         switch self {
-        case .optimal: "Optimal"
-        case .moderate: "Moderate"
-        case .low: "Low"
+        case .optimal: NSLocalizedString("Optimal", comment: "Recovery level")
+        case .moderate: NSLocalizedString("Moderate", comment: "Recovery level")
+        case .low: NSLocalizedString("Low", comment: "Recovery level")
         }
     }
 
@@ -224,10 +224,10 @@ enum StrainLevel {
 
     var label: String {
         switch self {
-        case .allOut: "All Out"
-        case .high: "High"
-        case .moderate: "Moderate"
-        case .light: "Light"
+        case .allOut: NSLocalizedString("All Out", comment: "Strain level")
+        case .high: NSLocalizedString("High", comment: "Strain level")
+        case .moderate: NSLocalizedString("Moderate", comment: "Strain level")
+        case .light: NSLocalizedString("Light", comment: "Strain level")
         }
     }
 

@@ -91,7 +91,7 @@ struct PerformanceOverviewView: View {
             Text(now).font(.title2.bold().monospacedDigit())
             HStack(spacing: 2) {
                 Text(dirArrow(dir)).foregroundStyle(dirColor(dir))
-                Text("vs \(then)").font(.caption2).foregroundStyle(.secondary)
+                Text(String(format: NSLocalizedString("vs %@", comment: "Comparison to previous period"), then)).font(.caption2).foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity)
@@ -137,7 +137,7 @@ struct PerformanceOverviewView: View {
                     Text(now).font(.subheadline.bold().monospacedDigit())
                     Text(dirArrow(dir)).foregroundStyle(dirColor(dir)).font(.footnote.bold())
                 }
-                Text("vs \(then)").font(.caption2).foregroundStyle(.secondary)
+                Text(String(format: NSLocalizedString("vs %@", comment: "Comparison to previous period"), then)).font(.caption2).foregroundStyle(.secondary)
             }
         }
     }

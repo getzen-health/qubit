@@ -236,7 +236,7 @@ struct RunningPowerZonesView: View {
                         Circle().fill(e.color).frame(width: 8, height: 8)
                         Text(e.name).font(.caption.bold()).foregroundStyle(e.color)
                         Spacer()
-                        Text("\(e.count) runs  ·  \(e.pct)").font(.caption2).foregroundStyle(.secondary)
+                        Text(String(format: NSLocalizedString("%d runs  ·  %@", comment: "Zone run count and percentage"), e.count, e.pct)).font(.caption2).foregroundStyle(.secondary)
                     }
                     let pct = runCount > 0 ? Double(e.count) / Double(runCount) : 0
                     GeometryReader { geo in

@@ -17,7 +17,7 @@ struct DashboardConfigView: View {
                         )
                     }
                 } header: {
-                    Text(category.displayName)
+                    Text(LocalizedStringKey(category.displayName))
                 }
             }
 
@@ -53,11 +53,11 @@ struct WidgetConfigRow: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(widget.name)
+                Text(LocalizedStringKey(widget.name))
                     .font(.body)
                     .foregroundStyle(.primary)
 
-                Text(widget.description)
+                Text(LocalizedStringKey(widget.description))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -93,7 +93,7 @@ struct WidgetOrderView: View {
                             .font(.system(size: 16))
                             .foregroundStyle(.accent)
 
-                        Text(widget.name)
+                        Text(LocalizedStringKey(widget.name))
                             .font(.body)
                     }
                 }

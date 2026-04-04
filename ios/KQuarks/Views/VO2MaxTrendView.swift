@@ -48,19 +48,19 @@ struct VO2MaxTrendView: View {
         var advice: String {
             switch self {
             case .superior:
-                return "Elite-level aerobic capacity. Your VO₂ max is in the top tier — associated with exceptional longevity and cardiovascular protection."
+                return NSLocalizedString("Elite-level aerobic capacity. Your VO₂ max is in the top tier — associated with exceptional longevity and cardiovascular protection.", comment: "VO2 max fitness advice")
             case .excellent:
-                return "Outstanding aerobic fitness. Sustaining this through consistent Zone 2 training and periodic hard efforts will maintain your advantage."
+                return NSLocalizedString("Outstanding aerobic fitness. Sustaining this through consistent Zone 2 training and periodic hard efforts will maintain your advantage.", comment: "VO2 max fitness advice")
             case .good:
-                return "Above-average aerobic base. Adding more long aerobic runs/rides and occasional threshold work will push you to excellent."
+                return NSLocalizedString("Above-average aerobic base. Adding more long aerobic runs/rides and occasional threshold work will push you to excellent.", comment: "VO2 max fitness advice")
             case .aboveAvg:
-                return "Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to 'Good'."
+                return NSLocalizedString("Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to 'Good'.", comment: "VO2 max fitness advice")
             case .average:
-                return "Moderate aerobic fitness. Regular Zone 2 cardio (150+ min/week) will meaningfully improve VO₂ max within 8–12 weeks."
+                return NSLocalizedString("Moderate aerobic fitness. Regular Zone 2 cardio (150+ min/week) will meaningfully improve VO₂ max within 8–12 weeks.", comment: "VO2 max fitness advice")
             case .belowAvg:
-                return "Below average. Start with consistent low-intensity cardio 4× per week. VO₂ max responds well to training — early gains are large."
+                return NSLocalizedString("Below average. Start with consistent low-intensity cardio 4× per week. VO₂ max responds well to training — early gains are large.", comment: "VO2 max fitness advice")
             case .poor:
-                return "Low aerobic capacity. Even modest increases in walking or easy cycling produce significant VO₂ max gains. Start gradually."
+                return NSLocalizedString("Low aerobic capacity. Even modest increases in walking or easy cycling produce significant VO₂ max gains. Start gradually.", comment: "VO2 max fitness advice")
             }
         }
     }
@@ -133,7 +133,7 @@ struct VO2MaxTrendView: View {
                     }
                     HStack(spacing: 6) {
                         Image(systemName: category.icon).foregroundStyle(category.color)
-                        Text(category.rawValue).font(.subheadline.bold()).foregroundStyle(category.color)
+                        Text(LocalizedStringKey(category.rawValue)).font(.subheadline.bold()).foregroundStyle(category.color)
                     }
                 }
                 Spacer()

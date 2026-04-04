@@ -240,7 +240,7 @@ struct CaffeineView: View {
                                 Image(systemName: preset.icon)
                                     .font(.title2)
                                     .foregroundStyle(preset.color)
-                                Text(preset.rawValue)
+                                Text(LocalizedStringKey(preset.rawValue))
                                     .font(.system(size: 10, weight: .medium))
                                     .foregroundStyle(.white.opacity(0.6))
                                     .multilineTextAlignment(.center)

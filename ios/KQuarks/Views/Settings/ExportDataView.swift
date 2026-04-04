@@ -55,7 +55,7 @@ struct ExportDataView: View {
 
             if let errorMsg = exportError {
                 Section {
-                    Text(errorMsg)
+                    Text(LocalizedStringKey(errorMsg))
                         .font(.footnote)
                         .foregroundStyle(.red)
                 }
@@ -96,8 +96,8 @@ struct ExportDataView: View {
         Toggle(isOn: isIncluded) {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                    Text(subtitle)
+                    Text(LocalizedStringKey(title))
+                    Text(LocalizedStringKey(subtitle))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

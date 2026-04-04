@@ -16,9 +16,9 @@ enum AppearanceMode: String, CaseIterable, Codable {
 
     var displayName: String {
         switch self {
-        case .system: return "System"
-        case .light: return "Light"
-        case .dark: return "Dark"
+        case .system: return NSLocalizedString("System", comment: "Appearance mode")
+        case .light: return NSLocalizedString("Light", comment: "Appearance mode")
+        case .dark: return NSLocalizedString("Dark", comment: "Appearance mode")
         }
     }
 

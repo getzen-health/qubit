@@ -286,7 +286,7 @@ struct WheelchairFitnessView: View {
                         .foregroundStyle(s.mode.color)
                         .frame(width: 24)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(s.mode.rawValue)
+                        Text(LocalizedStringKey(s.mode.rawValue))
                             .font(.caption.bold()).foregroundStyle(s.mode.color)
                         Text("\(s.label) · \(s.intensity.rawValue)")
                             .font(.caption2).foregroundStyle(.secondary)

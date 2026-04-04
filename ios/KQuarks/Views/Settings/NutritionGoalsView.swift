@@ -29,7 +29,7 @@ struct NutritionGoalsView: View {
                 ForEach(Array(Preset.allCases), id: \.self) { preset in
                     Button(action: { applyPreset(preset) }) {
                         HStack {
-                            Text(preset.rawValue)
+                            Text(LocalizedStringKey(preset.rawValue))
                             Spacer()
                             if isPresetSelected(preset) {
                                 Image(systemName: "checkmark.circle.fill")
@@ -92,7 +92,7 @@ struct NutritionGoalsView: View {
 
             if let error = errorMessage {
                 Section {
-                    Text(error)
+                    Text(LocalizedStringKey(error))
                         .foregroundStyle(.red)
                         .font(.caption)
                 }

@@ -158,7 +158,7 @@ struct NutritionPatternView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
-                    Text("\(Int(overallFiber))g/day")
+                    Text(String(format: NSLocalizedString("%dg/day", comment: "Fiber per day"), Int(overallFiber)))
                         .font(.caption)
                         .foregroundStyle(overallFiber >= 25 ? .green : .orange)
                     Text("· target: 25–35g")
@@ -180,7 +180,7 @@ struct NutritionPatternView: View {
                 Text(label)
                     .font(.subheadline)
                 Spacer()
-                Text("\(Int(grams))g · \(pct)% of cals")
+                Text(String(format: NSLocalizedString("%dg · %d%% of cals", comment: "Macro grams and calorie percentage"), Int(grams), pct))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text("\(Int(grams / target * 100))%")
@@ -242,18 +242,18 @@ struct NutritionPatternView: View {
                     HStack(spacing: 6) {
                         Text("🍔").font(.caption)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text("Most: \(high.label)")
+                            Text(String(format: NSLocalizedString("Most: %@", comment: "Highest calorie day"), high.label))
                                 .font(.caption.weight(.medium))
-                            Text("\(Int(high.avgCals)) kcal")
+                            Text(String(format: NSLocalizedString("%d kcal", comment: "Calorie amount"), Int(high.avgCals)))
                                 .font(.caption2).foregroundStyle(.secondary)
                         }
                     }
                     Spacer()
                     HStack(spacing: 6) {
                         VStack(alignment: .trailing, spacing: 1) {
-                            Text("Least: \(low.label)")
+                            Text(String(format: NSLocalizedString("Least: %@", comment: "Lowest calorie day"), low.label))
                                 .font(.caption.weight(.medium))
-                            Text("\(Int(low.avgCals)) kcal")
+                            Text(String(format: NSLocalizedString("%d kcal", comment: "Calorie amount"), Int(low.avgCals)))
                                 .font(.caption2).foregroundStyle(.secondary)
                         }
                         Text("🥗").font(.caption)
@@ -325,7 +325,7 @@ struct NutritionPatternView: View {
             if let wd = weekdayAvgCals, let we = weekendAvgCals, abs(we - wd) > 100 {
                 let diff = abs(Int(we - wd))
                 let more = we > wd ? "weekends" : "weekdays"
-                Text("You eat \(diff) kcal more on \(more)")
+                Text(String(format: NSLocalizedString("You eat %d kcal more on %@", comment: "Weekday vs weekend calorie comparison"), diff, more))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

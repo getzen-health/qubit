@@ -214,7 +214,7 @@ struct TrainingPatternView: View {
             }
 
             if !preferredTimeLabel.isEmpty {
-                Text("You mostly train in the \(preferredTimeLabel).")
+                Text(String(format: NSLocalizedString("You mostly train in the %@.", comment: "Training time preference"), preferredTimeLabel))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -275,7 +275,7 @@ struct TrainingPatternView: View {
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
                         .foregroundStyle(.secondary.opacity(0.5))
                         .annotation(position: .top, alignment: .trailing) {
-                            Text("avg \(Int(avgMins))m")
+                            Text(String(format: NSLocalizedString("avg %dm", comment: "Average minutes"), Int(avgMins)))
                                 .font(.system(size: 9))
                                 .foregroundStyle(.secondary)
                         }
@@ -302,15 +302,15 @@ struct TrainingPatternView: View {
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Best week").font(.caption2).foregroundStyle(.secondary)
-                        Text("\(Int(best.totalMins)) min").font(.caption.weight(.semibold)).foregroundStyle(.orange)
+                        Text(String(format: NSLocalizedString("%d min", comment: "Duration in minutes"), Int(best.totalMins))).font(.caption.weight(.semibold)).foregroundStyle(.orange)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("This week").font(.caption2).foregroundStyle(.secondary)
-                        Text("\(Int(curr.totalMins)) min").font(.caption.weight(.semibold))
+                        Text(String(format: NSLocalizedString("%d min", comment: "Duration in minutes"), Int(curr.totalMins))).font(.caption.weight(.semibold))
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Avg/week").font(.caption2).foregroundStyle(.secondary)
-                        Text("\(Int(avgMins)) min").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                        Text(String(format: NSLocalizedString("%d min", comment: "Duration in minutes"), Int(avgMins))).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                     }
                 }
             }

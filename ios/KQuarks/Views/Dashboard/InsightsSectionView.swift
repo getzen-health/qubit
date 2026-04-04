@@ -57,19 +57,19 @@ struct InsightRowView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(insight.category.uppercased())
+                Text(NSLocalizedString(insight.category, comment: "Insight category").uppercased())
                     .font(.caption2)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
                     .tracking(0.5)
 
-                Text(insight.title)
+                Text(LocalizedStringKey(insight.title))
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
-                Text(insight.content)
+                Text(LocalizedStringKey(insight.content))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)

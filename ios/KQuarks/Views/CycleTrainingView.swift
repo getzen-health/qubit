@@ -123,7 +123,7 @@ struct CycleTrainingView: View {
                         .font(.caption).foregroundStyle(.secondary)
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Image(systemName: phase.icon).font(.title).foregroundStyle(phase.color)
-                        Text(phase.rawValue)
+                        Text(LocalizedStringKey(phase.rawValue))
                             .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundStyle(phase.color)
                     }
@@ -179,7 +179,7 @@ struct CycleTrainingView: View {
                     }
                     .frame(width: 48)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(phase.rawValue).font(.caption.bold()).foregroundStyle(phase.color)
+                        Text(LocalizedStringKey(phase.rawValue)).font(.caption.bold()).foregroundStyle(phase.color)
                         Text(phase.trainingTip).font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     }
                 }

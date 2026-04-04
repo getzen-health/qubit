@@ -165,7 +165,7 @@ struct PilatesBarreView: View {
                     Image(systemName: type.icon)
                         .foregroundStyle(type.color)
                         .frame(width: 24)
-                    Text(type.rawValue)
+                    Text(LocalizedStringKey(type.rawValue))
                         .font(.subheadline).foregroundStyle(.primary)
                     Spacer()
                     GeometryReader { geo in
@@ -228,7 +228,7 @@ struct PilatesBarreView: View {
                 ForEach(SessionType.allCases, id: \.self) { t in
                     HStack(spacing: 4) {
                         Circle().fill(t.color).frame(width: 7, height: 7)
-                        Text(t.rawValue).font(.caption2).foregroundStyle(.secondary)
+                        Text(LocalizedStringKey(t.rawValue)).font(.caption2).foregroundStyle(.secondary)
                     }
                 }
             }

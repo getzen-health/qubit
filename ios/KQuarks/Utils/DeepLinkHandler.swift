@@ -27,7 +27,7 @@ final class DeepLinkHandler {
     var pendingDestination: DeepLinkDestination?
     
     func handleDeepLink(_ url: URL) {
-        guard url.scheme == "getzen" else { return }
+        guard url.scheme == "kquarks" || url.scheme == "getzen" else { return }
         let host = url.host ?? ""
         let path = url.pathComponents.dropFirst().first ?? ""
         
