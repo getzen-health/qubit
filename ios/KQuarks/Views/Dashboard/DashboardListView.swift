@@ -199,15 +199,16 @@ struct DashboardListView: View {
 
     /// Premium section header with accent line
     @ViewBuilder
-    private func sectionHeader(_ title: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringKey) -> some View {
         HStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 2)
                 .fill(Color.accentColor)
                 .frame(width: 3, height: 14)
-            Text(title.uppercased())
+            Text(title)
                 .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(.white.opacity(0.55))
                 .kerning(1.2)
+                .textCase(.uppercase)
         }
         .padding(.horizontal, 16)
     }
@@ -479,7 +480,7 @@ struct DashboardListView: View {
     }
 
     @ViewBuilder
-    private func metricsSection(title: String, summary: TodayHealthSummary) -> some View {
+    private func metricsSection(title: LocalizedStringKey, summary: TodayHealthSummary) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             sectionHeader(title)
 
@@ -490,7 +491,7 @@ struct DashboardListView: View {
                     label: "Recovery",
                     value: "\(viewModel.recoveryScore)",
                     unit: "%",
-                    sublabel: RecoveryLevel.from(score: viewModel.recoveryScore).label,
+                    sublabel: LocalizedStringKey(RecoveryLevel.from(score: viewModel.recoveryScore).label),
                     trend: viewModel.recoveryTrend,
                     color: .recovery
                 )
@@ -501,7 +502,7 @@ struct DashboardListView: View {
                     label: "Body Battery",
                     value: "\(viewModel.bodyBatteryScore)",
                     unit: "%",
-                    sublabel: viewModel.bodyBatteryLabel,
+                    sublabel: LocalizedStringKey(viewModel.bodyBatteryLabel),
                     color: .recovery
                 )
 
@@ -512,7 +513,7 @@ struct DashboardListView: View {
                         label: "Stress",
                         value: "\(viewModel.stressScore)",
                         unit: "%",
-                        sublabel: viewModel.stressLabel,
+                        sublabel: LocalizedStringKey(viewModel.stressLabel),
                         color: viewModel.stressScore >= 50 ? .strain : .recovery
                     )
                 }
@@ -523,7 +524,7 @@ struct DashboardListView: View {
                     label: "Strain",
                     value: String(format: "%.1f", viewModel.strainScore),
                     unit: "/21",
-                    sublabel: StrainLevel.from(score: viewModel.strainScore).label,
+                    sublabel: LocalizedStringKey(StrainLevel.from(score: viewModel.strainScore).label),
                     trend: viewModel.strainTrend,
                     color: .strain
                 )
@@ -540,7 +541,7 @@ struct DashboardListView: View {
                         icon: "moon.fill",
                         label: "Sleep",
                         value: formattedSleep,
-                        sublabel: sleepSublabel,
+                        sublabel: sleepSublabel.isEmpty ? nil : LocalizedStringKey(sleepSublabel),
                         color: .sleep
                     ) {
                         AnyView(sleepDetails(summary: summary))
