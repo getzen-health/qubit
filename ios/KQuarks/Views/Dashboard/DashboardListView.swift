@@ -24,7 +24,7 @@ struct DashboardListView: View {
                         HStack(spacing: 8) {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundStyle(.orange)
-                            Text(syncErr)
+                            Text(LocalizedStringKey(syncErr))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(2)
@@ -155,9 +155,9 @@ struct DashboardListView: View {
 
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
-        if hour < 12 { return "Good morning" }
-        if hour < 17 { return "Good afternoon" }
-        return "Good evening"
+        if hour < 12 { return NSLocalizedString("Good morning", comment: "Greeting") }
+        if hour < 17 { return NSLocalizedString("Good afternoon", comment: "Greeting") }
+        return NSLocalizedString("Good evening", comment: "Greeting")
     }
 
     private var greetingEmoji: String {
@@ -416,7 +416,7 @@ struct DashboardListView: View {
             // Last synced footer
             if let last = viewModel.lastSyncDate {
                 Label {
-                    (Text("Synced ") + Text(last, style: .relative) + Text(" ago"))
+                    Text(String(format: NSLocalizedString("Synced %@ ago", comment: "Last sync time"), last.formatted(.relative(presentation: .named))))
                         .font(.caption2)
                 } icon: {
                     Image(systemName: "arrow.clockwise")
@@ -534,7 +534,7 @@ struct DashboardListView: View {
                     let sleepSublabel: String = {
                         guard let ctx = viewModel.latestSleepContext, ctx.durationMinutes > 0 else { return "" }
                         let deepPct = Int(Double(ctx.deepMinutes) / Double(ctx.durationMinutes) * 100)
-                        return "\(deepPct)% deep sleep"
+                        return String(format: NSLocalizedString("%d%% deep sleep", comment: "Sleep sublabel"), deepPct)
                     }()
 
                     MetricRowView(
@@ -567,8 +567,8 @@ struct DashboardListView: View {
                         icon: "moon.stars.fill",
                         label: "Sleep Streak",
                         value: "\(viewModel.sleepStreak)",
-                        unit: viewModel.sleepStreak == 1 ? "night" : "nights",
-                        sublabel: "consecutive nights of 7+ hours",
+                        unit: viewModel.sleepStreak == 1 ? NSLocalizedString("night", comment: "") : NSLocalizedString("nights", comment: ""),
+                        sublabel: LocalizedStringKey(NSLocalizedString("consecutive nights of 7+ hours", comment: "Sleep streak")),
                         color: .sleep
                     )
                 }
@@ -581,8 +581,12 @@ struct DashboardListView: View {
                         icon: "bed.double.fill",
                         label: "Sleep Debt",
                         value: debtH > 0 ? "\(debtH)h \(debtM)m" : "\(debtM)m",
-                        unit: "this week",
-                        sublabel: debtH >= 5 ? "High — prioritize rest" : debtH >= 2 ? "Moderate debt" : "Minor deficit",
+                        unit: NSLocalizedString("this week", comment: "Sleep debt period"),
+                        sublabel: debtH >= 5
+                            ? LocalizedStringKey(NSLocalizedString("High — prioritize rest", comment: "Sleep debt"))
+                            : debtH >= 2
+                                ? LocalizedStringKey(NSLocalizedString("Moderate debt", comment: "Sleep debt"))
+                                : LocalizedStringKey(NSLocalizedString("Minor deficit", comment: "Sleep debt")),
                         color: debtH >= 5 ? .strain : .sleep
                     )
                 }
@@ -594,7 +598,11 @@ struct DashboardListView: View {
                         label: "Sleep Regularity",
                         value: "\(consistency)",
                         unit: "%",
-                        sublabel: consistency >= 80 ? "Consistent schedule" : consistency >= 60 ? "Moderate variation" : "High variation",
+                        sublabel: consistency >= 80
+                            ? LocalizedStringKey(NSLocalizedString("Consistent schedule", comment: "Sleep regularity"))
+                            : consistency >= 60
+                                ? LocalizedStringKey(NSLocalizedString("Moderate variation", comment: "Sleep regularity"))
+                                : LocalizedStringKey(NSLocalizedString("High variation", comment: "Sleep regularity")),
                         color: consistency >= 80 ? .recovery : .sleep
                     )
                 }
@@ -670,7 +678,7 @@ struct DashboardListView: View {
                     label: "Steps",
                     value: summary.steps.formatted(),
                     unit: "/ \(Int(GoalService.shared.stepsGoal).formatted())",
-                    sublabel: "\(Int(Double(summary.steps) / GoalService.shared.stepsGoal * 100))% of goal",
+                    sublabel: LocalizedStringKey(String(format: NSLocalizedString("%d%% of goal", comment: "Goal percentage"), Int(Double(summary.steps) / GoalService.shared.stepsGoal * 100))),
                     trend: viewModel.stepsTrend,
                     color: .activity,
                     destination: AnyView(HealthMetricDetailView(dataType: .steps))
@@ -681,7 +689,7 @@ struct DashboardListView: View {
                     label: "Active Calories",
                     value: "\(Int(summary.activeCalories))",
                     unit: "cal",
-                    sublabel: "\(Int(GoalService.shared.activeCaloriesGoal)) cal goal",
+                    sublabel: LocalizedStringKey(String(format: NSLocalizedString("%d cal goal", comment: "Calorie goal"), Int(GoalService.shared.activeCaloriesGoal))),
                     color: .strain,
                     destination: AnyView(HealthMetricDetailView(dataType: .activeCalories))
                 )
@@ -711,8 +719,8 @@ struct DashboardListView: View {
                         icon: "rosette",
                         label: "Step Streak",
                         value: "\(viewModel.currentStreak)",
-                        unit: viewModel.currentStreak == 1 ? "day" : "days",
-                        sublabel: "consecutive days at goal",
+                        unit: viewModel.currentStreak == 1 ? NSLocalizedString("day", comment: "") : NSLocalizedString("days", comment: ""),
+                        sublabel: LocalizedStringKey(NSLocalizedString("consecutive days at goal", comment: "Step streak")),
                         color: .orange
                     )
                 }
@@ -722,7 +730,7 @@ struct DashboardListView: View {
                         icon: "figure.mixed.cardio",
                         label: "Workouts This Week",
                         value: "\(viewModel.weeklyWorkoutCount)",
-                        unit: viewModel.weeklyWorkoutCount == 1 ? "session" : "sessions",
+                        unit: viewModel.weeklyWorkoutCount == 1 ? NSLocalizedString("session", comment: "") : NSLocalizedString("sessions", comment: ""),
                         color: .activity
                     )
                 }
@@ -732,8 +740,8 @@ struct DashboardListView: View {
                         icon: "figure.run",
                         label: "Workout Streak",
                         value: "\(viewModel.workoutStreak)",
-                        unit: viewModel.workoutStreak == 1 ? "day" : "days",
-                        sublabel: "consecutive days with a workout",
+                        unit: viewModel.workoutStreak == 1 ? NSLocalizedString("day", comment: "") : NSLocalizedString("days", comment: ""),
+                        sublabel: LocalizedStringKey(NSLocalizedString("consecutive days with a workout", comment: "Workout streak")),
                         color: .activity
                     )
                 }
@@ -779,7 +787,7 @@ struct DashboardListView: View {
                 .font(.largeTitle)
                 .foregroundStyle(Color.warning)
 
-            Text(error)
+            Text(LocalizedStringKey(error))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
 
@@ -901,10 +909,10 @@ class DashboardListViewModel {
 
     var bodyBatteryLabel: String {
         switch bodyBatteryScore {
-        case 75...100: return "Fully charged"
-        case 50..<75:  return "Good energy"
-        case 25..<50:  return "Draining"
-        default:       return "Depleted"
+        case 75...100: return NSLocalizedString("Fully charged", comment: "Body battery label")
+        case 50..<75:  return NSLocalizedString("Good energy", comment: "Body battery label")
+        case 25..<50:  return NSLocalizedString("Draining", comment: "Body battery label")
+        default:       return NSLocalizedString("Depleted", comment: "Body battery label")
         }
     }
 
@@ -919,10 +927,10 @@ class DashboardListViewModel {
 
     var stressLabel: String {
         switch stressScore {
-        case 0..<25:  return "Low"
-        case 25..<50: return "Moderate"
-        case 50..<75: return "Elevated"
-        default:      return "High"
+        case 0..<25:  return NSLocalizedString("Low", comment: "Stress label")
+        case 25..<50: return NSLocalizedString("Moderate", comment: "Stress label")
+        case 50..<75: return NSLocalizedString("Elevated", comment: "Stress label")
+        default:      return NSLocalizedString("High", comment: "Stress label")
         }
     }
 
@@ -1130,61 +1138,59 @@ class DashboardListViewModel {
     }
 
     func generatePrimaryInsight() -> String {
-        // Sleep-based insight takes precedence when sleep context is available
         if let sleep = latestSleepContext {
             let totalHrs = Double(sleep.durationMinutes) / 60
             let deepPct = sleep.durationMinutes > 0 ? Double(sleep.deepMinutes) / Double(sleep.durationMinutes) * 100 : 0
             if sleep.durationMinutes < 300 {
-                return "You slept under 5 hours last night. Prioritise recovery — avoid high-intensity training today."
+                return NSLocalizedString("You slept under 5 hours last night. Prioritise recovery — avoid high-intensity training today.", comment: "Insight")
             }
             if deepPct < 10 && sleep.durationMinutes > 360 {
-                return "Your deep sleep was low last night (\(Int(deepPct))%). Recovery may be impaired — consider lighter activity."
+                return String(format: NSLocalizedString("Your deep sleep was low last night (%d%%). Recovery may be impaired — consider lighter activity.", comment: "Insight"), Int(deepPct))
             }
             if totalHrs >= 7.5 && recoveryScore >= 75 {
-                return "Great sleep and strong recovery (\(recoveryScore)%). An excellent day for a hard training session."
+                return String(format: NSLocalizedString("Great sleep and strong recovery (%d%%). An excellent day for a hard training session.", comment: "Insight"), recoveryScore)
             }
         }
-        // Recovery-based insight
         if recoveryScore >= 80 {
             if currentStreak > 0 {
-                return "Excellent recovery with a \(currentStreak)-day step streak. Today is ideal for high-intensity training."
+                return String(format: NSLocalizedString("Excellent recovery with a %d-day step streak. Today is ideal for high-intensity training.", comment: "Insight"), currentStreak)
             }
-            return "Your recovery is excellent (\(recoveryScore)%). Today is ideal for high-intensity training."
+            return String(format: NSLocalizedString("Your recovery is excellent (%d%%). Today is ideal for high-intensity training.", comment: "Insight"), recoveryScore)
         }
         if recoveryScore >= 60 {
             if weeklyWorkoutCount >= 4 {
-                return "You're moderately recovered after \(weeklyWorkoutCount) workouts this week. Consider an active recovery session today."
+                return String(format: NSLocalizedString("You're moderately recovered after %d workouts this week. Consider an active recovery session today.", comment: "Insight"), weeklyWorkoutCount)
             }
-            return "You're moderately recovered (\(recoveryScore)%). A balanced workout or tempo session works well today."
+            return String(format: NSLocalizedString("You're moderately recovered (%d%%). A balanced workout or tempo session works well today.", comment: "Insight"), recoveryScore)
         }
         if strainScore >= 14 {
-            return "High strain score (\(String(format: "%.1f", strainScore))/21) with low recovery. Rest or light movement is recommended."
+            return String(format: NSLocalizedString("High strain score (%@/21) with low recovery. Rest or light movement is recommended.", comment: "Insight"), String(format: "%.1f", strainScore))
         }
-        return "Your recovery is low (\(recoveryScore)%). Prioritize rest, hydration, and light activity today."
+        return String(format: NSLocalizedString("Your recovery is low (%d%%). Prioritize rest, hydration, and light activity today.", comment: "Insight"), recoveryScore)
     }
 
     func generateSecondaryInsight() -> String? {
         if let trend = hrvTrend {
             if trend > 10 {
-                return "HRV trending up \(trend)% this week — a positive adaptation sign."
+                return String(format: NSLocalizedString("HRV trending up %d%% this week — a positive adaptation sign.", comment: "Insight"), trend)
             }
             if trend < -15 {
-                return "HRV dropped \(abs(trend))% this week — your body may need more recovery."
+                return String(format: NSLocalizedString("HRV dropped %d%% this week — your body may need more recovery.", comment: "Insight"), abs(trend))
             }
         }
         if let trend = stepsTrend {
             if trend > 20 {
-                return "You're \(trend)% more active than your weekly average. Great momentum!"
+                return String(format: NSLocalizedString("You're %d%% more active than your weekly average. Great momentum!", comment: "Insight"), trend)
             }
             if trend < -30 {
-                return "Activity is down \(abs(trend))% vs. your recent average. Try to move more today."
+                return String(format: NSLocalizedString("Activity is down %d%% vs. your recent average. Try to move more today.", comment: "Insight"), abs(trend))
             }
         }
         if sleepStreak > 2 {
-            return "\(sleepStreak)-night sleep streak — consistent sleep is a top recovery driver."
+            return String(format: NSLocalizedString("%d-night sleep streak — consistent sleep is a top recovery driver.", comment: "Insight"), sleepStreak)
         }
         if workoutStreak > 2 {
-            return "\(workoutStreak)-day workout streak — impressive consistency!"
+            return String(format: NSLocalizedString("%d-day workout streak — impressive consistency!", comment: "Insight"), workoutStreak)
         }
         return nil
     }
@@ -1252,24 +1258,24 @@ struct StepGoalRingView: View {
             VStack(alignment: .leading, spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
                     Label {
-                        Text("\(steps.formatted()) steps")
+                        Text(String(format: NSLocalizedString("%@ steps", comment: "Step count"), steps.formatted()))
                             .font(.subheadline.bold())
                     } icon: {
                         Circle().fill(Color.activity).frame(width: 8, height: 8)
                     }
-                    Text("Goal: \(goal.formatted())")
+                    Text(String(format: NSLocalizedString("Goal: %@", comment: "Goal format"), goal.formatted()))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Label {
-                        Text("\(calories) cal")
+                        Text(String(format: NSLocalizedString("%d cal", comment: "Calorie count"), calories))
                             .font(.subheadline.bold())
                     } icon: {
                         Circle().fill(Color.strain).frame(width: 8, height: 8)
                     }
-                    Text("Goal: \(calorieGoal) cal")
+                    Text(String(format: NSLocalizedString("Goal: %d cal", comment: "Calorie goal"), calorieGoal))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

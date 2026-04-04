@@ -46,20 +46,20 @@ enum HealthDataType: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .steps: return "Steps"
-        case .distance: return "Distance"
-        case .activeCalories: return "Active Calories"
-        case .totalCalories: return "Total Calories"
-        case .floorsClimbed: return "Floors Climbed"
-        case .heartRate: return "Heart Rate"
-        case .restingHeartRate: return "Resting Heart Rate"
-        case .hrv: return "Heart Rate Variability"
-        case .weight: return "Weight"
-        case .bodyFat: return "Body Fat"
-        case .bloodPressureSystolic: return "Blood Pressure (Systolic)"
-        case .bloodPressureDiastolic: return "Blood Pressure (Diastolic)"
-        case .oxygenSaturation: return "Blood Oxygen"
-        case .respiratoryRate: return "Respiratory Rate"
+        case .steps: return NSLocalizedString("Steps", comment: "")
+        case .distance: return NSLocalizedString("Distance", comment: "")
+        case .activeCalories: return NSLocalizedString("Active Calories", comment: "")
+        case .totalCalories: return NSLocalizedString("Total Calories", comment: "")
+        case .floorsClimbed: return NSLocalizedString("Floors Climbed", comment: "")
+        case .heartRate: return NSLocalizedString("Heart Rate", comment: "")
+        case .restingHeartRate: return NSLocalizedString("Resting Heart Rate", comment: "")
+        case .hrv: return NSLocalizedString("Heart Rate Variability", comment: "")
+        case .weight: return NSLocalizedString("Weight", comment: "")
+        case .bodyFat: return NSLocalizedString("Body Fat", comment: "")
+        case .bloodPressureSystolic: return NSLocalizedString("Blood Pressure (Systolic)", comment: "")
+        case .bloodPressureDiastolic: return NSLocalizedString("Blood Pressure (Diastolic)", comment: "")
+        case .oxygenSaturation: return NSLocalizedString("Blood Oxygen", comment: "")
+        case .respiratoryRate: return NSLocalizedString("Respiratory Rate", comment: "")
         }
     }
 
