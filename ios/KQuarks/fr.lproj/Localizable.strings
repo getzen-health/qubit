@@ -283,7 +283,7 @@
 "Customize your interface color." = "Personnalisez la couleur de votre interface.";
 "Cycle Tracking" = "Suivi du cycle";
 "Daily Activity" = "Activité quotidienne";
-"Daily HR Pattern" = "Rythme cardiaque quotidien";
+"Daily HR Pattern" = "Rythme FC quotidien";
 "Daily Hydration Reminder" = "Rappel d'hydratation";
 "Daily Readiness" = "Préparation quotidienne";
 "Dashboard Widgets" = "Widgets du tableau de bord";
@@ -1096,15 +1096,15 @@
 "Daily Steps This Month" = "Daily Pas This Mois";
 "Daily Steps — Last 7 Days" = "Daily Pas — Last 7 Jours";
 "Daily Summary" = "Daily Résumé";
-"Daily UV radiation, WHO categories & Vitamin D science" = "Daily UV radiation, WHO categories & Vitamin D science";
+"Daily UV radiation, WHO categories & Vitamin D science" = "Rayonnement UV quotidien, catégories OMS et science vitamine D";
 "Daily Walking HR (90 days)" = "Daily Marche HR (90 days)";
 "Daily estimated cognitive performance. Peaks with good sleep, high HRV, and training freshness." = "Daily estimated cognitive performance. Peaks with good sleep, high HRV, and training freshness.";
-"Daily events, streaks & time-of-day pattern" = "Daily events, streaks & time-of-day modèle";
-"Daily floors, 30-day trend & 10-floor goal streak" = "Daily floors, 30-day tendance & 10-floor objectif streak";
+"Daily events, streaks & time-of-day pattern" = "Événements quotidiens, séries et répartition horaire";
+"Daily floors, 30-day trend & 10-floor goal streak" = "Étages quotidiens, tendance 30 jours et série objectif 10 étages";
 "Daily goal reached! 🎉" = "Daily objectif reached! 🎉";
-"Daily intake, half-life model & bedtime impact on sleep quality" = "Daily intake, half-life model & bedtime impact on sleep quality";
+"Daily intake, half-life model & bedtime impact on sleep quality" = "Apport quotidien, modèle de demi-vie et impact sur le sommeil";
 "Daily session count. Goal line = 2 sessions/day (ADA recommendation)." = "Daily session count. Goal line = 2 sessions/day (ADA recommendation).";
-"Daily stand hours, 12-hr goal streak & hourly pattern" = "Daily stand heures, 12-hr objectif streak & hourly modèle";
+"Daily stand hours, 12-hr goal streak & hourly pattern" = "Heures debout, série objectif 12h et répartition horaire";
 "Daily training is safe (core muscles are slow-twitch, recover in ~24 h). Frequency > volume: 3 sets of McGill Big 3 daily produces greater adaptation than 1 session/week of high-volume ab circuits." = "Daily training is safe (core muscles are slow-twitch, recover in ~24 h). Frequency > volume: 3 sets of McGill Big 3 daily produces greater adaptation than 1 session/week of high-volume ab circuits.";
 "Dance & Aerobics" = "Dance & Aerobics";
 "Dance Science" = "Dance Science";
@@ -1723,7 +1723,7 @@
 "Most stress: \\\\(worst)" = "Most stress: \\\\(worst)";
 "Motor Sports Science" = "Motor Sports Science";
 "MotorSportsScienceView" = "MotorSportsScienceView";
-"Move ring calories, weekly totals & day-of-week patterns" = "Move ring calories, weekly totals & day-of-week modèles";
+"Move ring calories, weekly totals & day-of-week patterns" = "Calories anneau Bouger, totaux hebdomadaires et répartition par jour";
 "Multi-metric longevity index" = "Multi-metric longevity index";
 "Muscle Recovery" = "Muscle Récupération";
 "MuscleRecoveryView" = "MuscleRecoveryView";
@@ -2589,7 +2589,7 @@
 "Volume proxy: total workout duration per week. Intensity modulation (HR zones) is tracked separately in Heart Rate Zones and Interval Detector views." = "Volume proxy: total workout duration per week. Intensity modulation (HR zones) is tracked separately in Heart Rate Zones and Interval Detector views.";
 "W/kg" = "W/kg";
 "W/kg — 12 Month Trend" = "W/kg — 12 Mois Tendance";
-"WHO 150 min/week goal progress & streak history" = "WHO 150 min/week objectif progrès & streak historique";
+"WHO 150 min/week goal progress & streak history" = "Objectif OMS 150 min/sem et historique des séries";
 "WHO Noise Guidelines" = "WHO Noise Guidelines";
 "WHO Physical Activity Guidelines" = "WHO Physical Activity Guidelines";
 "Wake times are calculated based on 90-minute sleep cycles." = "Wake times are calculated based on 90-minute sommeil cycles.";
@@ -2607,7 +2607,7 @@
 "Walking heart rate requires Apple Watch Series 4 or later with watchOS 7+." = "Walking heart rate requires Apple Watch Series 4 or later with watchOS 7+.";
 "Walking metrics are measured by your iPhone's motion sensors during outdoor walks. Carry your iPhone in your pocket while walking to record data." = "Walking metrics are measured by your iPhone's motion sensors during outdoor walks. Carry your iPhone in your pocket while walking to record data.";
 "Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction" = "Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction";
-"Walking speed, step length & gait" = "Marche speed, pas length & gait";
+"Walking speed, step length & gait" = "Vitesse de marche, longueur de pas et démarche";
 "Walking speed, step length, asymmetry & double support — passively measured" = "Walking speed, step length, asymmetry & double support — passively measured";
 "WalkingAsymmetryView" = "WalkingAsymmetryView";
 "WalkingScienceView" = "WalkingScienceView";
@@ -2984,3 +2984,7 @@
 "Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep." = "Reduce volume 20–30%. Add a rest day. Prioritize 8h+ sleep.";
 "Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to ‘Good’." = "Solid foundation. Structured endurance training — 3–4 aerobic sessions/week with one tempo workout — will move you to ‘Good’.";
 "Stay the course. Maintain load and protect recovery habits." = "Stay the course. Maintain load and protect recovery habits.";
+
+"Gait Science" = "Science de la marche";
+
+"Daily Readiness" = "Préparation quotidienne";
