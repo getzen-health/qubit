@@ -2606,9 +2606,9 @@
 "Walking heart rate is measured passively by Apple Watch Series 4+ while you walk throughout the day." = "Walking heart rate is measured passively by Apple Watch Series 4+ while you walk throughout the day.";
 "Walking heart rate requires Apple Watch Series 4 or later with watchOS 7+." = "Walking heart rate requires Apple Watch Series 4 or later with watchOS 7+.";
 "Walking metrics are measured by your iPhone's motion sensors during outdoor walks. Carry your iPhone in your pocket while walking to record data." = "Walking metrics are measured by your iPhone's motion sensors during outdoor walks. Carry your iPhone in your pocket while walking to record data.";
-"Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction" = "Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction";
+"Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction" = "步行速度作为生命体征、步态生物力学和神经学标记 — Studenski 2011 (JAMA): 快0.1 m/s = 死亡率降低12%；跌倒风险预测";
 "Walking speed, step length & gait" = "步行速度、步长和步态";
-"Walking speed, step length, asymmetry & double support — passively measured" = "Walking speed, step length, asymmetry & double support — passively measured";
+"Walking speed, step length, asymmetry & double support — passively measured" = "步行速度、步长、不对称性和双支撑时间 — 被动测量";
 "WalkingAsymmetryView" = "WalkingAsymmetryView";
 "WalkingScienceView" = "WalkingScienceView";
 "WalkingSpeedView" = "WalkingSpeedView";
