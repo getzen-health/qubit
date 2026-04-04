@@ -142,7 +142,7 @@ struct SettingsView: View {
                         HStack {
                             Label("Language", systemImage: "globe")
                             Spacer()
-                            Text(LanguageManager.shared.currentLanguageDisplayName)
+                            Text(verbatim: LanguageManager.shared.currentLanguageDisplayName)
                                 .foregroundStyle(.secondary)
                                 .font(.subheadline)
                         }

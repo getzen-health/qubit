@@ -10,9 +10,12 @@ struct AppLanguage: Identifiable, Equatable {
 
 // MARK: - Language Manager
 
+@Observable
 final class LanguageManager {
     static let shared = LanguageManager()
-    private init() {}
+    private init() {
+        selectedLanguageCode = UserDefaults.standard.string(forKey: "userSelectedLanguage") ?? "en"
+    }
 
     let supported: [AppLanguage] = [
         AppLanguage(id: "en", displayName: "English",    flag: "🇺🇸"),
@@ -25,47 +28,38 @@ final class LanguageManager {
         AppLanguage(id: "ko", displayName: "한국어",      flag: "🇰🇷"),
     ]
 
-    var currentLanguageCode: String {
-        (UserDefaults.standard.array(forKey: "AppleLanguages") as? [String])?.first?.components(separatedBy: "-").first
-            ?? Locale.current.language.languageCode?.identifier
-            ?? "en"
+    var selectedLanguageCode: String {
+        didSet {
+            UserDefaults.standard.set(selectedLanguageCode, forKey: "userSelectedLanguage")
+        }
     }
+
+    var currentLocale: Locale { Locale(identifier: selectedLanguageCode) }
 
     var currentLanguageDisplayName: String {
-        supported.first { $0.id == currentLanguageCode }?.displayName ?? "English"
-    }
-
-    func setLanguage(_ code: String) {
-        UserDefaults.standard.set([code], forKey: "AppleLanguages")
-        UserDefaults.standard.synchronize()
+        supported.first { $0.id == selectedLanguageCode }?.displayName ?? "English"
     }
 }
 
 // MARK: - Language Settings View
 
 struct LanguageSettingsView: View {
-    @State private var selectedCode: String = LanguageManager.shared.currentLanguageCode
-    @State private var showRestartAlert = false
+    @State private var langManager = LanguageManager.shared
 
     var body: some View {
         languageList
             .premiumList()
             .navigationTitle("Language")
             .toolbarTitleDisplayMode(.inline)
-            .alert("Restart Required", isPresented: $showRestartAlert) {
-                Button("Later", role: .cancel) { }
-                Button("Restart Now", role: .destructive) {
-                    exit(0)
-                }
-            } message: {
-                Text("The language change will take effect after restarting the app.")
-            }
     }
 
     private var languageList: some View {
         List {
             Section {
                 languageRows
+            } footer: {
+                Text("Language changes take effect immediately.")
+                    .font(.caption)
             }
         }
     }
@@ -85,11 +79,7 @@ struct LanguageSettingsView: View {
     @ViewBuilder
     private func languageRow(_ lang: AppLanguage) -> some View {
         Button {
-            if lang.id != selectedCode {
-                selectedCode = lang.id
-                LanguageManager.shared.setLanguage(lang.id)
-                showRestartAlert = true
-            }
+            langManager.selectedLanguageCode = lang.id
         } label: {
             HStack(spacing: 14) {
                 Text(verbatim: lang.flag)
@@ -97,7 +87,7 @@ struct LanguageSettingsView: View {
                 Text(verbatim: lang.displayName)
                     .foregroundStyle(.primary)
                 Spacer()
-                if lang.id == selectedCode {
+                if lang.id == langManager.selectedLanguageCode {
                     Image(systemName: "checkmark")
                         .foregroundStyle(.accent)
                         .fontWeight(.semibold)

@@ -163,7 +163,7 @@ struct AdaptiveNavigationView: View {
                 .tag(3)
 
             SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
                 .tag(4)
         }
         .sheet(isPresented: $showCheckinSheet) {
