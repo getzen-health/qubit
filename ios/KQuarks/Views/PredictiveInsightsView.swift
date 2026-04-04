@@ -141,7 +141,7 @@ struct PredictiveInsightsView: View {
     // MARK: - Last Updated Footer
 
     private func lastUpdatedFooter(prediction: PredictionService.PredictionRecord) -> some View {
-        Text("Updated \(prediction.createdAt.formatted(.relative(presentation: .named)))")
+        Text(String(format: NSLocalizedString("Updated %@", comment: "Last updated time"), prediction.createdAt.formatted(.relative(presentation: .named))))
             .font(.caption)
             .foregroundStyle(.tertiary)
             .frame(maxWidth: .infinity, alignment: .center)

@@ -122,14 +122,14 @@ struct BiologicalAgeView: View {
                         Text("Biological Age").font(.headline)
                         if let d = ageDelta {
                             let sign = d < 0 ? "" : "+"
-                            Text("\(sign)\(d) yrs vs chronological")
+                            Text(String(format: NSLocalizedString("%@%d yrs vs chronological", comment: "Biological age delta"), sign, d))
                                 .font(.subheadline).bold()
                                 .foregroundStyle(deltaColor)
                         }
                         Text(deltaLabel)
                             .font(.caption).foregroundStyle(.secondary)
                     }
-                    Text("Chronological: \(chronologicalAge) yrs")
+                    Text(String(format: NSLocalizedString("Chronological: %d yrs", comment: "Chronological age label"), chronologicalAge))
                         .font(.caption2).foregroundStyle(.tertiary)
                 }
                 Spacer()
@@ -220,7 +220,7 @@ struct BiologicalAgeView: View {
                 Spacer()
                 HStack(spacing: 4) {
                     Rectangle().fill(Color.primary).frame(width: 2, height: 12)
-                    Text("Age \(chronologicalAge)").font(.caption2).foregroundStyle(.secondary)
+                    Text(String(format: NSLocalizedString("Age %d", comment: "Age marker label"), chronologicalAge)).font(.caption2).foregroundStyle(.secondary)
                 }
             }
         }
@@ -240,7 +240,7 @@ struct BiologicalAgeView: View {
                         if let ea = organ.estimatedAge {
                             let delta = ea - chronologicalAge
                             let sign = delta < 0 ? "" : "+"
-                            Text("\(sign)\(delta) yrs")
+                            Text(String(format: NSLocalizedString("%@%d yrs", comment: "Organ age delta"), sign, delta))
                                 .font(.caption2).bold()
                                 .foregroundStyle(delta < -2 ? .green : delta <= 2 ? .blue : .orange)
                         }

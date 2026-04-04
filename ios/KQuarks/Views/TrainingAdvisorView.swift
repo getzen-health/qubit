@@ -137,7 +137,7 @@ struct TrainingAdvisorView: View {
                 Text(wt.emoji)
                     .font(.system(size: 40))
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(wt.rawValue) Week")
+                    Text(String(format: NSLocalizedString("%@ Week", comment: "Week type label"), wt.rawValue))
                         .font(.title2.bold())
                         .foregroundStyle(wt.color)
                     Text("Recommended for the next 7 days")
@@ -363,7 +363,7 @@ struct TrainingAdvisorView: View {
 
                     Text(today.suggestion)
                         .font(.body)
-                    Text("Zone: \(today.zoneHint) · \(today.durationHint)")
+                    Text(String(format: NSLocalizedString("Zone: %@ · %@", comment: "Today's zone and duration hint"), today.zoneHint, today.durationHint))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

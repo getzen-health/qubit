@@ -66,7 +66,7 @@ struct SmartNudgesView: View {
                 Text("Today's Recommendations")
                     .font(.headline)
                 if let t = lastUpdated {
-                    Text("Updated \(t.formatted(date: .omitted, time: .shortened))")
+                    Text(String(format: NSLocalizedString("Updated %@", comment: "Last updated time"), t.formatted(date: .omitted, time: .shortened)))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

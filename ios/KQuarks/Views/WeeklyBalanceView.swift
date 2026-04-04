@@ -122,7 +122,7 @@ struct WeeklyBalanceView: View {
                     .foregroundStyle(scoreColor(score))
 
                 if let ws = weekStart {
-                    Text("Week of \(ws, format: .dateTime.month(.abbreviated).day())")
+                    Text(String(format: NSLocalizedString("Week of %@", comment: "Weekly balance header"), ws.formatted(.dateTime.month(.abbreviated).day())))
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }

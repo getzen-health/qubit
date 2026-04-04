@@ -115,7 +115,7 @@ struct MonthlyHealthSummaryView: View {
         VStack(spacing: 6) {
             Text(monthTitle)
                 .font(.title2.bold())
-            Text("vs \(lastMonthTitle)")
+            Text(String(format: NSLocalizedString("vs %@", comment: "Comparison to previous month"), lastMonthTitle))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -197,7 +197,7 @@ struct MonthlyHealthSummaryView: View {
                         Text(String(format: "%.0f%%", abs(diff)))
                             .font(.caption2.monospacedDigit())
                             .foregroundStyle(diff >= 0 ? .green : .red)
-                        Text("vs \(lastMonthTitle)")
+                        Text(String(format: NSLocalizedString("vs %@", comment: "Comparison to previous month"), lastMonthTitle))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     } else {

@@ -97,7 +97,7 @@ struct CircadianPerformanceView: View {
                 Text(w.name)
                     .font(.title2.weight(.bold))
                     .foregroundStyle(w.color)
-                Text("\(w.hourRange) · \(w.sessions) sessions analysed")
+                Text(String(format: NSLocalizedString("%@ · %d sessions analysed", comment: "Circadian window summary"), w.hourRange, w.sessions))
                     .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
@@ -187,7 +187,7 @@ struct CircadianPerformanceView: View {
                             Text(String(format: "%.0f bpm avg HR", w.avgHR))
                                 .font(.caption2).foregroundStyle(.tertiary)
                         }
-                        Text("\(w.sessions) sessions")
+                        Text(String(format: NSLocalizedString("%d sessions", comment: "Session count"), w.sessions))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                             .frame(width: 62, alignment: .trailing)
