@@ -1,0 +1,24 @@
+name: i18n Check
+
+on:
+  pull_request:
+    paths:
+      - 'ios/KQuarks/**/*.strings'
+      - 'ios/KQuarks/**/*.swift'
+      - 'scripts/check_localizations.py'
+      - '.github/workflows/i18n-check.yml'
+
+jobs:
+  check-localizations:
+    name: Localization Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check localizations
+        run: python3 scripts/check_localizations.py
