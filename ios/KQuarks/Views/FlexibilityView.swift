@@ -201,7 +201,7 @@ struct FlexibilityView: View {
                 HStack(spacing: 8) {
                     Image(systemName: type.icon)
                         .foregroundStyle(type.color).frame(width: 18)
-                    Text(type.rawValue)
+                    Text(LocalizedStringKey(type.rawValue))
                         .font(.caption2).frame(width: 155, alignment: .leading)
                     GeometryReader { geo in
                         ZStack(alignment: .leading) {
@@ -259,7 +259,7 @@ struct FlexibilityView: View {
                     Image(systemName: s.sessionType.icon)
                         .foregroundStyle(s.sessionType.color).frame(width: 24)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(s.sessionType.rawValue)
+                        Text(LocalizedStringKey(s.sessionType.rawValue))
                             .font(.caption.bold()).foregroundStyle(s.sessionType.color)
                         Text(s.label).font(.caption2).foregroundStyle(.secondary)
                     }

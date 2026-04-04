@@ -162,7 +162,7 @@ struct TriathlonView: View {
                     Text("\(count) sessions")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
-                    Text(d.rawValue)
+                    Text(LocalizedStringKey(d.rawValue))
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(.secondary)
                     Text(String(format: "%.0f%%", pct(d)))
@@ -271,7 +271,7 @@ struct TriathlonView: View {
                             selectedRace = rt
                         } label: {
                             VStack(spacing: 2) {
-                                Text(rt.rawValue).font(.subheadline.weight(.semibold))
+                                Text(LocalizedStringKey(rt.rawValue)).font(.subheadline.weight(.semibold))
                                 Text(rt.description).font(.caption2).foregroundStyle(.secondary)
                             }
                             .padding(.horizontal, 12)
@@ -302,7 +302,7 @@ struct TriathlonView: View {
 
                     VStack(alignment: .leading, spacing: 2) {
                         HStack {
-                            Text(d.rawValue).font(.subheadline.weight(.medium))
+                            Text(LocalizedStringKey(d.rawValue)).font(.subheadline.weight(.medium))
                             Spacer()
                             Text(String(format: "%.0f%%", actual)).font(.subheadline.bold())
                                 .foregroundStyle(d.color)

@@ -127,7 +127,7 @@ struct RestingHRDeepDiveView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(fitnessClass.color).frame(width: 8, height: 8)
-                        Text(fitnessClass.rawValue)
+                        Text(LocalizedStringKey(fitnessClass.rawValue))
                             .font(.subheadline).foregroundStyle(fitnessClass.color)
                     }
                 }
@@ -280,7 +280,7 @@ struct RestingHRDeepDiveView: View {
                 ForEach(classes, id: \.0.rawValue) { cls, label in
                     HStack(spacing: 10) {
                         Circle().fill(cls.color).frame(width: 10, height: 10)
-                        Text(cls.rawValue).font(.caption.bold()).foregroundStyle(cls.color).frame(width: 80, alignment: .leading)
+                        Text(LocalizedStringKey(cls.rawValue)).font(.caption.bold()).foregroundStyle(cls.color).frame(width: 80, alignment: .leading)
                         Text(cls.range).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
                         Spacer()
                         if cls == fitnessClass {

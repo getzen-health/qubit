@@ -147,7 +147,7 @@ struct WeeklyBalanceView: View {
                             .frame(width: 20)
                         Text(dim.name).font(.caption.weight(.semibold))
                         Spacer()
-                        Text(dim.tier.rawValue)
+                        Text(LocalizedStringKey(dim.tier.rawValue))
                             .font(.caption2.weight(.semibold))
                             .padding(.horizontal, 8).padding(.vertical, 2)
                             .background(dim.tier.color.opacity(0.15))

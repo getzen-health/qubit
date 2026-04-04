@@ -162,7 +162,7 @@ struct EnergyView: View {
                                     .font(.title2)
                                     .scaleEffect(vm.todayCheckin?.level == level ? 1.3 : 1.0)
                                     .animation(.spring(response: 0.3), value: vm.todayCheckin?.level)
-                                Text(String(level.rawValue))
+                                Text(LocalizedStringKey(String(level.rawValue)))
                                     .font(.caption2)
                                     .foregroundStyle(.white.opacity(0.4))
                             }

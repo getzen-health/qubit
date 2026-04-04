@@ -124,7 +124,7 @@ struct DivingAnalyticsView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(deepestCategory.color).frame(width: 8, height: 8)
-                        Text(deepestCategory.rawValue).font(.subheadline).foregroundStyle(deepestCategory.color)
+                        Text(LocalizedStringKey(deepestCategory.rawValue)).font(.subheadline).foregroundStyle(deepestCategory.color)
                     }
                 }
                 Spacer()
@@ -211,7 +211,7 @@ struct DivingAnalyticsView: View {
                         Circle().fill(dive.depthCategory.color).frame(width: 10, height: 10)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(dive.date.kqFormatted(dateStyle: .medium)).font(.subheadline.bold())
-                            Text(dive.depthCategory.rawValue).font(.caption).foregroundStyle(.secondary)
+                            Text(LocalizedStringKey(dive.depthCategory.rawValue)).font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 2) {
@@ -247,7 +247,7 @@ struct DivingAnalyticsView: View {
                 HStack(alignment: .top, spacing: 10) {
                     HStack(spacing: 6) {
                         Circle().fill(cat.color).frame(width: 8, height: 8)
-                        Text(cat.rawValue).font(.caption.bold()).foregroundStyle(cat.color)
+                        Text(LocalizedStringKey(cat.rawValue)).font(.caption.bold()).foregroundStyle(cat.color)
                     }
                     .frame(width: 90, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {

@@ -104,7 +104,7 @@ struct HRZoneProgressionView: View {
 
                 // Display mode picker
                 Picker("View", selection: $selectedView) {
-                    ForEach(DisplayMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(DisplayMode.allCases, id: \.self) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)

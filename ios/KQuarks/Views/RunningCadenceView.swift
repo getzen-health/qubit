@@ -113,7 +113,7 @@ struct RunningCadenceView: View {
                         .font(.system(size: 32))
                         .foregroundStyle(zone.color)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(zone.rawValue)
+                        Text(LocalizedStringKey(zone.rawValue))
                             .font(.headline.weight(.bold))
                             .foregroundStyle(zone.color)
                         if let avg = avgCadence {
@@ -245,7 +245,7 @@ struct RunningCadenceView: View {
                 ForEach(CadenceZone.allCases, id: \.rawValue) { z in
                     HStack(spacing: 4) {
                         Circle().fill(z.color).frame(width: 7, height: 7)
-                        Text(z.rawValue.components(separatedBy: " (").first ?? z.rawValue)
+                        Text(LocalizedStringKey(z.rawValue.components(separatedBy: " (").first ?? z.rawValue))
                             .font(.caption2).foregroundStyle(.secondary)
                     }
                 }
@@ -306,7 +306,7 @@ struct RunningCadenceView: View {
                 ForEach(CadenceZone.allCases, id: \.rawValue) { zone in
                     HStack(spacing: 6) {
                         Circle().fill(zone.color).frame(width: 6, height: 6)
-                        Text(zone.rawValue).font(.caption).foregroundStyle(.secondary)
+                        Text(LocalizedStringKey(zone.rawValue)).font(.caption).foregroundStyle(.secondary)
                     }
                 }
             }

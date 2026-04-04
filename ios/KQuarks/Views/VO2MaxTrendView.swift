@@ -133,7 +133,7 @@ struct VO2MaxTrendView: View {
                     }
                     HStack(spacing: 6) {
                         Image(systemName: category.icon).foregroundStyle(category.color)
-                        Text(category.rawValue).font(.subheadline.bold()).foregroundStyle(category.color)
+                        Text(LocalizedStringKey(category.rawValue)).font(.subheadline.bold()).foregroundStyle(category.color)
                     }
                 }
                 Spacer()

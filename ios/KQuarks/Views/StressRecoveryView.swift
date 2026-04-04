@@ -124,7 +124,7 @@ struct StressRecoveryView: View {
                     Text("Current Status")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text(currentQuadrant.rawValue)
+                    Text(LocalizedStringKey(currentQuadrant.rawValue))
                         .font(.title2.bold())
                         .foregroundStyle(currentQuadrant.color)
                 }
@@ -334,7 +334,7 @@ struct StressRecoveryView: View {
                         .foregroundStyle(q.color)
                         .frame(width: 20)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(q.rawValue).font(.caption.bold()).foregroundStyle(q.color)
+                        Text(LocalizedStringKey(q.rawValue)).font(.caption.bold()).foregroundStyle(q.color)
                         Text(q.description).font(.caption).foregroundStyle(.secondary)
                     }
                 }

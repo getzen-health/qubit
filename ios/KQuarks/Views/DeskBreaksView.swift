@@ -290,7 +290,7 @@ struct DeskBreaksView: View {
                             .foregroundStyle(breakType.color)
                             .frame(width: 32)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(breakType.rawValue).font(.subheadline).bold()
+                            Text(LocalizedStringKey(breakType.rawValue)).font(.subheadline).bold()
                             Text(breakType.description).font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -316,7 +316,7 @@ struct DeskBreaksView: View {
                     Image(systemName: breakType.icon)
                         .font(.system(size: 48))
                         .foregroundStyle(breakType.color)
-                    Text(breakType.rawValue)
+                    Text(LocalizedStringKey(breakType.rawValue))
                         .font(.title2.bold())
                     Text(breakType.description)
                         .font(.subheadline)
@@ -362,7 +362,7 @@ struct DeskBreaksView: View {
                     HStack(spacing: 12) {
                         Image(systemName: log.breakType.icon)
                             .foregroundStyle(log.breakType.color)
-                        Text(log.breakType.rawValue)
+                        Text(LocalizedStringKey(log.breakType.rawValue))
                             .font(.subheadline)
                         Spacer()
                         Text(log.timestamp.kqFormatted(dateStyle: .none, timeStyle: .short))

@@ -132,7 +132,7 @@ struct DailyReadinessView: View {
                     }
                     HStack(spacing: 6) {
                         Circle().fill(todayZone.color).frame(width: 8, height: 8)
-                        Text(todayZone.rawValue)
+                        Text(LocalizedStringKey(todayZone.rawValue))
                             .font(.headline).foregroundStyle(todayZone.color)
                     }
                 }
@@ -229,7 +229,7 @@ struct DailyReadinessView: View {
                 ForEach([ReadinessZone.optimal, .good, .moderate, .low], id: \.rawValue) { z in
                     HStack(spacing: 4) {
                         Circle().fill(z.color).frame(width: 7, height: 7)
-                        Text(z.rawValue).font(.caption2).foregroundStyle(.secondary)
+                        Text(LocalizedStringKey(z.rawValue)).font(.caption2).foregroundStyle(.secondary)
                     }
                 }
             }

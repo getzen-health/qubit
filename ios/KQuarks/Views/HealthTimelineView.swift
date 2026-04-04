@@ -78,7 +78,7 @@ struct HealthTimelineView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Menu {
                     ForEach(EventFilter.allCases, id: \.self) { f in
-                        Button(f.rawValue) { filter = f }
+                        Button(LocalizedStringKey(f.rawValue)) { filter = f }
                     }
                 } label: {
                     Image(systemName: "line.3.horizontal.decrease.circle")
@@ -96,7 +96,7 @@ struct HealthTimelineView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Picker("Filter", selection: $filter) {
                     ForEach(EventFilter.allCases, id: \.self) { f in
-                        Text(f.rawValue).tag(f)
+                        Text(LocalizedStringKey(f.rawValue)).tag(f)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -156,7 +156,7 @@ struct HealthTimelineView: View {
         VStack(spacing: 12) {
             Picker("Filter", selection: $filter) {
                 ForEach(EventFilter.allCases, id: \.self) { f in
-                    Text(f.rawValue).tag(f)
+                    Text(LocalizedStringKey(f.rawValue)).tag(f)
                 }
             }
             .pickerStyle(.segmented)

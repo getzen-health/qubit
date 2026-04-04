@@ -232,7 +232,7 @@ struct SymptomsLogView: View {
                             Text(ev.date.kqFormatted(dateStyle: .medium, timeStyle: .short)).font(.caption2).foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Text(ev.severity.rawValue)
+                        Text(LocalizedStringKey(ev.severity.rawValue))
                             .font(.caption.bold())
                             .foregroundStyle(ev.severity.color)
                             .padding(.horizontal, 8).padding(.vertical, 3)

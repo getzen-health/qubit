@@ -173,7 +173,7 @@ struct GlycogenStatusView: View {
                 .frame(height: 18)
 
                 HStack {
-                    Text(currentState.rawValue)
+                    Text(LocalizedStringKey(currentState.rawValue))
                         .font(.caption.bold())
                         .foregroundStyle(currentState.color)
                     Spacer()

@@ -234,7 +234,7 @@ struct LactateThresholdView: View {
                 ForEach([WorkoutPoint.EffortClass.easy, .moderate, .threshold, .hard], id: \.rawValue) { ec in
                     HStack(spacing: 4) {
                         Circle().fill(ec.color).frame(width: 7, height: 7)
-                        Text(ec.rawValue).font(.caption2).foregroundStyle(.secondary)
+                        Text(LocalizedStringKey(ec.rawValue)).font(.caption2).foregroundStyle(.secondary)
                     }
                 }
             }
