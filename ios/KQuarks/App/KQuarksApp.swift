@@ -65,12 +65,14 @@ struct KQuarksApp: App {
     }
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var langManager = LanguageManager.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(appState)
                 .environment(themeManager)
+                .environment(\.locale, langManager.currentLocale)
                 .modelContainer(modelContainer)
                 .preferredColorScheme(themeManager.appearanceMode.colorScheme)
                 .tint(themeManager.accentColor)
