@@ -70,6 +70,7 @@ struct KQuarksApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .id(langManager.viewRefreshID)
                 .environment(appState)
                 .environment(themeManager)
                 .environment(\.locale, langManager.currentLocale)
