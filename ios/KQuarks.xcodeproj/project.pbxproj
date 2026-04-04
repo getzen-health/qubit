@@ -1859,6 +1859,8 @@
 			files = (
 				014 /* Assets.xcassets in Resources */,
 				030 /* PrivacyInfo.xcprivacy in Resources */,
+				A1BF001 /* Localizable.strings in Resources */,
+				A1BF002 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

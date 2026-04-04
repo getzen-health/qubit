@@ -1,4 +1,28 @@
 import SwiftUI
+import ObjectiveC
+
+// MARK: - Bundle Swizzling for In-App Language Switching
+
+private var _bundleAssocKey: UInt8 = 0
+
+private final class _LanguageBundle: Bundle {
+    override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
+        guard let override = objc_getAssociatedObject(self, &_bundleAssocKey) as? Bundle else {
+            return super.localizedString(forKey: key, value: value, table: tableName)
+        }
+        return override.localizedString(forKey: key, value: value, table: tableName)
+    }
+}
+
+extension Bundle {
+    static func swapLanguage(_ code: String) {
+        let path = Bundle.main.path(forResource: code, ofType: "lproj")
+            ?? Bundle.main.path(forResource: "en", ofType: "lproj")
+        guard let p = path, let langBundle = Bundle(path: p) else { return }
+        objc_setAssociatedObject(Bundle.main, &_bundleAssocKey, langBundle, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        object_setClass(Bundle.main, _LanguageBundle.self)
+    }
+}
 
 // MARK: - AppLanguage Model
 
@@ -15,6 +39,7 @@ final class LanguageManager {
     static let shared = LanguageManager()
     private init() {
         selectedLanguageCode = UserDefaults.standard.string(forKey: "userSelectedLanguage") ?? "en"
+        Bundle.swapLanguage(selectedLanguageCode)
     }
 
     let supported: [AppLanguage] = [
@@ -28,9 +53,13 @@ final class LanguageManager {
         AppLanguage(id: "ko", displayName: "한국어",      flag: "🇰🇷"),
     ]
 
+    var viewRefreshID = UUID()
+
     var selectedLanguageCode: String {
         didSet {
             UserDefaults.standard.set(selectedLanguageCode, forKey: "userSelectedLanguage")
+            Bundle.swapLanguage(selectedLanguageCode)
+            viewRefreshID = UUID()
         }
     }
 
