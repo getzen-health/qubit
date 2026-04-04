@@ -1,0 +1,185 @@
+/* GetZen iOS Localizable.strings — English (Base) */
+
+// MARK: - App Name
+"GetZen" = "GetZen";
+
+// MARK: - Navigation / Sidebar
+"Dashboard" = "Dashboard";
+"Health" = "Health";
+"Insights" = "Insights";
+"Workouts" = "Workouts";
+"Water" = "Water";
+"Measurements" = "Measurements";
+"Supplements" = "Supplements";
+"Mood" = "Mood";
+"Cycle" = "Cycle";
+"Profile" = "Profile";
+"Sleep" = "Sleep";
+"Stress" = "Stress";
+"Weekly Balance" = "Weekly Balance";
+"Caffeine" = "Caffeine";
+"Energy" = "Energy";
+"Desk Breaks" = "Desk Breaks";
+"Hearing Health" = "Hearing Health";
+"Settings" = "Settings";
+"Main" = "Main";
+"Data" = "Data";
+"Other" = "Other";
+
+// MARK: - Onboarding Welcome
+"Your health. Deeper." = "Your health. Deeper.";
+"All your health data in one place" = "All your health data in one place";
+"Steps, heart rate, sleep, workouts and more—unified." = "Steps, heart rate, sleep, workouts and more—unified.";
+"AI-powered morning briefings" = "AI-powered morning briefings";
+"Claude analyzes your trends and delivers a daily summary." = "Claude analyzes your trends and delivers a daily summary.";
+"Apple Watch companion" = "Apple Watch companion";
+"Glanceable metrics and complications on your wrist." = "Glanceable metrics and complications on your wrist.";
+"Get Started" = "Get Started";
+"Privacy Policy" = "Privacy Policy";
+
+// MARK: - Onboarding Screen 1
+"Welcome to GetZen" = "Welcome to GetZen";
+"Your personal health dashboard — powered by Apple Health and AI" = "Your personal health dashboard — powered by Apple Health and AI";
+"Sync steps, sleep, workouts automatically" = "Sync steps, sleep, workouts automatically";
+"Scan food with QuarkScore™ analysis" = "Scan food with QuarkScore™ analysis";
+"AI-powered weekly health insights" = "AI-powered weekly health insights";
+
+// MARK: - Onboarding Screen 2 (HealthKit)
+"Connect Apple Health" = "Connect Apple Health";
+"Connect Your Health Data" = "Connect Your Health Data";
+"KQuarks reads your health data to sync it to your personal dashboard. Your data is private and never sold." = "GetZen reads your health data to sync it to your personal dashboard. Your data is private and never sold.";
+"KQuarks reads from Apple Health to give you deep insights. Your data stays private and is only uploaded to your personal cloud account." = "GetZen reads from Apple Health to give you deep insights. Your data stays private and is only uploaded to your personal cloud account.";
+"Steps" = "Steps";
+"Heart Rate" = "Heart Rate";
+"HRV" = "HRV";
+"Body Measurements" = "Body Measurements";
+"Grant Access" = "Grant Access";
+"Skip for now" = "Skip for now";
+"Maybe Later" = "Maybe Later";
+"Without Health access, KQuarks cannot display your stats or generate insights. You can grant access later in Settings > Health > KQuarks." = "Without Health access, GetZen cannot display your stats or generate insights. You can grant access later in Settings > Health > GetZen.";
+
+// MARK: - Onboarding Screen 3 (Goals)
+"Set Your Goals" = "Set Your Goals";
+"Personalise your daily targets. You can change these anytime in settings." = "Personalise your daily targets. You can change these anytime in settings.";
+"Daily Steps" = "Daily Steps";
+"Active Calories" = "Active Calories";
+"Save & Get Started" = "Save & Get Started";
+
+// MARK: - Onboarding Profile
+"Create Your Profile" = "Create Your Profile";
+"Name" = "Name";
+"Age" = "Age";
+"Height" = "Height";
+"Weight" = "Weight";
+"Continue" = "Continue";
+"Skip" = "Skip";
+
+// MARK: - Dashboard
+"Today" = "Today";
+"This Week" = "This Week";
+"This Month" = "This Month";
+"Good Morning" = "Good Morning";
+"Good Afternoon" = "Good Afternoon";
+"Good Evening" = "Good Evening";
+"Health Score" = "Health Score";
+"Activity" = "Activity";
+"Recovery" = "Recovery";
+"Nutrition" = "Nutrition";
+"Overview" = "Overview";
+"No data available" = "No data available";
+"Sync now" = "Sync now";
+"Last synced" = "Last synced";
+
+// MARK: - Health Metrics
+"Resting Heart Rate" = "Resting Heart Rate";
+"Heart Rate Variability" = "Heart Rate Variability";
+"Blood Oxygen" = "Blood Oxygen";
+"Respiratory Rate" = "Respiratory Rate";
+"Body Fat" = "Body Fat";
+"BMI" = "BMI";
+"VO2 Max" = "VO2 Max";
+"Active Energy" = "Active Energy";
+"Stand Hours" = "Stand Hours";
+"Exercise Minutes" = "Exercise Minutes";
+"Distance" = "Distance";
+"Floors Climbed" = "Floors Climbed";
+
+// MARK: - Sleep
+"Time in Bed" = "Time in Bed";
+"Time Asleep" = "Time Asleep";
+"Sleep Efficiency" = "Sleep Efficiency";
+"REM Sleep" = "REM Sleep";
+"Deep Sleep" = "Deep Sleep";
+"Core Sleep" = "Core Sleep";
+"Awake" = "Awake";
+"Bedtime" = "Bedtime";
+"Wake Time" = "Wake Time";
+
+// MARK: - Workouts
+"Duration" = "Duration";
+"Calories" = "Calories";
+"Pace" = "Pace";
+"Running" = "Running";
+"Cycling" = "Cycling";
+"Swimming" = "Swimming";
+"Strength Training" = "Strength Training";
+"Yoga" = "Yoga";
+"HIIT" = "HIIT";
+"Start Workout" = "Start Workout";
+"End Workout" = "End Workout";
+"No workouts recorded" = "No workouts recorded";
+
+// MARK: - Food / Nutrition
+"Scan Barcode" = "Scan Barcode";
+"Search Food" = "Search Food";
+"QuarkScore" = "QuarkScore";
+"Excellent" = "Excellent";
+"Good" = "Good";
+"Average" = "Average";
+"Poor" = "Poor";
+"Ingredients" = "Ingredients";
+"Nutrition Facts" = "Nutrition Facts";
+"Protein" = "Protein";
+"Carbohydrates" = "Carbohydrates";
+"Fat" = "Fat";
+"Fiber" = "Fiber";
+"Sugar" = "Sugar";
+"Sodium" = "Sodium";
+
+// MARK: - Settings
+"Account" = "Account";
+"Notifications" = "Notifications";
+"Privacy" = "Privacy";
+"Data & Storage" = "Data & Storage";
+"About" = "About";
+"Sign Out" = "Sign Out";
+"Delete Account" = "Delete Account";
+"Terms of Service" = "Terms of Service";
+"Version" = "Version";
+"Language" = "Language";
+"Units" = "Units";
+"Metric" = "Metric";
+"Imperial" = "Imperial";
+
+// MARK: - Common Actions
+"Save" = "Save";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Edit" = "Edit";
+"Delete" = "Delete";
+"Share" = "Share";
+"Close" = "Close";
+"Back" = "Back";
+"Next" = "Next";
+"OK" = "OK";
+"Confirm" = "Confirm";
+"Retry" = "Retry";
+"Loading" = "Loading";
+"Error" = "Error";
+
+// MARK: - Errors
+"Something went wrong" = "Something went wrong";
+"No internet connection" = "No internet connection";
+"Please try again" = "Please try again";
+"Sync failed" = "Sync failed";
+"Sign in to continue" = "Sign in to continue";

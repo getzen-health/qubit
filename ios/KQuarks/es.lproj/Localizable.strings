@@ -1,0 +1,185 @@
+/* GetZen iOS Localizable.strings — Español */
+
+// MARK: - App Name
+"GetZen" = "GetZen";
+
+// MARK: - Navigation / Sidebar
+"Dashboard" = "Panel";
+"Health" = "Salud";
+"Insights" = "Perspectivas";
+"Workouts" = "Entrenamientos";
+"Water" = "Agua";
+"Measurements" = "Medidas";
+"Supplements" = "Suplementos";
+"Mood" = "Estado de ánimo";
+"Cycle" = "Ciclo";
+"Profile" = "Perfil";
+"Sleep" = "Sueño";
+"Stress" = "Estrés";
+"Weekly Balance" = "Balance semanal";
+"Caffeine" = "Cafeína";
+"Energy" = "Energía";
+"Desk Breaks" = "Pausas activas";
+"Hearing Health" = "Salud auditiva";
+"Settings" = "Ajustes";
+"Main" = "Principal";
+"Data" = "Datos";
+"Other" = "Otro";
+
+// MARK: - Onboarding Welcome
+"Your health. Deeper." = "Tu salud. Más profundo.";
+"All your health data in one place" = "Todos tus datos de salud en un lugar";
+"Steps, heart rate, sleep, workouts and more—unified." = "Pasos, frecuencia cardíaca, sueño, entrenamientos y más — unificados.";
+"AI-powered morning briefings" = "Informes matutinos con IA";
+"Claude analyzes your trends and delivers a daily summary." = "Claude analiza tus tendencias y entrega un resumen diario.";
+"Apple Watch companion" = "Compañero de Apple Watch";
+"Glanceable metrics and complications on your wrist." = "Métricas y complicaciones visibles en tu muñeca.";
+"Get Started" = "Comenzar";
+"Privacy Policy" = "Política de privacidad";
+
+// MARK: - Onboarding Screen 1
+"Welcome to GetZen" = "Bienvenido a GetZen";
+"Your personal health dashboard — powered by Apple Health and AI" = "Tu panel de salud personal — impulsado por Apple Health e IA";
+"Sync steps, sleep, workouts automatically" = "Sincroniza pasos, sueño y entrenamientos automáticamente";
+"Scan food with QuarkScore™ analysis" = "Escanea alimentos con análisis QuarkScore™";
+"AI-powered weekly health insights" = "Perspectivas de salud semanales con IA";
+
+// MARK: - Onboarding Screen 2 (HealthKit)
+"Connect Apple Health" = "Conectar Apple Health";
+"Connect Your Health Data" = "Conecta tus datos de salud";
+"KQuarks reads your health data to sync it to your personal dashboard. Your data is private and never sold." = "GetZen lee tus datos de salud para sincronizarlos con tu panel personal. Tus datos son privados y nunca se venden.";
+"KQuarks reads from Apple Health to give you deep insights. Your data stays private and is only uploaded to your personal cloud account." = "GetZen lee de Apple Health para darte perspectivas profundas. Tus datos permanecen privados y solo se suben a tu cuenta personal.";
+"Steps" = "Pasos";
+"Heart Rate" = "Frecuencia cardíaca";
+"HRV" = "VFC";
+"Body Measurements" = "Medidas corporales";
+"Grant Access" = "Conceder acceso";
+"Skip for now" = "Omitir por ahora";
+"Maybe Later" = "Quizás después";
+"Without Health access, KQuarks cannot display your stats or generate insights. You can grant access later in Settings > Health > KQuarks." = "Sin acceso a Salud, GetZen no puede mostrar tus estadísticas. Puedes conceder acceso más tarde en Ajustes > Salud > GetZen.";
+
+// MARK: - Onboarding Screen 3 (Goals)
+"Set Your Goals" = "Establece tus objetivos";
+"Personalise your daily targets. You can change these anytime in settings." = "Personaliza tus metas diarias. Puedes cambiarlas en cualquier momento en ajustes.";
+"Daily Steps" = "Pasos diarios";
+"Active Calories" = "Calorías activas";
+"Save & Get Started" = "Guardar y comenzar";
+
+// MARK: - Onboarding Profile
+"Create Your Profile" = "Crea tu perfil";
+"Name" = "Nombre";
+"Age" = "Edad";
+"Height" = "Altura";
+"Weight" = "Peso";
+"Continue" = "Continuar";
+"Skip" = "Omitir";
+
+// MARK: - Dashboard
+"Today" = "Hoy";
+"This Week" = "Esta semana";
+"This Month" = "Este mes";
+"Good Morning" = "Buenos días";
+"Good Afternoon" = "Buenas tardes";
+"Good Evening" = "Buenas noches";
+"Health Score" = "Puntuación de salud";
+"Activity" = "Actividad";
+"Recovery" = "Recuperación";
+"Nutrition" = "Nutrición";
+"Overview" = "Resumen";
+"No data available" = "No hay datos disponibles";
+"Sync now" = "Sincronizar ahora";
+"Last synced" = "Última sincronización";
+
+// MARK: - Health Metrics
+"Resting Heart Rate" = "Frecuencia cardíaca en reposo";
+"Heart Rate Variability" = "Variabilidad de la frecuencia cardíaca";
+"Blood Oxygen" = "Oxígeno en sangre";
+"Respiratory Rate" = "Frecuencia respiratoria";
+"Body Fat" = "Grasa corporal";
+"BMI" = "IMC";
+"VO2 Max" = "VO2 Max";
+"Active Energy" = "Energía activa";
+"Stand Hours" = "Horas de pie";
+"Exercise Minutes" = "Minutos de ejercicio";
+"Distance" = "Distancia";
+"Floors Climbed" = "Pisos subidos";
+
+// MARK: - Sleep
+"Time in Bed" = "Tiempo en cama";
+"Time Asleep" = "Tiempo durmiendo";
+"Sleep Efficiency" = "Eficiencia del sueño";
+"REM Sleep" = "Sueño REM";
+"Deep Sleep" = "Sueño profundo";
+"Core Sleep" = "Sueño básico";
+"Awake" = "Despierto";
+"Bedtime" = "Hora de dormir";
+"Wake Time" = "Hora de despertar";
+
+// MARK: - Workouts
+"Duration" = "Duración";
+"Calories" = "Calorías";
+"Pace" = "Ritmo";
+"Running" = "Correr";
+"Cycling" = "Ciclismo";
+"Swimming" = "Natación";
+"Strength Training" = "Entrenamiento de fuerza";
+"Yoga" = "Yoga";
+"HIIT" = "HIIT";
+"Start Workout" = "Iniciar entrenamiento";
+"End Workout" = "Finalizar entrenamiento";
+"No workouts recorded" = "No hay entrenamientos registrados";
+
+// MARK: - Food / Nutrition
+"Scan Barcode" = "Escanear código de barras";
+"Search Food" = "Buscar alimento";
+"QuarkScore" = "QuarkScore";
+"Excellent" = "Excelente";
+"Good" = "Bueno";
+"Average" = "Regular";
+"Poor" = "Pobre";
+"Ingredients" = "Ingredientes";
+"Nutrition Facts" = "Información nutricional";
+"Protein" = "Proteína";
+"Carbohydrates" = "Carbohidratos";
+"Fat" = "Grasas";
+"Fiber" = "Fibra";
+"Sugar" = "Azúcar";
+"Sodium" = "Sodio";
+
+// MARK: - Settings
+"Account" = "Cuenta";
+"Notifications" = "Notificaciones";
+"Privacy" = "Privacidad";
+"Data & Storage" = "Datos y almacenamiento";
+"About" = "Acerca de";
+"Sign Out" = "Cerrar sesión";
+"Delete Account" = "Eliminar cuenta";
+"Terms of Service" = "Términos de servicio";
+"Version" = "Versión";
+"Language" = "Idioma";
+"Units" = "Unidades";
+"Metric" = "Métrico";
+"Imperial" = "Imperial";
+
+// MARK: - Common Actions
+"Save" = "Guardar";
+"Cancel" = "Cancelar";
+"Done" = "Hecho";
+"Edit" = "Editar";
+"Delete" = "Eliminar";
+"Share" = "Compartir";
+"Close" = "Cerrar";
+"Back" = "Atrás";
+"Next" = "Siguiente";
+"OK" = "OK";
+"Confirm" = "Confirmar";
+"Retry" = "Reintentar";
+"Loading" = "Cargando";
+"Error" = "Error";
+
+// MARK: - Errors
+"Something went wrong" = "Algo salió mal";
+"No internet connection" = "Sin conexión a Internet";
+"Please try again" = "Por favor, inténtalo de nuevo";
+"Sync failed" = "Error de sincronización";
+"Sign in to continue" = "Inicia sesión para continuar";

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1BF001 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1VG001 /* Localizable.strings */; };
+		A1BF002 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1VG002 /* InfoPlist.strings */; };
 		001 /* KQuarksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101 /* KQuarksApp.swift */; };
 		002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102 /* ContentView.swift */; };
 		003 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103 /* User.swift */; };
@@ -540,6 +542,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A1L001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L002 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L003 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L004 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L005 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L006 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L007 /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1L008 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A1I001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I002 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I003 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I004 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I005 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I006 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I007 /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A1I008 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		00D3DBABD1478FF6DCB03756 /* BowlingScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BowlingScienceView.swift; sourceTree = "<group>"; };
 		01ADC22E99C8407E87405D5E /* ShimmerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerModifier.swift; sourceTree = "<group>"; };
 		01EA0C4FC168060FAFD0867D /* NutritionScienceView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NutritionScienceView.swift; sourceTree = "<group>"; };
@@ -1109,6 +1127,8 @@
 				99A170C7B8AF9535E951F503 /* DynamicTypeExtensions.swift */,
 				508 /* Theme */,
 				509 /* Widgets */,
+				A1VG001 /* Localizable.strings */,
+				A1VG002 /* InfoPlist.strings */,
 				201 /* Assets.xcassets */,
 				202 /* KQuarks.entitlements */,
 				203 /* Info.plist */,
@@ -1805,6 +1825,13 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				es,
+				fr,
+				pt,
+				de,
+				ja,
+				zh,
+				ko,
 				Base,
 			);
 			mainGroup = 500;
@@ -1847,6 +1874,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+
+/* Begin PBXVariantGroup section */
+		A1VG001 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1L001 /* en */,
+				A1L002 /* es */,
+				A1L003 /* fr */,
+				A1L004 /* pt */,
+				A1L005 /* de */,
+				A1L006 /* ja */,
+				A1L007 /* zh */,
+				A1L008 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		A1VG002 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1I001 /* en */,
+				A1I002 /* es */,
+				A1I003 /* fr */,
+				A1I004 /* pt */,
+				A1I005 /* de */,
+				A1I006 /* ja */,
+				A1I007 /* zh */,
+				A1I008 /* ko */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin PBXSourcesBuildPhase section */
 		601 /* Sources */ = {

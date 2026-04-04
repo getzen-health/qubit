@@ -1,0 +1,7 @@
+/* GetZen iOS InfoPlist.strings — 日本語 */
+CFBundleDisplayName = "GetZen";
+NSCameraUsageDescription = "GetZenは食品のバーコードをスキャンするためにカメラを使用します。";
+NSHealthShareUsageDescription = "GetZenは健康データを読み取り、インサイトを表示し同期します。";
+NSHealthUpdateUsageDescription = "GetZenはアプリに記録したワークアウトデータを書き込みます。";
+NSMotionUsageDescription = "GetZenはモーションデータを使用して活動を追跡します。";
+NSUserNotificationsUsageDescription = "GetZenは毎日の健康サマリーとリマインダーをお送りします。";
