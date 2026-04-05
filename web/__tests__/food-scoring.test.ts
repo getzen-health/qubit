@@ -61,16 +61,16 @@ describe('calculateZenScore', () => {
     const result = calculateZenScore({
       nutriments: { proteins_100g: 20, fiber_100g: 5 },
     })
-    expect(result.pillars.nutrientBalance.score).toBeLessThanOrEqual(50)
-    expect(result.pillars.processingIntegrity.score).toBeLessThanOrEqual(15)
+    expect(result.pillars.nutrientDensity.score).toBeLessThanOrEqual(40)
     expect(result.pillars.additiveSafety.score).toBeLessThanOrEqual(25)
-    expect(result.pillars.ingredientQuality.score).toBeLessThanOrEqual(10)
+    expect(result.pillars.processingIngredients.score).toBeLessThanOrEqual(20)
+    expect(result.pillars.labelsCertifications.score).toBeLessThanOrEqual(15)
   })
 
   it('high-sodium product is penalised vs low-sodium', () => {
     const lowSodium = calculateZenScore({ nutriments: { sodium_100g: 0.05 } })
     const highSodium = calculateZenScore({ nutriments: { sodium_100g: 1.5 } })
-    expect(lowSodium.pillars.nutrientBalance.score).toBeGreaterThan(highSodium.pillars.nutrientBalance.score)
+    expect(lowSodium.pillars.nutrientDensity.score).toBeGreaterThan(highSodium.pillars.nutrientDensity.score)
   })
 
   it('TIER_A additive (e250) causes lower additive safety score', () => {
@@ -79,10 +79,10 @@ describe('calculateZenScore', () => {
     expect(dangerous.pillars.additiveSafety.score).toBeLessThan(safe.pillars.additiveSafety.score)
   })
 
-  it('organic label boosts ingredient quality score', () => {
+  it('organic label boosts labels & certifications score', () => {
     const noLabel = calculateZenScore({ ingredients_text: 'water, salt', labels_tags: [] })
     const organic = calculateZenScore({ ingredients_text: 'water, salt', labels_tags: ['en:organic'] })
-    expect(organic.pillars.ingredientQuality.score).toBeGreaterThan(noLabel.pillars.ingredientQuality.score)
+    expect(organic.pillars.labelsCertifications.score).toBeGreaterThan(noLabel.pillars.labelsCertifications.score)
   })
 
   it('score is consistent regardless of user profile (context fit removed)', () => {

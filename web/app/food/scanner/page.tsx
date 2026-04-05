@@ -41,9 +41,13 @@ interface HealthScore {
 }
 
 interface ScoreComponents {
+  nutrientDensity?: number
+  additiveSafety?: number
+  processingIngredients?: number
+  labelsCertifications?: number
+  // Legacy aliases
   nutrientBalance?: number
   processingIntegrity?: number
-  additiveSafety?: number
   ingredientQuality?: number
   nutrition?: number
   additives?: number
@@ -606,10 +610,10 @@ export default function FoodScannerPage() {
 {/* ZenScore™ 4-pillar breakdown */}
 {product.score_components && (
   <div className="flex gap-1 mt-1 flex-wrap justify-end max-w-full sm:max-w-[200px]">
-    <span title="Nutrient Balance (50 pts max)" className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium">🥦 {product.score_components.nutrientBalance ?? product.score_components.nutrition}/{50}</span>
+    <span title="Nutrient Density (40 pts max)" className="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium">🥦 {product.score_components.nutrientDensity ?? product.score_components.nutrientBalance ?? product.score_components.nutrition}/{40}</span>
     <span title="Additive Safety (25 pts max)" className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-medium">🧪 {product.score_components.additiveSafety ?? product.score_components.additives}/{25}</span>
-    <span title="Processing Level (15 pts max)" className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium">🏭 {product.score_components.processingIntegrity ?? 0}/{15}</span>
-    <span title="Ingredient Quality (10 pts max)" className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-xs font-medium">🌾 {product.score_components.ingredientQuality ?? 0}/{10}</span>
+    <span title="Processing & Ingredients (20 pts max)" className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium">🏭 {product.score_components.processingIngredients ?? product.score_components.processingIntegrity ?? 0}/{20}</span>
+    <span title="Labels & Certifications (15 pts max)" className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 text-xs font-medium">🌾 {product.score_components.labelsCertifications ?? product.score_components.ingredientQuality ?? 0}/{15}</span>
   </div>
 )}
                   {product.barcode && (
@@ -840,10 +844,10 @@ export default function FoodScannerPage() {
               {showBreakdown && (
                 <div className="space-y-2.5 mb-3">
                   {[
-                    { icon: '🥦', label: 'Nutrient Balance', key: 'nutrientBalance', fallback: 'nutrition', max: 50, color: 'bg-green-500' },
+                    { icon: '🥦', label: 'Nutrient Density', key: 'nutrientDensity', fallback: 'nutrition', max: 40, color: 'bg-green-500' },
+                    { icon: '🏭', label: 'Processing & Ingredients', key: 'processingIngredients', fallback: 'processingIntegrity', max: 20, color: 'bg-blue-500' },
                     { icon: '🧪', label: 'Additive Safety',  key: 'additiveSafety', fallback: 'additives', max: 25, color: 'bg-purple-500' },
-                    { icon: '🏭', label: 'Processing Level', key: 'processingIntegrity', fallback: 'processingIntegrity', max: 15, color: 'bg-blue-500' },
-                    { icon: '🌾', label: 'Ingredient Quality', key: 'ingredientQuality', fallback: 'ingredientQuality', max: 10, color: 'bg-amber-500' },
+                    { icon: '🌾', label: 'Labels & Certifications', key: 'labelsCertifications', fallback: 'ingredientQuality', max: 15, color: 'bg-amber-500' },
                   ].map(({ icon, label, key, fallback, max, color }) => {
                     const val = product.score_components
                       ? ((product.score_components as Record<string, number>)[key] ?? (product.score_components as Record<string, number>)[fallback] ?? 0)
@@ -871,7 +875,7 @@ export default function FoodScannerPage() {
                   <span className="relative group cursor-help">
                     <span className="text-text-secondary text-sm">ℹ️</span>
                     <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-surface-elevated border border-border rounded-lg text-xs text-text-secondary w-52 hidden group-hover:block z-10 pointer-events-none">
-                      ZenScore™ rates food quality 0–100 across nutrition balance, processing level, additives, ingredients, and context fit.
+                      ZenScore™ rates food quality 0–100 across nutrient density, processing level, additive safety, and certifications.
                     </span>
                   </span>
                 </span>
