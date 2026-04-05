@@ -26,8 +26,9 @@ struct ScanHistoryView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if items.isEmpty {
                     VStack(spacing: 16) {
-                        Text("📦")
-                            .font(.system(size: 60))
+                        Image(systemName: "shippingbox")
+                            .font(.system(size: 50))
+                            .foregroundStyle(.secondary)
                         Text("No scans yet")
                             .font(.headline)
                         Text("Scan a product barcode to see it here")
@@ -74,7 +75,7 @@ struct ScanHistoryView: View {
                                 }
                             }
                             Spacer()
-                            let shareText = "I just checked \(item.product_name) on KQuarks — it scored \(item.score ?? 0)/100 for health!"
+                            let shareText = "I just checked \(item.product_name) on GetZen — it scored \(item.score ?? 0)/100 for health!"
                             ShareLink(item: shareText) {
                                 Image(systemName: "square.and.arrow.up")
                                     .foregroundStyle(Color.accentColor)
