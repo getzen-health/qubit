@@ -1,6 +1,7 @@
 import ActivityKit
 import BackgroundTasks
 import Foundation
+import os
 
 #if !targetEnvironment(macCatalyst)
 @MainActor
@@ -28,7 +29,7 @@ class LiveActivityManager: ObservableObject {
                 LiveActivityManager.shared.scheduleFastingUpdate()
             }
         } catch {
-            print("Failed to start fasting Live Activity: \(error)")
+            Logger.general.debug("Failed to start fasting Live Activity: \(error)")
         }
     }
     
@@ -64,7 +65,7 @@ class LiveActivityManager: ObservableObject {
                 content: .init(state: state, staleDate: nil)
             )
         } catch {
-            print("Failed to start workout Live Activity: \(error)")
+            Logger.general.debug("Failed to start workout Live Activity: \(error)")
         }
     }
     
@@ -91,7 +92,7 @@ class LiveActivityManager: ObservableObject {
         do {
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            print("Failed to schedule fasting update: \(error)")
+            Logger.general.debug("Failed to schedule fasting update: \(error)")
         }
     }
 }

@@ -40,9 +40,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSHealthShareUsageDescription</key>
+	<string>GetZen reads your health data from Apple Health to provide personalized fitness insights, track your activity, sleep, heart rate, and generate AI-powered health recommendations.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>KQuarks writes your logged water intake back to Apple Health to keep your health data in sync.</string>
+	<string>GetZen writes your logged water intake back to Apple Health to keep your health data in sync.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>KQuarks uses the camera to scan food product barcodes.</string>
+	<string>GetZen uses the camera to scan food product barcodes.</string>
 </dict>
 </plist>

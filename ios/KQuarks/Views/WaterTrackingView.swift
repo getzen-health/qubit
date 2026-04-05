@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - Data Models
 
@@ -95,7 +96,7 @@ final class WaterTrackingViewModel {
                     ))
                     .execute()
             } catch {
-                print("Warning: Failed to save water to Supabase: \(error)")
+                Logger.general.debug("Warning: Failed to save water to Supabase: \(error)")
             }
         }
 
@@ -103,7 +104,7 @@ final class WaterTrackingViewModel {
         do {
             try await HealthKitService.shared.saveWater(milliliters: Double(ml))
         } catch {
-            print("Warning: Failed to write water to HealthKit: \(error)")
+            Logger.general.debug("Warning: Failed to write water to HealthKit: \(error)")
         }
     }
 
@@ -138,7 +139,7 @@ final class WaterTrackingViewModel {
                     .eq("id", value: id.uuidString)
                     .execute()
             } catch {
-                print("Warning: Failed to update water log in Supabase: \(error)")
+                Logger.general.debug("Warning: Failed to update water log in Supabase: \(error)")
             }
         }
     }

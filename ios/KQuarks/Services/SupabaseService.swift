@@ -2,6 +2,7 @@ import Foundation
 import AuthenticationServices
 import UIKit
 import Supabase
+import os
 
 @Observable
 class SupabaseService {
@@ -31,7 +32,7 @@ class SupabaseService {
             #if DEBUG
             fatalError("Missing Supabase configuration. Set SUPABASE_URL and SUPABASE_ANON_KEY in Info.plist or environment.")
             #else
-            print("[SupabaseService] Warning: Missing Supabase configuration. Backend features will be unavailable.")
+            Logger.general.debug("[SupabaseService] Warning: Missing Supabase configuration. Backend features will be unavailable.")
             resolvedURL = URL(string: "https://placeholder.supabase.co")!
             resolvedKey = "placeholder"
             #endif
@@ -90,7 +91,7 @@ class SupabaseService {
                 do {
                     try await updateUserProfile(displayName: displayName)
                 } catch {
-                    print("[SupabaseService] Failed to update user profile on sign-in: \(error)")
+                    Logger.general.debug("[SupabaseService] Failed to update user profile on sign-in: \(error)")
                 }
             }
         }
@@ -167,7 +168,7 @@ class SupabaseService {
                 )
                 .execute()
         } catch {
-            print("[SupabaseService] updateLastSyncAt failed: \(error)")
+            Logger.general.debug("[SupabaseService] updateLastSyncAt failed: \(error)")
         }
     }
 
@@ -196,7 +197,7 @@ class SupabaseService {
                 )
                 .execute()
         } catch {
-            print("[SupabaseService] saveDevicePushToken failed: \(error)")
+            Logger.general.debug("[SupabaseService] saveDevicePushToken failed: \(error)")
         }
     }
 
@@ -240,7 +241,7 @@ class SupabaseService {
                 )
                 .execute()
         } catch {
-            print("[SupabaseService] syncReadinessScore failed: \(error)")
+            Logger.general.debug("[SupabaseService] syncReadinessScore failed: \(error)")
         }
     }
 
@@ -299,7 +300,7 @@ class SupabaseService {
                 svc.morningReadinessEnabled = prefs.morningBriefing
             }
         } catch {
-            print("[SupabaseService] syncNotificationPreferences failed: \(error)")
+            Logger.general.debug("[SupabaseService] syncNotificationPreferences failed: \(error)")
         }
     }
 
@@ -373,7 +374,7 @@ class SupabaseService {
                 )
                 .execute()
         } catch {
-            print("[SupabaseService] saveNotificationPreferences failed: \(error)")
+            Logger.general.debug("[SupabaseService] saveNotificationPreferences failed: \(error)")
         }
     }
 
@@ -1609,7 +1610,7 @@ class SupabaseService {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: ["userId": userId])
         } catch {
-            print("[SupabaseService] Failed to serialize achievements request body: \(error)")
+            Logger.general.debug("[SupabaseService] Failed to serialize achievements request body: \(error)")
             return
         }
 
@@ -1632,10 +1633,10 @@ class SupabaseService {
                     )
                 }
             } catch {
-                print("[SupabaseService] Failed to fetch achievements for notifications: \(error)")
+                Logger.general.debug("[SupabaseService] Failed to fetch achievements for notifications: \(error)")
             }
         } catch {
-            print("[SupabaseService] checkAchievements network error: \(error)")
+            Logger.general.debug("[SupabaseService] checkAchievements network error: \(error)")
         }
     }
 

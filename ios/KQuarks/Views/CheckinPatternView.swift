@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - Top-level models
 
@@ -551,7 +552,7 @@ struct CheckinPatternView: View {
             moodDist   = dist(\.mood)
             stressDist = dist(\.stress)
         } catch {
-            print("[CheckinPatternView] loadData failed: \(error)")
+            Logger.general.debug("[CheckinPatternView] loadData failed: \(error)")
         }
     }
 

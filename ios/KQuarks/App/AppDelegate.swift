@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import os
 
 extension Notification.Name {
     static let quickActionTriggered = Notification.Name("KQuarks.quickAction")
@@ -21,7 +22,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             } catch {
-                print("Failed to request notification permissions: \(error)")
+                Logger.general.debug("Failed to request notification permissions: \(error)")
             }
         }
         
@@ -112,7 +113,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         let userInfo = notification.request.content.userInfo
-        print("[AppDelegate] Foreground notification received: \(userInfo)")
+        Logger.general.debug("[AppDelegate] Foreground notification received: \(userInfo)")
         
         // Display notification even when app is in foreground
         completionHandler([.banner, .sound, .badge])
@@ -125,7 +126,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let userInfo = response.notification.request.content.userInfo
-        print("[AppDelegate] Notification tapped: \(userInfo)")
+        Logger.general.debug("[AppDelegate] Notification tapped: \(userInfo)")
         
         // Handle deep links from notification data
         if let deepLink = userInfo["deepLink"] as? String,

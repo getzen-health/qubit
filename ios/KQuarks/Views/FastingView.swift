@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 // MARK: - FastingView
 
@@ -335,7 +336,7 @@ struct FastingView: View {
             }
             history = try await SupabaseService.shared.getFastingHistory(limit: 10)
         } catch {
-            print("[FastingView] load failed: \(error)")
+            Logger.general.debug("[FastingView] load failed: \(error)")
         }
     }
 
@@ -351,7 +352,7 @@ struct FastingView: View {
             elapsedHours = 0
             NotificationService.shared.scheduleFastingMilestones(targetHours: selectedProtocol.hours, startedAt: start)
         } catch {
-            print("[FastingView] startFast failed: \(error)")
+            Logger.general.debug("[FastingView] startFast failed: \(error)")
         }
     }
 
@@ -366,7 +367,7 @@ struct FastingView: View {
             startedAt = nil
             history = try await SupabaseService.shared.getFastingHistory(limit: 10)
         } catch {
-            print("[FastingView] endFast failed: \(error)")
+            Logger.general.debug("[FastingView] endFast failed: \(error)")
         }
     }
 

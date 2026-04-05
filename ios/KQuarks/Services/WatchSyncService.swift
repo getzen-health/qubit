@@ -1,5 +1,6 @@
 import Foundation
 import WatchConnectivity
+import os
 
 struct WatchHealthSnapshot: Codable {
     let steps: Int
@@ -32,7 +33,7 @@ class WatchSyncService: NSObject, WCSessionDelegate {
             let data = try encoder.encode(snapshot)
             try session.updateApplicationContext(["snapshot": data])
         } catch {
-            print("[WatchSyncService] Failed to send snapshot: \(error.localizedDescription)")
+            Logger.general.debug("[WatchSyncService] Failed to send snapshot: \(error.localizedDescription)")
         }
     }
 
@@ -44,7 +45,7 @@ class WatchSyncService: NSObject, WCSessionDelegate {
         error: Error?
     ) {
         if let error {
-            print("[WatchSyncService] Activation error: \(error.localizedDescription)")
+            Logger.general.debug("[WatchSyncService] Activation error: \(error.localizedDescription)")
         }
     }
 

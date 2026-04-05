@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import os
 
 @Observable
 final class GoalService {
@@ -70,7 +71,7 @@ final class GoalService {
                 }
                 #endif
             } catch {
-                print("[GoalService] Failed to save goals to Supabase: \(error)")
+                Logger.general.debug("[GoalService] Failed to save goals to Supabase: \(error)")
             }
         }
     }

@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 // Sentry iOS integration stub
 // TODO: Add https://github.com/getsentry/sentry-cocoa via SPM (version ~> 8.0), then replace stub
@@ -8,7 +9,7 @@ enum SentryService {
         //   options.dsn = dsn
         //   options.tracesSampleRate = 0.1
         // }
-        print("[SentryService] stub — add sentry-cocoa SPM package and uncomment")
+        Logger.general.debug("[SentryService] stub — add sentry-cocoa SPM package and uncomment")
     }
 
     static func capture(_ error: Error) {
