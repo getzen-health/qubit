@@ -313,22 +313,46 @@ struct ProductDetailSheet: View {
                 let codes = parseAdditivesForDisplay()
                 ForEach(codes, id: \.self) { code in
                     let risk = service.additiveRisk(for: code)
-                    HStack(spacing: 10) {
-                        Circle()
-                            .fill(riskColor(risk))
-                            .frame(width: 8, height: 8)
-                        Text(code.uppercased())
-                            .font(.system(size: 13, weight: .semibold).monospaced())
-                            .foregroundStyle(.white.opacity(0.85))
-                        Spacer()
-                        Text(riskLabel(risk))
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(riskColor(risk))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(riskColor(risk).opacity(0.12), in: Capsule())
+                    let info = Self.additiveDatabase[code.lowercased()]
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 10) {
+                            Circle()
+                                .fill(riskColor(risk))
+                                .frame(width: 8, height: 8)
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text(code.uppercased())
+                                        .font(.system(size: 13, weight: .semibold).monospaced())
+                                        .foregroundStyle(.white.opacity(0.85))
+                                    if let name = info?.name {
+                                        Text("· \(name)")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.white.opacity(0.5))
+                                    }
+                                }
+                                if let reason = info?.concern {
+                                    Text(reason)
+                                        .font(.system(size: 11))
+                                        .foregroundStyle(.white.opacity(0.45))
+                                        .lineLimit(2)
+                                }
+                            }
+                            Spacer()
+                            Text(riskLabel(risk))
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(riskColor(risk))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(riskColor(risk).opacity(0.12), in: Capsule())
+                        }
+                        if let source = info?.source {
+                            Text(source)
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.3))
+                                .padding(.leading, 18)
+                        }
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 6)
                 }
             }
         }
@@ -496,6 +520,52 @@ struct ProductDetailSheet: View {
         case .safe: return "Safe"
         }
     }
+
+    // MARK: - Additive Evidence Database
+
+    private struct AdditiveInfo {
+        let name: String
+        let concern: String
+        let source: String
+    }
+
+    private static let additiveDatabase: [String: AdditiveInfo] = [
+        // Tier A — High risk
+        "e102": AdditiveInfo(name: "Tartrazine", concern: "Linked to hyperactivity in children. Banned in several countries.", source: "EFSA 2009 — ADI exceeded in children · Southampton Study"),
+        "e104": AdditiveInfo(name: "Quinoline Yellow", concern: "May cause allergic reactions and hyperactivity.", source: "EFSA re-evaluation 2009 · UK Food Standards Agency"),
+        "e110": AdditiveInfo(name: "Sunset Yellow", concern: "Linked to hyperactivity in children. Requires warning label in EU.", source: "EFSA 2014 · EU Regulation 1333/2008"),
+        "e122": AdditiveInfo(name: "Carmoisine", concern: "May cause allergic reactions and hyperactivity in children.", source: "EFSA Scientific Opinion 2009"),
+        "e123": AdditiveInfo(name: "Amaranth", concern: "Suspected carcinogen. Banned in the United States.", source: "FDA ban 1976 · EFSA restricted use"),
+        "e124": AdditiveInfo(name: "Ponceau 4R", concern: "Linked to hyperactivity. Requires warning label in EU.", source: "EFSA re-evaluation · Southampton Study"),
+        "e129": AdditiveInfo(name: "Allura Red", concern: "Linked to hyperactivity in children. Under EFSA re-evaluation.", source: "EFSA 2023 re-evaluation · CSPI petition to FDA"),
+        "e171": AdditiveInfo(name: "Titanium Dioxide", concern: "Genotoxicity concern — no longer considered safe. Banned in EU.", source: "EFSA 2021 — banned EU June 2022"),
+        "e250": AdditiveInfo(name: "Sodium Nitrite", concern: "Forms nitrosamines (carcinogenic) during cooking. Linked to colorectal cancer.", source: "IARC Group 2A · WHO processed meat report 2015"),
+        "e251": AdditiveInfo(name: "Sodium Nitrate", concern: "Converts to nitrite in the body. Associated with increased cancer risk.", source: "IARC Group 2A · EFSA re-evaluation 2017"),
+        "e249": AdditiveInfo(name: "Potassium Nitrite", concern: "Same nitrosamine formation concern as sodium nitrite.", source: "IARC Group 2A"),
+        "e924": AdditiveInfo(name: "Potassium Bromate", concern: "Possible carcinogen. Banned in EU, Canada, Brazil, China.", source: "IARC Group 2B · EU ban"),
+        "e173": AdditiveInfo(name: "Aluminium", concern: "Neurotoxicity concern at high exposure. Accumulates in body.", source: "EFSA 2008 — reduced tolerable weekly intake"),
+        // Tier B — Moderate risk
+        "e150d": AdditiveInfo(name: "Sulphite Ammonia Caramel", concern: "Contains 4-MEI, a possible carcinogen formed during production.", source: "IARC · California Prop 65 listing"),
+        "e210": AdditiveInfo(name: "Benzoic Acid", concern: "Can form benzene when combined with vitamin C. ADHD link.", source: "FDA benzene investigation · Southampton Study"),
+        "e211": AdditiveInfo(name: "Sodium Benzoate", concern: "Forms benzene with ascorbic acid. Linked to hyperactivity.", source: "FDA 2006 benzene in beverages report"),
+        "e320": AdditiveInfo(name: "BHA", concern: "Possible carcinogen. Endocrine disruptor at high doses.", source: "IARC Group 2B · NTP Report on Carcinogens"),
+        "e321": AdditiveInfo(name: "BHT", concern: "Possible carcinogen. Accumulates in adipose tissue.", source: "IARC Group 2B"),
+        "e407": AdditiveInfo(name: "Carrageenan", concern: "May cause gut inflammation. Under EFSA re-evaluation.", source: "IARC Group 2B (degraded) · Tobacman 2001 review"),
+        "e950": AdditiveInfo(name: "Acesulfame-K", concern: "Artificial sweetener. May affect gut microbiome.", source: "EFSA 2021 re-evaluation · Suez et al. Nature 2014"),
+        "e951": AdditiveInfo(name: "Aspartame", concern: "Classified as possibly carcinogenic to humans by IARC.", source: "IARC Group 2B — July 2023 classification"),
+        "e954": AdditiveInfo(name: "Saccharin", concern: "Historical cancer concern. Delisted from NTP report in 2000.", source: "IARC Group 2B (historical)"),
+        "e955": AdditiveInfo(name: "Sucralose", concern: "May affect glucose metabolism and gut bacteria.", source: "EFSA 2023 re-evaluation · Schiffman & Rother 2013"),
+        "e338": AdditiveInfo(name: "Phosphoric Acid", concern: "High intake linked to lower bone density.", source: "Tucker et al. Am J Clin Nutr 2006"),
+        // Tier C — Low risk
+        "e220": AdditiveInfo(name: "Sulphur Dioxide", concern: "Can trigger asthma and allergic reactions in sensitive individuals.", source: "EFSA 2016 · FDA allergen labeling"),
+        "e621": AdditiveInfo(name: "MSG", concern: "Generally safe. Some report sensitivity symptoms at high doses.", source: "FDA GRAS status · EFSA 2017 ADI set"),
+        "e322": AdditiveInfo(name: "Lecithin", concern: "Generally safe emulsifier. Soy allergen concern.", source: "EFSA — no safety concern at current use levels"),
+        "e330": AdditiveInfo(name: "Citric Acid", concern: "Generally safe. Natural compound found in citrus fruits.", source: "EFSA — no safety concern"),
+        "e415": AdditiveInfo(name: "Xanthan Gum", concern: "Generally safe thickener. May cause bloating at very high intake.", source: "EFSA — acceptable daily intake not specified (safe)"),
+        "e440": AdditiveInfo(name: "Pectin", concern: "Natural fiber from fruits. Generally recognized as safe.", source: "EFSA — no safety concern"),
+        "e471": AdditiveInfo(name: "Mono/Diglycerides", concern: "Common emulsifier. May contain trans fats from processing.", source: "EFSA 2017 re-evaluation"),
+        "e500": AdditiveInfo(name: "Sodium Carbonate", concern: "Baking soda. Safe at normal use levels.", source: "EFSA — no safety concern"),
+    ]
 
     private func nutriScoreColor(_ grade: String) -> Color {
         switch grade {
@@ -828,47 +898,100 @@ struct ProductDetailSheet: View {
         .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
-    // MARK: - Sources Section
+    // MARK: - Sources Section (contextual evidence)
 
     private var sourcesSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sectionHeader(color: .white.opacity(0.4), title: "Sources", trailing: nil)
+            sectionHeader(color: .white.opacity(0.4), title: "Why This Score?", trailing: nil)
 
-            VStack(spacing: 8) {
-                sourceCard(
-                    icon: "chart.bar.fill",
-                    iconColor: .green,
-                    name: "Nutri-Score",
-                    detail: "European nutritional quality rating (A–E) by Santé publique France",
-                    url: "https://www.santepubliquefrance.fr/en/nutri-score"
-                )
-                sourceCard(
+            // Contextual nutrient evidence
+            if let n = nutriments {
+                let sugar = n.sugars100g ?? 0
+                let satFat = n.saturatedFat100g ?? 0
+                let fiber = n.fiber100g ?? 0
+                let sodium = (n.sodium100g ?? 0) * 1000
+
+                if sugar > 10 {
+                    evidenceRow(
+                        icon: "exclamationmark.triangle.fill",
+                        color: .orange,
+                        title: "High sugar (\(String(format: "%.1f", sugar))g/100g)",
+                        detail: "WHO recommends <25g added sugar per day. High sugar intake linked to obesity, type 2 diabetes, and cardiovascular disease.",
+                        source: "WHO Guideline: Sugars intake for adults and children, 2015"
+                    )
+                }
+                if satFat > 5 {
+                    evidenceRow(
+                        icon: "heart.fill",
+                        color: .red,
+                        title: "High saturated fat (\(String(format: "%.1f", satFat))g/100g)",
+                        detail: "Saturated fat raises LDL cholesterol. AHA recommends <13g/day for a 2,000 calorie diet.",
+                        source: "American Heart Association — Dietary Fats, 2021"
+                    )
+                }
+                if fiber > 3 {
+                    evidenceRow(
+                        icon: "leaf.fill",
+                        color: .green,
+                        title: "Good fiber source (\(String(format: "%.1f", fiber))g/100g)",
+                        detail: "Dietary fiber supports digestion, reduces cholesterol, and helps regulate blood sugar.",
+                        source: "Harvard T.H. Chan School of Public Health"
+                    )
+                }
+                if sodium > 600 {
+                    evidenceRow(
+                        icon: "drop.triangle.fill",
+                        color: .orange,
+                        title: "High sodium (\(Int(sodium))mg/100g)",
+                        detail: "Excess sodium raises blood pressure. WHO recommends <2,000mg/day.",
+                        source: "WHO Guideline: Sodium intake for adults and children, 2023"
+                    )
+                }
+                if let trans = n.transFat100g, trans > 0 {
+                    evidenceRow(
+                        icon: "xmark.octagon.fill",
+                        color: .red,
+                        title: "Contains trans fat (\(String(format: "%.1f", trans))g/100g)",
+                        detail: "Industrial trans fats have no safe level of intake. WHO targets global elimination by 2025.",
+                        source: "WHO REPLACE trans fat elimination programme"
+                    )
+                }
+            }
+
+            // Contextual NOVA evidence
+            if let nova = product.novaGroup, nova == 4 {
+                evidenceRow(
                     icon: "gearshape.2.fill",
-                    iconColor: .blue,
-                    name: "NOVA Classification",
-                    detail: "Food processing scale (1–4) by University of São Paulo",
-                    url: "https://world.openfoodfacts.org/nova"
+                    color: .red,
+                    title: "Ultra-processed food (NOVA 4)",
+                    detail: "Ultra-processed foods linked to higher risk of cardiovascular disease, cancer, and all-cause mortality in meta-analysis of 10M+ participants.",
+                    source: "BMJ 2024 — Lane et al. (doi:10.1136/bmj-2023-077310)"
                 )
-                sourceCard(
-                    icon: "shield.checkered",
-                    iconColor: .orange,
-                    name: "EFSA",
-                    detail: "European Food Safety Authority — additive risk assessments",
-                    url: "https://www.efsa.europa.eu/en/topics/topic/food-additives"
+            }
+
+            // Contextual additive evidence
+            let codes = parseAdditivesForDisplay()
+            let highRiskCodes = codes.filter { service.additiveRisk(for: $0) == .high }
+            if !highRiskCodes.isEmpty {
+                let names = highRiskCodes.prefix(3).compactMap { Self.additiveDatabase[$0.lowercased()]?.name ?? $0.uppercased() }
+                evidenceRow(
+                    icon: "flask.fill",
+                    color: .red,
+                    title: "\(highRiskCodes.count) high-risk additive\(highRiskCodes.count > 1 ? "s" : "")",
+                    detail: "\(names.joined(separator: ", ")) — flagged by European Food Safety Authority (EFSA) or International Agency for Research on Cancer (IARC).",
+                    source: "EFSA Scientific Opinions · IARC Monographs"
                 )
-                sourceCard(
-                    icon: "exclamationmark.triangle.fill",
-                    iconColor: .red,
-                    name: "IARC (WHO)",
-                    detail: "International Agency for Research on Cancer — carcinogen classifications",
-                    url: "https://monographs.iarc.who.int"
-                )
-                sourceCard(
-                    icon: "brain.head.profile.fill",
-                    iconColor: .purple,
-                    name: "Food Compass",
-                    detail: "Tufts University nutrient profiling system — Nature Food, 2021",
-                    url: "https://sites.tufts.edu/foodcompass"
+            }
+
+            // NutriScore context
+            if let grade = product.nutriscoreGrade?.lowercased() {
+                let (emoji, verdict) = nutriScoreVerdict(grade)
+                evidenceRow(
+                    icon: emoji,
+                    color: nutriScoreVerdictColor(grade),
+                    title: "Nutri-Score \(grade.uppercased())",
+                    detail: verdict,
+                    source: "Santé publique France — Nutri-Score algorithm v2, 2024"
                 )
             }
         }
@@ -880,33 +1003,57 @@ struct ProductDetailSheet: View {
         )
     }
 
-    private func sourceCard(icon: String, iconColor: Color, name: String, detail: String, url: String) -> some View {
-        Link(destination: URL(string: url)!) {
-            HStack(spacing: 12) {
+    private func evidenceRow(icon: String, color: Color, title: String, detail: String, source: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 10) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(iconColor.opacity(0.12))
-                        .frame(width: 38, height: 38)
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(color.opacity(0.12))
+                        .frame(width: 32, height: 32)
                     Image(systemName: icon)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(iconColor)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
-                    Text(detail)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.45))
-                        .lineLimit(2)
+                        .foregroundStyle(color)
                 }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.2))
+                Text(title)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.9))
             }
-            .padding(10)
-            .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            Text(detail)
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.55))
+                .lineSpacing(2)
+                .padding(.leading, 42)
+            HStack(spacing: 4) {
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: 9))
+                Text(source)
+                    .font(.system(size: 10, weight: .medium))
+            }
+            .foregroundStyle(.purple.opacity(0.6))
+            .padding(.leading, 42)
+        }
+        .padding(.vertical, 8)
+    }
+
+    private func nutriScoreVerdict(_ grade: String) -> (String, String) {
+        switch grade {
+        case "a": return ("checkmark.seal.fill", "Excellent nutritional quality. Rich in positive nutrients with low negative markers.")
+        case "b": return ("hand.thumbsup.fill", "Good nutritional quality. Positive nutrients outweigh negatives.")
+        case "c": return ("equal.circle.fill", "Average nutritional quality. Balance of positive and negative nutrients.")
+        case "d": return ("exclamationmark.circle.fill", "Below average. Higher levels of sugar, salt, or saturated fat.")
+        case "e": return ("xmark.circle.fill", "Poor nutritional quality. High in sugar, salt, saturated fat, or calories.")
+        default: return ("questionmark.circle.fill", "Nutritional quality not rated.")
+        }
+    }
+
+    private func nutriScoreVerdictColor(_ grade: String) -> Color {
+        switch grade {
+        case "a": return Color(red: 0.1, green: 0.75, blue: 0.35)
+        case "b": return Color(red: 0.5, green: 0.8, blue: 0.1)
+        case "c": return .orange
+        case "d": return Color(red: 0.95, green: 0.55, blue: 0.1)
+        case "e": return Color(red: 0.9, green: 0.25, blue: 0.2)
+        default: return .gray
         }
     }
 }
