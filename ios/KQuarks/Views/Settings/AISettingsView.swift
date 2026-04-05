@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AISettingsView: View {
     @State private var providerManager = AIProviderManager.shared
+    @State private var aiLogger = AIInteractionLogger.shared
     @State private var claudeApiKey: String = ""
     @State private var showingSaveConfirmation = false
 
@@ -112,6 +113,33 @@ struct AISettingsView: View {
                 } footer: {
                     Text("Optional. Provide your own Claude API key for higher rate limits. Without one, the shared server key is used.")
                 }
+            }
+
+            // AI Training Data Collection
+            Section {
+                Toggle(isOn: Binding(
+                    get: { aiLogger.hasConsent },
+                    set: { newValue in
+                        Task { await aiLogger.updateConsent(granted: newValue) }
+                    }
+                )) {
+                    Label("Help Improve AI", systemImage: "brain")
+                }
+
+                if aiLogger.hasConsent {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "checkmark.shield")
+                            .foregroundStyle(.green)
+                            .frame(width: 24)
+                        Text("Your AI interactions are being anonymized and saved to help train a fully private, on-device health AI.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } header: {
+                Text("AI Training")
+            } footer: {
+                Text("When enabled, your AI prompts and responses are logged to help build a better health AI. Data is anonymized and you can disable this at any time. Your goal: fully on-device AI that never sends data anywhere.")
             }
 
             // Privacy Info

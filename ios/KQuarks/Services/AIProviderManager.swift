@@ -84,34 +84,80 @@ class AIProviderManager {
 
     func generateInsights() async -> AIInsightsService.AIAnalysisResult? {
         let provider = effectiveProvider
+        let startTime = CFAbsoluteTimeGetCurrent()
 
         if provider == .onDevice {
             do {
                 let context = try await AIInsightsService.shared.buildHealthContextPublic()
                 let result = try await OnDeviceAIService.shared.generateInsights(context: context)
                 Logger.general.debug("[AIProvider] On-device insights generated successfully")
+
+                let elapsed = Int((CFAbsoluteTimeGetCurrent() - startTime) * 1000)
+                let contextStr = String(describing: context)
+                await AIInteractionLogger.shared.log(
+                    type: .insight,
+                    provider: "on_device",
+                    promptSummary: "Health insights generation",
+                    responseText: result.insights.map { $0.title + ": " + $0.content }.joined(separator: "\n"),
+                    healthContextHash: AIInteractionLogger.hashContext(contextStr),
+                    responseTimeMs: elapsed
+                )
+
                 return result
             } catch {
                 Logger.general.debug("[AIProvider] On-device failed, falling back to cloud: \(error.localizedDescription)")
                 if selectedProvider == .auto {
-                    return await AIInsightsService.shared.generateInsights()
+                    let result = await AIInsightsService.shared.generateInsights()
+                    if let result {
+                        let elapsed = Int((CFAbsoluteTimeGetCurrent() - startTime) * 1000)
+                        await AIInteractionLogger.shared.log(
+                            type: .insight,
+                            provider: "cloud",
+                            promptSummary: "Health insights generation (fallback)",
+                            responseText: result.insights.map { $0.title + ": " + $0.content }.joined(separator: "\n"),
+                            responseTimeMs: elapsed
+                        )
+                    }
+                    return result
                 }
                 return nil
             }
         }
 
-        return await AIInsightsService.shared.generateInsights()
+        let result = await AIInsightsService.shared.generateInsights()
+        if let result {
+            let elapsed = Int((CFAbsoluteTimeGetCurrent() - startTime) * 1000)
+            await AIInteractionLogger.shared.log(
+                type: .insight,
+                provider: "cloud",
+                promptSummary: "Health insights generation",
+                responseText: result.insights.map { $0.title + ": " + $0.content }.joined(separator: "\n"),
+                responseTimeMs: elapsed
+            )
+        }
+        return result
     }
 
     // MARK: - Chat
 
     func chat(message: String, history: [(role: String, content: String)]) async throws -> String {
         let provider = effectiveProvider
+        let startTime = CFAbsoluteTimeGetCurrent()
 
         if provider == .onDevice {
             do {
                 let response = try await OnDeviceAIService.shared.chat(message: message, history: history)
                 Logger.general.debug("[AIProvider] On-device chat response generated")
+
+                let elapsed = Int((CFAbsoluteTimeGetCurrent() - startTime) * 1000)
+                await AIInteractionLogger.shared.log(
+                    type: .chat,
+                    provider: "on_device",
+                    promptSummary: message,
+                    responseText: response,
+                    responseTimeMs: elapsed
+                )
+
                 return response
             } catch {
                 Logger.general.debug("[AIProvider] On-device chat failed: \(error.localizedDescription)")
@@ -129,12 +175,25 @@ class AIProviderManager {
 
     func generateBriefing() async -> String? {
         let provider = effectiveProvider
+        let startTime = CFAbsoluteTimeGetCurrent()
 
         if provider == .onDevice {
             do {
                 let context = try await AIInsightsService.shared.buildHealthContextPublic()
                 let briefing = try await OnDeviceAIService.shared.generateBriefing(context: context)
                 Logger.general.debug("[AIProvider] On-device briefing generated")
+
+                let elapsed = Int((CFAbsoluteTimeGetCurrent() - startTime) * 1000)
+                let contextStr = String(describing: context)
+                await AIInteractionLogger.shared.log(
+                    type: .briefing,
+                    provider: "on_device",
+                    promptSummary: "Morning briefing generation",
+                    responseText: briefing,
+                    healthContextHash: AIInteractionLogger.hashContext(contextStr),
+                    responseTimeMs: elapsed
+                )
+
                 return briefing
             } catch {
                 Logger.general.debug("[AIProvider] On-device briefing failed: \(error.localizedDescription)")
