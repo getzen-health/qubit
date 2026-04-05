@@ -3,7 +3,7 @@ import XCTest
 
 // MARK: - FoodScannerService Unit Tests
 //
-// Tests the ZenScore algorithm (5-pillar 0–100 scoring), additive safety,
+// Tests the ZenScore v2 algorithm (4-pillar 0–100 scoring), additive safety,
 // additive risk classification, and FoodProduct JSON decoding.
 // All tests are pure logic — no network calls.
 
@@ -116,37 +116,58 @@ final class FoodScannerServiceTests: XCTestCase {
 
     // MARK: - ZenScore: Additive Safety Pillar (0–25 pts)
 
-    func testCalcAdditiveSafety_noAdditives_returns25() {
-        let result = sut.calcAdditiveSafety([])
+    private func makeProduct(additives: [String], ingredients: String? = nil) throws -> FoodProduct {
+        let additivesJSON = additives.map { "\"\($0)\"" }.joined(separator: ",")
+        let ingredientsField = ingredients.map { ", \"ingredients_text\": \"\($0)\"" } ?? ""
+        let json = """
+        {
+          "code": "test",
+          "additives_tags": [\(additivesJSON)],
+          "labels_tags": [],
+          "categories_tags": [],
+          "countries_tags": []\(ingredientsField)
+        }
+        """.data(using: .utf8)!
+        return try JSONDecoder().decode(FoodProduct.self, from: json)
+    }
+
+    func testCalcAdditiveSafety_noAdditives_returns25() throws {
+        let product = try makeProduct(additives: [])
+        let result = sut.calcAdditiveSafety(product)
         XCTAssertEqual(result.score, 25)
         XCTAssertEqual(result.max, 25)
         XCTAssertTrue(result.detail.lowercased().contains("no additives"))
     }
 
-    func testCalcAdditiveSafety_tierAAdditive_lowerScore() {
+    func testCalcAdditiveSafety_tierAAdditive_lowerScore() throws {
         // e102 is Tier A (high risk) — penalises 10 pts
-        let result = sut.calcAdditiveSafety(["en:e102"])
+        let product = try makeProduct(additives: ["en:e102"])
+        let result = sut.calcAdditiveSafety(product)
         XCTAssertLessThan(result.score, 25)
         XCTAssertGreaterThanOrEqual(result.score, 0)
     }
 
-    func testCalcAdditiveSafety_tierCOnlyAdditive_slightPenalty() {
+    func testCalcAdditiveSafety_tierCOnlyAdditive_slightPenalty() throws {
         // Tier C (low risk) — small penalty
-        let tierC = sut.calcAdditiveSafety(["en:e220"])
-        let noAdditive = sut.calcAdditiveSafety([])
+        let productC = try makeProduct(additives: ["en:e220"])
+        let productNone = try makeProduct(additives: [])
+        let tierC = sut.calcAdditiveSafety(productC)
+        let noAdditive = sut.calcAdditiveSafety(productNone)
         XCTAssertLessThanOrEqual(tierC.score, noAdditive.score)
         XCTAssertGreaterThan(tierC.score, 0)
     }
 
-    func testCalcAdditiveSafety_scoreNeverExceedsMax() {
-        let result = sut.calcAdditiveSafety(["en:e102", "en:e950", "en:e220", "en:e460"])
+    func testCalcAdditiveSafety_scoreNeverExceedsMax() throws {
+        let product = try makeProduct(additives: ["en:e102", "en:e950", "en:e220", "en:e460"])
+        let result = sut.calcAdditiveSafety(product)
         XCTAssertLessThanOrEqual(result.score, 25)
     }
 
-    func testCalcAdditiveSafety_scoreNeverNegative() {
+    func testCalcAdditiveSafety_scoreNeverNegative() throws {
         // Many high-risk additives should floor at 0
         let manyBad = (1...10).map { "en:e10\($0 % 5 == 0 ? "2" : "29")" }
-        let result = sut.calcAdditiveSafety(manyBad)
+        let product = try makeProduct(additives: manyBad)
+        let result = sut.calcAdditiveSafety(product)
         XCTAssertGreaterThanOrEqual(result.score, 0)
     }
 
@@ -171,7 +192,7 @@ final class FoodScannerServiceTests: XCTestCase {
     }
 
     func testAdditiveRisk_unknownCode_returnsSafe() {
-        let risk = sut.additiveRisk(for: "e999")
+        let risk = sut.additiveRisk(for: "e100")
         XCTAssertEqual(risk.color, "green")
     }
 
@@ -335,8 +356,8 @@ final class FoodScannerServiceTests: XCTestCase {
         let result = sut.calculateZenScore(product)
         let p = result.pillars
 
-        let pillarSum = p.nutrientBalance.score + p.processingIntegrity.score +
-                        p.additiveSafety.score + p.ingredientQuality.score
+        let pillarSum = p.nutrientDensity.score + p.processingIngredients.score +
+                        p.additiveSafety.score + p.labelsCertifications.score
 
         XCTAssertEqual(result.score, pillarSum, "Total score must equal sum of pillar scores")
     }
