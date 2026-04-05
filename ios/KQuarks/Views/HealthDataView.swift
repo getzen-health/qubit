@@ -19,28 +19,6 @@ struct HealthDataView: View {
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         if selectedCategory == .sleep {
-                            NavigationLink(destination: SleepScienceView()) {
-                                HStack {
-                                    Image(systemName: "moon.stars.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.indigo)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sleep Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Sleep stages, performance impact & chronobiology — Walker 2017: SWS doubles GH; Mah 2011: +9% shooting accuracy with sleep extension; Van Dongen 2003: 6h/night ≡ 24h deprivation")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             NavigationLink(destination: SleepView()) {
                                 HStack {
                                     Image(systemName: "moon.fill")
@@ -61,32 +39,6 @@ struct HealthDataView: View {
 
                                     Spacer()
 
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: SleepArchitectureView()) {
-                                HStack {
-                                    Image(systemName: "moon.zzz.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.indigo)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sleep Architecture")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("REM, Core & Deep stage breakdown — 30 nights")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundStyle(.white.opacity(0.4))
@@ -200,152 +152,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: SleepRegularityIndexView()) {
-                                HStack {
-                                    Image(systemName: "calendar.badge.clock")
-                                        .font(.title2)
-                                        .foregroundStyle(.indigo)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.indigo.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sleep Regularity Index")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Day-to-day sleep/wake consistency score — Phillips 2021 mortality predictor")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: SocialJetLagView()) {
-                                HStack {
-                                    Image(systemName: "clock.arrow.2.circlepath")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Social Jet Lag")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Weekday vs weekend sleep timing mismatch — MSFsc, Roenneberg 2012")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: SleepChronotypeView()) {
-                                HStack {
-                                    Image(systemName: "moon.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Chronotype")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Early bird vs night owl & social jet lag")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: WristTemperatureScienceView()) {
-                                HStack {
-                                    Image(systemName: "thermometer.sun.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Wrist Temperature Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Thermoregulation, circadian biology, illness detection & fertility tracking")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding(.vertical, 4)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: WristTemperatureView()) {
-                                HStack {
-                                    Image(systemName: "thermometer.medium")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Wrist Temperature")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Nightly deviation (Series 8+)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: BodyTemperatureInsightsView()) {
-                                HStack {
-                                    Image(systemName: "thermometer.high")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Temperature Insights")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Illness signals, cycle correlation & 30-day trend")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
                         } else if selectedCategory == .body {
                             NavigationLink(destination: BodyCompositionView()) {
                                 HStack {
@@ -397,28 +203,6 @@ struct HealthDataView: View {
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: MedicationAdherenceScienceView()) {
-                                HStack {
-                                    Image(systemName: "pill.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Medication Adherence Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Adherence research, chronic disease outcomes & reminder science — WHO 2003: only 50% of chronic patients take meds as prescribed")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
                                 }
                                 .padding()
                                 .premiumCard(cornerRadius: 12)
@@ -491,135 +275,10 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: OralHygieneView()) {
-                                HStack {
-                                    Image(systemName: "mouth.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.mint)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Oral Hygiene")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Toothbrushing sessions, streaks, duration & time-of-day — Apple Watch Series 5+")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Handwashing Science
-                            NavigationLink(destination: HandwashingScienceView()) {
-                                HStack {
-                                    Image(systemName: "hands.sparkles.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Handwashing Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Infection prevention, Apple Watch detection & WHO 20-second evidence")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding(.vertical, 4)
-                            }
-                            .buttonStyle(.plain)
-
                             // Handwashing
-                            NavigationLink(destination: HandwashingView()) {
-                                HStack {
-                                    Image(systemName: "hands.sparkles.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.teal)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Handwashing")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Daily events, streaks & time-of-day pattern")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Audio Exposure Science
-                            NavigationLink(destination: AudioExposureScienceView()) {
-                                HStack {
-                                    Image(systemName: "waveform.badge.exclamationmark")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Audio Exposure Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Cochlear damage science, noise dose limits & tinnitus research — WHO 2015: 80 dB safe limit; Kujawa 2009: hidden hearing loss before audiogram changes")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Blood Glucose Science
-                            NavigationLink(destination: BloodGlucoseScienceView()) {
-                                HStack {
-                                    Image(systemName: "drop.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.red)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Blood Glucose Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("CGM metrics, insulin resistance, exercise & glucose, metabolic flexibility — ADA 2023, DPP trial, Zeevi 2015 Cell personalized nutrition")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Blood Glucose (CGM)
                             NavigationLink(destination: BloodGlucoseView()) {
                                 HStack {
@@ -706,32 +365,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // VO₂max Science
-                            NavigationLink(destination: VO2MaxScienceView()) {
-                                HStack {
-                                    Image(systemName: "lungs.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("VO₂max Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Physiology, longevity research, training protocols & Apple Watch accuracy — Mandsager 2018: elite fitness = 5× lower mortality")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // VO2 Max / Cardio Fitness
                             NavigationLink(destination: VO2MaxView()) {
                                 HStack {
@@ -760,32 +393,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // Race Predictor
-                            NavigationLink(destination: RacePredictorView()) {
-                                HStack {
-                                    Image(systemName: "stopwatch.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Race Predictor")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("5K, 10K, half & full marathon")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Circadian HR Pattern
                             NavigationLink(destination: CircadianHRView()) {
                                 HStack {
@@ -814,32 +421,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // HR Recovery Science
-                            NavigationLink(destination: HeartRateRecoveryScienceView()) {
-                                HStack {
-                                    Image(systemName: "heart.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.red)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("HRR Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Heart rate recovery physiology, mortality research & training protocols — Cole 1999 NEJM: HRR ≤12 bpm = 4× higher mortality")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // HR Recovery
                             NavigationLink(destination: HeartRateRecoveryView()) {
                                 HStack {
@@ -948,32 +529,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // Blood Oxygen Science
-                            NavigationLink(destination: BloodOxygenScienceView()) {
-                                HStack {
-                                    Image(systemName: "lungs.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Blood Oxygen Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("SpO₂ physiology, hypoxia, altitude acclimatization & sleep apnea detection — Levine 1997: LHTI; Apple Watch FDA-cleared OSA screening (watchOS 11)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Blood Oxygen Deep Dive (SpO₂)
                             NavigationLink(destination: BloodOxygenDeepDiveView()) {
                                 HStack {
@@ -1056,32 +611,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // HRV Science
-                            NavigationLink(destination: HRVScienceView()) {
-                                HStack {
-                                    Image(systemName: "waveform.path.ecg.rectangle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("HRV Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Autonomic physiology, health outcomes, HRV-guided training & Apple Watch accuracy — Plews 2013: 7-day rolling avg r=0.72 with performance")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // HRV deep-dive
                             NavigationLink(destination: HRVDetailView()) {
                                 HStack {
@@ -1188,28 +717,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: LongevityScienceView()) {
-                                HStack {
-                                    Image(systemName: "heart.text.square.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Longevity Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Exercise & mortality, biomarkers & cellular aging — Kodama 2009: each 1 MET = 13% mortality reduction; Mandsager 2018: low CRF = 500% higher mortality vs elite fitness")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Vitality Score — composite longevity index
                             NavigationLink(destination: LongevityView()) {
                                 HStack {
@@ -1265,32 +772,6 @@ struct HealthDataView: View {
                             .buttonStyle(.plain)
 
                             // AFib Science
-                            NavigationLink(destination: AFibScienceView()) {
-                                HStack {
-                                    Image(systemName: "waveform.path.ecg.rectangle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.red)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("AFib Science")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("AFib physiology, ECG accuracy, stroke risk (CHA₂DS₂-VASc), treatment & Apple Watch FDA-cleared screening — Perez 2019 NEJM Apple Heart Study")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             // Cardiac Events (AFib, high HR, low HR)
                             NavigationLink(destination: CardiacEventsView()) {
                                 HStack {
@@ -1392,28 +873,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: ExerciseBloodPressureView()) {
-                                HStack {
-                                    Image(systemName: "heart.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.red)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.red.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Exercise & Blood Pressure")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Does your training lower your BP? — Cornelissen 2013: aerobic exercise reduces SBP by 3.5 mmHg")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             ForEach(selectedCategory.dataTypes, id: \.self) { dataType in
                                 HealthDataRow(dataType: dataType)
                             }
@@ -1431,32 +890,6 @@ struct HealthDataView: View {
                                             .font(.headline)
                                             .foregroundStyle(.white)
                                         Text("Daily stand hours, 12-hr goal streak & hourly pattern")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: FlightsClimbedSummaryView()) {
-                                HStack {
-                                    Image(systemName: "figure.stair.stepper")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Floors Climbed")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Daily floors, 30-day trend & 10-floor goal streak")
                                             .font(.subheadline)
                                             .foregroundStyle(.white.opacity(0.4))
                                     }
@@ -1522,50 +955,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: GaitScienceView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Gait Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Walking speed as vital sign, gait biomechanics & neurological markers — Studenski 2011 (JAMA): 0.1 m/s faster = 12% lower mortality; fall risk prediction")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: GaitAnalysisView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk.circle")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Gait Analysis")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Walking speed, step length, asymmetry & double support — passively measured")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             NavigationLink(destination: FunctionalFitnessBatteryView()) {
                                 HStack {
                                     Image(systemName: "figure.strengthtraining.functional.circle.fill")
@@ -1588,160 +977,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: ImmuneStressIndexView()) {
-                                HStack {
-                                    Image(systemName: "cross.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.mint)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Immune Stress Index")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("HRV drop + RHR elevation + temp deviation + step reduction — illness early warning")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: FallRiskAssessmentView()) {
-                                HStack {
-                                    Image(systemName: "figure.fall.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Fall Risk Assessment")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("STEADI gait speed + steadiness + asymmetry composite — Studenski 2011")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: ActivityFragmentationView()) {
-                                HStack {
-                                    Image(systemName: "arrow.left.arrow.right.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.teal)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Activity Fragmentation")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("How broken-up your movement is — Diaz 2017 JAMA active/sedentary transition index")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: VILPAView()) {
-                                HStack {
-                                    Image(systemName: "bolt.heart.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("VILPA")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Vigorous Intermittent Lifestyle Activity — Stamatakis 2022 Nature Medicine: ≥3 bouts/day, 38% mortality reduction")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: SedentaryBreakView()) {
-                                HStack {
-                                    Image(systemName: "chair.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sedentary Breaks")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Longest sitting streak & break frequency — Biswas 2015 Ann Intern Med: >11hrs/day = 40% mortality risk")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: FastingScienceView()) {
-                                HStack {
-                                    Image(systemName: "timer")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Fasting Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Autophagy, metabolic switching & hormonal response — Ohsumi 2016 (Nobel): autophagy peaks 24–48h; Sutton 2018: TRE improves insulin sensitivity 38%; Ho 1988: 24h fasting raises GH 5×")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: MetabolicRateScienceView()) {
-                                HStack {
-                                    Image(systemName: "flame.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Metabolic Rate Science")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("RMR measurement, metabolic adaptation & TDEE components — Mifflin 1990, Rosenbaum 2010, Pontzer 2021")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             NavigationLink(destination: BasalMetabolicRateView()) {
                                 HStack {
                                     Image(systemName: "flame.circle.fill")
@@ -1754,94 +989,6 @@ struct HealthDataView: View {
                                         Text("Basal Metabolic Rate")
                                             .font(.headline).foregroundStyle(.white)
                                         Text("Apple Watch BMR, Mifflin-St Jeor formula & TDEE estimate")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: SweatRateView()) {
-                                HStack {
-                                    Image(systemName: "drop.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Sweat Rate")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Fluid loss per hour from weigh-ins near workouts — Sawka 2007 ACSM: >2% mass loss impairs performance")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: BoneLoadingView()) {
-                                HStack {
-                                    Image(systemName: "figure.run.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.green)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.green.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Bone Loading")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Weekly bone impact score from running (×2.5), walking (×1.2) & stairs — Wolff's Law, Nikander 2010")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: WalkingAsymmetryView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk.motion")
-                                        .font(.title2)
-                                        .foregroundStyle(.teal)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Walking Asymmetry")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Left/right step timing imbalance — Schmid 2019: >5% asymmetry = 2.5× higher knee OA risk")
-                                            .font(.subheadline).foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: WalkingSpeedView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk.arrival")
-                                        .font(.title2)
-                                        .foregroundStyle(.teal)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.teal.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Walking Speed")
-                                            .font(.headline).foregroundStyle(.white)
-                                        Text("Sixth vital sign — Studenski 2011 JAMA: each 0.1 m/s faster = ~12% lower 10-year mortality risk")
                                             .font(.subheadline).foregroundStyle(.white.opacity(0.4))
                                     }
                                     Spacer()
@@ -2034,84 +1181,6 @@ struct HealthDataView: View {
                             }
                             .buttonStyle(.plain)
 
-                            NavigationLink(destination: SixMinuteWalkView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk.motion")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("6-Min Walk Test")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Apple's estimated functional fitness & 90-day trend")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: WalkingSteadinessView()) {
-                                HStack {
-                                    Image(systemName: "figure.walk")
-                                        .font(.title2)
-                                        .foregroundStyle(.mint)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.mint.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Walking Steadiness")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Balance & fall risk assessment")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: StairSpeedView()) {
-                                HStack {
-                                    Image(systemName: "figure.stair.stepper")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Stair Speed")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Ascent & descent speed — fall risk indicator (iPhone 8+)")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
                             NavigationLink(destination: MobilityView()) {
                                 HStack {
                                     Image(systemName: "figure.walk.motion")
@@ -2125,84 +1194,6 @@ struct HealthDataView: View {
                                             .font(.headline)
                                             .foregroundStyle(.white)
                                         Text("Walking speed, step length & gait")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: DaylightExposureView()) {
-                                HStack {
-                                    Image(systemName: "sun.max.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Daylight Exposure")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Outdoor light for circadian health")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: UVExposureView()) {
-                                HStack {
-                                    Image(systemName: "sun.max.trianglebadge.exclamationmark")
-                                        .font(.title2)
-                                        .foregroundStyle(.orange)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.orange.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("UV Exposure")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Daily UV radiation, WHO categories & Vitamin D science")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.white.opacity(0.4))
-                                    }
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.4))
-                                }
-                                .padding()
-                                .premiumCard(cornerRadius: 12)
-                            }
-                            .buttonStyle(.plain)
-
-                            NavigationLink(destination: AudiogramView()) {
-                                HStack {
-                                    Image(systemName: "ear.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 44, height: 44)
-                                        .background(Color.purple.opacity(0.2))
-                                        .cornerRadius(10)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Audiogram")
-                                            .font(.headline)
-                                            .foregroundStyle(.white)
-                                        Text("Hearing threshold by frequency — noise notch detection")
                                             .font(.subheadline)
                                             .foregroundStyle(.white.opacity(0.4))
                                     }
