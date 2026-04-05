@@ -545,10 +545,10 @@ struct ProductDetailSheet: View {
                         .foregroundStyle(.white.opacity(0.6))
 
                     VStack(alignment: .leading, spacing: 6) {
-                        explainerRow("🥦", "Nutrient Density", "Vitamins, protein, fiber vs sugar, sodium — %DV based")
-                        explainerRow("🧪", "Additive Safety", "60+ additives analyzed with EFSA/IARC evidence")
-                        explainerRow("🏭", "Processing Level", "NOVA classification + ingredient complexity")
-                        explainerRow("🌿", "Ingredient Quality", "Whole foods vs refined/artificial analysis")
+                        explainerRow("leaf.fill", .green, "Nutrient Density", "Vitamins, protein, fiber vs sugar, sodium — %DV based")
+                        explainerRow("flask.fill", .orange, "Additive Safety", "60+ additives analyzed with EFSA/IARC evidence")
+                        explainerRow("gearshape.2.fill", .blue, "Processing Level", "NOVA classification + ingredient complexity")
+                        explainerRow("sparkles", Color(red: 0.5, green: 0.9, blue: 0.5), "Ingredient Quality", "Whole foods vs refined/artificial analysis")
                     }
 
                     HStack(spacing: 4) {
@@ -575,9 +575,12 @@ struct ProductDetailSheet: View {
         )
     }
 
-    private func explainerRow(_ emoji: String, _ title: String, _ desc: String) -> some View {
+    private func explainerRow(_ icon: String, _ iconColor: Color, _ title: String, _ desc: String) -> some View {
         HStack(alignment: .top, spacing: 8) {
-            Text(emoji).font(.system(size: 12))
+            Image(systemName: icon)
+                .font(.system(size: 12))
+                .foregroundStyle(iconColor)
+                .frame(width: 16)
             VStack(alignment: .leading, spacing: 1) {
                 Text(title)
                     .font(.system(size: 11, weight: .semibold))
@@ -604,14 +607,14 @@ struct ProductDetailSheet: View {
             sectionHeader(color: .purple, title: "Score Breakdown", trailing: nil)
 
             let pillars: [(String, Color, PillarScore)] = [
-                ("🥦", Color(red: 0.3, green: 0.85, blue: 0.4), zenScore.pillars.nutrientDensity),
-                ("🧪", Color(red: 0.95, green: 0.6, blue: 0.2), zenScore.pillars.additiveSafety),
-                ("🏭", Color(red: 0.4, green: 0.7, blue: 0.95), zenScore.pillars.processingIngredients),
-                ("🌿", Color(red: 0.5, green: 0.9, blue: 0.5), zenScore.pillars.labelsCertifications),
+                ("leaf.fill", Color(red: 0.3, green: 0.85, blue: 0.4), zenScore.pillars.nutrientDensity),
+                ("gearshape.2.fill", Color(red: 0.4, green: 0.7, blue: 0.95), zenScore.pillars.processingIngredients),
+                ("flask.fill", Color(red: 0.95, green: 0.6, blue: 0.2), zenScore.pillars.additiveSafety),
+                ("sparkles", Color(red: 0.5, green: 0.9, blue: 0.5), zenScore.pillars.labelsCertifications),
             ]
             ForEach(Array(pillars.enumerated()), id: \.offset) { _, item in
-                let (emoji, color, pillar) = item
-                PillarRow(emoji: emoji, pillar: pillar, barColor: color)
+                let (icon, color, pillar) = item
+                PillarRow(icon: icon, iconColor: color, pillar: pillar, barColor: color)
             }
         }
         .padding(18)
@@ -922,13 +925,17 @@ struct ZenScoreBadge: View {
 // MARK: - PillarRow
 
 struct PillarRow: View {
-    let emoji: String
+    let icon: String
+    let iconColor: Color
     let pillar: PillarScore
     var barColor: Color = .green
 
     var body: some View {
         HStack(spacing: 10) {
-            Text(emoji).font(.system(size: 16))
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundStyle(iconColor)
+                .frame(width: 20)
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(pillar.label)

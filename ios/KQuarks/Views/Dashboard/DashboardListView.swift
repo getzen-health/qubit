@@ -172,27 +172,41 @@ struct DashboardListView: View {
         return NSLocalizedString("Good evening", comment: "Greeting")
     }
 
-    private var greetingEmoji: String {
+    private var greetingIcon: String {
         let hour = Calendar.current.component(.hour, from: Date())
-        if hour < 6 { return "🌙" }
-        if hour < 12 { return "☀️" }
-        if hour < 17 { return "🌤️" }
-        if hour < 21 { return "🌅" }
-        return "🌙"
+        if hour < 6 { return "moon.stars.fill" }
+        if hour < 12 { return "sun.max.fill" }
+        if hour < 17 { return "cloud.sun.fill" }
+        if hour < 21 { return "sunset.fill" }
+        return "moon.stars.fill"
+    }
+
+    private var greetingIconColor: Color {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 6 { return .indigo }
+        if hour < 12 { return .yellow }
+        if hour < 17 { return .orange }
+        if hour < 21 { return Color(red: 0.95, green: 0.5, blue: 0.2) }
+        return .indigo
     }
 
     @ViewBuilder
     private var greetingHeader: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("\(greetingEmoji) \(greeting)")
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [.white, .white.opacity(0.7)],
-                        startPoint: .leading,
-                        endPoint: .trailing
+            HStack(spacing: 8) {
+                Image(systemName: greetingIcon)
+                    .font(.system(size: 22))
+                    .foregroundStyle(greetingIconColor)
+                Text(greeting)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.white, .white.opacity(0.7)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
                     )
-                )
+            }
 
             Text(Date(), format: .dateTime.weekday(.wide).month(.wide).day())
                 .font(.system(size: 14, weight: .medium))
