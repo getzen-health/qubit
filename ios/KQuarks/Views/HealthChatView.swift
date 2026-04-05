@@ -26,6 +26,13 @@ struct HealthChatView: View {
         .navigationTitle("Health Coach")
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if AIProviderManager.shared.effectiveProvider == .onDevice {
+                    Label("On-Device", systemImage: "lock.shield")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
+            }
             ToolbarItem(placement: .confirmationAction) {
                 if !service.messages.isEmpty {
                     Button("Clear") {

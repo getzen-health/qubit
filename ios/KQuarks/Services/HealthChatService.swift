@@ -71,6 +71,33 @@ class HealthChatService {
         let userMessage = ChatMessage(role: .user, content: trimmed)
         messages.append(userMessage)
 
+        // Try on-device first if provider says so
+        let provider = AIProviderManager.shared.effectiveProvider
+        if provider == .onDevice {
+            do {
+                let history = messages.dropLast().map { (role: $0.role.rawValue, content: $0.content) }
+                let responseText = try await OnDeviceAIService.shared.chat(message: trimmed, history: history)
+                let assistantMessage = ChatMessage(role: .assistant, content: responseText)
+                messages.append(assistantMessage)
+
+                let userId = supabase.currentSession?.user.id.uuidString ?? ""
+                await savePair(userMessage: userMessage, assistantMessage: assistantMessage, userId: userId)
+                isStreaming = false
+                return
+            } catch {
+                // If auto mode, fall through to cloud; otherwise show error
+                if AIProviderManager.shared.selectedProvider != .auto {
+                    self.error = error.localizedDescription
+                    messages.removeLast()
+                    isStreaming = false
+                    return
+                }
+                Logger.general.debug("[HealthChat] On-device failed, falling back to cloud")
+            }
+        }
+
+        // Cloud path (existing behavior)
+
         // Build history excluding the message we just appended (last element)
         let historyForRequest = messages.dropLast().map {
             HistoryMessage(role: $0.role.rawValue, content: $0.content)

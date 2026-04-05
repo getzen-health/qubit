@@ -99,6 +99,11 @@ class AIInsightsService {
         }
     }
 
+    /// Public accessor for health context — used by on-device AI provider
+    func buildHealthContextPublic() async throws -> HealthContext {
+        try await buildHealthContext()
+    }
+
     private func buildHealthContext() async throws -> HealthContext {
         let today = try await healthKit.fetchTodaySummary()
         let weekHistory = try await healthKit.fetchWeekSummaries(days: 7)
