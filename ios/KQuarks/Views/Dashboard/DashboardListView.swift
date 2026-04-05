@@ -7,6 +7,12 @@ struct DashboardListView: View {
     @Environment(ThemeManager.self) private var themeManager
     private let aiService = AIInsightsService.shared
 
+    @Binding var showFoodScanner: Bool
+
+    init(showFoodScanner: Binding<Bool> = .constant(false)) {
+        _showFoodScanner = showFoodScanner
+    }
+
     @State private var showLogWeight = false
     @State private var logWeightText = ""
     @State private var logWeightError: String?
@@ -71,6 +77,12 @@ struct DashboardListView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     HStack(spacing: 12) {
+                        Button {
+                            showFoodScanner = true
+                        } label: {
+                            Image(systemName: "barcode.viewfinder")
+                        }
+
                         Button {
                             Task {
                                 await viewModel.refreshAIInsights()
