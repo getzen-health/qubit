@@ -87,6 +87,10 @@
 		11DDEF68C27AD865CB1285D3 /* DynamicTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A170C7B8AF9535E951F503 /* DynamicTypeExtensions.swift */; };
 		129890F2FEE89D1D9E0B9785 /* AthletesHeartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5872C28615BC6D7E36884ABE /* AthletesHeartView.swift */; };
 		131BD475DD63D847D34D882E /* FoodScannerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0323F20D91291F4BCD3E82 /* FoodScannerServiceTests.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* GoalServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F3 /* GoalServiceTests.swift */; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A4 /* NotificationServiceTests.swift */; };
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* BiometricServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F6A7B8C9D0E1F2A3B5 /* BiometricServiceTests.swift */; };
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* SubscriptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C9D0E1F2A3B4C6 /* SubscriptionServiceTests.swift */; };
 		147AF085E70902D58E1FA282 /* EquestrianScienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465CFF3051EBC54B85A2E048 /* EquestrianScienceView.swift */; };
 		14838037E2CB3101D0D7C060 /* CardiacEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9CAE8615A5E5B880268E68 /* CardiacEventsView.swift */; };
 		14926EFEDF610B06685E3316 /* SleepStagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386B6D582462D5185F56766F /* SleepStagesView.swift */; };
@@ -829,6 +833,10 @@
 		79D01F52BFE52F4FB6C4B71A /* LactateThresholdView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LactateThresholdView.swift; sourceTree = "<group>"; };
 		79D0FD2B3AEB31579F78FE27 /* EditFoodEntryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditFoodEntryView.swift; sourceTree = "<group>"; };
 		7A0323F20D91291F4BCD3E82 /* FoodScannerServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodScannerServiceTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F3 /* GoalServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GoalServiceTests.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A4 /* NotificationServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
+		C3D4E5F6A7B8C9D0E1F2A3B5 /* BiometricServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BiometricServiceTests.swift; sourceTree = "<group>"; };
+		D4E5F6A7B8C9D0E1F2A3B4C6 /* SubscriptionServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionServiceTests.swift; sourceTree = "<group>"; };
 		7B2B109B2B207E75FDE1D80F /* YearInReviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = YearInReviewView.swift; sourceTree = "<group>"; };
 		7B44705B589DB2E561D8DE6A /* TrainingVolumeHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrainingVolumeHistoryView.swift; sourceTree = "<group>"; };
 		7BCDA79FDFEDE4F0BDC30B0E /* BasalMetabolicRateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BasalMetabolicRateView.swift; sourceTree = "<group>"; };
@@ -1098,6 +1106,10 @@
 			isa = PBXGroup;
 			children = (
 				7A0323F20D91291F4BCD3E82 /* FoodScannerServiceTests.swift */,
+				A1B2C3D4E5F6A7B8C9D0E1F3 /* GoalServiceTests.swift */,
+				B2C3D4E5F6A7B8C9D0E1F2A4 /* NotificationServiceTests.swift */,
+				C3D4E5F6A7B8C9D0E1F2A3B5 /* BiometricServiceTests.swift */,
+				D4E5F6A7B8C9D0E1F2A3B4C6 /* SubscriptionServiceTests.swift */,
 			);
 			name = KQuarksTests;
 			path = KQuarksTests;
@@ -2419,6 +2431,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				131BD475DD63D847D34D882E /* FoodScannerServiceTests.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* GoalServiceTests.swift in Sources */,
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* NotificationServiceTests.swift in Sources */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* BiometricServiceTests.swift in Sources */,
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* SubscriptionServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
