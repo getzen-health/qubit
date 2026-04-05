@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 // MARK: - FoodDiaryEntry Model
 
@@ -195,7 +196,7 @@ struct FoodDiaryView: View {
             let dateStr = selectedDate.formatted(.iso8601.year().month().day())
             entries = try await SupabaseService.shared.getFoodDiaryEntries(date: dateStr)
         } catch {
-            print("[FoodDiaryView] Failed to load entries: \(error)")
+            Logger.general.debug("[FoodDiaryView] Failed to load entries: \(error)")
             entries = []
         }
     }
@@ -206,7 +207,7 @@ struct FoodDiaryView: View {
             entries.removeAll { $0.id == entry.id }
         } catch {
             errorMessage = "Failed to delete entry: \(error.localizedDescription)"
-            print("[FoodDiaryView] Failed to delete entry: \(error)")
+            Logger.general.debug("[FoodDiaryView] Failed to delete entry: \(error)")
         }
     }
     
@@ -224,7 +225,7 @@ struct FoodDiaryView: View {
             }
         } catch {
             errorMessage = "Failed to update entry: \(error.localizedDescription)"
-            print("[FoodDiaryView] Failed to update entry: \(error)")
+            Logger.general.debug("[FoodDiaryView] Failed to update entry: \(error)")
         }
     }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - Top-level models
 
@@ -463,7 +464,7 @@ struct BloodPressurePatternView: View {
                 )
             }
         } catch {
-            print("[BloodPressurePatternView] loadData failed: \(error)")
+            Logger.general.debug("[BloodPressurePatternView] loadData failed: \(error)")
         }
     }
 }

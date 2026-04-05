@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 @Observable
 class HealthChatService {
@@ -211,7 +212,7 @@ class HealthChatService {
                 .insert(rows)
                 .execute()
         } catch {
-            print("[HealthChatService] Failed to persist messages: \(error)")
+            Logger.general.debug("[HealthChatService] Failed to persist messages: \(error)")
         }
     }
 }

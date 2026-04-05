@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import os
 
 // MARK: - Models
 
@@ -180,7 +181,7 @@ final class FoodScannerService {
                 self.product = try JSONDecoder().decode(FoodProduct.self, from: productData)
                 return
             } catch {
-                print("[FoodScanner] Fetch error (\(base)): \(error)")
+                Logger.general.debug("[FoodScanner] Fetch error (\(base)): \(error)")
                 continue
             }
         }
@@ -196,7 +197,7 @@ final class FoodScannerService {
             guard let url = URL(string: "\(base)/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=20&fields=\(Self.fields)") else { continue }
             do {
                 guard let data = try await fetchJSON(for: makeRequest(url: url)) else {
-                    print("[FoodScanner] \(base) returned HTML/error, trying next mirror")
+                    Logger.general.debug("[FoodScanner] \(base) returned HTML/error, trying next mirror")
                     continue
                 }
                 let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -207,17 +208,18 @@ final class FoodScannerService {
                     do {
                         return try decoder.decode(FoodProduct.self, from: itemData)
                     } catch {
-                        print("[FoodScanner] Decode error for \(productDict["product_name"] ?? "?"): \(error)")
+                        let name = productDict["product_name"] as? String ?? "?"
+                        Logger.general.debug("[FoodScanner] Decode error for \(name): \(error)")
                         return nil
                     }
                 }
                 return decoded.filter { $0.name != "Unknown Product" && !$0.name.isEmpty }
             } catch {
-                print("[FoodScanner] Search error (\(base)): \(error)")
+                Logger.general.debug("[FoodScanner] Search error (\(base)): \(error)")
                 continue
             }
         }
-        print("[FoodScanner] All mirrors failed for query: \(query)")
+        Logger.general.debug("[FoodScanner] All mirrors failed for query: \(query)")
         return []
     }
 

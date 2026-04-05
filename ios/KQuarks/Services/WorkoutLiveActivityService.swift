@@ -1,6 +1,7 @@
 import ActivityKit
 import HealthKit
 import Foundation
+import os
 
 #if !targetEnvironment(macCatalyst)
 @available(iOS 16.1, *)
@@ -31,7 +32,7 @@ class WorkoutLiveActivityService {
             )
             isActive = true
         } catch {
-            print("[WorkoutLiveActivity] Failed to start: \(error)")
+            Logger.general.debug("[WorkoutLiveActivity] Failed to start: \(error)")
         }
     }
     

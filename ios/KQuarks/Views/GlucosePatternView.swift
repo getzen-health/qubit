@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - Top-level models
 
@@ -433,7 +434,7 @@ struct GlucosePatternView: View {
                 return GlucoseMonthStat(label: monthLabels[m-1], count: bucket.count, avgMgdl: avg, inRangePct: inR)
             }
         } catch {
-            print("[GlucosePatternView] loadData failed: \(error)")
+            Logger.general.debug("[GlucosePatternView] loadData failed: \(error)")
         }
     }
 }

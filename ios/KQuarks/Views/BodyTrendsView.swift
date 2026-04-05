@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - Top-level models
 
@@ -498,7 +499,7 @@ struct BodyTrendsView: View {
                 )
             }
         } catch {
-            print("[BodyTrendsView] loadData failed: \(error)")
+            Logger.general.debug("[BodyTrendsView] loadData failed: \(error)")
         }
     }
 

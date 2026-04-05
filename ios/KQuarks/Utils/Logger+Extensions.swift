@@ -1,6 +1,10 @@
 import OSLog
 
 extension Logger {
+    static let general = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "getzen",
+        category: "general"
+    )
     static let sync = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "getzen",
         category: "sync"

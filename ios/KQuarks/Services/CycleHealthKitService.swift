@@ -1,5 +1,6 @@
 import HealthKit
 import Foundation
+import os
 
 @Observable
 class CycleHealthKitService {
@@ -14,7 +15,7 @@ class CycleHealthKitService {
             try await healthStore.requestAuthorization(toShare: [menstrualType], read: [menstrualType])
             return true
         } catch {
-            print("HealthKit write permission error: \(error)")
+            Logger.general.debug("HealthKit write permission error: \(error)")
             return false
         }
     }

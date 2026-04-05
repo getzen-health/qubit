@@ -1,5 +1,6 @@
 import UserNotifications
 import Foundation
+import os
 
 struct MedicationReminderService {
     static func requestPermission() async -> Bool {
@@ -37,7 +38,7 @@ struct MedicationReminderService {
         let request = UNNotificationRequest(identifier: "med-\(identifier)-\(timeOfDay)", content: content, trigger: trigger)
 
         center.add(request) { error in
-            if let error { print("Failed to schedule medication reminder: \(error)") }
+            if let error { Logger.general.debug("Failed to schedule medication reminder: \(error)") }
         }
     }
 

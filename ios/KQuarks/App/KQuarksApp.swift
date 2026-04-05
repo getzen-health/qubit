@@ -1,6 +1,7 @@
 import SwiftUI
 import Supabase
 import SwiftData
+import os
 #if os(iOS)
 import BackgroundTasks
 #endif
@@ -33,8 +34,11 @@ struct KQuarksApp: App {
             } else {
                 // Fallback 2: in-memory store — app stays alive, no local persistence
                 let memoryConfig = ModelConfiguration(isStoredInMemoryOnly: true)
-                // swiftlint:disable:next force_try
-                modelContainer = try! ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [memoryConfig])
+                do {
+                    modelContainer = try ModelContainer(for: Schema([PendingSyncItem.self]), configurations: [memoryConfig])
+                } catch {
+                    fatalError("Failed to create even in-memory ModelContainer: \(error.localizedDescription)")
+                }
             }
         }
 
@@ -136,7 +140,7 @@ class AppState {
             self.isAuthenticated = true
             if let user { GoalService.shared.apply(from: user) }
         } catch {
-            print("[Auth] initializeAuth failed: \(error.localizedDescription)")
+            Logger.general.debug("[Auth] initializeAuth failed: \(error.localizedDescription)")
             self.isAuthenticated = false
         }
 
@@ -157,7 +161,7 @@ class AppState {
                 self.isAuthenticated = true
                 if let user { GoalService.shared.apply(from: user) }
             } catch {
-                print("[Auth] signedIn user fetch failed: \(error.localizedDescription)")
+                Logger.general.debug("[Auth] signedIn user fetch failed: \(error.localizedDescription)")
             }
         case .signedOut:
             self.user = nil
@@ -180,7 +184,7 @@ class AppState {
             user = nil
             isAuthenticated = false
         } catch {
-            print("Sign out error: \(error)")
+            Logger.general.debug("Sign out error: \(error)")
         }
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 struct MoodView: View {
     @State private var selectedScore: Int = 5
@@ -191,7 +192,7 @@ struct MoodView: View {
                 recentLogs = logs
             }
         } catch {
-            print("[MoodView] Failed to load mood history: \(error)")
+            Logger.general.debug("[MoodView] Failed to load mood history: \(error)")
         }
     }
 }

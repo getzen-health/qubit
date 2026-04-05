@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import os
 
 // MARK: - WaterView
 
@@ -195,7 +196,7 @@ struct WaterView: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             #endif
         } catch {
-            print("[WaterView] addWater failed: \(error)")
+            Logger.general.debug("[WaterView] addWater failed: \(error)")
         }
     }
 

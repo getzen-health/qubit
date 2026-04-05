@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 // MARK: - Models
 
@@ -76,7 +77,7 @@ final class HabitsViewModel {
             habits = h
             completions = c
         } catch {
-            print("[HabitsView] load failed: \(error)")
+            Logger.general.debug("[HabitsView] load failed: \(error)")
         }
     }
 
@@ -108,7 +109,7 @@ final class HabitsViewModel {
             try await SupabaseService.shared.createHabit(name: name, emoji: emoji)
             await load()
         } catch {
-            print("[HabitsView] addHabit failed: \(error)")
+            Logger.general.debug("[HabitsView] addHabit failed: \(error)")
         }
     }
 

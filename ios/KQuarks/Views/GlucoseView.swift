@@ -1,5 +1,6 @@
 import SwiftUI
 import HealthKit
+import os
 
 struct GlucoseView: View {
     @State private var entries: [GlucoseEntry] = []
@@ -123,7 +124,7 @@ struct GlucoseView: View {
             }
         } catch {
             #if DEBUG
-            print("[GlucoseView] loadEntries error: \(error)")
+            Logger.general.debug("[GlucoseView] loadEntries error: \(error)")
             #endif
         }
     }
@@ -158,7 +159,7 @@ struct GlucoseView: View {
         } catch {
             errorMessage = "Network error"
             #if DEBUG
-            print("[GlucoseView] saveEntry error: \(error)")
+            Logger.general.debug("[GlucoseView] saveEntry error: \(error)")
             #endif
         }
     }

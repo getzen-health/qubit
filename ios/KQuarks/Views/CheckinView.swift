@@ -1,4 +1,5 @@
 import SwiftUI
+import os
 
 // MARK: - Model
 
@@ -44,7 +45,7 @@ final class CheckinViewModel {
                 notes  = c.notes ?? ""
             }
         } catch {
-            print("[CheckinViewModel] load failed: \(error)")
+            Logger.general.debug("[CheckinViewModel] load failed: \(error)")
         }
     }
 
