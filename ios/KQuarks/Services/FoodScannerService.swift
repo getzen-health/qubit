@@ -179,7 +179,9 @@ final class FoodScannerService {
     }
 
     func searchProducts(query: String) async -> [FoodProduct] {
-        guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return [] }
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+        guard let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return [] }
 
         for base in Self.baseURLs {
             guard let url = URL(string: "\(base)/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=20&fields=\(Self.fields)") else { continue }
@@ -193,7 +195,12 @@ final class FoodScannerService {
                 let decoder = JSONDecoder()
                 let decoded: [FoodProduct] = products.compactMap { productDict in
                     guard let itemData = try? JSONSerialization.data(withJSONObject: productDict) else { return nil }
-                    return try? decoder.decode(FoodProduct.self, from: itemData)
+                    do {
+                        return try decoder.decode(FoodProduct.self, from: itemData)
+                    } catch {
+                        print("[FoodScanner] Decode error for \(productDict["product_name"] ?? "?"): \(error)")
+                        return nil
+                    }
                 }
                 return decoded.filter { $0.name != "Unknown Product" && !$0.name.isEmpty }
             } catch {

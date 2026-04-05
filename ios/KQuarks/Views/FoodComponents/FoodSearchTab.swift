@@ -61,6 +61,7 @@ struct FoodSearchTab: View {
                 guard !Task.isCancelled else { return }
                 isSearching = true
                 let found = await service.searchProducts(query: newValue)
+                guard !Task.isCancelled else { return }
                 isSearching = false
                 results = found
             }
