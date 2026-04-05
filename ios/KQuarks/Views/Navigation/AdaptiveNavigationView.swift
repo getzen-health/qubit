@@ -147,7 +147,7 @@ struct AdaptiveNavigationView: View {
     @ViewBuilder
     private var iPhoneNavigationView: some View {
         TabView(selection: $selectedTab) {
-            DashboardListView()
+            DashboardListView(showFoodScanner: $showFoodScanner)
                 .tabItem { Label("Dashboard", systemImage: "heart.text.square") }
                 .tag(0)
 
@@ -167,38 +167,8 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Profile", systemImage: "person.crop.circle") }
                 .tag(4)
         }
-        .overlay(alignment: .bottomTrailing) {
-            Button {
-                showFoodScanner = true
-            } label: {
-                Image(systemName: "barcode.viewfinder")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 56, height: 56)
-                    .background(
-                        LinearGradient(
-                            colors: [Color.green, Color.green.opacity(0.8)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .clipShape(Circle())
-                    .shadow(color: .green.opacity(0.4), radius: 8, x: 0, y: 4)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 90)
-        }
         .sheet(isPresented: $showFoodScanner) {
-            NavigationStack {
-                FoodScannerView()
-                    .navigationTitle("Food Scanner")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Close") { showFoodScanner = false }
-                        }
-                    }
-            }
+            FoodScannerView()
         }
         .sheet(isPresented: $showCheckinSheet) {
             CheckinView()
