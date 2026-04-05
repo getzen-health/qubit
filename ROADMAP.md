@@ -215,6 +215,51 @@ A health tracking app combining **Bevel-style** dashboards with **Yuka-style** f
 
 ---
 
+## On-Device AI Training Strategy
+
+GetZen's core value: **private health AI** — all inference runs on-device, your data never leaves your phone.
+
+### Phase 1 — Cloud AI + Data Collection (Current)
+> Ship with Claude API while collecting training data from early users.
+
+| Component | Status |
+|-----------|--------|
+| Cloud AI (Claude) for insights, chat, briefing | ✅ Live |
+| On-device AI via Apple Foundation Models (iOS 26) | ✅ Shipped (PR #696) |
+| AI provider selection (on-device / cloud / auto) | ✅ Shipped |
+| `ai_interactions` table for logging prompts + responses | 🔄 In progress |
+| Opt-in consent toggle in AI Settings | 🔄 In progress |
+| AIInteractionLogger service (iOS) | 🔄 In progress |
+| User feedback (thumbs up/down) on AI responses | 🔄 In progress |
+
+**Data collected (with opt-in consent):**
+- Anonymized health context → AI prompt
+- AI response text
+- User rating (helpful / not helpful)
+- Interaction type (insight / chat / briefing)
+- Provider used (on-device / cloud)
+
+### Phase 2 — LoRA Adapter Training
+> Use collected data to train a health-specialized adapter for Apple's 3B model.
+
+| Step | Tool |
+|------|------|
+| Export prompt→response pairs from Supabase as JSONL | Python script |
+| Train LoRA adapter | Apple Adapter Training Toolkit (macOS 26) |
+| Validate adapter quality vs cloud responses | A/B comparison |
+| Package as `.fmadapter` (~160MB) | Toolkit output |
+| Request Foundation Models Adapter Entitlement | Apple Developer Portal |
+
+### Phase 3 — Fully Private
+> Ship trained adapter with app. Remove cloud dependency entirely.
+
+- Bundle `.fmadapter` in app binary
+- Default provider → on-device only
+- Cloud option removed or kept as optional fallback
+- Zero data leaves the phone — ever
+
+---
+
 ## Post-Launch (Week 3+)
 - [ ] Android app (Kotlin + Health Connect)
 - [ ] Apple Watch companion app

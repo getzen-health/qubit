@@ -515,8 +515,10 @@
 		W03 /* WatchComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = W14 /* WatchComplications.swift */; };
 		HQBME8HD09R0SP5I3CJRQ9GO /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */; };
 		J886VLBJMQ0KOP3Y7LZ39P8P /* AIProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */; };
+		KTRN92AIL0G7BLDFILE0001X /* AIInteractionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = KTRN92AIL0G7FILEREF001X /* AIInteractionLogger.swift */; };
 		FIT648M97HN93RUF5GZT3V46 /* AISettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = P4HJY3B3BS2T0A6P5F3LCCN9 /* AISettingsView.swift */; };
 		WNMJC87O4T8J1GSBOKMXQMAB /* OnDeviceAIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */; };
+		KTRN92AIL0G7TESTBLD001X /* AIInteractionLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = KTRN92AIL0G7TESTREF001X /* AIInteractionLoggerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1078,8 +1080,10 @@
 		W14 /* WatchComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplications.swift; sourceTree = "<group>"; };
 		AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIService.swift; sourceTree = "<group>"; };
 		QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProviderManager.swift; sourceTree = "<group>"; };
+		KTRN92AIL0G7FILEREF001X /* AIInteractionLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInteractionLogger.swift; sourceTree = "<group>"; };
 		P4HJY3B3BS2T0A6P5F3LCCN9 /* AISettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsView.swift; sourceTree = "<group>"; };
 		4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIServiceTests.swift; sourceTree = "<group>"; };
+		KTRN92AIL0G7TESTREF001X /* AIInteractionLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInteractionLoggerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1119,7 +1123,8 @@
 				C3D4E5F6A7B8C9D0E1F2A3B5 /* BiometricServiceTests.swift */,
 				D4E5F6A7B8C9D0E1F2A3B4C6 /* SubscriptionServiceTests.swift */,
 			
-				4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */,);
+				4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */,
+				KTRN92AIL0G7TESTREF001X /* AIInteractionLoggerTests.swift */,);
 			name = KQuarksTests;
 			path = KQuarksTests;
 			sourceTree = "<group>";
@@ -1666,7 +1671,8 @@
 				137 /* BiometricService.swift */,
 			
 				AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */,
-				QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */,);
+				QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */,
+				KTRN92AIL0G7FILEREF001X /* AIInteractionLogger.swift */,);
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -2436,6 +2442,7 @@
 			
 				HQBME8HD09R0SP5I3CJRQ9GO /* OnDeviceAIService.swift in Sources */,
 				J886VLBJMQ0KOP3Y7LZ39P8P /* AIProviderManager.swift in Sources */,
+				KTRN92AIL0G7BLDFILE0001X /* AIInteractionLogger.swift in Sources */,
 				FIT648M97HN93RUF5GZT3V46 /* AISettingsView.swift in Sources */,
 				XX8ER91JKMLSLM20FVXPEQXI /* SentryService.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2450,7 +2457,8 @@
 				C3D4E5F6A7B8C9D0E1F2A3B4 /* BiometricServiceTests.swift in Sources */,
 				D4E5F6A7B8C9D0E1F2A3B4C5 /* SubscriptionServiceTests.swift in Sources */,
 			
-				WNMJC87O4T8J1GSBOKMXQMAB /* OnDeviceAIServiceTests.swift in Sources */,);
+				WNMJC87O4T8J1GSBOKMXQMAB /* OnDeviceAIServiceTests.swift in Sources */,
+				KTRN92AIL0G7TESTBLD001X /* AIInteractionLoggerTests.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		W61 /* Sources */ = {

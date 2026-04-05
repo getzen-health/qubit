@@ -82,6 +82,14 @@ class HealthChatService {
 
                 let userId = supabase.currentSession?.user.id.uuidString ?? ""
                 await savePair(userMessage: userMessage, assistantMessage: assistantMessage, userId: userId)
+
+                await AIInteractionLogger.shared.log(
+                    type: .chat,
+                    provider: "on_device",
+                    promptSummary: trimmed,
+                    responseText: responseText
+                )
+
                 isStreaming = false
                 return
             } catch {
@@ -154,6 +162,14 @@ class HealthChatService {
 
             let assistantMessage = ChatMessage(role: .assistant, content: chatResponse.response)
             messages.append(assistantMessage)
+
+            // Log cloud interaction for training
+            await AIInteractionLogger.shared.log(
+                type: .chat,
+                provider: "cloud",
+                promptSummary: trimmed,
+                responseText: chatResponse.response
+            )
 
             // Persist both messages to Supabase
             await savePair(userMessage: userMessage, assistantMessage: assistantMessage, userId: userId)
