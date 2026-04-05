@@ -4,7 +4,7 @@
 A health tracking app combining **Bevel-style** dashboards with **Yuka-style** food scanning.
 - iOS (Swift/SwiftUI) reads Apple Health → syncs to cloud
 - Web dashboard (Next.js 14) visualises all metrics + AI insights
-- QuarkScore™ food health scoring (like Yuka, built from scratch)
+- ZenScore™ food health scoring (like Yuka, built from scratch)
 
 ---
 
@@ -15,7 +15,7 @@ A health tracking app combining **Bevel-style** dashboards with **Yuka-style** f
 | Web dashboard | ✅ 100+ pages, TypeScript strict, deployed on Vercel |
 | Backend | ✅ Supabase (Postgres + RLS + Edge Functions) |
 | API security | ✅ 204/209 routes use `createSecureApiHandler` |
-| Food scanner | ✅ Web (QuarkScore™), iOS in progress |
+| Food scanner | ✅ Web (ZenScore™), iOS in progress |
 | AI insights | ✅ Claude API edge function |
 | App Store | ❌ Not submitted |
 | Privacy policy | ❌ Missing |
@@ -35,7 +35,7 @@ A health tracking app combining **Bevel-style** dashboards with **Yuka-style** f
 | Task | Est | Status |
 |------|-----|--------|
 | Food/workouts API auth + Zod validation | 1.5h | 🔄 agent running |
-| iOS food scanner — VisionKit + OpenFoodFacts + QuarkScore | 2.0h | 🔄 agent running |
+| iOS food scanner — VisionKit + OpenFoodFacts + ZenScore™ | 2.0h | 🔄 agent running |
 | Web cleanup — consolidate SummaryCard, N+1 fix, loading skeletons | 2.0h | 🔄 agent running |
 | Claude AI API route — add Zod validation | 0.5h | pending |
 | Suppress console.error stack traces in production | 0.5h | pending |

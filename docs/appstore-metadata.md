@@ -14,7 +14,7 @@ GetZen gives you a complete picture of your health by syncing Apple Health data 
 
 **Features:**
 - 📊 **Health Dashboard** — Steps, heart rate, sleep, workouts, calories, HRV and more
-- 🥗 **Food Scanner** — Scan barcodes or search products for instant QuarkScore™ nutrition ratings  
+- 🥗 **Food Scanner** — Scan barcodes or search products for instant ZenScore™ nutrition ratings  
 - 🤖 **AI Health Insights** — Daily and weekly summaries powered by Claude AI
 - 💪 **Strength Logger** — Track workouts with progressive overload hints
 - 😴 **Sleep Analysis** — Deep, REM, Core and Awake stage breakdown

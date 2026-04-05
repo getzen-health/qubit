@@ -32,7 +32,7 @@ export interface HealthContext {
   last_mental_health_screen?: { phq9: number; gad7: number }
   sleep_apnea_risk?: string
   // Food scanning
-  avg_quark_score?: number
+  avg_zen_score?: number
   top_scanned_categories?: string[]
   // Lab results (if any)
   notable_labs?: { name: string; value: number; status: string }[]
@@ -226,7 +226,7 @@ export async function compileHealthContext(userId: string, supabase: any): Promi
   if (productScans && productScans.length > 0) {
     const scores = productScans.map((p: { health_score: number | null }) => p.health_score).filter((s: number | null): s is number => s != null)
     if (scores.length > 0) {
-      ctx.avg_quark_score = Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length)
+      ctx.avg_zen_score = Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length)
     }
   }
 
@@ -318,8 +318,8 @@ export function formatContextForClaude(ctx: HealthContext): string {
   if (ctx.sleep_apnea_risk && ctx.sleep_apnea_risk.toLowerCase() !== 'low') {
     lines.push(`- Sleep apnea risk: ${ctx.sleep_apnea_risk}`)
   }
-  if (ctx.avg_quark_score !== undefined) {
-    lines.push(`- Food quality (QuarkScore): avg ${ctx.avg_quark_score}/100 this week`)
+  if (ctx.avg_zen_score !== undefined) {
+    lines.push(`- Food quality (ZenScore): avg ${ctx.avg_zen_score}/100 this week`)
   }
   if (ctx.notable_labs && ctx.notable_labs.length > 0) {
     const labSummary = ctx.notable_labs.map(l => `${l.name}: ${l.value}`).join(', ')

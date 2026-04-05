@@ -350,7 +350,7 @@ export function NutritionLabelOCR({ onResult }: NutritionLabelOCRProps) {
           {!editing && (
             <div className="flex items-center gap-3 px-4 py-3 border-t border-border bg-muted/30">
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground">QuarkScore estimate</p>
+                <p className="text-xs text-muted-foreground">ZenScore estimate</p>
                 <p className="text-xl font-bold">{parsed.estimatedScore}<span className="text-sm font-normal text-muted-foreground">/100</span></p>
               </div>
               <button

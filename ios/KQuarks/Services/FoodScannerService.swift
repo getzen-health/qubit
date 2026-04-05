@@ -93,15 +93,15 @@ struct Nutriments: Codable {
     }
 }
 
-// MARK: - QuarkScore Result
+// MARK: - ZenScore Result
 
-struct QuarkScoreResult {
+struct ZenScoreResult {
     let score: Int
     let grade: String
-    let pillars: QuarkPillars
+    let pillars: ZenScorePillars
 }
 
-struct QuarkPillars {
+struct ZenScorePillars {
     let nutrientBalance: PillarScore
     let processingIntegrity: PillarScore
     let additiveSafety: PillarScore
@@ -212,19 +212,19 @@ final class FoodScannerService {
         return []
     }
 
-    // MARK: - QuarkScore Algorithm (5-pillar, 0-100)
+    // MARK: - ZenScore Algorithm (4-pillar, 0-100)
     // Ported from web/lib/food-scoring.ts
+    // Yuka-inspired: 50% nutrition, 25% additives, 15% processing, 10% ingredients
     // Grades: A+(≥85), A(≥70), B(≥55), C(≥35), D(≥15), F(<15)
 
-    func calculateQuarkScore(_ product: FoodProduct) -> QuarkScoreResult {
-        let nutrientResult = calcNutrientBalance(product.nutriments)
-        let processingResult = calcProcessingIntegrity(product)
+    func calculateZenScore(_ product: FoodProduct) -> ZenScoreResult {
+        let nutrientResult = calcNutrientBalance(product)
         let additiveResult = calcAdditiveSafety(product.additivesTags)
+        let processingResult = calcProcessingIntegrity(product)
         let ingredientResult = calcIngredientQuality(product)
-        let contextResult = PillarScore(score: 5, max: 5, label: "Fits Your Goals", detail: "General health context applied")
 
         let total = min(100, max(0,
-            nutrientResult.score + processingResult.score + additiveResult.score + ingredientResult.score + contextResult.score
+            nutrientResult.score + additiveResult.score + processingResult.score + ingredientResult.score
         ))
 
         let grade: String
@@ -237,24 +237,25 @@ final class FoodScannerService {
         default: grade = "F"
         }
 
-        return QuarkScoreResult(
+        return ZenScoreResult(
             score: total,
             grade: grade,
-            pillars: QuarkPillars(
+            pillars: ZenScorePillars(
                 nutrientBalance: nutrientResult,
                 processingIntegrity: processingResult,
                 additiveSafety: additiveResult,
                 ingredientQuality: ingredientResult,
-                contextFit: contextResult
+                contextFit: PillarScore(score: 0, max: 0, label: "Context Fit", detail: "Included in other pillars")
             )
         )
     }
 
-    // MARK: - Pillar 1: Nutrient Balance (0–35 pts)
+    // MARK: - Pillar 1: Nutrient Balance (0–50 pts)
 
-    private func calcNutrientBalance(_ n: Nutriments?) -> PillarScore {
+    private func calcNutrientBalance(_ product: FoodProduct) -> PillarScore {
+        let n = product.nutriments
         guard let n = n else {
-            return PillarScore(score: 14, max: 35, label: "Nutrient Balance", detail: "No nutrition data available")
+            return PillarScore(score: 25, max: 50, label: "Nutrient Balance", detail: "No nutrition data available")
         }
 
         func clamp(_ v: Double, _ lo: Double, _ hi: Double) -> Double { max(lo, min(hi, v)) }
@@ -268,38 +269,59 @@ final class FoodScannerService {
         let potassium = (n.potassium100g ?? 0) * 1000
         let fruitsVeg = n.fruitsVeg100g ?? 0
 
+        // Positive nutrients (lower thresholds for gentler scoring)
         let posScore =
-            clamp(fiber / 7.5, 0, 1) * 12 +
-            clamp(protein / 15, 0, 1) * 10 +
-            clamp(vitC / 80, 0, 1) * 4 +
-            clamp(vitD / 5, 0, 1) * 3 +
-            clamp(iron / 14, 0, 1) * 3 +
-            clamp(calcium / 1200, 0, 1) * 3 +
-            clamp(potassium / 3500, 0, 1) * 3 +
-            clamp(fruitsVeg / 100, 0, 1) * 3
+            clamp(fiber / 5, 0, 1) * 6 +
+            clamp(protein / 10, 0, 1) * 5 +
+            clamp(vitC / 60, 0, 1) * 3 +
+            clamp(vitD / 5, 0, 1) * 2 +
+            clamp(iron / 10, 0, 1) * 2 +
+            clamp(calcium / 800, 0, 1) * 2 +
+            clamp(potassium / 2000, 0, 1) * 2 +
+            clamp(fruitsVeg / 80, 0, 1) * 3
 
-        let sugar   = n.addedSugars100g ?? n.sugars100g ?? 0
+        // Sugar penalty: differentiate added vs natural sugars
+        let addedSugar = n.addedSugars100g
+        let totalSugar = n.sugars100g ?? 0
+        let sugarPenalty: Double
+        if let added = addedSugar {
+            sugarPenalty = clamp(added / 25, 0, 1) * 10 + clamp((totalSugar - added) / 50, 0, 1) * 3
+        } else {
+            sugarPenalty = clamp(totalSugar / 40, 0, 1) * 8
+        }
+
         let satFat  = n.saturatedFat100g ?? 0
         let sodium  = (n.sodium100g ?? 0) * 1000
         let transFat = n.transFat100g ?? 0
         let energy  = n.energyKcal100g ?? 0
 
-        let negPenalty =
-            clamp(sugar / 50, 0, 1) * 12 +
-            clamp(satFat / 20, 0, 1) * 9 +
-            clamp(sodium / 1500, 0, 1) * 8 +
-            clamp(transFat / 3, 0, 1) * 6 +
-            (energy > 900 ? 4 : energy > 600 ? 2 : 0)
+        let negPenalty = sugarPenalty +
+            clamp(satFat / 15, 0, 1) * 7 +
+            clamp(sodium / 1200, 0, 1) * 6 +
+            clamp(transFat / 2, 0, 1) * 5 +
+            (energy > 800 ? 3.0 : energy > 500 ? 1.5 : 0)
 
-        let raw = 14 + posScore - negPenalty
-        let score = min(35, max(0, Int(raw.rounded())))
-        let detail = "Fiber \(String(format: "%.1f", fiber))g · Protein \(String(format: "%.1f", protein))g · Sugar \(String(format: "%.1f", sugar))g · Sodium \(Int(sodium))mg"
-        return PillarScore(score: score, max: 35, label: "Nutrient Balance", detail: detail)
+        // NutriScore grade as a strong signal
+        let nutriScoreBonus: Double
+        switch product.nutriscoreGrade?.lowercased() {
+        case "a": nutriScoreBonus = 15
+        case "b": nutriScoreBonus = 10
+        case "c": nutriScoreBonus = 0
+        case "d": nutriScoreBonus = -8
+        case "e": nutriScoreBonus = -15
+        default: nutriScoreBonus = 0
+        }
+
+        let raw = 28 + posScore - negPenalty + nutriScoreBonus
+        let displaySugar = addedSugar ?? totalSugar
+        let score = min(50, max(0, Int(raw.rounded())))
+        let detail = "Fiber \(String(format: "%.1f", fiber))g · Protein \(String(format: "%.1f", protein))g · Sugar \(String(format: "%.1f", displaySugar))g · Sodium \(Int(sodium))mg"
+        return PillarScore(score: score, max: 50, label: "Nutrient Balance", detail: detail)
     }
 
-    // MARK: - Pillar 2: Processing Integrity (0–25 pts)
+    // MARK: - Pillar 2: Processing Integrity (0–15 pts)
 
-    private static let novaBaseScore: [Int: Int] = [1: 25, 2: 20, 3: 12, 4: 4]
+    private static let novaBaseScore: [Int: Int] = [1: 15, 2: 12, 3: 7, 4: 2]
 
     private static let upfMarkers = [
         "high fructose corn syrup", "corn syrup solids", "hydrogenated", "interesterified",
@@ -321,20 +343,18 @@ final class FoodScannerService {
 
     private func calcProcessingIntegrity(_ product: FoodProduct) -> PillarScore {
         let novaGroup = product.novaGroup ?? inferNovaGroup(product.ingredientsText)
-        let base = Self.novaBaseScore[novaGroup] ?? 12
-        let ingredientCount = (product.ingredientsText ?? "").components(separatedBy: ",").count
-        let complexityPenalty = novaGroup == 4 ? min(3, ingredientCount / 12) : 0
-        let score = min(25, max(0, base - complexityPenalty))
+        let base = Self.novaBaseScore[novaGroup] ?? 7
+        let score = min(15, max(0, base))
         let novaLabels: [Int: String] = [
             1: "Unprocessed (NOVA 1) — best",
             2: "Culinary ingredient (NOVA 2)",
             3: "Processed food (NOVA 3)",
             4: "Ultra-processed (NOVA 4) — linked to ↑CVD, cancer risk",
         ]
-        return PillarScore(score: score, max: 25, label: "Processing Level", detail: novaLabels[novaGroup] ?? "NOVA group \(novaGroup)")
+        return PillarScore(score: score, max: 15, label: "Processing Level", detail: novaLabels[novaGroup] ?? "NOVA group \(novaGroup)")
     }
 
-    // MARK: - Pillar 3: Additive Safety (0–20 pts)
+    // MARK: - Pillar 3: Additive Safety (0–25 pts)
 
     private static let tierA: Set<String> = [
         "e102", "e104", "e110", "e122", "e123", "e124", "e129",
@@ -365,7 +385,7 @@ final class FoodScannerService {
     func calcAdditiveSafety(_ tags: [String]) -> PillarScore {
         let codes = parseAdditiveCodes(tags)
         if codes.isEmpty {
-            return PillarScore(score: 20, max: 20, label: "Additive Safety", detail: "No additives detected")
+            return PillarScore(score: 25, max: 25, label: "Additive Safety", detail: "No additives detected")
         }
 
         var penalty = 0
@@ -376,21 +396,21 @@ final class FoodScannerService {
             guard !seen.contains(code) else { continue }
             seen.insert(code)
             if Self.tierA.contains(code) {
-                penalty += 8
+                penalty += 10
                 riskAdditives.append("\(code.uppercased()) (EFSA/IARC high concern)")
             } else if Self.tierB.contains(code) {
-                penalty += 4
+                penalty += 6
                 riskAdditives.append("\(code.uppercased()) (IARC 2B / EFSA watch-list)")
             } else if Self.tierC.contains(code) {
-                penalty += 1
+                penalty += 2
             }
         }
 
-        let score = min(20, max(0, 20 - penalty))
+        let score = min(25, max(0, 25 - penalty))
         let detail = riskAdditives.isEmpty
             ? "\(codes.count) additive\(codes.count != 1 ? "s" : "") — all within low-concern tier"
             : riskAdditives.prefix(2).joined(separator: " · ")
-        return PillarScore(score: score, max: 20, label: "Additive Safety", detail: detail)
+        return PillarScore(score: score, max: 25, label: "Additive Safety", detail: detail)
     }
 
     func additiveRisk(for code: String) -> AdditiveRisk {
@@ -401,7 +421,7 @@ final class FoodScannerService {
         return .safe
     }
 
-    // MARK: - Pillar 4: Ingredient Quality (0–15 pts)
+    // MARK: - Pillar 4: Ingredient Quality (0–10 pts)
 
     private static let wholeFoodMarkers = [
         "whole wheat", "whole grain", "brown rice", "oats", "quinoa",
@@ -422,21 +442,21 @@ final class FoodScannerService {
         let labels = product.labelsTags.joined(separator: " ").lowercased()
 
         guard !text.isEmpty else {
-            return PillarScore(score: 7, max: 15, label: "Ingredient Quality", detail: "Ingredient list unavailable — default score applied")
+            return PillarScore(score: 5, max: 10, label: "Ingredient Quality", detail: "Ingredient list unavailable — default score applied")
         }
 
         let top5 = text.components(separatedBy: CharacterSet(charactersIn: ",(")).prefix(5).joined(separator: " ")
-        var score = 7.0
-        let wholeFoodHits = Self.wholeFoodMarkers.filter { top5.contains($0) }.count
-        score += min(Double(wholeFoodHits) * 1.5, 4)
-        let refinedHits = Self.refinedFirstMarkers.filter { top5.contains($0) }.count
-        score -= Double(refinedHits) * 1.5
-        let hasSweetener = Self.artificialSweeteners.contains { text.contains($0) }
-        if hasSweetener { score -= 3 }
+        var score = 5.0
         let isOrganic = labels.contains("organic") || labels.contains("bio")
-        if isOrganic { score += 2 }
+        if isOrganic { score += 3 }
         let isWholeGrain = labels.contains("whole grain") || labels.contains("whole-grain")
         if isWholeGrain { score += 1 }
+        let wholeFoodHits = Self.wholeFoodMarkers.filter { top5.contains($0) }.count
+        if wholeFoodHits > 0 { score += 1 }
+        let refinedHits = Self.refinedFirstMarkers.filter { top5.contains($0) }.count
+        if refinedHits > 0 { score -= 2 }
+        let hasSweetener = Self.artificialSweeteners.contains { text.contains($0) }
+        if hasSweetener { score -= 3 }
 
         var parts: [String] = []
         if isOrganic { parts.append("Certified organic") }
@@ -446,8 +466,8 @@ final class FoodScannerService {
         if wholeFoodHits > 0 { parts.append("\(wholeFoodHits) whole food ingredient\(wholeFoodHits > 1 ? "s" : "")") }
 
         return PillarScore(
-            score: min(15, max(0, Int(score.rounded()))),
-            max: 15,
+            score: min(10, max(0, Int(score.rounded()))),
+            max: 10,
             label: "Ingredient Quality",
             detail: parts.isEmpty ? "Standard ingredient composition" : parts.joined(separator: " · ")
         )

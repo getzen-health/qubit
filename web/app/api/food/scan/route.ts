@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { scoreFoodProduct } from '@/lib/food-scoring'
+import { calculateZenScore } from '@/lib/food-scoring'
 import {
   createSecureApiHandler,
   secureJsonResponse,
@@ -108,7 +108,7 @@ export const GET = createSecureApiHandler(
     const nutriments = product.nutriments || {}
     const hasServing = nutriments['energy-kcal_serving'] !== undefined
 
-    // Fetch user health profile for personalised QuarkScore™ Context Fit pillar
+    // Fetch user health profile for personalised ZenScore™ Context Fit pillar
     let userProfile: { primary_goal?: string; health_conditions?: string[]; dietary_preferences?: string[] } | undefined
     if (user) {
       const { data: profile } = await supabase
@@ -119,7 +119,7 @@ export const GET = createSecureApiHandler(
       if (profile) userProfile = profile
     }
 
-    const { score, grade, components, pillars, flags } = scoreFoodProduct(product, userProfile)
+    const { score, grade, components, pillars, flags } = calculateZenScore(product, userProfile)
 
     const food = {
       name: product.product_name || 'Unknown Product',
