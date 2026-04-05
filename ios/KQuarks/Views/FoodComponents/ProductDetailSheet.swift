@@ -834,23 +834,6 @@ struct ProductDetailSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             sectionHeader(color: .white.opacity(0.4), title: "Sources", trailing: nil)
 
-            Text("Product data and nutritional information")
-                .font(.system(size: 12))
-                .foregroundStyle(.white.opacity(0.5))
-
-            sourceCard(
-                icon: "server.rack",
-                iconColor: .green,
-                name: "Open Food Facts",
-                detail: "Product data, ingredients, nutrition labels",
-                url: "https://world.openfoodfacts.org"
-            )
-
-            Text("Scientific frameworks used in scoring")
-                .font(.system(size: 12))
-                .foregroundStyle(.white.opacity(0.5))
-                .padding(.top, 4)
-
             VStack(spacing: 8) {
                 sourceCard(
                     icon: "chart.bar.fill",
