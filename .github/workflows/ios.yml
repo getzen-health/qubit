@@ -81,15 +81,16 @@ jobs:
         run: |
           xcodebuild -resolvePackageDependencies \
             -project KQuarks.xcodeproj \
-            -scheme KQuarksTests
+            -scheme KQuarks
 
       - name: Run Unit Tests
         working-directory: ios
         run: |
           xcodebuild test \
             -project KQuarks.xcodeproj \
-            -scheme KQuarksTests \
+            -scheme KQuarks \
             -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -only-testing:KQuarksTests \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty --color || true
