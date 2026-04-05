@@ -111,7 +111,7 @@ struct InsightsView: View {
 
     private func generateInsights() async {
         isLoading = true
-        let result = await AIInsightsService.shared.generateInsights()
+        let result = await AIProviderManager.shared.generateInsights()
         if let result = result {
             insights = result.insights.map { insight in
                 InsightItem(

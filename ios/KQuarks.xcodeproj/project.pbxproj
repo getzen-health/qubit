@@ -361,7 +361,7 @@
 		A18AAAF7385E87AF6536E116 /* ReadinessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0404C90632D9F617E48682C /* ReadinessView.swift */; };
 		A1A88B2AA178EE08644B1328 /* TrainingMonotonyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563892607AB6D6483E339E37 /* TrainingMonotonyView.swift */; };
 		A1B2C3D4E5F60002AABBCCDD /* WaterTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001AABBCCDD /* WaterTrackingView.swift */; };
-		A1B2C3D4E5F6A7B8C9D0E1F2 /* SentryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2E1D0C9B8A7F6E5D4C3B2A1 /* SentryService.swift */; };
+		XX8ER91JKMLSLM20FVXPEQXI /* SentryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2E1D0C9B8A7F6E5D4C3B2A1 /* SentryService.swift */; };
 		A2784F222E5379B95430511C /* TrackAndFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6031F85BE33243898E3E4948 /* TrackAndFieldView.swift */; };
 		A28E2C47FFDE67E233B7380D /* MentalHealthScienceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBF58CDE340A85E3185908A /* MentalHealthScienceView.swift */; };
 		A299DF7FA292859FDA41A676 /* HIITPatternView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CBD1E9B16F99A1380E45577 /* HIITPatternView.swift */; };
@@ -513,6 +513,10 @@
 		W01 /* KQuarksWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = W11 /* KQuarksWidget.swift */; };
 		W02 /* KQuarksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = W10 /* KQuarksWidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		W03 /* WatchComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = W14 /* WatchComplications.swift */; };
+		HQBME8HD09R0SP5I3CJRQ9GO /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */; };
+		J886VLBJMQ0KOP3Y7LZ39P8P /* AIProviderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */; };
+		FIT648M97HN93RUF5GZT3V46 /* AISettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = P4HJY3B3BS2T0A6P5F3LCCN9 /* AISettingsView.swift */; };
+		WNMJC87O4T8J1GSBOKMXQMAB /* OnDeviceAIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1072,6 +1076,10 @@
 		W12 /* KQuarksWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KQuarksWidget.entitlements; sourceTree = "<group>"; };
 		W13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		W14 /* WatchComplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplications.swift; sourceTree = "<group>"; };
+		AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIService.swift; sourceTree = "<group>"; };
+		QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProviderManager.swift; sourceTree = "<group>"; };
+		P4HJY3B3BS2T0A6P5F3LCCN9 /* AISettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsView.swift; sourceTree = "<group>"; };
+		4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1110,7 +1118,8 @@
 				B2C3D4E5F6A7B8C9D0E1F2A4 /* NotificationServiceTests.swift */,
 				C3D4E5F6A7B8C9D0E1F2A3B5 /* BiometricServiceTests.swift */,
 				D4E5F6A7B8C9D0E1F2A3B4C6 /* SubscriptionServiceTests.swift */,
-			);
+			
+				4W9RCDEQ38EXUMCSVYGZB7UQ /* OnDeviceAIServiceTests.swift */,);
 			name = KQuarksTests;
 			path = KQuarksTests;
 			sourceTree = "<group>";
@@ -1655,7 +1664,9 @@
 				132 /* GoalService.swift */,
 				134 /* NotificationService.swift */,
 				137 /* BiometricService.swift */,
-			);
+			
+				AKYNVKA0RQ1QY2N9ETXDO5FJ /* OnDeviceAIService.swift */,
+				QY98B4D42C771OMF6NGJ9A7T /* AIProviderManager.swift */,);
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -1709,7 +1720,8 @@
 				125 /* DashboardConfigView.swift */,
 				133 /* GoalsSettingsView.swift */,
 				142 /* NotificationSettingsView.swift */,
-			);
+			
+				P4HJY3B3BS2T0A6P5F3LCCN9 /* AISettingsView.swift */,);
 			path = Settings;
 			sourceTree = "<group>";
 		};
@@ -1985,7 +1997,6 @@
 				AA11BB22CC33DD44EE55FF66 /* SubscriptionService.swift in Sources */,
 				BB22CC33DD44EE55FF66AA11 /* PaywallView.swift in Sources */,
 				82EB8F2A553686E6B8A9AC06 /* CrashReportingService.swift in Sources */,
-				A1B2C3D4E5F6A7B8C9D0E1F2 /* SentryService.swift in Sources */,
 				78C443BF1C1E47AFA45D176D /* AIBriefingService.swift in Sources */,
 				6F3EB7F98B2DDF1B91525A61 /* OfflineSyncQueue.swift in Sources */,
 				5F7E73709D832EF062FA7EEB /* BarcodeScannerTab.swift in Sources */,
@@ -2029,7 +2040,6 @@
 				B70F801F70EB4F8F9AE0563E /* RunningView.swift in Sources */,
 				0EE7C956DED249DD8F9D01D6 /* LeaderboardView.swift in Sources */,
 				1A2B3C4D5E6F7A8B9C0D1E2F /* ImportView.swift in Sources */,
-				A1B2C3D4E5F6A7B8C9D0E1F2 /* SentryService.swift in Sources */,
 				33019F5A5A724DAC815F192D /* RecoveryView.swift in Sources */,
 				CCB7D860EB064C6E9EC128E5 /* CorrelationsView.swift in Sources */,
 				8BB56245B042519684588187 /* CaffeineView.swift in Sources */,
@@ -2423,7 +2433,11 @@
 				B1474B9DDFF1041D5A97E847 /* Zone2TrainingView.swift in Sources */,
 				6E2D81CA2E47461B9A8639E0 /* NutritionLabelParser.swift in Sources */,
 				1B47E5B43AE84279BAEFE25D /* NutritionLabelScannerView.swift in Sources */,
-			);
+			
+				HQBME8HD09R0SP5I3CJRQ9GO /* OnDeviceAIService.swift in Sources */,
+				J886VLBJMQ0KOP3Y7LZ39P8P /* AIProviderManager.swift in Sources */,
+				FIT648M97HN93RUF5GZT3V46 /* AISettingsView.swift in Sources */,
+				XX8ER91JKMLSLM20FVXPEQXI /* SentryService.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B9360455B4BF3519B9642E81 /* Sources */ = {
@@ -2435,7 +2449,8 @@
 				B2C3D4E5F6A7B8C9D0E1F2A3 /* NotificationServiceTests.swift in Sources */,
 				C3D4E5F6A7B8C9D0E1F2A3B4 /* BiometricServiceTests.swift in Sources */,
 				D4E5F6A7B8C9D0E1F2A3B4C5 /* SubscriptionServiceTests.swift in Sources */,
-			);
+			
+				WNMJC87O4T8J1GSBOKMXQMAB /* OnDeviceAIServiceTests.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		W61 /* Sources */ = {
