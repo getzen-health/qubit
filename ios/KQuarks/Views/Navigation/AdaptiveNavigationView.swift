@@ -11,6 +11,7 @@ struct AdaptiveNavigationView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var selectedTab: Int = 0
     @State private var showCheckinSheet = false
+    @State private var showFoodScanner = false
 
     init() {
         // Global UIKit appearance for premium dark theme
@@ -166,6 +167,39 @@ struct AdaptiveNavigationView: View {
                 .tabItem { Label("Profile", systemImage: "person.crop.circle") }
                 .tag(4)
         }
+        .overlay(alignment: .bottomTrailing) {
+            Button {
+                showFoodScanner = true
+            } label: {
+                Image(systemName: "barcode.viewfinder")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 56, height: 56)
+                    .background(
+                        LinearGradient(
+                            colors: [Color.green, Color.green.opacity(0.8)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .clipShape(Circle())
+                    .shadow(color: .green.opacity(0.4), radius: 8, x: 0, y: 4)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 90)
+        }
+        .sheet(isPresented: $showFoodScanner) {
+            NavigationStack {
+                FoodScannerView()
+                    .navigationTitle("Food Scanner")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Close") { showFoodScanner = false }
+                        }
+                    }
+            }
+        }
         .sheet(isPresented: $showCheckinSheet) {
             CheckinView()
         }
@@ -177,6 +211,8 @@ struct AdaptiveNavigationView: View {
             case "com.kquarks.checkin":
                 selectedTab = 0
                 showCheckinSheet = true
+            case "com.kquarks.foodscanner":
+                showFoodScanner = true
             default: break
             }
         }

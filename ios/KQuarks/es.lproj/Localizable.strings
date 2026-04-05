@@ -3098,3 +3098,6 @@
 "VO₂ Max" = "VO₂ Máx";
 
 "Training Load" = "Carga de entrenamiento";
+
+// MARK: - Food Scanner Quick Access
+"Scan & check QuarkScore™" = "Escanear y ver QuarkScore™";
