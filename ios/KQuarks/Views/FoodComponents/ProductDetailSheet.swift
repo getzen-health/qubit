@@ -7,6 +7,7 @@ struct ProductDetailSheet: View {
     @State private var animatedScore: Double = 0
     @State private var showIngredients = false
     @State private var showScoreInfo = false
+    @State private var showWhyScore = false
 
     private var zenScore: ZenScoreResult {
         service.calculateZenScore(product)
@@ -796,18 +797,18 @@ struct ProductDetailSheet: View {
                     nutrientDivider
                     NutrientRow(name: "Carbohydrates", value: n.carbohydrates100g, unit: "g", style: .neutral)
                     nutrientDivider
-                    NutrientRow(name: "  of which Sugars", value: n.sugars100g, unit: "g", style: .caution)
+                    NutrientRow(name: "Sugars", value: n.sugars100g, unit: "g", style: .caution, isSubItem: true)
                     if let added = n.addedSugars100g {
                         nutrientDivider
-                        NutrientRow(name: "  Added Sugars", value: added, unit: "g", style: .negative)
+                        NutrientRow(name: "Added Sugars", value: added, unit: "g", style: .negative, isSubItem: true)
                     }
                     nutrientDivider
                     NutrientRow(name: "Fat", value: n.fat100g, unit: "g", style: .neutral)
                     nutrientDivider
-                    NutrientRow(name: "  Saturated Fat", value: n.saturatedFat100g, unit: "g", style: .negative)
+                    NutrientRow(name: "Saturated Fat", value: n.saturatedFat100g, unit: "g", style: .negative, isSubItem: true)
                     if let trans = n.transFat100g {
                         nutrientDivider
-                        NutrientRow(name: "  Trans Fat", value: trans, unit: "g", style: .negative)
+                        NutrientRow(name: "Trans Fat", value: trans, unit: "g", style: .negative, isSubItem: true)
                     }
                     nutrientDivider
                     NutrientRow(name: "Fiber", value: n.fiber100g, unit: "g", style: .positive)
@@ -902,9 +903,22 @@ struct ProductDetailSheet: View {
 
     private var sourcesSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sectionHeader(color: .white.opacity(0.4), title: "Why This Score?", trailing: nil)
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    showWhyScore.toggle()
+                }
+            } label: {
+                HStack {
+                    sectionHeader(color: .white.opacity(0.4), title: "Why This Score?", trailing: nil)
+                    Spacer()
+                    Image(systemName: showWhyScore ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+            }
+            .buttonStyle(.plain)
 
-            // Contextual nutrient evidence
+            if showWhyScore {
             if let n = nutriments {
                 let sugar = n.sugars100g ?? 0
                 let satFat = n.saturatedFat100g ?? 0
@@ -994,6 +1008,7 @@ struct ProductDetailSheet: View {
                     source: "Santé publique France — Nutri-Score algorithm v2, 2024"
                 )
             }
+            } // end showWhyScore
         }
         .padding(18)
         .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -1190,6 +1205,7 @@ struct NutrientRow: View {
     let value: Double?
     let unit: String
     let style: RowStyle
+    var isSubItem: Bool = false
 
     private var valueColor: Color {
         switch style {
@@ -1204,7 +1220,7 @@ struct NutrientRow: View {
         HStack {
             Text(name)
                 .font(.system(size: 13))
-                .foregroundStyle(.white.opacity(0.5))
+                .foregroundStyle(.white.opacity(isSubItem ? 0.4 : 0.6))
             Spacer()
             if let v = value {
                 Text("\(String(format: v < 10 ? "%.1f" : "%.0f", v)) \(unit)")
@@ -1216,6 +1232,7 @@ struct NutrientRow: View {
                     .foregroundStyle(.white.opacity(0.2))
             }
         }
+        .padding(.leading, isSubItem ? 16 : 0)
         .padding(.vertical, 2)
     }
 }
