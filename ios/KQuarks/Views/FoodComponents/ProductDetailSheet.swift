@@ -828,27 +828,66 @@ struct ProductDetailSheet: View {
         .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
-    // MARK: - Scientific Sources Section
+    // MARK: - Sources Section
 
     private var sourcesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(color: .white.opacity(0.4), title: "Scientific Sources", trailing: nil)
+        VStack(alignment: .leading, spacing: 14) {
+            sectionHeader(color: .white.opacity(0.4), title: "Sources", trailing: nil)
 
-            VStack(alignment: .leading, spacing: 10) {
-                sourceLink("Product data — Open Food Facts", url: "https://world.openfoodfacts.org", desc: "Open, collaborative food products database")
-                sourceLink("Nutri-Score — Santé publique France", url: "https://www.santepubliquefrance.fr/en/nutri-score", desc: "French national public health agency")
-                sourceLink("NOVA classification — Monteiro et al.", url: "https://doi.org/10.1017/S1368980017000234", desc: "Public Health Nutrition, 2019")
-                sourceLink("Food additive safety — EFSA", url: "https://www.efsa.europa.eu/en/topics/topic/food-additives", desc: "European Food Safety Authority evaluations")
-                sourceLink("Additive carcinogenicity — IARC", url: "https://monographs.iarc.who.int/agents-classified-by-the-iarc/", desc: "WHO International Agency for Research on Cancer")
-                sourceLink("Ultra-processed foods & health — BMJ 2024", url: "https://doi.org/10.1136/bmj-2023-077310", desc: "Lane et al. — UPF exposure and adverse health outcomes")
-                sourceLink("Food Compass — Tufts University", url: "https://doi.org/10.1038/s43016-021-00381-y", desc: "Mozaffarian et al. — Nature Food 2021")
-            }
+            Text("Product data and nutritional information")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.5))
 
-            Text("ZenScore™ analyzes 54+ food attributes across 4 scientific domains — going beyond simple nutrition labels to evaluate additive safety, processing level, ingredient quality, and certifications. Powered by research from Food Compass, EFSA, IARC, and NOVA classification.")
-                .font(.system(size: 10))
-                .foregroundStyle(.white.opacity(0.3))
-                .lineSpacing(2)
+            sourceCard(
+                icon: "server.rack",
+                iconColor: .green,
+                name: "Open Food Facts",
+                detail: "Product data, ingredients, nutrition labels",
+                url: "https://world.openfoodfacts.org"
+            )
+
+            Text("Scientific frameworks used in scoring")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.5))
                 .padding(.top, 4)
+
+            VStack(spacing: 8) {
+                sourceCard(
+                    icon: "chart.bar.fill",
+                    iconColor: .green,
+                    name: "Nutri-Score",
+                    detail: "European nutritional quality rating (A–E) by Santé publique France",
+                    url: "https://www.santepubliquefrance.fr/en/nutri-score"
+                )
+                sourceCard(
+                    icon: "gearshape.2.fill",
+                    iconColor: .blue,
+                    name: "NOVA Classification",
+                    detail: "Food processing scale (1–4) by University of São Paulo",
+                    url: "https://world.openfoodfacts.org/nova"
+                )
+                sourceCard(
+                    icon: "shield.checkered",
+                    iconColor: .orange,
+                    name: "EFSA",
+                    detail: "European Food Safety Authority — additive risk assessments",
+                    url: "https://www.efsa.europa.eu/en/topics/topic/food-additives"
+                )
+                sourceCard(
+                    icon: "exclamationmark.triangle.fill",
+                    iconColor: .red,
+                    name: "IARC (WHO)",
+                    detail: "International Agency for Research on Cancer — carcinogen classifications",
+                    url: "https://monographs.iarc.who.int"
+                )
+                sourceCard(
+                    icon: "brain.head.profile.fill",
+                    iconColor: .purple,
+                    name: "Food Compass",
+                    detail: "Tufts University nutrient profiling system — Nature Food, 2021",
+                    url: "https://sites.tufts.edu/foodcompass"
+                )
+            }
         }
         .padding(18)
         .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -858,28 +897,33 @@ struct ProductDetailSheet: View {
         )
     }
 
-    private func sourceLink(_ title: String, url: String, desc: String) -> some View {
-        Link(destination: URL(string: url) ?? URL(string: "https://getzen.app")!) {
-            HStack(alignment: .center, spacing: 10) {
-                Image(systemName: "link.circle.fill")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.purple.opacity(0.8))
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(title)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.9))
-                    Text(desc)
+    private func sourceCard(icon: String, iconColor: Color, name: String, detail: String, url: String) -> some View {
+        Link(destination: URL(string: url)!) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(iconColor.opacity(0.12))
+                        .frame(width: 38, height: 38)
+                    Image(systemName: icon)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(iconColor)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text(detail)
                         .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.5))
+                        .foregroundStyle(.white.opacity(0.45))
+                        .lineLimit(2)
                 }
                 Spacer()
-                Image(systemName: "arrow.up.right")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(.purple.opacity(0.5))
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.2))
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal, 12)
-            .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .padding(10)
+            .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
     }
 }
