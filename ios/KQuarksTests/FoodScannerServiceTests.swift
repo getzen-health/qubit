@@ -3,7 +3,7 @@ import XCTest
 
 // MARK: - FoodScannerService Unit Tests
 //
-// Tests the QuarkScore algorithm (5-pillar 0–100 scoring), additive safety,
+// Tests the ZenScore algorithm (5-pillar 0–100 scoring), additive safety,
 // additive risk classification, and FoodProduct JSON decoding.
 // All tests are pure logic — no network calls.
 
@@ -114,19 +114,19 @@ final class FoodScannerServiceTests: XCTestCase {
         XCTAssertEqual(n.sugars100g ?? 0, 3.0, accuracy: 0.01)
     }
 
-    // MARK: - QuarkScore: Additive Safety Pillar (0–20 pts)
+    // MARK: - ZenScore: Additive Safety Pillar (0–25 pts)
 
-    func testCalcAdditiveSafety_noAdditives_returns20() {
+    func testCalcAdditiveSafety_noAdditives_returns25() {
         let result = sut.calcAdditiveSafety([])
-        XCTAssertEqual(result.score, 20)
-        XCTAssertEqual(result.max, 20)
+        XCTAssertEqual(result.score, 25)
+        XCTAssertEqual(result.max, 25)
         XCTAssertTrue(result.detail.lowercased().contains("no additives"))
     }
 
     func testCalcAdditiveSafety_tierAAdditive_lowerScore() {
-        // e102 is Tier A (high risk) — penalises 12 pts
+        // e102 is Tier A (high risk) — penalises 10 pts
         let result = sut.calcAdditiveSafety(["en:e102"])
-        XCTAssertLessThan(result.score, 20)
+        XCTAssertLessThan(result.score, 25)
         XCTAssertGreaterThanOrEqual(result.score, 0)
     }
 
@@ -140,7 +140,7 @@ final class FoodScannerServiceTests: XCTestCase {
 
     func testCalcAdditiveSafety_scoreNeverExceedsMax() {
         let result = sut.calcAdditiveSafety(["en:e102", "en:e950", "en:e220", "en:e460"])
-        XCTAssertLessThanOrEqual(result.score, 20)
+        XCTAssertLessThanOrEqual(result.score, 25)
     }
 
     func testCalcAdditiveSafety_scoreNeverNegative() {
@@ -182,9 +182,9 @@ final class FoodScannerServiceTests: XCTestCase {
         XCTAssertEqual(lower.color, upper.color)
     }
 
-    // MARK: - QuarkScore: Full Score Range
+    // MARK: - ZenScore: Full Score Range
 
-    func testCalculateQuarkScore_cleanProduct_highScore() throws {
+    func testCalculateZenScore_cleanProduct_highScore() throws {
         let json = """
         {
           "code": "1",
@@ -210,14 +210,14 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let result = sut.calculateQuarkScore(product)
+        let result = sut.calculateZenScore(product)
 
-        XCTAssertGreaterThanOrEqual(result.score, 50, "Clean product should score at least 50")
+        XCTAssertGreaterThanOrEqual(result.score, 70, "Clean product should score at least 70")
         XCTAssertLessThanOrEqual(result.score, 100)
-        XCTAssertEqual(result.pillars.additiveSafety.score, 20, "No additives = perfect additive score")
+        XCTAssertEqual(result.pillars.additiveSafety.score, 25, "No additives = perfect additive score")
     }
 
-    func testCalculateQuarkScore_ultraProcessedProduct_lowScore() throws {
+    func testCalculateZenScore_ultraProcessedProduct_lowScore() throws {
         let json = """
         {
           "code": "2",
@@ -243,14 +243,14 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let result = sut.calculateQuarkScore(product)
+        let result = sut.calculateZenScore(product)
 
         XCTAssertLessThan(result.score, 50, "Ultra-processed product should score below 50")
         XCTAssertGreaterThanOrEqual(result.score, 0)
-        XCTAssertLessThan(result.pillars.additiveSafety.score, 20, "Multiple bad additives should reduce additive score")
+        XCTAssertLessThan(result.pillars.additiveSafety.score, 25, "Multiple bad additives should reduce additive score")
     }
 
-    func testCalculateQuarkScore_totalNeverExceeds100() throws {
+    func testCalculateZenScore_totalNeverExceeds100() throws {
         let json = """
         {
           "code": "3",
@@ -275,13 +275,13 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let result = sut.calculateQuarkScore(product)
+        let result = sut.calculateZenScore(product)
 
         XCTAssertLessThanOrEqual(result.score, 100)
         XCTAssertGreaterThanOrEqual(result.score, 0)
     }
 
-    func testCalculateQuarkScore_totalNeverNegative() throws {
+    func testCalculateZenScore_totalNeverNegative() throws {
         let json = """
         {
           "code": "4",
@@ -304,12 +304,12 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let result = sut.calculateQuarkScore(product)
+        let result = sut.calculateZenScore(product)
 
         XCTAssertGreaterThanOrEqual(result.score, 0)
     }
 
-    func testCalculateQuarkScore_pillarsAddUpToTotal() throws {
+    func testCalculateZenScore_pillarsAddUpToTotal() throws {
         let json = """
         {
           "code": "5",
@@ -332,11 +332,11 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let result = sut.calculateQuarkScore(product)
+        let result = sut.calculateZenScore(product)
         let p = result.pillars
 
         let pillarSum = p.nutrientBalance.score + p.processingIntegrity.score +
-                        p.additiveSafety.score + p.ingredientQuality.score + p.contextFit.score
+                        p.additiveSafety.score + p.ingredientQuality.score
 
         XCTAssertEqual(result.score, pillarSum, "Total score must equal sum of pillar scores")
     }
@@ -614,9 +614,9 @@ final class FoodScannerServiceTests: XCTestCase {
         let results = await sut.searchProducts(query: "nutella")
         XCTAssertGreaterThan(results.count, 0, "Search for 'nutella' should return results")
 
-        // Verify QuarkScore can be calculated for all results
+        // Verify ZenScore can be calculated for all results
         for product in results {
-            let score = sut.calculateQuarkScore(product)
+            let score = sut.calculateZenScore(product)
             XCTAssertGreaterThanOrEqual(score.score, 0, "Score should be >= 0 for \(product.name)")
             XCTAssertLessThanOrEqual(score.score, 100, "Score should be <= 100 for \(product.name)")
         }
@@ -660,9 +660,9 @@ final class FoodScannerServiceTests: XCTestCase {
         XCTAssertNotNil(sut.error, "Unknown barcode should set error message")
     }
 
-    // MARK: - QuarkScore Consistency
+    // MARK: - ZenScore Consistency
 
-    func testQuarkScore_identicalProducts_sameScore() throws {
+    func testZenScore_identicalProducts_sameScore() throws {
         let json = """
         {
           "code": "same",
@@ -684,13 +684,13 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let product = try JSONDecoder().decode(FoodProduct.self, from: json)
-        let score1 = sut.calculateQuarkScore(product)
-        let score2 = sut.calculateQuarkScore(product)
+        let score1 = sut.calculateZenScore(product)
+        let score2 = sut.calculateZenScore(product)
         XCTAssertEqual(score1.score, score2.score, "Same product should always get the same score")
         XCTAssertEqual(score1.grade, score2.grade)
     }
 
-    func testQuarkScore_gradeMatchesScore() throws {
+    func testZenScore_gradeMatchesScore() throws {
         // Clean product should get high grade
         let cleanJSON = """
         {
@@ -717,7 +717,7 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let clean = try JSONDecoder().decode(FoodProduct.self, from: cleanJSON)
-        let cleanScore = sut.calculateQuarkScore(clean)
+        let cleanScore = sut.calculateZenScore(clean)
         XCTAssertTrue(["A+", "A"].contains(cleanScore.grade), "Clean product should get A+ or A, got \(cleanScore.grade) (\(cleanScore.score))")
 
         // Bad product should get low grade
@@ -746,7 +746,7 @@ final class FoodScannerServiceTests: XCTestCase {
         """.data(using: .utf8)!
 
         let bad = try JSONDecoder().decode(FoodProduct.self, from: badJSON)
-        let badScore = sut.calculateQuarkScore(bad)
+        let badScore = sut.calculateZenScore(bad)
         XCTAssertTrue(["D", "F"].contains(badScore.grade), "Bad product should get D or F, got \(badScore.grade) (\(badScore.score))")
     }
 }

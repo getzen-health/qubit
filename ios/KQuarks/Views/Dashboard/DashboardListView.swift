@@ -301,7 +301,7 @@ struct DashboardListView: View {
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: FoodScannerView()) {
-                        DashboardTileCard(icon: "barcode.viewfinder", title: "Food Scanner", subtitle: "QuarkScore™", color: .green)
+                        DashboardTileCard(icon: "barcode.viewfinder", title: "Food Scanner", subtitle: "ZenScore™", color: .green)
                     }.buttonStyle(.plain)
 
                     NavigationLink(destination: NutritionView()) {

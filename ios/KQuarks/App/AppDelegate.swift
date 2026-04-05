@@ -68,7 +68,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
             UIApplicationShortcutItem(
                 type: "com.kquarks.foodscanner",
                 localizedTitle: "Food Scanner",
-                localizedSubtitle: "Scan & check QuarkScore™",
+                localizedSubtitle: "Scan & check ZenScore™",
                 icon: UIApplicationShortcutIcon(systemImageName: "barcode.viewfinder"),
                 userInfo: nil
             ),

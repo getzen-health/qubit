@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import {
-  scoreFoodProduct,
+  calculateZenScore,
   getAdditiveDetails,
   type FoodProduct,
   type UserProfile,
 } from '../lib/food-scoring'
 
-describe('scoreFoodProduct', () => {
+describe('calculateZenScore', () => {
   it('returns a score between 0 and 100', () => {
-    const result = scoreFoodProduct({})
+    const result = calculateZenScore({})
     expect(result.score).toBeGreaterThanOrEqual(0)
     expect(result.score).toBeLessThanOrEqual(100)
   })
@@ -31,7 +31,7 @@ describe('scoreFoodProduct', () => {
       ingredients_text: 'whole grain oats, water',
       labels_tags: ['en:organic'],
     }
-    const result = scoreFoodProduct(product)
+    const result = calculateZenScore(product)
     expect(result.score).toBeGreaterThanOrEqual(70)
     expect(['A+', 'A']).toContain(result.grade)
   })
@@ -52,60 +52,59 @@ describe('scoreFoodProduct', () => {
       nova_group: 4,
       ingredients_text: 'sugar, hydrogenated palm oil, high fructose corn syrup, artificial flavor, maltodextrin, sodium nitrite, aspartame',
     }
-    const result = scoreFoodProduct(product)
+    const result = calculateZenScore(product)
     expect(result.score).toBeLessThan(35)
     expect(['F', 'D', 'C']).toContain(result.grade)
   })
 
   it('all pillar scores are within their documented max values', () => {
-    const result = scoreFoodProduct({
+    const result = calculateZenScore({
       nutriments: { proteins_100g: 20, fiber_100g: 5 },
     })
-    expect(result.pillars.nutrientBalance.score).toBeLessThanOrEqual(35)
-    expect(result.pillars.processingIntegrity.score).toBeLessThanOrEqual(25)
-    expect(result.pillars.additiveSafety.score).toBeLessThanOrEqual(20)
-    expect(result.pillars.ingredientQuality.score).toBeLessThanOrEqual(15)
-    expect(result.pillars.contextFit.score).toBeLessThanOrEqual(5)
+    expect(result.pillars.nutrientBalance.score).toBeLessThanOrEqual(50)
+    expect(result.pillars.processingIntegrity.score).toBeLessThanOrEqual(15)
+    expect(result.pillars.additiveSafety.score).toBeLessThanOrEqual(25)
+    expect(result.pillars.ingredientQuality.score).toBeLessThanOrEqual(10)
   })
 
   it('high-sodium product is penalised vs low-sodium', () => {
-    const lowSodium = scoreFoodProduct({ nutriments: { sodium_100g: 0.05 } })
-    const highSodium = scoreFoodProduct({ nutriments: { sodium_100g: 1.5 } })
+    const lowSodium = calculateZenScore({ nutriments: { sodium_100g: 0.05 } })
+    const highSodium = calculateZenScore({ nutriments: { sodium_100g: 1.5 } })
     expect(lowSodium.pillars.nutrientBalance.score).toBeGreaterThan(highSodium.pillars.nutrientBalance.score)
   })
 
   it('TIER_A additive (e250) causes lower additive safety score', () => {
-    const safe = scoreFoodProduct({ additives_tags: [] })
-    const dangerous = scoreFoodProduct({ additives_tags: ['en:e250'] })
+    const safe = calculateZenScore({ additives_tags: [] })
+    const dangerous = calculateZenScore({ additives_tags: ['en:e250'] })
     expect(dangerous.pillars.additiveSafety.score).toBeLessThan(safe.pillars.additiveSafety.score)
   })
 
   it('organic label boosts ingredient quality score', () => {
-    const noLabel = scoreFoodProduct({ ingredients_text: 'water, salt', labels_tags: [] })
-    const organic = scoreFoodProduct({ ingredients_text: 'water, salt', labels_tags: ['en:organic'] })
+    const noLabel = calculateZenScore({ ingredients_text: 'water, salt', labels_tags: [] })
+    const organic = calculateZenScore({ ingredients_text: 'water, salt', labels_tags: ['en:organic'] })
     expect(organic.pillars.ingredientQuality.score).toBeGreaterThan(noLabel.pillars.ingredientQuality.score)
   })
 
-  it('context fit is personalised — high-calorie food scores lower for weight-loss goal', () => {
+  it('score is consistent regardless of user profile (context fit removed)', () => {
     const highCalorie: FoodProduct = {
       nutriments: { 'energy-kcal_100g': 600, sugars_100g: 40 },
       nova_group: 4,
     }
     const profile: UserProfile = { primary_goal: 'lose_weight' }
-    const noProfile = scoreFoodProduct(highCalorie)
-    const withProfile = scoreFoodProduct(highCalorie, profile)
-    expect(withProfile.pillars.contextFit.score).toBeLessThanOrEqual(noProfile.pillars.contextFit.score)
+    const noProfile = calculateZenScore(highCalorie)
+    const withProfile = calculateZenScore(highCalorie, profile)
+    expect(withProfile.score).toEqual(noProfile.score)
   })
 
   it('returns legacy component aliases for backward compatibility', () => {
-    const result = scoreFoodProduct({})
+    const result = calculateZenScore({})
     expect(result.components).toHaveProperty('nutrition')
     expect(result.components).toHaveProperty('additives')
     expect(result.components).toHaveProperty('organic')
   })
 
   it('flags array contains EFSA/IARC high-concern additive codes', () => {
-    const result = scoreFoodProduct({ additives_tags: ['en:e250', 'en:e102'] })
+    const result = calculateZenScore({ additives_tags: ['en:e250', 'en:e102'] })
     expect(result.flags.length).toBeGreaterThan(0)
     expect(result.flags.some(f => f.includes('E250'))).toBe(true)
   })

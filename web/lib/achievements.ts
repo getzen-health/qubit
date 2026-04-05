@@ -40,7 +40,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { key: 'scan_50',             name: 'Label Reader',        description: 'Scan 50 products',                    icon: '🏷️', xpReward: 100, category: 'scanning' },
   { key: 'scan_100',            name: 'Ingredient Expert',   description: 'Scan 100 products',                   icon: '🧪', xpReward: 200, category: 'scanning' },
   { key: 'cosmetics_scan_1',    name: 'Beauty Check',        description: 'Scan your first cosmetic product',    icon: '🧴', xpReward: 25,  category: 'scanning' },
-  { key: 'found_a_plus',        name: 'Clean Eater',         description: 'Find a product with A+ QuarkScore',   icon: '🌿', xpReward: 30,  category: 'scanning' },
+  { key: 'found_a_plus',        name: 'Clean Eater',         description: 'Find a product with A+ ZenScore',   icon: '🌿', xpReward: 30,  category: 'scanning' },
   // Fitness
   { key: 'first_workout',       name: 'First Steps',         description: 'Log your first workout',              icon: '🏃', xpReward: 25,  category: 'fitness' },
   { key: 'workout_7',           name: 'Week Warrior',        description: 'Log 7 workouts',                      icon: '💪', xpReward: 75,  category: 'fitness' },

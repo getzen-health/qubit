@@ -4,7 +4,7 @@ const features = [
   {
     icon: '🍎',
     title: 'Food Scanner',
-    description: 'Scan any barcode. Get a QuarkScore™ with ingredient analysis and nutritional breakdown.',
+    description: 'Scan any barcode. Get a ZenScore™ with ingredient analysis and nutritional breakdown.',
   },
   {
     icon: '🤖',

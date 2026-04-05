@@ -53,7 +53,7 @@ function getContextItems(ctx: HealthContext): { label: string; value: string }[]
   if (ctx.active_goals && ctx.active_goals.length > 0) items.push({ label: 'Goals', value: `${ctx.active_goals.length} active` })
   if (ctx.current_supplements && ctx.current_supplements.length > 0) items.push({ label: 'Supplements', value: `${ctx.current_supplements.length} tracked` })
   if (ctx.chronotype) items.push({ label: 'Chronotype', value: ctx.chronotype.charAt(0).toUpperCase() + ctx.chronotype.slice(1) })
-  if (ctx.avg_quark_score !== undefined) items.push({ label: 'QuarkScore', value: `${ctx.avg_quark_score}/100` })
+  if (ctx.avg_zen_score !== undefined) items.push({ label: 'ZenScore', value: `${ctx.avg_zen_score}/100` })
   if (ctx.current_fasting_protocol) items.push({ label: 'Fasting', value: ctx.current_fasting_protocol })
   return items
 }

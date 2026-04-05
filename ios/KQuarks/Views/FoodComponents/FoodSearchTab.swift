@@ -102,8 +102,8 @@ struct ProductRowView: View {
     let product: FoodProduct
     let service: FoodScannerService
 
-    private var quarkScore: QuarkScoreResult {
-        service.calculateQuarkScore(product)
+    private var zenScore: ZenScoreResult {
+        service.calculateZenScore(product)
     }
 
     var body: some View {
@@ -143,7 +143,7 @@ struct ProductRowView: View {
                 }
             }
             Spacer()
-            QuarkScoreBadge(score: quarkScore.score, grade: quarkScore.grade, size: .small)
+            ZenScoreBadge(score: zenScore.score, grade: zenScore.grade, size: .small)
         }
         .padding(12)
         .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))

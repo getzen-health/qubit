@@ -59,7 +59,7 @@ struct ProductHealthScore {
     }
 }
 
-// MARK: - FoodScannerView (Yuka-style, QuarkScore™)
+// MARK: - FoodScannerView (Yuka-style, ZenScore™)
 
 struct FoodScannerView: View {
     @Environment(\.dismiss) private var dismiss

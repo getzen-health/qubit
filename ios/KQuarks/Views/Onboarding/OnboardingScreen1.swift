@@ -38,7 +38,7 @@ struct OnboardingScreen1: View {
                     OnboardingBulletRow(
                         icon: "barcode.viewfinder",
                         color: .orange,
-                        text: "Scan food with QuarkScore™ analysis"
+                        text: "Scan food with ZenScore™ analysis"
                     )
                     OnboardingBulletRow(
                         icon: "brain.head.profile",

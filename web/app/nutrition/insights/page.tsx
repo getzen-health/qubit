@@ -69,7 +69,7 @@ export default function NutritionInsightsPage() {
             <div>
               <p className="text-xs text-text-secondary uppercase tracking-wide mb-0.5">Your Diet Pattern</p>
               <h2 className="text-xl font-bold text-text-primary">{data.dietPattern}</h2>
-              <p className="text-sm text-text-secondary mt-0.5">Average QuarkScore: <span className="font-semibold text-text-primary">{data.avgScore}/100</span></p>
+              <p className="text-sm text-text-secondary mt-0.5">Average ZenScore: <span className="font-semibold text-text-primary">{data.avgScore}/100</span></p>
             </div>
           </div>
         </div>
