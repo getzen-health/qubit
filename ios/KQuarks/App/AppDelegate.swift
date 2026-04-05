@@ -66,6 +66,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     static func makeShortcutItems() -> [UIApplicationShortcutItem] {
         [
             UIApplicationShortcutItem(
+                type: "com.kquarks.foodscanner",
+                localizedTitle: "Food Scanner",
+                localizedSubtitle: "Scan & check QuarkScore™",
+                icon: UIApplicationShortcutIcon(systemImageName: "barcode.viewfinder"),
+                userInfo: nil
+            ),
+            UIApplicationShortcutItem(
                 type: "com.kquarks.insights",
                 localizedTitle: "Insights",
                 localizedSubtitle: "AI health insights",
